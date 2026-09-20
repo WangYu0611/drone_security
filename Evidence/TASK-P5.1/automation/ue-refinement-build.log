@@ -1,0 +1,49 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p5-1\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p5-1).
+UbaServer - Listening on 0.0.0.0:1345
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2)
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandShellWidget.cpp, DroneOpsPlayerController.cpp, MapMissionRouteWidget.cpp, MapShellWidget.cpp, ProductText.cpp, SecurityPlanWorkspaceWidget.cpp, P4WorkflowTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 11 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 18.32 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/11] Compile [x64] CommandCenterPanel.cpp
+[2/11] Compile [x64] CommandShellWidget.cpp
+[3/11] Compile [x64] MapMissionRouteWidget.cpp
+[4/11] Compile [x64] MapShellWidget.cpp
+[5/11] Compile [x64] P4WorkflowTest.cpp
+[6/11] Compile [x64] Module.UE5DroneControl.gen.cpp
+[7/11] Compile [x64] SecurityPlanWorkspaceWidget.cpp
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(92,23): error C3535: 无法推导“auto *”的类型(依据“TObjectPtr<UWidget>”)
+    auto* ExistingRoot=WidgetTree->RootWidget;auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();WidgetTree->RootWidget=Overlay;Overlay->AddChildToOverlay(ExistingRoot);
+                      ^
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(92,23): error C2440: “初始化”: 无法从“TObjectPtr<UWidget>”转换为“<error type> *”
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(92,23): note: 没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(92,141): error C2664: “UOverlaySlot *UOverlay::AddChildToOverlay(UWidget *)”: 无法将参数 1 从“<error type> *”转换为“UWidget *”
+    auto* ExistingRoot=WidgetTree->RootWidget;auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();WidgetTree->RootWidget=Overlay;Overlay->AddChildToOverlay(ExistingRoot);
+                                                                                                                                            ^
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(92,159): note: 指向的类型不相关; 转换需要 reinterpret_cast、C 样式强制转换或带圆括号的函数样式强制转换
+    auto* ExistingRoot=WidgetTree->RootWidget;auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();WidgetTree->RootWidget=Overlay;Overlay->AddChildToOverlay(ExistingRoot);
+                                                                                                                                                              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Overlay.h(26,24): note: 参见“UOverlay::AddChildToOverlay”的声明
+	UMG_API UOverlaySlot* AddChildToOverlay(UWidget* Content);
+	                      ^
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(92,141): note: 尝试匹配参数列表“(<error type> *)”时
+    auto* ExistingRoot=WidgetTree->RootWidget;auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();WidgetTree->RootWidget=Overlay;Overlay->AddChildToOverlay(ExistingRoot);
+                                                                                                                                            ^
+[8/11] Compile [x64] ProductText.cpp
+Total time in Unreal Build Accelerator local executor: 43.87 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 49.02 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 12.4kb

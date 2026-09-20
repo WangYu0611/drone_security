@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"d:/RedAlert/UE5DroneControl/BackEnd\\(before\\)\" -type f)",
+      "Read(//c/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/**)",
+      "Read(//c/Program Files/Microsoft Visual Studio/2022/**)",
+      "Read(//dev/**)",
+      "Bash(grep -iE \"\\\\.\\(ini|cpp|h|umap\\)$\")",
+      "Bash(xargs grep *)",
+      "Bash(grep -v \"^[^a-zA-Z]*$\")",
+      "Bash(grep -v \"^.$\\\\|^..$\")",
+      "Bash(grep -v \"^.$\\\\|^..$\\\\|^...$\")",
+      "Bash(grep -v \"^[^a-zA-Z/]*$\")",
+      "Bash(netstat -ano)",
+      "Bash(tasklist /FI \"PID eq 24664\")",
+      "Bash(tasklist)",
+      "Bash(grep -v \"//.*8080\\\\|//.*8081\")",
+      "Bash(sort -k6,7)",
+      "Bash(cp -r d:/RedAlert/UE5DroneControl/Source/DroneEdit/PathEditor d:/RedAlert/UE5DroneControl/Source/UE5DroneControl/PathEditor)",
+      "Bash(cp -r d:/RedAlert/UE5DroneControl/Source/DroneEdit/RuntimeInteraction d:/RedAlert/UE5DroneControl/Source/UE5DroneControl/RuntimeInteraction)",
+      "Bash(cp -r d:/RedAlert/UE5DroneControl/Source/DroneEdit/TaskSystem d:/RedAlert/UE5DroneControl/Source/UE5DroneControl/TaskSystem)",
+      "Bash(xargs sed:*)",
+      "Bash(wmic computersystem:*)",
+      "Bash(wmic pagefile:*)",
+      "Bash(systeminfo)",
+      "Bash(powershell -command \"Get-WmiObject Win32_PageFileUsage | Select-Object Name, AllocatedBaseSize, CurrentUsage, PeakUsage\")",
+      "Read(//c/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/**)",
+      "Bash(find /d/RedAlert/UE5DroneControl -name *Cesium* -o -name *cesium*)",
+      "Read(//c/Program Files/Epic Games/UE_5.7/Engine/Plugins/Marketplace/Cesiumfo9eaf76ca58f3V10/Source/CesiumRuntime/Public/**)",
+      "Read(//c/Program Files/Epic Games/UE_5.7/Engine/Plugins/Marketplace/Cesiumfo9eaf76ca58f3V10/Source/CesiumRuntime/**)",
+      "Bash(python -c \":*)",
+      "Bash(find d:/RedAlert/UE5DroneControl/BackEnd -name jetson_bridge* -o -name simulate_telemetry*)",
+      "Bash(where python:*)",
+      "Bash(\"C:\\\\Program Files\\\\Epic Games\\\\UE_5.7\\\\Engine\\\\Build\\\\BatchFiles\\\\Build.bat\" UE5DroneControlEditor Win64 DebugGame -Project=\"D:\\\\RedAlert\\\\UE5DroneControl\\\\UE5DroneControl.uproject\" -WaitMutex)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files/Epic Games/UE_5.7/Engine/Build/**)",
+      "Bash(reg query *)",
+      "Bash(find /c/Users/qianhan/UE5DroneControl -type f \\\\\\(-name *.md -o -name *.txt -o -name *requirement* -o -name *spec* \\\\\\))",
+      "Bash(find /c/Users/qianhan/UE5DroneControl -path /c/Users/qianhan/UE5DroneControl/Intermediate -prune -o -path /c/Users/qianhan/UE5DroneControl/Saved -prune -o -type f \\\\\\(-name *需求* -o -name *架构* -o -name *接口* \\\\\\) -print)",
+      "Bash(find c:UsersqianhanUE5DroneControl -name *BoxSelect* -o -name *box_select*)",
+      "Bash(ls *.uproject)"
+    ],
+    "additionalDirectories": [
+      "\\tmp",
+      "C:\\Users\\VENTSDENYE5\\AppData\\Roaming\\Unreal Engine\\UnrealBuildTool",
+      "Bash(sort -k6,7)",
+      "Bash(\"/c/Program Files/Epic Games/UE_5.5/Engine/Build/BatchFiles/Build.bat\" UE5DroneControlEditor Win64 Development \"e:/code/UE5DroneControl/UE5DroneControl.uproject\" -NoHotReload)",
+      "Read(//c/Program Files/**)",
+      "Bash(reg query *)"
+    ]
+  }
+}

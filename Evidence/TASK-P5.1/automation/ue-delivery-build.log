@@ -1,0 +1,27 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p5-1\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p5-1).
+UbaServer - Listening on 0.0.0.0:1345
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2)
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandShellWidget.cpp, DroneOpsPlayerController.cpp, MapMissionRouteWidget.cpp, MapShellWidget.cpp, ProductText.cpp, SecurityPlanWorkspaceWidget.cpp, P4WorkflowTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 5 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 17.72 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/5] Compile [x64] SecurityPlanWorkspaceWidget.cpp
+C:\Users\wy331\Documents\UE5DroneControl-p5-1\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(17,173): error C2065: “TRUE”: 未声明的标识符
+        if(::IsWindowVisible(Window) && FCStringWide::Strcmp(Title,L"Drone Security | Map")==0){auto* M=reinterpret_cast<FMatch*>(Data);M->Window=Window;++M->Count;}return TRUE;},reinterpret_cast<LPARAM>(&Match));
+                                                                                                                                                                            ^
+[2/5] Compile [x64] ProductText.cpp
+Total time in Unreal Build Accelerator local executor: 11.61 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 12.98 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 6.0kb

@@ -1,0 +1,336 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" -Mode=ValidatePlatforms -OutputSDKs  -AllPlatforms  -project="C:/Users/wy331/Documents/UE5DroneControl-p5-2/UE5DroneControl.uproject" -log="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Saved/Logs/AutoSDKInfo.txt" -verbose -timestamps
+Log file: C:\Users\wy331\Documents\UE5DroneControl-p5-2\Saved\Logs\AutoSDKInfo.txt
+##PlatformValidate: Win64 VALID 10.0.22621.0
+##PlatformValidate: Mac VALID 26.1.1
+##PlatformValidate: IOS VALID 26.1.1
+##PlatformValidate: Android INVALID r27c
+##PlatformValidate: Linux INVALID v26_clang-20.1.8-rockylinux8
+##PlatformValidate: LinuxArm64 INVALID v26_clang-20.1.8-rockylinux8
+##PlatformValidate: TVOS VALID 26.1.1
+##PlatformValidate: VisionOS INVALID <UNKNOWN>
+Unable to find required SDK version 'MainVersion' for platform VisionOS. Check your SDK.json files
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 311b
+[2026.09.19-13.57.51:149][  0]LogInit: Display: Running engine for game: UE5DroneControl
+[2026.09.19-13.57.51:149][  0]LogCore: Display: Requested channels: 'cpu,gpu,frame,log,bookmark,screenshot,region'
+[2026.09.19-13.57.51:149][  0]LogTrace: Display: Control listening on port 1985
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : platform="Windows"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : config="Development"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : buildversion="++UE5+Release-5.8-CL-55116800"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : engineversion="5.8.0-55116800+++UE5+Release-5.8"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : enginereleaseversion="5.8.0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : os="Windows 11 (25H2) [10.0.26200.9457] "
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : cpu="AuthenticAMD|AMD Ryzen 7 5800H with Radeon Graphics"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : pgoenabled="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : pgoprofilingenabled="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : ltoenabled="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : asan="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : mergedmodules="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : compacttset="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : commandline="" C:\Users\wy331\Documents\UE5DroneControl-p5-2\UE5DroneControl.uproject -run=GatherText -config=Config/Localization/DroneOps.ini -unattended -nop4 -NullRHI -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log""
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : loginid="d4e8ffba46e752f478b902afee18f6d8"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : llm="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : zenstreaming="0"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : systemresolution.resx="1280"
+[2026.09.19-13.57.51:149][  0]LogCsvProfiler: Display: Metadata set : systemresolution.resy="720"
+[2026.09.19-13.57.51:149][  0]LogAudio: Display: Audio Device Manager not initializing due to all audio being disabled. If this is not intentional, please check command line arguments for "-nosound".
+[2026.09.19-13.57.51:149][  0]LogAssetRegistry: Display: FindShardedCacheFiles: 1 via .ref, 0 via migration fallback, 1 total
+[2026.09.19-13.57.51:149][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles (PreLoad): 1 .ref files found, 1 referenced binaries
+[2026.09.19-13.57.51:149][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles: 1 total binaries, 1 referenced (kept), 0 old-style pre-migration (kept), 0 orphans deleted, 0 orphans locked (kept)
+[2026.09.19-13.57.51:149][  0]LogAssetRegistry: Display: LoadCacheFiles: loading 1 cache files, memory-mapping=enabled
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading Mac ini files took 0.06 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading Android ini files took 0.06 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading VulkanPC ini files took 0.07 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading IOS ini files took 0.07 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading Windows ini files took 0.08 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading TVOS ini files took 0.08 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading VisionOS ini files took 0.08 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading Unix ini files took 0.08 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading LinuxArm64 ini files took 0.10 seconds
+[2026.09.19-13.57.51:149][  0]LogConfig: Display: Loading Linux ini files took 0.10 seconds
+[2026.09.19-13.57.51:149][  0]LogAssetRegistry: Display: Asset registry cache read as 126.7 MiB from ../../../../../../Users/wy331/Documents/UE5DroneControl-p5-2/Intermediate/CachedAssetRegistry/CachedAssetRegistry_0_5E8E55F84E370EBE2D0A8FA2F6867F5F.bin (memory-mapped=yes)
+[2026.09.19-13.57.51:149][  0]LogPluginManager: Warning: Plugin 'SimpleWebSocket' requires engine version '5.7.0' and may not be compatible with the current current engine version '5.8.0-55116800+++UE5+Release-5.8'
+[2026.09.19-13.57.51:149][  0]LogPluginManager: Display: Skipping load of 'SimpleWebSocket'.
+[2026.09.19-13.57.51:149][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Log is disabled for this application
+[2026.09.19-13.57.51:149][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.CSV is disabled for this application
+[2026.09.19-13.57.51:150][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Horde is disabled for this application
+[2026.09.19-13.57.51:150][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Log is disabled for this application
+[2026.09.19-13.57.51:150][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.CSV is disabled for this application
+[2026.09.19-13.57.51:150][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Horde is disabled for this application
+[2026.09.19-13.57.51:150][  0]LogAsyncCompilation: Display: MemorySharingInfo: UsedMemory=341MiB, MaxMemoryAvailable=34717MiB
+[2026.09.19-13.57.51:150][  0]RenderDocPlugin: Display: RenderDoc plugin will not be loaded. Use '-AttachRenderDoc' on the cmd line or enable 'renderdoc.AutoAttach' in the plugin settings.
+[2026.09.19-13.57.51:150][  0]LogStreaming: Display: AsyncLoading2 - Created: Async Loading Thread: false, Async Post Load: false, Multithreaded: false
+[2026.09.19-13.57.51:150][  0]LogHAL: Display: Platform has ~ 32 GB [34256932864 / 34359738368 / 32], which maps to Largest [LargestMinGB=32, LargerMinGB=12, DefaultMinGB=8, SmallerMinGB=6, SmallestMinGB=0)
+[2026.09.19-13.57.51:150][  0]LogCsvProfiler: Display: Metadata set : extradevelopmentmemorymb="0"
+[2026.09.19-13.57.51:150][  0]LogObj: Display: Attempting to load config data for Default__DownlinkBandwidthManagerConfig before the Class has been constructed/registered/linked (likely during module loading or early startup). This will result in the load silently failing and should be fixed.
+[2026.09.19-13.57.51:547][  0]LogObj: Display: Attempting to load config data for Default__SlateThemeManager before the Class has been constructed/registered/linked (likely during module loading or early startup). This will result in the load silently failing and should be fixed.
+[2026.09.19-13.57.51:696][  0]LogCsvProfiler: Display: Metadata set : verbatimrhiname="Null"
+[2026.09.19-13.57.51:696][  0]LogCsvProfiler: Display: Metadata set : rhiname="Null"
+[2026.09.19-13.57.51:696][  0]LogCsvProfiler: Display: Metadata set : rhifeaturelevel="SM6"
+[2026.09.19-13.57.51:696][  0]LogCsvProfiler: Display: Metadata set : shaderplatform="PCD3D_SM6"
+[2026.09.19-13.57.51:696][  0]LogCsvProfiler: Display: Metadata set : gpu=""
+[2026.09.19-13.57.51:696][  0]LogCsvProfiler: Display: Metadata set : gpudriver=""
+[2026.09.19-13.57.51:704][  0]LogTextureFormatASTC: Display: ASTCEnc version 5.0.1 library loaded
+[2026.09.19-13.57.51:704][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatASTC
+[2026.09.19-13.57.51:704][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatDXT
+[2026.09.19-13.57.51:704][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatETC2
+[2026.09.19-13.57.51:704][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatIntelISPCTexComp
+[2026.09.19-13.57.51:704][  0]LogTextureFormatOodle: Display: Oodle Texture TFO init; latest sdk version = 2.9.16
+[2026.09.19-13.57.51:704][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.16.dll
+[2026.09.19-13.57.51:705][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatOodle
+[2026.09.19-13.57.51:705][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatUncompressed
+[2026.09.19-13.57.51:753][  0]LogTargetPlatformManager: Display: Failed to SetupSDK for platform 'Android'
+[2026.09.19-13.57.51:781][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOS'
+[2026.09.19-13.57.51:781][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOSClient'
+[2026.09.19-13.57.51:809][  0]LogTargetPlatformManager: Display: Failed to SetupSDK for platform 'Linux'
+[2026.09.19-13.57.51:837][  0]LogTargetPlatformManager: Display: Failed to SetupSDK for platform 'LinuxArm64'
+[2026.09.19-13.57.51:866][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Mac'
+[2026.09.19-13.57.51:866][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacEditor'
+[2026.09.19-13.57.51:866][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacServer'
+[2026.09.19-13.57.51:866][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacClient'
+[2026.09.19-13.57.51:893][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOS'
+[2026.09.19-13.57.51:893][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOSClient'
+[2026.09.19-13.57.51:921][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Windows'
+[2026.09.19-13.57.51:921][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsEditor'
+[2026.09.19-13.57.51:921][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsServer'
+[2026.09.19-13.57.51:921][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsClient'
+[2026.09.19-13.57.51:921][  0]LogTargetPlatformManager: Display: Building Assets For WindowsEditor
+[2026.09.19-13.57.51:925][  0]LogAudioDebug: Display: Lib vorbis DLL was dynamically loaded.
+[2026.09.19-13.57.52:281][  0]LogDerivedDataCache: Display: ../../../Engine/DerivedDataCache/Compressed.ddp: Opened pak cache for reading. (1667 MiB)
+[2026.09.19-13.57.52:282][  0]LogZenServiceInstance: Display: Launching zen utility 'C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/zen.exe service status'.
+[2026.09.19-13.57.52:893][  0]LogZenServiceInstance: Display: Writing plugin version info to 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zen_plugin_versions.json'
+[2026.09.19-13.57.52:894][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/wy331/AppData/Local/UnrealEngine/5.8/Saved/Zen/zen.version', version: '5.8.13-202605190912-windows-x64-release-094f62c2'
+[2026.09.19-13.57.52:894][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.8.13-202605190912-windows-x64-release-094f62c2'
+[2026.09.19-13.57.52:894][  0]LogZenServiceInstance: Display: Installed service at 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
+[2026.09.19-13.57.52:895][  0]LogZenServiceInstance: Display: Launching executable 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\wy331\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --restrict-content-types --allow-external-oidctoken-exe=false --plugins-config "C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zen_plugins_v1.json" --security-config-path "C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/security-config.json" --owner-pid 88908  --child-id Zen_88908_Startup'
+[2026.09.19-13.57.55:543][  0]LogZenServiceInstance: Display: Unreal Zen Storage Server HTTP service at http://[::1]:8558 status: OK!.
+[2026.09.19-13.57.55:545][  0]LogDerivedDataCache: Display: ZenLocal: Using ZenServer HTTP service at [::1] with namespace ue.ddc. Status: OK!.
+[2026.09.19-13.57.55:554][  0]LogDerivedDataCache: Display: C:/Users/wy331/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.04ms. RandomReadSpeed=514.52MBs, RandomWriteSpeed=139.39MBs. Assigned SpeedClass 'Local'
+[2026.09.19-13.57.55:558][  0]LogUbaHorde: Display: UBA/Horde Configuration [Uba.Provider.Horde]: Not Enabled
+[2026.09.19-13.57.55:558][  0]LogShaderCompilers: Display: No distributed shader compiler controller found
+[2026.09.19-13.57.55:558][  0]LogShaderCompilers: Display: Using 13 local workers for shader compilation
+[2026.09.19-13.57.55:560][  0]LogShaderCompilers: Display: Compiling shader autogen file: ../../../../../../Users/wy331/Documents/UE5DroneControl-p5-2/Intermediate/ShaderAutogen/PCD3D_SM6/AutogenShaderHeaders.ush
+[2026.09.19-13.57.55:560][  0]LogShaderCompilers: Display: Autogen file is unchanged, skipping write.
+[2026.09.19-13.57.56:132][  0]LogEditorDomain: Display: EditorDomain is Disabled
+[2026.09.19-13.57.56:236][  0]LogAssetRegistry: Display: AssetDataGatherer spent 0.000s loading caches from ../../../../../../Users/wy331/Documents/UE5DroneControl-p5-2/Intermediate/CachedAssetRegistry.
+[2026.09.19-13.57.56:444][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64Editor not found.
+[2026.09.19-13.57.56:444][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64 not found.
+[2026.09.19-13.57.56:496][  0]LogCsvProfiler: Display: Metadata set : deviceprofile="WindowsEditor"
+[2026.09.19-13.57.56:499][  0]LogStreaming: Display: FlushAsyncLoading(1): 1 QueuedPackages, 0 AsyncPackages
+[2026.09.19-13.57.56:516][  0]LogTextureEncodingSettings: Display: Texture Encode Speed: Final (cook).
+[2026.09.19-13.57.56:516][  0]LogTextureEncodingSettings: Display: Oodle Texture Encode Speed settings: Fast: RDO Off Lambda=0, Effort=Normal Final: RDO Off Lambda=0, Effort=Normal
+[2026.09.19-13.57.56:516][  0]LogTextureEncodingSettings: Display: Shared linear texture encoding: Disabled
+[2026.09.19-13.57.56:540][  0]LogMeshReduction: Display: Using QuadricMeshReduction for automatic static mesh reduction
+[2026.09.19-13.57.56:540][  0]LogMeshReduction: Display: Using SkeletalMeshReduction for automatic skeletal mesh reduction
+[2026.09.19-13.57.56:540][  0]LogMeshReduction: Display: Using ProxyLODMeshReduction for automatic mesh merging
+[2026.09.19-13.57.56:540][  0]LogMeshReduction: Display: No distributed automatic mesh merging module available
+[2026.09.19-13.57.56:777][  0]LogShaderCompilers: Display: Compiling shader autogen file: ../../../../../../Users/wy331/Documents/UE5DroneControl-p5-2/Intermediate/ShaderAutogen/PCD3D_SM5/AutogenShaderHeaders.ush
+[2026.09.19-13.57.56:777][  0]LogShaderCompilers: Display: Autogen file is unchanged, skipping write.
+[2026.09.19-13.57.56:777][  0]LogVirtualization: Display: VirtualizationSystem name found in ini file: None
+[2026.09.19-13.57.56:777][  0]LogVirtualization: Display: FNullVirtualizationSystem mounted, virtualization will be disabled
+[2026.09.19-13.57.56:853][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize started...
+[2026.09.19-13.57.56:856][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize took 2.526 ms
+[2026.09.19-13.57.57:168][  0]LogMetaSound: Display: MetaSound Page Target Initialized to 'Default'
+[2026.09.19-13.57.57:171][  0]LogAudio: Display: Registering Engine Module Parameter Interfaces...
+[2026.09.19-13.57.57:872][  0]LogSemanticSearch: Display: No codebook found, creating flat index
+[2026.09.19-13.57.57:938][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.09.19-13.57.57:938][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.09.19-13.57.58:331][  0]LogToolsetRegistry: Display: Registering Toolset ToolsetRegistry.AgentSkillToolset
+[2026.09.19-13.57.58:354][  0]LogGameFeatures: Error: Asset manager settings do not include a rule for assets of type GameFeatureData, which is required for game feature plugins to function
+[2026.09.19-13.57.58:355][  0]LogGameFeatures: Display: Total built in plugin load time 0.0011s
+[2026.09.19-13.57.58:356][  0]LoadErrors: Error: Asset Manager settings do not include an entry for assets of type GameFeatureData, which is required for game feature plugins to function. Add entry to PrimaryAssetTypesToScan?
+[2026.09.19-13.57.58:372][  0]LogCsvProfiler: Display: Metadata set : largeworldcoordinates="1"
+[2026.09.19-13.57.58:410][  0]LogCsvProfiler: Display: Metadata set : raytracing="0"
+[2026.09.19-13.57.58:585][  0]LogToolsetRegistry: Display: Registering Toolset ConfigSettingsToolset.ConfigSettingsToolset
+[2026.09.19-13.57.58:588][  0]LogToolsetRegistry: Display: Registering Toolset AutomationTestToolset.AutomationTestToolset
+[2026.09.19-13.57.58:589][  0]LogToolsetRegistry: Display: Registering Toolset DataRegistryToolset.DataRegistryTools
+[2026.09.19-13.57.58:593][  0]LogToolsetRegistry: Display: Registering Toolset DataflowAgent.DataflowAgentToolset
+[2026.09.19-13.57.58:594][  0]LogToolsetRegistry: Display: Registering Toolset GameFeaturesToolset.GameFeaturesToolset
+[2026.09.19-13.57.58:598][  0]LogToolsetRegistry: Display: Registering Toolset EditorToolset.EditorAppToolset
+[2026.09.19-13.57.58:598][  0]LogToolsetRegistry: Display: Registering Toolset EditorToolset.LogsToolset
+[2026.09.19-13.57.58:600][  0]LogToolsetRegistry: Display: Registering Toolset GameplayTagsToolset.GameplayTagsToolset
+[2026.09.19-13.57.58:602][  0]LogToolsetRegistry: Display: Registering Toolset GASToolsets.GameplayCueToolset
+[2026.09.19-13.57.58:602][  0]LogToolsetRegistry: Display: Registering Toolset GASToolsets.AttributeSetToolset
+[2026.09.19-13.57.58:602][  0]LogToolsetRegistry: Display: Registering Toolset GASToolsets.AbilitySystemInspectorToolset
+[2026.09.19-13.57.58:608][  0]LogToolsetRegistry: Display: Registering Toolset PCGToolset.PCGToolset
+[2026.09.19-13.57.58:608][  0]LogToolsetRegistry: Display: Registering Toolset PCGToolset.PCGSpatialToolset
+[2026.09.19-13.57.58:611][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Info
+[2026.09.19-13.57.58:612][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Component
+[2026.09.19-13.57.58:612][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Blueprint
+[2026.09.19-13.57.58:623][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_System
+[2026.09.19-13.57.58:623][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Assets
+[2026.09.19-13.57.58:627][  0]LogToolsetRegistry: Display: Registering Toolset PhysicsToolsets.PhysicsAssetToolset
+[2026.09.19-13.57.58:629][  0]LogToolsetRegistry: Display: Registering Toolset PluginToolset.PluginToolset
+[2026.09.19-13.57.58:631][  0]LogToolsetRegistry: Display: Registering Toolset SemanticSearchToolset.SemanticSearchToolset
+[2026.09.19-13.57.58:634][  0]LogToolsetRegistry: Display: Registering Toolset SlateInspectorToolset.SlateInspectorToolset
+[2026.09.19-13.57.58:638][  0]LogToolsetRegistry: Display: Registering Toolset WorldConditionsToolset.WorldConditionTools
+[2026.09.19-13.57.58:645][  0]LogToolsetRegistry: Display: Registering Toolset UMGToolSet.UMGToolSet
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: LegacyScheduler: No
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Scheduling GatherText tasks for 'C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini'
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'UpdateArchives' has a single parallel task. Adding it to the end of its sequential tasks.
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Import' has a single parallel task. Adding it to the end of its sequential tasks.
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Compile' has a single parallel task. Adding it to the end of its sequential tasks.
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreInitialize':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Initialize':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostInitialize':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreUpdateManifests':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'UpdateManifests':
+	2 sequential task(s): 1 GatherTextFromSourceCommandlet, 1 GenerateGatherManifestCommandlet
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostUpdateManifests':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreUpdateArchives':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'UpdateArchives':
+	1 sequential task(s): 1 GenerateGatherArchiveCommandlet
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostUpdateArchives':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreImport':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Import':
+	1 sequential task(s): 1 InternationalizationExportCommandlet
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostImport':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreExport':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Export':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostExport':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreCompile':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Compile':
+	1 sequential task(s): 1 GenerateTextLocalizationResourceCommandlet
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostCompile':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PreFinalize':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'Finalize':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Phase 'PostFinalize':
+	0 sequential task(s): 
+	0 parallel tasks(s): 
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: CanRunParallelTasks: Yes
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Running phase 'UpdateManifests' (2 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Running 2 sequentials task(s) in phase 'UpdateManifests'...
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Starting sequential task 1 of 2 in phase 'UpdateManifests'...
+[2026.09.19-13.57.58:670][  0]LogGatherTextCommandlet: Display: Executing GatherTextFromSourceCommandlet (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep0 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.57.58:670][  0]LogGatherTextFromSourceCommandlet: Display: UGatherTextFromSourceCommandlet::Main started...
+[2026.09.19-13.58.03:864][  0]LogGatherTextFromSourceCommandlet: Warning: A string literal was not correctly terminated. File ../../../../Program Files/Epic Games/UE_5.8/Engine/Plugins/Marketplace/Cesiumfo5b7c98b8073cV11/Source/CesiumRuntime/Private/Tests/CesiumGeoJsonDocument.spec.cpp at line 135, starting line:               R"==({
+[2026.09.19-13.58.03:864][  0]LogGatherTextFromSourceCommandlet: Warning: A string literal was not correctly terminated. File ../../../../Program Files/Epic Games/UE_5.8/Engine/Plugins/Marketplace/Cesiumfo5b7c98b8073cV11/Source/CesiumRuntime/Private/Tests/CesiumGeoJsonDocument.spec.cpp at line 141, starting line:                  })==",
+[2026.09.19-13.58.06:281][  0]LogGatherTextFromSourceCommandlet: Display: Ran source prepass for nested macros in 7.61 seconds
+[2026.09.19-13.58.06:304][  0]LogGatherTextFromSourceCommandlet: Display: Ran source mainpass in 0.02 seconds
+[2026.09.19-13.58.06:304][  0]LogGatherTextFromSourceCommandlet: Display: UGatherTextFromSourceCommandlet::Main took 7.63 sec
+[2026.09.19-13.58.06:304][  0]LogGatherTextCommandlet: Display: Executing GatherTextFromSourceCommandlet took 7.63 seconds (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep0 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:304][  0]LogGatherTextCommandlet: Display: Starting sequential task 2 of 2 in phase 'UpdateManifests'...
+[2026.09.19-13.58.06:304][  0]LogGatherTextCommandlet: Display: Executing GenerateGatherManifestCommandlet (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep1 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:304][  0]LogGenerateManifestCommandlet: Display: UGenerateGatherManifestCommandlet::Main started...
+[2026.09.19-13.58.06:317][  0]LogGenerateManifestCommandlet: Display: UGenerateGatherManifestCommandlet::Main took 13.802 ms
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: Executing GenerateGatherManifestCommandlet took 0.01 seconds (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep1 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: 2 sequentials task(s) in phase 'UpdateManifests' took 7.65 seconds.
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: Phase 'UpdateManifests' took 7.65 seconds (2 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: Running phase 'UpdateArchives' (1 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: Running 1 sequentials task(s) in phase 'UpdateArchives'...
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: Starting sequential task 1 of 1 in phase 'UpdateArchives'...
+[2026.09.19-13.58.06:317][  0]LogGatherTextCommandlet: Display: Executing GenerateGatherArchiveCommandlet (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep2 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:317][  0]LogGenerateArchiveCommandlet: Display: UGenerateGatherArchiveCommandlet::Main started...
+[2026.09.19-13.58.06:363][  0]LogGenerateArchiveCommandlet: Display: UGenerateGatherArchiveCommandlet::Main took 45.911 ms
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: Executing GenerateGatherArchiveCommandlet took 0.05 seconds (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep2 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: 1 sequentials task(s) in phase 'UpdateArchives' took 0.05 seconds.
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: Phase 'UpdateArchives' took 0.05 seconds (1 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: Running phase 'Import' (1 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: Running 1 sequentials task(s) in phase 'Import'...
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: Starting sequential task 1 of 1 in phase 'Import'...
+[2026.09.19-13.58.06:363][  0]LogGatherTextCommandlet: Display: Executing InternationalizationExportCommandlet (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep3 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:363][  0]LogInternationalizationExportCommandlet: Display: UInternationalizationExportCommandlet::Main Import started...
+[2026.09.19-13.58.06:399][  0]LogInternationalizationExportCommandlet: Display: UInternationalizationExportCommandlet::Main Import took 35.810 ms
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: Executing InternationalizationExportCommandlet took 0.04 seconds (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep3 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: 1 sequentials task(s) in phase 'Import' took 0.04 seconds.
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: Phase 'Import' took 0.04 seconds (1 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: Running phase 'Compile' (1 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: Running 1 sequentials task(s) in phase 'Compile'...
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: Starting sequential task 1 of 1 in phase 'Compile'...
+[2026.09.19-13.58.06:399][  0]LogGatherTextCommandlet: Display: Executing GenerateTextLocalizationResourceCommandlet (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep4 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:399][  0]LogGenerateTextLocalizationResourceCommandlet: Display: UGenerateTextLocalizationResourceCommandlet::Main started...
+[2026.09.19-13.58.06:418][  0]LogGenerateTextLocalizationResourceCommandlet: Display: UGenerateTextLocalizationResourceCommandlet::Main took 18.740 ms
+[2026.09.19-13.58.06:418][  0]LogGatherTextCommandlet: Display: Executing GenerateTextLocalizationResourceCommandlet took 0.02 seconds (params: -Config="C:/Users/wy331/Documents/UE5DroneControl-p5-2/Config/Localization/DroneOps.ini" -Section=GatherTextStep4 -abslog=C:\Users\wy331\Documents\UE5DroneControl-p5-2\Evidence\TASK-P5.2\ue\localization-verified.log -run=GatherText -unattended -nop4 -NullRHI)
+[2026.09.19-13.58.06:418][  0]LogGatherTextCommandlet: Display: 1 sequentials task(s) in phase 'Compile' took 0.02 seconds.
+[2026.09.19-13.58.06:418][  0]LogGatherTextCommandlet: Display: Phase 'Compile' took 0.02 seconds (1 sequential tasks and 0 parallel tasks).
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: ---Gather Source Stats------------------------
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: ---Prepass------------------------------------
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.h =                            52236 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.inl =                              0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.c =                                0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.cpp =                          37347 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.ini =                              0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Other =                              0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Total =                          89583 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Duration =                        7.61 seconds
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: ---Mainpass-----------------------------------
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.h =                                0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.inl =                              0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.c =                                0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.cpp =                              1 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: *.ini =                              0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Other =                              0 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Total =                              1 files
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Duration =                        0.02 seconds
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: ---Nested Macro-------------------------------
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: DuplicateExact =                     0
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: DuplicateMacroName =                 8
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: DuplicateExcluded =                  0
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Concatenation =                      0
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Variadic =                           0
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: SizeInBytes =                   112301 bytes
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: 
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Nested_LOCTEXT =                    34
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Nested_NSLOCTEXT =                  13
+[2026.09.19-13.58.06:418][  0]LogGatherTextFromSourceCommandlet: Display: Nested_NOTELOCTEXT =                 0
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: Nested_NSNOTELOCTEXT =               0
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: Nested_UI_COMMAND =                 12
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: Nested_UI_COMMAND_EXT =              0
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: 
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: PrepassBegin =                  209936
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: PrepassEnd =                    209709
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: MainpassBegin =                      0
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: MainpassMid =                        0
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: MainpassEnd =                        0
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: 
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: Submit =                           390
+[2026.09.19-13.58.06:419][  0]LogGatherTextFromSourceCommandlet: Display: SubmitNested =                       0
+[2026.09.19-13.58.06:419][  0]LogGatherTextCommandlet: Display: Completed all steps in 7.75 seconds
+[2026.09.19-13.58.06:419][  0]LogGatherTextCommandlet: Display: GatherText completed with exit code 0
+[2026.09.19-13.58.06:419][  0]LogInit: Display: Finished.
+[2026.09.19-13.58.06:419][  0]LogInit: Display: 
+
+Execution of commandlet took:  7.75 seconds, PeakPhysMemoryMB=3842 MB, PeakVirtMemoryMB=3757 MB
+[2026.09.19-13.58.06:429][  0]LogToolsetRegistry: Display: Unregistering Toolset ToolsetRegistry.AgentSkillToolset
+[2026.09.19-13.58.06:430][  0]LogToolsetRegistry: Display: Unregistering Toolset AutomationTestToolset.AutomationTestToolset
+[2026.09.19-13.58.06:430][  0]LogToolsetRegistry: Display: Unregistering Toolset SlateInspectorToolset.SlateInspectorToolset
+[2026.09.19-13.58.06:433][  0]LogNiagara: Warning: NiagaraSystem was nullptr for OverrideName "SplatInterface".
+[2026.09.19-13.58.06:474][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles (PostWrite): 1 .ref files found, 1 referenced binaries
+[2026.09.19-13.58.06:474][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles: 1 total binaries, 1 referenced (kept), 0 old-style pre-migration (kept), 0 orphans deleted, 0 orphans locked (kept)
+[2026.09.19-13.58.06:657][  0]LogShaderCompilers: Display: Exiting ShaderCompilingThread

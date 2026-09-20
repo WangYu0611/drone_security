@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>120 Hz 视频流延迟测试</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #070a0f;
+      --panel: #0e1520;
+      --line: #2a394b;
+      --text: #edf6ff;
+      --muted: #8ea1b7;
+      --accent: #4bd4ff;
+      --danger: #ff5f5f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 920px;
+      min-height: 100vh;
+      overflow: hidden;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    header {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #0a1018;
+    }
+
+    h1 {
+      margin: 0 10px 0 0;
+      font-size: 18px;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .hz {
+      color: var(--accent);
+      font: 700 13px/1 ui-monospace, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    input {
+      flex: 1;
+      min-width: 220px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: #080d14;
+      color: var(--text);
+      font: 14px/1 ui-monospace, Consolas, monospace;
+      outline: none;
+    }
+
+    input:focus { border-color: var(--accent); }
+
+    button {
+      height: 36px;
+      padding: 0 14px;
+      border: 1px solid #1f7d9e;
+      border-radius: 5px;
+      background: #0c526c;
+      color: white;
+      font: 600 13px/1 "Segoe UI", "Microsoft YaHei", sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #117092; }
+
+    main {
+      height: calc(100vh - 68px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .panel {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+    }
+
+    .panel-title {
+      position: absolute;
+      z-index: 2;
+      top: 12px;
+      left: 14px;
+      padding: 5px 8px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 4px;
+      background: rgba(0, 0, 0, .72);
+      color: white;
+      font-size: 13px;
+      letter-spacing: .08em;
+      pointer-events: none;
+    }
+
+    canvas, iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .stream-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 60px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.8;
+      pointer-events: none;
+    }
+
+    .stream-empty strong { color: var(--text); }
+
+    .stream-empty.hidden { display: none; }
+
+    .readout {
+      position: absolute;
+      z-index: 3;
+      right: 14px;
+      bottom: 12px;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 4px;
+      background: rgba(0, 0, 0, .72);
+      color: #d5e5f4;
+      font: 12px/1.25 ui-monospace, Consolas, monospace;
+      text-align: right;
+      pointer-events: none;
+    }
+
+    .error {
+      color: var(--danger);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>视频流延迟测试</h1>
+    <span class="hz">SOURCE: 120 Hz</span>
+    <label for="stream-url">右侧回传地址</label>
+    <input id="stream-url" type="url" value="http://127.0.0.1:8889/drone-1" spellcheck="false" aria-label="右侧回传视频地址">
+    <button id="load-stream" type="button">载入回传</button>
+    <button id="restart" type="button">从 0 开始</button>
+  </header>
+
+  <main>
+    <section class="panel" aria-label="左侧 120 Hz 测试源">
+      <div class="panel-title">左侧：120 Hz 测试源（让摄像头只拍这里）</div>
+      <canvas id="source-canvas"></canvas>
+      <div id="readout" class="readout"></div>
+    </section>
+
+    <section class="panel" aria-label="右侧回传视频">
+      <div class="panel-title">右侧：回传视频</div>
+      <div id="stream-empty" class="stream-empty">
+        <div><strong>等待载入回传视频</strong><br>填入播放器页面地址后点击“载入回传”。<br>默认值适用于本机 MediaMTX 的 drone-1。</div>
+      </div>
+      <iframe id="stream-frame" title="回传视频" allow="autoplay; fullscreen; camera; microphone"></iframe>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const TEST_HZ = 120;
+      const FRAME_MS = 1000 / TEST_HZ;
+      const canvas = document.getElementById('source-canvas');
+      const context = canvas.getContext('2d', { alpha: false });
+      const readout = document.getElementById('readout');
+      const streamUrl = document.getElementById('stream-url');
+      const streamFrame = document.getElementById('stream-frame');
+      const streamEmpty = document.getElementById('stream-empty');
+      let startedAt = performance.now();
+      let lastFrame = -1;
+      let canvasWidth = 0;
+      let canvasHeight = 0;
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const ratio = window.devicePixelRatio || 1;
+        canvasWidth = Math.max(1, Math.round(rect.width * ratio));
+        canvasHeight = Math.max(1, Math.round(rect.height * ratio));
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      }
+
+      function binaryText(value) {
+        return (value & 0xffff).toString(2).padStart(16, '0');
+      }
+
+      function drawFrame(frame) {
+        const rect = canvas.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const frameText = String(frame).padStart(8, '0');
+        const elapsedMs = Math.round(frame * FRAME_MS);
+        const bits = binaryText(frame);
+        const margin = Math.min(width, height) * 0.055;
+
+        context.fillStyle = '#f8fbff';
+        context.fillRect(0, 0, width, height);
+        context.fillStyle = '#05070a';
+        context.fillRect(margin, margin, width - margin * 2, height - margin * 2);
+
+        // 每一格对应当前帧号的一个二进制位，数字模糊时仍可看出帧的变化。
+        const barGap = Math.max(3, width * 0.006);
+        const barWidth = (width - margin * 2 - barGap * 15) / 16;
+        const barY = height * 0.20;
+        const barHeight = height * 0.17;
+        for (let index = 0; index < 16; index += 1) {
+          context.fillStyle = bits[index] === '1' ? '#ffffff' : '#26313e';
+          context.fillRect(margin + index * (barWidth + barGap), barY, barWidth, barHeight);
+        }
+
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillStyle = '#ffffff';
+        context.font = `700 ${Math.min(width * 0.15, height * 0.27)}px ui-monospace, Consolas, monospace`;
+        context.fillText(frameText, width / 2, height * 0.56);
+
+        context.fillStyle = '#9db4c9';
+        context.font = `600 ${Math.min(width * 0.030, height * 0.055)}px ui-monospace, Consolas, monospace`;
+        context.fillText(`FRAME ${frameText}   |   ${elapsedMs.toString().padStart(8, ' ')} ms   |   ${TEST_HZ} Hz`, width / 2, height * 0.78);
+
+        // 交替的黑白定位条，方便确认画面确实在持续变化。
+        const markerSize = Math.min(width, height) * 0.04;
+        for (let index = 0; index < 8; index += 1) {
+          context.fillStyle = ((frame + index) & 1) === 0 ? '#ffffff' : '#000000';
+          context.fillRect(margin + index * markerSize, height - margin - markerSize, markerSize, markerSize);
+        }
+
+        readout.innerHTML = `当前源帧：<b>${frameText}</b><br>${elapsedMs} ms（${TEST_HZ} Hz）`;
+      }
+
+      function animate(now) {
+        // 用单调时钟量化为 120 Hz，而非 setInterval；240 Hz 显示器会让每个测试帧稳定显示约两次。
+        const frame = Math.floor((now - startedAt) / FRAME_MS);
+        if (frame !== lastFrame) {
+          lastFrame = frame;
+          drawFrame(frame);
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function loadStream() {
+        const url = streamUrl.value.trim();
+        if (!url) {
+          streamEmpty.innerHTML = '<div class="error">请输入右侧回传播放器页面地址。</div>';
+          streamEmpty.classList.remove('hidden');
+          streamFrame.removeAttribute('src');
+          return;
+        }
+        streamFrame.src = url;
+        streamEmpty.classList.add('hidden');
+      }
+
+      document.getElementById('load-stream').addEventListener('click', loadStream);
+      streamUrl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') loadStream();
+      });
+      document.getElementById('restart').addEventListener('click', () => {
+        startedAt = performance.now();
+        lastFrame = -1;
+      });
+      window.addEventListener('resize', resizeCanvas);
+
+      resizeCanvas();
+      loadStream();
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>

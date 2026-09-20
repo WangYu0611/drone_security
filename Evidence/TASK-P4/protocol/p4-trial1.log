@@ -1,0 +1,37 @@
+PASS Command creates plan revision 1
+PASS Map business mutations forbidden
+PASS Command route mutations forbidden
+PASS Video all plan actions forbidden
+PASS Mission CRUD assignment unassignment duplicate rejection
+PASS Video domain validation and same-value no-op
+PASS Active UAV and mission selection do not change video target
+PASS Explicit feed selection changes video only
+PASS Explicit Map edit request delivered
+PASS Dirty session blocks review and deployment
+PASS Save failure retains dirty session and authoritative route
+PASS Save ACK increments content revision and closes session
+PASS Validation and review separate and revision bound
+PASS Three-client language convergence no-op and business isolation
+PASS Content change invalidates review
+PASS Offline Map edit request rejected
+PASS Finite lease automatically expires without owner heartbeat
+PASS Deployment atomic snapshot and repeated deployment rejection
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+409 !== 200
+
+    at file:///C:/Users/wy331/Documents/UE5DroneControl-p4/Backend/tests/p4_workflow_integration.mjs:53:43
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 409,
+  expected: 200,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.0

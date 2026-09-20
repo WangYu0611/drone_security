@@ -1,0 +1,285 @@
+{
+  "context": {
+    "context_version": 3,
+    "active_uav_id": "UAV-01",
+    "active_alert_id": null,
+    "active_mission_id": "mission-2",
+    "active_security_plan_id": "plan-1",
+    "active_area_id": null,
+    "operation_mode": "MONITOR",
+    "updated_at": 1789810574.8577428,
+    "updated_by": "CLIENT-COMMAND-fc6c274c"
+  },
+  "security-plans": {
+    "version": 38,
+    "next_id": 6,
+    "plans": {
+      "plan-1": {
+        "id": "plan-1",
+        "name": "P5 Single Host Acceptance",
+        "description": "",
+        "status": "DEPLOYED",
+        "content_revision": 4,
+        "review": {
+          "content_revision": 4,
+          "reviewed_at": 1789810786.5535674,
+          "reviewed_by": "CLIENT-COMMAND-fc6c274c"
+        },
+        "version": 7,
+        "created_at": 1789810536.5149238,
+        "updated_at": 1789810816.6549425,
+        "mission_ids": [
+          "mission-2"
+        ],
+        "validation": {
+          "ready": true,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": 4
+        },
+        "deployment_id": "deployment-5"
+      }
+    },
+    "missions": {
+      "mission-2": {
+        "id": "mission-2",
+        "plan_id": "plan-1",
+        "name": "North Perimeter",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-4",
+        "status": "DEPLOYED"
+      }
+    },
+    "paths": {
+      "route-4": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.98122466531492,
+            "longitude": 116.3470485192471,
+            "altitude": 1.1000099923943494,
+            "segmentSpeed": 0,
+            "waitTime": 0,
+            "location": {
+              "x": 414.43809015638845,
+              "y": -2494.5555530933866,
+              "z": -4190.00397030708
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.980702101786136,
+            "longitude": 116.3470215013536,
+            "altitude": 1.0999862995877008,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": 183.660059403172,
+              "y": 3307.6913665742863,
+              "z": -4190.010069113767
+            }
+          }
+        ],
+        "route_id": "route-4"
+      }
+    },
+    "events": [
+      {
+        "sequence": 1,
+        "timestamp": 1789810536.5149317,
+        "event_type": "PLAN_CREATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5 Single Host Acceptance"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Security plan created: P5 Single Host Acceptance",
+        "source": "CLIENT-COMMAND-fc6c274c"
+      },
+      {
+        "sequence": 2,
+        "timestamp": 1789810574.8553147,
+        "event_type": "MISSION_CREATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "North Perimeter",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Mission created: North Perimeter",
+        "source": "CLIENT-COMMAND-fc6c274c"
+      },
+      {
+        "sequence": 3,
+        "timestamp": 1789810608.655099,
+        "event_type": "UAV_ASSIGNED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "North Perimeter",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "UAV-01 assigned to North Perimeter",
+        "source": "CLIENT-COMMAND-fc6c274c"
+      },
+      {
+        "sequence": 4,
+        "timestamp": 1789810715.1182377,
+        "event_type": "ROUTE_CREATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "North Perimeter",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route saved: North Perimeter",
+        "source": "CLIENT-MAP-1e99ae79"
+      },
+      {
+        "sequence": 5,
+        "timestamp": 1789810746.0030606,
+        "event_type": "PLAN_VALIDATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5 Single Host Acceptance"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Configuration checked",
+        "source": "CLIENT-COMMAND-fc6c274c"
+      },
+      {
+        "sequence": 6,
+        "timestamp": 1789810786.5535705,
+        "event_type": "PLAN_REVIEWED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5 Single Host Acceptance"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Current configuration reviewed",
+        "source": "CLIENT-COMMAND-fc6c274c"
+      },
+      {
+        "sequence": 7,
+        "timestamp": 1789810816.6549375,
+        "event_type": "PLAN_DEPLOYED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5 Single Host Acceptance"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Deployed. Execution has not started.",
+        "source": "CLIENT-COMMAND-fc6c274c"
+      }
+    ],
+    "deployments": {
+      "deployment-5": {
+        "id": "deployment-5",
+        "plan_id": "plan-1",
+        "content_revision": 4,
+        "deployed_at": 1789810816.6549263,
+        "deployed_by": "CLIENT-COMMAND-fc6c274c",
+        "reviewed_by": "CLIENT-COMMAND-fc6c274c",
+        "reviewed_at": 1789810786.5535674,
+        "snapshot": {
+          "plan": {
+            "id": "plan-1",
+            "name": "P5 Single Host Acceptance",
+            "description": "",
+            "status": "DEPLOYED",
+            "content_revision": 4,
+            "review": {
+              "content_revision": 4,
+              "reviewed_at": 1789810786.5535674,
+              "reviewed_by": "CLIENT-COMMAND-fc6c274c"
+            },
+            "version": 6,
+            "created_at": 1789810536.5149238,
+            "updated_at": 1789810786.5535731,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 1,
+              "routes_ready": 1,
+              "validated_content_revision": 4
+            },
+            "deployment_id": "deployment-5"
+          },
+          "missions": {
+            "mission-2": {
+              "id": "mission-2",
+              "plan_id": "plan-1",
+              "name": "North Perimeter",
+              "assigned_uav_id": "UAV-01",
+              "route_id": "route-4",
+              "status": "DEPLOYED"
+            }
+          },
+          "paths": {
+            "route-4": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.98122466531492,
+                  "longitude": 116.3470485192471,
+                  "altitude": 1.1000099923943494,
+                  "segmentSpeed": 0,
+                  "waitTime": 0,
+                  "location": {
+                    "x": 414.43809015638845,
+                    "y": -2494.5555530933866,
+                    "z": -4190.00397030708
+                  }
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.980702101786136,
+                  "longitude": 116.3470215013536,
+                  "altitude": 1.0999862995877008,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": 183.660059403172,
+                    "y": 3307.6913665742863,
+                    "z": -4190.010069113767
+                  }
+                }
+              ],
+              "route_id": "route-4"
+            }
+          }
+        }
+      }
+    },
+    "edit_sessions": {}
+  },
+  "ui-preferences": {
+    "language": "en",
+    "ui_preferences_version": 2,
+    "updated_at": 1789810926.3389802,
+    "updated_by": "CLIENT-VIDEO-16131754"
+  },
+  "video-view": {
+    "video_target_uav_id": "UAV-02",
+    "video_view_version": 1,
+    "updated_at": 1789810913.4344232,
+    "updated_by": "CLIENT-VIDEO-16131754"
+  }
+}

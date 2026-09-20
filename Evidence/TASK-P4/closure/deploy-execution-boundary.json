@@ -1,0 +1,34 @@
+{
+  "static_plan_handler_has_no_execution_dependencies": true,
+  "forbidden_call_checks": [
+    "ApiCreateArray(",
+    "assembly_controller",
+    "AssemblyController",
+    "execution_engine",
+    "ExecutionEngine",
+    "MAVLink",
+    "PX4",
+    "/api/arrays"
+  ],
+  "logs": {
+    "native-errors.stdout.log": {
+      "assembly_started": 0,
+      "execution_started": 0
+    },
+    "native-restart.stdout.log": {
+      "assembly_started": 0,
+      "execution_started": 0
+    },
+    "native-backend.stdout.log": {
+      "array_http_calls": 0,
+      "assembly_started": 0,
+      "execution_started": 0
+    },
+    "protocol-backend.stdout.log": {
+      "array_http_calls": 0,
+      "assembly_started": 0,
+      "execution_started": 0
+    }
+  },
+  "boundary": "Historical native deployment preceded HTTP method/path auditing; historical arrays=0 derives from the complete isolated PlanRequest call path plus zero Assembly/Exec starts. Final protocol Deploy has direct HTTP audit. No packet-level PX4/MAVLink capture is claimed."
+}

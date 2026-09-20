@@ -1,0 +1,109 @@
+e9ce394 2026-09-19 TASK-P5.2 close security plan mock mission execution lifecycle
+23ef442 2026-09-14 feat(p1): synchronize authoritative operational context across clients
+531c240 2026-09-09 chore: prepare UE5.7 project handoff baseline
+876a8ad 2026-08-05 Merge remote-tracking branch 'origin/feature/msy'
+4f38e18 2026-07-29 垂直射线疏密调节v2.0
+5ac3095 2026-07-28 无人机模型可替换+编辑模式路径点选中范围增大
+bf4b590 2026-07-27 后端完善集结逻辑、增加视频流延迟测试
+be875db 2026-07-26 wasdqe控制ue实现+速度设定ue实现 jetson端待实现
+37b8e61 2026-07-26 新增RTT延迟测试+无人机模型
+eb44db4 2026-07-25 field test updates
+da77c8e 2026-07-22 文字显示
+42f780c 2026-07-21 视频流调整完善
+dff08c0 2026-07-21 修复海拔问题
+d408a41 2026-07-21 视频流
+aee5e6e 2026-07-20 轨迹
+ae950ab 2026-07-15 Merge remote-tracking branch 'origin/feature/msy'
+917b268 2026-07-15 Merge origin/main into feature/msy
+35dd4db 2026-07-14 完成需求功能
+e7d97e0 2026-07-14 后端debug、支持视频流
+63941fb 2026-07-10 后端+ue 微调
+b6fa182 2026-07-10 后端+无人机端代码更新
+5f38239 2026-07-05 优化无人机选择范围、更换无人机模型，并修正飞行高度/旋转中心
+7bd1f29 2026-05-24 更新后端，修复视角切换错误
+b541625 2026-05-23 对MainMenu的部分UI实现，但同时发现大量Bug待修复、需求待完善
+00bfd90 2026-05-14 Merge remote-tracking branch 'origin/dev/Chen-jinyao'
+0f53909 2026-05-14 add assignment and merge backend & fix some bugs
+b46846d 2026-05-07 fix merge conflict in build.bat
+f68730c 2026-05-06 整理后端
+4642fd5 2026-05-06 修复合并问题
+1f3619e 2026-05-06 Merge remote-tracking branch 'origin/dev/yangpu'
+f20f572 2026-05-06 Merge remote-tracking branch 'origin/Howie'
+7036211 2026-05-06 CesiumCoordinateService + 轴向验证 +power_on 锚定 + 影子机同步 均已实现
+dc1a865 2026-05-06 修复
+3ca8db6 2026-05-05 第三周任务：完善遥测映射、WS 指令增强及调试接口路由修复
+87c5ec4 2026-05-05 完成前后端修复
+4312d40 2026-05-03 Reset all files to match main branch
+714e92a 2026-04-24 Merge remote-tracking branch 'origin/dev/yangpu'
+4fd5dba 2026-04-24 合并完成
+8b4dbea 2026-04-24 udp sender and reciever
+2ecc8de 2026-04-23 第二周完成
+74b5605 2026-04-05 Merge remote-tracking branch 'origin/fr03-UI'
+d3b4dec 2026-04-03 UI设计完毕 正常弹出，内容齐全，
+c17f27c 2026-04-03 C逻辑写好了，UI搭建完毕
+4790bc8 2026-03-31 click
+bf15689 2026-03-28 搭好基座，准备并行开发
+bec8ce8 2026-03-26 first multi-UAV
+5cdaa3f 2026-03-15 实现windows电脑发送信息
+3e143f8 2026-01-27 realtimeDrone逻辑已实现 同时增加空格切换视角，1、0切换无人机视角功能
+60b00ed 2026-01-26 位置信息处理正常 欧拉角处理仍需优化
+896e213 2026-01-26 通讯成功，数据处理仍有问题
+79f185c 2025-12-15 双向数据通信 两飞机 源代码
+
+Deleted UI evidence:
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "LocalPreviewIsolationToggleWidget.generated.h"
+
+class UCheckBox;
+class UTextBlock;
+class UBorder;
+class UDroneNetworkManager;
+
+/**
+ * 纯本地预演（隔离后端）Toggle 控件。
+ * 完全由 C++ 构建 UI，不需要蓝图。
+ * 视觉优先级高、始终可见，不被普通面板遮挡。
+ */
+UCLASS()
+class UE5DRONECONTROL_API ULocalPreviewIsolationToggleWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+protected:
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+	virtual void NativeOnInitialized() override;
+
+private:
+	/** 构建运行时 Widget 树（CheckBox + 标签 + 状态横幅）。 */
+	void BuildWidgetTree();
+
+	/** CheckBox 状态变化回调。 */
+	UFUNCTION()
+	void OnToggleChanged(bool bIsChecked);
+
+	/** DroneNetworkManager 隔离状态变化回调（外部触发，如关卡退出复位）。 */
+	UFUNCTION()
+	void OnIsolationStateChanged(bool bIsolated);
+
+	UPROPERTY()
+	TObjectPtr<UCheckBox> IsolationCheckBox;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> LabelText;
+
+	UPROPERTY()
+	TObjectPtr<UBorder> StatusBanner;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> BannerText;
+
+	UPROPERTY()
+	TObjectPtr<UDroneNetworkManager> CachedNetworkManager;
+
+	/** 避免 CheckBox 回调与外部状态变化回调互相触发。 */
+	bool bSuppressCallback = false;
+};

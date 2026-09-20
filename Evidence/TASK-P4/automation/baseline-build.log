@@ -1,0 +1,143 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p4\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p4).
+Creating makefile for UE5DroneControlEditor (no existing makefile)
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+C:\Users\wy331\Documents\UE5DroneControl-p4\Plugins\VisualStudioTools\Source\VisualStudioTools\VisualStudioTools.Build.cs(26,17): warning CS0618: 'ModuleRules.UnsafeTypeCastWarningLevel' is obsolete: 'Deprecated in UE5.6 - Replace with ModuleRules.CppCompileWarningSettings.UnsafeTypeCastWarningLevel'
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+=================================
+Using Unreal Build Accelerator local executor to run 115 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 18.36 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/115] Compile Resource [x64] Default.rc2 [NoUba]
+[2/115] Compile Resource [x64] Default.rc2 [NoUba]
+[3/115] Compile [x64] SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.cpp [NoUba]
+[4/115] Compile [x64] CesiumCoordinateService.cpp [NoUba]
+[5/115] Compile [x64] AssemblyPopupWidget.cpp [NoUba]
+[6/115] Compile [x64] CommandActionButton.cpp [NoUba]
+[7/115] Compile [x64] CommandAlertStore.cpp [NoUba]
+[8/115] Compile [x64] CommandAlarmPanel.cpp [NoUba]
+[9/115] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[10/115] Compile [x64] CommandCenterVisualQA.cpp [NoUba]
+[11/115] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[12/115] Compile [x64] CommandClientTest.cpp [NoUba]
+[13/115] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[14/115] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[15/115] Compile [x64] CommandScreenManager.cpp [NoUba]
+[16/115] Compile [x64] CommandStartupTest.cpp [NoUba]
+[17/115] Compile [x64] CommandShellWidget.cpp [NoUba]
+[18/115] Compile [x64] CommandTacticalMap.cpp [NoUba]
+[19/115] Compile [x64] CommandVisualQA.cpp [NoUba]
+[20/115] Compile [x64] DefaultSegmentSpeedWidget.cpp [NoUba]
+[21/115] Compile [x64] DroneCommandSenderComponent.cpp [NoUba]
+[22/115] Compile [x64] DroneGroundProjectionComponent.cpp [NoUba]
+[23/115] Compile [x64] DroneHttpClient.cpp [NoUba]
+[24/115] Compile [x64] DroneInfoProviderInterface.cpp [NoUba]
+[25/115] Compile [x64] DroneInfoPanelWidget.cpp [NoUba]
+[26/115] Compile [x64] DroneListItemWidget.cpp [NoUba]
+[27/115] Compile [x64] DroneListWidget.cpp [NoUba]
+[28/115] Compile [x64] DroneMapSettingsBlueprintLibrary.cpp [NoUba]
+[29/115] Compile [x64] DroneMissionService.cpp [NoUba]
+[30/115] Compile [x64] DroneModelTypes.cpp [NoUba]
+[31/115] Compile [x64] DroneNameEditPopupWidget.cpp [NoUba]
+[32/115] Compile [x64] DroneNameLabelWidget.cpp [NoUba]
+[33/115] Compile [x64] DroneNetworkManager.cpp [NoUba]
+[34/115] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[35/115] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[36/115] Compile [x64] DronePathActor.cpp [NoUba]
+[37/115] Compile [x64] DronePathConflictLibrary.cpp [NoUba]
+[38/115] Compile [x64] DronePathPlaybackWidget.cpp [NoUba]
+[39/115] Compile [x64] DronePathSaveLibrary.cpp [NoUba]
+[40/115] Compile [x64] DronePlaybackManager.cpp [NoUba]
+[41/115] Compile [x64] DroneRegistrySubsystem.cpp [NoUba]
+[42/115] Compile [x64] DroneRuntimeInteractionGameMode.cpp [NoUba]
+[43/115] Compile [x64] DroneSelectableInterface.cpp [NoUba]
+[44/115] Compile [x64] DroneRuntimeInteractionPlayerController.cpp [NoUba]
+[45/115] Compile [x64] DroneSelectionComponent.cpp [NoUba]
+[46/115] Compile [x64] DroneTaskManager.cpp [NoUba]
+[47/115] Compile [x64] DroneTelemetryComponent.cpp [NoUba]
+[48/115] Compile [x64] DroneVideoWindowManager.cpp [NoUba]
+[49/115] Compile [x64] DroneVideoWindowWidget.cpp [NoUba]
+[50/115] Compile [x64] DroneVisualComponent.cpp [NoUba]
+[51/115] Compile [x64] DroneWebSocketClient.cpp [NoUba]
+[52/115] Compile [x64] DroneWaypointActor.cpp [NoUba]
+[53/115] Compile [x64] FormationRotationGizmoActor.cpp [NoUba]
+[54/115] Compile [x64] EnemyDroneListWidget.cpp [NoUba]
+[55/115] Compile [x64] GeographicCoordinateTextParserTest.cpp [NoUba]
+[56/115] Compile [x64] GeographicTypes.cpp [NoUba]
+[57/115] Compile [x64] GeographicTargetPanelWidget.cpp [NoUba]
+[58/115] Compile [x64] GroundProjectionSettingsWidget.cpp [NoUba]
+[59/115] Compile [x64] HostileTargetActor.cpp [NoUba]
+[60/115] Compile [x64] MainMenuGameMode.cpp [NoUba]
+[61/115] Compile [x64] HostileTargetManager.cpp [NoUba]
+[62/115] Compile [x64] MainMenuPlayerController.cpp [NoUba]
+[63/115] Compile [x64] MainMenuWidget.cpp [NoUba]
+[64/115] Compile [x64] MapExtractionTest.cpp [NoUba]
+[65/115] Compile [x64] MapShellWidget.cpp [NoUba]
+[66/115] Compile [x64] MapVisualQA.cpp [NoUba]
+[67/115] Compile [x64] MultiDroneCharacter.cpp [NoUba]
+[68/115] Compile [x64] MultiDroneManager.cpp [NoUba]
+[69/115] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[70/115] Compile [x64] MultiDronePlayerController.cpp [NoUba]
+[71/115] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[72/115] Compile [x64] OperationalEventStore.cpp [NoUba]
+[73/115] Compile [x64] OperationalContextTest.cpp [NoUba]
+[74/115] Compile [x64] PathDroneMatchItemWidget.cpp [NoUba]
+[75/115] Compile [x64] OperationalLogWidget.cpp [NoUba]
+[76/115] Compile [x64] PerModuleInline.gen.cpp [NoUba]
+[77/115] Compile [x64] PathFileListItemWidget.cpp [NoUba]
+[78/115] Compile [x64] PreviewConfirmPopupWidget.cpp [NoUba]
+[79/115] Compile [x64] RealTimeDroneReceiver.cpp [NoUba]
+[80/115] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[81/115] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+[82/115] Compile [x64] SimpleCoordinateService.cpp [NoUba]
+[83/115] Compile [x64] SequenceDispatchPanelWidget.cpp [NoUba]
+[84/115] Compile [x64] StrategyGameMode.cpp [NoUba]
+[85/115] Compile [x64] StrategyHUD.cpp [NoUba]
+[86/115] Compile [x64] StrategyPawn.cpp [NoUba]
+[87/115] Compile [x64] StrategyUI.cpp [NoUba]
+[88/115] Compile [x64] StrategyPlayerController.cpp [NoUba]
+[89/115] Compile [x64] StrategyUnit.cpp [NoUba]
+[90/115] Compile [x64] ToastWidget.cpp [NoUba]
+[91/115] Compile [x64] TwinStickAIController.cpp [NoUba]
+[92/115] Compile [x64] TwinStickAoEAttack.cpp [NoUba]
+[93/115] Compile [x64] TwinStickCharacter.cpp [NoUba]
+[94/115] Compile [x64] TwinStickGameMode.cpp [NoUba]
+[95/115] Compile [x64] TwinStickNPC.cpp [NoUba]
+[96/115] Compile [x64] TwinStickNPCDestruction.cpp [NoUba]
+[97/115] Compile [x64] TwinStickPickup.cpp [NoUba]
+[98/115] Compile [x64] TwinStickPlayerController.cpp [NoUba]
+[99/115] Compile [x64] TwinStickProjectile.cpp [NoUba]
+[100/115] Compile [x64] TwinStickSpawner.cpp [NoUba]
+[101/115] Compile [x64] TwinStickStateTreeUtility.cpp [NoUba]
+[102/115] Compile [x64] TwinStickUI.cpp [NoUba]
+[103/115] Compile [x64] UE5DroneControlCharacter.cpp [NoUba]
+[104/115] Compile [x64] UE5DroneControlGameMode.cpp [NoUba]
+[105/115] Compile [x64] UE5DroneControl.cpp [NoUba]
+[106/115] Compile [x64] UE5DroneControlPlayerController.cpp [NoUba]
+[107/115] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[108/115] Compile [x64] VideoShellWidget.cpp [NoUba]
+[109/115] Compile [x64] VideoClientTest.cpp [NoUba]
+[110/115] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ C:/Users/wy331/Documents/UE5DroneControl-p4/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ C:/Users/wy331/Documents/UE5DroneControl-p4/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[111/115] Compile [x64] Module.SimpleWebSocket.cpp [NoUba]
+[112/115] Link [x64] UnrealEditor-SimpleWebSocket.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ C:/Users/wy331/Documents/UE5DroneControl-p4/Plugins/SimpleWe0e9acbcbf62aV6/Intermediate/Build/Win64/x64/UnrealEditor/Development/SimpleWebSocket/UnrealEditor-SimpleWebSocket.lib ﾺￍﾶￔￏ￳ C:/Users/wy331/Documents/UE5DroneControl-p4/Plugins/SimpleWe0e9acbcbf62aV6/Intermediate/Build/Win64/x64/UnrealEditor/Development/SimpleWebSocket/UnrealEditor-SimpleWebSocket.exp
+[113/115] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[114/115] Link [x64] UnrealEditor-SimpleWebSocket.dll [NoUba]
+[115/115] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 374.22 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 408.01 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 44.9kb

@@ -1,0 +1,477 @@
+[2026-09-19 16:42:16.061] [info] Config loaded from 'Saved/P4QA/native/config.yaml': 6 ports, 6 drones max
+[2026-09-19 16:42:16.064] [info] Config validation passed (6 ports, 6 max drones)
+[2026-09-19 16:42:16.067] [info] [:] Logger initialized. Level=debug, File=./Saved/P4QA/native/backend.log
+[2026-09-19 16:42:16.069] [info] [:] ============================================
+[2026-09-19 16:42:16.070] [info] [:]   Drone Backend v1.0.0
+[2026-09-19 16:42:16.071] [info] [:]   HTTP :19282  WS :19283
+[2026-09-19 16:42:16.072] [info] [:] ============================================
+[2026-09-19 16:42:16.073] [info] [:] [UdpSender] JSON protocol session_id=backend-1789807336072478-a0f225df
+[2026-09-19 16:42:16.074] [info] [:] DroneManager created
+[2026-09-19 16:42:16.101] [info] [:] Drone 1 added: slot=1 name=Drone 1
+[2026-09-19 16:42:16.101] [info] [:] Drone 2 added: slot=2 name=Drone 2
+[2026-09-19 16:42:16.102] [info] [:] Drone 3 added: slot=3 name=Drone 3
+[2026-09-19 16:42:16.102] [info] [:] Drone 4 added: slot=4 name=d4
+[2026-09-19 16:42:16.102] [info] [:] Drone 5 added: slot=5 name=d5
+[2026-09-19 16:42:16.102] [info] [:] Drone 6 added: slot=6 name=d6
+[2026-09-19 16:42:16.102] [info] [:] [Storage] Loaded 6 drones from ./Saved/P4QA/native/data/drones.json
+[2026-09-19 16:42:16.103] [info] [:] [UdpReceiver] Slot 1: listening port 22888 for drone 1
+[2026-09-19 16:42:16.103] [info] [:] [UdpReceiver] Slot 2: listening port 22890 for drone 2
+[2026-09-19 16:42:16.103] [info] [:] [UdpReceiver] Slot 3: listening port 22892 for drone 3
+[2026-09-19 16:42:16.103] [info] [:] [UdpReceiver] Slot 4: listening port 22894 for drone 4
+[2026-09-19 16:42:16.103] [info] [:] [UdpReceiver] Slot 5: listening port 22896 for drone 5
+[2026-09-19 16:42:16.104] [info] [:] [UdpReceiver] Slot 6: listening port 22898 for drone 6
+[2026-09-19 16:42:16.104] [info] [:] [UdpSender] Drone 1 target set: 127.0.0.1:22889
+[2026-09-19 16:42:16.104] [info] [:] [UdpSender] Drone 2 target set: 127.0.0.1:22891
+[2026-09-19 16:42:16.105] [info] [:] [UdpSender] Drone 3 target set: 127.0.0.1:22893
+[2026-09-19 16:42:16.105] [info] [:] [UdpSender] Drone 4 target set: 127.0.0.1:22895
+[2026-09-19 16:42:16.105] [info] [:] [UdpSender] Drone 5 target set: 127.0.0.1:22897
+[2026-09-19 16:42:16.105] [info] [:] [UdpSender] Drone 6 target set: 127.0.0.1:22899
+[2026-09-19 16:42:16.105] [info] [:] [UdpReceiver] Listening on port 22888
+[2026-09-19 16:42:16.106] [info] [:] [UdpReceiver] Listening on port 22890
+[2026-09-19 16:42:16.106] [info] [:] [UdpReceiver] Listening on port 22892
+[2026-09-19 16:42:16.106] [info] [:] [UdpReceiver] Listening on port 22894
+[2026-09-19 16:42:16.106] [info] [:] [UdpReceiver] Listening on port 22896
+[2026-09-19 16:42:16.106] [info] [:] [UdpReceiver] Listening on port 22898
+[2026-09-19 16:42:16.107] [info] [:] Backend started. Press Ctrl+C to stop.
+[DebugCLI] Started. Type 'help' for commands.
+[2026-09-19 16:42:16.108] [info] [:] [HTTP] Listening on 0.0.0.0:19282
+[2026-09-19 16:42:16.108] [info] [:] [WS] Listening on 0.0.0.0:19283
+[2026-09-19 16:44:01.375] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:44:01.621] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:44:01.636] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:44:01.670] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:45:36.548] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:45:36.551] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:45:36.614] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-19 16:45:36.651] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "5FF51AF4-480B-6ECD-06BD-2F910961F153"
+}
+[2026-09-19 16:45:36.701] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:45:36.701] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:45:36.701] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:45:36.753] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:39.791] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:42.792] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:45.792] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:48.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:52.042] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:55.043] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:58.294] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:01.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:04.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:07.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:11.044] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:14.293] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:17.543] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:20.543] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:23.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:26.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:30.043] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:33.294] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:36.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:39.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:42.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:46.043] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:49.043] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:52.293] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:55.294] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:58.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:01.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:04.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:07.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:10.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:14.044] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:17.294] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:20.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:23.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:26.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:30.044] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:33.045] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:36.295] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:39.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:42.795] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:45.795] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:49.045] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:52.295] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:55.296] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:47:58.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:01.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:04.798] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:08.047] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:11.051] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:14.311] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:17.339] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:17.911] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:48:17.951] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:48:18.015] [debug] [:] [WS] Client connected, total sessions=2
+[2026-09-19 16:48:18.042] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "9FC87917-4514-9958-3DA8-9390255937F3"
+}
+[2026-09-19 16:48:18.092] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:48:18.092] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:48:18.092] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:48:18.138] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:20.341] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:21.387] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:23.344] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:24.470] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:26.348] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:27.714] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:29.593] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:30.961] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:32.593] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:34.209] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:35.842] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:37.459] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:38.842] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:40.709] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:42.093] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:43.959] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:45.349] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:46.960] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:48.592] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:50.209] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:51.592] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:53.210] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:54.842] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:56.210] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:57.842] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:48:59.211] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:00.842] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:02.212] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:03.851] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:05.461] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:06.893] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:07.826] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:49:07.860] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:49:07.962] [debug] [:] [WS] Client connected, total sessions=3
+[2026-09-19 16:49:07.966] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "399E7C78-4AAD-1043-C82F-75B5056D70BA"
+}
+[2026-09-19 16:49:08.047] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:49:08.055] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:49:08.057] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:49:08.077] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:08.519] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:09.912] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:11.099] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:11.763] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:12.914] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:14.102] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:15.011] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:16.164] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:17.349] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:18.262] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:19.413] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:20.351] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:21.510] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:22.415] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:23.353] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:24.513] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:25.415] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:26.353] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:26.926] [debug] [:] [HTTP Request] GET /api/context/clients
+[2026-09-19 16:49:27.765] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:28.415] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:29.604] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:31.012] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:31.416] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:32.604] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:34.013] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:34.416] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:35.852] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:37.263] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:37.417] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:38.853] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:40.422] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:40.514] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:40.548] [debug] [:] [HTTP Request] PATCH /api/ui-preferences
+[2026-09-19 16:49:42.018] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:43.530] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:43.564] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:45.018] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:46.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:46.780] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:48.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:49.813] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:50.029] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:51.270] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:52.815] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:53.031] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:54.520] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:56.032] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:56.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:57.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:59.032] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:49:59.315] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:00.770] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:02.032] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:02.315] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:04.019] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:05.033] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:05.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:07.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:08.282] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:08.815] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:10.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:11.282] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:12.064] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:13.516] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:14.282] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:15.315] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:16.524] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:17.532] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:18.315] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:19.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:20.532] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:21.564] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:23.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:23.782] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:24.564] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:26.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:26.783] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:27.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:29.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:30.032] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:30.816] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:32.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:33.032] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:33.816] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:35.766] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:36.282] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:37.064] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:39.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:39.532] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:40.065] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:41.483] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:50:42.266] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:42.535] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:43.314] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:44.688] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:50:45.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:45.536] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:46.316] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:48.516] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:48.538] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:49.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:51.538] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:51.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:52.815] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:54.538] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:55.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:56.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:57.539] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:58.266] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:50:59.315] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:00.539] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:01.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:02.318] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:03.789] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:04.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:05.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:07.040] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:07.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:08.815] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:10.289] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:10.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:12.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:13.293] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:14.016] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:15.317] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:16.543] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:17.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:18.320] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:19.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:20.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:21.566] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:22.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:23.516] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:24.815] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:25.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:26.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:28.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:28.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:29.766] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:31.315] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:31.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:32.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:34.322] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:35.044] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:36.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:37.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:38.294] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:39.266] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:40.566] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:41.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:42.266] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:43.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:44.793] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:45.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:46.815] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:47.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:48.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:49.816] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:51.044] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:51.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:52.816] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:54.294] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:54.766] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:56.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:57.544] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:57.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:51:59.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:00.445] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:52:00.546] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:01.016] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:02.316] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:03.596] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:52:03.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:04.018] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:05.316] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:06.794] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:07.266] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:08.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:10.045] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:10.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:11.816] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:13.295] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:13.516] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:14.817] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:16.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:16.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:18.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:19.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:19.795] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:21.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:22.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:23.045] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:24.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:25.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:26.295] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:27.316] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:29.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:29.295] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:30.316] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:32.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:32.295] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:33.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:35.267] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:35.545] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:36.817] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:38.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:40.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:41.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:43.066] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:44.517] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:46.067] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:47.518] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:49.317] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:50.767] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:52.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:54.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:55.817] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:57.017] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:52:59.067] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:00.018] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:02.317] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:03.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:05.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:06.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:07.711] [info] [:] [WS] session closed: 你的主机中的软件中止了一个已建立的连接。 [system:10053]
+[2026-09-19 16:53:07.711] [debug] [:] [WS] Client disconnected, total sessions=2
+[2026-09-19 16:53:08.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:09.270] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:09.918] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:53:09.968] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:53:10.030] [debug] [:] [WS] Client connected, total sessions=3
+[2026-09-19 16:53:10.066] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "5FF51AF4-480B-6ECD-06BD-2F910961F153"
+}
+[2026-09-19 16:53:10.121] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:53:10.122] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:53:10.122] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:53:10.172] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:11.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:12.518] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:13.417] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:14.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:15.518] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:16.417] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:17.817] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:18.768] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:19.667] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:20.816] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:22.018] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:22.667] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:23.817] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:25.018] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:25.667] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:26.817] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:28.268] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:28.667] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:30.067] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:31.519] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:31.667] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:33.317] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:34.668] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:34.768] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:36.567] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:37.117] [debug] [:] [HTTP Request] PATCH /api/ui-preferences
+[2026-09-19 16:53:37.958] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:37.996] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:39.764] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:40.961] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:41.236] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:42.764] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:43.961] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:44.236] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:45.764] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:47.211] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:47.486] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:49.014] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:50.461] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:50.486] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:52.014] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:53.486] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:53.711] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:55.015] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:56.736] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:56.962] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:58.135] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:53:59.737] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:00.211] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:01.218] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:02.987] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:03.211] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:04.528] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:05.987] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:06.212] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:07.787] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:08.990] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:09.214] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:11.046] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:12.238] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:12.461] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:14.317] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:15.239] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:15.461] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:17.548] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:18.462] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:18.489] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:20.786] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:21.490] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:21.712] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:54:24.093] [info] [:] [WS] session closed: 远程主机强迫关闭了一个现有的连接。 [system:10054]
+[2026-09-19 16:54:24.094] [debug] [:] [WS] Client disconnected, total sessions=2
+[2026-09-19 16:54:24.437] [info] [:] [WS] session closed: 远程主机强迫关闭了一个现有的连接。 [system:10054]
+[2026-09-19 16:54:24.437] [debug] [:] [WS] Client disconnected, total sessions=1
+[2026-09-19 16:54:24.744] [info] [:] [WS] session closed: 远程主机强迫关闭了一个现有的连接。 [system:10054]
+[2026-09-19 16:54:24.745] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:55:25.253] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:55:25.325] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:55:25.328] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:55:25.330] [debug] [:] [HTTP Request] GET /api/video-view

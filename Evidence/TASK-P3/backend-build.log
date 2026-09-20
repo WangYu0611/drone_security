@@ -1,0 +1,702 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  1>Checking Build System
+  Building Custom Rule C:/Users/wy331/Documents/UE5DroneControl-p3/Backend/CMakeLists.txt
+  main.cpp
+  Building Custom Rule C:/Users/wy331/Documents/UE5DroneControl-p3/Backend/CMakeLists.txt
+  test_main.cpp
+  test_operational_context.cpp
+C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45): error C2679: 二元“!=”: 没有找到接受“std::string”类型的右操作数的运算符(或没有可接受的转换) [C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\build-p3\DroneBackend.vcxproj]
+  (编译源文件“../main.cpp”)
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\guiddef.h(197,15):
+      可能是“bool operator !=(const GUID &,const GUID &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool operator !=(const GUID &,const GUID &)”: 无法将参数 1 从“const boost::json::value”转换为“const GUID &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const GUID”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\exception(291,28):
+      或    “bool std::operator !=(const std::exception_ptr &,const std::exception_ptr &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::exception_ptr &,const std::exception_ptr &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::exception_ptr &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::exception_ptr”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\exception(295,28):
+      或    “bool std::operator !=(const std::exception_ptr &,std::nullptr_t) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::exception_ptr &,std::nullptr_t) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::exception_ptr &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::exception_ptr”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\exception(299,28):
+      或    “bool std::operator !=(std::nullptr_t,const std::exception_ptr &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::exception_ptr &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“std::nullptr_t”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(239,28):
+      或    “bool std::operator !=(const std::error_code &,const std::error_code &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_code &,const std::error_code &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_code &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_code”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(243,28):
+      或    “bool std::operator !=(const std::error_code &,const std::error_condition &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_code &,const std::error_condition &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_code &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_code”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(247,28):
+      或    “bool std::operator !=(const std::error_condition &,const std::error_code &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_condition &,const std::error_code &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_condition &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_condition”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(321,28):
+      或    “bool std::operator !=(const std::error_condition &,const std::error_condition &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_condition &,const std::error_condition &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_condition &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_condition”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\thread(276,24):
+      或    “bool std::operator !=(std::thread::id,std::thread::id) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::thread::id,std::thread::id) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“std::thread::id”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\variant(1659,27):
+      或    “bool std::operator !=(std::monostate,std::monostate) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::monostate,std::monostate) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“std::monostate”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_int128.hpp(337,38):
+      或    “bool std::operator !=(const std::_Base128 &,const std::_Base128 &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::_Base128 &,const std::_Base128 &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::_Base128 &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::_Base128”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(2456,32):
+      或    “bool std::operator !=(const std::bernoulli_distribution::param_type &,const std::bernoulli_distribution::param_type &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::bernoulli_distribution::param_type &,const std::bernoulli_distribution::param_type &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::bernoulli_distribution::param_type &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::bernoulli_distribution::param_type”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(2522,28):
+      或    “bool std::operator !=(const std::bernoulli_distribution &,const std::bernoulli_distribution &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::bernoulli_distribution &,const std::bernoulli_distribution &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::bernoulli_distribution &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::bernoulli_distribution”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(5134,28):
+      或    “bool std::discrete_distribution<size_t>::operator !=(const std::discrete_distribution<size_t> &,const std::discrete_distribution<size_t> &)”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::discrete_distribution<size_t>::operator !=(const std::discrete_distribution<size_t> &,const std::discrete_distribution<size_t> &)”: 无法将参数 1 从“const boost::json::value”转换为“const std::discrete_distribution<size_t> &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::discrete_distribution<size_t>”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(5017,32):
+      或    “bool std::discrete_distribution<size_t>::param_type::operator !=(const std::discrete_distribution<size_t>::param_type &,const std::discrete_distribution<size_t>::param_type &)”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::discrete_distribution<size_t>::param_type::operator !=(const std::discrete_distribution<size_t>::param_type &,const std::discrete_distribution<size_t>::param_type &)”: 无法将参数 1 从“const boost::json::value”转换为“const std::discrete_distribution<size_t>::param_type &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::discrete_distribution<size_t>::param_type”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\storage_ptr.hpp(451,1):
+      或    “bool boost::json::operator !=(const boost::json::storage_ptr &,const boost::json::storage_ptr &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::storage_ptr &,const boost::json::storage_ptr &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const boost::json::storage_ptr &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const boost::json::storage_ptr”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\array.hpp(1326,5):
+      或    “bool boost::json::operator !=(const boost::json::array &,const boost::json::array &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::array &,const boost::json::array &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const boost::json::array &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const boost::json::array”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\object.hpp(1270,5):
+      或    “bool boost::json::operator !=(const boost::json::object &,const boost::json::object &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::object &,const boost::json::object &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const boost::json::object &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const boost::json::object”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\value.hpp(3075,5):
+      或    “bool boost::json::operator !=(const boost::json::value &,const boost::json::value &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::value &,const boost::json::value &) noexcept”: 无法将参数 2 从“std::string”转换为“const boost::json::value &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,51):
+              原因如下: 无法从“std::string”转换为“const boost::json::value”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,51):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\utility(519,27):
+      或    “bool std::operator !=(const std::pair<_Ty1,_Ty2> &,const std::pair<_Uty1,_Uty2> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::pair<_Ty1,_Ty2> &,const std::pair<_Uty1,_Uty2> &)”: 无法从“const boost::json::value”推导出“const std::pair<_Ty1,_Ty2> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xutility(1908,30):
+      或    “bool std::operator !=(const std::reverse_iterator<_BidIt> &,const std::reverse_iterator<_BidIt2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::reverse_iterator<_BidIt> &,const std::reverse_iterator<_BidIt2> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xutility(4471,30):
+      或    “bool std::operator !=(const std::move_iterator<_Iter> &,const std::move_iterator<_Iter2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::move_iterator<_Iter> &,const std::move_iterator<_Iter2> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_string_view.hpp(1870,27):
+      或    “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const std::basic_string_view<_Elem,_Traits>) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const std::basic_string_view<_Elem,_Traits>) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string_view<_Elem,_Traits>”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_string_view.hpp(1876,27):
+      或    “bool std::operator !=(const _Identity<std::basic_string_view<_Elem,_Traits>>::type,const std::basic_string_view<_Elem,_Traits>) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Identity<std::basic_string_view<_Elem,_Traits>>::type,const std::basic_string_view<_Elem,_Traits>) noexcept”: 无法从“std::string”推导出“const std::basic_string_view<_Elem,_Traits>”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_string_view.hpp(1882,27):
+      或    “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const _Identity<std::basic_string_view<_Elem,_Traits>>::type) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const _Identity<std::basic_string_view<_Elem,_Traits>>::type) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string_view<_Elem,_Traits>”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(1056,17):
+      或    “bool std::operator !=(const std::allocator<_Ty> &,const std::allocator<_Other> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::allocator<_Ty> &,const std::allocator<_Other> &) noexcept”: 无法从“const boost::json::value”推导出“const std::allocator<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\tuple(858,27):
+      或    “bool std::operator !=(const std::tuple<_Types...> &,const std::tuple<_Types...> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::tuple<_Types...> &,const std::tuple<_Types...> &)”: 无法从“const boost::json::value”推导出“const std::tuple<_Types...> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3288,17):
+      或    “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3294,17):
+      或    “bool std::operator !=(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”: 无法从“const boost::json::value”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3300,17):
+      或    “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const ) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const ) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\list(1903,17):
+      或    “bool std::operator !=(const std::list<_Ty,_Alloc> &,const std::list<_Ty,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::list<_Ty,_Alloc> &,const std::list<_Ty,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::list<_Ty,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(2281,17):
+      或    “bool std::operator !=(const std::vector<_Ty,_Alloc> &,const std::vector<_Ty,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::vector<_Ty,_Alloc> &,const std::vector<_Ty,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::vector<_Ty,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\unordered_map(543,17):
+      或    “bool std::operator !=(const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\unordered_map(915,17):
+      或    “bool std::operator !=(const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\functional(1295,17):
+      或    “bool std::operator !=(const std::function<_Fty> &,std::nullptr_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::function<_Fty> &,std::nullptr_t) noexcept”: 无法从“const boost::json::value”推导出“const std::function<_Fty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\functional(1300,17):
+      或    “bool std::operator !=(std::nullptr_t,const std::function<_Fty> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::function<_Fty> &) noexcept”: 无法从“std::string”推导出“const std::function<_Fty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(1891,17):
+      或    “bool std::operator !=(const std::shared_ptr<_Ty> &,const std::shared_ptr<_Ty0> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::shared_ptr<_Ty> &,const std::shared_ptr<_Ty0> &) noexcept”: 无法从“const boost::json::value”推导出“const std::shared_ptr<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(1933,17):
+      或    “bool std::operator !=(const std::shared_ptr<_Ty> &,std::nullptr_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::shared_ptr<_Ty> &,std::nullptr_t) noexcept”: 无法从“const boost::json::value”推导出“const std::shared_ptr<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(1938,17):
+      或    “bool std::operator !=(std::nullptr_t,const std::shared_ptr<_Ty> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::shared_ptr<_Ty> &) noexcept”: 无法从“std::string”推导出“const std::shared_ptr<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3672,17):
+      或    “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,const std::unique_ptr<_Ty2,_Dx2> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,const std::unique_ptr<_Ty2,_Dx2> &)”: 无法从“const boost::json::value”推导出“const std::unique_ptr<_Ty,_Dx> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3723,17):
+      或    “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,std::nullptr_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,std::nullptr_t) noexcept”: 无法从“const boost::json::value”推导出“const std::unique_ptr<_Ty,_Dx> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3728,17):
+      或    “bool std::operator !=(std::nullptr_t,const std::unique_ptr<_Ty,_Dx> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::unique_ptr<_Ty,_Dx> &) noexcept”: 无法从“std::string”推导出“const std::unique_ptr<_Ty,_Dx> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\array(790,17):
+      或    “bool std::operator !=(const std::array<_Ty,_Size> &,const std::array<_Ty,_Size> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::array<_Ty,_Size> &,const std::array<_Ty,_Size> &)”: 无法从“const boost::json::value”推导出“const std::array<_Ty,_Size> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\iterator(311,17):
+      或    “bool std::operator !=(const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &,const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &,const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &) noexcept”: 无法从“const boost::json::value”推导出“const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\iterator(493,17):
+      或    “bool std::operator !=(const std::istreambuf_iterator<_Elem,_Traits> &,const std::istreambuf_iterator<_Elem,_Traits> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::istreambuf_iterator<_Elem,_Traits> &,const std::istreambuf_iterator<_Elem,_Traits> &)”: 无法从“const boost::json::value”推导出“const std::istreambuf_iterator<_Elem,_Traits> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\variant(1310,27):
+      或    “bool std::operator !=(const std::variant<_Types...> &,const std::variant<_Types...> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::variant<_Types...> &,const std::variant<_Types...> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::variant<_Types...> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\map(414,17):
+      或    “bool std::operator !=(const std::map<_Kty,_Ty,_Pr,_Alloc> &,const std::map<_Kty,_Ty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::map<_Kty,_Ty,_Pr,_Alloc> &,const std::map<_Kty,_Ty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::map<_Kty,_Ty,_Pr,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\map(646,17):
+      或    “bool std::operator !=(const std::multimap<_Kty,_Ty,_Pr,_Alloc> &,const std::multimap<_Kty,_Ty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::multimap<_Kty,_Ty,_Pr,_Alloc> &,const std::multimap<_Kty,_Ty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::multimap<_Kty,_Ty,_Pr,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\complex(1548,27):
+      或    “bool std::operator !=(const std::complex<_Ty> &,const std::complex<_Ty> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::complex<_Ty> &,const std::complex<_Ty> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::complex<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\complex(1554,27):
+      或    “bool std::operator !=(const std::complex<_Ty> &,const _Ty &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::complex<_Ty> &,const _Ty &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::complex<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\complex(1560,27):
+      或    “bool std::operator !=(const _Ty &,const std::complex<_Ty> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Ty &,const std::complex<_Ty> &) noexcept(<expr>)”: 无法从“std::string”推导出“const std::complex<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(664,27):
+      或    “bool std::operator !=(const std::optional<_Ty> &,const std::optional<_Ty2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::optional<_Ty> &,const std::optional<_Ty2> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(779,27):
+      或    “bool std::operator !=(const std::optional<_Ty> &,std::nullopt_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::optional<_Ty> &,std::nullopt_t) noexcept”: 无法从“const boost::json::value”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(783,27):
+      或    “bool std::operator !=(std::nullopt_t,const std::optional<_Ty> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullopt_t,const std::optional<_Ty> &) noexcept”: 无法从“std::string”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(870,27):
+      或    “bool std::operator !=(const std::optional<_Ty> &,const _Ty2 &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::optional<_Ty> &,const _Ty2 &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(878,27):
+      或    “bool std::operator !=(const _Ty1 &,const std::optional<_Ty2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Ty1 &,const std::optional<_Ty2> &) noexcept(<expr>)”: 无法从“std::string”推导出“const std::optional<_Ty2> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\deque(1806,17):
+      或    “bool std::operator !=(const std::deque<_Ty,_Alloc> &,const std::deque<_Ty,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::deque<_Ty,_Alloc> &,const std::deque<_Ty,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::deque<_Ty,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\queue(187,17):
+      或    “bool std::operator !=(const std::queue<_Ty,_Container> &,const std::queue<_Ty,_Container> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::queue<_Ty,_Container> &,const std::queue<_Ty,_Container> &)”: 无法从“const boost::json::value”推导出“const std::queue<_Ty,_Container> &”的 模板 参数
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\string.hpp(2105,1):
+      或    “std::enable_if<string_and_stringlike<T,U>::value||string_and_stringlike<U,T>::value,bool>::type boost::json::operator !=(const T &,const U &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          未能使函数模板“std::enable_if<string_and_stringlike<T,U>::value||string_and_stringlike<U,T>::value,bool>::type boost::json::operator !=(const T &,const U &) noexcept”专用化
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              用下列模板参数:
+                  C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+                  “T=boost::json::value”
+                  C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+                  “U=std::string”
+              C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\string.hpp(2080,9):
+              “boost::json::detail::string_comp_op_requirement”: 未能使别名模板专用化
+                  C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\detail\string_impl.hpp(379,16):
+                  “type”: 不是“std::enable_if<false,bool>”的任何直接或间接基类的成员
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\set(223,17):
+      或    “bool std::operator !=(const std::set<_Kty,_Pr,_Alloc> &,const std::set<_Kty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::set<_Kty,_Pr,_Alloc> &,const std::set<_Kty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::set<_Kty,_Pr,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\set(438,17):
+      或    “bool std::operator !=(const std::multiset<_Kty,_Pr,_Alloc> &,const std::multiset<_Kty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::multiset<_Kty,_Pr,_Alloc> &,const std::multiset<_Kty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::multiset<_Kty,_Pr,_Alloc> &”的 模板 参数
+      C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+      尝试匹配参数列表“(const boost::json::value, std::string)”时
+  
+  test_coordinate_converter.cpp
+  config_loader.cpp
+  Defining YAML_CPP_API for DLL import
+  test_quaternion_utils.cpp
+  coordinate_converter.cpp
+  quaternion_utils.cpp
+  gps_anchor_manager.cpp
+  test_gps_anchor_manager.cpp
+  assignment_solver.cpp
+  udp_receiver.cpp
+  test_command_queue.cpp
+  test_state_machine.cpp
+  Defining YAML_CPP_API for DLL import
+  test_assembly_planner.cpp
+  udp_sender.cpp
+  test_video_metadata_store.cpp
+  coordinate_converter.cpp
+  quaternion_utils.cpp
+  gps_anchor_manager.cpp
+  assignment_solver.cpp
+  command_queue.cpp
+  command_queue.cpp
+  state_machine.cpp
+  state_machine.cpp
+  assembly_planner.cpp
+  heartbeat_manager.cpp
+  video_metadata_store.cpp
+  正在生成代码...
+  drone_manager.cpp
+  DroneBackend_tests.vcxproj -> C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\build-p3\Release\DroneBackend_tests.exe
+  assembly_controller.cpp
+  assembly_planner.cpp
+  execution_engine.cpp
+  http_server.cpp
+C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45): error C2679: 二元“!=”: 没有找到接受“std::string”类型的右操作数的运算符(或没有可接受的转换) [C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\build-p3\DroneBackend.vcxproj]
+  (编译源文件“../http/http_server.cpp”)
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\guiddef.h(197,15):
+      可能是“bool operator !=(const GUID &,const GUID &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool operator !=(const GUID &,const GUID &)”: 无法将参数 1 从“const boost::json::value”转换为“const GUID &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const GUID”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\exception(291,28):
+      或    “bool std::operator !=(const std::exception_ptr &,const std::exception_ptr &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::exception_ptr &,const std::exception_ptr &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::exception_ptr &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::exception_ptr”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\exception(295,28):
+      或    “bool std::operator !=(const std::exception_ptr &,std::nullptr_t) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::exception_ptr &,std::nullptr_t) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::exception_ptr &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::exception_ptr”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\exception(299,28):
+      或    “bool std::operator !=(std::nullptr_t,const std::exception_ptr &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::exception_ptr &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“std::nullptr_t”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(239,28):
+      或    “bool std::operator !=(const std::error_code &,const std::error_code &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_code &,const std::error_code &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_code &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_code”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(243,28):
+      或    “bool std::operator !=(const std::error_code &,const std::error_condition &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_code &,const std::error_condition &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_code &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_code”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(247,28):
+      或    “bool std::operator !=(const std::error_condition &,const std::error_code &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_condition &,const std::error_code &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_condition &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_condition”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\system_error(321,28):
+      或    “bool std::operator !=(const std::error_condition &,const std::error_condition &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::error_condition &,const std::error_condition &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::error_condition &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::error_condition”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\thread(276,24):
+      或    “bool std::operator !=(std::thread::id,std::thread::id) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::thread::id,std::thread::id) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“std::thread::id”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\variant(1659,27):
+      或    “bool std::operator !=(std::monostate,std::monostate) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::monostate,std::monostate) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“std::monostate”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_int128.hpp(337,38):
+      或    “bool std::operator !=(const std::_Base128 &,const std::_Base128 &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::_Base128 &,const std::_Base128 &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::_Base128 &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::_Base128”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(2456,32):
+      或    “bool std::operator !=(const std::bernoulli_distribution::param_type &,const std::bernoulli_distribution::param_type &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::bernoulli_distribution::param_type &,const std::bernoulli_distribution::param_type &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::bernoulli_distribution::param_type &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::bernoulli_distribution::param_type”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(2522,28):
+      或    “bool std::operator !=(const std::bernoulli_distribution &,const std::bernoulli_distribution &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::bernoulli_distribution &,const std::bernoulli_distribution &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const std::bernoulli_distribution &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::bernoulli_distribution”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(5134,28):
+      或    “bool std::discrete_distribution<size_t>::operator !=(const std::discrete_distribution<size_t> &,const std::discrete_distribution<size_t> &)”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::discrete_distribution<size_t>::operator !=(const std::discrete_distribution<size_t> &,const std::discrete_distribution<size_t> &)”: 无法将参数 1 从“const boost::json::value”转换为“const std::discrete_distribution<size_t> &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::discrete_distribution<size_t>”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\random(5017,32):
+      或    “bool std::discrete_distribution<size_t>::param_type::operator !=(const std::discrete_distribution<size_t>::param_type &,const std::discrete_distribution<size_t>::param_type &)”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::discrete_distribution<size_t>::param_type::operator !=(const std::discrete_distribution<size_t>::param_type &,const std::discrete_distribution<size_t>::param_type &)”: 无法将参数 1 从“const boost::json::value”转换为“const std::discrete_distribution<size_t>::param_type &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const std::discrete_distribution<size_t>::param_type”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\storage_ptr.hpp(451,1):
+      或    “bool boost::json::operator !=(const boost::json::storage_ptr &,const boost::json::storage_ptr &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::storage_ptr &,const boost::json::storage_ptr &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const boost::json::storage_ptr &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const boost::json::storage_ptr”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\array.hpp(1326,5):
+      或    “bool boost::json::operator !=(const boost::json::array &,const boost::json::array &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::array &,const boost::json::array &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const boost::json::array &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const boost::json::array”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\object.hpp(1270,5):
+      或    “bool boost::json::operator !=(const boost::json::object &,const boost::json::object &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::object &,const boost::json::object &) noexcept”: 无法将参数 1 从“const boost::json::value”转换为“const boost::json::object &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              原因如下: 无法从“const boost::json::value”转换为“const boost::json::object”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\value.hpp(3075,5):
+      或    “bool boost::json::operator !=(const boost::json::value &,const boost::json::value &) noexcept”[使用参数相关的查找找到]
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool boost::json::operator !=(const boost::json::value &,const boost::json::value &) noexcept”: 无法将参数 2 从“std::string”转换为“const boost::json::value &”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,51):
+              原因如下: 无法从“std::string”转换为“const boost::json::value”
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,51):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\utility(519,27):
+      或    “bool std::operator !=(const std::pair<_Ty1,_Ty2> &,const std::pair<_Uty1,_Uty2> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::pair<_Ty1,_Ty2> &,const std::pair<_Uty1,_Uty2> &)”: 无法从“const boost::json::value”推导出“const std::pair<_Ty1,_Ty2> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xutility(1908,30):
+      或    “bool std::operator !=(const std::reverse_iterator<_BidIt> &,const std::reverse_iterator<_BidIt2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::reverse_iterator<_BidIt> &,const std::reverse_iterator<_BidIt2> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xutility(4471,30):
+      或    “bool std::operator !=(const std::move_iterator<_Iter> &,const std::move_iterator<_Iter2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::move_iterator<_Iter> &,const std::move_iterator<_Iter2> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_string_view.hpp(1870,27):
+      或    “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const std::basic_string_view<_Elem,_Traits>) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const std::basic_string_view<_Elem,_Traits>) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string_view<_Elem,_Traits>”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_string_view.hpp(1876,27):
+      或    “bool std::operator !=(const _Identity<std::basic_string_view<_Elem,_Traits>>::type,const std::basic_string_view<_Elem,_Traits>) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Identity<std::basic_string_view<_Elem,_Traits>>::type,const std::basic_string_view<_Elem,_Traits>) noexcept”: 无法从“std::string”推导出“const std::basic_string_view<_Elem,_Traits>”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\__msvc_string_view.hpp(1882,27):
+      或    “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const _Identity<std::basic_string_view<_Elem,_Traits>>::type) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string_view<_Elem,_Traits>,const _Identity<std::basic_string_view<_Elem,_Traits>>::type) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string_view<_Elem,_Traits>”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(1056,17):
+      或    “bool std::operator !=(const std::allocator<_Ty> &,const std::allocator<_Other> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::allocator<_Ty> &,const std::allocator<_Other> &) noexcept”: 无法从“const boost::json::value”推导出“const std::allocator<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\tuple(858,27):
+      或    “bool std::operator !=(const std::tuple<_Types...> &,const std::tuple<_Types...> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::tuple<_Types...> &,const std::tuple<_Types...> &)”: 无法从“const boost::json::value”推导出“const std::tuple<_Types...> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3288,17):
+      或    “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3294,17):
+      或    “bool std::operator !=(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &) noexcept”: 无法从“const boost::json::value”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3300,17):
+      或    “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const ) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const ) noexcept”: 无法从“const boost::json::value”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\list(1903,17):
+      或    “bool std::operator !=(const std::list<_Ty,_Alloc> &,const std::list<_Ty,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::list<_Ty,_Alloc> &,const std::list<_Ty,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::list<_Ty,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(2281,17):
+      或    “bool std::operator !=(const std::vector<_Ty,_Alloc> &,const std::vector<_Ty,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::vector<_Ty,_Alloc> &,const std::vector<_Ty,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::vector<_Ty,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\unordered_map(543,17):
+      或    “bool std::operator !=(const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::unordered_map<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\unordered_map(915,17):
+      或    “bool std::operator !=(const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &,const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::unordered_multimap<_Kty,_Ty,_Hasher,_Keyeq,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\functional(1295,17):
+      或    “bool std::operator !=(const std::function<_Fty> &,std::nullptr_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::function<_Fty> &,std::nullptr_t) noexcept”: 无法从“const boost::json::value”推导出“const std::function<_Fty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\functional(1300,17):
+      或    “bool std::operator !=(std::nullptr_t,const std::function<_Fty> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::function<_Fty> &) noexcept”: 无法从“std::string”推导出“const std::function<_Fty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(1891,17):
+      或    “bool std::operator !=(const std::shared_ptr<_Ty> &,const std::shared_ptr<_Ty0> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::shared_ptr<_Ty> &,const std::shared_ptr<_Ty0> &) noexcept”: 无法从“const boost::json::value”推导出“const std::shared_ptr<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(1933,17):
+      或    “bool std::operator !=(const std::shared_ptr<_Ty> &,std::nullptr_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::shared_ptr<_Ty> &,std::nullptr_t) noexcept”: 无法从“const boost::json::value”推导出“const std::shared_ptr<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(1938,17):
+      或    “bool std::operator !=(std::nullptr_t,const std::shared_ptr<_Ty> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::shared_ptr<_Ty> &) noexcept”: 无法从“std::string”推导出“const std::shared_ptr<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3672,17):
+      或    “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,const std::unique_ptr<_Ty2,_Dx2> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,const std::unique_ptr<_Ty2,_Dx2> &)”: 无法从“const boost::json::value”推导出“const std::unique_ptr<_Ty,_Dx> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3723,17):
+      或    “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,std::nullptr_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::unique_ptr<_Ty,_Dx> &,std::nullptr_t) noexcept”: 无法从“const boost::json::value”推导出“const std::unique_ptr<_Ty,_Dx> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\memory(3728,17):
+      或    “bool std::operator !=(std::nullptr_t,const std::unique_ptr<_Ty,_Dx> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullptr_t,const std::unique_ptr<_Ty,_Dx> &) noexcept”: 无法从“std::string”推导出“const std::unique_ptr<_Ty,_Dx> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\deque(1806,17):
+      或    “bool std::operator !=(const std::deque<_Ty,_Alloc> &,const std::deque<_Ty,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::deque<_Ty,_Alloc> &,const std::deque<_Ty,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::deque<_Ty,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\queue(187,17):
+      或    “bool std::operator !=(const std::queue<_Ty,_Container> &,const std::queue<_Ty,_Container> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::queue<_Ty,_Container> &,const std::queue<_Ty,_Container> &)”: 无法从“const boost::json::value”推导出“const std::queue<_Ty,_Container> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\iterator(311,17):
+      或    “bool std::operator !=(const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &,const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &,const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &) noexcept”: 无法从“const boost::json::value”推导出“const std::istream_iterator<_Ty,_Elem,_Traits,_Diff> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\iterator(493,17):
+      或    “bool std::operator !=(const std::istreambuf_iterator<_Elem,_Traits> &,const std::istreambuf_iterator<_Elem,_Traits> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::istreambuf_iterator<_Elem,_Traits> &,const std::istreambuf_iterator<_Elem,_Traits> &)”: 无法从“const boost::json::value”推导出“const std::istreambuf_iterator<_Elem,_Traits> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\array(790,17):
+      或    “bool std::operator !=(const std::array<_Ty,_Size> &,const std::array<_Ty,_Size> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::array<_Ty,_Size> &,const std::array<_Ty,_Size> &)”: 无法从“const boost::json::value”推导出“const std::array<_Ty,_Size> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\variant(1310,27):
+      或    “bool std::operator !=(const std::variant<_Types...> &,const std::variant<_Types...> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::variant<_Types...> &,const std::variant<_Types...> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::variant<_Types...> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\map(414,17):
+      或    “bool std::operator !=(const std::map<_Kty,_Ty,_Pr,_Alloc> &,const std::map<_Kty,_Ty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::map<_Kty,_Ty,_Pr,_Alloc> &,const std::map<_Kty,_Ty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::map<_Kty,_Ty,_Pr,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\map(646,17):
+      或    “bool std::operator !=(const std::multimap<_Kty,_Ty,_Pr,_Alloc> &,const std::multimap<_Kty,_Ty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::multimap<_Kty,_Ty,_Pr,_Alloc> &,const std::multimap<_Kty,_Ty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::multimap<_Kty,_Ty,_Pr,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\complex(1548,27):
+      或    “bool std::operator !=(const std::complex<_Ty> &,const std::complex<_Ty> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::complex<_Ty> &,const std::complex<_Ty> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::complex<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\complex(1554,27):
+      或    “bool std::operator !=(const std::complex<_Ty> &,const _Ty &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::complex<_Ty> &,const _Ty &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::complex<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\complex(1560,27):
+      或    “bool std::operator !=(const _Ty &,const std::complex<_Ty> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Ty &,const std::complex<_Ty> &) noexcept(<expr>)”: 无法从“std::string”推导出“const std::complex<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(664,27):
+      或    “bool std::operator !=(const std::optional<_Ty> &,const std::optional<_Ty2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::optional<_Ty> &,const std::optional<_Ty2> &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(779,27):
+      或    “bool std::operator !=(const std::optional<_Ty> &,std::nullopt_t) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::optional<_Ty> &,std::nullopt_t) noexcept”: 无法从“const boost::json::value”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(783,27):
+      或    “bool std::operator !=(std::nullopt_t,const std::optional<_Ty> &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(std::nullopt_t,const std::optional<_Ty> &) noexcept”: 无法从“std::string”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(870,27):
+      或    “bool std::operator !=(const std::optional<_Ty> &,const _Ty2 &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::optional<_Ty> &,const _Ty2 &) noexcept(<expr>)”: 无法从“const boost::json::value”推导出“const std::optional<_Ty> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\optional(878,27):
+      或    “bool std::operator !=(const _Ty1 &,const std::optional<_Ty2> &) noexcept(<expr>)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const _Ty1 &,const std::optional<_Ty2> &) noexcept(<expr>)”: 无法从“std::string”推导出“const std::optional<_Ty2> &”的 模板 参数
+      C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\string.hpp(2105,1):
+      或    “std::enable_if<string_and_stringlike<T,U>::value||string_and_stringlike<U,T>::value,bool>::type boost::json::operator !=(const T &,const U &) noexcept”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          未能使函数模板“std::enable_if<string_and_stringlike<T,U>::value||string_and_stringlike<U,T>::value,bool>::type boost::json::operator !=(const T &,const U &) noexcept”专用化
+              C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+              用下列模板参数:
+                  C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+                  “T=boost::json::value”
+                  C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+                  “U=std::string”
+              C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\string.hpp(2080,9):
+              “boost::json::detail::string_comp_op_requirement”: 未能使别名模板专用化
+                  C:\Users\wy331\Documents\ChatGPT\无人机安防项目\UE5DroneControl\Backend\build-command\vcpkg_installed\x64-windows\include\boost\json\detail\string_impl.hpp(379,16):
+                  “type”: 不是“std::enable_if<false,bool>”的任何直接或间接基类的成员
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\set(223,17):
+      或    “bool std::operator !=(const std::set<_Kty,_Pr,_Alloc> &,const std::set<_Kty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::set<_Kty,_Pr,_Alloc> &,const std::set<_Kty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::set<_Kty,_Pr,_Alloc> &”的 模板 参数
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\set(438,17):
+      或    “bool std::operator !=(const std::multiset<_Kty,_Pr,_Alloc> &,const std::multiset<_Kty,_Pr,_Alloc> &)”
+          C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+          “bool std::operator !=(const std::multiset<_Kty,_Pr,_Alloc> &,const std::multiset<_Kty,_Pr,_Alloc> &)”: 无法从“const boost::json::value”推导出“const std::multiset<_Kty,_Pr,_Alloc> &”的 模板 参数
+      C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\storage\security_plan_store.h(91,45):
+      尝试匹配参数列表“(const boost::json::value, std::string)”时
+  
+  video_metadata_store.cpp
+  正在生成代码...

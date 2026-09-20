@@ -1,0 +1,24 @@
+ Backend/http/http_server.cpp                       |  5 ++
+ Backend/storage/security_plan_store.h              | 12 +++--
+ Backend/tests/test_p4_workflow.cpp                 | 16 ++++++
+ Config/DefaultGame.ini                             |  3 ++
+ Evidence/TASK-P4/automation/run-automation.ps1     |  4 +-
+ .../UE5DroneControl/Command/CommandAlarmPanel.cpp  | 17 +++---
+ .../UE5DroneControl/Command/CommandCenterPanel.cpp |  8 +--
+ .../UE5DroneControl/Command/CommandCenterPanel.h   |  2 +-
+ .../UE5DroneControl/Command/CommandShellWidget.cpp | 33 ++++++------
+ .../UE5DroneControl/Command/CommandTacticalMap.cpp |  5 +-
+ .../Command/OperationalLogWidget.cpp               | 12 +++--
+ .../UE5DroneControl/Command/OperationalLogWidget.h |  1 +
+ .../DroneOps/Control/DroneOpsPlayerController.h    |  1 +
+ Source/UE5DroneControl/Map/MapShellWidget.cpp      | 26 ++++-----
+ Source/UE5DroneControl/Map/MapShellWidget.h        |  2 +-
+ .../Shared/OperationalContextSubsystem.cpp         | 56 +++++++++++++++++--
+ .../Shared/OperationalContextSubsystem.h           | 11 ++++
+ .../Shared/OperationalEventStore.cpp               | 14 ++++-
+ .../UE5DroneControl/Shared/OperationalEventStore.h |  4 +-
+ Source/UE5DroneControl/UI/DroneListItemWidget.cpp  | 45 ++++++++--------
+ Source/UE5DroneControl/UI/DroneListWidget.cpp      |  9 ++--
+ Source/UE5DroneControl/Video/VideoShellWidget.cpp  | 63 ++++++++++------------
+ Source/UE5DroneControl/Video/VideoShellWidget.h    |  3 ++
+ 23 files changed, 228 insertions(+), 124 deletions(-)

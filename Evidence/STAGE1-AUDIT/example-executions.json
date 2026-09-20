@@ -1,0 +1,107 @@
+{
+  "execution_id": "execution-6",
+  "deployment_id": "deployment-5",
+  "plan_id": "plan-1",
+  "mission_id": "mission-2",
+  "route_id": "route-4",
+  "route_revision": 1,
+  "route_snapshot": {
+    "pathId": 1,
+    "bClosedLoop": false,
+    "waypoints": [
+      {
+        "sequence": 1,
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336,
+        "segmentSpeed": 0,
+        "waitTime": 0,
+        "location": {
+          "x": 3.7008801560927965e-14,
+          "y": 3.796815872192382e-05,
+          "z": 1699.9999999403954
+        }
+      },
+      {
+        "sequence": 2,
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114,
+        "segmentSpeed": 1,
+        "waitTime": 0,
+        "location": {
+          "x": 4270.916120797396,
+          "y": -0.011935830116271973,
+          "z": 1699.9857205152512
+        }
+      },
+      {
+        "sequence": 3,
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289,
+        "segmentSpeed": 1,
+        "waitTime": 0,
+        "location": {
+          "x": 4270.953937143087,
+          "y": 5551.762306153774,
+          "z": 2699.9613721370697
+        }
+      },
+      {
+        "sequence": 4,
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992,
+        "segmentSpeed": 1,
+        "waitTime": 0,
+        "location": {
+          "x": -1.071256393889272e-13,
+          "y": 5551.765531182289,
+          "z": 1699.9756518006325
+        }
+      }
+    ],
+    "route_id": "route-4",
+    "revision": 1
+  },
+  "plan_name": "P5.2 Mission Test",
+  "mission_name": "Task 01",
+  "uav_id": "UAV-01",
+  "state": "COMPLETED",
+  "control_version": 6.0,
+  "current_waypoint": 4,
+  "completed_waypoints": 4,
+  "total_waypoints": 4,
+  "segment_progress": 1.0,
+  "overall_progress": 1.0,
+  "progress": 1.0,
+  "position": {
+    "latitude": 39.9805,
+    "longitude": 116.34699999999998,
+    "altitude": 59.99999999916992
+  },
+  "segment_start": {
+    "latitude": 39.9805,
+    "longitude": 116.34699999999998,
+    "altitude": 59.99999999916992
+  },
+  "home_position": {
+    "latitude": 39.9807,
+    "longitude": 116.34703,
+    "altitude": 30.0
+  },
+  "default_speed_mps": 8.0,
+  "distance_m": 187.78866639373808,
+  "estimated_seconds": 148.46890962661342,
+  "distance_travelled_m": 187.7886662463153,
+  "wait_remaining": 0.0,
+  "elapsed_seconds": 148.56847190000005,
+  "created_at": 1789826868.219071,
+  "started_at": 1789826868.5469131,
+  "updated_at": 1789827780.221348,
+  "completed_at": 1789827780.221347,
+  "completion_reason": "ROUTE_FINISHED",
+  "failure_reason": "",
+  "simulation": true
+}

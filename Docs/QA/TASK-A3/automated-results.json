@@ -1,0 +1,38 @@
+{
+  "realBackendValidated": false,
+  "build": {
+    "actions": 26,
+    "result": "Succeeded",
+    "seconds": 118.2,
+    "log": "Saved/CommandQA/A3/final-material-build.log"
+  },
+  "knownFailure": "Expected 'viewport height' to be 1080, but it was 1082.",
+  "branch": "feat/triple-screen-command-a3",
+  "tests": [
+    {
+      "fullTestPath": "DroneOps.Command.A2MapMode",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 59
+    },
+    {
+      "fullTestPath": "DroneOps.Command.AlertStore",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "DroneOps.Command.StartupRole",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "DroneOps.Command.CesiumWorld",
+      "state": "Fail",
+      "errors": 1,
+      "warnings": 72
+    }
+  ],
+  "baseline": "2c7f06240bfdcb70248a64a4a758756c3dbb2c2e"
+}

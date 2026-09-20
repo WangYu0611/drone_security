@@ -1,0 +1,207 @@
+#pragma once
+
+#define _WIN32_WINNT 0x0601
+
+#include "core/config_loader.h"
+#include "core/types.h"
+#include "drone/drone_manager.h"
+#include "execution/assembly_controller.h"
+#include "execution/execution_engine.h"
+#include "communication/ws_manager.h"
+#include "storage/video_metadata_store.h"
+#include "storage/operational_context.h"
+#include "storage/security_plan_store.h"
+#include "storage/shared_view_store.h"
+
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/json.hpp>
+
+#include <atomic>
+#include <filesystem>
+#include <fstream>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
+
+namespace beast = boost::beast;
+namespace http  = beast::http;
+namespace ws_ns = beast::websocket;
+namespace net   = boost::asio;
+using tcp = net::ip::tcp;
+
+// ============================================================
+// ApiError
+// ============================================================
+struct ApiError : public std::runtime_error {
+    int status_code = 500;
+    ApiError(int status, const std::string& msg)
+        : std::runtime_error(msg), status_code(status) {}
+};
+
+// ============================================================
+// JSON helpers
+// ============================================================
+inline std::string json_stringify(const boost::json::value& v) {
+    return boost::json::serialize(v);
+}
+
+inline const boost::json::object& require_object(const boost::json::value& v, const char* ctx) {
+    if (!v.is_object()) throw ApiError(400, std::string(ctx) + " must be a JSON object");
+    return v.as_object();
+}
+
+inline const boost::json::array& require_array(const boost::json::value& v, const char* ctx) {
+    if (!v.is_array()) throw ApiError(400, std::string(ctx) + " must be a JSON array");
+    return v.as_array();
+}
+
+// ============================================================
+// HttpServer
+//
+// 职责：
+//   1. 监听 HTTP REST 端口，处理 /api/drones、/api/arrays 等接口
+//   2. 监听 WebSocket 端口，处理 move/pause/resume 指令
+//   3. 通过 DroneManager 和 AssemblyController 执行业务逻辑
+//   4. 通过 WsManager 向 UE5 推送遥测/事件/告警
+// ============================================================
+class HttpServer {
+public:
+    HttpServer(const AppConfig& config,
+               DroneManager& drone_mgr,
+               AssemblyController& assembly_ctrl,
+               ExecutionEngine& exec_engine,
+               WsManager& ws_manager);
+    ~HttpServer();
+
+    /// 启动 HTTP 和 WebSocket 监听线程（阻塞直到 stop() 被调用）
+    void Run();
+
+    /// 停止服务器
+    void Stop();
+
+    bool IsRunning() const { return running_; }
+
+private:
+    // ---- HTTP 处理 ----
+    http::response<http::string_body> HandleHttp(
+        http::request<http::string_body>& req);
+
+    // ---- WebSocket 会话 ----
+    void RunWsSession(tcp::socket socket,
+                      http::request<http::string_body> upgrade_req);
+
+    // ---- 连接处理 ----
+    static void HandleHttpConnection(tcp::socket socket, HttpServer* self);
+    static void HandleWsConnection(tcp::socket socket, HttpServer* self);
+
+    // ---- 服务器循环 ----
+    void RunHttpServer();
+    void RunWsServer();
+
+    // ---- REST 路由实现 ----
+    boost::json::value ApiListDrones();
+    boost::json::value ApiRegisterDrone(const boost::json::object& body);
+    boost::json::value ApiUpdateDrone(const std::string& id, const boost::json::object& body);
+    boost::json::value ApiDeleteDrone(const std::string& id);
+    boost::json::value ApiGetAnchor(const std::string& id);
+    boost::json::value ApiRefreshDrones();
+    boost::json::value ApiStoreVideoMetadataBatch(
+        const boost::json::object& body);
+    boost::json::value ApiCreateArray(const boost::json::object& body);
+    boost::json::value ApiPreviewArray(const boost::json::object& body);
+    boost::json::value ApiStopArray(const std::string& id);
+
+    /// auto_assign=true 时：用匈牙利算法将在线无人机分配到各路径首航点，
+    /// 写回 cfg.paths[].drone_id，并通过 WS 推送 assignment_result
+    void AutoAssignDrones(AssemblyConfig& cfg);
+    void PublishTaskState(const DroneTaskState& state);
+
+    // ---- Debug 路由 ----
+    boost::json::value DebugDroneState(const std::string& id);
+    boost::json::value DebugDroneQueue(const std::string& id);
+    boost::json::value DebugHeartbeat(const std::string& id);
+    boost::json::value DebugInjectTelemetry(const std::string& id, const boost::json::object& body);
+    boost::json::value DebugMove(const std::string& id, const boost::json::object& body);
+    boost::json::value DebugPause(const std::string& id, bool pause);
+    boost::json::value DebugSingleArray(const std::string& id, const boost::json::object& body);
+    boost::json::value DebugTarget(const std::string& id, const boost::json::object& body);
+    boost::json::value DebugBatchArray(const boost::json::array& body);
+    boost::json::value DebugArrayState(const std::string& id);
+    boost::json::value DebugMetrics();
+    boost::json::value DebugAvoidanceState();
+
+    // ---- WS 命令处理 ----
+    void HandleWsCommand(const boost::json::object& msg,
+                         const std::shared_ptr<WsSession>& session);
+
+    // ---- 持久化 ----
+    void SaveDrones();
+    void LoadDrones();
+
+    // ---- 工具 ----
+    static bool PathMatch(const std::string& path,
+                          const std::string& prefix,
+                          const std::string& suffix,
+                          std::string& id_out);
+
+    static http::response<http::string_body> MakeResponse(
+        const http::request<http::string_body>& req,
+        int status_code,
+        const std::string& body,
+        const std::string& content_type = "application/json");
+
+    // ---- 成员 ----
+    const AppConfig&      config_;
+    DroneManager&         drone_mgr_;
+    AssemblyController&   assembly_ctrl_;
+    ExecutionEngine&      exec_engine_;
+    WsManager&            ws_manager_;
+    VideoMetadataStore    video_metadata_store_;
+    OperationalContext operational_context_;
+    SecurityPlanStore security_plans_;
+    UIPreferenceStore ui_preferences_;
+    VideoViewStore video_view_;
+    std::thread plan_lease_thread_;
+    boost::json::value ViewRequest(const boost::json::object& body,bool language);
+    std::mutex plan_requests_mutex_;
+    boost::json::value PlanRequest(const boost::json::object& body);
+    std::mutex context_clients_mutex_;
+    int64_t context_client_version_ = 0;
+    std::unordered_map<std::string, boost::json::object> context_clients_;
+    std::unordered_map<std::string, std::weak_ptr<WsSession>> context_sessions_;
+    boost::json::value ContextClients();
+    boost::json::value RegisterContextClient(const boost::json::object& body);
+    boost::json::value UpdateContext(const boost::json::object& body);
+    bool HandleContextMessage(const boost::json::object& body, const std::shared_ptr<WsSession>& session);
+    void DisconnectContextClient(const std::shared_ptr<WsSession>& session);
+
+    std::atomic<bool>     running_{false};
+    std::thread           http_thread_;
+    std::thread           ws_thread_;
+    mutable std::mutex    conn_threads_mutex_;
+    std::vector<std::thread> conn_threads_;
+
+    // 无人机注册表（持久化用）
+    struct DroneRecord {
+        std::string id;
+        std::string name;
+        std::string model;
+        int         slot = 0;
+        std::string ip;
+        int         port = 0;
+        std::string video_url;
+    };
+    std::vector<DroneRecord> drone_records_;
+    mutable std::mutex       records_mutex_;
+    int                      next_drone_seq_ = 1;
+
+    mutable std::mutex task_state_mutex_;
+    std::unordered_map<int, DroneTaskState> task_states_;
+    std::unordered_map<int, std::string> paused_previous_states_;
+
+};

@@ -1,0 +1,32 @@
+[
+  {
+    "ProcessId": 14428,
+    "Name": "DroneBackend.exe",
+    "ExecutablePath": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Backend\\build-p4\\Release\\DroneBackend.exe",
+    "CommandLine": "\"C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Backend\\build-p4\\Release\\DroneBackend.exe\" Saved/P4QA/native/config.yaml"
+  },
+  {
+    "ProcessId": 19460,
+    "Name": "DroneBackend.exe",
+    "ExecutablePath": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Backend\\build-p4\\Release\\DroneBackend.exe",
+    "CommandLine": "\"C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Backend\\build-p4\\Release\\DroneBackend.exe\" Saved/P4QA/protocol2/config.yaml"
+  },
+  {
+    "ProcessId": 7048,
+    "Name": "UnrealEditor.exe",
+    "ExecutablePath": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "CommandLine": "\"C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\" C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\UE5DroneControl.uproject /Game/Level/CesiumWorld -game -ClientRole=Command -P1Http=http://127.0.0.1:19282 -P1Ws=ws://127.0.0.1:19283/ws -unattended -windowed -WinX=0 -WinY=30 -ResX=1920 -ResY=1080 -nosplash -ExecCmds=\"P2.QA,t.MaxFPS 20\" -abslog=C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Evidence\\TASK-P4\\native\\command-closure.log"
+  },
+  {
+    "ProcessId": 26760,
+    "Name": "UnrealEditor.exe",
+    "ExecutablePath": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "CommandLine": "\"C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\" C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\UE5DroneControl.uproject /Game/Level/CesiumWorld -game -ClientRole=Map -P1Http=http://127.0.0.1:19282 -P1Ws=ws://127.0.0.1:19283/ws -unattended -windowed -WinX=0 -WinY=30 -ResX=1920 -ResY=1080 -nosplash -ExecCmds=\"P2.QA,t.MaxFPS 20\" -abslog=C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Evidence\\TASK-P4\\native\\map-closure.log"
+  },
+  {
+    "ProcessId": 26900,
+    "Name": "UnrealEditor.exe",
+    "ExecutablePath": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "CommandLine": "\"C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\" C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\UE5DroneControl.uproject /Game/Level/CesiumWorld -game -ClientRole=Video -P1Http=http://127.0.0.1:19282 -P1Ws=ws://127.0.0.1:19283/ws -unattended -windowed -WinX=0 -WinY=30 -ResX=1920 -ResY=1080 -nosplash -ExecCmds=\"P2.QA,t.MaxFPS 20\" -abslog=C:\\Users\\wy331\\Documents\\UE5DroneControl-p4\\Evidence\\TASK-P4\\native\\video-closure.log"
+  }
+]

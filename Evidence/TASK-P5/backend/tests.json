@@ -1,0 +1,770 @@
+{
+  "tests": 60,
+  "failures": 2,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-09-19T17:47:33Z",
+  "time": "0.06s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "P1BackendContext",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0.013s",
+      "testsuite": [
+        {
+          "name": "SnapshotVersionAtomicUpdateAndNoop",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_operational_context.cpp",
+          "line": 4,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "P1BackendContext"
+        },
+        {
+          "name": "ConcurrentWritersPublishMonotonically",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_operational_context.cpp",
+          "line": 16,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.003s",
+          "classname": "P1BackendContext"
+        },
+        {
+          "name": "RestartPreservesVersionAndAllFields",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_operational_context.cpp",
+          "line": 24,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.01s",
+          "classname": "P1BackendContext"
+        }
+      ]
+    },
+    {
+      "name": "PlanFixture",
+      "tests": 6,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0.013s",
+      "testsuite": [
+        {
+          "name": "Create",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_security_plans.cpp",
+          "line": 32,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "AssignmentAndDuplicateRejected",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_security_plans.cpp",
+          "line": 33,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "ValidationFailureAndAtomicDeploy",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_security_plans.cpp",
+          "line": 41,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "InvalidCoordinatesAndStaleVersion",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_security_plans.cpp",
+          "line": 49,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "SelectionAndReadinessInvalidation",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_security_plans.cpp",
+          "line": 58,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "PersistenceRestart",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_security_plans.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.011s",
+          "classname": "PlanFixture"
+        }
+      ]
+    },
+    {
+      "name": "P4Workflow",
+      "tests": 6,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0.005s",
+      "testsuite": [
+        {
+          "name": "RevisionValidationReviewInvalidation",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 23,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "ReviewRequiredAndDeploymentCopyImmutable",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 30,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "SessionBlocksReviewDeployAndSaveFailureRetains",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "OwnerRevisionAndDiscard",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "IndependentViewsNoopValidationAndBusinessIsolation",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 57,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "PublisherFailureRetainsCompleteDeploymentState",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 67,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        }
+      ]
+    },
+    {
+      "name": "P4Atomicity",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0.003s",
+      "testsuite": [
+        {
+          "name": "PersistenceFailurePublishesNothing",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 73,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.003s",
+          "classname": "P4Atomicity"
+        }
+      ]
+    },
+    {
+      "name": "CoordinateConverterTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "NedToUeOffset",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_coordinate_converter.cpp",
+          "line": 6,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CoordinateConverterTest"
+        },
+        {
+          "name": "UeOffsetToNed",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_coordinate_converter.cpp",
+          "line": 26,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CoordinateConverterTest"
+        },
+        {
+          "name": "RoundTrip",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_coordinate_converter.cpp",
+          "line": 44,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CoordinateConverterTest"
+        }
+      ]
+    },
+    {
+      "name": "QuaternionUtilsTest",
+      "tests": 4,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "SpeedFromVelocity",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 10,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        },
+        {
+          "name": "IdentityQuaternion",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 20,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        },
+        {
+          "name": "YawFlip",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 31,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        },
+        {
+          "name": "GetUeYaw",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 48,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        }
+      ]
+    },
+    {
+      "name": "GpsAnchorManagerTest",
+      "tests": 5,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "SetAndGetAnchor",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 4,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "UpdateAnchor",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 25,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "ClearAnchor",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 39,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "MultipleDrones",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 50,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "GetNonExistent",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        }
+      ]
+    },
+    {
+      "name": "CommandQueueTest",
+      "tests": 11,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0.002s",
+      "testsuite": [
+        {
+          "name": "PushAndPop",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "PopFromEmpty",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 26,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "FifoOrder",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 33,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "CoalescesPendingVerticalTargets",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "DoesNotCoalesceDifferentHorizontalTargets",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 78,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "CoalescesPendingManualTargetsToLatest",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 98,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "PreservesRequestedSpeedWhenReplacingManualTarget",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 127,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "OverflowDropsOldest",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 149,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "PauseBlocksPop",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 165,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "Clear",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 182,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "ThreadSafety",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_command_queue.cpp",
+          "line": 193,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.001s",
+          "classname": "CommandQueueTest"
+        }
+      ]
+    },
+    {
+      "name": "StateMachineTest",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "InitialStateIsOffline",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 6,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "TelemetryTransitionsToOnline",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 12,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "TimeoutTransitionsToLost",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 19,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "TelemetryAfterTimeoutResetsToOnline",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 31,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "ResetGoesToOffline",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "PowerOnEvent",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 50,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "LostConnectionEvent",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 59,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "ReconnectEvent",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 69,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "NoTimeoutWhenNotOnline",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_state_machine.cpp",
+          "line": 80,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        }
+      ]
+    },
+    {
+      "name": "AssignmentSolverTest",
+      "tests": 2,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Hungarian3x3",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 8,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "AssignmentSolverTest"
+        },
+        {
+          "name": "HungarianDiagonal",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 34,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "AssignmentSolverTest"
+        }
+      ]
+    },
+    {
+      "name": "SegmentDistanceTest",
+      "tests": 4,
+      "failures": 1,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Parallel",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest"
+        },
+        {
+          "name": "Crossing",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 60,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest",
+          "failures": [
+            {
+              "failure": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp:66\nThe difference between d and 0.0 is 5, which exceeds 1e-4, where\nd evaluates to 5,\n0.0 evaluates to 0, and\n1e-4 evaluates to 0.0001.\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "EndpointClosest",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 69,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest"
+        },
+        {
+          "name": "VerticalSeparation",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 77,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest"
+        }
+      ]
+    },
+    {
+      "name": "AssemblyPlannerTest",
+      "tests": 3,
+      "failures": 1,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "NoConflictSparse",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 90,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "AssemblyPlannerTest"
+        },
+        {
+          "name": "ConflictHeightSeparation",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 110,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "AssemblyPlannerTest",
+          "failures": [
+            {
+              "failure": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp:128\nExpected: (conflicts.size()) >= (1u), actual: 0 vs 1\n",
+              "type": ""
+            },
+            {
+              "failure": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp:133\nValue of: z_changed\n  Actual: false\nExpected: true\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "PreservePreassignedTargets",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 136,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "AssemblyPlannerTest"
+        }
+      ]
+    },
+    {
+      "name": "VideoMetadataStoreTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-09-19T17:47:33Z",
+      "time": "0.021s",
+      "testsuite": [
+        {
+          "name": "StoresJsonLinesAndDeduplicatesRetry",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_video_metadata_store.cpp",
+          "line": 53,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.013s",
+          "classname": "VideoMetadataStoreTest"
+        },
+        {
+          "name": "RejectsUnsafeMissionNameAndOversizedBatch",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_video_metadata_store.cpp",
+          "line": 76,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0s",
+          "classname": "VideoMetadataStoreTest"
+        },
+        {
+          "name": "AcceptsEmptyFinalBatchAndWritesCompletionMarker",
+          "file": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\tests\\test_video_metadata_store.cpp",
+          "line": 86,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-09-19T17:47:33Z",
+          "time": "0.008s",
+          "classname": "VideoMetadataStoreTest"
+        }
+      ]
+    }
+  ]
+}

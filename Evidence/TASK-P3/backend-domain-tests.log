@@ -1,0 +1,21 @@
+Note: Google Test filter = PlanFixture.*
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from PlanFixture
+[ RUN      ] PlanFixture.Create
+[       OK ] PlanFixture.Create (0 ms)
+[ RUN      ] PlanFixture.AssignmentAndDuplicateRejected
+[       OK ] PlanFixture.AssignmentAndDuplicateRejected (0 ms)
+[ RUN      ] PlanFixture.ValidationFailureAndAtomicDeploy
+[       OK ] PlanFixture.ValidationFailureAndAtomicDeploy (0 ms)
+[ RUN      ] PlanFixture.InvalidCoordinatesAndStaleVersion
+[       OK ] PlanFixture.InvalidCoordinatesAndStaleVersion (0 ms)
+[ RUN      ] PlanFixture.SelectionAndReadinessInvalidation
+[       OK ] PlanFixture.SelectionAndReadinessInvalidation (0 ms)
+[ RUN      ] PlanFixture.PersistenceRestart
+[       OK ] PlanFixture.PersistenceRestart (8 ms)
+[----------] 6 tests from PlanFixture (9 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (9 ms total)
+[  PASSED  ] 6 tests.

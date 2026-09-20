@@ -1,0 +1,2234 @@
+[
+  {
+    "sequence": 14,
+    "timestamp": 1789826868.219093,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 15,
+    "timestamp": 1789826868.3285055,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 16,
+    "timestamp": 1789826868.4373155,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 17,
+    "timestamp": 1789826868.4373264,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 18,
+    "timestamp": 1789826868.5469184,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 19,
+    "timestamp": 1789826874.2342732,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2392948711074255,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 20,
+    "timestamp": 1789826916.821427,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.4661561469436183,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 21,
+    "timestamp": 1789826935.771401,
+    "event_type": "MISSION_PAUSED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "MISSION_PAUSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PAUSED",
+      "position": {
+        "latitude": 39.98083275483699,
+        "longitude": 116.3475,
+        "altitude": 63.34490326035407
+      },
+      "progress": 0.5667758170610148,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 22,
+    "timestamp": 1789827698.782154,
+    "event_type": "MISSION_RESUMED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "MISSION_RESUMED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98083275483699,
+        "longitude": 116.3475,
+        "altitude": 63.34490326035407
+      },
+      "progress": 0.5667758170610148,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 23,
+    "timestamp": 1789827736.4661825,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7669710353926452,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 24,
+    "timestamp": 1789827780.2213361,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 25,
+    "timestamp": 1789827780.2213483,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-6",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-6",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 26,
+    "timestamp": 1789827868.133983,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 27,
+    "timestamp": 1789827868.200118,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 28,
+    "timestamp": 1789827868.309512,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 29,
+    "timestamp": 1789827868.309523,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 30,
+    "timestamp": 1789827868.4174805,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 31,
+    "timestamp": 1789827875.4027982,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2801595831912368,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 32,
+    "timestamp": 1789827918.0170994,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.4948339811552125,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 33,
+    "timestamp": 1789827974.4712534,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7794892393748704,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 34,
+    "timestamp": 1789828014.2624454,
+    "event_type": "MISSION_RETURNING",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "MISSION_RETURNING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "RETURNING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34705554982631,
+        "altitude": 61.11099652598404
+      },
+      "progress": 0.975501331099939,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 35,
+    "timestamp": 1789828018.9627395,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-7",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-7",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.975501331099939,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 36,
+    "timestamp": 1789828114.716494,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 37,
+    "timestamp": 1789828114.760505,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 38,
+    "timestamp": 1789828114.8695433,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 39,
+    "timestamp": 1789828114.8695536,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 40,
+    "timestamp": 1789828114.9780529,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 41,
+    "timestamp": 1789828120.6444135,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.23929487110600958,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 44,
+    "timestamp": 1789828163.6624336,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.4661561469272023,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 45,
+    "timestamp": 1789828220.1655304,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7669710354031669,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 46,
+    "timestamp": 1789828263.94192,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 47,
+    "timestamp": 1789828263.941933,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-8",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-8",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 55,
+    "timestamp": 1789828709.867154,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 56,
+    "timestamp": 1789828709.952432,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 57,
+    "timestamp": 1789828710.0625117,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 58,
+    "timestamp": 1789828710.0625236,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 59,
+    "timestamp": 1789828710.1723764,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 60,
+    "timestamp": 1789828717.1355228,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2801595831887737,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 64,
+    "timestamp": 1789828759.7678344,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.49483398110565996,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 65,
+    "timestamp": 1789828813.0199952,
+    "event_type": "MISSION_PAUSED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "MISSION_PAUSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PAUSED",
+      "position": {
+        "latitude": 39.98052916916765,
+        "longitude": 116.3475,
+        "altitude": 69.41661664650047
+      },
+      "progress": 0.762882925410511,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 66,
+    "timestamp": 1789828870.2718852,
+    "event_type": "MISSION_RESUMED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "MISSION_RESUMED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98052916916765,
+        "longitude": 116.3475,
+        "altitude": 69.41661664650047
+      },
+      "progress": 0.762882925410511,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 67,
+    "timestamp": 1789828873.616155,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7794892393110713,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 68,
+    "timestamp": 1789828888.6725714,
+    "event_type": "MISSION_ABORTED",
+    "params": {
+      "target_id": "execution-14",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-14",
+    "message": "MISSION_ABORTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "ABORTED",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34732720996601,
+        "altitude": 66.54419932049674
+      },
+      "progress": 0.8556933629542816,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 69,
+    "timestamp": 1789829235.9851096,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34732720996601,
+        "altitude": 66.54419932049674
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 70,
+    "timestamp": 1789829236.0863588,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34732720996601,
+        "altitude": 66.54419932049674
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 71,
+    "timestamp": 1789829236.1950912,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34732720996601,
+        "altitude": 66.54419932049674
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 72,
+    "timestamp": 1789829236.1951025,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34732720996601,
+        "altitude": 66.54419932049674
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 73,
+    "timestamp": 1789829236.3181953,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.34732720996601,
+        "altitude": 66.54419932049674
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 74,
+    "timestamp": 1789829244.2314456,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.3044892060836052,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 75,
+    "timestamp": 1789829286.7381546,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.5119078700024858,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 76,
+    "timestamp": 1789829343.3019617,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7869421261634904,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 77,
+    "timestamp": 1789829387.02062,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 78,
+    "timestamp": 1789829387.0206287,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-18",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-18",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 79,
+    "timestamp": 1789830854.9008908,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 80,
+    "timestamp": 1789830854.954765,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 81,
+    "timestamp": 1789830855.0652997,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 82,
+    "timestamp": 1789830855.0653164,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 83,
+    "timestamp": 1789830855.1878788,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 84,
+    "timestamp": 1789830862.1395028,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2801595832019516,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 85,
+    "timestamp": 1789830904.740542,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.49483398109706755,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 86,
+    "timestamp": 1789830961.3156457,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7794892392931482,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 87,
+    "timestamp": 1789831005.0677,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 88,
+    "timestamp": 1789831005.067711,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-19",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-19",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 89,
+    "timestamp": 1789831277.4933476,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 90,
+    "timestamp": 1789831277.5871527,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 91,
+    "timestamp": 1789831277.7080524,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 92,
+    "timestamp": 1789831277.7080653,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 93,
+    "timestamp": 1789831277.8185155,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 94,
+    "timestamp": 1789831284.8032815,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.28015958320873774,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 95,
+    "timestamp": 1789831327.4156497,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.4948339811258889,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 96,
+    "timestamp": 1789831383.8664737,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.779489239309485,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 97,
+    "timestamp": 1789831427.6661117,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 98,
+    "timestamp": 1789831427.666126,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-20",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-20",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 99,
+    "timestamp": 1789831964.5179543,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 100,
+    "timestamp": 1789831964.586592,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 101,
+    "timestamp": 1789831964.696108,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 102,
+    "timestamp": 1789831964.69612,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 103,
+    "timestamp": 1789831964.8056211,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 104,
+    "timestamp": 1789831971.7863393,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2801595831876067,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 105,
+    "timestamp": 1789832014.39119,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.4948339811151337,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 106,
+    "timestamp": 1789832070.8709192,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.779489239358506,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 107,
+    "timestamp": 1789832114.612206,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 108,
+    "timestamp": 1789832114.6122172,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-21",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-21",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 109,
+    "timestamp": 1789832282.7971516,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 110,
+    "timestamp": 1789832282.8450055,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 111,
+    "timestamp": 1789832282.9543624,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 112,
+    "timestamp": 1789832282.954376,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 113,
+    "timestamp": 1789832283.0634763,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 114,
+    "timestamp": 1789832290.0343168,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2801595831830783,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 115,
+    "timestamp": 1789832332.7063801,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.49483398111420634,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 116,
+    "timestamp": 1789832389.107154,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7794892392769824,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 117,
+    "timestamp": 1789832432.8965232,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 118,
+    "timestamp": 1789832432.8965337,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  }
+]

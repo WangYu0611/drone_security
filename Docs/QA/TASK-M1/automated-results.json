@@ -1,0 +1,168 @@
+[
+  {
+    "run": "command",
+    "counts": {
+      "succeeded": 2,
+      "succeededWithWarnings": 2,
+      "failed": 0,
+      "notRun": 0
+    },
+    "tests": [
+      {
+        "name": "DroneOps.Command.AlertStore",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 0,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 0,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.M1.CommandRegression",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 27,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 32,
+        "errorMessages": []
+      }
+    ]
+  },
+  {
+    "run": "known-height",
+    "counts": {
+      "succeeded": 0,
+      "succeededWithWarnings": 0,
+      "failed": 1,
+      "notRun": 0
+    },
+    "tests": [
+      {
+        "name": "DroneOps.Command.CesiumWorld",
+        "state": "Fail",
+        "errors": 1,
+        "warnings": 77,
+        "errorMessages": [
+          "Expected 'viewport height' to be 1080, but it was 1082."
+        ]
+      }
+    ]
+  },
+  {
+    "run": "map",
+    "counts": {
+      "succeeded": 1,
+      "succeededWithWarnings": 2,
+      "failed": 0,
+      "notRun": 0
+    },
+    "tests": [
+      {
+        "name": "DroneOps.Command.A2MapMode",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 59,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 0,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 44,
+        "errorMessages": []
+      }
+    ]
+  },
+  {
+    "run": "standalone",
+    "counts": {
+      "succeeded": 0,
+      "succeededWithWarnings": 1,
+      "failed": 0,
+      "notRun": 0
+    },
+    "tests": [
+      {
+        "name": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 40,
+        "errorMessages": []
+      }
+    ]
+  },
+  {
+    "run": "video",
+    "counts": {
+      "succeeded": 1,
+      "succeededWithWarnings": 1,
+      "failed": 0,
+      "notRun": 0
+    },
+    "tests": [
+      {
+        "name": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 0,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 32,
+        "errorMessages": []
+      }
+    ]
+  },
+  {
+    "run": "map-final",
+    "counts": {
+      "succeeded": 1,
+      "succeededWithWarnings": 2,
+      "failed": 0,
+      "notRun": 0
+    },
+    "tests": [
+      {
+        "name": "DroneOps.Command.A2MapMode",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 59,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 0,
+        "errorMessages": []
+      },
+      {
+        "name": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": 0,
+        "warnings": 44,
+        "errorMessages": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,148 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p4\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p4).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (source file added)
+UHT compiled-in object format Default
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Video\VideoShellWidget.cpp(1): error: Expected VideoShellWidget.h to be first header included.
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandAlarmPanel.cpp, CommandCenterPanel.cpp, MapMissionRouteWidget.cpp, MapShellWidget.cpp, OperationalContextSubsystem.cpp, ProductText.cpp, SecurityPlanWorkspaceWidget.cpp, UILanguageSubsystem.cpp, VideoShellWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 26 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 18.24 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/26] Compile [x64] CommandAlertStore.cpp [NoUba]
+[2/26] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[3/26] Compile [x64] CommandAlarmPanel.cpp [NoUba]
+[4/26] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[5/26] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[6/26] Compile [x64] CommandScreenManager.cpp [NoUba]
+[7/26] Compile [x64] CommandTacticalMap.cpp [NoUba]
+[8/26] Compile [x64] CommandShellWidget.cpp [NoUba]
+[9/26] Compile [x64] DroneRegistrySubsystem.cpp [NoUba]
+[10/26] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(40,210): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+    bPending=true;const auto Weak=TWeakObjectPtr<UMapMissionRouteWidget>(this);if(!S->SubmitPlan(R,[Weak,Complete](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);Complete(Reply);})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");Complete(nullptr);}
+                                                                                                                                                                                                                 ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(21,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(40,215): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+    bPending=true;const auto Weak=TWeakObjectPtr<UMapMissionRouteWidget>(this);if(!S->SubmitPlan(R,[Weak,Complete](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);Complete(Reply);})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");Complete(nullptr);}
+                                                                                                                                                                                                                      ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(45,79): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+    Submit(TEXT("begin_route_edit"),[this](TSharedPtr<FJsonObject> Reply){if(!Error(Reply).IsEmpty())return;SessionId=Field(Reply,TEXT("edit_session_id"));if(SessionId.IsEmpty())return;LoadSaved();if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionPathEditing(true);Focus();},R);
+                                                                              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(21,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(45,84): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+    Submit(TEXT("begin_route_edit"),[this](TSharedPtr<FJsonObject> Reply){if(!Error(Reply).IsEmpty())return;SessionId=Field(Reply,TEXT("edit_session_id"));if(SessionId.IsEmpty())return;LoadSaved();if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionPathEditing(true);Focus();},R);
+                                                                                   ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(49,87): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+    Submit(TEXT("save_route"),[this](TSharedPtr<FJsonObject> Reply){bSaving=false;if(!Error(Reply).IsEmpty()){bDirty=true;return;}
+                                                                                      ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(21,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(49,92): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+    Submit(TEXT("save_route"),[this](TSharedPtr<FJsonObject> Reply){bSaving=false;if(!Error(Reply).IsEmpty()){bDirty=true;return;}
+                                                                                           ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,66): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+    auto Done=[this](TSharedPtr<FJsonObject> Reply){const auto C=Error(Reply);if(!C.IsEmpty() && C!=TEXT("EDIT_SESSION_EXPIRED"))return;
+                                                                 ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(21,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,71): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+    auto Done=[this](TSharedPtr<FJsonObject> Reply){const auto C=Error(Reply);if(!C.IsEmpty() && C!=TEXT("EDIT_SESSION_EXPIRED"))return;
+                                                                      ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,64): error C2737: ﾡﾰCﾡﾱ: ﾱ￘￐￫ﾳ￵ￊﾼﾻﾯ const ﾶￔￏ￳
+    auto Done=[this](TSharedPtr<FJsonObject> Reply){const auto C=Error(Reply);if(!C.IsEmpty() && C!=TEXT("EDIT_SESSION_EXPIRED"))return;
+                                                               ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,83): error C3536: ﾡﾰCﾡﾱ: ﾳ￵ￊﾼﾻﾯￖﾮￇﾰￎ￞ﾷﾨￊﾹￓￃ
+    auto Done=[this](TSharedPtr<FJsonObject> Reply){const auto C=Error(Reply);if(!C.IsEmpty() && C!=TEXT("EDIT_SESSION_EXPIRED"))return;
+                                                                                  ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,99): error C4130: ﾡﾰ!=ﾡﾱ: ￗￖﾷ￻ﾴﾮﾳﾣ￁﾿ﾵ￘ￖﾷﾵￄￂ￟ﾼﾭﾲ￙ￗ￷
+    auto Done=[this](TSharedPtr<FJsonObject> Reply){const auto C=Error(Reply);if(!C.IsEmpty() && C!=TEXT("EDIT_SESSION_EXPIRED"))return;
+                                                                                                  ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,99): error C2446: ﾡﾰ!=ﾡﾱ: ￃﾻￓ￐ﾴￓﾡﾰconst wchar_t [21]ﾡﾱﾵﾽﾡﾰ<error type>ﾡﾱﾵￄￗﾪﾻﾻ
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(54,101): note: ￃﾻￓ￐ￊﾹﾸￃￗﾪﾻﾻﾵￃￒￔￖﾴ￐￐ﾵￄ￉ￏￏￂￎￄ
+    auto Done=[this](TSharedPtr<FJsonObject> Reply){const auto C=Error(Reply);if(!C.IsEmpty() && C!=TEXT("EDIT_SESSION_EXPIRED"))return;
+                                                                                                    ^
+[11/26] Compile [x64] MapExtractionTest.cpp [NoUba]
+[12/26] Compile [x64] MapShellWidget.cpp [NoUba]
+[13/26] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[14/26] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[15/26] Compile [x64] OperationalContextTest.cpp [NoUba]
+[16/26] Compile [x64] OperationalEventStore.cpp [NoUba]
+[17/26] Compile [x64] ProductText.cpp [NoUba]
+[18/26] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[19/26] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(87,188): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
+                                                                                                                                                                                           ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(21,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.cpp(87,193): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
+                                                                                                                                                                                                ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+[20/26] Compile [x64] UILanguageSubsystem.cpp [NoUba]
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\UILanguageSubsystem.cpp(5,86): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰFCultureﾡﾱ
+    if(ConfirmedLanguage==Language && FInternationalization::Get().GetCurrentLanguage()->GetName()==Language)return;
+                                                                                     ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Internationalization\CulturePointer.h(7,7): note: ﾲￎﾼ￻ﾡﾰFCultureﾡﾱﾵￄ￉￹ￃ￷
+class FCulture;
+      ^
+C:\Users\wy331\Documents\UE5DroneControl-p4\Source\UE5DroneControl\Shared\UILanguageSubsystem.cpp(5,90): error C2039: "GetName": ﾲﾻￊￇ "TSharedRef<FCulture,ESPMode::ThreadSafe>" ﾵￄﾳ￉ￔﾱ
+    if(ConfirmedLanguage==Language && FInternationalization::Get().GetCurrentLanguage()->GetName()==Language)return;
+                                                                                         ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Templates\SharedPointer.h(153,7): note: ﾲￎﾼ￻ﾡﾰTSharedRef<FCulture,ESPMode::ThreadSafe>ﾡﾱﾵￄ￉￹ￃ￷
+class TSharedRef
+      ^
+[21/26] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+[22/26] Compile [x64] VideoShellWidget.cpp [NoUba]
+[23/26] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 94.76 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 100.03 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 24.8kb

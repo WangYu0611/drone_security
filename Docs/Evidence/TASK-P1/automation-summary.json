@@ -1,0 +1,183 @@
+{
+  "baseline": "6a9dec83feaf3fb4faa9ce35c403670c0a2dfba0",
+  "suites": [
+    {
+      "run": "final-p1-command",
+      "discovered": 1,
+      "success": 1,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.P1.VersionAndRoleSync",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-p1-map",
+      "discovered": 1,
+      "success": 1,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.P1.VersionAndRoleSync",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-p1-video",
+      "discovered": 1,
+      "success": 1,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.P1.VersionAndRoleSync",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-reg-command",
+      "discovered": 4,
+      "success": 4,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.Command.AlertStore",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        },
+        {
+          "path": "DroneOps.Command.StartupRole",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        },
+        {
+          "path": "DroneOps.M1.CommandRegression",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        },
+        {
+          "path": "DroneOps.Video.RoleLifecycle",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-reg-map",
+      "discovered": 3,
+      "success": 3,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.Command.A2MapMode",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        },
+        {
+          "path": "DroneOps.Command.StartupRole",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        },
+        {
+          "path": "DroneOps.Video.RoleLifecycle",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-reg-standalone",
+      "discovered": 2,
+      "success": 1,
+      "failed": 1,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.Command.CesiumWorld",
+          "state": "Fail",
+          "test_completed_logged": true,
+          "errors": [
+            "Expected 'viewport height' to be 1080, but it was 1082."
+          ]
+        },
+        {
+          "path": "DroneOps.Video.RoleLifecycle",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-reg-video",
+      "discovered": 2,
+      "success": 2,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.Command.StartupRole",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        },
+        {
+          "path": "DroneOps.Video.RoleLifecycle",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "run": "final-multi-selection-ack",
+      "discovered": 1,
+      "success": 1,
+      "failed": 0,
+      "notRun": 0,
+      "tests": [
+        {
+          "path": "DroneOps.P1.MultiSelectionAcks",
+          "state": "Success",
+          "test_completed_logged": true,
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "backend": {
+    "executed": 47,
+    "passed": 45,
+    "failed": 2,
+    "p1_passed": 3,
+    "known_failures": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ]
+  },
+  "builds": {
+    "ue": "build-final-ack.log: Succeeded, 8.22 s; physical screenshots: build-physical.log, Succeeded, 7.95 s",
+    "backend": "backend-build-presence.log: DroneBackend and DroneBackend_tests Release built"
+  }
+}

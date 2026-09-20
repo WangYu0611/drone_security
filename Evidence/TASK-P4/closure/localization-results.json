@@ -1,0 +1,35 @@
+{
+  "gather_log": "closure/gather.log",
+  "gather_commandlet_exit": 0,
+  "process_exit": 1,
+  "process_exit_reason": "Retained GameFeatureData/AssetManager startup errors; complete log preserved",
+  "resource_generation": "Both cultures generated on 2026-09-19, confirmed in GatherTextStep4 log",
+  "unchanged_mtime_reason": "UE GenerateTextLocalizationResourceCommandlet uses UE::Localization::FileUtil::WriteFileIfModified with BinaryHash; byte-identical output retains timestamp, not stale generation",
+  "engine_source": "Engine/Source/Editor/UnrealEd/Private/Commandlets/GenerateTextLocalizationResourceCommandlet.cpp:226",
+  "resources": [
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.locres",
+      "sha256": "40accc39d43cc264e6a7667e2135c561df1b63a6b85a76625539356e0a05e26b",
+      "bytes": 15180,
+      "mtime": "2026-09-15T10:08:03.160737"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.locres",
+      "sha256": "95b954fdc745540196b2bea270ef8dc80ccab91c140a3fda85bf14fcfb5362d3",
+      "bytes": 14409,
+      "mtime": "2026-09-15T10:08:03.160737"
+    }
+  ],
+  "ui_fixes": [
+    "PRIMARY / \u4e3b\u9009\u4e2d and MULTI / \u591a\u9009\u4e2d now stable localized keys",
+    "Video Header uses canonical UAV-%02d and localized no-target text"
+  ],
+  "screenshots": [
+    "closure/command-zh-Hans-final.png",
+    "closure/command-en.png",
+    "closure/map-zh-Hans.png",
+    "closure/map-en.png",
+    "closure/video-zh-Hans.png",
+    "closure/video-en.png"
+  ]
+}

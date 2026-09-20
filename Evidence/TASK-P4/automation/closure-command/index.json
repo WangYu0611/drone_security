@@ -1,0 +1,781 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "7CDA12804594310992A5EF94E58FA4C4",
+			"instanceName": "JXGM-12336",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.19-08.44.36",
+	"succeeded": 0,
+	"succeededWithWarnings": 2,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 18.290531158447266,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CommandLiveCRUD",
+			"fullTestPath": "DroneOps.P4.Workflow.CommandLiveCRUD",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"7CDA12804594310992A5EF94E58FA4C4"
+			],
+			"duration": 9.7871065139770508,
+			"dateTime": "2026.09.19-08.44.18",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.19"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.19"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.19"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.19"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:8080  WebSocketUrl=ws://127.0.0.1:8081/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneWS] Connection error: socket connect failed",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D2341ABD00: request failed, libcurl error: 7 (Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D2341ABD00: libcurl info message cache 0 (  Trying 127.0.0.1:8080...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D2341ABD00: libcurl info message cache 1 (connect to 127.0.0.1 port 8080 from 0.0.0.0 port 61578 failed: Connection refused)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D2341ABD00: libcurl info message cache 2 (Failed to connect to 127.0.0.1 port 8080 after 2047 ms: Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D2341ABD00: libcurl info message cache 3 (closing connection #11)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D2341ABD00 GET http://127.0.0.1:8080/api/drones completed with reason 'ConnectionError' after 2.05s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneHttpClient] Request failed: http://127.0.0.1:8080/api/drones",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500: request failed, libcurl error: 7 (Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500: libcurl info message cache 0 (Hostname 127.0.0.1 was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500: libcurl info message cache 1 (  Trying 127.0.0.1:8080...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500: libcurl info message cache 2 (connect to 127.0.0.1 port 8080 from 0.0.0.0 port 55769 failed: Connection refused)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500: libcurl info message cache 3 (Failed to connect to 127.0.0.1 port 8080 after 2026 ms: Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500: libcurl info message cache 4 (closing connection #16)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23491F500 GET http://127.0.0.1:8080/api/drones completed with reason 'ConnectionError' after 2.03s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneHttpClient] Request failed: http://127.0.0.1:8080/api/drones",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneWS] Connection error: ",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.27"
+				}
+			],
+			"warnings": 23,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CommandReviewReadonlyCopyAndCombo",
+			"fullTestPath": "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"7CDA12804594310992A5EF94E58FA4C4"
+			],
+			"duration": 8.5034255981445312,
+			"dateTime": "2026.09.19-08.44.28",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:8080  WebSocketUrl=ws://127.0.0.1:8081/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500: request failed, libcurl error: 7 (Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500: libcurl info message cache 0 (Hostname 127.0.0.1 was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500: libcurl info message cache 1 (  Trying 127.0.0.1:8080...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500: libcurl info message cache 2 (connect to 127.0.0.1 port 8080 from 0.0.0.0 port 55777 failed: Connection refused)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500: libcurl info message cache 3 (Failed to connect to 127.0.0.1 port 8080 after 2032 ms: Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500: libcurl info message cache 4 (closing connection #17)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D23985F500 GET http://127.0.0.1:8080/api/drones completed with reason 'ConnectionError' after 2.03s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.28"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneWS] Connection error: ",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: request failed, libcurl error: 7 (Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 0 (Connection 27 seems to be dead)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 1 (shutting down connection #27)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 2 (Connection 28 seems to be dead)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 3 (shutting down connection #28)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 4 (Connection 29 seems to be dead)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 5 (shutting down connection #29)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 6 (Hostname 127.0.0.1 was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 7 (  Trying 127.0.0.1:8080...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 8 (connect to 127.0.0.1 port 8080 from 0.0.0.0 port 55856 failed: Connection refused)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 9 (Failed to connect to 127.0.0.1 port 8080 after 2029 ms: Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400: libcurl info message cache 10 (closing connection #30)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D29608C400 GET http://127.0.0.1:8080/api/drones completed with reason 'ConnectionError' after 2.03s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneHttpClient] Request failed: http://127.0.0.1:8080/api/drones",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.31"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00: request failed, libcurl error: 7 (Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00: libcurl info message cache 0 (Hostname 127.0.0.1 was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00: libcurl info message cache 1 (  Trying 127.0.0.1:8080...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00: libcurl info message cache 2 (connect to 127.0.0.1 port 8080 from 0.0.0.0 port 55899 failed: Connection refused)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00: libcurl info message cache 3 (Failed to connect to 127.0.0.1 port 8080 after 2042 ms: Could not connect to server)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00: libcurl info message cache 4 (closing connection #31)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001D296329A00 GET http://127.0.0.1:8080/api/drones completed with reason 'ConnectionError' after 2.04s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneHttpClient] Request failed: http://127.0.0.1:8080/api/drones",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneWS] Connection error: ",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.19-08.44.35"
+				}
+			],
+			"warnings": 37,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

@@ -1,0 +1,1560 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh-Hans\n"
+
+msgctxt "DroneOps,Plan.Title"
+msgid "SECURITY PLAN"
+msgstr "安保方案"
+
+msgctxt "DroneOps,Plan.Name"
+msgid "Plan name"
+msgstr "方案名称"
+
+msgctxt "DroneOps,Plan.Description"
+msgid "Description"
+msgstr "描述"
+
+msgctxt "DroneOps,Plan.New"
+msgid "NEW PLAN"
+msgstr "新建方案"
+
+msgctxt "DroneOps,Plan.Update"
+msgid "SAVE PLAN INFORMATION"
+msgstr "保存方案信息"
+
+msgctxt "DroneOps,Plan.Mission"
+msgid "Task"
+msgstr "任务"
+
+msgctxt "DroneOps,Plan.Missions"
+msgid "MISSIONS"
+msgstr "任务列表"
+
+msgctxt "DroneOps,Plan.MissionName"
+msgid "Task name"
+msgstr "任务名称"
+
+msgctxt "DroneOps,Plan.AddMission"
+msgid "ADD TASK"
+msgstr "添加任务"
+
+msgctxt "DroneOps,Plan.Rename"
+msgid "RENAME TASK"
+msgstr "重命名任务"
+
+msgctxt "DroneOps,Plan.Delete"
+msgid "DELETE MISSION"
+msgstr "删除任务"
+
+msgctxt "DroneOps,Plan.Assign"
+msgid "ASSIGN UAV"
+msgstr "分配无人机"
+
+msgctxt "DroneOps,Plan.Unassign"
+msgid "UNASSIGN UAV"
+msgstr "取消分配"
+
+msgctxt "DroneOps,Plan.NoMissions"
+msgid "No missions / Add first mission"
+msgstr "暂无任务 / 添加首个任务"
+
+msgctxt "DroneOps,Plan.NoPlan"
+msgid "No active plan"
+msgstr "未选择方案"
+
+msgctxt "DroneOps,Plan.EditMap"
+msgid "EDIT ROUTE ON MAP"
+msgstr "在地图编辑航线"
+
+msgctxt "DroneOps,Plan.Check"
+msgid "CHECK CONFIGURATION"
+msgstr "检查配置"
+
+msgctxt "DroneOps,Plan.Review"
+msgid "REVIEW PLAN"
+msgstr "审阅方案"
+
+msgctxt "DroneOps,Plan.ConfirmReview"
+msgid "CONFIRM REVIEW"
+msgstr "确认审阅"
+
+msgctxt "DroneOps,Plan.Deploy"
+msgid "DEPLOY PLAN"
+msgstr "部署方案"
+
+msgctxt "DroneOps,Plan.ConfirmDeploy"
+msgid "CONFIRM DEPLOY"
+msgstr "确认部署"
+
+msgctxt "DroneOps,Plan.Copy"
+msgid "COPY AS DRAFT"
+msgstr "复制为草稿"
+
+msgctxt "DroneOps,Plan.DRAFT"
+msgid "DRAFT"
+msgstr "草稿"
+
+msgctxt "DroneOps,Plan.READY"
+msgid "CONFIGURATION VALID"
+msgstr "配置有效"
+
+msgctxt "DroneOps,Plan.DEPLOYED"
+msgid "Deployed"
+msgstr "已部署"
+
+msgctxt "DroneOps,Plan.ReviewNotice"
+msgid "This review confirms the current plan configuration. Deployment freezes the business configuration and does not start aircraft execution."
+msgstr "本次审阅确认当前方案配置版本。部署只会冻结业务配置，不会启动无人机。"
+
+msgctxt "DroneOps,Plan.Revision"
+msgid "Revision {0}"
+msgstr "内容版本 {0}"
+
+msgctxt "DroneOps,Plan.Reviewed"
+msgid "Reviewed revision {0}"
+msgstr "已审阅当前版本 {0}"
+
+msgctxt "DroneOps,Plan.MissionSummary"
+msgid "{0} | UAV: {1} | Waypoints: {2}"
+msgstr "{0} | 无人机：{1} | 航点数：{2}"
+
+msgctxt "DroneOps,Plan.Counts"
+msgid "Tasks: {0} | UAV assigned: {1} | Routes configured: {2}"
+msgstr "任务：{0} | 已分配无人机：{1} | 已配置航线：{2}"
+
+msgctxt "DroneOps,Plan.RouteParameters"
+msgid "Loop: {0} | Speed: {1} | Wait: {2}"
+msgstr "循环：{0} | 速度：{1} | 等待：{2}"
+
+msgctxt "DroneOps,Plan.Blocking"
+msgid "Blocking issues"
+msgstr "阻塞问题"
+
+msgctxt "DroneOps,Plan.Warnings"
+msgid "Configuration check only. Terrain, airspace, endurance and flight safety are not assessed."
+msgstr "仅检查业务配置，未评估地形、空域、续航和飞行安全。"
+
+msgctxt "DroneOps,Plan.Deployment"
+msgid "Deployment record"
+msgstr "部署记录"
+
+msgctxt "DroneOps,Common.Save"
+msgid "SAVE"
+msgstr "保存"
+
+msgctxt "DroneOps,Common.Cancel"
+msgid "CANCEL"
+msgstr "取消"
+
+msgctxt "DroneOps,Common.Discard"
+msgid "DISCARD CHANGES"
+msgstr "放弃更改"
+
+msgctxt "DroneOps,Common.Exit"
+msgid "EXIT"
+msgstr "退出"
+
+msgctxt "DroneOps,Common.None"
+msgid "Not assigned"
+msgstr "未分配"
+
+msgctxt "DroneOps,Common.Waiting"
+msgid "Waiting for Backend confirmation..."
+msgstr "等待后端确认…"
+
+msgctxt "DroneOps,Common.Confirmed"
+msgid "Backend confirmed"
+msgstr "后端已确认"
+
+msgctxt "DroneOps,Common.Language"
+msgid "Language"
+msgstr "语言"
+
+msgctxt "DroneOps,Map.Route"
+msgid "MISSION ROUTE"
+msgstr "任务航线"
+
+msgctxt "DroneOps,Map.Begin"
+msgid "BEGIN ROUTE EDIT"
+msgstr "开始编辑航线"
+
+msgctxt "DroneOps,Map.Add"
+msgid "ADD WAYPOINT"
+msgstr "添加航点"
+
+msgctxt "DroneOps,Map.Delete"
+msgid "DELETE WAYPOINT"
+msgstr "删除航点"
+
+msgctxt "DroneOps,Map.Clear"
+msgid "CLEAR ROUTE"
+msgstr "清空航线"
+
+msgctxt "DroneOps,Map.Focus"
+msgid "FOCUS ROUTE"
+msgstr "定位航线"
+
+msgctxt "DroneOps,Map.DirtyPrompt"
+msgid "Unsaved route changes. Save, discard, or cancel before leaving."
+msgstr "航线有未保存修改。离开前请选择保存、放弃或取消。"
+
+msgctxt "DroneOps,Map.DiscardPrompt"
+msgid "Discard local changes and reload the saved route?"
+msgstr "放弃本地修改并重新载入已保存航线？"
+
+msgctxt "DroneOps,Map.EDITING"
+msgid "EDITING"
+msgstr "编辑中"
+
+msgctxt "DroneOps,Map.DIRTY"
+msgid "DIRTY / UNSAVED"
+msgstr "已修改 / 未保存"
+
+msgctxt "DroneOps,Map.SAVING"
+msgid "SAVING"
+msgstr "保存中"
+
+msgctxt "DroneOps,Map.CLEAN"
+msgid "SAVED / READ ONLY"
+msgstr "已保存 / 只读"
+
+msgctxt "DroneOps,Map.Count"
+msgid "Waypoints: {0}"
+msgstr "航点数：{0}"
+
+msgctxt "DroneOps,Video.Open"
+msgid "OPEN VIDEO"
+msgstr "查看视频"
+
+msgctxt "DroneOps,Video.Active"
+msgid "VIEW ACTIVE UAV VIDEO"
+msgstr "查看当前无人机视频"
+
+msgctxt "DroneOps,Video.Assigned"
+msgid "VIEW ASSIGNED UAV VIDEO"
+msgstr "查看任务无人机视频"
+
+msgctxt "DroneOps,Video.Target"
+msgid "VIDEO TARGET"
+msgstr "视频目标"
+
+msgctxt "DroneOps,Errors.SYNC_OFFLINE"
+msgid "Backend offline. No change submitted."
+msgstr "后端离线，未提交修改。"
+
+msgctxt "DroneOps,Errors.SYNC_FAILED"
+msgid "Synchronization failed. Last confirmed state retained."
+msgstr "同步失败，保留最后确认状态。"
+
+msgctxt "DroneOps,Errors.PLAN_EDIT_IN_PROGRESS"
+msgid "Map route editing is in progress. Save or discard before review or deployment."
+msgstr "地图航线正在编辑，请先保存或放弃，再审阅或部署。"
+
+msgctxt "DroneOps,Errors.PLAN_REVIEW_REQUIRED"
+msgid "Review the current configuration first."
+msgstr "请先审阅当前配置。"
+
+msgctxt "DroneOps,Errors.REVIEW_STALE"
+msgid "Review is stale. Review the current revision again."
+msgstr "审阅已失效，请重新审阅当前版本。"
+
+msgctxt "DroneOps,Errors.VALIDATION_STALE"
+msgid "Configuration validation is stale."
+msgstr "配置检查已失效。"
+
+msgctxt "DroneOps,Errors.VERSION_CONFLICT"
+msgid "Version conflict. Local draft retained. Discard and reload to resolve."
+msgstr "版本冲突，本地草稿已保留。可放弃并重新载入以解决冲突。"
+
+msgctxt "DroneOps,Errors.EDIT_SESSION_CONFLICT"
+msgid "Another editor owns this route session."
+msgstr "其他编辑器正在使用该编辑会话。"
+
+msgctxt "DroneOps,Errors.EDIT_SESSION_EXPIRED"
+msgid "Editing lease expired. Local draft retained; discard and reload."
+msgstr "编辑租约已过期，本地草稿保留，请放弃并重新载入。"
+
+msgctxt "DroneOps,Errors.MAP_CLIENT_UNAVAILABLE"
+msgid "Map client unavailable"
+msgstr "地图客户端未连接"
+
+msgctxt "DroneOps,Errors.PLAN_DEPLOYED"
+msgid "Deployed plan is read only."
+msgstr "已部署方案为只读。"
+
+msgctxt "DroneOps,Errors.PLAN_NOT_READY"
+msgid "Check configuration and resolve blocking issues."
+msgstr "请检查配置并解决阻塞问题。"
+
+msgctxt "DroneOps,Errors.NO_MISSIONS"
+msgid "Add at least one mission."
+msgstr "请至少添加一个任务。"
+
+msgctxt "DroneOps,Errors.NO_UAV_ASSIGNED"
+msgid "Assign a UAV to this mission."
+msgstr "请为该任务分配无人机。"
+
+msgctxt "DroneOps,Errors.INVALID_UAV"
+msgid "The assigned UAV is not in the Registry."
+msgstr "已分配无人机不在注册表中。"
+
+msgctxt "DroneOps,Errors.UAV_ALREADY_ASSIGNED"
+msgid "This UAV is assigned to another mission in this plan."
+msgstr "此无人机已分配给该方案中的其他任务。"
+
+msgctxt "DroneOps,Errors.ROUTE_MISSING"
+msgid "Edit and save a route on Map."
+msgstr "请在地图编辑并保存航线。"
+
+msgctxt "DroneOps,Errors.ROUTE_TOO_SHORT"
+msgid "Route requires at least 2 waypoints."
+msgstr "航线至少需要 2 个航点。"
+
+msgctxt "DroneOps,Errors.INVALID_WAYPOINT"
+msgid "Waypoint coordinates or parameters are invalid."
+msgstr "航点坐标或参数无效。"
+
+msgctxt "DroneOps,Errors.INVALID_NAME"
+msgid "Enter a valid name."
+msgstr "请输入有效名称。"
+
+msgctxt "DroneOps,Errors.INVALID_LANGUAGE"
+msgid "Unsupported language."
+msgstr "不支持此语言。"
+
+msgctxt "DroneOps,Errors.INVALID_VIDEO_TARGET"
+msgid "Select a registered UAV video target."
+msgstr "请选择已注册的无人机视频目标。"
+
+msgctxt "DroneOps,Errors.Request"
+msgid "Request failed. Confirm the current selection and retry."
+msgstr "请求失败，请确认当前选择后重试。"
+
+msgctxt "DroneOps,Video.Header"
+msgid "{0} | VIDEO TARGET: {1} | ACTIVE UAV: {2}"
+msgstr "{0} | 视频目标：{1} | 当前无人机：{2}"
+
+msgctxt "DroneOps,Video.Feed"
+msgid "{0}\nModel: N/A | Link: {1}\n{2}\n{3}"
+msgstr "{0}\n机型：暂无 | 连接：{1}\n{2}\n{3}"
+
+msgctxt "DroneOps,Video.Heading"
+msgid "PRIMARY VIDEO / {0}"
+msgstr "主视频 / {0}"
+
+msgctxt "DroneOps,Video.Details"
+msgid "{0} | Camera: N/A | Resolution: {1} | FPS: {2} | {3}"
+msgstr "{0} | 相机：暂无 | 分辨率：{1} | 帧率：{2} | {3}"
+
+msgctxt "DroneOps,Command.Header"
+msgid "COMMAND CENTER | {0} | {1} | Clients {2}/3"
+msgstr "指挥中心 | {0} | {1} | 客户端 {2}/3"
+
+msgctxt "DroneOps,Command.Count"
+msgid "{0} UAV | {1} ONLINE | {2} ALERTS"
+msgstr "无人机 {0} | 在线 {1} | 告警 {2}"
+
+msgctxt "DroneOps,Command.Metrics"
+msgid "ALT {0} | SPD {1} | BAT {2}"
+msgstr "高度 {0} | 速度 {1} | 电量 {2}"
+
+msgctxt "DroneOps,Command.Link"
+msgid "LINK {0}\nMISSION {1}"
+msgstr "连接 {0}\n任务 {1}"
+
+msgctxt "DroneOps,Log.Count"
+msgid "EVENT / OPERATION LOG (UTC) | Critical {0} | Warning {1}"
+msgstr "事件 / 操作日志（UTC）| 严重 {0} | 警告 {1}"
+
+msgctxt "DroneOps,Map.Header"
+msgid "MAP OPERATIONS"
+msgstr "地图作业"
+
+msgctxt "DroneOps,Map.Init"
+msgid "Map initializing"
+msgstr "地图初始化中"
+
+msgctxt "DroneOps,Map.Select"
+msgid "Select a UAV here or on the map."
+msgstr "在列表或地图中选择无人机。"
+
+msgctxt "DroneOps,Map.Locate"
+msgid "LOCATE"
+msgstr "定位"
+
+msgctxt "DroneOps,Video.Title"
+msgid "UAV VIDEO MONITOR CENTER"
+msgstr "无人机视频监看系统"
+
+msgctxt "DroneOps,Video.Aircraft"
+msgid "AIRCRAFT"
+msgstr "无人机列表"
+
+msgctxt "DroneOps,Video.SelectFeed"
+msgid "SELECT VIDEO TARGET"
+msgstr "选择视频目标"
+
+msgctxt "DroneOps,Video.ModelNotice"
+msgid "Model not supplied by Registry. Visual presets are not aircraft specifications."
+msgstr "注册表未提供机型，外观预设不代表飞机规格。"
+
+msgctxt "DroneOps,Video.Primary"
+msgid "PRIMARY VIDEO"
+msgstr "主视频"
+
+msgctxt "DroneOps,Video.NoTarget"
+msgid "NO TARGET\nNO ACTIVE STREAM"
+msgstr "未指定目标\n无活动视频流"
+
+msgctxt "DroneOps,Video.Camera"
+msgid "Camera: N/A"
+msgstr "相机：暂无"
+
+msgctxt "DroneOps,Video.AI"
+msgid "AI DETECTION"
+msgstr "智能检测"
+
+msgctxt "DroneOps,Video.AINotConnected"
+msgid "AI DETECTION NOT CONNECTED"
+msgstr "智能检测未连接"
+
+msgctxt "DroneOps,Video.Categories"
+msgid "PERSON\n\nVEHICLE\n\nUAV\n\nBEHAVIOR\n\nOTHER"
+msgstr "人员\n\n车辆\n\n无人机\n\n异常行为\n\n其他目标"
+
+msgctxt "DroneOps,Video.RecentAlerts"
+msgid "RECENT ALERTS"
+msgstr "最近告警"
+
+msgctxt "DroneOps,Video.NoAlerts"
+msgid "NO ACTIVE ALERTS"
+msgstr "无活动告警"
+
+msgctxt "DroneOps,Video.ReservedFields"
+msgid "Reserved fields\nTitle · UAV · Target\nTimestamp · Severity"
+msgstr "预留字段\n标题 · 无人机 · 目标\n时间 · 严重程度"
+
+msgctxt "DroneOps,Video.ReservedStatus"
+msgid "UAV ONLINE: N/A\nAI ENGINE: NOT CONNECTED\nSTORAGE: N/A\nNETWORK: N/A"
+msgstr "在线无人机：暂无\nAI 引擎：未连接\n存储：暂无\n网络：暂无"
+
+msgctxt "DroneOps,Common.Reserved"
+msgid "Reserved for future integration"
+msgstr "预留，等待后续接入"
+
+msgctxt "DroneOps,Video.Four"
+msgid "4 VIEW"
+msgstr "4 格布局"
+
+msgctxt "DroneOps,Video.Six"
+msgid "6 VIEW"
+msgstr "6 格布局"
+
+msgctxt "DroneOps,Video.Focus"
+msgid "FOCUS"
+msgstr "聚焦布局"
+
+msgctxt "DroneOps,Video.SetActive"
+msgid "SET AS ACTIVE UAV"
+msgstr "设为当前无人机"
+
+msgctxt "DroneOps,Video.Retry"
+msgid "RETRY"
+msgstr "重试"
+
+msgctxt "DroneOps,Video.Single"
+msgid "SINGLE ACTIVE PLAYER · Secondary feeds are reserved slots · No AI backend connected"
+msgstr "单个活动播放器 · 其他视频格位为预留 · 未连接 AI 后端"
+
+msgctxt "DroneOps,Video.Reserved"
+msgid "RESERVED\nNO UAV ASSIGNED"
+msgstr "预留格位\n未分配无人机"
+
+msgctxt "DroneOps,Video.NoSource"
+msgid "NO SOURCE\nAssign a video source to this UAV"
+msgstr "无视频源\n请为此无人机配置视频源"
+
+msgctxt "DroneOps,Command.Title"
+msgid "SECURITY COMMAND CENTER"
+msgstr "安防指挥中心"
+
+msgctxt "DroneOps,Command.Fleet"
+msgid "UAV FLEET"
+msgstr "机队态势"
+
+msgctxt "DroneOps,Command.Waiting"
+msgid "Waiting for Registry"
+msgstr "等待注册表数据"
+
+msgctxt "DroneOps,Command.Alerts"
+msgid "ALERTS · Last 200 / Session"
+msgstr "告警中心 · 最近200条 / 本会话"
+
+msgctxt "DroneOps,Command.Tactical"
+msgid "TACTICAL DATA"
+msgstr "无人机态势"
+
+msgctxt "DroneOps,Command.NoSelection"
+msgid "No UAV selected"
+msgstr "未选择无人机"
+
+msgctxt "DroneOps,Command.NoMetrics"
+msgid "ALT N/A | SPD N/A | BAT N/A"
+msgstr "高度 暂无 | 速度 暂无 | 电量 暂无"
+
+msgctxt "DroneOps,Command.NoMission"
+msgid "LINK N/A | MISSION N/A"
+msgstr "连接 暂无 | 任务 暂无"
+
+msgctxt "DroneOps,Command.ActionNotice"
+msgid "Request results require Backend confirmation. Use Map for route editing."
+msgstr "请求结果以后端确认为准，航线编辑请使用地图客户端。"
+
+msgctxt "DroneOps,Command.Details"
+msgid "UAV DETAILS / ACTIONS"
+msgstr "无人机详情 / 操作"
+
+msgctxt "DroneOps,Command.Pause"
+msgid "REQUEST PAUSE"
+msgstr "暂停请求"
+
+msgctxt "DroneOps,Command.Resume"
+msgid "REQUEST RESUME"
+msgstr "恢复请求"
+
+msgctxt "DroneOps,Command.NoAlerts"
+msgid "No alerts in this session"
+msgstr "本会话尚未收到告警"
+
+msgctxt "DroneOps,Command.Select"
+msgid "SELECT UAV"
+msgstr "选择无人机"
+
+msgctxt "DroneOps,Command.Handled"
+msgid "MARK HANDLED"
+msgstr "标记已处理"
+
+msgctxt "DroneOps,Command.Remove"
+msgid "REMOVE RECORD"
+msgstr "移除记录"
+
+msgctxt "DroneOps,Log.Clear"
+msgid "CLEAR DISPLAY"
+msgstr "清空显示"
+
+msgctxt "DroneOps,Log.Empty"
+msgid "No events in this view"
+msgstr "当前视图暂无事件"
+
+msgctxt "DroneOps,Common.Online"
+msgid "ONLINE"
+msgstr "在线"
+
+msgctxt "DroneOps,Common.Lost"
+msgid "LOST"
+msgstr "失联"
+
+msgctxt "DroneOps,Common.Offline"
+msgid "OFFLINE"
+msgstr "离线"
+
+msgctxt "DroneOps,Common.Selected"
+msgid "SELECTED"
+msgstr "已选择"
+
+msgctxt "DroneOps,Common.Select"
+msgid "SELECT"
+msgstr "选择"
+
+msgctxt "DroneOps,Common.Expand"
+msgid "EXPAND"
+msgstr "展开"
+
+msgctxt "DroneOps,Common.Collapse"
+msgid "COLLAPSE"
+msgstr "收起"
+
+msgctxt "DroneOps,Common.Rename"
+msgid "RENAME"
+msgstr "重命名"
+
+msgctxt "DroneOps,Status.RESERVED"
+msgid "RESERVED"
+msgstr "预留"
+
+msgctxt "DroneOps,Status.INFO"
+msgid "INFO"
+msgstr "信息"
+
+msgctxt "DroneOps,Status.WARNING"
+msgid "WARNING"
+msgstr "警告"
+
+msgctxt "DroneOps,Status.CRITICAL"
+msgid "CRITICAL"
+msgstr "严重"
+
+msgctxt "DroneOps,Status.RECORD"
+msgid "RECORD"
+msgstr "录像"
+
+msgctxt "DroneOps,Status.PLAYBACK"
+msgid "PLAYBACK"
+msgstr "回放"
+
+msgctxt "DroneOps,Status.SCREENSHOT"
+msgid "SCREENSHOT"
+msgstr "截图"
+
+msgctxt "DroneOps,Status.ALERT_FILTER"
+msgid "ALERT FILTER"
+msgstr "告警筛选"
+
+msgctxt "DroneOps,Status.NO_TARGET"
+msgid "NO TARGET"
+msgstr "未指定目标"
+
+msgctxt "DroneOps,Status.NO_SOURCE"
+msgid "NO SOURCE"
+msgstr "无视频源"
+
+msgctxt "DroneOps,Status.CONNECTING"
+msgid "CONNECTING"
+msgstr "连接中"
+
+msgctxt "DroneOps,Status.PAGE_READY___WAITING_VIDEO"
+msgid "PAGE READY / WAITING VIDEO"
+msgstr "页面就绪 / 等待视频"
+
+msgctxt "DroneOps,Status.PLAYING"
+msgid "PLAYING"
+msgstr "正在播放"
+
+msgctxt "DroneOps,Status.STALLED___NO_FRAMES"
+msgid "STALLED / NO FRAMES"
+msgstr "视频停滞 / 无新帧"
+
+msgctxt "DroneOps,Status.OFFLINE___LOAD_FAILED"
+msgid "OFFLINE / LOAD FAILED"
+msgstr "离线 / 加载失败"
+
+msgctxt "DroneOps,Status.MEDIA_ERROR"
+msgid "MEDIA ERROR"
+msgstr "媒体错误"
+
+msgctxt "DroneOps,Status.RETRYING"
+msgid "RETRYING"
+msgstr "重试中"
+
+msgctxt "DroneOps,Status.CLOSED"
+msgid "CLOSED"
+msgstr "已关闭"
+
+msgctxt "DroneOps,Status.SOURCE_SET"
+msgid "SOURCE SET"
+msgstr "已配置视频源"
+
+msgctxt "DroneOps,Status.VIDEO_SLOT_NO_ACTIVE_STREAM"
+msgid "VIDEO SLOT\nNO ACTIVE STREAM"
+msgstr "视频格位\n无活动视频流"
+
+msgctxt "DroneOps,Status.MONITOR"
+msgid "MONITOR"
+msgstr "监控"
+
+msgctxt "DroneOps,Status.PLAN_EDIT"
+msgid "PLAN_EDIT"
+msgstr "方案编辑"
+
+msgctxt "DroneOps,Status.ALERT_RESPONSE"
+msgid "ALERT_RESPONSE"
+msgstr "告警响应"
+
+msgctxt "DroneOps,Status.MISSION_EXECUTION"
+msgid "MISSION_EXECUTION"
+msgstr "任务执行"
+
+msgctxt "DroneOps,Status.ALL"
+msgid "ALL"
+msgstr "全部"
+
+msgctxt "DroneOps,Status.SYSTEM"
+msgid "SYSTEM"
+msgstr "系统"
+
+msgctxt "DroneOps,Status.OPERATION"
+msgid "OPERATION"
+msgstr "操作"
+
+msgctxt "DroneOps,Status.ALERT"
+msgid "ALERT"
+msgstr "告警"
+
+msgctxt "DroneOps,Status.MISSION"
+msgid "MISSION"
+msgstr "任务"
+
+msgctxt "DroneOps,Status.PLAN"
+msgid "PLAN"
+msgstr "方案"
+
+msgctxt "DroneOps,Events.PLAN_CREATED"
+msgid "Plan {plan_name} created"
+msgstr "已创建方案 {plan_name}"
+
+msgctxt "DroneOps,Events.PLAN_UPDATED"
+msgid "Plan {plan_name} updated"
+msgstr "已更新方案 {plan_name}"
+
+msgctxt "DroneOps,Events.PLAN_COPIED"
+msgid "Plan {plan_name} copied as draft"
+msgstr "已将方案 {plan_name} 复制为草稿"
+
+msgctxt "DroneOps,Events.MISSION_CREATED"
+msgid "Mission {mission_name} created"
+msgstr "已创建任务 {mission_name}"
+
+msgctxt "DroneOps,Events.MISSION_UPDATED"
+msgid "Mission {mission_name} renamed"
+msgstr "已重命名任务 {mission_name}"
+
+msgctxt "DroneOps,Events.MISSION_DELETED"
+msgid "Mission {target_id} deleted"
+msgstr "已删除任务 {target_id}"
+
+msgctxt "DroneOps,Events.UAV_ASSIGNED"
+msgid "{uav_id} assigned to mission {mission_name}"
+msgstr "{uav_id} 已分配至任务 {mission_name}"
+
+msgctxt "DroneOps,Events.UAV_UNASSIGNED"
+msgid "Mission {mission_name} UAV unassigned"
+msgstr "任务 {mission_name} 已取消无人机分配"
+
+msgctxt "DroneOps,Events.ROUTE_CREATED"
+msgid "Mission {mission_name} route saved"
+msgstr "任务 {mission_name} 航线已保存"
+
+msgctxt "DroneOps,Events.ROUTE_UPDATED"
+msgid "Mission {mission_name} route updated"
+msgstr "任务 {mission_name} 航线已更新"
+
+msgctxt "DroneOps,Events.ROUTE_CLEARED"
+msgid "Mission {mission_name} route cleared"
+msgstr "任务 {mission_name} 航线已清空"
+
+msgctxt "DroneOps,Events.PLAN_VALIDATED"
+msgid "Plan {plan_name} configuration checked"
+msgstr "方案 {plan_name} 配置已检查"
+
+msgctxt "DroneOps,Events.PLAN_REVIEWED"
+msgid "Plan {plan_name} reviewed"
+msgstr "方案 {plan_name} 已审阅"
+
+msgctxt "DroneOps,Events.PLAN_DEPLOYED"
+msgid "Plan {plan_name} deployed. Execution has not started."
+msgstr "方案 {plan_name} 已部署，执行尚未启动"
+
+msgctxt "DroneOps,Common.Sync"
+msgid "BACKEND {0} | SYNC {1} | ACTIVE {2} | v{3}"
+msgstr "后端 {0} | 同步 {1} | 当前 {2} | v{3}"
+
+msgctxt "DroneOps,Common.Connected"
+msgid "CONNECTED"
+msgstr "已连接"
+
+msgctxt "DroneOps,Common.Disconnected"
+msgid "DISCONNECTED"
+msgstr "已断开"
+
+msgctxt "DroneOps,Common.Reconnecting"
+msgid "RECONNECTING"
+msgstr "重连中"
+
+msgctxt "DroneOps,Tactical.Header"
+msgid "2D TACTICAL MAP | Z{0} | {1} UAV without GPS"
+msgstr "二维态势地图 | Z{0} | {1} 架无人机无 GPS"
+
+msgctxt "DroneOps,Tactical.Active"
+msgid "ACTIVE"
+msgstr "当前"
+
+msgctxt "DroneOps,Tactical.Alert"
+msgid "ALERT"
+msgstr "告警"
+
+msgctxt "DroneOps,Fleet.Summary"
+msgid "UAV {0} | BAT {1}\nMISSION {2}"
+msgstr "无人机 {0} | 电量 {1}\n任务 {2}"
+
+msgctxt "DroneOps,Fleet.Local"
+msgid "Local rehearsal: backend refresh disabled"
+msgstr "纯本地预演：后端刷新已禁用"
+
+msgctxt "DroneOps,Fleet.Online"
+msgid "Online"
+msgstr "在线"
+
+msgctxt "DroneOps,Fleet.Offline"
+msgid "Offline"
+msgstr "离线"
+
+msgctxt "DroneOps,Fleet.Lost"
+msgid "Disconnected"
+msgstr "失联"
+
+msgctxt "DroneOps,Fleet.Idle"
+msgid "Idle"
+msgstr "待命"
+
+msgctxt "DroneOps,Fleet.Unknown"
+msgid "Unknown"
+msgstr "未知"
+
+msgctxt "DroneOps,Alarm.Severity"
+msgid "{0} / {1} UTC {2}"
+msgstr "{0} / {1} UTC {2}"
+
+msgctxt "DroneOps,Alarm.Target"
+msgid "TARGET UAV {0} | {1}"
+msgstr "目标无人机 {0} | {1}"
+
+msgctxt "DroneOps,Alarm.Handled"
+msgid "Handled"
+msgstr "已处理"
+
+msgctxt "DroneOps,Alarm.Info"
+msgid "INFO"
+msgstr "信息"
+
+msgctxt "DroneOps,Alarm.Warning"
+msgid "WARNING"
+msgstr "警告"
+
+msgctxt "DroneOps,Alarm.Critical"
+msgid "CRITICAL"
+msgstr "严重"
+
+msgctxt "DroneOps,Log.All"
+msgid "ALL"
+msgstr "全部"
+
+msgctxt "DroneOps,Errors.COORDINATES_NOT_READY"
+msgid "Map coordinates are not ready. Retry when the map is loaded."
+msgstr "地图坐标服务尚未就绪，请在地图加载后重试。"
+
+msgctxt "DroneOps,Video.System"
+msgid "SYSTEM ONLINE: N/A | {0} UAVs | {1} VIEW POSITIONS | {2} PLAYING | AI: NOT CONNECTED | {3}"
+msgstr "系统在线：未知 | {0} 架无人机 | {1} 个显示位 | {2} 路播放中 | AI：未连接 | {3}"
+
+msgctxt "DroneOps,Plan.EditingBlock"
+msgid "Route editing in progress: {0}. Review and deployment are blocked."
+msgstr "航线正在编辑：{0}。暂不可审阅或部署。"
+
+msgctxt "DroneOps,Errors.ROLE_FORBIDDEN"
+msgid "This client cannot perform this action."
+msgstr "此客户端无权执行该操作。"
+
+msgctxt "DroneOps,Errors.REQUEST_REJECTED"
+msgid "The server rejected this request. Refresh and retry."
+msgstr "服务器拒绝了此请求，请刷新后重试。"
+
+msgctxt "DroneOps,Video.NoTargetHint"
+msgid "NO VIDEO TARGET\nChoose View Video to open a UAV feed."
+msgstr "尚未选择视频目标\n点击“查看视频”调取无人机画面。"
+
+msgctxt "DroneOps,Fleet.Primary"
+msgid "PRIMARY"
+msgstr "主选中"
+
+msgctxt "DroneOps,Fleet.Multi"
+msgid "MULTI SELECTED"
+msgstr "多选中"
+
+msgctxt "DroneOps,Video.DescriptorTip"
+msgid "{0}\nConfigured visual: {1}\nAircraft model is not supplied by Descriptor."
+msgstr "{0}\n配置的外观：{1}\n无人机描述未提供实际机型。"
+
+msgctxt "DroneOps,Events.backend_connected"
+msgid "Backend connected"
+msgstr "后端已连接"
+
+msgctxt "DroneOps,Events.backend_reconnected"
+msgid "Backend reconnected"
+msgstr "后端已重连"
+
+msgctxt "DroneOps,Events.backend_disconnected"
+msgid "Backend disconnected"
+msgstr "后端已断开"
+
+msgctxt "DroneOps,Events.client_connected"
+msgid "{source} client connected"
+msgstr "{source} 客户端已连接"
+
+msgctxt "DroneOps,Events.client_disconnected"
+msgid "{source} client disconnected"
+msgstr "{source} 客户端已断开"
+
+msgctxt "DroneOps,Events.active_uav_changed"
+msgid "Active UAV changed: {target}"
+msgstr "当前无人机已切换：{target}"
+
+msgctxt "DroneOps,Events.alert_selected"
+msgid "Alert selected: {target}"
+msgstr "已选择告警：{target}"
+
+msgctxt "DroneOps,Events.operation_mode_changed"
+msgid "Operation mode changed: {target}"
+msgstr "操作模式已切换：{target}"
+
+msgctxt "DroneOps,Events.enter_alert_response"
+msgid "Entered alert response"
+msgstr "已进入告警处置"
+
+msgctxt "DroneOps,Events.active_mission_id_changed"
+msgid "Mission selected: {target}"
+msgstr "已选择任务：{target}"
+
+msgctxt "DroneOps,Events.active_security_plan_id_changed"
+msgid "Plan selected: {target}"
+msgstr "已选择方案：{target}"
+
+msgctxt "DroneOps,Events.active_area_id_changed"
+msgid "Area selected: {target}"
+msgstr "已选择区域：{target}"
+
+msgctxt "DroneOps,Stage1.Name"
+msgid "DRONE SECURITY COMMAND SYSTEM"
+msgstr "无人机安防指挥系统"
+
+msgctxt "DroneOps,Stage1.Command"
+msgid "COMMAND CENTER"
+msgstr "指挥中心"
+
+msgctxt "DroneOps,Stage1.Map"
+msgid "TACTICAL MAP"
+msgstr "战术地图"
+
+msgctxt "DroneOps,Stage1.Video"
+msgid "VIDEO INTELLIGENCE"
+msgstr "视频情报"
+
+msgctxt "DroneOps,Stage1.Identity"
+msgid "{0}  |  {1}"
+msgstr "{0}  |  {1}"
+
+msgctxt "DroneOps,Stage1.Health"
+msgid "{0}   |   CMD {1}   MAP {2}   VID {3}"
+msgstr "{0}   |   指挥 {1}   地图 {2}   视频 {3}"
+
+msgctxt "DroneOps,Stage1.System.READY"
+msgid "SYSTEM READY"
+msgstr "系统就绪"
+
+msgctxt "DroneOps,Stage1.System.DEGRADED"
+msgid "SYSTEM DEGRADED"
+msgstr "系统降级"
+
+msgctxt "DroneOps,Stage1.System.OFFLINE"
+msgid "BACKEND OFFLINE / RECONNECTING"
+msgstr "后端离线 / 正在重连"
+
+msgctxt "DroneOps,Stage1.Online"
+msgid "ONLINE"
+msgstr "在线"
+
+msgctxt "DroneOps,Stage1.Offline"
+msgid "OFFLINE"
+msgstr "离线"
+
+msgctxt "DroneOps,Stage1.Detail"
+msgid "Language {0}  |  {1}"
+msgstr "语言 {0}  |  {1}"
+
+msgctxt "DroneOps,Launcher.Layout"
+msgid "SINGLE-SCREEN MULTI-WINDOW  |  Focus a window for detailed work"
+msgstr "单屏多窗口  |  聚焦窗口进行详细操作"
+
+msgctxt "DroneOps,Launcher.Start"
+msgid "Launch System"
+msgstr "启动系统"
+
+msgctxt "DroneOps,Launcher.Shutdown"
+msgid "Shutdown System"
+msgstr "关闭系统"
+
+msgctxt "DroneOps,Launcher.Restart"
+msgid "Restart"
+msgstr "重启"
+
+msgctxt "DroneOps,Launcher.Stop"
+msgid "Stop"
+msgstr "停止"
+
+msgctxt "DroneOps,Launcher.Focus"
+msgid "Focus"
+msgstr "聚焦"
+
+msgctxt "DroneOps,Launcher.Arrange"
+msgid "Arrange Windows"
+msgstr "排列窗口"
+
+msgctxt "DroneOps,Launcher.Existing"
+msgid "CONNECTED TO EXISTING INSTANCE"
+msgstr "已连接现有实例"
+
+msgctxt "DroneOps,Launcher.Error"
+msgid "Operation failed:"
+msgstr "操作失败："
+
+msgctxt "DroneOps,Launcher.STARTING"
+msgid "STARTING"
+msgstr "正在启动"
+
+msgctxt "DroneOps,Launcher.READY"
+msgid "SYSTEM READY"
+msgstr "系统就绪"
+
+msgctxt "DroneOps,Launcher.DEGRADED"
+msgid "SYSTEM DEGRADED"
+msgstr "系统降级"
+
+msgctxt "DroneOps,Launcher.FAILED"
+msgid "FAILED"
+msgstr "失败"
+
+msgctxt "DroneOps,Launcher.STOPPING"
+msgid "STOPPING"
+msgstr "正在关闭"
+
+msgctxt "DroneOps,Launcher.STOPPED"
+msgid "STOPPED"
+msgstr "已停止"
+
+msgctxt "DroneOps,Launcher.ONLINE"
+msgid "ONLINE"
+msgstr "在线"
+
+msgctxt "DroneOps,Launcher.OFFLINE"
+msgid "OFFLINE"
+msgstr "离线"
+
+msgctxt "DroneOps,Launcher.RECONNECTING"
+msgid "RECONNECTING"
+msgstr "正在重连"
+
+msgctxt "DroneOps,Nav.Overview"
+msgid "Overview"
+msgstr "总览"
+
+msgctxt "DroneOps,Nav.Plans"
+msgid "Security Plans"
+msgstr "安保方案"
+
+msgctxt "DroneOps,Nav.Fleet"
+msgid "UAV Fleet"
+msgstr "无人机"
+
+msgctxt "DroneOps,Nav.Alerts"
+msgid "Alerts"
+msgstr "告警"
+
+msgctxt "DroneOps,Nav.Logs"
+msgid "Logs"
+msgstr "日志"
+
+msgctxt "DroneOps,Workflow.NewPlan"
+msgid "+ New security plan"
+msgstr "＋ 新建安保方案"
+
+msgctxt "DroneOps,Workflow.BackPlans"
+msgid "Back to security plans"
+msgstr "← 安保方案"
+
+msgctxt "DroneOps,Workflow.OpenPlan"
+msgid "Open plan"
+msgstr "打开方案"
+
+msgctxt "DroneOps,Workflow.CreateContinue"
+msgid "Create and continue"
+msgstr "创建并继续"
+
+msgctxt "DroneOps,Workflow.NextTask"
+msgid "Next: task configuration"
+msgstr "下一步：任务配置 →"
+
+msgctxt "DroneOps,Workflow.BasicInfo"
+msgid "Basic information"
+msgstr "基本信息"
+
+msgctxt "DroneOps,Workflow.TaskConfig"
+msgid "Task configuration"
+msgstr "任务配置"
+
+msgctxt "DroneOps,Workflow.RouteEditing"
+msgid "Route editing"
+msgstr "航线编辑"
+
+msgctxt "DroneOps,Workflow.PreDeployReview"
+msgid "Pre-deployment check"
+msgstr "部署前检查"
+
+msgctxt "DroneOps,Workflow.Deployed"
+msgid "Deployed"
+msgstr "已部署"
+
+msgctxt "DroneOps,Workflow.EditMap"
+msgid "Edit Route in Map →"
+msgstr "前往地图编辑航线 →"
+
+msgctxt "DroneOps,Workflow.ReturnMap"
+msgid "Switch to Map / Retry"
+msgstr "切换到 Map / 重试"
+
+msgctxt "DroneOps,Workflow.BackEdit"
+msgid "Return to task configuration"
+msgstr "返回任务配置"
+
+msgctxt "DroneOps,Workflow.ConfirmDeploy"
+msgid "Confirm and deploy →"
+msgstr "确认并部署 →"
+
+msgctxt "DroneOps,Workflow.NewVersion"
+msgid "Create a new version from this plan"
+msgstr "基于此方案创建新版本"
+
+msgctxt "DroneOps,Workflow.DefaultTask"
+msgid "Task 01"
+msgstr "任务 01"
+
+msgctxt "DroneOps,Workflow.Step"
+msgid "{0}  {1}"
+msgstr "{0}  {1}"
+
+msgctxt "DroneOps,Workflow.ActiveStep"
+msgid "● {0}  {1}"
+msgstr "● {0}  {1}"
+
+msgctxt "DroneOps,Workflow.PlanCard"
+msgid "{0}  ·  Tasks: {1}\nLast modified: {2}"
+msgstr "{0}  ·  任务：{1}\n最后修改：{2}"
+
+msgctxt "DroneOps,Workflow.MapEditingStatus"
+msgid "Editing in Map\n{0}\n{1} · {2}\nSaved waypoints: {3}"
+msgstr "正在 Map 中编辑\n{0}\n{1} · {2}\n已保存航点：{3}"
+
+msgctxt "DroneOps,Workflow.MapOfflineStatus"
+msgid "Map client offline\nYour saved draft is retained.\n{0}\n{1} · {2}\nSaved waypoints: {3}"
+msgstr "Map 客户端离线\n已保存的方案草稿不会丢失。\n{0}\n{1} · {2}\n已保存航点：{3}"
+
+msgctxt "DroneOps,Workflow.SaveDraft"
+msgid "Save draft"
+msgstr "保存草稿"
+
+msgctxt "DroneOps,Workflow.FinishRoute"
+msgid "Finish route editing"
+msgstr "完成航线编辑"
+
+msgctxt "DroneOps,Workflow.ContinueEditing"
+msgid "Continue editing"
+msgstr "继续编辑"
+
+msgctxt "DroneOps,Workflow.CurrentPlan"
+msgid "Current security plan\n{0}\n{1}"
+msgstr "当前安保方案\n{0}\n{1}"
+
+msgctxt "DroneOps,Workflow.RecentEvents"
+msgid "Recent events"
+msgstr "最近事件"
+
+msgctxt "DroneOps,Workflow.GlobalHint"
+msgid "Create → Configure → Edit route → Check → Deploy"
+msgstr "新建 → 配置 → 编辑航线 → 检查 → 部署"
+
+msgctxt "DroneOps,Workflow.DeploymentNotice"
+msgid "Configuration is deployed. The UAV has not started executing."
+msgstr "配置已经部署到系统，无人机尚未开始执行。"
+
+msgctxt "DroneOps,Events.ROUTE_EDIT_STARTED"
+msgid "Route editing started: {mission_name}"
+msgstr "开始编辑航线：{mission_name}"
+
+msgctxt "DroneOps,Events.ROUTE_SAVED"
+msgid "Route draft saved: {mission_name}"
+msgstr "航线草稿已保存：{mission_name}"
+
+msgctxt "DroneOps,Events.ROUTE_EDIT_COMPLETED"
+msgid "Route editing completed: {mission_name}"
+msgstr "航线编辑已完成：{mission_name}"
+
+msgctxt "DroneOps,Workflow.Chinese"
+msgid "中文"
+msgstr "中文"
+
+msgctxt "DroneOps,Workflow.English"
+msgid "English"
+msgstr "English"
+
+msgctxt "DroneOps,Workflow.Undo"
+msgid "Undo"
+msgstr "撤销"
+
+msgctxt "DroneOps,Workflow.EditSpeed"
+msgid "Edit speed"
+msgstr "编辑速度"
+
+msgctxt "DroneOps,Workflow.Waypoint"
+msgid "Waypoint {0}  ·  Height {1} m  ·  Speed {2} m/s"
+msgstr "航点 {0}  ·  高度 {1} 米  ·  速度 {2} 米/秒"
+
+msgctxt "DroneOps,Workflow.RouteStats"
+msgid "Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)"
+msgstr "距离：{0} 米 · 预计：{1} 分钟（估算最低速度 1 米/秒）"
+
+msgctxt "DroneOps,Events.PLAN_DELETED"
+msgid "Draft deleted: {plan_name}"
+msgstr "已删除草稿：{plan_name}"
+
+msgctxt "DroneOps,Workflow.DeleteDraft"
+msgid "Confirm delete draft"
+msgstr "确认删除草稿"
+
+msgctxt "DroneOps,Workflow.Duplicate"
+msgid "Duplicate"
+msgstr "复制"
+
+msgctxt "DroneOps,Workflow.SaveExit"
+msgid "Save and exit"
+msgstr "保存并退出"
+
+msgctxt "DroneOps,Workflow.AssignedUAV"
+msgid "Assigned UAV"
+msgstr "执行无人机"
+
+msgctxt "DroneOps,Workflow.Patrol"
+msgid "Task type: Patrol"
+msgstr "任务类型：巡逻"
+
+msgctxt "DroneOps,Workflow.StepInfo"
+msgid "Info"
+msgstr "基本信息"
+
+msgctxt "DroneOps,Workflow.StepTask"
+msgid "Tasks"
+msgstr "任务配置"
+
+msgctxt "DroneOps,Workflow.StepRoute"
+msgid "Route"
+msgstr "航线"
+
+msgctxt "DroneOps,Workflow.StepCheck"
+msgid "Check"
+msgstr "部署前检查"
+
+msgctxt "DroneOps,Workflow.StepDeploy"
+msgid "Deploy"
+msgstr "部署"
+
+msgctxt "DroneOps,Workflow.DeploymentSuccess"
+msgid "✓ Security plan deployed"
+msgstr "✓ 安保方案已部署"
+
+msgctxt "DroneOps,Workflow.CheckInformation"
+msgid "Check task assignment and saved route below."
+msgstr "请检查以下任务分配和已保存航线。"
+
+msgctxt "DroneOps,Workflow.Readiness"
+msgid "Backend: {0}   ·   Map: {1}"
+msgstr "Backend：{0}   ·   Map：{1}"
+
+msgctxt "DroneOps,Workflow.RouteEditBanner"
+msgid "● ROUTE EDITING"
+msgstr "● 航线编辑中"
+
+msgctxt "DroneOps,Map.SAVED"
+msgid "Saved · editing continues"
+msgstr "已保存 · 可继续编辑"
+
+msgctxt "DroneOps,Workflow.VersionName"
+msgid "{0} — new version"
+msgstr "{0} — 新版本"
+
+msgctxt "DroneOps,Workflow.LastSaved"
+msgid "Last saved: {0}"
+msgstr "最近保存：{0}"
+
+msgctxt "DroneOps,Events.PLAN_OPENED"
+msgid "Opened {plan_name}"
+msgstr "已打开方案 {plan_name}"
+
+msgctxt "DroneOps,Events.PLAN_VERSION_CREATED"
+msgid "Created a new version: {plan_name}"
+msgstr "已创建方案新版本：{plan_name}"
+
+msgctxt "DroneOps,Events.PLAN_REVIEW_READY"
+msgid "Pre-deployment check ready: {plan_name}"
+msgstr "方案可进行部署前检查：{plan_name}"
+
+msgctxt "DroneOps,Events.MISSION_CONFIGURED"
+msgid "Task configured: {mission_name} · {uav_id}"
+msgstr "任务已配置：{mission_name} · {uav_id}"
+
+msgctxt "DroneOps,Errors.MAP_FOCUS_MANUAL"
+msgid "Select the Map window or use Launcher Focus."
+msgstr "请选择 Map 窗口，或使用 Launcher 的聚焦按钮。"
+
+msgctxt "DroneOps,Workflow.CreatedAt"
+msgid "Created: {0}"
+msgstr "创建时间：{0}"
+
+msgctxt "DroneOps,Workflow.ReviewDistance"
+msgid "Route distance: {0} m"
+msgstr "航线距离：{0} 米"
+
+msgctxt "DroneOps,Execution.Deploy"
+msgid "Deploy Plan →"
+msgstr "部署方案 →"
+
+msgctxt "DroneOps,Execution.Start"
+msgid "Start Mission →"
+msgstr "开始任务 →"
+
+msgctxt "DroneOps,Execution.Open"
+msgid "Open mission"
+msgstr "打开任务"
+
+msgctxt "DroneOps,Execution.None"
+msgid "No active mission"
+msgstr "当前没有正在执行的任务"
+
+msgctxt "DroneOps,Execution.Simulation"
+msgid "SIMULATION · Mock UAV"
+msgstr "模拟执行 · Mock UAV"
+
+msgctxt "DroneOps,Execution.Monitor"
+msgid "Execution Monitor · SIMULATION"
+msgstr "任务监控 · 模拟执行"
+
+msgctxt "DroneOps,Execution.ReadOnly"
+msgid "Deployed route is read-only"
+msgstr "当前部署航线为只读状态"
+
+msgctxt "DroneOps,Execution.Summary"
+msgid "{0}\n{1} · {2}\n{3}\nWaypoint {4} / {5} · {6}"
+msgstr "{0}\n{1} · {2}\n{3}\n航点 {4} / {5} · {6}"
+
+msgctxt "DroneOps,Execution.Confirm"
+msgid "Confirm"
+msgstr "确认"
+
+msgctxt "DroneOps,Execution.Pause"
+msgid "Pause mission"
+msgstr "暂停任务"
+
+msgctxt "DroneOps,Execution.Resume"
+msgid "Resume mission"
+msgstr "继续任务"
+
+msgctxt "DroneOps,Execution.Return"
+msgid "Return Home"
+msgstr "返航"
+
+msgctxt "DroneOps,Execution.Abort"
+msgid "Abort mission"
+msgstr "终止任务"
+
+msgctxt "DroneOps,Execution.Cancel"
+msgid "Cancel"
+msgstr "取消"
+
+msgctxt "DroneOps,Execution.History"
+msgid "Execution history / View plan"
+msgstr "执行记录 / 查看方案"
+
+msgctxt "DroneOps,Execution.Video"
+msgid "View mission UAV video"
+msgstr "查看任务无人机视频"
+
+msgctxt "DroneOps,Execution.Duration"
+msgid "Execution time: {0} seconds"
+msgstr "执行时间：{0} 秒"
+
+msgctxt "DroneOps,Execution.StartConfirm"
+msgid "Confirm mission execution"
+msgstr "任务执行确认"
+
+msgctxt "DroneOps,Execution.MockCheck"
+msgid "Simulation preflight checks deployment, route, Mock UAV availability and execution conflicts. Backend confirms every action."
+msgstr "模拟执行检查部署、航线、Mock UAV 可用性及任务冲突；所有操作以 Backend 确认为准。"
+
+msgctxt "DroneOps,Execution.returnConfirm"
+msgid "Confirm Return Home? Remaining waypoints will be skipped. The Mock UAV will return to its defined Home."
+msgstr "确认返航？当前任务将停止执行后续航点，Mock UAV 将返回预设的模拟 Home 点。"
+
+msgctxt "DroneOps,Execution.abortConfirm"
+msgid "Confirm abort? This execution cannot be resumed. The Mock UAV will stop at its current position."
+msgstr "确认终止任务？本次执行无法继续，Mock UAV 将停在当前位置。"
+
+msgctxt "DroneOps,Execution.ShutdownConfirm"
+msgid "A simulated mission is active. Shutdown will persist it as paused and stop local simulation. Continue?"
+msgstr "当前存在正在执行的模拟任务。关闭系统将持久化为暂停状态并停止本地模拟。是否继续关闭？"
+
+msgctxt "DroneOps,Execution.ROUTE_FINISHED"
+msgid "All waypoints completed"
+msgstr "全部航点已完成"
+
+msgctxt "DroneOps,Execution.RETURNED_HOME"
+msgid "Returned to simulation Home"
+msgstr "已返回模拟 Home 点"
+
+msgctxt "DroneOps,Execution.CREATED"
+msgid "Mission created"
+msgstr "任务已创建"
+
+msgctxt "DroneOps,Execution.PREFLIGHT"
+msgid "Checking simulation conditions"
+msgstr "正在检查模拟执行条件"
+
+msgctxt "DroneOps,Execution.STARTING"
+msgid "Starting mission…"
+msgstr "正在启动任务…"
+
+msgctxt "DroneOps,Execution.EXECUTING"
+msgid "Mission executing"
+msgstr "任务执行中"
+
+msgctxt "DroneOps,Execution.PAUSED"
+msgid "Mission paused"
+msgstr "任务已暂停"
+
+msgctxt "DroneOps,Execution.RETURNING"
+msgid "Returning Home"
+msgstr "正在返航"
+
+msgctxt "DroneOps,Execution.COMPLETED"
+msgid "Mission completed"
+msgstr "任务已完成"
+
+msgctxt "DroneOps,Execution.ABORTED"
+msgid "Mission aborted"
+msgstr "任务已终止"
+
+msgctxt "DroneOps,Execution.FAILED"
+msgid "Mission failed"
+msgstr "任务失败"
+
+msgctxt "DroneOps,Errors.MOCK_UAV_UNAVAILABLE"
+msgid "Mock UAV unavailable. Check the simulation fixture and registry."
+msgstr "Mock UAV 不可用，请检查模拟配置与注册表。"
+
+msgctxt "DroneOps,Errors.EXECUTION_CONFLICT"
+msgid "This UAV already has an active mission."
+msgstr "此无人机已有正在执行的任务。"
+
+msgctxt "DroneOps,Errors.EXECUTION_STALE"
+msgid "Mission state changed. Review the current state and retry."
+msgstr "任务状态已变化，请确认当前状态后重试。"
+
+msgctxt "DroneOps,Errors.EXECUTION_STATE_INVALID"
+msgid "This action is unavailable in the current mission state."
+msgstr "当前任务状态不允许此操作。"
+
+msgctxt "DroneOps,Errors.EXECUTION_NOT_FOUND"
+msgid "Execution no longer exists."
+msgstr "未找到本次任务执行。"
+
+msgctxt "DroneOps,Errors.IMMUTABLE_ROUTE_MISSING"
+msgid "The deployed route snapshot is missing."
+msgstr "已部署航线快照缺失。"
+
+msgctxt "DroneOps,Errors.REQUEST_ID_REQUIRED"
+msgid "Execution request identifier is required."
+msgstr "缺少任务操作请求标识。"
+
+msgctxt "DroneOps,Errors.REQUEST_ID_REUSED"
+msgid "Request identifier conflict."
+msgstr "请求标识冲突。"
+
+msgctxt "DroneOps,Errors.DEPLOYMENT_MISSING"
+msgid "Deployment snapshot is missing."
+msgstr "部署快照缺失。"
+
+msgctxt "DroneOps,Events.EXECUTION_CREATED"
+msgid "Mission execution created · {uav_id}"
+msgstr "任务执行已创建 · {uav_id}"
+
+msgctxt "DroneOps,Events.PREFLIGHT_STARTED"
+msgid "Simulation preflight started · {uav_id}"
+msgstr "开始模拟执行检查 · {uav_id}"
+
+msgctxt "DroneOps,Events.PREFLIGHT_PASSED"
+msgid "Simulation preflight passed · {uav_id}"
+msgstr "模拟执行检查通过 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_STARTING"
+msgid "Mission starting · {uav_id}"
+msgstr "任务正在启动 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_STARTED"
+msgid "Mission started · {uav_id}"
+msgstr "任务已开始 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_PAUSED"
+msgid "Mission paused · {uav_id}"
+msgstr "任务已暂停 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_RESUMED"
+msgid "Mission resumed · {uav_id}"
+msgstr "任务已继续 · {uav_id}"
+
+msgctxt "DroneOps,Events.WAYPOINT_REACHED"
+msgid "Waypoint reached · {uav_id}"
+msgstr "已抵达航点 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_RETURNING"
+msgid "Returning Home · {uav_id}"
+msgstr "任务正在返航 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_ABORTED"
+msgid "Mission aborted · {uav_id}"
+msgstr "任务已终止 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_COMPLETED"
+msgid "Mission completed · {uav_id}"
+msgstr "任务已完成 · {uav_id}"
+
+msgctxt "DroneOps,Events.MISSION_FAILED"
+msgid "Mission failed · {uav_id}"
+msgstr "任务失败 · {uav_id}"
+
+msgctxt "DroneOps,Execution.Estimate"
+msgid "Estimated distance: {0} m · Time: {1} seconds"
+msgstr "预计距离：{0} 米 · 时间：{1} 秒"
+
+msgctxt "DroneOps,Execution.MockAvailable"
+msgid "✓ Mock UAV configured"
+msgstr "✓ 已配置 Mock UAV"
+
+msgctxt "DroneOps,Events.DEPLOYMENT_CREATED"
+msgid "Deployment created: {plan_name}"
+msgstr "已创建部署：{plan_name}"
+
+msgctxt "DroneOps,Execution.ConfirmStart"
+msgid "Confirm Start Mission"
+msgstr "确认开始任务"
+
+msgctxt "DroneOps,Execution.ConfirmReturn"
+msgid "Confirm Return"
+msgstr "确认返航"
+
+msgctxt "DroneOps,Execution.ConfirmAbort"
+msgid "Confirm Abort"
+msgstr "确认终止"
+
+msgctxt "DroneOps,Execution.NoConflict"
+msgid "No active execution conflict"
+msgstr "当前无任务执行冲突"
+
+msgctxt "DroneOps,Execution.DeploymentValid"
+msgid "Immutable deployment and saved route"
+msgstr "部署有效，航线版本已固定"

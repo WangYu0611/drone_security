@@ -1,0 +1,83 @@
+M	Config/DefaultGame.ini
+D	Docs/TASK-A-CommandClient.md
+M	Source/UE5DroneControl.Target.cs
+D	Source/UE5DroneControl/Command/CommandActionButton.cpp
+D	Source/UE5DroneControl/Command/CommandActionButton.h
+D	Source/UE5DroneControl/Command/CommandAlarmPanel.cpp
+D	Source/UE5DroneControl/Command/CommandAlarmPanel.h
+D	Source/UE5DroneControl/Command/CommandAlertStore.cpp
+D	Source/UE5DroneControl/Command/CommandAlertStore.h
+D	Source/UE5DroneControl/Command/CommandMapInteractionService.cpp
+D	Source/UE5DroneControl/Command/CommandMapInteractionService.h
+D	Source/UE5DroneControl/Command/CommandScreenManager.cpp
+D	Source/UE5DroneControl/Command/CommandScreenManager.h
+D	Source/UE5DroneControl/Command/CommandShellWidget.cpp
+D	Source/UE5DroneControl/Command/CommandShellWidget.h
+M	Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp
+M	Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h
+D	Source/UE5DroneControl/Tests/CommandClientTest.cpp
+M	Source/UE5DroneControl/UE5DroneControl.Build.cs
+M	Source/UE5DroneControl/UI/DroneListItemWidget.cpp
+M	Source/UE5DroneControl/UI/DroneListItemWidget.h
+M	Source/UE5DroneControl/UI/DroneListWidget.cpp
+M	Source/UE5DroneControl/UI/DroneListWidget.h
+M	Source/UE5DroneControl/UI/GeographicTargetPanelWidget.h
+M	Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp
+M	Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.h
+M	Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp
+M	Source/UE5DroneControlEditor.Target.cs
+M	UE5DroneControl.uproject
+ .codex/config.toml                                 |   2 +
+ Config/DefaultEngine.ini                           |   9 +-
+ Config/DefaultGame.ini                             |  15 +-
+ Content/Command/Materials/M_CommandPath.uasset     |   3 +
+ Docs/QA/TASK-A3/01-default-2d.jpg                  | Bin 0 -> 229027 bytes
+ Docs/QA/TASK-A3/02-selected.jpg                    | Bin 0 -> 232334 bytes
+ Docs/QA/TASK-A3/03-path-planning.jpg               | Bin 0 -> 244059 bytes
+ Docs/QA/TASK-A3/04-confirm.jpg                     | Bin 0 -> 238583 bytes
+ Docs/QA/TASK-A3/04-playback.jpg                    | Bin 0 -> 245983 bytes
+ Docs/QA/TASK-A3/05-mission-tools.jpg               | Bin 0 -> 235189 bytes
+ Docs/QA/TASK-A3/06-geographic.jpg                  | Bin 0 -> 252070 bytes
+ Docs/QA/TASK-A3/07-sequence.jpg                    | Bin 0 -> 233546 bytes
+ Docs/QA/TASK-A3/08-3d.jpg                          | Bin 0 -> 232322 bytes
+ Docs/QA/TASK-A3/09-alert-critical-warning.jpg      | Bin 0 -> 249685 bytes
+ Docs/QA/TASK-A3/09-alert-info.jpg                  | Bin 0 -> 248328 bytes
+ Docs/QA/TASK-A3/10-speed.jpg                       | Bin 0 -> 250972 bytes
+ Docs/QA/TASK-A3/11-2d-roundtrip.jpg                | Bin 0 -> 222908 bytes
+ Docs/QA/TASK-A3/README.md                          |  34 +++
+ Docs/QA/TASK-A3/automated-results.json             |  38 +++
+ Docs/QA/TASK-A3/before-default.jpg                 | Bin 0 -> 311404 bytes
+ Docs/TASK-A2-CommandCleanup-MapMode.md             | 184 ++++++++++++++
+ Docs/TASK-A3-Startup-Visual.md                     | 108 +++++++++
+ Scripts/create_command_path_material.py            |  21 ++
+ .../Command/CommandActionButton.cpp                |   2 +
+ .../UE5DroneControl/Command/CommandAlarmPanel.cpp  |  34 ++-
+ .../Command/CommandMapInteractionService.cpp       | 246 ++++++++++++++++++-
+ .../Command/CommandMapInteractionService.h         |  46 +++-
+ .../Command/CommandScreenManager.cpp               |  70 +++++-
+ .../UE5DroneControl/Command/CommandScreenManager.h |   6 +
+ .../UE5DroneControl/Command/CommandShellWidget.cpp | 149 ++++++++++--
+ .../UE5DroneControl/Command/CommandShellWidget.h   |   9 +
+ Source/UE5DroneControl/Command/CommandTheme.h      |  92 +++++++
+ .../DroneOps/Control/DroneOpsGameMode.cpp          |  11 +
+ .../DroneOps/Control/DroneOpsGameMode.h            |   4 +
+ .../DroneOps/Control/DroneOpsPlayerController.cpp  |  62 ++++-
+ .../DroneOps/Control/DroneOpsPlayerController.h    |   1 +
+ .../UE5DroneControl/PathEditor/DronePathActor.cpp  |  44 +++-
+ Source/UE5DroneControl/PathEditor/DronePathActor.h |   7 +
+ .../PathEditor/DroneWaypointActor.cpp              |  42 +++-
+ .../PathEditor/DroneWaypointActor.h                |   4 +
+ .../UE5DroneControl/Tests/CommandMapModeTest.cpp   | 263 +++++++++++++++++++++
+ .../UE5DroneControl/Tests/CommandStartupTest.cpp   |  19 ++
+ Source/UE5DroneControl/Tests/CommandVisualQA.cpp   |  27 +++
+ Source/UE5DroneControl/UE5DroneControl.cpp         |  29 ++-
+ .../UI/DefaultSegmentSpeedWidget.cpp               |   8 +-
+ Source/UE5DroneControl/UI/DroneListItemWidget.cpp  |  28 ++-
+ Source/UE5DroneControl/UI/DroneListWidget.cpp      |   5 +
+ .../UI/GeographicTargetPanelWidget.cpp             |  20 +-
+ .../UI/GeographicTargetPanelWidget.h               |   2 +
+ .../UI/PreviewConfirmPopupWidget.cpp               |   8 +-
+ .../UI/SequenceDispatchPanelWidget.cpp             |  35 +++
+ .../UI/SequenceDispatchPanelWidget.h               |   5 +
+ UE5DroneControl.uproject                           |  15 ++
+ 53 files changed, 1626 insertions(+), 81 deletions(-)

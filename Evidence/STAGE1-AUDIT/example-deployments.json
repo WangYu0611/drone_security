@@ -1,0 +1,112 @@
+{
+  "id": "deployment-5",
+  "plan_id": "plan-1",
+  "content_revision": 3,
+  "deployed_at": 1789826800.518512,
+  "deployed_by": "CLIENT-COMMAND-98385c6c",
+  "reviewed_by": "CLIENT-COMMAND-98385c6c",
+  "reviewed_at": 1789826800.468423,
+  "snapshot": {
+    "plan": {
+      "id": "plan-1",
+      "name": "P5.2 Mission Test",
+      "description": "",
+      "status": "DEPLOYED",
+      "content_revision": 3,
+      "review": {
+        "content_revision": 3,
+        "reviewed_at": 1789826800.468423,
+        "reviewed_by": "CLIENT-COMMAND-98385c6c"
+      },
+      "version": 5,
+      "created_at": 1789826434.3097532,
+      "updated_at": 1789826800.4684289,
+      "mission_ids": [
+        "mission-2"
+      ],
+      "workflow_step": "PreDeployReview",
+      "workflow_mission_id": "mission-2",
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": 3
+      },
+      "deployment_id": "deployment-5"
+    },
+    "missions": {
+      "mission-2": {
+        "id": "mission-2",
+        "plan_id": "plan-1",
+        "name": "Task 01",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-4",
+        "status": "DEPLOYED"
+      }
+    },
+    "paths": {
+      "route-4": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.981,
+            "longitude": 116.34699999999998,
+            "altitude": 59.999999999441336,
+            "segmentSpeed": 0,
+            "waitTime": 0,
+            "location": {
+              "x": 3.7008801560927965e-14,
+              "y": 3.796815872192382e-05,
+              "z": 1699.9999999403954
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.98099999999999,
+            "longitude": 116.3475,
+            "altitude": 59.999999999665114,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": 4270.916120797396,
+              "y": -0.011935830116271973,
+              "z": 1699.9857205152512
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.980499999999985,
+            "longitude": 116.3475,
+            "altitude": 69.99999999979289,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": 4270.953937143087,
+              "y": 5551.762306153774,
+              "z": 2699.9613721370697
+            }
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.9805,
+            "longitude": 116.34699999999998,
+            "altitude": 59.99999999916992,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -1.071256393889272e-13,
+              "y": 5551.765531182289,
+              "z": 1699.9756518006325
+            }
+          }
+        ],
+        "route_id": "route-4",
+        "revision": 1
+      }
+    }
+  }
+}

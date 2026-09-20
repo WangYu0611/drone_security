@@ -1,0 +1,59 @@
+{
+  "last_events": [
+    {
+      "at": 1789812478.383481,
+      "event": "system",
+      "previous": "READY",
+      "state": "STOPPING"
+    },
+    {
+      "at": 1789812480.411834,
+      "event": "exit",
+      "role": "Command",
+      "pid": 35104,
+      "start_time": 1789812036.684009,
+      "executable": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "owned": true,
+      "exit_code": 0
+    },
+    {
+      "at": 1789812482.3640664,
+      "event": "exit",
+      "role": "Map",
+      "pid": 35700,
+      "start_time": 1789812036.7126715,
+      "executable": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "owned": true,
+      "exit_code": 0
+    },
+    {
+      "at": 1789812484.950677,
+      "event": "exit",
+      "role": "Video",
+      "pid": 10992,
+      "start_time": 1789812096.9558067,
+      "executable": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "owned": true,
+      "exit_code": 0
+    },
+    {
+      "at": 1789812492.9661498,
+      "event": "exit",
+      "role": "Backend",
+      "pid": 25464,
+      "start_time": 1789812036.128575,
+      "executable": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5\\Backend\\build-p5\\Release\\DroneBackend.exe",
+      "owned": true,
+      "exit_code": 1
+    },
+    {
+      "at": 1789812492.9674504,
+      "event": "system",
+      "previous": "STOPPING",
+      "state": "STOPPED"
+    }
+  ],
+  "current_ownership": null,
+  "baseline_backend_reachable": true,
+  "owned_remaining": []
+}

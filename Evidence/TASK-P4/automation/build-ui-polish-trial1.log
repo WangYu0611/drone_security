@@ -1,0 +1,43 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p4\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p4).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: UE5DroneControl.cpp, CommandAlarmPanel.cpp, CommandCenterPanel.cpp, CommandShellWidget.cpp, CommandTacticalMap.cpp, OperationalLogWidget.cpp, DroneOpsPlayerController.cpp, MapMissionRouteWidget.cpp, MapShellWidget.cpp, OperationalContextSubsystem.cpp, OperationalEventStore.cpp, ProductText.cpp, SecurityPlanWorkspaceWidget.cpp, UILanguageSubsystem.cpp, P4WorkflowTest.cpp, DroneListItemWidget.cpp, DroneListWidget.cpp, VideoShellWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 18 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 18.43 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/18] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[2/18] Compile [x64] CommandAlarmPanel.cpp [NoUba]
+[3/18] Compile [x64] CommandTacticalMap.cpp [NoUba]
+[4/18] Compile [x64] CommandShellWidget.cpp [NoUba]
+[5/18] Compile [x64] DroneListItemWidget.cpp [NoUba]
+[6/18] Compile [x64] DroneListWidget.cpp [NoUba]
+[7/18] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[8/18] Compile [x64] OperationalEventStore.cpp [NoUba]
+[9/18] Compile [x64] MapShellWidget.cpp [NoUba]
+[10/18] Compile [x64] OperationalLogWidget.cpp [NoUba]
+[11/18] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[12/18] Compile [x64] ProductText.cpp [NoUba]
+[13/18] Compile [x64] UILanguageSubsystem.cpp [NoUba]
+[14/18] Compile [x64] VideoShellWidget.cpp [NoUba]
+[15/18] Compile [x64] UE5DroneControl.cpp [NoUba]
+[16/18] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ C:/Users/wy331/Documents/UE5DroneControl-p4/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ C:/Users/wy331/Documents/UE5DroneControl-p4/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[17/18] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[18/18] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 61.68 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 63.31 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 9.1kb

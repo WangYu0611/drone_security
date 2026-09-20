@@ -1,0 +1,68 @@
+{
+  "closure-command": {
+    "started": [
+      "CommandLiveCRUD",
+      "CommandReviewReadonlyCopyAndCombo"
+    ],
+    "completed": [
+      [
+        "Success",
+        "CommandLiveCRUD"
+      ],
+      [
+        "Success",
+        "CommandReviewReadonlyCopyAndCombo"
+      ]
+    ],
+    "classification": "selected final result",
+    "startup_cesium_enum_diagnostic": true,
+    "cesium_cache_lock_messages": 0
+  },
+  "closure-map": {
+    "started": [
+      "FTextAndDraftIsolation",
+      "MapLiveDraftGuard"
+    ],
+    "completed": [
+      [
+        "Success",
+        "FTextAndDraftIsolation"
+      ],
+      [
+        "Success",
+        "MapLiveDraftGuard"
+      ]
+    ],
+    "classification": "selected final result",
+    "startup_cesium_enum_diagnostic": true,
+    "cesium_cache_lock_messages": 0
+  },
+  "closure-video-isolated": {
+    "started": [
+      "ExplicitSelectionAndBrowserIsolation"
+    ],
+    "completed": [
+      [
+        "Success",
+        "ExplicitSelectionAndBrowserIsolation"
+      ]
+    ],
+    "classification": "selected final result",
+    "startup_cesium_enum_diagnostic": true,
+    "cesium_cache_lock_messages": 0
+  },
+  "closure-video": {
+    "started": [
+      "ExplicitSelectionAndBrowserIsolation"
+    ],
+    "completed": [
+      [
+        "Fail",
+        "ExplicitSelectionAndBrowserIsolation"
+      ]
+    ],
+    "classification": "historical failing trial",
+    "startup_cesium_enum_diagnostic": true,
+    "cesium_cache_lock_messages": 100
+  }
+}

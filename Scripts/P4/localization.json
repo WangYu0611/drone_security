@@ -1,0 +1,1558 @@
+{
+  "Plan.Title": [
+    "SECURITY PLAN",
+    "安保方案"
+  ],
+  "Plan.Name": [
+    "Plan name",
+    "方案名称"
+  ],
+  "Plan.Description": [
+    "Description",
+    "描述"
+  ],
+  "Plan.New": [
+    "NEW PLAN",
+    "新建方案"
+  ],
+  "Plan.Update": [
+    "SAVE PLAN INFORMATION",
+    "保存方案信息"
+  ],
+  "Plan.Mission": [
+    "Task",
+    "任务"
+  ],
+  "Plan.Missions": [
+    "MISSIONS",
+    "任务列表"
+  ],
+  "Plan.MissionName": [
+    "Task name",
+    "任务名称"
+  ],
+  "Plan.AddMission": [
+    "ADD TASK",
+    "添加任务"
+  ],
+  "Plan.Rename": [
+    "RENAME TASK",
+    "重命名任务"
+  ],
+  "Plan.Delete": [
+    "DELETE MISSION",
+    "删除任务"
+  ],
+  "Plan.Assign": [
+    "ASSIGN UAV",
+    "分配无人机"
+  ],
+  "Plan.Unassign": [
+    "UNASSIGN UAV",
+    "取消分配"
+  ],
+  "Plan.NoMissions": [
+    "No missions / Add first mission",
+    "暂无任务 / 添加首个任务"
+  ],
+  "Plan.NoPlan": [
+    "No active plan",
+    "未选择方案"
+  ],
+  "Plan.EditMap": [
+    "EDIT ROUTE ON MAP",
+    "在地图编辑航线"
+  ],
+  "Plan.Check": [
+    "CHECK CONFIGURATION",
+    "检查配置"
+  ],
+  "Plan.Review": [
+    "REVIEW PLAN",
+    "审阅方案"
+  ],
+  "Plan.ConfirmReview": [
+    "CONFIRM REVIEW",
+    "确认审阅"
+  ],
+  "Plan.Deploy": [
+    "DEPLOY PLAN",
+    "部署方案"
+  ],
+  "Plan.ConfirmDeploy": [
+    "CONFIRM DEPLOY",
+    "确认部署"
+  ],
+  "Plan.Copy": [
+    "COPY AS DRAFT",
+    "复制为草稿"
+  ],
+  "Plan.DRAFT": [
+    "DRAFT",
+    "草稿"
+  ],
+  "Plan.READY": [
+    "CONFIGURATION VALID",
+    "配置有效"
+  ],
+  "Plan.DEPLOYED": [
+    "Deployed",
+    "已部署"
+  ],
+  "Plan.ReviewNotice": [
+    "This review confirms the current plan configuration. Deployment freezes the business configuration and does not start aircraft execution.",
+    "本次审阅确认当前方案配置版本。部署只会冻结业务配置，不会启动无人机。"
+  ],
+  "Plan.Revision": [
+    "Revision {0}",
+    "内容版本 {0}"
+  ],
+  "Plan.Reviewed": [
+    "Reviewed revision {0}",
+    "已审阅当前版本 {0}"
+  ],
+  "Plan.MissionSummary": [
+    "{0} | UAV: {1} | Waypoints: {2}",
+    "{0} | 无人机：{1} | 航点数：{2}"
+  ],
+  "Plan.Counts": [
+    "Tasks: {0} | UAV assigned: {1} | Routes configured: {2}",
+    "任务：{0} | 已分配无人机：{1} | 已配置航线：{2}"
+  ],
+  "Plan.RouteParameters": [
+    "Loop: {0} | Speed: {1} | Wait: {2}",
+    "循环：{0} | 速度：{1} | 等待：{2}"
+  ],
+  "Plan.Blocking": [
+    "Blocking issues",
+    "阻塞问题"
+  ],
+  "Plan.Warnings": [
+    "Configuration check only. Terrain, airspace, endurance and flight safety are not assessed.",
+    "仅检查业务配置，未评估地形、空域、续航和飞行安全。"
+  ],
+  "Plan.Deployment": [
+    "Deployment record",
+    "部署记录"
+  ],
+  "Common.Save": [
+    "SAVE",
+    "保存"
+  ],
+  "Common.Cancel": [
+    "CANCEL",
+    "取消"
+  ],
+  "Common.Discard": [
+    "DISCARD CHANGES",
+    "放弃更改"
+  ],
+  "Common.Exit": [
+    "EXIT",
+    "退出"
+  ],
+  "Common.None": [
+    "Not assigned",
+    "未分配"
+  ],
+  "Common.Waiting": [
+    "Waiting for Backend confirmation...",
+    "等待后端确认…"
+  ],
+  "Common.Confirmed": [
+    "Backend confirmed",
+    "后端已确认"
+  ],
+  "Common.Language": [
+    "Language",
+    "语言"
+  ],
+  "Map.Route": [
+    "MISSION ROUTE",
+    "任务航线"
+  ],
+  "Map.Begin": [
+    "BEGIN ROUTE EDIT",
+    "开始编辑航线"
+  ],
+  "Map.Add": [
+    "ADD WAYPOINT",
+    "添加航点"
+  ],
+  "Map.Delete": [
+    "DELETE WAYPOINT",
+    "删除航点"
+  ],
+  "Map.Clear": [
+    "CLEAR ROUTE",
+    "清空航线"
+  ],
+  "Map.Focus": [
+    "FOCUS ROUTE",
+    "定位航线"
+  ],
+  "Map.DirtyPrompt": [
+    "Unsaved route changes. Save, discard, or cancel before leaving.",
+    "航线有未保存修改。离开前请选择保存、放弃或取消。"
+  ],
+  "Map.DiscardPrompt": [
+    "Discard local changes and reload the saved route?",
+    "放弃本地修改并重新载入已保存航线？"
+  ],
+  "Map.EDITING": [
+    "EDITING",
+    "编辑中"
+  ],
+  "Map.DIRTY": [
+    "DIRTY / UNSAVED",
+    "已修改 / 未保存"
+  ],
+  "Map.SAVING": [
+    "SAVING",
+    "保存中"
+  ],
+  "Map.CLEAN": [
+    "SAVED / READ ONLY",
+    "已保存 / 只读"
+  ],
+  "Map.Count": [
+    "Waypoints: {0}",
+    "航点数：{0}"
+  ],
+  "Video.Open": [
+    "OPEN VIDEO",
+    "查看视频"
+  ],
+  "Video.Active": [
+    "VIEW ACTIVE UAV VIDEO",
+    "查看当前无人机视频"
+  ],
+  "Video.Assigned": [
+    "VIEW ASSIGNED UAV VIDEO",
+    "查看任务无人机视频"
+  ],
+  "Video.Target": [
+    "VIDEO TARGET",
+    "视频目标"
+  ],
+  "Errors.SYNC_OFFLINE": [
+    "Backend offline. No change submitted.",
+    "后端离线，未提交修改。"
+  ],
+  "Errors.SYNC_FAILED": [
+    "Synchronization failed. Last confirmed state retained.",
+    "同步失败，保留最后确认状态。"
+  ],
+  "Errors.PLAN_EDIT_IN_PROGRESS": [
+    "Map route editing is in progress. Save or discard before review or deployment.",
+    "地图航线正在编辑，请先保存或放弃，再审阅或部署。"
+  ],
+  "Errors.PLAN_REVIEW_REQUIRED": [
+    "Review the current configuration first.",
+    "请先审阅当前配置。"
+  ],
+  "Errors.REVIEW_STALE": [
+    "Review is stale. Review the current revision again.",
+    "审阅已失效，请重新审阅当前版本。"
+  ],
+  "Errors.VALIDATION_STALE": [
+    "Configuration validation is stale.",
+    "配置检查已失效。"
+  ],
+  "Errors.VERSION_CONFLICT": [
+    "Version conflict. Local draft retained. Discard and reload to resolve.",
+    "版本冲突，本地草稿已保留。可放弃并重新载入以解决冲突。"
+  ],
+  "Errors.EDIT_SESSION_CONFLICT": [
+    "Another editor owns this route session.",
+    "其他编辑器正在使用该编辑会话。"
+  ],
+  "Errors.EDIT_SESSION_EXPIRED": [
+    "Editing lease expired. Local draft retained; discard and reload.",
+    "编辑租约已过期，本地草稿保留，请放弃并重新载入。"
+  ],
+  "Errors.MAP_CLIENT_UNAVAILABLE": [
+    "Map client unavailable",
+    "地图客户端未连接"
+  ],
+  "Errors.PLAN_DEPLOYED": [
+    "Deployed plan is read only.",
+    "已部署方案为只读。"
+  ],
+  "Errors.PLAN_NOT_READY": [
+    "Check configuration and resolve blocking issues.",
+    "请检查配置并解决阻塞问题。"
+  ],
+  "Errors.NO_MISSIONS": [
+    "Add at least one mission.",
+    "请至少添加一个任务。"
+  ],
+  "Errors.NO_UAV_ASSIGNED": [
+    "Assign a UAV to this mission.",
+    "请为该任务分配无人机。"
+  ],
+  "Errors.INVALID_UAV": [
+    "The assigned UAV is not in the Registry.",
+    "已分配无人机不在注册表中。"
+  ],
+  "Errors.UAV_ALREADY_ASSIGNED": [
+    "This UAV is assigned to another mission in this plan.",
+    "此无人机已分配给该方案中的其他任务。"
+  ],
+  "Errors.ROUTE_MISSING": [
+    "Edit and save a route on Map.",
+    "请在地图编辑并保存航线。"
+  ],
+  "Errors.ROUTE_TOO_SHORT": [
+    "Route requires at least 2 waypoints.",
+    "航线至少需要 2 个航点。"
+  ],
+  "Errors.INVALID_WAYPOINT": [
+    "Waypoint coordinates or parameters are invalid.",
+    "航点坐标或参数无效。"
+  ],
+  "Errors.INVALID_NAME": [
+    "Enter a valid name.",
+    "请输入有效名称。"
+  ],
+  "Errors.INVALID_LANGUAGE": [
+    "Unsupported language.",
+    "不支持此语言。"
+  ],
+  "Errors.INVALID_VIDEO_TARGET": [
+    "Select a registered UAV video target.",
+    "请选择已注册的无人机视频目标。"
+  ],
+  "Errors.Request": [
+    "Request failed. Confirm the current selection and retry.",
+    "请求失败，请确认当前选择后重试。"
+  ],
+  "Video.Header": [
+    "{0} | VIDEO TARGET: {1} | ACTIVE UAV: {2}",
+    "{0} | 视频目标：{1} | 当前无人机：{2}"
+  ],
+  "Video.Feed": [
+    "{0}\nModel: N/A | Link: {1}\n{2}\n{3}",
+    "{0}\n机型：暂无 | 连接：{1}\n{2}\n{3}"
+  ],
+  "Video.Heading": [
+    "PRIMARY VIDEO / {0}",
+    "主视频 / {0}"
+  ],
+  "Video.Details": [
+    "{0} | Camera: N/A | Resolution: {1} | FPS: {2} | {3}",
+    "{0} | 相机：暂无 | 分辨率：{1} | 帧率：{2} | {3}"
+  ],
+  "Command.Header": [
+    "COMMAND CENTER | {0} | {1} | Clients {2}/3",
+    "指挥中心 | {0} | {1} | 客户端 {2}/3"
+  ],
+  "Command.Count": [
+    "{0} UAV | {1} ONLINE | {2} ALERTS",
+    "无人机 {0} | 在线 {1} | 告警 {2}"
+  ],
+  "Command.Metrics": [
+    "ALT {0} | SPD {1} | BAT {2}",
+    "高度 {0} | 速度 {1} | 电量 {2}"
+  ],
+  "Command.Link": [
+    "LINK {0}\nMISSION {1}",
+    "连接 {0}\n任务 {1}"
+  ],
+  "Log.Count": [
+    "EVENT / OPERATION LOG (UTC) | Critical {0} | Warning {1}",
+    "事件 / 操作日志（UTC）| 严重 {0} | 警告 {1}"
+  ],
+  "Map.Header": [
+    "MAP OPERATIONS",
+    "地图作业"
+  ],
+  "Map.Init": [
+    "Map initializing",
+    "地图初始化中"
+  ],
+  "Map.Select": [
+    "Select a UAV here or on the map.",
+    "在列表或地图中选择无人机。"
+  ],
+  "Map.Locate": [
+    "LOCATE",
+    "定位"
+  ],
+  "Video.Title": [
+    "UAV VIDEO MONITOR CENTER",
+    "无人机视频监看系统"
+  ],
+  "Video.Aircraft": [
+    "AIRCRAFT",
+    "无人机列表"
+  ],
+  "Video.SelectFeed": [
+    "SELECT VIDEO TARGET",
+    "选择视频目标"
+  ],
+  "Video.ModelNotice": [
+    "Model not supplied by Registry. Visual presets are not aircraft specifications.",
+    "注册表未提供机型，外观预设不代表飞机规格。"
+  ],
+  "Video.Primary": [
+    "PRIMARY VIDEO",
+    "主视频"
+  ],
+  "Video.NoTarget": [
+    "NO TARGET\nNO ACTIVE STREAM",
+    "未指定目标\n无活动视频流"
+  ],
+  "Video.Camera": [
+    "Camera: N/A",
+    "相机：暂无"
+  ],
+  "Video.AI": [
+    "AI DETECTION",
+    "智能检测"
+  ],
+  "Video.AINotConnected": [
+    "AI DETECTION NOT CONNECTED",
+    "智能检测未连接"
+  ],
+  "Video.Categories": [
+    "PERSON\n\nVEHICLE\n\nUAV\n\nBEHAVIOR\n\nOTHER",
+    "人员\n\n车辆\n\n无人机\n\n异常行为\n\n其他目标"
+  ],
+  "Video.RecentAlerts": [
+    "RECENT ALERTS",
+    "最近告警"
+  ],
+  "Video.NoAlerts": [
+    "NO ACTIVE ALERTS",
+    "无活动告警"
+  ],
+  "Video.ReservedFields": [
+    "Reserved fields\nTitle · UAV · Target\nTimestamp · Severity",
+    "预留字段\n标题 · 无人机 · 目标\n时间 · 严重程度"
+  ],
+  "Video.ReservedStatus": [
+    "UAV ONLINE: N/A\nAI ENGINE: NOT CONNECTED\nSTORAGE: N/A\nNETWORK: N/A",
+    "在线无人机：暂无\nAI 引擎：未连接\n存储：暂无\n网络：暂无"
+  ],
+  "Common.Reserved": [
+    "Reserved for future integration",
+    "预留，等待后续接入"
+  ],
+  "Video.Four": [
+    "4 VIEW",
+    "4 格布局"
+  ],
+  "Video.Six": [
+    "6 VIEW",
+    "6 格布局"
+  ],
+  "Video.Focus": [
+    "FOCUS",
+    "聚焦布局"
+  ],
+  "Video.SetActive": [
+    "SET AS ACTIVE UAV",
+    "设为当前无人机"
+  ],
+  "Video.Retry": [
+    "RETRY",
+    "重试"
+  ],
+  "Video.Single": [
+    "SINGLE ACTIVE PLAYER · Secondary feeds are reserved slots · No AI backend connected",
+    "单个活动播放器 · 其他视频格位为预留 · 未连接 AI 后端"
+  ],
+  "Video.Reserved": [
+    "RESERVED\nNO UAV ASSIGNED",
+    "预留格位\n未分配无人机"
+  ],
+  "Video.NoSource": [
+    "NO SOURCE\nAssign a video source to this UAV",
+    "无视频源\n请为此无人机配置视频源"
+  ],
+  "Command.Title": [
+    "SECURITY COMMAND CENTER",
+    "安防指挥中心"
+  ],
+  "Command.Fleet": [
+    "UAV FLEET",
+    "机队态势"
+  ],
+  "Command.Waiting": [
+    "Waiting for Registry",
+    "等待注册表数据"
+  ],
+  "Command.Alerts": [
+    "ALERTS · Last 200 / Session",
+    "告警中心 · 最近200条 / 本会话"
+  ],
+  "Command.Tactical": [
+    "TACTICAL DATA",
+    "无人机态势"
+  ],
+  "Command.NoSelection": [
+    "No UAV selected",
+    "未选择无人机"
+  ],
+  "Command.NoMetrics": [
+    "ALT N/A | SPD N/A | BAT N/A",
+    "高度 暂无 | 速度 暂无 | 电量 暂无"
+  ],
+  "Command.NoMission": [
+    "LINK N/A | MISSION N/A",
+    "连接 暂无 | 任务 暂无"
+  ],
+  "Command.ActionNotice": [
+    "Request results require Backend confirmation. Use Map for route editing.",
+    "请求结果以后端确认为准，航线编辑请使用地图客户端。"
+  ],
+  "Command.Details": [
+    "UAV DETAILS / ACTIONS",
+    "无人机详情 / 操作"
+  ],
+  "Command.Pause": [
+    "REQUEST PAUSE",
+    "暂停请求"
+  ],
+  "Command.Resume": [
+    "REQUEST RESUME",
+    "恢复请求"
+  ],
+  "Command.NoAlerts": [
+    "No alerts in this session",
+    "本会话尚未收到告警"
+  ],
+  "Command.Select": [
+    "SELECT UAV",
+    "选择无人机"
+  ],
+  "Command.Handled": [
+    "MARK HANDLED",
+    "标记已处理"
+  ],
+  "Command.Remove": [
+    "REMOVE RECORD",
+    "移除记录"
+  ],
+  "Log.Clear": [
+    "CLEAR DISPLAY",
+    "清空显示"
+  ],
+  "Log.Empty": [
+    "No events in this view",
+    "当前视图暂无事件"
+  ],
+  "Common.Online": [
+    "ONLINE",
+    "在线"
+  ],
+  "Common.Lost": [
+    "LOST",
+    "失联"
+  ],
+  "Common.Offline": [
+    "OFFLINE",
+    "离线"
+  ],
+  "Common.Selected": [
+    "SELECTED",
+    "已选择"
+  ],
+  "Common.Select": [
+    "SELECT",
+    "选择"
+  ],
+  "Common.Expand": [
+    "EXPAND",
+    "展开"
+  ],
+  "Common.Collapse": [
+    "COLLAPSE",
+    "收起"
+  ],
+  "Common.Rename": [
+    "RENAME",
+    "重命名"
+  ],
+  "Status.RESERVED": [
+    "RESERVED",
+    "预留"
+  ],
+  "Status.INFO": [
+    "INFO",
+    "信息"
+  ],
+  "Status.WARNING": [
+    "WARNING",
+    "警告"
+  ],
+  "Status.CRITICAL": [
+    "CRITICAL",
+    "严重"
+  ],
+  "Status.RECORD": [
+    "RECORD",
+    "录像"
+  ],
+  "Status.PLAYBACK": [
+    "PLAYBACK",
+    "回放"
+  ],
+  "Status.SCREENSHOT": [
+    "SCREENSHOT",
+    "截图"
+  ],
+  "Status.ALERT_FILTER": [
+    "ALERT FILTER",
+    "告警筛选"
+  ],
+  "Status.NO_TARGET": [
+    "NO TARGET",
+    "未指定目标"
+  ],
+  "Status.NO_SOURCE": [
+    "NO SOURCE",
+    "无视频源"
+  ],
+  "Status.CONNECTING": [
+    "CONNECTING",
+    "连接中"
+  ],
+  "Status.PAGE_READY___WAITING_VIDEO": [
+    "PAGE READY / WAITING VIDEO",
+    "页面就绪 / 等待视频"
+  ],
+  "Status.PLAYING": [
+    "PLAYING",
+    "正在播放"
+  ],
+  "Status.STALLED___NO_FRAMES": [
+    "STALLED / NO FRAMES",
+    "视频停滞 / 无新帧"
+  ],
+  "Status.OFFLINE___LOAD_FAILED": [
+    "OFFLINE / LOAD FAILED",
+    "离线 / 加载失败"
+  ],
+  "Status.MEDIA_ERROR": [
+    "MEDIA ERROR",
+    "媒体错误"
+  ],
+  "Status.RETRYING": [
+    "RETRYING",
+    "重试中"
+  ],
+  "Status.CLOSED": [
+    "CLOSED",
+    "已关闭"
+  ],
+  "Status.SOURCE_SET": [
+    "SOURCE SET",
+    "已配置视频源"
+  ],
+  "Status.VIDEO_SLOT_NO_ACTIVE_STREAM": [
+    "VIDEO SLOT\nNO ACTIVE STREAM",
+    "视频格位\n无活动视频流"
+  ],
+  "Status.MONITOR": [
+    "MONITOR",
+    "监控"
+  ],
+  "Status.PLAN_EDIT": [
+    "PLAN_EDIT",
+    "方案编辑"
+  ],
+  "Status.ALERT_RESPONSE": [
+    "ALERT_RESPONSE",
+    "告警响应"
+  ],
+  "Status.MISSION_EXECUTION": [
+    "MISSION_EXECUTION",
+    "任务执行"
+  ],
+  "Status.ALL": [
+    "ALL",
+    "全部"
+  ],
+  "Status.SYSTEM": [
+    "SYSTEM",
+    "系统"
+  ],
+  "Status.OPERATION": [
+    "OPERATION",
+    "操作"
+  ],
+  "Status.ALERT": [
+    "ALERT",
+    "告警"
+  ],
+  "Status.MISSION": [
+    "MISSION",
+    "任务"
+  ],
+  "Status.PLAN": [
+    "PLAN",
+    "方案"
+  ],
+  "Events.PLAN_CREATED": [
+    "Plan {plan_name} created",
+    "已创建方案 {plan_name}"
+  ],
+  "Events.PLAN_UPDATED": [
+    "Plan {plan_name} updated",
+    "已更新方案 {plan_name}"
+  ],
+  "Events.PLAN_COPIED": [
+    "Plan {plan_name} copied as draft",
+    "已将方案 {plan_name} 复制为草稿"
+  ],
+  "Events.MISSION_CREATED": [
+    "Mission {mission_name} created",
+    "已创建任务 {mission_name}"
+  ],
+  "Events.MISSION_UPDATED": [
+    "Mission {mission_name} renamed",
+    "已重命名任务 {mission_name}"
+  ],
+  "Events.MISSION_DELETED": [
+    "Mission {target_id} deleted",
+    "已删除任务 {target_id}"
+  ],
+  "Events.UAV_ASSIGNED": [
+    "{uav_id} assigned to mission {mission_name}",
+    "{uav_id} 已分配至任务 {mission_name}"
+  ],
+  "Events.UAV_UNASSIGNED": [
+    "Mission {mission_name} UAV unassigned",
+    "任务 {mission_name} 已取消无人机分配"
+  ],
+  "Events.ROUTE_CREATED": [
+    "Mission {mission_name} route saved",
+    "任务 {mission_name} 航线已保存"
+  ],
+  "Events.ROUTE_UPDATED": [
+    "Mission {mission_name} route updated",
+    "任务 {mission_name} 航线已更新"
+  ],
+  "Events.ROUTE_CLEARED": [
+    "Mission {mission_name} route cleared",
+    "任务 {mission_name} 航线已清空"
+  ],
+  "Events.PLAN_VALIDATED": [
+    "Plan {plan_name} configuration checked",
+    "方案 {plan_name} 配置已检查"
+  ],
+  "Events.PLAN_REVIEWED": [
+    "Plan {plan_name} reviewed",
+    "方案 {plan_name} 已审阅"
+  ],
+  "Events.PLAN_DEPLOYED": [
+    "Plan {plan_name} deployed. Execution has not started.",
+    "方案 {plan_name} 已部署，执行尚未启动"
+  ],
+  "Common.Sync": [
+    "BACKEND {0} | SYNC {1} | ACTIVE {2} | v{3}",
+    "后端 {0} | 同步 {1} | 当前 {2} | v{3}"
+  ],
+  "Common.Connected": [
+    "CONNECTED",
+    "已连接"
+  ],
+  "Common.Disconnected": [
+    "DISCONNECTED",
+    "已断开"
+  ],
+  "Common.Reconnecting": [
+    "RECONNECTING",
+    "重连中"
+  ],
+  "Tactical.Header": [
+    "2D TACTICAL MAP | Z{0} | {1} UAV without GPS",
+    "二维态势地图 | Z{0} | {1} 架无人机无 GPS"
+  ],
+  "Tactical.Active": [
+    "ACTIVE",
+    "当前"
+  ],
+  "Tactical.Alert": [
+    "ALERT",
+    "告警"
+  ],
+  "Fleet.Summary": [
+    "UAV {0} | BAT {1}\nMISSION {2}",
+    "无人机 {0} | 电量 {1}\n任务 {2}"
+  ],
+  "Fleet.Local": [
+    "Local rehearsal: backend refresh disabled",
+    "纯本地预演：后端刷新已禁用"
+  ],
+  "Fleet.Online": [
+    "Online",
+    "在线"
+  ],
+  "Fleet.Offline": [
+    "Offline",
+    "离线"
+  ],
+  "Fleet.Lost": [
+    "Disconnected",
+    "失联"
+  ],
+  "Fleet.Idle": [
+    "Idle",
+    "待命"
+  ],
+  "Fleet.Unknown": [
+    "Unknown",
+    "未知"
+  ],
+  "Alarm.Severity": [
+    "{0} / {1} UTC {2}",
+    "{0} / {1} UTC {2}"
+  ],
+  "Alarm.Target": [
+    "TARGET UAV {0} | {1}",
+    "目标无人机 {0} | {1}"
+  ],
+  "Alarm.Handled": [
+    "Handled",
+    "已处理"
+  ],
+  "Alarm.Info": [
+    "INFO",
+    "信息"
+  ],
+  "Alarm.Warning": [
+    "WARNING",
+    "警告"
+  ],
+  "Alarm.Critical": [
+    "CRITICAL",
+    "严重"
+  ],
+  "Log.All": [
+    "ALL",
+    "全部"
+  ],
+  "Errors.COORDINATES_NOT_READY": [
+    "Map coordinates are not ready. Retry when the map is loaded.",
+    "地图坐标服务尚未就绪，请在地图加载后重试。"
+  ],
+  "Video.System": [
+    "SYSTEM ONLINE: N/A | {0} UAVs | {1} VIEW POSITIONS | {2} PLAYING | AI: NOT CONNECTED | {3}",
+    "系统在线：未知 | {0} 架无人机 | {1} 个显示位 | {2} 路播放中 | AI：未连接 | {3}"
+  ],
+  "Plan.EditingBlock": [
+    "Route editing in progress: {0}. Review and deployment are blocked.",
+    "航线正在编辑：{0}。暂不可审阅或部署。"
+  ],
+  "Errors.ROLE_FORBIDDEN": [
+    "This client cannot perform this action.",
+    "此客户端无权执行该操作。"
+  ],
+  "Errors.REQUEST_REJECTED": [
+    "The server rejected this request. Refresh and retry.",
+    "服务器拒绝了此请求，请刷新后重试。"
+  ],
+  "Video.NoTargetHint": [
+    "NO VIDEO TARGET\nChoose View Video to open a UAV feed.",
+    "尚未选择视频目标\n点击“查看视频”调取无人机画面。"
+  ],
+  "Fleet.Primary": [
+    "PRIMARY",
+    "主选中"
+  ],
+  "Fleet.Multi": [
+    "MULTI SELECTED",
+    "多选中"
+  ],
+  "Video.DescriptorTip": [
+    "{0}\nConfigured visual: {1}\nAircraft model is not supplied by Descriptor.",
+    "{0}\n配置的外观：{1}\n无人机描述未提供实际机型。"
+  ],
+  "Events.backend_connected": [
+    "Backend connected",
+    "后端已连接"
+  ],
+  "Events.backend_reconnected": [
+    "Backend reconnected",
+    "后端已重连"
+  ],
+  "Events.backend_disconnected": [
+    "Backend disconnected",
+    "后端已断开"
+  ],
+  "Events.client_connected": [
+    "{source} client connected",
+    "{source} 客户端已连接"
+  ],
+  "Events.client_disconnected": [
+    "{source} client disconnected",
+    "{source} 客户端已断开"
+  ],
+  "Events.active_uav_changed": [
+    "Active UAV changed: {target}",
+    "当前无人机已切换：{target}"
+  ],
+  "Events.alert_selected": [
+    "Alert selected: {target}",
+    "已选择告警：{target}"
+  ],
+  "Events.operation_mode_changed": [
+    "Operation mode changed: {target}",
+    "操作模式已切换：{target}"
+  ],
+  "Events.enter_alert_response": [
+    "Entered alert response",
+    "已进入告警处置"
+  ],
+  "Events.active_mission_id_changed": [
+    "Mission selected: {target}",
+    "已选择任务：{target}"
+  ],
+  "Events.active_security_plan_id_changed": [
+    "Plan selected: {target}",
+    "已选择方案：{target}"
+  ],
+  "Events.active_area_id_changed": [
+    "Area selected: {target}",
+    "已选择区域：{target}"
+  ],
+  "Stage1.Name": [
+    "DRONE SECURITY COMMAND SYSTEM",
+    "无人机安防指挥系统"
+  ],
+  "Stage1.Command": [
+    "COMMAND CENTER",
+    "指挥中心"
+  ],
+  "Stage1.Map": [
+    "TACTICAL MAP",
+    "战术地图"
+  ],
+  "Stage1.Video": [
+    "VIDEO INTELLIGENCE",
+    "视频情报"
+  ],
+  "Stage1.Identity": [
+    "{0}  |  {1}",
+    "{0}  |  {1}"
+  ],
+  "Stage1.Health": [
+    "{0}   |   CMD {1}   MAP {2}   VID {3}",
+    "{0}   |   指挥 {1}   地图 {2}   视频 {3}"
+  ],
+  "Stage1.System.READY": [
+    "SYSTEM READY",
+    "系统就绪"
+  ],
+  "Stage1.System.DEGRADED": [
+    "SYSTEM DEGRADED",
+    "系统降级"
+  ],
+  "Stage1.System.OFFLINE": [
+    "BACKEND OFFLINE / RECONNECTING",
+    "后端离线 / 正在重连"
+  ],
+  "Stage1.Online": [
+    "ONLINE",
+    "在线"
+  ],
+  "Stage1.Offline": [
+    "OFFLINE",
+    "离线"
+  ],
+  "Stage1.Detail": [
+    "Language {0}  |  {1}",
+    "语言 {0}  |  {1}"
+  ],
+  "Launcher.Layout": [
+    "SINGLE-SCREEN MULTI-WINDOW  |  Focus a window for detailed work",
+    "单屏多窗口  |  聚焦窗口进行详细操作"
+  ],
+  "Launcher.Start": [
+    "Launch System",
+    "启动系统"
+  ],
+  "Launcher.Shutdown": [
+    "Shutdown System",
+    "关闭系统"
+  ],
+  "Launcher.Restart": [
+    "Restart",
+    "重启"
+  ],
+  "Launcher.Stop": [
+    "Stop",
+    "停止"
+  ],
+  "Launcher.Focus": [
+    "Focus",
+    "聚焦"
+  ],
+  "Launcher.Arrange": [
+    "Arrange Windows",
+    "排列窗口"
+  ],
+  "Launcher.Existing": [
+    "CONNECTED TO EXISTING INSTANCE",
+    "已连接现有实例"
+  ],
+  "Launcher.Error": [
+    "Operation failed:",
+    "操作失败："
+  ],
+  "Launcher.STARTING": [
+    "STARTING",
+    "正在启动"
+  ],
+  "Launcher.READY": [
+    "SYSTEM READY",
+    "系统就绪"
+  ],
+  "Launcher.DEGRADED": [
+    "SYSTEM DEGRADED",
+    "系统降级"
+  ],
+  "Launcher.FAILED": [
+    "FAILED",
+    "失败"
+  ],
+  "Launcher.STOPPING": [
+    "STOPPING",
+    "正在关闭"
+  ],
+  "Launcher.STOPPED": [
+    "STOPPED",
+    "已停止"
+  ],
+  "Launcher.ONLINE": [
+    "ONLINE",
+    "在线"
+  ],
+  "Launcher.OFFLINE": [
+    "OFFLINE",
+    "离线"
+  ],
+  "Launcher.RECONNECTING": [
+    "RECONNECTING",
+    "正在重连"
+  ],
+  "Nav.Overview": [
+    "Overview",
+    "总览"
+  ],
+  "Nav.Plans": [
+    "Security Plans",
+    "安保方案"
+  ],
+  "Nav.Fleet": [
+    "UAV Fleet",
+    "无人机"
+  ],
+  "Nav.Alerts": [
+    "Alerts",
+    "告警"
+  ],
+  "Nav.Logs": [
+    "Logs",
+    "日志"
+  ],
+  "Workflow.NewPlan": [
+    "+ New security plan",
+    "＋ 新建安保方案"
+  ],
+  "Workflow.BackPlans": [
+    "Back to security plans",
+    "← 安保方案"
+  ],
+  "Workflow.OpenPlan": [
+    "Open plan",
+    "打开方案"
+  ],
+  "Workflow.CreateContinue": [
+    "Create and continue",
+    "创建并继续"
+  ],
+  "Workflow.NextTask": [
+    "Next: task configuration",
+    "下一步：任务配置 →"
+  ],
+  "Workflow.BasicInfo": [
+    "Basic information",
+    "基本信息"
+  ],
+  "Workflow.TaskConfig": [
+    "Task configuration",
+    "任务配置"
+  ],
+  "Workflow.RouteEditing": [
+    "Route editing",
+    "航线编辑"
+  ],
+  "Workflow.PreDeployReview": [
+    "Pre-deployment check",
+    "部署前检查"
+  ],
+  "Workflow.Deployed": [
+    "Deployed",
+    "已部署"
+  ],
+  "Workflow.EditMap": [
+    "Edit Route in Map →",
+    "前往地图编辑航线 →"
+  ],
+  "Workflow.ReturnMap": [
+    "Switch to Map / Retry",
+    "切换到 Map / 重试"
+  ],
+  "Workflow.BackEdit": [
+    "Return to task configuration",
+    "返回任务配置"
+  ],
+  "Workflow.ConfirmDeploy": [
+    "Confirm and deploy →",
+    "确认并部署 →"
+  ],
+  "Workflow.NewVersion": [
+    "Create a new version from this plan",
+    "基于此方案创建新版本"
+  ],
+  "Workflow.DefaultTask": [
+    "Task 01",
+    "任务 01"
+  ],
+  "Workflow.Step": [
+    "{0}  {1}",
+    "{0}  {1}"
+  ],
+  "Workflow.ActiveStep": [
+    "● {0}  {1}",
+    "● {0}  {1}"
+  ],
+  "Workflow.PlanCard": [
+    "{0}  ·  Tasks: {1}\nLast modified: {2}",
+    "{0}  ·  任务：{1}\n最后修改：{2}"
+  ],
+  "Workflow.MapEditingStatus": [
+    "Editing in Map\n{0}\n{1} · {2}\nSaved waypoints: {3}",
+    "正在 Map 中编辑\n{0}\n{1} · {2}\n已保存航点：{3}"
+  ],
+  "Workflow.MapOfflineStatus": [
+    "Map client offline\nYour saved draft is retained.\n{0}\n{1} · {2}\nSaved waypoints: {3}",
+    "Map 客户端离线\n已保存的方案草稿不会丢失。\n{0}\n{1} · {2}\n已保存航点：{3}"
+  ],
+  "Workflow.SaveDraft": [
+    "Save draft",
+    "保存草稿"
+  ],
+  "Workflow.FinishRoute": [
+    "Finish route editing",
+    "完成航线编辑"
+  ],
+  "Workflow.ContinueEditing": [
+    "Continue editing",
+    "继续编辑"
+  ],
+  "Workflow.CurrentPlan": [
+    "Current security plan\n{0}\n{1}",
+    "当前安保方案\n{0}\n{1}"
+  ],
+  "Workflow.RecentEvents": [
+    "Recent events",
+    "最近事件"
+  ],
+  "Workflow.GlobalHint": [
+    "Create → Configure → Edit route → Check → Deploy",
+    "新建 → 配置 → 编辑航线 → 检查 → 部署"
+  ],
+  "Workflow.DeploymentNotice": [
+    "Configuration is deployed. The UAV has not started executing.",
+    "配置已经部署到系统，无人机尚未开始执行。"
+  ],
+  "Events.ROUTE_EDIT_STARTED": [
+    "Route editing started: {mission_name}",
+    "开始编辑航线：{mission_name}"
+  ],
+  "Events.ROUTE_SAVED": [
+    "Route draft saved: {mission_name}",
+    "航线草稿已保存：{mission_name}"
+  ],
+  "Events.ROUTE_EDIT_COMPLETED": [
+    "Route editing completed: {mission_name}",
+    "航线编辑已完成：{mission_name}"
+  ],
+  "Workflow.Chinese": [
+    "中文",
+    "中文"
+  ],
+  "Workflow.English": [
+    "English",
+    "English"
+  ],
+  "Workflow.Undo": [
+    "Undo",
+    "撤销"
+  ],
+  "Workflow.EditSpeed": [
+    "Edit speed",
+    "编辑速度"
+  ],
+  "Workflow.Waypoint": [
+    "Waypoint {0}  ·  Height {1} m  ·  Speed {2} m/s",
+    "航点 {0}  ·  高度 {1} 米  ·  速度 {2} 米/秒"
+  ],
+  "Workflow.RouteStats": [
+    "Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)",
+    "距离：{0} 米 · 预计：{1} 分钟（估算最低速度 1 米/秒）"
+  ],
+  "Events.PLAN_DELETED": [
+    "Draft deleted: {plan_name}",
+    "已删除草稿：{plan_name}"
+  ],
+  "Workflow.DeleteDraft": [
+    "Confirm delete draft",
+    "确认删除草稿"
+  ],
+  "Workflow.Duplicate": [
+    "Duplicate",
+    "复制"
+  ],
+  "Workflow.SaveExit": [
+    "Save and exit",
+    "保存并退出"
+  ],
+  "Workflow.AssignedUAV": [
+    "Assigned UAV",
+    "执行无人机"
+  ],
+  "Workflow.Patrol": [
+    "Task type: Patrol",
+    "任务类型：巡逻"
+  ],
+  "Workflow.StepInfo": [
+    "Info",
+    "基本信息"
+  ],
+  "Workflow.StepTask": [
+    "Tasks",
+    "任务配置"
+  ],
+  "Workflow.StepRoute": [
+    "Route",
+    "航线"
+  ],
+  "Workflow.StepCheck": [
+    "Check",
+    "部署前检查"
+  ],
+  "Workflow.StepDeploy": [
+    "Deploy",
+    "部署"
+  ],
+  "Workflow.DeploymentSuccess": [
+    "✓ Security plan deployed",
+    "✓ 安保方案已部署"
+  ],
+  "Workflow.CheckInformation": [
+    "Check task assignment and saved route below.",
+    "请检查以下任务分配和已保存航线。"
+  ],
+  "Workflow.Readiness": [
+    "Backend: {0}   ·   Map: {1}",
+    "Backend：{0}   ·   Map：{1}"
+  ],
+  "Workflow.RouteEditBanner": [
+    "● ROUTE EDITING",
+    "● 航线编辑中"
+  ],
+  "Map.SAVED": [
+    "Saved · editing continues",
+    "已保存 · 可继续编辑"
+  ],
+  "Workflow.VersionName": [
+    "{0} — new version",
+    "{0} — 新版本"
+  ],
+  "Workflow.LastSaved": [
+    "Last saved: {0}",
+    "最近保存：{0}"
+  ],
+  "Events.PLAN_OPENED": [
+    "Opened {plan_name}",
+    "已打开方案 {plan_name}"
+  ],
+  "Events.PLAN_VERSION_CREATED": [
+    "Created a new version: {plan_name}",
+    "已创建方案新版本：{plan_name}"
+  ],
+  "Events.PLAN_REVIEW_READY": [
+    "Pre-deployment check ready: {plan_name}",
+    "方案可进行部署前检查：{plan_name}"
+  ],
+  "Events.MISSION_CONFIGURED": [
+    "Task configured: {mission_name} · {uav_id}",
+    "任务已配置：{mission_name} · {uav_id}"
+  ],
+  "Errors.MAP_FOCUS_MANUAL": [
+    "Select the Map window or use Launcher Focus.",
+    "请选择 Map 窗口，或使用 Launcher 的聚焦按钮。"
+  ],
+  "Workflow.CreatedAt": [
+    "Created: {0}",
+    "创建时间：{0}"
+  ],
+  "Workflow.ReviewDistance": [
+    "Route distance: {0} m",
+    "航线距离：{0} 米"
+  ],
+  "Execution.Deploy": [
+    "Deploy Plan →",
+    "部署方案 →"
+  ],
+  "Execution.Start": [
+    "Start Mission →",
+    "开始任务 →"
+  ],
+  "Execution.Open": [
+    "Open mission",
+    "打开任务"
+  ],
+  "Execution.None": [
+    "No active mission",
+    "当前没有正在执行的任务"
+  ],
+  "Execution.Simulation": [
+    "SIMULATION · Mock UAV",
+    "模拟执行 · Mock UAV"
+  ],
+  "Execution.Monitor": [
+    "Execution Monitor · SIMULATION",
+    "任务监控 · 模拟执行"
+  ],
+  "Execution.ReadOnly": [
+    "Deployed route is read-only",
+    "当前部署航线为只读状态"
+  ],
+  "Execution.Summary": [
+    "{0}\n{1} · {2}\n{3}\nWaypoint {4} / {5} · {6}",
+    "{0}\n{1} · {2}\n{3}\n航点 {4} / {5} · {6}"
+  ],
+  "Execution.Confirm": [
+    "Confirm",
+    "确认"
+  ],
+  "Execution.Pause": [
+    "Pause mission",
+    "暂停任务"
+  ],
+  "Execution.Resume": [
+    "Resume mission",
+    "继续任务"
+  ],
+  "Execution.Return": [
+    "Return Home",
+    "返航"
+  ],
+  "Execution.Abort": [
+    "Abort mission",
+    "终止任务"
+  ],
+  "Execution.Cancel": [
+    "Cancel",
+    "取消"
+  ],
+  "Execution.History": [
+    "Execution history / View plan",
+    "执行记录 / 查看方案"
+  ],
+  "Execution.Video": [
+    "View mission UAV video",
+    "查看任务无人机视频"
+  ],
+  "Execution.Duration": [
+    "Execution time: {0} seconds",
+    "执行时间：{0} 秒"
+  ],
+  "Execution.StartConfirm": [
+    "Confirm mission execution",
+    "任务执行确认"
+  ],
+  "Execution.MockCheck": [
+    "Simulation preflight checks deployment, route, Mock UAV availability and execution conflicts. Backend confirms every action.",
+    "模拟执行检查部署、航线、Mock UAV 可用性及任务冲突；所有操作以 Backend 确认为准。"
+  ],
+  "Execution.returnConfirm": [
+    "Confirm Return Home? Remaining waypoints will be skipped. The Mock UAV will return to its defined Home.",
+    "确认返航？当前任务将停止执行后续航点，Mock UAV 将返回预设的模拟 Home 点。"
+  ],
+  "Execution.abortConfirm": [
+    "Confirm abort? This execution cannot be resumed. The Mock UAV will stop at its current position.",
+    "确认终止任务？本次执行无法继续，Mock UAV 将停在当前位置。"
+  ],
+  "Execution.ShutdownConfirm": [
+    "A simulated mission is active. Shutdown will persist it as paused and stop local simulation. Continue?",
+    "当前存在正在执行的模拟任务。关闭系统将持久化为暂停状态并停止本地模拟。是否继续关闭？"
+  ],
+  "Execution.ROUTE_FINISHED": [
+    "All waypoints completed",
+    "全部航点已完成"
+  ],
+  "Execution.RETURNED_HOME": [
+    "Returned to simulation Home",
+    "已返回模拟 Home 点"
+  ],
+  "Execution.CREATED": [
+    "Mission created",
+    "任务已创建"
+  ],
+  "Execution.PREFLIGHT": [
+    "Checking simulation conditions",
+    "正在检查模拟执行条件"
+  ],
+  "Execution.STARTING": [
+    "Starting mission…",
+    "正在启动任务…"
+  ],
+  "Execution.EXECUTING": [
+    "Mission executing",
+    "任务执行中"
+  ],
+  "Execution.PAUSED": [
+    "Mission paused",
+    "任务已暂停"
+  ],
+  "Execution.RETURNING": [
+    "Returning Home",
+    "正在返航"
+  ],
+  "Execution.COMPLETED": [
+    "Mission completed",
+    "任务已完成"
+  ],
+  "Execution.ABORTED": [
+    "Mission aborted",
+    "任务已终止"
+  ],
+  "Execution.FAILED": [
+    "Mission failed",
+    "任务失败"
+  ],
+  "Errors.MOCK_UAV_UNAVAILABLE": [
+    "Mock UAV unavailable. Check the simulation fixture and registry.",
+    "Mock UAV 不可用，请检查模拟配置与注册表。"
+  ],
+  "Errors.EXECUTION_CONFLICT": [
+    "This UAV already has an active mission.",
+    "此无人机已有正在执行的任务。"
+  ],
+  "Errors.EXECUTION_STALE": [
+    "Mission state changed. Review the current state and retry.",
+    "任务状态已变化，请确认当前状态后重试。"
+  ],
+  "Errors.EXECUTION_STATE_INVALID": [
+    "This action is unavailable in the current mission state.",
+    "当前任务状态不允许此操作。"
+  ],
+  "Errors.EXECUTION_NOT_FOUND": [
+    "Execution no longer exists.",
+    "未找到本次任务执行。"
+  ],
+  "Errors.IMMUTABLE_ROUTE_MISSING": [
+    "The deployed route snapshot is missing.",
+    "已部署航线快照缺失。"
+  ],
+  "Errors.REQUEST_ID_REQUIRED": [
+    "Execution request identifier is required.",
+    "缺少任务操作请求标识。"
+  ],
+  "Errors.REQUEST_ID_REUSED": [
+    "Request identifier conflict.",
+    "请求标识冲突。"
+  ],
+  "Errors.DEPLOYMENT_MISSING": [
+    "Deployment snapshot is missing.",
+    "部署快照缺失。"
+  ],
+  "Events.EXECUTION_CREATED": [
+    "Mission execution created · {uav_id}",
+    "任务执行已创建 · {uav_id}"
+  ],
+  "Events.PREFLIGHT_STARTED": [
+    "Simulation preflight started · {uav_id}",
+    "开始模拟执行检查 · {uav_id}"
+  ],
+  "Events.PREFLIGHT_PASSED": [
+    "Simulation preflight passed · {uav_id}",
+    "模拟执行检查通过 · {uav_id}"
+  ],
+  "Events.MISSION_STARTING": [
+    "Mission starting · {uav_id}",
+    "任务正在启动 · {uav_id}"
+  ],
+  "Events.MISSION_STARTED": [
+    "Mission started · {uav_id}",
+    "任务已开始 · {uav_id}"
+  ],
+  "Events.MISSION_PAUSED": [
+    "Mission paused · {uav_id}",
+    "任务已暂停 · {uav_id}"
+  ],
+  "Events.MISSION_RESUMED": [
+    "Mission resumed · {uav_id}",
+    "任务已继续 · {uav_id}"
+  ],
+  "Events.WAYPOINT_REACHED": [
+    "Waypoint reached · {uav_id}",
+    "已抵达航点 · {uav_id}"
+  ],
+  "Events.MISSION_RETURNING": [
+    "Returning Home · {uav_id}",
+    "任务正在返航 · {uav_id}"
+  ],
+  "Events.MISSION_ABORTED": [
+    "Mission aborted · {uav_id}",
+    "任务已终止 · {uav_id}"
+  ],
+  "Events.MISSION_COMPLETED": [
+    "Mission completed · {uav_id}",
+    "任务已完成 · {uav_id}"
+  ],
+  "Events.MISSION_FAILED": [
+    "Mission failed · {uav_id}",
+    "任务失败 · {uav_id}"
+  ],
+  "Execution.Estimate": [
+    "Estimated distance: {0} m · Time: {1} seconds",
+    "预计距离：{0} 米 · 时间：{1} 秒"
+  ],
+  "Execution.MockAvailable": [
+    "✓ Mock UAV configured",
+    "✓ 已配置 Mock UAV"
+  ],
+  "Events.DEPLOYMENT_CREATED": [
+    "Deployment created: {plan_name}",
+    "已创建部署：{plan_name}"
+  ],
+  "Execution.ConfirmStart": [
+    "Confirm Start Mission",
+    "确认开始任务"
+  ],
+  "Execution.ConfirmReturn": [
+    "Confirm Return",
+    "确认返航"
+  ],
+  "Execution.ConfirmAbort": [
+    "Confirm Abort",
+    "确认终止"
+  ],
+  "Execution.NoConflict": [
+    "No active execution conflict",
+    "当前无任务执行冲突"
+  ],
+  "Execution.DeploymentValid": [
+    "Immutable deployment and saved route",
+    "部署有效，航线版本已固定"
+  ]
+}

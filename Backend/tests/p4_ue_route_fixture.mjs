@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const base='http://127.0.0.1:19280',instance_id=crypto.randomUUID();
+const api=async(path,body)=>{const r=await fetch(base+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(!r.ok)throw Error(JSON.stringify(j));return j;};
+await api('/api/context/clients',{instance_id,client_id:'P4-UE-FIXTURE',client_role:'Command',hostname:'SYNTHETIC',app_version:'P4'});
+const sock=new WebSocket('ws://127.0.0.1:19281/ws');await new Promise(r=>sock.onopen=r);sock.send(JSON.stringify({type:'subscribe_context',instance_id}));await new Promise(r=>sock.onmessage=r);
+const send=async(action,extra={})=>api('/api/security-plans',{instance_id,action,expected_version:(await api('/api/security-plans')).version,...extra});
+const p=await send('create_plan',{name:'P4 UE ROUTE GUARD'}),plan_id=p.plan_id;
+const m=await send('add_mission',{plan_id,name:'Map draft guard'}),mission_id=m.mission_id;
+await send('assign',{plan_id,mission_id,assigned_uav_id:'UAV-01'});
+fs.writeFileSync('Evidence/TASK-P4/automation/route-fixture.json',JSON.stringify({plan_id,mission_id},null,2));sock.close();

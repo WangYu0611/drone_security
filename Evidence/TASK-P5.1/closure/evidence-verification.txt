@@ -1,0 +1,40 @@
+{
+  "ue": [
+    {
+      "role": "command",
+      "completed_successfully": 2,
+      "device": "JXGM-40736",
+      "report_created": "2026.09.19-12.22.46",
+      "failed": 0
+    },
+    {
+      "role": "map",
+      "completed_successfully": 2,
+      "device": "JXGM-56680",
+      "report_created": "2026.09.19-12.43.42",
+      "failed": 0
+    },
+    {
+      "role": "video",
+      "completed_successfully": 1,
+      "device": "JXGM-99028",
+      "report_created": "2026.09.19-12.26.28",
+      "failed": 0
+    }
+  ],
+  "protocol": {
+    "p4": 21,
+    "p5": 8,
+    "p51": 11
+  },
+  "backend": {
+    "discovered": 64,
+    "passed": 62,
+    "historical_failures": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ]
+  },
+  "native_recovery": "saved Map content equal; Backend/full relaunch domains equal and all roles hydrated",
+  "protected_refs_unchanged": true
+}

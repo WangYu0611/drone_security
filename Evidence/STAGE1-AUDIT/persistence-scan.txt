@@ -1,0 +1,115 @@
+Backend/config.yaml:57: path: "./Backend/data/drones.json"
+Backend/core/config_loader.cpp:57: cfg.storage_path = st["path"].as<std::string>(cfg.storage_path);
+Backend/core/config_loader.h:34: std::string storage_path = "./data/drones.json";
+Backend/core/config_loader.h:43: /// 从 config.yaml 加载配置
+Backend/core/config_loader.h:44: AppConfig LoadConfig(const std::string& path = "config.yaml");
+Backend/http/http_server.cpp:112: , operational_context_((std::filesystem::path(config.storage_path).parent_path() / "operational_context.json").string())
+Backend/http/http_server.cpp:113: , security_plans_((std::filesystem::path(config.storage_path).parent_path() / "security_plans.json").string())
+Backend/http/http_server.cpp:114: , ui_preferences_((std::filesystem::path(config.storage_path).parent_path() / "ui_preferences.json").string())
+Backend/http/http_server.cpp:115: , video_view_((std::filesystem::path(config.storage_path).parent_path() / "video_view.json").string())
+Backend/http/http_server.cpp:117: const auto mockPath=std::filesystem::path(config.storage_path).parent_path()/"mock_execution.json";
+Backend/http/http_server.cpp:1459: std::filesystem::path p(config_.storage_path);
+Backend/http/http_server.cpp:1476: std::ofstream f(config_.storage_path, std::ios::trunc);
+Backend/http/http_server.cpp:1490: std::ifstream f(config_.storage_path);
+Backend/http/http_server.cpp:1526: spdlog::info("[Storage] Loaded {} drones from {}", drone_records_.size(), config_.storage_path);
+Backend/main.cpp:32: auto config = LoadConfig(argc > 1 ? argv[1] : "config.yaml");
+Backend/storage/operational_context.h:23: explicit OperationalContext(std::string path = "data/operational_context.json") : path_(std::move(path)) {
+Backend/storage/video_metadata_store.cpp:22: name << std::setfill('0') << std::setw(12) << sequence << ".jsonl";
+Backend/storage/video_metadata_store.cpp:159: WriteJsonAtomic(mission_directory / "session.json", session);
+Backend/storage/video_metadata_store.cpp:162: WriteJsonAtomic(mission_directory / "completed.json", session);
+Backend/tests/integration_week3.py:125: path: "__TMP__/drones.json"
+Backend/tests/integration_week3.py:354: config = tmp_path / "config.yaml"
+Backend/tests/test_operational_context.cpp:25: const auto path=(std::filesystem::temp_directory_path()/ ("p1-context-test-"+std::to_string(OperationalContext::now())+".json")).string();
+Backend/tests/test_p4_workflow.cpp:75: std::filesystem::create_directories(root);const auto path=root/"plans.json";
+Backend/tests/test_p52_execution.cpp:43: TEST_F(P52Execution, DurableRestartRetainsPositionAndContinues){running();tick(1);const auto path=std::filesystem::temp_directory_path()/("p52-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");{std::ofstream out(path);out<<boost::json::serialize(store.snapshot());}SecurityPlanStore recovered(path.string());EXPECT_EQ(recovered.snapshot(),store.snapshot());recovered.configureMock({{"uavs",O{{"UAV-01",O{}}}}});recovered.tickExecutions(1,uavs,[](const O&){});EXPECT_NE(recovered.snapshot().at("executions").as_object().at(execution).as_object().at("position"),exec().at("position"));std::filesystem::remove(path);}
+Backend/tests/test_security_plans.cpp:65: auto path=(std::filesystem::temp_directory_path()/("p3-qa-"+std::to_string(OperationalContext::now())+".json")).string();
+Backend/tests/test_video_metadata_store.cpp:73: / "session.json"));
+Backend/tests/test_video_metadata_store.cpp:99: EXPECT_TRUE(std::filesystem::exists(mission_dir / "completed.json"));
+Config/DefaultEngine.ini:151: ; 奥维 WEB 瓦片服务只有 2D 影像瓦片，没有 tileset.json；保持 3D Tileset 在线/原配置，只替换 raster overlay。
+Config/DefaultEngine.ini:207: ; TilesetUrl=http://127.0.0.1:8070/tileset.json
+Jetson/jetson_bridge.py:514: f"{self._route_local_ip or '<unknown>'}. Backend config.yaml must use "
+Jetson/jetson_video_stream.py:1318: self.mission_dir / "mission.json",
+Jetson/jetson_video_stream.py:1381: write_json_atomic(self.mission_dir / "camera_info.json", payload)
+Launcher/collect_evidence.py:11: sources+=list((root/'Saved/Stage1/Logs').glob('*.jsonl'))
+Launcher/collect_evidence.py:23: (dest/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+Launcher/config.json:14: "mock_fixture": "Backend/mock_execution.json"
+Launcher/launcher.pyw:15: self.config = json.loads((ROOT/'Launcher/config.json').read_text(encoding='utf-8-sig'))
+Launcher/launcher.pyw:18: self.catalog = json.loads((ROOT/'Scripts/P4/localization.json').read_text(encoding='utf-8-sig'))
+Launcher/record_acceptance.py:12: config = json.loads((root/'Launcher/config.json').read_text())
+Launcher/record_acceptance.py:16: snapshot['ownership'] = json.loads((root/config['runtime_directory']/'ownership.json').read_text())
+Launcher/record_acceptance.py:18: before = json.loads((out/(args.compare+'.json')).read_text(encoding='utf-8-sig'))
+Launcher/record_acceptance.py:28: (out/(args.name+'.json')).write_text(json.dumps(snapshot, indent=2), encoding='utf-8')
+Launcher/runtime.py:148: with (self.logs / 'launcher.jsonl').open('a', encoding='utf-8') as out:
+Launcher/runtime.py:157: temp.replace(self.directory / 'ownership.json')
+Launcher/runtime.py:184: for name,value in [('mock_execution.json',fixture),('drones.json',[
+Launcher/runtime.py:189: config_path = self.directory / 'backend.yaml'
+Launcher/runtime.py:196: path: "data/drones.json"
+Launcher/test_runtime.py:35: cfg = json.loads((root/'Launcher/config.json').read_text(encoding='utf-8-sig'))
+Scripts/P4/extend_localization.py:3: p=Path('Scripts/P4/localization.json');d=json.loads(p.read_text(encoding='utf-8-sig'))
+Scripts/P4/extend_localization.py:79: d.update(extra);p.write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf-8');Path('Scripts/P4/source_aliases.json').write_text(json.dumps({source:v[0] for source,v in sources.items()},ensure_ascii=False,indent=2),encoding='utf-8')
+Scripts/P4/generate_localization.py:3: data=json.loads(Path('Scripts/P4/localization.json').read_text(encoding='utf-8-sig'))
+Scripts/P4/generate_localization.py:11: aliases=Path('Scripts/P4/source_aliases.json')
+Scripts/P4/localize_widgets.py:45: p=Path('Scripts/P4/localization.json');d=json.loads(p.read_text(encoding='utf-8-sig'));d['Common.Sync']=['BACKEND {0} | SYNC {1} | ACTIVE {2} | v{3}','后端 {0} | 同步 {1} | 当前 {2} | v{3}'];d['Common.Connected']=['CONNECTED','已连接'];d['Common.Disconnected']=['DISCONNECTED','已断开'];d['Common.Reconnecting']=['RECONNECTING','重连中'];p.write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf-8')
+Scripts/P4/upgrade_transport.py:7: s=s.replace('    , security_plans_((std::filesystem::path(config.storage_path).parent_path() / "security_plans.json").string())','''    , security_plans_((std::filesystem::path(config.storage_path).parent_path() / "security_plans.json").string())
+Scripts/P4/upgrade_transport.py:8: , ui_preferences_((std::filesystem::path(config.storage_path).parent_path() / "ui_preferences.json").string())
+Scripts/P4/upgrade_transport.py:9: , video_view_((std::filesystem::path(config.storage_path).parent_path() / "video_view.json").string())''')
+Scripts/P5.1/collect_evidence.py:11: sources+=list((root/'Saved/Stage1/Logs').glob('*.jsonl'))
+Scripts/P5.1/collect_evidence.py:23: (dest/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+Scripts/P5.1/record_acceptance.py:15: config = json.loads((root/'Launcher/config.json').read_text())
+Scripts/P5.1/record_acceptance.py:19: snapshot['ownership'] = json.loads((root/config['runtime_directory']/'ownership.json').read_text())
+Scripts/P5.1/record_acceptance.py:25: before = json.loads((out/(args.compare+'.json')).read_text(encoding='utf-8-sig'))
+Scripts/P5.1/record_acceptance.py:35: (out/(args.name+'.json')).write_text(json.dumps(snapshot, indent=2), encoding='utf-8')
+Scripts/P5.1/verify_evidence.py:13: report = load(automation / f'ue-{role}/index.json')
+Scripts/P5.1/verify_evidence.py:26: backend = load(automation / 'backend-tests.json')
+Scripts/P5.1/verify_evidence.py:32: snap = load(evidence / f'recovery/{name}.json')
+Scripts/P5.1/verify_evidence.py:36: before = load(evidence / 'recovery/before-map-restart.json')
+Scripts/P5.1/verify_evidence.py:37: after = load(evidence / 'recovery/after-map-restart.json')
+Scripts/P5.1/verify_evidence.py:43: rows = load(evidence / f'recovery/{name}.json')
+Scripts/P5.1/verify_evidence.py:51: (automation / 'verified-summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
+Scripts/P5.1/verify_evidence.py:54: (evidence / 'visual/manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+Scripts/P5.2/archive_native_observations.py:5: source=root/'Evidence/TASK-P5.2/native/observations.jsonl'
+Scripts/P5.2/archive_native_observations.py:6: archive=source.with_suffix('.jsonl.gz')
+Scripts/P5.2/archive_native_observations.py:7: retained=root/'Saved/P5.2-native-raw/observations.jsonl'
+Scripts/P5.2/archive_native_observations.py:15: (root/'Evidence/TASK-P5.2/closure/observation-archive.json').write_text(json.dumps(proof,indent=2),encoding='utf-8')
+Scripts/P5.2/close_evidence.py:15: data=json.loads((report/'index.json').read_text(encoding='utf-8-sig'))
+Scripts/P5.2/close_evidence.py:21: (out/'ue/final-counts.json').write_text(json.dumps(counts,indent=2),encoding='utf-8')
+Scripts/P5.2/native_observer.py:5: with (out/'observations.jsonl').open('a',encoding='utf-8') as f:
+Scripts/P5.2/run_backend_regression.py:9: (RUNTIME/'data/mock_execution.json').write_bytes((ROOT/'Backend/mock_execution.json').read_bytes())
+Scripts/P5.2/run_backend_regression.py:11: (RUNTIME/'data/drones.json').write_text(json.dumps(registry),encoding='utf-8')
+Scripts/P5.2/run_backend_regression.py:12: (RUNTIME/'backend.yaml').write_text('server:\n  http_port: 19680\n  ws_port: 19681\n  debug: true\nport_map: {}\nstorage:\n  path: "data/drones.json"\nlog:\n  file: "backend.log"\n',encoding='utf-8')
+Scripts/P5.2/run_backend_regression.py:18: p=subprocess.Popen([str(ROOT/'Backend/build-p52/Release/DroneBackend.exe'),str(RUNTIME/'backend.yaml')],cwd=RUNTIME,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW)
+Scripts/P5.2/run_backend_regression.py:30: (OUT/'restart.json').write_text(json.dumps({'synthetic':True,'paused_restart_preserved':True,'execution_count':len(after['executions'])},indent=2),encoding='utf-8')
+Scripts/P5.2/run_backend_regression.py:32: fixture=(ROOT/'Scripts/P5.1/route_fixture.mjs').read_text().replace("'http://127.0.0.1:19580'","'http://127.0.0.1:19680'").replace('ws://127.0.0.1:19581/ws','ws://127.0.0.1:19681/ws').replace('Evidence/TASK-P5.1/automation/route-fixture.json','Evidence/TASK-P5.2/ue/route-fixture.json')
+Scripts/P5.2/run_backend_regression.py:52: assert (report/'index.json').stat().st_mtime>=started
+Scripts/P5.2/run_backend_regression.py:53: summary=json.loads((report/'index.json').read_text(encoding='utf-8-sig'))
+Scripts/P5.2/validate_native.py:5: if '--offline' in sys.argv:state=json.loads((out/'final-state.json').read_text(encoding='utf-8'))
+Scripts/P5.2/validate_native.py:8: (out/'final-state.json').write_text(json.dumps(state,indent=2),encoding='utf-8')
+Scripts/P5.2/validate_native.py:9: observations=out/'observations.jsonl'
+Scripts/P5.2/validate_native.py:10: raw=observations.read_text(encoding='utf-8') if observations.exists() else gzip.decompress((out/'observations.jsonl.gz').read_bytes()).decode('utf-8')
+Scripts/P5.2/validate_native.py:34: (out/'execution-timeline.json').write_text(json.dumps(timeline,indent=2),encoding='utf-8')
+Scripts/P5.2/validate_native.py:38: (out/f'uninterrupted-{complete_id}.json').write_text(json.dumps(complete_timeline,indent=2),encoding='utf-8')
+Scripts/P5.2/validate_native.py:39: before=json.loads((out/'backend-restart-before.json').read_text(encoding='utf-8-sig'))
+Scripts/P5.2/validate_native.py:40: after=json.loads((out/'backend-restart-after.json').read_text(encoding='utf-8-sig'))
+Scripts/P5.2/validate_native.py:46: (out/'validation.json').write_text(json.dumps(summary,indent=2),encoding='utf-8');print(json.dumps(summary))
+Scripts/audit_video_assets.py:23: with open(unreal.Paths.project_saved_dir()+'VideoQA/assets.json','w',encoding='utf-8') as f:json.dump({'assets':rows,'media_material_render_targets':media},f,ensure_ascii=False,indent=2)
+Scripts/video_demo_fixture.py:50: (OUT / "sources.json").write_text(json.dumps(files, indent=2), encoding="utf-8")
+Scripts/video_demo_fixture.py:93: (OUT / "processes.json").write_text(json.dumps([p.pid for p in processes]), encoding="utf-8")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:88: // Cesium FromUrl tileset 源需要指向 tileset.json；配置裸服务器地址时自动补全
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:92: if (Url.EndsWith(TEXT(".json")))
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:98: return Url + TEXT("/tileset.json");
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:19: return FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("DroneRegistry.json"));
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:207: if (!FFileHelper::SaveStringToFile(Output, *SavePath))
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:18: * - 保存/读取通用设置（通过 GameInstance 或 SaveGame）
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:7: #include "GameFramework/SaveGame.h"
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:356: bool bSuccess = FFileHelper::SaveStringToFile(SaveString, *SavePath);
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.cpp:53: return FPaths::Combine(SaveDirectory, SanitizedBaseName + TEXT(".json"));
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.cpp:73: if (!FFileHelper::SaveStringToFile(JsonOutput, *SaveFilePath))
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.cpp:56: IFileManager::Get().FindFiles(FoundFiles, *FPaths::Combine(SearchDir, TEXT("*.json")), true, false);
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:299: IFileManager::Get().FindFiles(FoundFiles, *FPaths::Combine(SearchDir, TEXT("*.json")), true, false);
+tools/integration_week3.py:125: path: "__TMP__/drones.json"
+tools/integration_week3.py:365: config = tmp_path / "config.yaml"
+tools/integration_week4.py:118: path: "{tmp}/drones.json"
+tools/integration_week4.py:506: config = tmp_path / "config.yaml"
+tools/integration_week5.py:94: path: "{tmp}/drones.json"
+tools/integration_week5.py:248: config_path = tmp / "config.yaml"
+tools/mock_ue/mock_ue/main.py:210: for path in sorted(sample_dir.glob("*.json")):

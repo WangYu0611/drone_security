@@ -1,0 +1,11 @@
+PASS Create automatically configures one task and selects workspace context
+PASS Basic and task steps persist without changing domain status
+PASS Command routes the active task to Map
+PASS Map editing step is authoritative and recoverable
+PASS Save draft keeps editing active
+PASS Both language directions preserve workflow and content
+PASS Fresh Command reads saved editing context
+PASS Finish ends editing and enters pre-deployment check
+PASS Checked reviewed configuration deploys
+PASS Deployed plan rejects direct editing
+PASS New version selects new draft and preserves immutable deployment

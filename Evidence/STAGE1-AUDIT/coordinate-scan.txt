@@ -1,0 +1,199 @@
+Backend/communication/udp_receiver.cpp:276: spdlog::debug("[UdpReceiver] Slot {} recv {}B from {}:{}: NED({:.2f},{:.2f},{:.2f}) bat={} gps_fix={}",
+Backend/communication/udp_sender.cpp:86: {"frame", "NED"},
+Backend/communication/udp_sender.cpp:127: "NED=({:.3f},{:.3f},{:.3f}) bytes={} -> {}:{}",
+Backend/communication/udp_sender.h:27: /// @param packet    内部 NED 控制指令（函数内序列化为 JSON）
+Backend/conversion/coordinate_converter.h:5: /// NED ↔ UE 坐标转换工具
+Backend/conversion/coordinate_converter.h:7: /// NED:   X=North(北), Y=East(东), Z=Down(下)    单位: 米
+Backend/conversion/coordinate_converter.h:16: /// NED 米 → UE 偏移厘米（用于遥测：NED → UE 推送）
+Backend/conversion/coordinate_converter.h:20: /// UE 偏移厘米 → NED 米（用于控制：UE move → NED 指令）
+Backend/conversion/quaternion_utils.cpp:11: // 步骤1: Z 分量取反（NED Down -> UE5 Up）
+Backend/conversion/quaternion_utils.cpp:33: // The qz flip above already converts positive NED yaw to negative UE yaw.
+Backend/conversion/quaternion_utils.h:5: /// 四元数工具：NED/FRD → UE5 左手系转换
+Backend/conversion/quaternion_utils.h:9: /// @param vN  NED 北向速度 (m/s)
+Backend/conversion/quaternion_utils.h:10: /// @param vE  NED 东向速度 (m/s)
+Backend/conversion/quaternion_utils.h:11: /// @param vD  NED 地向速度 (m/s)
+Backend/conversion/quaternion_utils.h:17: /// NED 四元数 → UE5 欧拉角
+Backend/conversion/quaternion_utils.h:22: ///   2. UE Yaw = -NED Yaw —— Yaw 取反
+Backend/core/types.h:25: /// x/y/z 始终是以无人机本次上电位置为原点的 NED 米坐标。
+Backend/debug_cli.h:22: //                                 — 注入一条遥测（NED 米，可选电量和 GPS）
+Backend/debug_cli.h:72: "    N E D   : NED position (meters), D negative = above origin\n"
+Backend/debug_cli.h:143: std::cout << "  ID    Slot  State             Bat   NED(m)\n";
+Backend/debug_cli.h:173: << "  NED=(" << s.pos_x << ", " << s.pos_y << ", " << s.pos_z << ")m"
+Backend/debug_cli.h:217: << "  NED=(" << tel.position_ned[0]
+Backend/drone/command_queue.h:25: * same horizontal NED target, replace that pending command with this newer
+Backend/drone/drone_manager.cpp:126: // VehicleLocalPosition sample. Hold that measured NED point,
+Backend/drone/drone_manager.cpp:135: "Drone {} reconnected: cleared stale commands and holding current NED",
+Backend/drone/drone_manager.cpp:348: "-> power-on-relative NED(m)=({:.3f},{:.3f},{:.3f}), speed={}m/s",
+Backend/drone/drone_manager.cpp:366: "NED(m)=({:.3f},{:.3f},{:.3f}), speed={}m/s",
+Backend/drone/drone_manager.cpp:394: "Abort drone {}: cleared queued commands and holding measured power-on-relative NED({:.3f},{:.3f},{:.3f})",
+Backend/drone/drone_manager.cpp:417: "Pause drone {} at measured power-on-relative NED({:.3f},{:.3f},{:.3f})",
+Backend/drone/drone_manager.cpp:476: // establish an estimator-valid NED position.
+Backend/drone/drone_manager.cpp:583: // Local NED can become valid before GPS. Publish the frozen anchor once
+Backend/drone/drone_manager.h:48: /** Cancel pending movement and command a hold at the latest measured NED position. */
+Backend/drone/heartbeat_manager.cpp:97: "[Heartbeat] Hold requested drone {} NED({:.3f},{:.3f},{:.3f})",
+Backend/drone/heartbeat_manager.cpp:256: "NED({:.3f},{:.3f},{:.3f})",
+Backend/drone/heartbeat_manager.cpp:277: "NED({:.3f},{:.3f},{:.3f})",
+Backend/execution/assembly_controller.cpp:95: spdlog::info("[Assembly] Drone {} target: NED({:.2f}, {:.2f}, {:.2f})",
+Backend/execution/assembly_controller.h:45: /// 2. 计算每架无人机的初始槽位目标点（NED）
+Backend/execution/assembly_controller.h:67: /// @param ned_x, ned_y, ned_z  NED 位置（米）
+Backend/execution/execution_engine.cpp:500: spdlog::info("[Exec] Drone {} wp[{}]: NED({:.2f},{:.2f},{:.2f})",
+Backend/execution/execution_engine.h:145: // 避障：每机当前实际目标（NED）
+Backend/execution_legacy/execution_engine.cpp:371: spdlog::info("[Exec] Drone {} wp[{}]: NED({:.2f},{:.2f},{:.2f})",
+Backend/execution_legacy/execution_engine.h:135: // 避障：每机当前实际目标（NED）
+Backend/http/http_server.cpp:809: // 收集有航点的路径，提取首航点并转换为 NED
+Backend/http/http_server.cpp:823: // 收集在线无人机及其当前 NED 位置
+Backend/http/http_server.cpp:976: {"coordinate_frame", "NED"},
+Backend/main.cpp:66: // 6b. AssemblyController 集结指令回调 -> DroneManager NED 发送
+Backend/tests/test_coordinate_converter.cpp:4: // NED → UE 偏移: N=North, E=East, D=Down → X=Forward, Y=Right, Z=Up
+Backend/tests/test_coordinate_converter.cpp:10: // NED (1, 2, -3) → NED 中 Down=-3 表示"上"
+Backend/tests/test_coordinate_converter.cpp:17: // NED (0, 0, 5) → 向下 5 米 → UE Z = -5*100 = -500
+Backend/tests/test_coordinate_converter.cpp:24: // UE 偏移 → NED: X=Forward, Y=Right, Z=Up → N=North, E=East, D=Down
+Backend/tests/test_coordinate_converter.cpp:30: // UE (100, 200, 300) → NED: N=100*0.01=1, E=200*0.01=2, D=-300*0.01=-3
+Backend/tests/test_coordinate_converter.cpp:36: // UE (0, 0, -500) → NED: N=0, E=0, D=-(-500)*0.01=5
+Backend/tests/test_coordinate_converter.cpp:43: // 往返验证: UE → NED → UE 应回到原点
+Backend/tests/test_quaternion_utils.cpp:30: // NED Yaw = 30°, UE Yaw = -30°
+Backend/tests/test_quaternion_utils.cpp:42: // NED Yaw = 30°, UE Yaw 应为 -30°
+Config/DefaultGame.ini:16: ; h_ellipsoid = H_AMSL + GeoidSeparationMeters. Configure for the operating region.
+Config/DefaultGame.ini:17: GeoidSeparationMeters=0.0
+Jetson/jetson_bridge.py:193: if target.get("frame") != "NED":
+Jetson/jetson_bridge.py:194: raise ValueError(f"target.frame must be NED, got {target.get('frame')!r}")
+Jetson/jetson_bridge.py:207: raise ValueError(f"invalid NED target: {exc}") from exc
+Jetson/jetson_bridge.py:228: raise ValueError("timestamps and NED coordinates must be finite")
+Jetson/jetson_bridge.py:231: f"NED target exceeds MAX_ABS_TARGET_M={MAX_ABS_TARGET_M}: "
+Jetson/jetson_bridge.py:259: """Return a finite PX4 VehicleLocalPosition NED tuple, or ``None``."""
+Jetson/jetson_bridge.py:526: f"{COMMAND_CONFIRM_WINDOW_SEC:.2f}s; target=NED meters relative to "
+Jetson/jetson_bridge.py:591: """Initialize the first setpoint from a valid PX4 local NED sample."""
+Jetson/jetson_bridge.py:612: f"NED=({local_ned[0]:.3f},{local_ned[1]:.3f},{local_ned[2]:.3f})"
+Jetson/jetson_bridge.py:660: """Return a NED velocity vector for a finite-speed move, or ``None``.
+Jetson/jetson_bridge.py:711: # from PX4's current local NED position at 50 Hz, so its 3D magnitude is
+Jetson/jetson_bridge.py:1031: f"NED=({parsed['x']:.3f},{parsed['y']:.3f},{parsed['z']:.3f}) "
+Jetson/jetson_bridge.py:1162: # JSON 中已经是 PX4 所需的 NED 米坐标，原点为本次上电位置。
+Jetson/jetson_bridge.py:1163: # Jetson 只透传到 TrajectorySetpoint，不做 UE/NED 二次转换。
+Jetson/jetson_bridge.py:1203: f"confirmed={confirmed_packets} NED(m, power_on_origin)="
+Jetson/test_jetson_bridge_protocol.py:92: "frame": "NED",
+Source/UE5DroneControl/Command/CommandMapInteractionService.cpp:308: return FocusLocation(ICoordinateService::Execute_GeographicToWorld(Object, Latitude, Longitude, EllipsoidHeightMeters));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:172: FVector2D Wgs84ToGcj02(double Longitude, double Latitude)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:192: FVector2D Gcj02ToWgs84(double Longitude, double Latitude)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:203: const FVector2D Gcj = Wgs84ToGcj02(WgsLongitude, WgsLatitude);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:742: const FVector ServiceWorldPosition = ICoordinateService::Execute_GeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:748: const FVector ServiceLonLatHeight = ICoordinateService::Execute_WorldToGeographic(CoordinateServiceObject, SampleWorldPosition);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:762: ? Wgs84ToGcj02(SampleWgsLonLat.X, SampleWgsLonLat.Y)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:765: ? Gcj02ToWgs84(RasterLonLat.X, RasterLonLat.Y)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:787: const FVector2D NorthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, North) : FVector2D(West, North);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:788: const FVector2D NortheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, North) : FVector2D(East, North);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:789: const FVector2D SoutheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, South) : FVector2D(East, South);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:790: const FVector2D SouthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, South) : FVector2D(West, South);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:1407: ? Wgs84ToGcj02(Longitude, Latitude)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:2002: ? Wgs84ToGcj02(Longitude, Latitude)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:2030: const FVector2D NorthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, North) : FVector2D(West, North);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:2031: const FVector2D NortheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, North) : FVector2D(East, North);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:2032: const FVector2D SoutheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, South) : FVector2D(East, South);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:2033: const FVector2D SouthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, South) : FVector2D(West, South);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:75: ICoordinateService::Execute_WorldToGeographic(CoordinateServiceObject, WorldLocation);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:111: const FVector NorthWorld = ICoordinateService::Execute_GeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1729: // dispatch path to build a PX4-local NED target. This is shared by online
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1731: MapTargetCoordinate.AltitudeMslMeters -= NetworkManager->GeoidSeparationMeters;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1743: TEXT("Map dispatch: skipped backend command for drone %d because Cesium world -> NED conversion failed: %s"),
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1881: // Match Jetson's existing default absolute local-NED guard. Reject here so
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1895: bool ADroneOpsPlayerController::TryConvertGeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1949: const FVector Converted = ICoordinateService::Execute_GeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1977: if (!TryConvertGeographicToWorld(CoordinateSystem, Longitude, Latitude, AltitudeMslMeters, WorldTarget, ConvertError))
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:2094: const FVector BaseTarget = ICoordinateService::Execute_GeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:2231: const double GeoidSeparationMeters = NetworkManager ? NetworkManager->GeoidSeparationMeters : 0.0;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:2235: Longitude, Latitude, AltitudeMslMeters, GeoidSeparationMeters,
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:3501: ICoordinateService::Execute_WorldToGeographic(CoordObject, WorldLocation);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:3506: LongitudeLatitudeHeight.Z - NetworkManager->GeoidSeparationMeters;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:5279: if (!TryConvertGeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:5456: if (!TryConvertGeographicToWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:77: * drone to have a connected backend, a frozen GPS anchor, and fresh valid GPS/local-NED telemetry;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:79: * ellipsoid height via UDroneNetworkManager::GeoidSeparationMeters before the coordinate
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:100: * each drone's power-on GPS anchor, and fresh time-coherent GPS/local-NED telemetry.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:158: * drone's fresh GPS/local-NED telemetry, avoiding Cesium world-axis and earth-curvature leakage.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:474: bool TryConvertGeographicToWorld(
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:26: FVector UCesiumCoordinateService::GeographicToWorld_Implementation(double Latitude, double Longitude, double Altitude) const
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:30: UE_LOG(LogTemp, Warning, TEXT("CesiumCoordinateService: GeographicToWorld called but Georeference is null"));
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:41: FVector UCesiumCoordinateService::WorldToGeographic_Implementation(const FVector& WorldLocation) const
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:76: FVector OriginWorld = GeographicToWorld_Implementation(OriginLat, OriginLon, OriginAlt);
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:77: FVector NorthWorld  = GeographicToWorld_Implementation(OriginLat + DegPer100m, OriginLon, OriginAlt);
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:78: FVector EastWorld   = GeographicToWorld_Implementation(OriginLat, OriginLon + DegPer100m, OriginAlt);
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp:92: "NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation."));
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.h:14: * NED ↔ UE offset conversion reuses SimpleCoordinateService linear formulas.
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.h:26: virtual FVector GeographicToWorld_Implementation(double Latitude, double Longitude, double Altitude) const override;
+Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.h:27: virtual FVector WorldToGeographic_Implementation(const FVector& WorldLocation) const override;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:263: /** True only for PX4 VehicleLocalPosition in the TrajectorySetpoint NED frame. */
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:71: * Builds an absolute PX4-local target using one fresh, time-coherent GPS/local-NED
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:11: * Provides conversion between UE5 world coordinates, NED coordinates, and geographic coordinates
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:25: * Convert UE5 world coordinates to NED coordinates (meters)
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:27: * @return NED location in meters (North, East, Down)
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:34: * Convert NED coordinates to UE5 world coordinates
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:35: * @param NedLocation NED location in meters (North, East, Down)
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:48: FVector WorldToGeographic(const FVector& WorldLocation) const;
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:49: virtual FVector WorldToGeographic_Implementation(const FVector& WorldLocation) const { return FVector::ZeroVector; }
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:59: FVector GeographicToWorld(double Latitude, double Longitude, double Altitude) const;
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:60: virtual FVector GeographicToWorld_Implementation(double Latitude, double Longitude, double Altitude) const { return FVector::ZeroVector; }
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp:11: // UE5 coordinates (cm) to NED (meters)
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp:13: // NED: X=North, Y=East, Z=Down
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp:24: // NED (meters) to UE5 coordinates (cm)
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp:25: // NED: X=North, Y=East, Z=Down
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp:35: FVector USimpleCoordinateService::WorldToGeographic_Implementation(const FVector& WorldLocation) const
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp:41: FVector USimpleCoordinateService::GeographicToWorld_Implementation(double Latitude, double Longitude, double Altitude) const
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.h:12: * Assumes UE5 world origin (0,0,0) corresponds to NED origin
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.h:25: virtual FVector WorldToGeographic_Implementation(const FVector& WorldLocation) const override;
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.h:26: virtual FVector GeographicToWorld_Implementation(double Latitude, double Longitude, double Altitude) const override;
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:16: float   X;          // 4  NED north [m]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:17: float   Y;          // 4  NED east  [m]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:18: float   Z;          // 4  NED down  [m]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:185: // 因此这里把 NED(m) 反变换为 UE(cm) 写入包体，避免在接收端被二次缩放导致几乎不动。
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:195: UE_LOG(LogTemp, Verbose, TEXT("DroneCommandSender: Sent mask=0x%X NED=(%.2f,%.2f,%.2f) Mode=%d Seq=%d"),
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:202: // Look up current NED position from registry, then send Mode=0
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:21: *   float   X           (4)   NED north  [m]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:22: *   float   Y           (4)   NED east   [m]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:23: *   float   Z           (4)   NED down   [m]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:54: * @param NedTarget  Target position in NED coordinates [meters]
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:64: * @param NedTarget  Shared target in NED [meters]
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:741: // An anchor event is not a synchronized GPS/local-NED telemetry sample.
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:73: * Geoid separation (metres) for the operating region: EllipsoidHeight = MSLHeight + GeoidSeparationMeters.
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:80: double GeoidSeparationMeters = 0.0;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:86: return AltitudeMslMeters + GeoidSeparationMeters;
+Source/UE5DroneControl/Map/MapExecutionWidget.cpp:34: if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Drone))){const auto P=Object(Execution,TEXT("position"));Mirror->ApplySimulationPosition(ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude"))));}
+Source/UE5DroneControl/Map/MapExecutionWidget.cpp:39: for(const auto& V:R->GetArrayField(TEXT("waypoints"))){const auto P=V->AsObject();Bounds+=ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude")));}
+Source/UE5DroneControl/Map/MapExecutionWidget.cpp:40: const auto Home=Object(Execution,TEXT("home_position"));Bounds+=ICoordinateService::Execute_GeographicToWorld(Coordinates,Home->GetNumberField(TEXT("latitude")),Home->GetNumberField(TEXT("longitude")),Home->GetNumberField(TEXT("altitude")));
+Source/UE5DroneControl/Map/MapExecutionWidget.cpp:49: const auto World=ICoordinateService::Execute_GeographicToWorld(C,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude")));
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:34: if(C)for(const auto& W:Route.Waypoints){const auto G=ICoordinateService::Execute_WorldToGeographic(C,W.Location);auto P=MakeShared<FJsonObject>();P->SetNumberField(TEXT("sequence"),Points.Num()+1);P->SetNumberField(TEXT("latitude"),G.Y);P->SetNumberField(TEXT("longitude"),G.X);P->SetNumberField(TEXT("altitude"),G.Z);P->SetNumberField(TEXT("segmentSpeed"),W.SegmentSpeed);P->SetNumberField(TEXT("waitTime"),W.WaitTime);auto L=MakeShared<FJsonObject>();L->SetNumberField(TEXT("x"),W.Location.X);L->SetNumberField(TEXT("y"),W.Location.Y);L->SetNumberField(TEXT("z"),W.Location.Z);P->SetObjectField(TEXT("location"),L);Points.Add(MakeShared<FJsonValueObject>(P));}
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:42: if(R){R->TryGetBoolField(TEXT("bClosedLoop"),Data.bClosedLoop);if(R->TryGetArrayField(TEXT("waypoints"),Points))for(const auto& P:*Points){const auto O=P->AsObject();FDroneWaypointSaveData W;W.Location=ICoordinateService::Execute_GeographicToWorld(C,O->GetNumberField(TEXT("latitude")),O->GetNumberField(TEXT("longitude")),O->GetNumberField(TEXT("altitude")));W.SegmentSpeed=O->GetNumberField(TEXT("segmentSpeed"));W.WaitTime=O->GetNumberField(TEXT("waitTime"));Data.Waypoints.Add(W);}}
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:540: // ==================== NED 四元数 → UE5 欧拉角转换 ====================
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:542: // 无人机四元数（NED 坐标系）：
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:543: //   表示从 NED 参考系到机体系的旋转
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:551: // 注意：NED 和 UE5 坐标系不同，需要转换
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:554: // 【修复】NED 到 UE5 的坐标系转换
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:555: // NED: X=North, Y=East, Z=Down
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:574: // ==================== NED 坐标系 → UE5 坐标系转换 ====================
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:576: // 无人机坐标系（NED - North East Down）：
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:742: // 	UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [原始数据] NED Position: (%.6f, %.6f, %.6f) 米"),
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:779: // 坐标系和单位转换: NED (米) -> UE5 (厘米)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:894: Snap.NedLocation     = DroneData.Position; // absolute NED [m]
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:897: Snap.Altitude        = -DroneData.Position.Z; // NED down is negative altitude
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:986: // though both used the same PX4 NED telemetry.  Prefer the synchronized GPS in this telemetry
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:1013: TargetLocation = ICoordinateService::Execute_GeographicToWorld(
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:1114: AnchorWorldLocation = ICoordinateService::Execute_GeographicToWorld(
+Source/UE5DroneControl/RealTimeDroneReceiver.h:32: // Position (NED, meters)
+Source/UE5DroneControl/RealTimeDroneReceiver.h:52: * Converts NED -> UE5 coordinates and drives the drone mesh.
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:286: T.WorldLocation=ICoordinateService::Execute_GeographicToWorld(C,T.GpsLatitude,T.GpsLongitude,T.GpsAltitude);
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:138: W.Location=ICoordinateService::Execute_GeographicToWorld(Coordinate,O->GetNumberField(TEXT("latitude")),O->GetNumberField(TEXT("longitude")),O->GetNumberField(TEXT("altitude")));
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:163: TArray<TSharedPtr<FJsonValue>> Points;for(const auto& W:Route.Waypoints){const FVector Geo=ICoordinateService::Execute_WorldToGeographic(Coordinate,W.Location);auto P=MakeShared<FJsonObject>();
+Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:105: const FVector OriginGps = ICoordinateService::Execute_WorldToGeographic(Coordinates.GetObject(), Registry->GetSenderPawn(9011)->GetActorLocation());
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:691: // PX4, however, consumes a power-on-origin-relative NED target.  Build a separate wire copy
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1647: // wire copy through WGS84 + fresh per-drone local NED so the backend receives
+tools/integration_week4.py:181: """注入遥测，位置恰好在 UE 偏移对应的 NED 坐标（误差 0）。"""
+tools/integration_week4.py:209: # 对应 NED (m)：d1→(1,0,5)，d2→(-1,0,5)
+tools/simulate_telemetry.py:109: 坐标系：NED（米），position[2] 为负表示在地面以上。
+tools/simulate_telemetry.py:125: # 偏航角随时间变化（NED 右手系，弧度）
+tools/simulate_telemetry.py:213: print(f"[d{drone_id}] t={t:.1f}s  NED=({pos[0]:.2f},{pos[1]:.2f},{pos[2]:.2f})  battery={battery}%")
+tools/simulate_telemetry.py:251: help="固定 NED 位置（米），例如 --position 10 0 5",
+tools/simulate_telemetry.py:255: help="固定 UE 偏移目标（厘米），脚本自动转换成 NED 注入，例如 --ue-target 1000 0 -500",
+ue_px4_msgs/messages.py:241: position: List[float] = field(default_factory=lambda: [0.0, 0.0, 0.0])  # NED, 米
+ue_px4_msgs/utils.py:21: NED: X=北(North), Y=东(East), Z=下(Down) - 右手坐标系
+ue_px4_msgs/utils.py:72: def gps_to_enu(lat: float, lon: float, alt: float,
+ue_px4_msgs/utils.py:102: def enu_to_ned(e: float, n: float, u: float) -> Tuple[float, float, float]:
+ue_px4_msgs/utils.py:106: ENU: 东-北-上 (East-North-Up)
+ue_px4_msgs/utils.py:107: NED: 北-东-下 (North-East-Down)

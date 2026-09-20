@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="60" failures="2" disabled="0" errors="0" time="0.054" timestamp="2026-09-15T09:29:30.287" name="AllTests">
+  <testsuite name="P1BackendContext" tests="3" failures="0" disabled="0" skipped="0" errors="0" time="0.013" timestamp="2026-09-15T09:29:30.287">
+    <testcase name="SnapshotVersionAtomicUpdateAndNoop" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_operational_context.cpp" line="4" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.287" classname="P1BackendContext" />
+    <testcase name="ConcurrentWritersPublishMonotonically" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_operational_context.cpp" line="16" status="run" result="completed" time="0.002" timestamp="2026-09-15T09:29:30.287" classname="P1BackendContext" />
+    <testcase name="RestartPreservesVersionAndAllFields" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_operational_context.cpp" line="24" status="run" result="completed" time="0.01" timestamp="2026-09-15T09:29:30.290" classname="P1BackendContext" />
+  </testsuite>
+  <testsuite name="PlanFixture" tests="6" failures="0" disabled="0" skipped="0" errors="0" time="0.01" timestamp="2026-09-15T09:29:30.301">
+    <testcase name="Create" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_security_plans.cpp" line="32" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.301" classname="PlanFixture" />
+    <testcase name="AssignmentAndDuplicateRejected" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_security_plans.cpp" line="33" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.301" classname="PlanFixture" />
+    <testcase name="ValidationFailureAndAtomicDeploy" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_security_plans.cpp" line="41" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.301" classname="PlanFixture" />
+    <testcase name="InvalidCoordinatesAndStaleVersion" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_security_plans.cpp" line="49" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.302" classname="PlanFixture" />
+    <testcase name="SelectionAndReadinessInvalidation" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_security_plans.cpp" line="58" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.302" classname="PlanFixture" />
+    <testcase name="PersistenceRestart" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_security_plans.cpp" line="64" status="run" result="completed" time="0.008" timestamp="2026-09-15T09:29:30.303" classname="PlanFixture" />
+  </testsuite>
+  <testsuite name="P4Workflow" tests="6" failures="0" disabled="0" skipped="0" errors="0" time="0.003" timestamp="2026-09-15T09:29:30.312">
+    <testcase name="RevisionValidationReviewInvalidation" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="23" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.312" classname="P4Workflow" />
+    <testcase name="ReviewRequiredAndDeploymentCopyImmutable" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="30" status="run" result="completed" time="0.001" timestamp="2026-09-15T09:29:30.312" classname="P4Workflow" />
+    <testcase name="SessionBlocksReviewDeployAndSaveFailureRetains" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="42" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.313" classname="P4Workflow" />
+    <testcase name="OwnerRevisionAndDiscard" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="51" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.314" classname="P4Workflow" />
+    <testcase name="IndependentViewsNoopValidationAndBusinessIsolation" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="57" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.315" classname="P4Workflow" />
+    <testcase name="PublisherFailureRetainsCompleteDeploymentState" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="67" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.315" classname="P4Workflow" />
+  </testsuite>
+  <testsuite name="P4Atomicity" tests="1" failures="0" disabled="0" skipped="0" errors="0" time="0.002" timestamp="2026-09-15T09:29:30.315">
+    <testcase name="PersistenceFailurePublishesNothing" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_p4_workflow.cpp" line="73" status="run" result="completed" time="0.002" timestamp="2026-09-15T09:29:30.315" classname="P4Atomicity" />
+  </testsuite>
+  <testsuite name="CoordinateConverterTest" tests="3" failures="0" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.318">
+    <testcase name="NedToUeOffset" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_coordinate_converter.cpp" line="6" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CoordinateConverterTest" />
+    <testcase name="UeOffsetToNed" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_coordinate_converter.cpp" line="26" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CoordinateConverterTest" />
+    <testcase name="RoundTrip" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_coordinate_converter.cpp" line="44" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CoordinateConverterTest" />
+  </testsuite>
+  <testsuite name="QuaternionUtilsTest" tests="4" failures="0" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.318">
+    <testcase name="SpeedFromVelocity" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_quaternion_utils.cpp" line="10" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="QuaternionUtilsTest" />
+    <testcase name="IdentityQuaternion" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_quaternion_utils.cpp" line="20" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="QuaternionUtilsTest" />
+    <testcase name="YawFlip" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_quaternion_utils.cpp" line="31" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="QuaternionUtilsTest" />
+    <testcase name="GetUeYaw" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_quaternion_utils.cpp" line="48" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="QuaternionUtilsTest" />
+  </testsuite>
+  <testsuite name="GpsAnchorManagerTest" tests="5" failures="0" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.318">
+    <testcase name="SetAndGetAnchor" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_gps_anchor_manager.cpp" line="4" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="GpsAnchorManagerTest" />
+    <testcase name="UpdateAnchor" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_gps_anchor_manager.cpp" line="25" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="GpsAnchorManagerTest" />
+    <testcase name="ClearAnchor" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_gps_anchor_manager.cpp" line="39" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="GpsAnchorManagerTest" />
+    <testcase name="MultipleDrones" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_gps_anchor_manager.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="GpsAnchorManagerTest" />
+    <testcase name="GetNonExistent" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_gps_anchor_manager.cpp" line="64" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="GpsAnchorManagerTest" />
+  </testsuite>
+  <testsuite name="CommandQueueTest" tests="11" failures="0" disabled="0" skipped="0" errors="0" time="0.001" timestamp="2026-09-15T09:29:30.318">
+    <testcase name="PushAndPop" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="5" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="PopFromEmpty" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="26" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="FifoOrder" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="33" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="CoalescesPendingVerticalTargets" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="51" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="DoesNotCoalesceDifferentHorizontalTargets" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="78" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="CoalescesPendingManualTargetsToLatest" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="98" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="PreservesRequestedSpeedWhenReplacingManualTarget" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="127" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="OverflowDropsOldest" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="149" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="PauseBlocksPop" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="165" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="Clear" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="182" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+    <testcase name="ThreadSafety" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_command_queue.cpp" line="193" status="run" result="completed" time="0.001" timestamp="2026-09-15T09:29:30.318" classname="CommandQueueTest" />
+  </testsuite>
+  <testsuite name="StateMachineTest" tests="9" failures="0" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.319">
+    <testcase name="InitialStateIsOffline" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="6" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.319" classname="StateMachineTest" />
+    <testcase name="TelemetryTransitionsToOnline" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="12" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="TimeoutTransitionsToLost" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="19" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="TelemetryAfterTimeoutResetsToOnline" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="31" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="ResetGoesToOffline" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="42" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="PowerOnEvent" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="LostConnectionEvent" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="59" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="ReconnectEvent" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="69" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+    <testcase name="NoTimeoutWhenNotOnline" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_state_machine.cpp" line="80" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="StateMachineTest" />
+  </testsuite>
+  <testsuite name="AssignmentSolverTest" tests="2" failures="0" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.320">
+    <testcase name="Hungarian3x3" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="8" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="AssignmentSolverTest" />
+    <testcase name="HungarianDiagonal" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="34" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="AssignmentSolverTest" />
+  </testsuite>
+  <testsuite name="SegmentDistanceTest" tests="4" failures="1" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.320">
+    <testcase name="Parallel" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="51" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="SegmentDistanceTest" />
+    <testcase name="Crossing" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="60" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="SegmentDistanceTest">
+      <failure message="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp:66&#x0A;The difference between d and 0.0 is 5, which exceeds 1e-4, where&#x0A;d evaluates to 5,&#x0A;0.0 evaluates to 0, and&#x0A;1e-4 evaluates to 0.0001.&#x0A;" type=""><![CDATA[C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp:66
+The difference between d and 0.0 is 5, which exceeds 1e-4, where
+d evaluates to 5,
+0.0 evaluates to 0, and
+1e-4 evaluates to 0.0001.
+]]></failure>
+    </testcase>
+    <testcase name="EndpointClosest" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="69" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="SegmentDistanceTest" />
+    <testcase name="VerticalSeparation" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="77" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="SegmentDistanceTest" />
+  </testsuite>
+  <testsuite name="AssemblyPlannerTest" tests="3" failures="1" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-09-15T09:29:30.320">
+    <testcase name="NoConflictSparse" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="90" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="AssemblyPlannerTest" />
+    <testcase name="ConflictHeightSeparation" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="110" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="AssemblyPlannerTest">
+      <failure message="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp:128&#x0A;Expected: (conflicts.size()) &gt;= (1u), actual: 0 vs 1&#x0A;" type=""><![CDATA[C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp:128
+Expected: (conflicts.size()) >= (1u), actual: 0 vs 1
+]]></failure>
+      <failure message="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp:133&#x0A;Value of: z_changed&#x0A;  Actual: false&#x0A;Expected: true&#x0A;" type=""><![CDATA[C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp:133
+Value of: z_changed
+  Actual: false
+Expected: true
+]]></failure>
+    </testcase>
+    <testcase name="PreservePreassignedTargets" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_assembly_planner.cpp" line="136" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.320" classname="AssemblyPlannerTest" />
+  </testsuite>
+  <testsuite name="VideoMetadataStoreTest" tests="3" failures="0" disabled="0" skipped="0" errors="0" time="0.021" timestamp="2026-09-15T09:29:30.320">
+    <testcase name="StoresJsonLinesAndDeduplicatesRetry" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_video_metadata_store.cpp" line="53" status="run" result="completed" time="0.011" timestamp="2026-09-15T09:29:30.320" classname="VideoMetadataStoreTest" />
+    <testcase name="RejectsUnsafeMissionNameAndOversizedBatch" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_video_metadata_store.cpp" line="76" status="run" result="completed" time="0." timestamp="2026-09-15T09:29:30.332" classname="VideoMetadataStoreTest" />
+    <testcase name="AcceptsEmptyFinalBatchAndWritesCompletionMarker" file="C:\Users\wy331\Documents\UE5DroneControl-p4\Backend\tests\test_video_metadata_store.cpp" line="86" status="run" result="completed" time="0.009" timestamp="2026-09-15T09:29:30.332" classname="VideoMetadataStoreTest" />
+  </testsuite>
+</testsuites>

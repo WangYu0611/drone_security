@@ -1,0 +1,29 @@
+{
+  "id": "plan-1",
+  "name": "P5.2 Mission Test",
+  "description": "",
+  "status": "DEPLOYED",
+  "content_revision": 3,
+  "review": {
+    "content_revision": 3,
+    "reviewed_at": 1789826800.468423,
+    "reviewed_by": "CLIENT-COMMAND-98385c6c"
+  },
+  "version": 6,
+  "created_at": 1789826434.3097532,
+  "updated_at": 1789826800.518537,
+  "mission_ids": [
+    "mission-2"
+  ],
+  "workflow_step": "PreDeployReview",
+  "workflow_mission_id": "mission-2",
+  "validation": {
+    "ready": true,
+    "issues": [],
+    "mission_count": 1,
+    "assigned_count": 1,
+    "routes_ready": 1,
+    "validated_content_revision": 3
+  },
+  "deployment_id": "deployment-5"
+}

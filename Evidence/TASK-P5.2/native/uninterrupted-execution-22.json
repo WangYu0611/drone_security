@@ -1,0 +1,242 @@
+[
+  {
+    "sequence": 109,
+    "timestamp": 1789832282.7971516,
+    "event_type": "EXECUTION_CREATED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "EXECUTION_CREATED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "CREATED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 110,
+    "timestamp": 1789832282.8450055,
+    "event_type": "PREFLIGHT_STARTED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "PREFLIGHT_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 111,
+    "timestamp": 1789832282.9543624,
+    "event_type": "PREFLIGHT_PASSED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "PREFLIGHT_PASSED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "PREFLIGHT",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 112,
+    "timestamp": 1789832282.954376,
+    "event_type": "MISSION_STARTING",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "MISSION_STARTING",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "STARTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 113,
+    "timestamp": 1789832283.0634763,
+    "event_type": "MISSION_STARTED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "MISSION_STARTED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.0,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 114,
+    "timestamp": 1789832290.0343168,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34699999999998,
+        "altitude": 59.999999999441336
+      },
+      "progress": 0.2801595831830783,
+      "current_waypoint": 1
+    }
+  },
+  {
+    "sequence": 115,
+    "timestamp": 1789832332.7063801,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.98099999999999,
+        "longitude": 116.3475,
+        "altitude": 59.999999999665114
+      },
+      "progress": 0.49483398111420634,
+      "current_waypoint": 2
+    }
+  },
+  {
+    "sequence": 116,
+    "timestamp": 1789832389.107154,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.980499999999985,
+        "longitude": 116.3475,
+        "altitude": 69.99999999979289
+      },
+      "progress": 0.7794892392769824,
+      "current_waypoint": 3
+    }
+  },
+  {
+    "sequence": 117,
+    "timestamp": 1789832432.8965232,
+    "event_type": "WAYPOINT_REACHED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "WAYPOINT_REACHED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "EXECUTING",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 0.999999,
+      "current_waypoint": 4
+    }
+  },
+  {
+    "sequence": 118,
+    "timestamp": 1789832432.8965337,
+    "event_type": "MISSION_COMPLETED",
+    "params": {
+      "target_id": "execution-22",
+      "uav_id": "UAV-01",
+      "reason": ""
+    },
+    "category": "MISSION",
+    "target_id": "execution-22",
+    "message": "MISSION_COMPLETED",
+    "source": "Mock Execution",
+    "execution_snapshot": {
+      "state": "COMPLETED",
+      "position": {
+        "latitude": 39.9805,
+        "longitude": 116.34699999999998,
+        "altitude": 59.99999999916992
+      },
+      "progress": 1.0,
+      "current_waypoint": 4
+    }
+  }
+]

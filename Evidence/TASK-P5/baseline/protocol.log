@@ -1,0 +1,23 @@
+PASS Command creates plan revision 1
+PASS Map business mutations forbidden
+PASS Command route mutations forbidden
+PASS Video all plan actions forbidden
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+409 !== 200
+
+    at file:///C:/Users/wy331/Documents/UE5DroneControl-p5/Backend/tests/p4_workflow_integration.mjs:22:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 409,
+  expected: 200,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.0

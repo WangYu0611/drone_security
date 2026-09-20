@@ -1,0 +1,31 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p3\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p3).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandShellWidget.cpp, SecurityPlanPanel.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 5 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 17.23 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/5] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+C:\Users\wy331\Documents\UE5DroneControl-p3\Source\UE5DroneControl\Shared\SecurityPlanPanel.cpp(39,161): error C2039: "SetFont": ﾲﾻￊￇ "UEditableTextBox" ﾵￄﾳ￉ￔﾱ
+    auto Entry=[&](const TCHAR* Hint){auto* W=WidgetTree->ConstructWidget<UEditableTextBox>();W->SetHintText(FText::FromString(Hint));CommandTheme::Input(W);W->SetFont(FCoreStyle::GetDefaultFontStyle("Regular",14));Editing->AddChild(W);return W;};
+                                                                                                                                                                ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\EditableTextBox.h(27,7): note: ﾲￎﾼ￻ﾡﾰUEditableTextBoxﾡﾱﾵￄ￉￹ￃ￷
+class UEditableTextBox : public UWidget
+      ^
+[2/5] Compile [x64] CommandShellWidget.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 12.94 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 15.99 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 5.0kb

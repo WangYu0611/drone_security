@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "next_id": 2,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "P4 Native Security",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 1,
+      "review": null,
+      "version": 1,
+      "created_at": 1789434945.1681423,
+      "updated_at": 1789434945.1681423,
+      "mission_ids": [],
+      "validation": {
+        "ready": false,
+        "issues": [
+          {
+            "mission_id": "",
+            "code": "NO_MISSIONS",
+            "params": {}
+          }
+        ],
+        "mission_count": 0,
+        "assigned_count": 0,
+        "routes_ready": 0,
+        "validated_content_revision": null
+      }
+    }
+  },
+  "missions": {},
+  "paths": {},
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1789434945.1681497,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P4 Native Security"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P4 Native Security",
+      "source": "CLIENT-COMMAND-2D014286"
+    }
+  ],
+  "deployments": {},
+  "edit_sessions": {}
+}

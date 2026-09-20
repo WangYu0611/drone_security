@@ -1,0 +1,107 @@
+ M Backend/http/http_server.cpp
+ M Backend/storage/security_plan_store.h
+ M Backend/tests/test_p4_workflow.cpp
+ M Config/DefaultGame.ini
+ M Evidence/TASK-P4/automation/run-automation.ps1
+ M Source/UE5DroneControl/Command/CommandAlarmPanel.cpp
+ M Source/UE5DroneControl/Command/CommandCenterPanel.cpp
+ M Source/UE5DroneControl/Command/CommandCenterPanel.h
+ M Source/UE5DroneControl/Command/CommandShellWidget.cpp
+ M Source/UE5DroneControl/Command/CommandTacticalMap.cpp
+ M Source/UE5DroneControl/Command/OperationalLogWidget.cpp
+ M Source/UE5DroneControl/Command/OperationalLogWidget.h
+ M Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h
+ M Source/UE5DroneControl/Map/MapShellWidget.cpp
+ M Source/UE5DroneControl/Map/MapShellWidget.h
+ M Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp
+ M Source/UE5DroneControl/Shared/OperationalContextSubsystem.h
+ M Source/UE5DroneControl/Shared/OperationalEventStore.cpp
+ M Source/UE5DroneControl/Shared/OperationalEventStore.h
+ M Source/UE5DroneControl/UI/DroneListItemWidget.cpp
+ M Source/UE5DroneControl/UI/DroneListWidget.cpp
+ M Source/UE5DroneControl/Video/VideoShellWidget.cpp
+ M Source/UE5DroneControl/Video/VideoShellWidget.h
+?? Backend/tests/p4_restart_check.mjs
+?? Backend/tests/p4_ue_route_fixture.mjs
+?? Backend/tests/p4_workflow_integration.mjs
+?? Config/Localization/
+?? Content/Localization/
+?? Evidence/TASK-P4/acceptance-ledger.md
+?? Evidence/TASK-P4/automation/build-draft-guard-trial1.log
+?? Evidence/TASK-P4/automation/build-final-trial1.log
+?? Evidence/TASK-P4/automation/build-final-trial2.log
+?? Evidence/TASK-P4/automation/build-final-trial3.log
+?? Evidence/TASK-P4/automation/build-language-refresh.log
+?? Evidence/TASK-P4/automation/build-localization-trial1.log
+?? Evidence/TASK-P4/automation/build-localization-trial2.log
+?? Evidence/TASK-P4/automation/build-tests-trial1.log
+?? Evidence/TASK-P4/automation/build-ui-polish-trial1.log
+?? Evidence/TASK-P4/automation/build-workflow-trial1.log
+?? Evidence/TASK-P4/automation/build-workflow-trial2.log
+?? Evidence/TASK-P4/automation/p4-command-final.log
+?? Evidence/TASK-P4/automation/p4-command-final/
+?? Evidence/TASK-P4/automation/p4-command-live-trial1.log
+?? Evidence/TASK-P4/automation/p4-command-live-trial1/
+?? Evidence/TASK-P4/automation/p4-command-live-trial2.log
+?? Evidence/TASK-P4/automation/p4-command-live-trial2/
+?? Evidence/TASK-P4/automation/p4-localization-trial1.log
+?? Evidence/TASK-P4/automation/p4-localization-trial1/
+?? Evidence/TASK-P4/automation/p4-localization-trial2.log
+?? Evidence/TASK-P4/automation/p4-localization-trial2/
+?? Evidence/TASK-P4/automation/p4-map-live-trial1.log
+?? Evidence/TASK-P4/automation/p4-map-live-trial1/
+?? Evidence/TASK-P4/automation/p4-video-trial1.log
+?? Evidence/TASK-P4/automation/p4-video-trial1/
+?? Evidence/TASK-P4/automation/p4-video-trial2.log
+?? Evidence/TASK-P4/automation/p4-video-trial2/
+?? Evidence/TASK-P4/automation/route-fixture.json
+?? Evidence/TASK-P4/backend/build-atomicity-trial1.log
+?? Evidence/TASK-P4/backend/build-domain-trial1.log
+?? Evidence/TASK-P4/backend/build-domain-trial2.log
+?? Evidence/TASK-P4/backend/build-domain-trial3.log
+?? Evidence/TASK-P4/backend/build-domain-trial4.log
+?? Evidence/TASK-P4/backend/build-errors-trial1.log
+?? Evidence/TASK-P4/backend/build-final.log
+?? Evidence/TASK-P4/backend/domain-trial1.log
+?? Evidence/TASK-P4/backend/domain-trial1.xml
+?? Evidence/TASK-P4/backend/domain-trial2.log
+?? Evidence/TASK-P4/backend/domain-trial2.xml
+?? Evidence/TASK-P4/backend/full-final.log
+?? Evidence/TASK-P4/backend/full-final.xml
+?? Evidence/TASK-P4/backend/full-trial1.log
+?? Evidence/TASK-P4/backend/full-trial1.xml
+?? Evidence/TASK-P4/backend/native-errors.stderr.log
+?? Evidence/TASK-P4/backend/native-errors.stdout.log
+?? Evidence/TASK-P4/backend/native-restart.stderr.log
+?? Evidence/TASK-P4/backend/native-restart.stdout.log
+?? Evidence/TASK-P4/backend/protocol-final.stderr.log
+?? Evidence/TASK-P4/backend/protocol-final.stdout.log
+?? Evidence/TASK-P4/backend/protocol2-atomicity.stderr.log
+?? Evidence/TASK-P4/backend/protocol2-atomicity.stdout.log
+?? Evidence/TASK-P4/backend/protocol2-errors.stderr.log
+?? Evidence/TASK-P4/backend/protocol2-errors.stdout.log
+?? Evidence/TASK-P4/closure/
+?? Evidence/TASK-P4/localization/
+?? Evidence/TASK-P4/native/
+?? Evidence/TASK-P4/protocol/final/
+?? Evidence/TASK-P4/protocol/p4-final.log
+?? Evidence/TASK-P4/protocol/p4-http.json
+?? Evidence/TASK-P4/protocol/p4-results.json
+?? Evidence/TASK-P4/protocol/p4-trial1.log
+?? Evidence/TASK-P4/protocol/p4-trial2.log
+?? Evidence/TASK-P4/protocol/p4-ws.json
+?? Evidence/TASK-P4/protocol/restart-after.json
+?? Evidence/TASK-P4/protocol/restart-before.json
+?? Evidence/TASK-P4/protocol/restart-trial1.log
+?? Evidence/TASK-P4/protocol/trial1/
+?? Scripts/P4/
+?? Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp
+?? Source/UE5DroneControl/Map/MapMissionRouteWidget.h
+?? Source/UE5DroneControl/Shared/PlanWidgetSupport.h
+?? Source/UE5DroneControl/Shared/ProductText.cpp
+?? Source/UE5DroneControl/Shared/ProductText.h
+?? Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp
+?? Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.h
+?? Source/UE5DroneControl/Shared/UILanguageSubsystem.cpp
+?? Source/UE5DroneControl/Shared/UILanguageSubsystem.h
+?? Source/UE5DroneControl/Tests/P4WorkflowTest.cpp

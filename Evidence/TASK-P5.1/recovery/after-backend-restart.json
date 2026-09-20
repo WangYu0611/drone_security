@@ -1,0 +1,1140 @@
+{
+  "context": {
+    "context_version": 4,
+    "active_uav_id": null,
+    "active_alert_id": null,
+    "active_mission_id": "mission-17",
+    "active_security_plan_id": "plan-16",
+    "active_area_id": null,
+    "operation_mode": "MONITOR",
+    "updated_at": 1789821482.180189,
+    "updated_by": "CLIENT-COMMAND-393a462e"
+  },
+  "clients": [
+    {
+      "client_id": "CLIENT-VIDEO-7b5d2ce3",
+      "client_role": "Video",
+      "instance_id": "7b5d2ce3-eada-45f4-86d8-8140fc9bf5dd",
+      "hostname": "JXGM",
+      "app_version": "P5-Stage1",
+      "connected_at": 1789821602.6998239,
+      "last_seen": 1789821602.8006535,
+      "hydrated": true,
+      "state": "ONLINE",
+      "client_version": 7
+    },
+    {
+      "client_id": "CLIENT-COMMAND-393a462e",
+      "client_role": "Command",
+      "instance_id": "393a462e-c553-48ee-867c-c6b1999c47a0",
+      "hostname": "JXGM",
+      "app_version": "P5-Stage1",
+      "connected_at": 1789821602.709926,
+      "last_seen": 1789821602.709926,
+      "hydrated": false,
+      "state": "ONLINE",
+      "client_version": 5
+    },
+    {
+      "client_id": "CLIENT-MAP-07e94538",
+      "client_role": "Map",
+      "instance_id": "07e94538-7562-4da8-995f-04c9f427ed58",
+      "hostname": "JXGM",
+      "app_version": "P5-Stage1",
+      "connected_at": 1789821602.7356312,
+      "last_seen": 1789821602.7356317,
+      "hydrated": false,
+      "state": "ONLINE",
+      "client_version": 6
+    }
+  ],
+  "preferences": {
+    "language": "en",
+    "ui_preferences_version": 4,
+    "updated_at": 1789821524.3125355,
+    "updated_by": "CLIENT-VIDEO-7b5d2ce3"
+  },
+  "video": {
+    "video_target_uav_id": null,
+    "video_view_version": 0,
+    "updated_at": 0,
+    "updated_by": "Backend"
+  },
+  "plans": {
+    "version": 134,
+    "next_id": 19,
+    "plans": {
+      "plan-1": {
+        "id": "plan-1",
+        "name": "P5.1 UX Test Plan",
+        "description": "",
+        "status": "DEPLOYED",
+        "content_revision": 4,
+        "review": {
+          "content_revision": 4,
+          "reviewed_at": 1789819707.295076,
+          "reviewed_by": "CLIENT-COMMAND-a23b8ada"
+        },
+        "version": 7,
+        "created_at": 1789819439.8772883,
+        "updated_at": 1789819707.3458376,
+        "mission_ids": [
+          "mission-2"
+        ],
+        "workflow_step": "PreDeployReview",
+        "workflow_mission_id": "mission-2",
+        "validation": {
+          "ready": true,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": 4
+        },
+        "deployment_id": "deployment-5"
+      },
+      "plan-6": {
+        "id": "plan-6",
+        "name": "P5.1 UX Test Plan",
+        "description": "",
+        "status": "DRAFT",
+        "content_revision": 1,
+        "review": null,
+        "version": 1,
+        "created_at": 1789819732.0944328,
+        "updated_at": 1789819732.094433,
+        "mission_ids": [
+          "mission-7"
+        ],
+        "workflow_step": "TaskConfig",
+        "deployment": null,
+        "source_plan_id": "plan-1",
+        "source_deployment_id": "deployment-5",
+        "validation": {
+          "ready": false,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": null
+        }
+      },
+      "plan-9": {
+        "id": "plan-9",
+        "name": "P5.1 UX Test Plan",
+        "description": "",
+        "status": "DEPLOYED",
+        "content_revision": 4,
+        "review": {
+          "content_revision": 4,
+          "reviewed_at": 1789821461.7806704,
+          "reviewed_by": "CLIENT-COMMAND-393a462e"
+        },
+        "version": 7,
+        "created_at": 1789821203.4922483,
+        "updated_at": 1789821461.8280065,
+        "mission_ids": [
+          "mission-10"
+        ],
+        "workflow_step": "PreDeployReview",
+        "workflow_mission_id": "mission-10",
+        "validation": {
+          "ready": true,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": 4
+        },
+        "deployment_id": "deployment-15"
+      },
+      "plan-16": {
+        "id": "plan-16",
+        "name": "P5.1 UX Test Plan \u2014 new version",
+        "description": "",
+        "status": "DRAFT",
+        "content_revision": 1,
+        "review": null,
+        "version": 1,
+        "created_at": 1789821482.1760616,
+        "updated_at": 1789821482.1760619,
+        "mission_ids": [
+          "mission-17"
+        ],
+        "workflow_step": "TaskConfig",
+        "deployment": null,
+        "source_plan_id": "plan-9",
+        "source_deployment_id": "deployment-15",
+        "validation": {
+          "ready": false,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": null
+        }
+      }
+    },
+    "missions": {
+      "mission-2": {
+        "id": "mission-2",
+        "plan_id": "plan-1",
+        "name": "Task 01",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-4",
+        "status": "DEPLOYED"
+      },
+      "mission-7": {
+        "id": "mission-7",
+        "plan_id": "plan-6",
+        "name": "Task 01",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-8",
+        "status": "READY"
+      },
+      "mission-10": {
+        "id": "mission-10",
+        "plan_id": "plan-9",
+        "name": "Task 01",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-12",
+        "status": "DEPLOYED"
+      },
+      "mission-17": {
+        "id": "mission-17",
+        "plan_id": "plan-16",
+        "name": "Task 01",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-18",
+        "status": "READY"
+      }
+    },
+    "paths": {
+      "route-4": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.980746021520865,
+            "longitude": 116.347082667712,
+            "altitude": 1.0999914007549123,
+            "segmentSpeed": 0,
+            "waitTime": 0,
+            "location": {
+              "x": 706.1298302787158,
+              "y": 2820.0314430737185,
+              "z": -4190.0075635521025
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.98049939125645,
+            "longitude": 116.34684163856991,
+            "altitude": 1.0999927417713626,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -1352.6941661886606,
+              "y": 5558.471938508956,
+              "z": -4190.026565315466
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.98068807558485,
+            "longitude": 116.34663421437116,
+            "altitude": 1.0999710610047184,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -3124.46487139662,
+              "y": 3463.4238977102996,
+              "z": -4190.0200411105525
+            }
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981039495881795,
+            "longitude": 116.34670334700152,
+            "altitude": 1.0999791716410685,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -2533.93532039678,
+              "y": -438.5440162074714,
+              "z": -4190.0072506806355
+            }
+          }
+        ],
+        "route_id": "route-4"
+      },
+      "route-8": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.980746021520865,
+            "longitude": 116.347082667712,
+            "altitude": 1.0999914007549123,
+            "segmentSpeed": 0,
+            "waitTime": 0,
+            "location": {
+              "x": 706.1298302787158,
+              "y": 2820.0314430737185,
+              "z": -4190.0075635521025
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.98049939125645,
+            "longitude": 116.34684163856991,
+            "altitude": 1.0999927417713626,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -1352.6941661886606,
+              "y": 5558.471938508956,
+              "z": -4190.026565315466
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.98068807558485,
+            "longitude": 116.34663421437116,
+            "altitude": 1.0999710610047184,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -3124.46487139662,
+              "y": 3463.4238977102996,
+              "z": -4190.0200411105525
+            }
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981039495881795,
+            "longitude": 116.34670334700152,
+            "altitude": 1.0999791716410685,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -2533.93532039678,
+              "y": -438.5440162074714,
+              "z": -4190.0072506806355
+            }
+          }
+        ],
+        "route_id": "route-8"
+      },
+      "route-12": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.98070573384951,
+            "longitude": 116.34696528572084,
+            "altitude": 1.099981314894248,
+            "segmentSpeed": 0,
+            "waitTime": 0,
+            "location": {
+              "x": -296.52208617329615,
+              "y": 3267.362976551056,
+              "z": -4190.010400772095
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.98051227390441,
+            "longitude": 116.34688355028366,
+            "altitude": 1.099979560487666,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -994.6918404102328,
+              "y": 5415.430939674377,
+              "z": -4190.02598875761
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.980384990459655,
+            "longitude": 116.34669077897703,
+            "altitude": 1.0999679254643535,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -2641.3134256303315,
+              "y": 6828.709523797035,
+              "z": -4190.045470952988
+            }
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.98024362272158,
+            "longitude": 116.34661696519522,
+            "altitude": 1.0999585048667089,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -3271.8249474831823,
+              "y": 8398.373485722099,
+              "z": -4190.068151866857
+            }
+          }
+        ],
+        "route_id": "route-12"
+      },
+      "route-18": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.98070573384951,
+            "longitude": 116.34696528572084,
+            "altitude": 1.099981314894248,
+            "segmentSpeed": 0,
+            "waitTime": 0,
+            "location": {
+              "x": -296.52208617329615,
+              "y": 3267.362976551056,
+              "z": -4190.010400772095
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.98051227390441,
+            "longitude": 116.34688355028366,
+            "altitude": 1.099979560487666,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -994.6918404102328,
+              "y": 5415.430939674377,
+              "z": -4190.02598875761
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.980384990459655,
+            "longitude": 116.34669077897703,
+            "altitude": 1.0999679254643535,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -2641.3134256303315,
+              "y": 6828.709523797035,
+              "z": -4190.045470952988
+            }
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.98024362272158,
+            "longitude": 116.34661696519522,
+            "altitude": 1.0999585048667089,
+            "segmentSpeed": 1,
+            "waitTime": 0,
+            "location": {
+              "x": -3271.8249474831823,
+              "y": 8398.373485722099,
+              "z": -4190.068151866857
+            }
+          }
+        ],
+        "route_id": "route-18"
+      }
+    },
+    "events": [
+      {
+        "sequence": 1,
+        "timestamp": 1789819439.877302,
+        "event_type": "PLAN_CREATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Security plan created: P5.1 UX Test Plan",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 2,
+        "timestamp": 1789819439.8773155,
+        "event_type": "MISSION_CREATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Default task created",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 3,
+        "timestamp": 1789819476.4283092,
+        "event_type": "UAV_ASSIGNED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "UAV-01 assigned to Task 01",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 4,
+        "timestamp": 1789819486.8120615,
+        "event_type": "ROUTE_EDIT_STARTED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route editing started",
+        "source": "CLIENT-MAP-09fc8af9"
+      },
+      {
+        "sequence": 5,
+        "timestamp": 1789819593.113606,
+        "event_type": "ROUTE_CREATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route saved: Task 01",
+        "source": "CLIENT-MAP-09fc8af9"
+      },
+      {
+        "sequence": 6,
+        "timestamp": 1789819593.1136107,
+        "event_type": "ROUTE_SAVED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route draft saved",
+        "source": "CLIENT-MAP-09fc8af9"
+      },
+      {
+        "sequence": 7,
+        "timestamp": 1789819666.015762,
+        "event_type": "ROUTE_UPDATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route saved: Task 01",
+        "source": "CLIENT-MAP-09fc8af9"
+      },
+      {
+        "sequence": 8,
+        "timestamp": 1789819666.015767,
+        "event_type": "ROUTE_SAVED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route draft saved",
+        "source": "CLIENT-MAP-09fc8af9"
+      },
+      {
+        "sequence": 9,
+        "timestamp": 1789819666.022706,
+        "event_type": "ROUTE_EDIT_COMPLETED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route editing completed",
+        "source": "CLIENT-MAP-09fc8af9"
+      },
+      {
+        "sequence": 10,
+        "timestamp": 1789819707.2469332,
+        "event_type": "PLAN_VALIDATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Configuration checked",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 11,
+        "timestamp": 1789819707.2950795,
+        "event_type": "PLAN_REVIEWED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Current configuration reviewed",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 12,
+        "timestamp": 1789819707.3458335,
+        "event_type": "PLAN_DEPLOYED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Deployed. Execution has not started.",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 13,
+        "timestamp": 1789819732.094446,
+        "event_type": "PLAN_COPIED",
+        "params": {
+          "target_id": "plan-6",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-6",
+        "message": "Plan copied as draft",
+        "source": "CLIENT-COMMAND-a23b8ada"
+      },
+      {
+        "sequence": 14,
+        "timestamp": 1789821203.492257,
+        "event_type": "PLAN_CREATED",
+        "params": {
+          "target_id": "plan-9",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-9",
+        "message": "Security plan created: P5.1 UX Test Plan",
+        "source": "CLIENT-COMMAND-1e813bd0"
+      },
+      {
+        "sequence": 15,
+        "timestamp": 1789821203.4922662,
+        "event_type": "MISSION_CREATED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Default task created",
+        "source": "CLIENT-COMMAND-1e813bd0"
+      },
+      {
+        "sequence": 16,
+        "timestamp": 1789821220.1939223,
+        "event_type": "UAV_ASSIGNED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "UAV-01 assigned to Task 01",
+        "source": "CLIENT-COMMAND-1e813bd0"
+      },
+      {
+        "sequence": 17,
+        "timestamp": 1789821220.1939323,
+        "event_type": "MISSION_CONFIGURED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Task configured",
+        "source": "CLIENT-COMMAND-1e813bd0"
+      },
+      {
+        "sequence": 18,
+        "timestamp": 1789821228.9989362,
+        "event_type": "ROUTE_EDIT_STARTED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route editing started",
+        "source": "CLIENT-MAP-2562b752"
+      },
+      {
+        "sequence": 19,
+        "timestamp": 1789821273.6986842,
+        "event_type": "ROUTE_CREATED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route saved: Task 01",
+        "source": "CLIENT-MAP-2562b752"
+      },
+      {
+        "sequence": 20,
+        "timestamp": 1789821273.6986897,
+        "event_type": "ROUTE_SAVED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route draft saved",
+        "source": "CLIENT-MAP-2562b752"
+      },
+      {
+        "sequence": 21,
+        "timestamp": 1789821330.4582796,
+        "event_type": "ROUTE_EDIT_STARTED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route editing started",
+        "source": "CLIENT-MAP-8b167bd4"
+      },
+      {
+        "sequence": 22,
+        "timestamp": 1789821351.5151448,
+        "event_type": "ROUTE_EDIT_STARTED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route editing started",
+        "source": "CLIENT-MAP-07e94538"
+      },
+      {
+        "sequence": 23,
+        "timestamp": 1789821441.3831048,
+        "event_type": "ROUTE_UPDATED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route saved: Task 01",
+        "source": "CLIENT-MAP-07e94538"
+      },
+      {
+        "sequence": 24,
+        "timestamp": 1789821441.3831089,
+        "event_type": "ROUTE_SAVED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route draft saved",
+        "source": "CLIENT-MAP-07e94538"
+      },
+      {
+        "sequence": 25,
+        "timestamp": 1789821441.391682,
+        "event_type": "ROUTE_EDIT_COMPLETED",
+        "params": {
+          "target_id": "mission-10",
+          "mission_name": "Task 01",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-10",
+        "message": "Route editing completed",
+        "source": "CLIENT-MAP-07e94538"
+      },
+      {
+        "sequence": 26,
+        "timestamp": 1789821461.7254908,
+        "event_type": "PLAN_VALIDATED",
+        "params": {
+          "target_id": "plan-9",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-9",
+        "message": "Configuration checked",
+        "source": "CLIENT-COMMAND-393a462e"
+      },
+      {
+        "sequence": 27,
+        "timestamp": 1789821461.725495,
+        "event_type": "PLAN_REVIEW_READY",
+        "params": {
+          "target_id": "plan-9",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-9",
+        "message": "Pre-deployment check ready",
+        "source": "CLIENT-COMMAND-393a462e"
+      },
+      {
+        "sequence": 28,
+        "timestamp": 1789821461.7806728,
+        "event_type": "PLAN_REVIEWED",
+        "params": {
+          "target_id": "plan-9",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-9",
+        "message": "Current configuration reviewed",
+        "source": "CLIENT-COMMAND-393a462e"
+      },
+      {
+        "sequence": 29,
+        "timestamp": 1789821461.8279996,
+        "event_type": "PLAN_DEPLOYED",
+        "params": {
+          "target_id": "plan-9",
+          "plan_name": "P5.1 UX Test Plan"
+        },
+        "category": "PLAN",
+        "target_id": "plan-9",
+        "message": "Deployed. Execution has not started.",
+        "source": "CLIENT-COMMAND-393a462e"
+      },
+      {
+        "sequence": 30,
+        "timestamp": 1789821482.1760743,
+        "event_type": "PLAN_COPIED",
+        "params": {
+          "target_id": "plan-16",
+          "plan_name": "P5.1 UX Test Plan \u2014 new version"
+        },
+        "category": "PLAN",
+        "target_id": "plan-16",
+        "message": "Plan copied as draft",
+        "source": "CLIENT-COMMAND-393a462e"
+      },
+      {
+        "sequence": 31,
+        "timestamp": 1789821482.176078,
+        "event_type": "PLAN_VERSION_CREATED",
+        "params": {
+          "target_id": "plan-16",
+          "plan_name": "P5.1 UX Test Plan \u2014 new version"
+        },
+        "category": "PLAN",
+        "target_id": "plan-16",
+        "message": "New plan version created",
+        "source": "CLIENT-COMMAND-393a462e"
+      }
+    ],
+    "deployments": {
+      "deployment-5": {
+        "id": "deployment-5",
+        "plan_id": "plan-1",
+        "content_revision": 4,
+        "deployed_at": 1789819707.345824,
+        "deployed_by": "CLIENT-COMMAND-a23b8ada",
+        "reviewed_by": "CLIENT-COMMAND-a23b8ada",
+        "reviewed_at": 1789819707.295076,
+        "snapshot": {
+          "plan": {
+            "id": "plan-1",
+            "name": "P5.1 UX Test Plan",
+            "description": "",
+            "status": "DEPLOYED",
+            "content_revision": 4,
+            "review": {
+              "content_revision": 4,
+              "reviewed_at": 1789819707.295076,
+              "reviewed_by": "CLIENT-COMMAND-a23b8ada"
+            },
+            "version": 6,
+            "created_at": 1789819439.8772883,
+            "updated_at": 1789819707.295082,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "PreDeployReview",
+            "workflow_mission_id": "mission-2",
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 1,
+              "routes_ready": 1,
+              "validated_content_revision": 4
+            },
+            "deployment_id": "deployment-5"
+          },
+          "missions": {
+            "mission-2": {
+              "id": "mission-2",
+              "plan_id": "plan-1",
+              "name": "Task 01",
+              "assigned_uav_id": "UAV-01",
+              "route_id": "route-4",
+              "status": "DEPLOYED"
+            }
+          },
+          "paths": {
+            "route-4": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.980746021520865,
+                  "longitude": 116.347082667712,
+                  "altitude": 1.0999914007549123,
+                  "segmentSpeed": 0,
+                  "waitTime": 0,
+                  "location": {
+                    "x": 706.1298302787158,
+                    "y": 2820.0314430737185,
+                    "z": -4190.0075635521025
+                  }
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.98049939125645,
+                  "longitude": 116.34684163856991,
+                  "altitude": 1.0999927417713626,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -1352.6941661886606,
+                    "y": 5558.471938508956,
+                    "z": -4190.026565315466
+                  }
+                },
+                {
+                  "sequence": 3,
+                  "latitude": 39.98068807558485,
+                  "longitude": 116.34663421437116,
+                  "altitude": 1.0999710610047184,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -3124.46487139662,
+                    "y": 3463.4238977102996,
+                    "z": -4190.0200411105525
+                  }
+                },
+                {
+                  "sequence": 4,
+                  "latitude": 39.981039495881795,
+                  "longitude": 116.34670334700152,
+                  "altitude": 1.0999791716410685,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -2533.93532039678,
+                    "y": -438.5440162074714,
+                    "z": -4190.0072506806355
+                  }
+                }
+              ],
+              "route_id": "route-4"
+            }
+          }
+        }
+      },
+      "deployment-15": {
+        "id": "deployment-15",
+        "plan_id": "plan-9",
+        "content_revision": 4,
+        "deployed_at": 1789821461.827988,
+        "deployed_by": "CLIENT-COMMAND-393a462e",
+        "reviewed_by": "CLIENT-COMMAND-393a462e",
+        "reviewed_at": 1789821461.7806704,
+        "snapshot": {
+          "plan": {
+            "id": "plan-9",
+            "name": "P5.1 UX Test Plan",
+            "description": "",
+            "status": "DEPLOYED",
+            "content_revision": 4,
+            "review": {
+              "content_revision": 4,
+              "reviewed_at": 1789821461.7806704,
+              "reviewed_by": "CLIENT-COMMAND-393a462e"
+            },
+            "version": 6,
+            "created_at": 1789821203.4922483,
+            "updated_at": 1789821461.7806764,
+            "mission_ids": [
+              "mission-10"
+            ],
+            "workflow_step": "PreDeployReview",
+            "workflow_mission_id": "mission-10",
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 1,
+              "routes_ready": 1,
+              "validated_content_revision": 4
+            },
+            "deployment_id": "deployment-15"
+          },
+          "missions": {
+            "mission-10": {
+              "id": "mission-10",
+              "plan_id": "plan-9",
+              "name": "Task 01",
+              "assigned_uav_id": "UAV-01",
+              "route_id": "route-12",
+              "status": "DEPLOYED"
+            }
+          },
+          "paths": {
+            "route-12": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.98070573384951,
+                  "longitude": 116.34696528572084,
+                  "altitude": 1.099981314894248,
+                  "segmentSpeed": 0,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -296.52208617329615,
+                    "y": 3267.362976551056,
+                    "z": -4190.010400772095
+                  }
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.98051227390441,
+                  "longitude": 116.34688355028366,
+                  "altitude": 1.099979560487666,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -994.6918404102328,
+                    "y": 5415.430939674377,
+                    "z": -4190.02598875761
+                  }
+                },
+                {
+                  "sequence": 3,
+                  "latitude": 39.980384990459655,
+                  "longitude": 116.34669077897703,
+                  "altitude": 1.0999679254643535,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -2641.3134256303315,
+                    "y": 6828.709523797035,
+                    "z": -4190.045470952988
+                  }
+                },
+                {
+                  "sequence": 4,
+                  "latitude": 39.98024362272158,
+                  "longitude": 116.34661696519522,
+                  "altitude": 1.0999585048667089,
+                  "segmentSpeed": 1,
+                  "waitTime": 0,
+                  "location": {
+                    "x": -3271.8249474831823,
+                    "y": 8398.373485722099,
+                    "z": -4190.068151866857
+                  }
+                }
+              ],
+              "route_id": "route-12"
+            }
+          }
+        }
+      }
+    },
+    "edit_sessions": {}
+  },
+  "ownership": [
+    {
+      "role": "Video",
+      "pid": 3280,
+      "start_time": 1789821115.6864612,
+      "executable": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "owned": true,
+      "exit_code": null
+    },
+    {
+      "role": "Map",
+      "pid": 19716,
+      "start_time": 1789821331.453681,
+      "executable": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "owned": true,
+      "exit_code": null
+    },
+    {
+      "role": "Command",
+      "pid": 38120,
+      "start_time": 1789821385.7823458,
+      "executable": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "owned": true,
+      "exit_code": null
+    },
+    {
+      "role": "Backend",
+      "pid": 66964,
+      "start_time": 1789821601.1079123,
+      "executable": "C:\\Users\\wy331\\Documents\\UE5DroneControl-p5-1\\Backend\\build-p5\\Release\\DroneBackend.exe",
+      "owned": true,
+      "exit_code": null
+    }
+  ],
+  "comparison": {
+    "context": true,
+    "preferences": true,
+    "video": true,
+    "plans": true
+  }
+}

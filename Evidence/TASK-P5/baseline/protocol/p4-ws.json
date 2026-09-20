@@ -1,0 +1,1652 @@
+[
+  {
+    "role": "Command",
+    "message": {
+      "type": "client_connected",
+      "event_type": "client_connected",
+      "event_id": "connected-d5357486-2b97-4101-99f3-5620bf7665d8-1789809423.338655",
+      "timestamp": 1789809423.3386722,
+      "payload": {
+        "client_id": "P4-QA-Command",
+        "client_role": "Command",
+        "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+        "hostname": "SYNTHETIC-QA",
+        "app_version": "P4",
+        "connected_at": 1789809423.338652,
+        "state": "ONLINE",
+        "client_version": 2
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "context_subscribed",
+      "payload": {
+        "context_version": 0,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": null,
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 0,
+        "updated_by": "Backend"
+      },
+      "clients": [
+        {
+          "client_id": "P4-QA-Command",
+          "client_role": "Command",
+          "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+          "hostname": "SYNTHETIC-QA",
+          "app_version": "P4",
+          "connected_at": 1789809423.338652,
+          "state": "ONLINE",
+          "client_version": 2
+        }
+      ]
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "client_connected",
+      "event_type": "client_connected",
+      "event_id": "connected-3012b131-c376-43ba-89cb-40b9efe55564-1789809423.409121",
+      "timestamp": 1789809423.4091308,
+      "payload": {
+        "client_id": "P4-QA-Map",
+        "client_role": "Map",
+        "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+        "hostname": "SYNTHETIC-QA",
+        "app_version": "P4",
+        "connected_at": 1789809423.4091177,
+        "state": "ONLINE",
+        "client_version": 4
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "context_subscribed",
+      "payload": {
+        "context_version": 0,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": null,
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 0,
+        "updated_by": "Backend"
+      },
+      "clients": [
+        {
+          "client_id": "P4-QA-Command",
+          "client_role": "Command",
+          "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+          "hostname": "SYNTHETIC-QA",
+          "app_version": "P4",
+          "connected_at": 1789809423.338652,
+          "state": "ONLINE",
+          "client_version": 2
+        },
+        {
+          "client_id": "P4-QA-Map",
+          "client_role": "Map",
+          "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+          "hostname": "SYNTHETIC-QA",
+          "app_version": "P4",
+          "connected_at": 1789809423.4091177,
+          "state": "ONLINE",
+          "client_version": 4
+        }
+      ]
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "client_connected",
+      "event_type": "client_connected",
+      "event_id": "connected-3012b131-c376-43ba-89cb-40b9efe55564-1789809423.409121",
+      "timestamp": 1789809423.4091308,
+      "payload": {
+        "client_id": "P4-QA-Map",
+        "client_role": "Map",
+        "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+        "hostname": "SYNTHETIC-QA",
+        "app_version": "P4",
+        "connected_at": 1789809423.4091177,
+        "state": "ONLINE",
+        "client_version": 4
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "client_connected",
+      "event_type": "client_connected",
+      "event_id": "connected-fe5c5c87-c385-42f1-b36f-72814abb6dc6-1789809423.470318",
+      "timestamp": 1789809423.4703245,
+      "payload": {
+        "client_id": "P4-QA-Video",
+        "client_role": "Video",
+        "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+        "hostname": "SYNTHETIC-QA",
+        "app_version": "P4",
+        "connected_at": 1789809423.4703145,
+        "state": "ONLINE",
+        "client_version": 6
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "context_subscribed",
+      "payload": {
+        "context_version": 0,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": null,
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 0,
+        "updated_by": "Backend"
+      },
+      "clients": [
+        {
+          "client_id": "P4-QA-Command",
+          "client_role": "Command",
+          "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+          "hostname": "SYNTHETIC-QA",
+          "app_version": "P4",
+          "connected_at": 1789809423.338652,
+          "state": "ONLINE",
+          "client_version": 2
+        },
+        {
+          "client_id": "P4-QA-Map",
+          "client_role": "Map",
+          "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+          "hostname": "SYNTHETIC-QA",
+          "app_version": "P4",
+          "connected_at": 1789809423.4091177,
+          "state": "ONLINE",
+          "client_version": 4
+        },
+        {
+          "client_id": "P4-QA-Video",
+          "client_role": "Video",
+          "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+          "hostname": "SYNTHETIC-QA",
+          "app_version": "P4",
+          "connected_at": 1789809423.4703145,
+          "state": "ONLINE",
+          "client_version": 6
+        }
+      ]
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "client_connected",
+      "event_type": "client_connected",
+      "event_id": "connected-fe5c5c87-c385-42f1-b36f-72814abb6dc6-1789809423.470318",
+      "timestamp": 1789809423.4703245,
+      "payload": {
+        "client_id": "P4-QA-Video",
+        "client_role": "Video",
+        "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+        "hostname": "SYNTHETIC-QA",
+        "app_version": "P4",
+        "connected_at": 1789809423.4703145,
+        "state": "ONLINE",
+        "client_version": 6
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "client_connected",
+      "event_type": "client_connected",
+      "event_id": "connected-fe5c5c87-c385-42f1-b36f-72814abb6dc6-1789809423.470318",
+      "timestamp": 1789809423.4703245,
+      "payload": {
+        "client_id": "P4-QA-Video",
+        "client_role": "Video",
+        "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+        "hostname": "SYNTHETIC-QA",
+        "app_version": "P4",
+        "connected_at": 1789809423.4703145,
+        "state": "ONLINE",
+        "client_version": 6
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 1,
+        "next_id": 2,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.5310173,
+            "mission_ids": [],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "",
+                  "code": "NO_MISSIONS",
+                  "params": {}
+                }
+              ],
+              "mission_count": 0,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {},
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 1,
+        "next_id": 2,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.5310173,
+            "mission_ids": [],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "",
+                  "code": "NO_MISSIONS",
+                  "params": {}
+                }
+              ],
+              "mission_count": 0,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {},
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 1,
+        "next_id": 2,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.5310173,
+            "mission_ids": [],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "",
+                  "code": "NO_MISSIONS",
+                  "params": {}
+                }
+              ],
+              "mission_count": 0,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {},
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-1",
+      "version": 1,
+      "timestamp": 1789809423.535601,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_security_plan_changed"
+      ],
+      "payload": {
+        "context_version": 1,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.5340323,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-1",
+      "version": 1,
+      "timestamp": 1789809423.535601,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_security_plan_changed"
+      ],
+      "payload": {
+        "context_version": 1,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.5340323,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-1",
+      "version": 1,
+      "timestamp": 1789809423.535601,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_security_plan_changed"
+      ],
+      "payload": {
+        "context_version": 1,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.5340323,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 2,
+            "review": null,
+            "version": 2,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6507173,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 2,
+            "review": null,
+            "version": 2,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6507173,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 2,
+            "review": null,
+            "version": 2,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6507173,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-2",
+      "version": 2,
+      "timestamp": 1789809423.6556475,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_mission_changed"
+      ],
+      "payload": {
+        "context_version": 2,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-2",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6539023,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-2",
+      "version": 2,
+      "timestamp": 1789809423.6556475,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_mission_changed"
+      ],
+      "payload": {
+        "context_version": 2,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-2",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6539023,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-2",
+      "version": 2,
+      "timestamp": 1789809423.6556475,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_mission_changed"
+      ],
+      "payload": {
+        "context_version": 2,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-2",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6539023,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 3,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 3,
+            "review": null,
+            "version": 3,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6596715,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 3,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 3,
+            "review": null,
+            "version": 3,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6596715,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 3,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 3,
+            "review": null,
+            "version": 3,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6596715,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-3",
+      "version": 3,
+      "timestamp": 1789809423.663139,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_mission_changed"
+      ],
+      "payload": {
+        "context_version": 3,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-3",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6617074,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-3",
+      "version": 3,
+      "timestamp": 1789809423.663139,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_mission_changed"
+      ],
+      "payload": {
+        "context_version": 3,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-3",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6617074,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "OperationalContextChanged",
+      "event_type": "OperationalContextChanged",
+      "event_id": "context-3",
+      "version": 3,
+      "timestamp": 1789809423.663139,
+      "source_client": "P4-QA-Command",
+      "changes": [
+        "active_mission_changed"
+      ],
+      "payload": {
+        "context_version": 3,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-3",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6617074,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "role": "Command",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 4,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 4,
+            "review": null,
+            "version": 4,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6687143,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Retained original input",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1789809423.6687052,
+            "event_type": "MISSION_UPDATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Retained original input",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission renamed: Retained original input",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Map",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 4,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 4,
+            "review": null,
+            "version": 4,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6687143,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Retained original input",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1789809423.6687052,
+            "event_type": "MISSION_UPDATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Retained original input",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission renamed: Retained original input",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  },
+  {
+    "role": "Video",
+    "message": {
+      "type": "SecurityPlansChanged",
+      "payload": {
+        "version": 4,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 4,
+            "review": null,
+            "version": 4,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6687143,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Retained original input",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1789809423.6687052,
+            "event_type": "MISSION_UPDATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Retained original input",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission renamed: Retained original input",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  }
+]

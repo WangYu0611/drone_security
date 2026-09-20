@@ -1,0 +1,421 @@
+{
+  "assets": [
+    {
+      "path": "/Game/DroneOps/UI/WBP_DroneInfoPanel",
+      "class": "WidgetBlueprint",
+      "dependencies": [
+        "/Script/SlateCore",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/UE5DroneControl",
+        "/Script/WebBrowserWidget"
+      ],
+      "referencers": [
+        "/Game/DroneOps/UI/WBP_DroneOpsHUD"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/UI/WBP_DroneInfoPanel.WBP_DroneInfoPanel_C' (0x000001DA2A5CF000) Class 'WidgetBlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/DroneOps/UI/WBP_DroneVideoWindow",
+      "class": "WidgetBlueprint",
+      "dependencies": [
+        "/Script/SlateCore",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/UE5DroneControl",
+        "/Script/WebBrowserWidget"
+      ],
+      "referencers": [],
+      "generated_class": "<Object '/Game/DroneOps/UI/WBP_DroneVideoWindow.WBP_DroneVideoWindow_C' (0x000001DA10302000) Class 'WidgetBlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/DroneOps/Blueprints/BP_DroneOpsPlayerController",
+      "class": "Blueprint",
+      "dependencies": [
+        "/Script/UE5DroneControl",
+        "/Game/DroneOps/UI/WBP_DroneOpsHUD",
+        "/Game/DroneOps/UI/NewWidgetBlueprint"
+      ],
+      "referencers": [
+        "/Game/DroneOps/Blueprints/BP_MultiDroneCharacter",
+        "/Game/DroneOps/Blueprints/BP_RealTimeDrone"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/Blueprints/BP_DroneOpsPlayerController.BP_DroneOpsPlayerController_C' (0x000001DAA67D7700) Class 'BlueprintGeneratedClass'>",
+      "defaults": {
+        "drone_ops_hud_widget_class": "<Object '/Game/DroneOps/UI/WBP_DroneOpsHUD.WBP_DroneOpsHUD_C' (0x000001DAA5FFA800) Class 'WidgetBlueprintGeneratedClass'>",
+        "drone_video_window_widget_class": "<Object '/Game/DroneOps/UI/WBP_DroneVideoWindow.WBP_DroneVideoWindow_C' (0x000001DA10302000) Class 'WidgetBlueprintGeneratedClass'>",
+        "box_select_widget_class": "<Object '/Game/DroneOps/UI/NewWidgetBlueprint.NewWidgetBlueprint_C' (0x000001DAA5FF3000) Class 'WidgetBlueprintGeneratedClass'>"
+      }
+    },
+    {
+      "path": "/Game/DroneOps/MainMenu/BP_MainMenuGameMode",
+      "class": "Blueprint",
+      "dependencies": [
+        "/Script/UE5DroneControl",
+        "/Game/DroneOps/MainMenu/BP_MainMenuPlayerController"
+      ],
+      "referencers": [
+        "/Game/Level/MainMenu"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/MainMenu/BP_MainMenuGameMode.BP_MainMenuGameMode_C' (0x000001DAA67D9300) Class 'BlueprintGeneratedClass'>",
+      "defaults": {
+        "player_controller_class": "<Object '/Game/DroneOps/MainMenu/BP_MainMenuPlayerController.BP_MainMenuPlayerController_C' (0x000001DAA67D7E00) Class 'BlueprintGeneratedClass'>"
+      }
+    },
+    {
+      "path": "/Game/DroneOps/MainMenu/BP_MainMenuPlayerController",
+      "class": "Blueprint",
+      "dependencies": [
+        "/Script/UE5DroneControl"
+      ],
+      "referencers": [
+        "/Game/DroneOps/MainMenu/BP_MainMenuGameMode"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/MainMenu/BP_MainMenuPlayerController.BP_MainMenuPlayerController_C' (0x000001DAA67D7E00) Class 'BlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/DroneOps/UI/MainMenu",
+      "class": "ObjectRedirector",
+      "dependencies": [
+        "/Game/Level/MainMenu"
+      ],
+      "referencers": []
+    },
+    {
+      "path": "/Game/DroneOps/UI/WBP_DroneOpsHUD",
+      "class": "WidgetBlueprint",
+      "dependencies": [
+        "/Script/SlateCore",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/UE5DroneControl",
+        "/Engine/EditorBlueprintResources/StandardMacros",
+        "/Game/DroneOps/UI/WBP_DroneInfoPanel",
+        "/Game/DroneOps/UI/WBP_VideoStreamSelector"
+      ],
+      "referencers": [
+        "/Game/Level/DefaultMap",
+        "/Game/DroneOps/Blueprints/BP_DroneOpsPlayerController"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/UI/WBP_DroneOpsHUD.WBP_DroneOpsHUD_C' (0x000001DAA5FFA800) Class 'WidgetBlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/DroneOps/UI/WBP_MainMenu",
+      "class": "WidgetBlueprint",
+      "dependencies": [
+        "/Script/SlateCore",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/UE5DroneControl",
+        "/Game/DroneOps/UI/WBP_DroneRow"
+      ],
+      "referencers": [
+        "/Game/Level/MainMenu"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/UI/WBP_MainMenu.WBP_MainMenu_C' (0x000001DAA5FFC000) Class 'WidgetBlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/DroneOps/UI/WBP_VideoStreamRow",
+      "class": "WidgetBlueprint",
+      "dependencies": [
+        "/Script/SlateCore",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/UE5DroneControl"
+      ],
+      "referencers": [
+        "/Game/DroneOps/UI/WBP_VideoStreamSelector"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/UI/WBP_VideoStreamRow.WBP_VideoStreamRow_C' (0x000001DAA5FF5000) Class 'WidgetBlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/DroneOps/UI/WBP_VideoStreamSelector",
+      "class": "WidgetBlueprint",
+      "dependencies": [
+        "/Script/SlateCore",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/UE5DroneControl",
+        "/Engine/EditorBlueprintResources/StandardMacros",
+        "/Game/DroneOps/UI/WBP_VideoStreamRow"
+      ],
+      "referencers": [
+        "/Game/DroneOps/UI/WBP_DroneOpsHUD"
+      ],
+      "generated_class": "<Object '/Game/DroneOps/UI/WBP_VideoStreamSelector.WBP_VideoStreamSelector_C' (0x000001DAA5FF7000) Class 'WidgetBlueprintGeneratedClass'>",
+      "defaults": {}
+    },
+    {
+      "path": "/Game/Level/CesiumWorld",
+      "class": "World",
+      "dependencies": [
+        "/Script/InputCore",
+        "/Script/NavigationSystem",
+        "/Script/CesiumRuntime",
+        "/Script/UE5DroneControl",
+        "/Engine/EngineMaterials/WorldGridMaterial",
+        "/CesiumForUnreal/CesiumCreditSystemBP",
+        "/Engine/EditorResources/LightIcons/S_LightError",
+        "/Game/CesiumSettings/CesiumIonServers/CesiumIonSaaS"
+      ],
+      "referencers": [
+        "/Game/TopDown/CesiumWorld"
+      ]
+    },
+    {
+      "path": "/Game/Level/MainMenu",
+      "class": "World",
+      "dependencies": [
+        "/Script/NavigationSystem",
+        "/Script/UMG",
+        "/Script/UMGEditor",
+        "/Script/InterchangeImport",
+        "/Engine/EngineMaterials/WorldGridMaterial",
+        "/Game/DroneOps/MainMenu/BP_MainMenuGameMode",
+        "/Game/DroneOps/UI/WBP_DroneList",
+        "/Game/DroneOps/UI/WBP_MainMenu",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/01_-_Default",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/Mesh",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/Mesh_ncl_1",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/Mesh_ncl_2",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/Mesh_ncl_3",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/Mesh_ncl_4",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/Mesh_ncl_5",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/01_-_Default",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/02_-_Default",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh_ncl_1",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh_ncl_2",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh_ncl_3",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh_ncl_4",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh_ncl_5",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/Mesh_ncl_6",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/01_-_Default",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/Mesh",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/Mesh_ncl_1",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/Mesh_ncl_2",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/Mesh_ncl_3",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/Mesh_ncl_4",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/Mesh_ncl_5"
+      ],
+      "referencers": [
+        "/Game/DroneOps/UI/MainMenu",
+        "/Game/DroneModel/free-military-drone-full-pack-in-description/source/RootNode_TrackSetNode",
+        "/Game/DroneModel/free-police-drone-full-pack-in-description/source/RootNode_TrackSetNode",
+        "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/RootNode_TrackSetNode"
+      ]
+    },
+    {
+      "path": "/Game/TopDown/CesiumWorld",
+      "class": "ObjectRedirector",
+      "dependencies": [
+        "/Game/Level/CesiumWorld"
+      ],
+      "referencers": []
+    }
+  ],
+  "media_material_render_targets": [
+    {
+      "path": "/Game/Command/Materials/M_CommandPath",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/areas_pedestrian",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/forest",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/mat_terrain",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/mat_terrain_2",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/overlay",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/roof",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/BUAAMap/buaaMap/wall",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Cursor/M_Cursor",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/DroneModel/free-military-drone-full-pack-in-description/source/01_-_Default",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/DroneModel/free-police-drone-full-pack-in-description/source/01_-_Default",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/DroneModel/free-police-drone-full-pack-in-description/source/02_-_Default",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/01_-_Default",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/DroneOps/Materials/MI_EnemyDrone",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/DroneOps/Materials/MI_EnemyDrone_Cesium1",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/DroneOps/Materials/M_CurtainBase",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/DroneOps/Materials/M_DroneHighlight",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/DroneOps/Materials/M_DroneHightlight_Cesium",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/DroneOps/Materials/M_OfflineRasterTile",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V1_02",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V2_01",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V2_02",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V3_01",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V3_02",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V4_01",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/MI_Drone_Scavenger_V4_02",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/Drone_Scavenger/Materials/M_Drone_Scavenger_V1_01",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Interactable/JumpPad/Assets/Materials/MI_GlowNT",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Interactable/JumpPad/Assets/Materials/M_GradientGlow",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Interactable/JumpPad/Assets/Materials/M_SimpleGlow",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/MF_ProcGrid",
+      "class": "MaterialFunction"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/MI_DefaultColorway",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/MI_PrototypeGrid_Gray",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/MI_PrototypeGrid_Gray_02",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/MI_PrototypeGrid_Gray_Round",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/MI_PrototypeGrid_TopDark",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/M_FlatCol",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/LevelPrototyping/Materials/M_PrototypeGrid",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/map/buaaMap/areas_pedestrian",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/map/buaaMap/forest",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/map/buaaMap/mat_terrain_2",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/map/buaaMap/overlay",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/map/buaaMap/roof",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/map/buaaMap/wall",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/TopDown/MI_Colorway",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/TopDown/Cursor/MI_Cursor_Red",
+      "class": "MaterialInstanceConstant"
+    },
+    {
+      "path": "/Game/TopDown/Cursor/M_Cursor",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/Variant_Strategy/M_Cutout",
+      "class": "Material"
+    },
+    {
+      "path": "/Game/Variant_TwinStick/M_Glow",
+      "class": "Material"
+    }
+  ]
+}

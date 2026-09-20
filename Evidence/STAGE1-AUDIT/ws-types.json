@@ -1,0 +1,36 @@
+{
+  "server_to_client": [
+    "telemetry",
+    "event",
+    "alert",
+    "assembling",
+    "assembly_complete",
+    "assembly_timeout",
+    "assignment_result",
+    "drone_task_state",
+    "command_ack",
+    "error",
+    "OperationalContextChanged",
+    "client_connected",
+    "client_disconnected",
+    "context_subscribed",
+    "context_pong",
+    "SecurityPlansChanged",
+    "UIPreferencesChanged",
+    "VideoViewChanged",
+    "MapRouteEditRequested"
+  ],
+  "client_to_server": [
+    "subscribe_context",
+    "context_ping",
+    "pause",
+    "resume"
+  ],
+  "rejected_type": "move (use mode instead)",
+  "mode_discriminator": [
+    "move",
+    "scout",
+    "patrol",
+    "attack"
+  ]
+}

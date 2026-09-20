@@ -1,0 +1,96 @@
+{
+  "v2-video": {
+    "tests": [
+      {
+        "test": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": []
+      },
+      {
+        "test": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": []
+      }
+    ],
+    "discovered": 2,
+    "completed": 2,
+    "passed": 2,
+    "failed": 0
+  },
+  "v2-command": {
+    "tests": [
+      {
+        "test": "DroneOps.Command.A2MapMode",
+        "state": "Success",
+        "errors": []
+      },
+      {
+        "test": "DroneOps.Command.AlertStore",
+        "state": "Success",
+        "errors": []
+      },
+      {
+        "test": "DroneOps.Command.CesiumWorld",
+        "state": "Fail",
+        "errors": [
+          {
+            "event": {
+              "type": "Error",
+              "message": "Expected 'viewport height' to be 1080, but it was 1082.",
+              "context": "",
+              "artifact": "00000000000000000000000000000000"
+            },
+            "filename": "C:\\Users\\wy331\\Documents\\UE5DroneControl-command\\Source\\UE5DroneControl\\Tests\\CommandClientTest.cpp",
+            "lineNumber": 94,
+            "timestamp": "2026.09.14-09.54.02"
+          }
+        ]
+      },
+      {
+        "test": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": []
+      },
+      {
+        "test": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": []
+      }
+    ],
+    "discovered": 5,
+    "completed": 5,
+    "passed": 4,
+    "failed": 1
+  },
+  "v2-standalone": {
+    "tests": [
+      {
+        "test": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": []
+      }
+    ],
+    "discovered": 1,
+    "completed": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "v2-video-final": {
+    "tests": [
+      {
+        "test": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "errors": []
+      },
+      {
+        "test": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "errors": []
+      }
+    ],
+    "discovered": 2,
+    "completed": 2,
+    "passed": 2,
+    "failed": 0
+  }
+}

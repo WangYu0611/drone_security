@@ -1,0 +1,443 @@
+{
+  "version": 17,
+  "next_id": 12,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "P3 automated QA",
+      "description": "SYNTHETIC QA",
+      "status": "DRAFT",
+      "version": 7,
+      "created_at": 1789402135.3804085,
+      "updated_at": 1789402135.467312,
+      "mission_ids": [
+        "mission-2",
+        "mission-3"
+      ],
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 2,
+        "assigned_count": 2,
+        "routes_ready": 2
+      }
+    },
+    "plan-6": {
+      "id": "plan-6",
+      "name": "P3 automated QA",
+      "description": "SYNTHETIC QA",
+      "status": "DEPLOYED",
+      "version": 9,
+      "created_at": 1789402152.3548622,
+      "updated_at": 1789402152.417954,
+      "mission_ids": [
+        "mission-7",
+        "mission-8"
+      ],
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 2,
+        "assigned_count": 2,
+        "routes_ready": 2
+      }
+    },
+    "plan-11": {
+      "id": "plan-11",
+      "name": "Perimeter Patrol A",
+      "description": "",
+      "status": "DRAFT",
+      "version": 1,
+      "created_at": 1789403884.8333063,
+      "updated_at": 1789403884.8333063,
+      "mission_ids": [],
+      "validation": {
+        "ready": false,
+        "issues": [
+          {
+            "mission_id": "",
+            "code": "NO_MISSIONS"
+          }
+        ],
+        "mission_count": 0,
+        "assigned_count": 0,
+        "routes_ready": 0
+      }
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Mission-01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-4",
+      "status": "READY"
+    },
+    "mission-3": {
+      "id": "mission-3",
+      "plan_id": "plan-1",
+      "name": "Mission-02",
+      "assigned_uav_id": "UAV-02",
+      "route_id": "route-5",
+      "status": "READY"
+    },
+    "mission-7": {
+      "id": "mission-7",
+      "plan_id": "plan-6",
+      "name": "Mission-01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-9",
+      "status": "DEPLOYED"
+    },
+    "mission-8": {
+      "id": "mission-8",
+      "plan_id": "plan-6",
+      "name": "Mission-02",
+      "assigned_uav_id": "UAV-02",
+      "route_id": "route-10",
+      "status": "DEPLOYED"
+    }
+  },
+  "paths": {
+    "route-4": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-4"
+    },
+    "route-5": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-5"
+    },
+    "route-9": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-9"
+    },
+    "route-10": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-10"
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1789402135.380412,
+      "event_type": "PLAN_CREATED",
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P3 automated QA",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1789402135.405377,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Mission created: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1789402135.4298773,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Mission created: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1789402135.4389317,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV-01 assigned to Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1789402135.4461346,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "UAV-02 assigned to Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1789402135.4630244,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1789402135.467308,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Route saved: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1789402152.3548653,
+      "event_type": "PLAN_CREATED",
+      "category": "PLAN",
+      "target_id": "plan-6",
+      "message": "Security plan created: P3 automated QA",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1789402152.3639345,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-7",
+      "message": "Mission created: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 10,
+      "timestamp": 1789402152.370561,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-8",
+      "message": "Mission created: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 11,
+      "timestamp": 1789402152.3796284,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-7",
+      "message": "UAV-01 assigned to Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 12,
+      "timestamp": 1789402152.384751,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-8",
+      "message": "UAV-02 assigned to Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 13,
+      "timestamp": 1789402152.3991916,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-7",
+      "message": "Route saved: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 14,
+      "timestamp": 1789402152.4035444,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-8",
+      "message": "Route saved: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 15,
+      "timestamp": 1789402152.4114385,
+      "event_type": "PLAN_READY",
+      "category": "PLAN",
+      "target_id": "plan-6",
+      "message": "Security plan READY: P3 automated QA",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 16,
+      "timestamp": 1789402152.4179509,
+      "event_type": "PLAN_DEPLOYED",
+      "category": "PLAN",
+      "target_id": "plan-6",
+      "message": "Security plan DEPLOYED: P3 automated QA",
+      "source": "P3-QA-Command"
+    },
+    {
+      "sequence": 17,
+      "timestamp": 1789403884.8333092,
+      "event_type": "PLAN_CREATED",
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Security plan created: Perimeter Patrol A",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    }
+  ]
+}

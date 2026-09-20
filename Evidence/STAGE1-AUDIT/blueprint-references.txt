@@ -1,0 +1,1163 @@
+Config/DefaultEditor.ini:2: SimpleMapName=/Game/TopDown/Maps/TopDownExampleMap
+Config/DefaultEditor.ini:5: bAllowClassAndBlueprintPinMatching=true
+Config/DefaultEditor.ini:6: bReplaceBlueprintWithClass= true
+Config/DefaultEditor.ini:7: bDontLoadBlueprintOutsideEditor= true
+Config/DefaultEditor.ini:8: bBlueprintIsNotBlueprintType= true
+Config/DefaultEditorPerProjectUserSettings.ini:2: ContentBrowserTab1.SelectedPaths=/Game/TopDown
+Config/DefaultEngine.ini:2: GameDefaultMap=/Game/Level/CesiumWorld.CesiumWorld
+Config/DefaultEngine.ini:3: EditorStartupMap=/Game/Level/CesiumWorld.CesiumWorld
+Config/DefaultEngine.ini:195: OfflineRasterPlaneMaterial=/Game/DroneOps/Materials/M_OfflineRasterTile.M_OfflineRasterTile
+DroneLinkMonitorSubsystem.h:24: UFUNCTION(BlueprintCallable, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:27: UFUNCTION(BlueprintCallable, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:30: UFUNCTION(BlueprintCallable, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:33: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:36: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:39: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:42: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:45: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:48: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:51: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:54: UFUNCTION(BlueprintPure, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:57: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:60: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:63: UPROPERTY(BlueprintAssignable, Category = "LinkMonitor")
+DroneLinkMonitorSubsystem.h:66: UPROPERTY(BlueprintAssignable, Category = "LinkMonitor")
+Launcher/config.json:5: "map": "/Game/Level/CesiumWorld",
+Scripts/audit_video_assets.py:12: if c in ['WidgetBlueprint','Blueprint']:
+Scripts/create_command_path_material.py:4: asset_path = "/Game/Command/Materials/M_CommandPath"
+Scripts/create_command_path_material.py:7: "M_CommandPath", "/Game/Command/Materials", unreal.Material, unreal.MaterialFactoryNew())
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:10: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Command/CommandAlarmPanel.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Command/CommandAlertStore.h:7: USTRUCT(BlueprintType)
+Source/UE5DroneControl/Command/CommandAlertStore.h:11: UPROPERTY(BlueprintReadOnly) int32 Id = 0;
+Source/UE5DroneControl/Command/CommandAlertStore.h:12: UPROPERTY(BlueprintReadOnly) FString SharedId;
+Source/UE5DroneControl/Command/CommandAlertStore.h:13: UPROPERTY(BlueprintReadOnly) FDateTime ReceivedAt;
+Source/UE5DroneControl/Command/CommandAlertStore.h:14: UPROPERTY(BlueprintReadOnly) int32 DroneId = 0;
+Source/UE5DroneControl/Command/CommandAlertStore.h:15: UPROPERTY(BlueprintReadOnly) FString Type;
+Source/UE5DroneControl/Command/CommandAlertStore.h:16: UPROPERTY(BlueprintReadOnly) FString Message;
+Source/UE5DroneControl/Command/CommandAlertStore.h:17: UPROPERTY(BlueprintReadOnly) bool bHandled = false;
+Source/UE5DroneControl/Command/CommandAlertStore.h:30: UFUNCTION(BlueprintCallable) int32 AddAlert(int32 DroneId, const FString& Type, const FString& Message);
+Source/UE5DroneControl/Command/CommandAlertStore.h:32: UFUNCTION(BlueprintPure) TArray<FCommandAlert> GetAlerts() const { return Alerts; }
+Source/UE5DroneControl/Command/CommandAlertStore.h:33: UFUNCTION(BlueprintCallable) bool ClearAlert(int32 AlertId);
+Source/UE5DroneControl/Command/CommandAlertStore.h:34: UFUNCTION(BlueprintCallable) bool MarkHandled(int32 AlertId);
+Source/UE5DroneControl/Command/CommandAlertStore.h:35: UFUNCTION(BlueprintPure) int32 GetUnhandledCount() const;
+Source/UE5DroneControl/Command/CommandAlertStore.h:36: UPROPERTY(BlueprintAssignable) FCommandAlertChanged OnAlertAdded;
+Source/UE5DroneControl/Command/CommandAlertStore.h:37: UPROPERTY(BlueprintAssignable) FCommandAlertChanged OnAlertUpdated;
+Source/UE5DroneControl/Command/CommandCenterPanel.cpp:10: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Command/CommandCenterPanel.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:9: UENUM(BlueprintType)
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:24: UFUNCTION(BlueprintCallable) bool SelectDrone(int32 DroneId);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:25: UFUNCTION(BlueprintCallable) bool FocusDrone(int32 DroneId);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:26: UFUNCTION(BlueprintCallable) bool FocusLocation(const FVector& WorldLocation);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:28: UFUNCTION(BlueprintCallable) bool FocusAlertOnMap(int32 AlertId);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:29: UFUNCTION(BlueprintCallable) bool BeginPathPlanning();
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:30: UFUNCTION(BlueprintCallable) bool ConfirmPath();
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:31: UFUNCTION(BlueprintCallable) bool CancelPathPlanning();
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:32: UFUNCTION(BlueprintCallable) bool DeleteSelectedWaypoint();
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:33: UFUNCTION(BlueprintCallable) bool SetSelectedPaused(bool bPaused);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:34: UFUNCTION(BlueprintPure) bool CanPauseSelected() const;
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:35: UFUNCTION(BlueprintPure) bool IsPlanning() const;
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:36: UFUNCTION(BlueprintPure) ECommandMapMode GetMapMode() const { return CurrentMapMode; }
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:37: UFUNCTION(BlueprintCallable) void SetMapMode(ECommandMapMode Mode);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:38: UFUNCTION(BlueprintCallable) void Enter2DMode() { SetMapMode(ECommandMapMode::Map2D); }
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:39: UFUNCTION(BlueprintCallable) void Enter3DMode() { SetMapMode(ECommandMapMode::Map3D); }
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:40: UFUNCTION(BlueprintCallable) bool FocusGeographicLocation(double Latitude, double Longitude, double EllipsoidHeightMeters);
+Source/UE5DroneControl/Command/CommandMapInteractionService.h:41: UPROPERTY(BlueprintAssignable) FCommandMapModeChanged OnMapModeChanged;
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:166: UClass* Class = LoadClass<USequenceDispatchPanelWidget>(nullptr,
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:167: TEXT("/Game/DroneOps/UI/WBP_SequenceDispatchPanel.WBP_SequenceDispatchPanel_C"));
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:193: UClass* Class = LoadClass<UGeographicTargetPanelWidget>(nullptr,
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:194: TEXT("/Game/DroneOps/UI/WBP_GeographicTargetPanel.WBP_GeographicTargetPanel_C"));
+Source/UE5DroneControl/Command/CommandScreenManager.h:8: UENUM(BlueprintType)
+Source/UE5DroneControl/Command/CommandScreenManager.h:21: UFUNCTION(BlueprintCallable) void Show();
+Source/UE5DroneControl/Command/CommandScreenManager.h:22: UFUNCTION(BlueprintCallable) void Hide();
+Source/UE5DroneControl/Command/CommandScreenManager.h:23: UFUNCTION(BlueprintCallable) void Destroy();
+Source/UE5DroneControl/Command/CommandScreenManager.h:24: UFUNCTION(BlueprintPure) EDroneClientRole GetClientRole() const { return ClientRole; }
+Source/UE5DroneControl/Command/CommandScreenManager.h:40: UPROPERTY(BlueprintAssignable) FCommandOpenVideoRequested OnRequestOpenVideo;
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:24: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Command/CommandShellWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:8: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Command/CommandTacticalMap.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Command/CommandTheme.h:9: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Command/OperationalLogWidget.cpp:5: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Command/OperationalLogWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:3: #include "DroneMapSettingsBlueprintLibrary.h"
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:55: void UDroneMapSettingsBlueprintLibrary::LoadDroneMapSettings(FDroneMapSettings& OutSettings)
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:80: void UDroneMapSettingsBlueprintLibrary::SaveDroneMapSettings(const FDroneMapSettings& Settings)
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:115: bool UDroneMapSettingsBlueprintLibrary::ApplyDroneMapSettingsToCurrentWorld(
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:131: bool UDroneMapSettingsBlueprintLibrary::SetOfflineMapEnabled(
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:153: bool UDroneMapSettingsBlueprintLibrary::IsOfflineMapEnabled()
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.cpp:160: bool UDroneMapSettingsBlueprintLibrary::ValidateCurrentMapCoordinates(
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:6: #include "Kismet/BlueprintFunctionLibrary.h"
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:7: #include "DroneMapSettingsBlueprintLibrary.generated.h"
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:9: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:14: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:17: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:20: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:23: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:26: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:29: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:32: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:35: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:38: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:41: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:44: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:47: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:50: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:53: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:56: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:59: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:62: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:65: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:68: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:73: class UE5DRONECONTROL_API UDroneMapSettingsBlueprintLibrary : public UBlueprintFunctionLibrary
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:78: UFUNCTION(BlueprintCallable, Category = "DroneOps|MapSettings")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:81: UFUNCTION(BlueprintCallable, Category = "DroneOps|MapSettings")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:84: UFUNCTION(BlueprintCallable, Category = "DroneOps|MapSettings", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:87: UFUNCTION(BlueprintCallable, Category = "DroneOps|MapSettings", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:90: UFUNCTION(BlueprintCallable, BlueprintPure, Category = "DroneOps|MapSettings")
+Source/UE5DroneControl/DroneOps/Control/DroneMapSettingsBlueprintLibrary.h:93: UFUNCTION(BlueprintCallable, Category = "DroneOps|MapSettings", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:391: // Use the existing native controller without legacy Blueprint HUD/BeginPlay overrides.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:399: TEXT("/Game/DroneOps/Blueprints/BP_DroneOpsPlayerController.BP_DroneOpsPlayerController_C")));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:433: TSoftClassPtr<ARealTimeDroneReceiver> SoftClass(FSoftObjectPath(TEXT("/Game/DroneOps/Blueprints/BP_RealTimeDrone.BP_RealTimeDrone_C")));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:448: TSoftClassPtr<AMultiDroneCharacter> SoftClass(FSoftObjectPath(TEXT("/Game/DroneOps/Blueprints/BP_MultiDroneCharacter.BP_MultiDroneCharacter_C")));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:463: TSoftClassPtr<AMultiDroneCharacter> SoftClass(FSoftObjectPath(TEXT("/Game/DroneOps/Blueprints/BP_EnemyDroneCharacter.BP_EnemyDroneCharacter_C")));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:472: // 无专用敌对机 Blueprint 时保持 null，回退到 ShadowDroneClass + 红色 ThemeColor
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:1840: FString PlaneMaterialPath = TEXT("/Game/DroneOps/Materials/M_OfflineRasterTile.M_OfflineRasterTile");
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:1992: UMaterialInterface* PlaneMaterial = Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *PlaneMaterialPath));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:34: UFUNCTION(BlueprintCallable, Category = "DroneOps|Map")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:38: UFUNCTION(BlueprintCallable, Category = "DroneOps|Map")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:45: UFUNCTION(BlueprintCallable, Category = "DroneOps|Map")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:57: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:61: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:69: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:72: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:75: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:79: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:82: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:85: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:88: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:91: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DroneOps|Drone Spawn")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:31: #include "UI/UIManagerBlueprintLibrary.h"
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:41: #include "Blueprint/WidgetLayoutLibrary.h"
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:44: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:48: #include "UObject/ConstructorHelpers.h"
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:268: // A hostile target must always have a visible native fallback. Blueprint overrides are optional.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:272: // Keep the Blueprint property overridable, but provide the project panel as
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:274: static ConstructorHelpers::FClassFinder<UDroneInfoPanelWidget> DroneInfoPanelClass(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:275: TEXT("/Game/DroneOps/UI/WBP_DroneInfoPanel"));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:281: static ConstructorHelpers::FClassFinder<UDroneVideoWindowWidget> DroneVideoWindowClass(
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:282: TEXT("/Game/DroneOps/UI/WBP_DroneVideoWindow"));
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:373: UUIManagerBlueprintLibrary::ShowSequenceDispatchPanel(this);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:376: UUIManagerBlueprintLibrary::ShowGeographicTargetPanel(this);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:380: UUIManagerBlueprintLibrary::ShowDroneList(this);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:381: UUIManagerBlueprintLibrary::ShowEnemyDroneList(this);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:382: UUIManagerBlueprintLibrary::LinkPanels();
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:612: // For BlueprintNativeEvent functions, must use Execute_* static call
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:733: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("视频键盘操控只能选择一架无人机"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:738: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("请先退出路径点编辑，再进入视频键盘操控"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:746: UUIManagerBlueprintLibrary::ShowToast(this, ValidationError, 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:753: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("选中的无人机不可用"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:763: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("已进入视频键盘操控：WASD 移动，Q/E 升降，R 转向，F 翻转左右"), 4.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:799: UUIManagerBlueprintLibrary::ShowToast(this,
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:808: UUIManagerBlueprintLibrary::ShowToast(this,
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:893: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("选中无人机已改变，已退出视频键盘操控"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1382: // Blueprint so the video-stream row can reset its checkbox.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1407: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("视频窗口控件未配置"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1421: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("敌对无人机不支持视频流"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1433: UUIManagerBlueprintLibrary::ShowToast(this, Error, 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:2058: // direct Blueprint manipulation or a transient selection update in the same frame.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:3058: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("测试：无人机注册成功"), 2.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:3286: UUIManagerBlueprintLibrary::ShowToast(this, TEXT("视频键盘操控期间不支持路径点编辑"), 3.0f);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:68: UFUNCTION(BlueprintCallable, Category = "DroneOps|Calibration")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:89: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:102: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:114: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:121: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:128: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:132: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:141: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:145: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:170: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:181: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:187: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:190: UFUNCTION(BlueprintPure, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:194: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:197: UFUNCTION(BlueprintPure, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:201: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:205: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:230: UFUNCTION(BlueprintCallable, Category = "DroneOps|PathEdit")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:242: UFUNCTION(BlueprintCallable, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:246: UFUNCTION(BlueprintCallable, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:250: UFUNCTION(BlueprintPure, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:254: UFUNCTION(BlueprintPure, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:293: UPROPERTY(BlueprintReadOnly, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:297: UPROPERTY(BlueprintReadOnly, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:311: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:314: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:317: UFUNCTION(BlueprintCallable, Category = "DroneOps")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:335: UPROPERTY(BlueprintAssignable, Category = "DroneOps Events")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:339: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HUD")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:343: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HUD")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:351: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HUD")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:355: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HUD")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:364: UPROPERTY(BlueprintAssignable, Category = "DroneOps|Video")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:373: UFUNCTION(BlueprintCallable, Category = "DroneOps|Video")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:377: UFUNCTION(BlueprintCallable, Category = "DroneOps|Video")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:381: UFUNCTION(BlueprintCallable, Category = "DroneOps|Video")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:385: UFUNCTION(BlueprintCallable, Category = "DroneOps|Video")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:393: UFUNCTION(BlueprintCallable, Category = "DroneOps|VideoControl")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:396: UFUNCTION(BlueprintCallable, Category = "DroneOps|VideoControl")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:399: UFUNCTION(BlueprintPure, Category = "DroneOps|VideoControl")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:402: UFUNCTION(BlueprintPure, Category = "DroneOps|VideoControl")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:412: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Navigation")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:416: UPROPERTY(BlueprintReadOnly, Category = "BoxSelect")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:420: UPROPERTY(BlueprintReadOnly, Category = "BoxSelect")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:424: UPROPERTY(BlueprintReadOnly, Category = "BoxSelect")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:427: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:764: /** Bridges the manager's native close event to the BlueprintAssignable OnDroneVideoWindowClosed. */
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:11: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:22: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:31: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:47: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:62: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:75: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:166: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:171: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:174: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:177: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:180: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:183: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:186: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:189: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:192: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:195: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:198: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:201: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:205: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:209: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:213: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:222: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:227: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:230: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:233: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:236: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:239: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:242: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:245: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:248: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:251: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:254: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:257: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:260: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:264: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:267: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:272: UPROPERTY(BlueprintReadOnly) double GpsLatitude = 0.0;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:273: UPROPERTY(BlueprintReadOnly) double GpsLongitude = 0.0;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:274: UPROPERTY(BlueprintReadOnly) double GpsAltitude = 0.0;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:277: UPROPERTY(BlueprintReadOnly) int32 BatteryPercent = -1;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:280: UPROPERTY(BlueprintReadOnly) EDroneCommandMode TaskMode = EDroneCommandMode::Move;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:281: UPROPERTY(BlueprintReadOnly) EDroneTaskState TaskState = EDroneTaskState::Standby;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:282: UPROPERTY(BlueprintReadOnly) FString TaskErrorDetail;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:285: UPROPERTY(BlueprintReadOnly) int32 CurrentWaypointIndex = 0;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:286: UPROPERTY(BlueprintReadOnly) int32 TotalWaypoints = 0;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:289: UPROPERTY(BlueprintReadOnly) EUELocalDroneState LocalState = EUELocalDroneState::None;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:294: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:299: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:301: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:303: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:305: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:307: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:309: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:311: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:313: UPROPERTY(BlueprintReadOnly, Category = "Task")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:320: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:325: UPROPERTY(BlueprintReadWrite, Category = "Command")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:328: UPROPERTY(BlueprintReadWrite, Category = "Command")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:331: UPROPERTY(BlueprintReadWrite, Category = "Command")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:334: UPROPERTY(BlueprintReadWrite, Category = "Command")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:337: UPROPERTY(BlueprintReadWrite, Category = "Command")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:340: UPROPERTY(BlueprintReadWrite, Category = "Command")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:349: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:354: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:357: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:360: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:363: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:366: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:369: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:372: UPROPERTY(BlueprintReadWrite, Category = "Control")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:382: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:388: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DroneLabel")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:392: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DroneLabel")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:396: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DroneLabel")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:408: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:413: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:416: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:419: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:422: UPROPERTY(BlueprintReadOnly, Category = "Map")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:431: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:436: UPROPERTY(BlueprintReadWrite, Category = "Camera")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:439: UPROPERTY(BlueprintReadWrite, Category = "Camera")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:442: UPROPERTY(BlueprintReadWrite, Category = "Camera")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:445: UPROPERTY(BlueprintReadWrite, Category = "Camera")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:454: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:459: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:462: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:465: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:474: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:479: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:482: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:485: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:494: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:499: UPROPERTY(BlueprintReadOnly, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:502: UPROPERTY(BlueprintReadOnly, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:505: UPROPERTY(BlueprintReadOnly, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:508: UPROPERTY(BlueprintReadOnly, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:511: UPROPERTY(BlueprintReadOnly, Category = "Formation")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:84: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:87: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:91: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:94: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:97: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:100: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:103: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:106: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:109: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:113: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:116: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:119: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:122: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:126: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:129: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:132: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:135: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:138: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:142: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:146: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:150: UFUNCTION(BlueprintPure, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:154: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:157: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:160: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:164: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:167: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:170: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:173: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:176: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:180: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:183: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:186: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:190: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:194: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:197: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:200: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:203: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:206: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:210: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:213: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:216: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:219: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:222: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:225: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:228: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:232: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:236: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:239: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:248: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:252: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:258: UPROPERTY(BlueprintAssignable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:265: UFUNCTION(BlueprintCallable, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:269: UFUNCTION(BlueprintPure, Category = "DroneRegistry")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:16: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:23: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:28: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geographic Coordinate")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:31: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geographic Coordinate")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:34: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geographic Coordinate")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:39: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:44: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geographic Dispatch")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:47: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geographic Dispatch")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:89: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:95: UPROPERTY(BlueprintReadOnly, Category = "Geographic Dispatch")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:99: UPROPERTY(BlueprintReadOnly, Category = "Geographic Dispatch")
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:103: UPROPERTY(BlueprintReadOnly, Category = "Geographic Dispatch")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.cpp:12: #include "UObject/ConstructorHelpers.h"
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.cpp:32: static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:18: UCLASS(BlueprintType, Blueprintable)
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:29: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:33: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HostileTarget", meta = (ClampMin = "100.0", UIMin = "100.0"))
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:37: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:41: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:45: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:51: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:55: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:59: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:63: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:67: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:73: UFUNCTION(BlueprintPure, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:77: UFUNCTION(BlueprintCallable, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:81: UFUNCTION(BlueprintCallable, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:85: UFUNCTION(BlueprintCallable, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.h:93: UFUNCTION(BlueprintCallable, Category = "HostileTarget")
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:13: UINTERFACE(MinimalAPI, Blueprintable)
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:29: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:38: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:47: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:58: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:66: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h:74: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.h:14: UCLASS(BlueprintType)
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:28: UCLASS(ClassGroup = "DroneOps", meta = (BlueprintSpawnableComponent))
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:37: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:41: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:45: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:57: UFUNCTION(BlueprintCallable, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:67: UFUNCTION(BlueprintCallable, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:73: UFUNCTION(BlueprintCallable, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.h:76: UFUNCTION(BlueprintPure, Category = "CommandSender")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.cpp:76: UMaterialInterface* MaterialSource = LoadObject<UMaterialInterface>(
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.cpp:77: nullptr, TEXT("/Game/DroneOps/Materials/M_CurtainBase.M_CurtainBase"));
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.cpp:80: MaterialSource = LoadObject<UMaterialInterface>(
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:26: UCLASS(ClassGroup = "DroneOps", meta = (BlueprintSpawnableComponent))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:42: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:46: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection", meta = (ClampMin = "100.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:53: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Trail", meta = (ClampMin = "1.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:57: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Trail", meta = (ClampMin = "0.1"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:61: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Trail", meta = (ClampMin = "0.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:65: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Rendering", meta = (ClampMin = "0.1"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:69: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Rendering", meta = (ClampMin = "0.1"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:73: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Trail", meta = (ClampMin = "2"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:77: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundProjection|Rendering", meta = (ClampMin = "2"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:81: UFUNCTION(BlueprintPure, Category = "GroundProjection")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:85: UFUNCTION(BlueprintPure, Category = "GroundProjection")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:91: UFUNCTION(BlueprintCallable, Category = "GroundProjection", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:95: UFUNCTION(BlueprintPure, Category = "GroundProjection")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:99: UFUNCTION(BlueprintCallable, Category = "GroundProjection")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:103: UFUNCTION(BlueprintCallable, Category = "GroundProjection", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:107: UFUNCTION(BlueprintPure, Category = "GroundProjection|Diagnostics")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:114: UFUNCTION(BlueprintPure, Category = "GroundProjection|Diagnostics")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:118: UFUNCTION(BlueprintPure, Category = "GroundProjection|Diagnostics")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:122: UFUNCTION(BlueprintPure, Category = "GroundProjection|Diagnostics")
+Source/UE5DroneControl/DroneOps/Drone/DroneGroundProjectionComponent.h:125: UFUNCTION(BlueprintPure, Category = "GroundProjection|Diagnostics")
+Source/UE5DroneControl/DroneOps/Drone/DroneModelTypes.cpp:33: const FString MilitaryDir = TEXT("/Game/DroneModel/free-military-drone-full-pack-in-description/source/");
+Source/UE5DroneControl/DroneOps/Drone/DroneModelTypes.cpp:34: const FString PoliceDir   = TEXT("/Game/DroneModel/free-police-drone-full-pack-in-description/source/");
+Source/UE5DroneControl/DroneOps/Drone/DroneModelTypes.cpp:35: const FString SciFiDir    = TEXT("/Game/DroneModel/free-sci-fi-drone-full-pack-in-description/source/");
+Source/UE5DroneControl/DroneOps/Drone/DroneModelTypes.cpp:37: /** 由目录与资产名拼出带对象名的完整路径（/Game/Foo/Mesh.Mesh）。 */
+Source/UE5DroneControl/DroneOps/Drone/DroneModelTypes.cpp:106: Def.BodyMeshPath = TEXT("/Game/Drone_Scavenger/SK/SK_Drone_Scavenger.SK_Drone_Scavenger");
+Source/UE5DroneControl/DroneOps/Drone/DroneModelTypes.h:12: UENUM(BlueprintType)
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:18: UCLASS(ClassGroup = "DroneOps", meta = (BlueprintSpawnableComponent))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:29: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:33: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:37: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:40: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:43: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label", meta = (ClampMin = "1.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:46: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:49: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:52: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label", meta = (ClampMin = "1.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:56: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:59: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Label")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:62: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:65: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight", meta = (ClampMin = "0.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:68: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight", meta = (ClampMin = "0.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:71: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight", meta = (ClampMin = "1.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:74: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:77: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:80: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:83: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:87: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:90: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:93: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight", meta = (ClampMin = "10.0"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:96: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Selection|Highlight", meta = (ClampMin = "0.5"))
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:101: UFUNCTION(BlueprintCallable, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:104: UFUNCTION(BlueprintCallable, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:107: UFUNCTION(BlueprintCallable, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:110: UFUNCTION(BlueprintPure, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:113: UFUNCTION(BlueprintPure, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:116: UFUNCTION(BlueprintPure, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:124: UFUNCTION(BlueprintCallable, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:128: UPROPERTY(BlueprintAssignable, Category = "Selection")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:18: UCLASS(ClassGroup = "DroneOps", meta = (BlueprintSpawnableComponent))
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:28: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:33: UFUNCTION(BlueprintCallable, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:38: UFUNCTION(BlueprintPure, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:41: UFUNCTION(BlueprintPure, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:44: UFUNCTION(BlueprintPure, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:48: UPROPERTY(BlueprintAssignable, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.cpp:45: UStaticMesh* BodyMesh = LoadObject<UStaticMesh>(nullptr, *Def.BodyMeshPath);
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.cpp:111: UStaticMesh* PartMesh = LoadObject<UStaticMesh>(nullptr, *Part.MeshPath);
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.h:37: UCLASS(ClassGroup = "DroneOps", meta = (BlueprintSpawnableComponent))
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.h:53: UFUNCTION(BlueprintCallable, Category = "Drone Visual")
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.h:56: UFUNCTION(BlueprintPure, Category = "Drone Visual")
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.h:60: UFUNCTION(BlueprintPure, Category = "Drone Visual")
+Source/UE5DroneControl/DroneOps/Drone/DroneVisualComponent.h:64: UFUNCTION(BlueprintPure, Category = "Drone Visual")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:13: UINTERFACE(MinimalAPI, BlueprintType)
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:27: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneInfo")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:34: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneInfo")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:41: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneInfo")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneSelectableInterface.h:9: UINTERFACE(MinimalAPI, Blueprintable)
+Source/UE5DroneControl/DroneOps/Interfaces/DroneSelectableInterface.h:26: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneSelectable")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneSelectableInterface.h:31: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneSelectable")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneSelectableInterface.h:36: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneSelectable")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneSelectableInterface.h:41: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneSelectable")
+Source/UE5DroneControl/DroneOps/Interfaces/DroneSelectableInterface.h:46: UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DroneSelectable")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:15: UCLASS(BlueprintType)
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:22: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:26: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:29: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:32: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:35: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:38: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:42: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.h:46: UFUNCTION(BlueprintPure, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:14: USTRUCT(BlueprintType)
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:19: UPROPERTY(BlueprintReadOnly, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:22: UPROPERTY(BlueprintReadOnly, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:47: UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:51: UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:55: UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:63: UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:79: UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:83: UFUNCTION(BlueprintPure, Category = "Coordinate")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:92: UPROPERTY(BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:96: UPROPERTY(BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:100: UPROPERTY(BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:104: UFUNCTION(BlueprintPure, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:108: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:132: UFUNCTION(BlueprintCallable, Category = "Network|Isolation")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:136: UFUNCTION(BlueprintPure, Category = "Network|Isolation")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:144: UFUNCTION(BlueprintPure, Category = "Network|Isolation")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:150: UPROPERTY(BlueprintAssignable, Category = "Network|Isolation")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:166: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:176: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:183: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:193: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:201: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:256: UFUNCTION(BlueprintPure, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:259: UFUNCTION(BlueprintPure, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:22: UCLASS(BlueprintType)
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:29: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:33: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:37: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:42: UPROPERTY(BlueprintAssignable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:45: UPROPERTY(BlueprintAssignable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:49: UPROPERTY(BlueprintAssignable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:54: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:57: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:60: UFUNCTION(BlueprintCallable, Category = "Network")
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:63: UFUNCTION(BlueprintPure, Category = "Network")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.cpp:4: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:37: UFUNCTION(BlueprintCallable, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:41: UFUNCTION(BlueprintCallable, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:48: UFUNCTION(BlueprintCallable, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:55: UFUNCTION(BlueprintCallable, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:63: UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MainMenu|UI")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:71: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuPlayerController.h:75: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:17: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:408: UDroneMapSettingsBlueprintLibrary::LoadDroneMapSettings(OutSettings);
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:413: UDroneMapSettingsBlueprintLibrary::SaveDroneMapSettings(Settings);
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:418: UDroneMapSettingsBlueprintLibrary::SetOfflineMapEnabled(this, bUseOfflineMap, false);
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:423: return UDroneMapSettingsBlueprintLibrary::IsOfflineMapEnabled();
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:7: #include "DroneOps/Control/DroneMapSettingsBlueprintLibrary.h"
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:65: UFUNCTION(BlueprintCallable, Category = "MainMenu|DroneRegistry")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:71: UFUNCTION(BlueprintCallable, Category = "MainMenu|DroneRegistry")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:80: UFUNCTION(BlueprintCallable, Category = "MainMenu|DroneRegistry")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:86: UFUNCTION(BlueprintCallable, Category = "MainMenu|DroneRegistry")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:100: UFUNCTION(BlueprintCallable, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:107: UFUNCTION(BlueprintCallable, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:111: UFUNCTION(BlueprintCallable, Category = "MainMenu|MapSettings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:115: UFUNCTION(BlueprintCallable, Category = "MainMenu|MapSettings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:119: UFUNCTION(BlueprintCallable, Category = "MainMenu|MapSettings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:122: UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MainMenu|MapSettings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:130: UFUNCTION(BlueprintCallable, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:134: UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:138: UFUNCTION(BlueprintCallable, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:142: UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:146: UFUNCTION(BlueprintCallable, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:150: UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:158: UFUNCTION(BlueprintCallable, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:162: UFUNCTION(BlueprintCallable, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:166: UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:175: UFUNCTION(BlueprintImplementableEvent, Category = "MainMenu|DroneRegistry")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:179: UFUNCTION(BlueprintImplementableEvent, Category = "MainMenu|DroneRegistry")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:183: UFUNCTION(BlueprintImplementableEvent, Category = "MainMenu|Settings")
+Source/UE5DroneControl/MainMenu/MainMenuWidget.h:187: UFUNCTION(BlueprintImplementableEvent, Category = "MainMenu|Navigation")
+Source/UE5DroneControl/Map/MapExecutionWidget.cpp:10: #include "Blueprint/WidgetLayoutLibrary.h"
+Source/UE5DroneControl/Map/MapExecutionWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Map/MapMissionRouteWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Map/MapShellWidget.cpp:14: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Map/MapShellWidget.cpp:15: #include "Blueprint/WidgetLayoutLibrary.h"
+Source/UE5DroneControl/Map/MapShellWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/MultiDroneCharacter.cpp:21: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/MultiDroneCharacter.cpp:22: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/MultiDroneCharacter.cpp:86: // 敌对机用 Capsule 响应 Visibility 射线（兜底：敌对机 Blueprint 可能无 Skeletal Mesh 碰撞几何）
+Source/UE5DroneControl/MultiDroneCharacter.h:40: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:44: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:50: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:54: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:58: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:62: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:66: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:70: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:74: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/MultiDroneCharacter.h:79: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDroneCharacter.h:84: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDroneCharacter.h:87: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDroneCharacter.h:91: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDroneCharacter.h:94: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDroneCharacter.h:97: UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Selection UI")
+Source/UE5DroneControl/MultiDroneCharacter.h:100: UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Selection UI")
+Source/UE5DroneControl/MultiDroneCharacter.h:104: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDroneCharacter.h:108: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Label UI")
+Source/UE5DroneControl/MultiDroneCharacter.h:118: UFUNCTION(BlueprintCallable, Category = "Assembly")
+Source/UE5DroneControl/MultiDroneCharacter.h:125: UFUNCTION(BlueprintCallable, Category = "Assembly")
+Source/UE5DroneControl/MultiDroneCharacter.h:128: UFUNCTION(BlueprintPure, Category = "Assembly")
+Source/UE5DroneControl/MultiDroneCharacter.h:136: UFUNCTION(BlueprintCallable, Category = "Path Preview")
+Source/UE5DroneControl/MultiDroneCharacter.h:139: UFUNCTION(BlueprintPure, Category = "Path Preview")
+Source/UE5DroneControl/MultiDroneCharacter.h:143: UFUNCTION(BlueprintCallable, Category = "Assembly")
+Source/UE5DroneControl/MultiDroneCharacter.h:151: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Assembly")
+Source/UE5DroneControl/MultiDroneCharacter.h:159: * Exposed to Blueprint for UI display.
+Source/UE5DroneControl/MultiDroneCharacter.h:161: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/MultiDroneCharacter.h:180: UFUNCTION(BlueprintCallable, Category = "Drone Network")
+Source/UE5DroneControl/MultiDroneCharacter.h:192: UFUNCTION(BlueprintCallable, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneCharacter.h:196: UFUNCTION(BlueprintPure, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneCharacter.h:200: UFUNCTION(BlueprintPure, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneCharacter.h:206: * 此标志供外部（UI、Blueprint）查询用。
+Source/UE5DroneControl/MultiDroneCharacter.h:208: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneCharacter.h:212: UFUNCTION(BlueprintPure, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneCharacter.h:216: UFUNCTION(BlueprintCallable, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneCharacter.h:224: UFUNCTION(BlueprintCallable, Category = "Drone|Attack")
+Source/UE5DroneControl/MultiDroneManager.h:24: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:28: UFUNCTION(BlueprintCallable, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:32: UFUNCTION(BlueprintCallable, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:36: UFUNCTION(BlueprintCallable, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:40: UFUNCTION(BlueprintCallable, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:44: UPROPERTY(BlueprintReadOnly, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:48: UPROPERTY(BlueprintReadOnly, Category = "Multi Drone")
+Source/UE5DroneControl/MultiDroneManager.h:53: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/MultiDronePlayerController.cpp:4: #include "Blueprint/AIBlueprintHelperLibrary.h"
+Source/UE5DroneControl/MultiDronePlayerController.cpp:93: UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+Source/UE5DroneControl/PathEditor/DronePathActor.cpp:18: #include "UObject/ConstructorHelpers.h"
+Source/UE5DroneControl/PathEditor/DronePathActor.cpp:63: static ConstructorHelpers::FObjectFinder<UMaterialInterface> CommandMaterial(TEXT("/Game/Command/Materials/M_CommandPath.M_CommandPath"));
+Source/UE5DroneControl/PathEditor/DronePathActor.cpp:83: static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+Source/UE5DroneControl/PathEditor/DronePathActor.cpp:89: static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+Source/UE5DroneControl/PathEditor/DronePathActor.cpp:97: // (e.g. M_DroneHighlight) in the Blueprint Details panel so ApplyColorToMaterial works.
+Source/UE5DroneControl/PathEditor/DronePathActor.h:19: UENUM(BlueprintType)
+Source/UE5DroneControl/PathEditor/DronePathActor.h:29: UENUM(BlueprintType)
+Source/UE5DroneControl/PathEditor/DronePathActor.h:39: UCLASS(BlueprintType, Blueprintable)
+Source/UE5DroneControl/PathEditor/DronePathActor.h:47: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:50: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:53: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:56: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:59: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:63: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:66: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:69: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization", meta = (ClampMin = "0.0", UIMin = "0.0"))
+Source/UE5DroneControl/PathEditor/DronePathActor.h:72: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:75: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:78: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:81: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:84: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:87: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:90: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:93: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Visualization", meta = (ClampMin = "0.05", UIMin = "0.05"))
+Source/UE5DroneControl/PathEditor/DronePathActor.h:96: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Extensibility")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:99: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Extensibility")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:102: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Extensibility")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:105: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:108: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:111: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:114: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:117: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:120: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:123: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:126: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:129: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:132: UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:135: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:138: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:141: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:146: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:149: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:158: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:161: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:164: UFUNCTION(BlueprintPure, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:168: UFUNCTION(BlueprintPure, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:171: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:174: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:177: UFUNCTION(BlueprintCallable, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:183: UFUNCTION(BlueprintCallable, Category = "Drone Path|Extensibility")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:186: UFUNCTION(BlueprintPure, Category = "Drone Path|Extensibility")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:189: UFUNCTION(BlueprintPure, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:192: UFUNCTION(BlueprintPure, Category = "Drone Path")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:198: UFUNCTION(BlueprintCallable, Category = "Drone Path|Visualization")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:201: UFUNCTION(BlueprintCallable, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:204: UFUNCTION(BlueprintCallable, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:207: UFUNCTION(BlueprintCallable, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:210: UFUNCTION(BlueprintCallable, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:213: UFUNCTION(BlueprintPure, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:216: UFUNCTION(BlueprintPure, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:219: UFUNCTION(BlueprintCallable, Category = "Drone Path|Execution")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:222: UFUNCTION(BlueprintCallable, Category = "Drone Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:225: UFUNCTION(BlueprintCallable, Category = "Drone Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:230: UFUNCTION(BlueprintPure, Category = "Drone Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:233: UFUNCTION(BlueprintImplementableEvent, Category = "Drone Path|Events")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:236: UFUNCTION(BlueprintImplementableEvent, Category = "Drone Path|Events")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:239: UFUNCTION(BlueprintImplementableEvent, Category = "Drone Path|Events")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:242: UFUNCTION(BlueprintImplementableEvent, Category = "Drone Path|Events")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:245: UFUNCTION(BlueprintCallable, CallInEditor, Category = "Drone Path|Editor")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:248: UFUNCTION(BlueprintCallable, CallInEditor, Category = "Drone Path|Editor")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:260: UFUNCTION(BlueprintCallable, Category = "Drone Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathActor.h:264: UFUNCTION(BlueprintCallable, Category = "Drone Path|Movement")
+Source/UE5DroneControl/PathEditor/DronePathConflictLibrary.h:4: #include "Kismet/BlueprintFunctionLibrary.h"
+Source/UE5DroneControl/PathEditor/DronePathConflictLibrary.h:10: class UE5DRONECONTROL_API UDronePathConflictLibrary : public UBlueprintFunctionLibrary
+Source/UE5DroneControl/PathEditor/DronePathConflictLibrary.h:15: UFUNCTION(BlueprintCallable, Category = "Drone Path|Conflict Detection")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:4: #include "Kismet/BlueprintFunctionLibrary.h"
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:9: USTRUCT(BlueprintType)
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:15: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:18: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:21: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:25: USTRUCT(BlueprintType)
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:31: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:34: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:37: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:41: USTRUCT(BlueprintType)
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:49: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:52: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:57: class UE5DRONECONTROL_API UDronePathSaveLibrary : public UBlueprintFunctionLibrary
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:62: UFUNCTION(BlueprintCallable, Category = "Drone Path|Save")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:65: UFUNCTION(BlueprintCallable, Category = "Drone Path|Save", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:68: UFUNCTION(BlueprintCallable, Category = "Drone|IO")
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.h:75: UFUNCTION(BlueprintCallable, Category = "Drone|IO")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.cpp:432: USkeletalMesh* DroneMesh = LoadObject<USkeletalMesh>(nullptr, TEXT("/Game/Drone_Scavenger/SK/SK_Drone_Scavenger.SK_Drone_Scavenger"));
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:39: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:47: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:51: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:57: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:60: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:63: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:66: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:69: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:72: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:75: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:78: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:81: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:89: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:97: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DronePlaybackManager.h:107: UFUNCTION(BlueprintCallable, Category = "Drone|Playback")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.cpp:17: #include "UObject/ConstructorHelpers.h"
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.cpp:48: static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.cpp:54: static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:19: UENUM(BlueprintType)
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:28: UCLASS(BlueprintType, Blueprintable)
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:36: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:39: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:42: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:45: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:48: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:51: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:54: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:57: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:60: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:63: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:66: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:69: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:72: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:75: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:78: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:81: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization", meta = (ClampMin = "0.05", UIMin = "0.05"))
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:84: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:87: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:90: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:93: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization", meta = (ClampMin = "1.0", UIMin = "1.0"))
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:101: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization", meta = (ClampMin = "1.0", UIMin = "1.0"))
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:104: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization", meta = (ClampMin = "0.1", UIMin = "0.1"))
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:107: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization", meta = (ClampMin = "0.01", UIMin = "0.01"))
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:110: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:113: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:116: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:119: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization", meta = (ClampMin = "1.0", UIMin = "1.0"))
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:122: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Visualization")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:125: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:128: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:131: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:134: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:137: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:140: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:143: UFUNCTION(BlueprintPure, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:151: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:154: UFUNCTION(BlueprintPure, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:157: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:160: UFUNCTION(BlueprintPure, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:163: UFUNCTION(BlueprintPure, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:166: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:169: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:172: UFUNCTION(BlueprintPure, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:175: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:178: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.h:181: UFUNCTION(BlueprintCallable, Category = "Drone Path|Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:6: USTRUCT(BlueprintType)
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:12: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Extension")
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:16: USTRUCT(BlueprintType)
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:23: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:26: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint", meta = (ClampMin = "0.0", UIMin = "0.0"))
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:30: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint", meta = (ClampMin = "0.0", ClampMax = "15.0", UIMin = "0.0", UIMax = "15.0"))
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:33: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Waypoint")
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:36: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint|Extension")
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.cpp:8: #include "UObject/ConstructorHelpers.h"
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.cpp:26: static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.cpp:32: static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.h:28: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gizmo", meta = (ClampMin = "50.0"))
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.h:32: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gizmo", meta = (ClampMin = "8", ClampMax = "128"))
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.h:36: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gizmo", meta = (ClampMin = "1.0"))
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.h:39: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gizmo")
+Source/UE5DroneControl/PathEditor/FormationRotationGizmoActor.h:42: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gizmo")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:24: USTRUCT(BlueprintType)
+Source/UE5DroneControl/RealTimeDroneReceiver.h:72: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:76: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:79: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:82: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:85: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:90: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:95: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:98: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:102: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:106: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:110: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Label UI")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:129: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:132: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:135: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config", meta = (EditCondition = "bAutoDetectPort"))
+Source/UE5DroneControl/RealTimeDroneReceiver.h:138: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config", meta = (EditCondition = "bAutoDetectPort"))
+Source/UE5DroneControl/RealTimeDroneReceiver.h:141: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config", meta = (EditCondition = "bAutoDetectPort"))
+Source/UE5DroneControl/RealTimeDroneReceiver.h:144: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:147: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:150: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:153: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:156: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:159: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:163: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:167: UFUNCTION(BlueprintCallable, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:170: UFUNCTION(BlueprintPure, Category = "RealTime Config")
+Source/UE5DroneControl/RealTimeDroneReceiver.h:173: UFUNCTION(BlueprintCallable, Category = "Drone Identity")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:18: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint Editing")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:22: UPROPERTY(BlueprintAssignable, Category = "Waypoint Editing")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:25: UFUNCTION(BlueprintCallable, Category = "Waypoint Editing")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:28: UFUNCTION(BlueprintCallable, Category = "Waypoint Editing")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:31: UFUNCTION(BlueprintCallable, Category = "Waypoint Editing")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:34: UFUNCTION(BlueprintCallable, Category = "Waypoint Editing")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:38: UFUNCTION(BlueprintCallable, Category = "Navigation")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:42: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Navigation")
+Source/UE5DroneControl/RuntimeInteraction/DroneRuntimeInteractionPlayerController.h:46: UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Waypoint Editing")
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:10: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Shared/SecurityPlanPanel.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:6: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.h:3: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:11: UENUM(BlueprintType)
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:19: USTRUCT(BlueprintType)
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:25: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:28: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:31: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Task", meta = (ClampMin = "0.0", UIMin = "0.0"))
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:34: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:38: UCLASS(BlueprintType, Blueprintable)
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:44: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:47: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:50: UFUNCTION(BlueprintCallable, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:53: UFUNCTION(BlueprintCallable, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:56: UFUNCTION(BlueprintCallable, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:59: UFUNCTION(BlueprintPure, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:62: UFUNCTION(BlueprintCallable, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:65: UFUNCTION(BlueprintPure, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:68: UFUNCTION(BlueprintPure, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:71: UFUNCTION(BlueprintCallable, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:74: UFUNCTION(BlueprintPure, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:77: UFUNCTION(BlueprintCallable, Category = "Drone Task")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:80: UFUNCTION(BlueprintCallable, Category = "Drone Task|Scheduling")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:83: UFUNCTION(BlueprintCallable, Category = "Drone Task|Scheduling")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:86: UFUNCTION(BlueprintCallable, Category = "Drone Task|Scheduling")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:89: UFUNCTION(BlueprintPure, Category = "Drone Task|Scheduling")
+Source/UE5DroneControl/TaskSystem/DroneTaskManager.h:92: UFUNCTION(BlueprintCallable, Category = "Drone Task|Scheduling")
+Source/UE5DroneControl/Tests/CommandCenterV2Test.cpp:15: #include "Blueprint/WidgetBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/CommandCenterV2Test.cpp:55: TArray<UUserWidget*> Widgets;UWidgetBlueprintLibrary::GetAllWidgetsOfClass(W,Widgets,Class,false);Test->TestEqual(*Class->GetName(),Widgets.Num(),1);
+Source/UE5DroneControl/Tests/CommandCenterV2Test.cpp:80: bool Class::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(FP2Check(this,Mode));ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:20: #include "Blueprint/WidgetBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:29: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:185: UWidgetBlueprintLibrary::GetAllWidgetsOfClass(World, Popups, UPreviewConfirmPopupWidget::StaticClass(), true);
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:201: UClass* VideoClass = LoadClass<UDroneVideoWindowWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_DroneVideoWindow.WBP_DroneVideoWindow_C"));
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:202: Test->TestNotNull(TEXT("original video Blueprint exists"), VideoClass);
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:238: ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));
+Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:25: #include "Blueprint/WidgetBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:26: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:115: UWidgetBlueprintLibrary::GetAllWidgetsOfClass(World, Popups, UPreviewConfirmPopupWidget::StaticClass(), true);
+Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:149: UWidgetBlueprintLibrary::GetAllWidgetsOfClass(PC->GetWorld(), GeographicWidgets, UGeographicTargetPanelWidget::StaticClass(), false);
+Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:256: ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:14: #include "UI/UIManagerBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:20: #include "Blueprint/WidgetBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:21: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:42: UWidgetBlueprintLibrary::GetAllWidgetsOfClass(World, Widgets, Class, false); return Widgets.Num();
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:55: UUIManagerBlueprintLibrary::ShowSequenceDispatchPanel(PC);
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:56: UUIManagerBlueprintLibrary::ShowGeographicTargetPanel(PC);
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:102: ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));
+Source/UE5DroneControl/Tests/OperationalContextTest.cpp:55: ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));
+Source/UE5DroneControl/Tests/OperationalContextTest.cpp:100: ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));
+Source/UE5DroneControl/Tests/P4WorkflowTest.cpp:186: bool Class::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(Command);ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
+Source/UE5DroneControl/Tests/SecurityPlanTest.cpp:72: bool Class::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(FP3ReplicaCheck(this,Video));ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
+Source/UE5DroneControl/Tests/SecurityPlanTest.cpp:76: bool FP3Route::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(FP3ReplicaCheck(this,false,true));ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
+Source/UE5DroneControl/Tests/VideoClientTest.cpp:12: #include "Blueprint/WidgetBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/VideoClientTest.cpp:13: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Tests/VideoClientTest.cpp:16: #include "UI/UIManagerBlueprintLibrary.h"
+Source/UE5DroneControl/Tests/VideoClientTest.cpp:37: UWidgetBlueprintLibrary::GetAllWidgetsOfClass(World, Widgets, Class, true);
+Source/UE5DroneControl/Tests/VideoClientTest.cpp:70: UUIManagerBlueprintLibrary::ShowDroneList(PC);
+Source/UE5DroneControl/Tests/VideoClientTest.cpp:145: ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));
+Source/UE5DroneControl/UE5DroneControlCharacter.cpp:4: #include "UObject/ConstructorHelpers.h"
+Source/UE5DroneControl/UE5DroneControlCharacter.h:36: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/UE5DroneControlCharacter.h:39: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/UE5DroneControlCharacter.h:63: // 【修正】只保留这个主函数即�?    UFUNCTION(BlueprintCallable, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:67: UFUNCTION(BlueprintCallable, Category = "Camera")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:71: UFUNCTION(BlueprintCallable, Category = "Camera")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:74: UFUNCTION(BlueprintCallable, Category = "Camera")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:79: UFUNCTION(BlueprintCallable, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:83: UFUNCTION(BlueprintCallable, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:87: UFUNCTION(BlueprintCallable, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:91: UFUNCTION(BlueprintCallable, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:98: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:102: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:105: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:108: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:112: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:115: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:119: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:126: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:129: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:133: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:141: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:144: UPROPERTY(BlueprintReadOnly, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:147: UPROPERTY(BlueprintReadOnly, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:150: UPROPERTY(BlueprintReadOnly, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:156: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Network")
+Source/UE5DroneControl/UE5DroneControlCharacter.h:166: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Flight")
+Source/UE5DroneControl/UE5DroneControlGameMode.h:12: *  Check the Blueprint derived class for the set values
+Source/UE5DroneControl/UE5DroneControlPlayerController.cpp:5: #include "Blueprint/AIBlueprintHelperLibrary.h"
+Source/UE5DroneControl/UE5DroneControlPlayerController.cpp:108: UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:20: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:24: UPROPERTY(BlueprintReadWrite, Category = "UI")
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:28: UPROPERTY(BlueprintReadWrite, Category = "UI")
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:32: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:36: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/AssemblyPopupWidget.h:40: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:4: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.h:4: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:18: * The Blueprint is responsible only for presentation.  It may omit any named
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:22: UCLASS(Abstract, Blueprintable)
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:33: /** Allows a Blueprint retry button to call the same native retry path. */
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:34: UFUNCTION(BlueprintCallable, Category = "DroneInfo|Video")
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:37: UFUNCTION(BlueprintCallable, Category = "DroneInfo")
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:17: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:563: // 同时写入 ConnectionStatusText（新字段）和 StatusText（Blueprint 实际绑定的旧字段）
+Source/UE5DroneControl/UI/DroneListItemWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneListItemWidget.h:26: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:30: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:34: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:38: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:42: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:47: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:51: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:55: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:59: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:63: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:67: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:71: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:75: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:79: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:83: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:87: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:94: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/DroneListItemWidget.h:98: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DroneListItemWidget.h:101: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DroneListItemWidget.h:105: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DroneListItemWidget.h:108: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DroneListItemWidget.h:113: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DroneListWidget.cpp:6: #include "UIManagerBlueprintLibrary.h"
+Source/UE5DroneControl/UI/DroneListWidget.cpp:20: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/DroneListWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneListWidget.h:16: USTRUCT(BlueprintType)
+Source/UE5DroneControl/UI/DroneListWidget.h:21: UPROPERTY(BlueprintReadOnly, Category = "Drone Data")
+Source/UE5DroneControl/UI/DroneListWidget.h:24: UPROPERTY(BlueprintReadOnly, Category = "Drone Data")
+Source/UE5DroneControl/UI/DroneListWidget.h:27: UPROPERTY(BlueprintReadOnly, Category = "Drone Data")
+Source/UE5DroneControl/UI/DroneListWidget.h:30: UPROPERTY(BlueprintReadOnly, Category = "Drone Data")
+Source/UE5DroneControl/UI/DroneListWidget.h:33: UPROPERTY(BlueprintReadOnly, Category = "Drone Data")
+Source/UE5DroneControl/UI/DroneListWidget.h:36: UPROPERTY(BlueprintReadOnly, Category = "Drone Data")
+Source/UE5DroneControl/UI/DroneListWidget.h:52: UFUNCTION(BlueprintImplementableEvent, Category = "UI|Drone")
+Source/UE5DroneControl/UI/DroneListWidget.h:56: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional)) //
+Source/UE5DroneControl/UI/DroneListWidget.h:60: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI") //
+Source/UE5DroneControl/UI/DroneListWidget.h:64: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI") //
+Source/UE5DroneControl/UI/DroneListWidget.h:68: UFUNCTION(BlueprintCallable, Category = "UI") //
+Source/UE5DroneControl/UI/DroneListWidget.h:71: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/DroneListWidget.h:75: UFUNCTION(BlueprintCallable, Category = "UI") //
+Source/UE5DroneControl/UI/DroneListWidget.h:79: UFUNCTION(BlueprintCallable, Category = "UI") //
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.cpp:5: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.h:44: * Layout (all built at runtime so no Blueprint asset is required):
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.h:61: UPROPERTY(BlueprintAssignable, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.h:68: UFUNCTION(BlueprintCallable, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.h:72: /** Allow Blueprint subclass to access the bound drone id (read-only). */
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.h:73: UFUNCTION(BlueprintPure, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DroneNameLabelWidget.cpp:5: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/DroneNameLabelWidget.cpp:18: return; // Blueprint already bound
+Source/UE5DroneControl/UI/DroneNameLabelWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneNameLabelWidget.h:23: /** Main text block – built at runtime if the Blueprint doesn't bind one. */
+Source/UE5DroneControl/UI/DroneNameLabelWidget.h:28: UFUNCTION(BlueprintCallable, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DroneNameLabelWidget.h:32: UFUNCTION(BlueprintCallable, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DroneNameLabelWidget.h:36: UFUNCTION(BlueprintCallable, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DroneNameLabelWidget.h:40: UFUNCTION(BlueprintCallable, Category = "DroneLabel")
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:4: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:39: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path Playback")
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:42: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path Playback")
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:45: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path Playback")
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:48: UFUNCTION(BlueprintCallable, Category = "Drone Path Playback")
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:51: UFUNCTION(BlueprintCallable, Category = "Drone Path Playback")
+Source/UE5DroneControl/UI/DronePathPlaybackWidget.h:54: UFUNCTION(BlueprintCallable, Category = "Drone Path Playback")
+Source/UE5DroneControl/UI/DroneVideoWindowManager.cpp:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.h:29: UCLASS(Abstract, Blueprintable)
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.h:54: /** Retry the video connection from a Blueprint button, if bound directly. */
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.h:55: UFUNCTION(BlueprintCallable, Category = "DroneVideo")
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.h:76: UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DroneVideo", meta = (ClampMin = "1.0"))
+Source/UE5DroneControl/UI/EnemyDroneListWidget.cpp:19: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/EnemyDroneListWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/EnemyDroneListWidget.h:25: UFUNCTION(BlueprintCallable, Category = "UI|Enemy")
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:5: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:140: if (UTexture2D* LocationTexture = LoadObject<UTexture2D>(
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:141: nullptr, TEXT("/Game/SpaceGUI/textures/Icons/64/t_Location_64.t_Location_64")))
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:455: // Legacy SpinBox Blueprints use slider bounds only, so a typed out-of-range value remains
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.h:28: * Expected (optional) bound widgets in the Blueprint:
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.h:92: /** Legacy three-field Blueprint bindings retained for compatibility. */
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.h:102: /** Legacy Blueprint bindings retained for compatibility; text inputs take precedence. */
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.cpp:5: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:16: * The widget is built in C++ when no Blueprint tree is supplied, which keeps
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:19: UCLASS(Blueprintable)
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:28: UFUNCTION(BlueprintPure, Category = "GroundProjection")
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:31: UFUNCTION(BlueprintPure, Category = "GroundProjection")
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:35: UFUNCTION(BlueprintPure, Category = "GroundProjection|Diagnostics")
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:38: UFUNCTION(BlueprintCallable, Category = "GroundProjection")
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.h:42: UFUNCTION(BlueprintCallable, Category = "GroundProjection")
+Source/UE5DroneControl/UI/PathDragDropOperation.h:4: #include "Blueprint/DragDropOperation.h"
+Source/UE5DroneControl/UI/PathDragDropOperation.h:13: UPROPERTY(BlueprintReadWrite, Category = "DragDrop")
+Source/UE5DroneControl/UI/PathDragDropOperation.h:16: UPROPERTY(BlueprintReadWrite, Category = "DragDrop")
+Source/UE5DroneControl/UI/PathDroneMatchItemWidget.h:4: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/PathFileListItemWidget.h:4: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.cpp:12: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:13: UENUM(BlueprintType)
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:34: UPROPERTY(BlueprintAssignable, Category = "PreviewConfirm")
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:53: UFUNCTION(BlueprintCallable, Category = "PreviewConfirm")
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:57: UFUNCTION(BlueprintCallable, Category = "PreviewConfirm")
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:63: UFUNCTION(BlueprintCallable, Category = "AttackConfirm")
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:69: UPROPERTY(BlueprintAssignable, Category = "AttackConfirm")
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:73: UFUNCTION(BlueprintCallable, Category = "AttackConfirm")
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.h:77: UFUNCTION(BlueprintCallable, Category = "AttackConfirm")
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:26: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.h:4: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.h:103: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SequenceDispatch")
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.h:106: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SequenceDispatch")
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.h:110: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SequenceDispatch")
+Source/UE5DroneControl/UI/ToastWidget.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/UI/ToastWidget.h:20: UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+Source/UE5DroneControl/UI/ToastWidget.h:24: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+Source/UE5DroneControl/UI/ToastWidget.h:28: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/ToastWidget.h:32: UFUNCTION(BlueprintCallable, Category = "UI")
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:3: #include "UIManagerBlueprintLibrary.h"
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:30: TWeakObjectPtr<UDroneListWidget> UUIManagerBlueprintLibrary::CurrentDroneList;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:31: TWeakObjectPtr<UEnemyDroneListWidget> UUIManagerBlueprintLibrary::CurrentEnemyDroneList;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:32: TWeakObjectPtr<UToastWidget> UUIManagerBlueprintLibrary::CurrentToast;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:33: TWeakObjectPtr<UAssemblyPopupWidget> UUIManagerBlueprintLibrary::CurrentAssemblyPopup;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:34: TWeakObjectPtr<USequenceDispatchPanelWidget> UUIManagerBlueprintLibrary::CurrentSequenceDispatchPanel;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:35: TWeakObjectPtr<UGeographicTargetPanelWidget> UUIManagerBlueprintLibrary::CurrentGeographicTargetPanel;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:36: TWeakObjectPtr<UGroundProjectionSettingsWidget> UUIManagerBlueprintLibrary::CurrentGroundProjectionSettings;
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:38: TSubclassOf<UDroneListWidget> UUIManagerBlueprintLibrary::GetDroneListClass()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:40: UClass* Class = LoadClass<UDroneListWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_DroneList.WBP_DroneList_C"));
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:44: TSubclassOf<UToastWidget> UUIManagerBlueprintLibrary::GetToastClass()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:46: UClass* Class = LoadClass<UToastWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_Toast.WBP_Toast_C"));
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:50: TSubclassOf<UAssemblyPopupWidget> UUIManagerBlueprintLibrary::GetAssemblyPopupClass()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:52: UClass* Class = LoadClass<UAssemblyPopupWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_AssemblyPopup.WBP_AssemblyPopup_C"));
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:56: void UUIManagerBlueprintLibrary::ShowToast(UObject* WorldContextObject, const FString& Message, float Duration)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:79: void UUIManagerBlueprintLibrary::ShowDroneList(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:98: UClass* ItemClass = LoadClass<UDroneListItemWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_DroneListItem.WBP_DroneListItem_C"));
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:111: void UUIManagerBlueprintLibrary::HideDroneList(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:121: void UUIManagerBlueprintLibrary::ShowAssemblyDemo(UObject* WorldContextObject, int32 TotalCount, float StepInterval)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:137: TSubclassOf<USequenceDispatchPanelWidget> UUIManagerBlueprintLibrary::GetSequenceDispatchPanelClass()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:139: UClass* Class = LoadClass<USequenceDispatchPanelWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_SequenceDispatchPanel.WBP_SequenceDispatchPanel_C"));
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:143: void UUIManagerBlueprintLibrary::ShowSequenceDispatchPanel(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:166: void UUIManagerBlueprintLibrary::HideSequenceDispatchPanel(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:176: TSubclassOf<UGeographicTargetPanelWidget> UUIManagerBlueprintLibrary::GetGeographicTargetPanelClass()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:178: UClass* Class = LoadClass<UGeographicTargetPanelWidget>(nullptr, TEXT("/Game/DroneOps/UI/WBP_GeographicTargetPanel.WBP_GeographicTargetPanel_C"));
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:182: void UUIManagerBlueprintLibrary::ShowGeographicTargetPanel(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:208: void UUIManagerBlueprintLibrary::HideGeographicTargetPanel(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:218: void UUIManagerBlueprintLibrary::ShowEnemyDroneList(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:246: void UUIManagerBlueprintLibrary::HideEnemyDroneList(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:255: void UUIManagerBlueprintLibrary::LinkPanels()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:264: TSubclassOf<UGroundProjectionSettingsWidget> UUIManagerBlueprintLibrary::GetGroundProjectionSettingsClass()
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:269: void UUIManagerBlueprintLibrary::ShowGroundProjectionSettings(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.cpp:291: void UUIManagerBlueprintLibrary::HideGroundProjectionSettings(UObject* WorldContextObject)
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:6: #include "Kismet/BlueprintFunctionLibrary.h"
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:7: #include "UIManagerBlueprintLibrary.generated.h"
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:13: class UE5DRONECONTROL_API UUIManagerBlueprintLibrary : public UBlueprintFunctionLibrary
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:19: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:23: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:27: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:31: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:35: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:39: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:43: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:47: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:51: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:55: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:64: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/UI/UIManagerBlueprintLibrary.h:68: UFUNCTION(BlueprintCallable, Category = "UI Manager", meta = (WorldContext = "WorldContextObject"))
+Source/UE5DroneControl/Variant_Strategy/StrategyPawn.h:22: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_Strategy/StrategyPawn.h:26: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_Strategy/StrategyPlayerController.h:18: UENUM(BlueprintType)
+Source/UE5DroneControl/Variant_Strategy/StrategyPlayerController.h:295: UFUNCTION(BlueprintImplementableEvent, Category="Cursor", meta = (DisplayName="Cursor Feedback"))
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:27: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:68: /** Blueprint handler for strategy game selection */
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:69: UFUNCTION(BlueprintImplementableEvent, Category="NPC", meta = (DisplayName="Unit Selected"))
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:72: /** Blueprint handler for strategy game deselection */
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:73: UFUNCTION(BlueprintImplementableEvent, Category="NPC", meta = (DisplayName="Unit Deselected"))
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:76: /** Blueprint handler for strategy game interactions */
+Source/UE5DroneControl/Variant_Strategy/StrategyUnit.h:77: UFUNCTION(BlueprintImplementableEvent, Category="NPC", meta = (DisplayName="Interaction Behavior"))
+Source/UE5DroneControl/Variant_Strategy/UI/StrategyUI.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Variant_Strategy/UI/StrategyUI.h:28: /** Blueprint handler to update unit count sub-widgets */
+Source/UE5DroneControl/Variant_Strategy/UI/StrategyUI.h:29: UFUNCTION(BlueprintImplementableEvent, Category="UI", meta = (DisplayName="Update Units Count"))
+Source/UE5DroneControl/Variant_Strategy/UI/StrategyUI.h:35: UFUNCTION(BlueprintPure, Category="UI")
+Source/UE5DroneControl/Variant_TwinStick/AI/TwinStickAIController.h:21: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/AI/TwinStickNPC.h:50: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="NPC")
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickAoEAttack.h:22: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickAoEAttack.h:26: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickAoEAttack.h:69: /** Allows Blueprint handling of AoE fade out effects. NOTE: Call Destroy Actor at the end of this! */
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickAoEAttack.h:70: UFUNCTION(BlueprintImplementableEvent, Category="AoE Attack")
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickPickup.h:21: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickPickup.h:25: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickProjectile.h:22: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickProjectile.h:26: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/Gameplay/TwinStickProjectile.h:30: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:29: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:33: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:170: UFUNCTION(BlueprintCallable, Category="Input")
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:174: UFUNCTION(BlueprintCallable, Category="Input")
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:178: UFUNCTION(BlueprintCallable, Category="Input")
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:182: UFUNCTION(BlueprintCallable, Category="Input")
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:186: UFUNCTION(BlueprintCallable, Category="Input")
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:196: /** Allows Blueprint code to react to damage */
+Source/UE5DroneControl/Variant_TwinStick/TwinStickCharacter.h:197: UFUNCTION(BlueprintImplementableEvent, Category="Damage", meta = (DisplayName = "Damaged"))
+Source/UE5DroneControl/Variant_TwinStick/TwinStickPlayerController.cpp:12: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:6: #include "Blueprint/UserWidget.h"
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:20: /** Blueprint handler to update the items counter */
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:21: UFUNCTION(BlueprintImplementableEvent, Category="Score")
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:24: /** Blueprint handler to update the score sub-widgets */
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:25: UFUNCTION(BlueprintImplementableEvent, Category="Score")
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:28: /** Blueprint handler to update the combo sub-widgets */
+Source/UE5DroneControl/Variant_TwinStick/UI/TwinStickUI.h:29: UFUNCTION(BlueprintImplementableEvent, Category="Score")
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:8: #include "Blueprint/WidgetTree.h"
+Source/UE5DroneControl/Video/VideoShellWidget.h:3: #include "Blueprint/UserWidget.h"

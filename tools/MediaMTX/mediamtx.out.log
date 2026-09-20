@@ -1,0 +1,306 @@
+2026/08/06 16:45:30 INF MediaMTX v1.18.2, windows, amd64
+2026/08/06 16:45:30 INF configuration loaded from D:\RedAlert\UE5DroneControl\tools\MediaMTX\mediamtx.yml
+2026/08/06 16:45:30 INF [RTSP] listener opened on :8554 (TCP/RTSP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/08/06 16:45:30 INF [RTMP] listener opened on :1935 (TCP/RTMP)
+2026/08/06 16:45:30 INF [HLS] listener opened on :8888 (TCP/HTTP)
+2026/08/06 16:45:30 INF [WebRTC] listener opened on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/08/06 16:45:30 INF [SRT] listener opened on :8890 (UDP)
+2026/08/06 17:01:24 INF [RTSP] [conn 127.0.0.1:62487] opened
+2026/08/06 17:01:24 INF [RTSP] [session 665c121e] created by 127.0.0.1:62487
+2026/08/06 17:01:24 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:24 INF [path drone-1] stream is available and online, 1 track (H264)
+2026/08/06 17:01:24 INF [RTSP] [session 665c121e] is publishing to path 'drone-1'
+2026/08/06 17:01:24 INF [RTSP] [conn 127.0.0.1:62488] opened
+2026/08/06 17:01:24 INF [RTSP] [session f1266e79] created by 127.0.0.1:62488
+2026/08/06 17:01:24 INF [path drone-1] RTP packets are too big (1460 > 1440), remuxing them into smaller ones
+2026/08/06 17:01:24 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:24 INF [path drone-2] stream is available and online, 1 track (H264)
+2026/08/06 17:01:24 INF [RTSP] [session f1266e79] is publishing to path 'drone-2'
+2026/08/06 17:01:24 INF [path drone-2] RTP packets are too big (1460 > 1440), remuxing them into smaller ones
+2026/08/06 17:01:24 INF [RTSP] [conn 127.0.0.1:62489] opened
+2026/08/06 17:01:24 INF [RTSP] [session 6b3003b6] created by 127.0.0.1:62489
+2026/08/06 17:01:24 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:24 INF [path drone-3] stream is available and online, 1 track (H264)
+2026/08/06 17:01:24 INF [RTSP] [session 6b3003b6] is publishing to path 'drone-3'
+2026/08/06 17:01:24 INF [path drone-3] RTP packets are too big (1460 > 1440), remuxing them into smaller ones
+2026/08/06 17:01:24 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:01:25 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:25 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:26 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:27 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:27 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:29 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:29 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:31 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:01:31 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:31 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:32 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:32 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:33 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:34 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:35 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:36 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:36 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:37 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:01:38 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:38 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:39 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:39 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:39 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:41 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:41 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:42 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:43 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:01:43 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:44 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:45 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:45 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:46 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:47 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:48 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:49 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:01:49 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:50 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:51 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:51 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:52 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:53 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:54 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:55 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:01:56 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:01:56 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:01:57 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:01:57 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:01:58 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:01:59 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:00 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:00 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:01 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:02 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:02 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:03 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:03 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:03 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:05 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:05 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:06 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:07 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:08 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:08 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:09 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:10 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:10 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:11 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:12 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:13 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:14 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:14 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:15 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:16 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:16 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:17 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:17 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:18 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:19 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:20 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:20 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:20 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:21 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:22 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:22 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:23 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:24 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:24 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:26 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:26 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:26 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:28 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:28 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:28 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:30 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:30 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:31 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:32 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:32 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:33 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:34 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:34 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:35 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:36 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:37 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:38 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:38 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:39 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:40 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:40 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:41 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:42 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:42 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:44 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:44 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:45 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:45 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:46 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:47 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:47 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:48 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:48 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:50 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:50 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:51 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:51 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:52 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:53 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:02:53 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:54 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:54 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:56 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:02:56 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:02:57 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:02:58 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:02:58 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:02:59 INF [path drone-2] [recorder] recording 1 track (H264)
+2026/08/06 17:03:00 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:03:00 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:03:01 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:03:02 INF [path drone-3] [recorder] recording 1 track (H264)
+2026/08/06 17:03:03 INF [path drone-1] [recorder] recording 1 track (H264)
+2026/08/06 17:03:03 ERR [path drone-2] [recorder] mkdir D:\DroneData\recordings\drone-2: Access is denied.
+2026/08/06 17:03:04 ERR [path drone-3] [recorder] mkdir D:\DroneData\recordings\drone-3: Access is denied.
+2026/08/06 17:03:04 ERR [path drone-1] [recorder] mkdir D:\DroneData\recordings\drone-1: Access is denied.
+2026/08/06 17:03:04 INF reloading configuration (file changed)
+2026/08/06 17:03:04 INF [path drone-3] [recorder] recording stopped
+2026/08/06 17:03:04 INF [path drone-2] [recorder] recording stopped
+2026/08/06 17:03:04 INF [path drone-1] [recorder] recording stopped
+2026/08/06 17:04:49 INF reloading configuration (file changed)
+2026/08/06 17:04:49 INF [WebRTC] listener is closing
+2026/08/06 17:04:49 INF [WebRTC] listener opened on :8889 (TCP/HTTP), :8189 (UDP/ICE)
+2026/08/06 17:16:01 INF [RTSP] [conn 127.0.0.1:59014] opened
+2026/08/06 17:16:01 INF [RTSP] [session 8e4ad151] created by 127.0.0.1:59014
+2026/08/06 17:16:01 INF [RTSP] [session 8e4ad151] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:16:02 INF [RTSP] [session 8e4ad151] destroyed: torn down by 127.0.0.1:59014
+2026/08/06 17:16:02 INF [RTSP] [conn 127.0.0.1:59014] closed: read tcp 127.0.0.1:8554->127.0.0.1:59014: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:16:02 INF [RTSP] [conn 127.0.0.1:59021] opened
+2026/08/06 17:16:02 INF [RTSP] [session 1fefdfec] created by 127.0.0.1:59021
+2026/08/06 17:16:02 INF [RTSP] [session 1fefdfec] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:16:07 INF [RTSP] [session 1fefdfec] destroyed: torn down by 127.0.0.1:59021
+2026/08/06 17:16:07 INF [RTSP] [conn 127.0.0.1:59021] closed: read tcp 127.0.0.1:8554->127.0.0.1:59021: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:16:07 INF [RTSP] [conn 127.0.0.1:60265] opened
+2026/08/06 17:16:07 INF [RTSP] [session b1d36162] created by 127.0.0.1:60265
+2026/08/06 17:16:07 INF [RTSP] [session b1d36162] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:16:09 INF [RTSP] [session b1d36162] destroyed: torn down by 127.0.0.1:60265
+2026/08/06 17:16:09 INF [RTSP] [conn 127.0.0.1:60265] closed: read tcp 127.0.0.1:8554->127.0.0.1:60265: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:29:33 INF [RTSP] [conn 127.0.0.1:53545] opened
+2026/08/06 17:29:33 INF [RTSP] [session 73cca0f2] created by 127.0.0.1:53545
+2026/08/06 17:29:33 INF [RTSP] [session 73cca0f2] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:29:35 INF [RTSP] [session 73cca0f2] destroyed: torn down by 127.0.0.1:53545
+2026/08/06 17:29:35 INF [RTSP] [conn 127.0.0.1:53545] closed: read tcp 127.0.0.1:8554->127.0.0.1:53545: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:29:35 INF [RTSP] [conn 127.0.0.1:57573] opened
+2026/08/06 17:29:35 INF [RTSP] [session cc711530] created by 127.0.0.1:57573
+2026/08/06 17:29:35 INF [RTSP] [session cc711530] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:29:38 INF [RTSP] [session cc711530] destroyed: torn down by 127.0.0.1:57573
+2026/08/06 17:29:38 INF [RTSP] [conn 127.0.0.1:57573] closed: read tcp 127.0.0.1:8554->127.0.0.1:57573: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:29:38 INF [RTSP] [conn 127.0.0.1:50361] opened
+2026/08/06 17:29:38 INF [RTSP] [session e368160d] created by 127.0.0.1:50361
+2026/08/06 17:29:38 INF [RTSP] [session e368160d] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:29:40 INF [RTSP] [session e368160d] destroyed: torn down by 127.0.0.1:50361
+2026/08/06 17:29:40 INF [RTSP] [conn 127.0.0.1:50361] closed: read tcp 127.0.0.1:8554->127.0.0.1:50361: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:29:42 INF [RTSP] [conn 127.0.0.1:50383] opened
+2026/08/06 17:29:42 INF [RTSP] [session 58efe194] created by 127.0.0.1:50383
+2026/08/06 17:29:43 INF [RTSP] [session 58efe194] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:29:44 INF [RTSP] [session 58efe194] destroyed: torn down by 127.0.0.1:50383
+2026/08/06 17:29:44 INF [RTSP] [conn 127.0.0.1:50383] closed: read tcp 127.0.0.1:8554->127.0.0.1:50383: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:29:44 INF [RTSP] [conn 127.0.0.1:50388] opened
+2026/08/06 17:29:44 INF [RTSP] [session f41de56d] created by 127.0.0.1:50388
+2026/08/06 17:29:44 INF [RTSP] [session f41de56d] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:29:50 INF [RTSP] [session f41de56d] destroyed: torn down by 127.0.0.1:50388
+2026/08/06 17:29:50 INF [RTSP] [conn 127.0.0.1:50388] closed: read tcp 127.0.0.1:8554->127.0.0.1:50388: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:29:51 INF [RTSP] [conn 127.0.0.1:55923] opened
+2026/08/06 17:29:51 INF [RTSP] [session 0dc41559] created by 127.0.0.1:55923
+2026/08/06 17:29:51 INF [RTSP] [session 0dc41559] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:29:52 INF [RTSP] [session 0dc41559] destroyed: torn down by 127.0.0.1:55923
+2026/08/06 17:29:52 INF [RTSP] [conn 127.0.0.1:55923] closed: read tcp 127.0.0.1:8554->127.0.0.1:55923: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:38:13 INF [RTSP] [conn 127.0.0.1:59384] opened
+2026/08/06 17:38:13 INF [RTSP] [session fad2ef0e] created by 127.0.0.1:59384
+2026/08/06 17:38:13 INF [RTSP] [session fad2ef0e] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:38:14 INF [RTSP] [session fad2ef0e] destroyed: torn down by 127.0.0.1:59384
+2026/08/06 17:38:14 INF [RTSP] [conn 127.0.0.1:59384] closed: read tcp 127.0.0.1:8554->127.0.0.1:59384: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:38:14 INF [RTSP] [conn 127.0.0.1:53564] opened
+2026/08/06 17:38:14 INF [RTSP] [session be7ae3b9] created by 127.0.0.1:53564
+2026/08/06 17:38:14 INF [RTSP] [session be7ae3b9] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:38:17 INF [RTSP] [session be7ae3b9] destroyed: torn down by 127.0.0.1:53564
+2026/08/06 17:38:17 INF [RTSP] [conn 127.0.0.1:53564] closed: read tcp 127.0.0.1:8554->127.0.0.1:53564: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:38:17 INF [RTSP] [conn 127.0.0.1:53806] opened
+2026/08/06 17:38:17 INF [RTSP] [session 1e583540] created by 127.0.0.1:53806
+2026/08/06 17:38:17 INF [RTSP] [session 1e583540] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:38:19 INF [RTSP] [session 1e583540] destroyed: torn down by 127.0.0.1:53806
+2026/08/06 17:38:19 INF [RTSP] [conn 127.0.0.1:53806] closed: read tcp 127.0.0.1:8554->127.0.0.1:53806: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:38:21 INF [RTSP] [conn 127.0.0.1:53815] opened
+2026/08/06 17:38:21 INF [RTSP] [session befcb36d] created by 127.0.0.1:53815
+2026/08/06 17:38:21 INF [RTSP] [session befcb36d] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:38:22 INF [RTSP] [session befcb36d] destroyed: torn down by 127.0.0.1:53815
+2026/08/06 17:38:22 INF [RTSP] [conn 127.0.0.1:53815] closed: read tcp 127.0.0.1:8554->127.0.0.1:53815: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:38:22 INF [RTSP] [conn 127.0.0.1:53820] opened
+2026/08/06 17:38:22 INF [RTSP] [session 19cd6f39] created by 127.0.0.1:53820
+2026/08/06 17:38:22 INF [RTSP] [session 19cd6f39] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:38:28 INF [RTSP] [session 19cd6f39] destroyed: torn down by 127.0.0.1:53820
+2026/08/06 17:38:28 INF [RTSP] [conn 127.0.0.1:53820] closed: read tcp 127.0.0.1:8554->127.0.0.1:53820: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:38:28 INF [RTSP] [conn 127.0.0.1:63703] opened
+2026/08/06 17:38:28 INF [RTSP] [session b467cb4a] created by 127.0.0.1:63703
+2026/08/06 17:38:28 INF [RTSP] [session b467cb4a] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:38:29 INF [RTSP] [session b467cb4a] destroyed: torn down by 127.0.0.1:63703
+2026/08/06 17:38:29 INF [RTSP] [conn 127.0.0.1:63703] closed: read tcp 127.0.0.1:8554->127.0.0.1:63703: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:06 INF [RTSP] [conn 127.0.0.1:57977] opened
+2026/08/06 17:41:06 INF [RTSP] [session eaba2ed9] created by 127.0.0.1:57977
+2026/08/06 17:41:06 INF [RTSP] [session eaba2ed9] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:41:07 INF [RTSP] [session eaba2ed9] destroyed: torn down by 127.0.0.1:57977
+2026/08/06 17:41:07 INF [RTSP] [conn 127.0.0.1:57977] closed: read tcp 127.0.0.1:8554->127.0.0.1:57977: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:08 INF [RTSP] [conn 127.0.0.1:57983] opened
+2026/08/06 17:41:08 INF [RTSP] [session 6c249a1d] created by 127.0.0.1:57983
+2026/08/06 17:41:08 INF [RTSP] [session 6c249a1d] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:41:10 INF [RTSP] [session 6c249a1d] destroyed: torn down by 127.0.0.1:57983
+2026/08/06 17:41:10 INF [RTSP] [conn 127.0.0.1:57983] closed: read tcp 127.0.0.1:8554->127.0.0.1:57983: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:10 INF [RTSP] [conn 127.0.0.1:57992] opened
+2026/08/06 17:41:10 INF [RTSP] [session f5dd80ae] created by 127.0.0.1:57992
+2026/08/06 17:41:10 INF [RTSP] [session f5dd80ae] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:41:12 INF [RTSP] [session f5dd80ae] destroyed: torn down by 127.0.0.1:57992
+2026/08/06 17:41:12 INF [RTSP] [conn 127.0.0.1:57992] closed: read tcp 127.0.0.1:8554->127.0.0.1:57992: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:14 INF [RTSP] [conn 127.0.0.1:58008] opened
+2026/08/06 17:41:14 INF [RTSP] [session 4d9380f1] created by 127.0.0.1:58008
+2026/08/06 17:41:14 INF [RTSP] [session 4d9380f1] is reading from path 'drone-1', with TCP, 1 track (H264)
+2026/08/06 17:41:16 INF [RTSP] [session 4d9380f1] destroyed: torn down by 127.0.0.1:58008
+2026/08/06 17:41:16 INF [RTSP] [conn 127.0.0.1:58008] closed: read tcp 127.0.0.1:8554->127.0.0.1:58008: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:16 INF [RTSP] [conn 127.0.0.1:63067] opened
+2026/08/06 17:41:16 INF [RTSP] [session f9434ad2] created by 127.0.0.1:63067
+2026/08/06 17:41:16 INF [RTSP] [session f9434ad2] is reading from path 'drone-2', with TCP, 1 track (H264)
+2026/08/06 17:41:21 INF [RTSP] [session f9434ad2] destroyed: torn down by 127.0.0.1:63067
+2026/08/06 17:41:21 INF [RTSP] [conn 127.0.0.1:63067] closed: read tcp 127.0.0.1:8554->127.0.0.1:63067: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:21 INF [RTSP] [conn 127.0.0.1:63094] opened
+2026/08/06 17:41:21 INF [RTSP] [session 4a14028f] created by 127.0.0.1:63094
+2026/08/06 17:41:21 INF [RTSP] [session 4a14028f] is reading from path 'drone-3', with TCP, 1 track (H264)
+2026/08/06 17:41:22 INF [RTSP] [session 4a14028f] destroyed: torn down by 127.0.0.1:63094
+2026/08/06 17:41:22 INF [RTSP] [conn 127.0.0.1:63094] closed: read tcp 127.0.0.1:8554->127.0.0.1:63094: wsarecv: An existing connection was forcibly closed by the remote host.
+2026/08/06 17:41:31 INF [WebRTC] [session 53e7da62] created by 127.0.0.1:57472
+2026/08/06 17:41:31 INF [WebRTC] [session 53e7da62] peer connection established, local candidate: host/udp/2001:250:20f:1:8da5:4902:c080:7ad3/8189, remote candidate: prflx/udp/2001:250:20f:1:8da5:4902:c080:7ad3/55309
+2026/08/06 17:41:31 INF [WebRTC] [session 53e7da62] is reading from path 'drone-3', 1 track (H264)
+2026/08/06 17:41:39 INF [WebRTC] [session 5d63cda4] created by 127.0.0.1:57472
+2026/08/06 17:41:39 INF [WebRTC] [session 5d63cda4] peer connection established, local candidate: host/udp/2001:250:20f:1:8da5:4902:c080:7ad3/8189, remote candidate: prflx/udp/2001:250:20f:1:8da5:4902:c080:7ad3/55083
+2026/08/06 17:41:39 INF [WebRTC] [session 5d63cda4] is reading from path 'drone-1', 1 track (H264)
+2026/08/06 17:41:44 INF [WebRTC] [session b672bc41] created by 127.0.0.1:57472
+2026/08/06 17:41:44 INF [WebRTC] [session b672bc41] peer connection established, local candidate: host/udp/2001:250:20f:1:8da5:4902:c080:7ad3/8189, remote candidate: prflx/udp/2001:250:20f:1:8da5:4902:c080:7ad3/59353
+2026/08/06 17:41:44 INF [WebRTC] [session b672bc41] is reading from path 'drone-2', 1 track (H264)
+2026/08/06 17:42:27 INF [WebRTC] [session 5d63cda4] closed: peer connection closed
+2026/08/06 17:42:28 INF [WebRTC] [session b672bc41] closed: peer connection closed
+2026/08/06 17:42:29 INF [WebRTC] [session 53e7da62] closed: peer connection closed
+2026/08/06 17:42:39 INF [WebRTC] [session b203b0d8] created by 127.0.0.1:64170
+2026/08/06 17:42:39 INF [WebRTC] [session b203b0d8] peer connection established, local candidate: host/udp/2001:250:20f:1:68cc:d783:b92c:2388/8189, remote candidate: prflx/udp/2001:250:20f:1:8da5:4902:c080:7ad3/51530
+2026/08/06 17:42:39 INF [WebRTC] [session b203b0d8] is reading from path 'drone-1', 1 track (H264)
+2026/08/06 17:42:43 INF [WebRTC] [session 95614786] created by 127.0.0.1:64170
+2026/08/06 17:42:43 INF [WebRTC] [session 95614786] peer connection established, local candidate: host/udp/2001:250:20f:1:8da5:4902:c080:7ad3/8189, remote candidate: prflx/udp/2001:250:20f:1:8da5:4902:c080:7ad3/58313
+2026/08/06 17:42:43 INF [WebRTC] [session 95614786] is reading from path 'drone-2', 1 track (H264)
+2026/08/06 17:42:52 INF [WebRTC] [session ea2d66fd] created by 127.0.0.1:64170
+2026/08/06 17:42:52 INF [WebRTC] [session ea2d66fd] peer connection established, local candidate: host/udp/2001:250:20f:1:68cc:d783:b92c:2388/8189, remote candidate: prflx/udp/2001:250:20f:1:8da5:4902:c080:7ad3/56451
+2026/08/06 17:42:52 INF [WebRTC] [session ea2d66fd] is reading from path 'drone-3', 1 track (H264)
+2026/08/06 18:39:52 INF [WebRTC] [session 95614786] closed: peer connection closed
+2026/08/06 18:39:52 INF [WebRTC] [session b203b0d8] closed: peer connection closed
+2026/08/06 18:39:52 INF [WebRTC] [session ea2d66fd] closed: peer connection closed

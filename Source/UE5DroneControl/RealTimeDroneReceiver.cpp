@@ -1,0 +1,1145 @@
+﻿#include "RealTimeDroneReceiver.h"
+#include "DroneOps/Drone/DroneTelemetryComponent.h"
+#include "DroneOps/Drone/DroneSelectionComponent.h"
+#include "DroneOps/Drone/DroneGroundProjectionComponent.h"
+#include "DroneOps/Drone/DroneVisualComponent.h"
+#include "DroneOps/Core/DroneRegistrySubsystem.h"
+#include "DroneOps/Core/DroneOpsTypes.h"
+#include "DroneOps/Core/ICoordinateService.h"
+#include "DroneOps/Network/DroneNetworkManager.h"
+#include "UI/DroneNameLabelWidget.h"
+#include "Engine/GameInstance.h"
+#include "Components/WidgetComponent.h"
+
+// --- 引入必要的底层头文件 ---
+#include "SocketSubsystem.h"
+#include "Interfaces/IPv4/IPv4Address.h"
+#include "Common/UdpSocketBuilder.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Components/CapsuleComponent.h"
+
+ARealTimeDroneReceiver::ARealTimeDroneReceiver()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	TargetLocation = FVector::ZeroVector;
+	TargetRotation = FRotator::ZeroRotator;
+	ListenSocket = nullptr;
+	bEnableUDPSend = false;
+
+	// Actor Z 直接代表真实飞行高度，禁用父类通过 Mesh 相对 Z 模拟高度的逻辑。
+	// 这样 Mesh 保持在 Capsule 旋转中心，姿态旋转不会绕下方点偏转。
+	bUseMeshHeightOffset = false;
+
+	TelemetryComponent = CreateDefaultSubobject<UDroneTelemetryComponent>(TEXT("TelemetryComponent"));
+	SelectionComponent = CreateDefaultSubobject<UDroneSelectionComponent>(TEXT("SelectionComponent"));
+	GroundProjectionComponent = CreateDefaultSubobject<UDroneGroundProjectionComponent>(TEXT("GroundProjection"));
+
+	// 外观模型挂载点：挂在 Root 上，与 Mesh 同处旋转中心。
+	VisualComponent = CreateDefaultSubobject<UDroneVisualComponent>(TEXT("VisualComponent"));
+	if (VisualComponent)
+	{
+		VisualComponent->SetupAttachment(RootComponent);
+	}
+
+	// Screen-space name label above the drone
+	NameLabelWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameLabelWidgetComponent"));
+	if (NameLabelWidgetComponent)
+	{
+		NameLabelWidgetComponent->SetupAttachment(RootComponent);
+		NameLabelWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
+		NameLabelWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		NameLabelWidgetComponent->SetDrawSize(FVector2D(200.0f, 40.0f));
+		NameLabelWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	// === 【关键】禁用重力和物理模拟 ===
+	if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+	{
+		// 禁用重力 - 这是防止下落的关键！
+		Movement->GravityScale = 0.0f;
+		Movement->bUseFlatBaseForFloorChecks = true;
+		// 禁用物理中的垂直速度
+		Movement->Velocity.Z = 0.0f;
+	}
+
+	// === 【修改】智能碰撞设置 ===
+	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
+	{
+		// 1. 确保碰撞是开启的 (Profile = Pawn)，这样它才能检测到地板
+		Capsule->SetCollisionProfileName(TEXT("Pawn"));
+
+		// 2. 忽略其他 Pawn（避免与其他飞机互相挤飞）
+		Capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+		// 3. 忽略摄像机，防止遮挡视线
+		Capsule->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+		// 4. Capsule 不阻挡 Visibility 射线——让射线穿透打到 Mesh。
+		//    修正高度逻辑后，Mesh 与 Capsule 处于同一高度，Capsule 会被先命中；
+		//    由 Mesh 负责 Visibility 命中才能通过 IsA<UMeshComponent>() 选中检测。
+		Capsule->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+
+		// 5. 禁用物理模拟 - 防止碰撞弹起
+		Capsule->SetSimulatePhysics(false);
+	}
+
+	// Mesh 负责 Visibility 命中（鼠标悬停 / 点击选中的实际射线接收体）
+	if (USkeletalMeshComponent* MyMesh = GetMesh())
+	{
+		MyMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	}
+}
+
+void ARealTimeDroneReceiver::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 【关键】记录初始位置作为坐标原点
+	InitialLocation = GetActorLocation();
+	TargetLocation = InitialLocation;
+	TargetRotation = GetActorRotation();
+
+	// Sync SelectionComponent identity
+	if (SelectionComponent)
+	{
+		SelectionComponent->DroneId = DroneId;
+		SelectionComponent->ThemeColor = ThemeColor;
+	}
+
+	// 【再次确保】禁用重力和物理
+	if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+	{
+		Movement->GravityScale = 0.0f;
+		Movement->SetMovementMode(MOVE_Flying);  // 切换到飞行模式，完全禁用重力
+	}
+
+	// === 1. WebSocket 模式：订阅 Registry 遥测事件，跳过 UDP ===
+	if (bUseWebSocket)
+	{
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+			{
+				Registry->OnTelemetryUpdated.AddDynamic(this, &ARealTimeDroneReceiver::OnWebSocketTelemetry);
+				UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver [%s]: WebSocket mode, subscribed to Registry telemetry"), *DroneName);
+			}
+
+			// Subscribe to power_on / reconnect events for GPS anchoring
+			if (UDroneNetworkManager* NetMgr = GI->GetSubsystem<UDroneNetworkManager>())
+			{
+				NetMgr->OnDroneWsEvent.AddUObject(this, &ARealTimeDroneReceiver::OnDroneWsEvent);
+				UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver [%s]: Subscribed to WS events for GPS anchoring"), *DroneName);
+
+				// Catch up: if power_on arrived before this actor spawned, apply cached anchor now.
+				double CachedLat, CachedLon, CachedAlt;
+				if (NetMgr->GetCachedGpsAnchor(DroneId, CachedLat, CachedLon, CachedAlt))
+				{
+					UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver [%s]: Applying cached GPS anchor (%.6f, %.6f, %.1fm)"),
+						*DroneName, CachedLat, CachedLon, CachedAlt);
+					OnDroneWsEvent(DroneId, TEXT("power_on"), CachedLat, CachedLon, CachedAlt);
+				}
+			}
+		}
+	}
+	else
+	{
+		// === UDP 模式：绑定端口 ===
+		if (bAutoDetectPort)
+		{
+			AutoDetectPort();
+			return;
+		}
+		CreateAndBindSocket(ListenPort);
+	}
+
+	// === 2. Register with DroneRegistrySubsystem ===
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			// Only register descriptor if not already registered by MultiDroneManager
+			if (!Registry->IsDroneRegistered(DroneId))
+			{
+				FDroneDescriptor Desc;
+				Desc.Name            = DroneName;
+				Desc.DroneId         = DroneId;
+				Desc.MavlinkSystemId = MavlinkSystemId;
+				Desc.BitIndex        = BitIndex;
+				Desc.ThemeColor      = ThemeColor;
+				Desc.UEReceivePort   = ListenPort;
+				Registry->RegisterDrone(Desc);
+			}
+			Registry->RegisterReceiverActor(DroneId, this);
+			UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver: Registered receiver for %s (ID=%d)"), *DroneName, DroneId);
+		}
+	}
+
+	// Sync TelemetryComponent DroneId
+	if (TelemetryComponent && !bUseWebSocket)
+	{
+		FDroneTelemetrySnapshot InitSnap;
+		InitSnap.DroneId = DroneId;
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+			{
+				Registry->GetTelemetry(DroneId, InitSnap);
+				InitSnap.DroneId = DroneId;
+			}
+		}
+		TelemetryComponent->PushSnapshot(InitSnap);
+	}
+
+	// ---- Name-label widget component ----
+	if (NameLabelWidgetComponent)
+	{
+		NameLabelWidgetComponent->SetRelativeLocation(NameLabelRelativeLocation);
+
+		// UWidgetComponent (Screen space) 自行管理渲染目标，不依赖 widget 创建者身份。
+		// 用 GetWorld() 创建可避免 CreateWidget 对 ULocalPlayer* 的编译期类型检查失败。
+		UDroneNameLabelWidget* LabelWidget = GetWorld()
+			? CreateWidget<UDroneNameLabelWidget>(GetWorld(), UDroneNameLabelWidget::StaticClass())
+			: nullptr;
+		if (LabelWidget)
+		{
+			NameLabelWidgetComponent->SetWidget(LabelWidget);
+
+			if (UGameInstance* GI = GetGameInstance())
+			{
+				if (UDroneRegistrySubsystem* Reg = GI->GetSubsystem<UDroneRegistrySubsystem>())
+				{
+					FDroneLabelSettings InitialSettings;
+					Reg->GetDroneLabelSettings(DroneId, InitialSettings);
+					LabelWidget->ApplyLabelSettings(InitialSettings.DisplayName, InitialSettings.LabelColor, InitialSettings.FontSize);
+					Reg->OnDroneLabelSettingsChanged.AddDynamic(this, &ARealTimeDroneReceiver::OnLabelSettingsChanged);
+				}
+			}
+		}
+	}
+
+	// ---- 外观模型 ----
+	// 订阅后续变更，并立即应用 Registry 中的当前选择：
+	// 处理"Pawn 晚于设置生成"的情况（切换模型后重新进入场景）。
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Reg = GI->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			Reg->OnDroneModelTypeChanged.AddDynamic(this, &ARealTimeDroneReceiver::OnModelTypeChanged);
+			if (VisualComponent)
+			{
+				VisualComponent->ApplyModelType(Reg->GetDroneModelType(DroneId));
+			}
+		}
+	}
+}
+
+void ARealTimeDroneReceiver::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	// Unsubscribe from WS events
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UDroneNetworkManager* NetMgr = GI->GetSubsystem<UDroneNetworkManager>())
+		{
+			NetMgr->OnDroneWsEvent.RemoveAll(this);
+		}
+		if (UDroneRegistrySubsystem* Reg = GI->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			Reg->OnDroneLabelSettingsChanged.RemoveAll(this);
+			Reg->OnDroneModelTypeChanged.RemoveAll(this);
+		}
+	}
+
+	if (ListenSocket)
+	{
+		ListenSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenSocket);
+		ListenSocket = nullptr;
+	}
+}
+
+void ARealTimeDroneReceiver::Tick(float DeltaTime)
+{
+	// Block parent's local-move logic while paused
+	if (bIsPaused)
+	{
+		bSendClickTarget = false;
+	}
+
+	Super::Tick(DeltaTime);
+
+	// === 【新增】频率限制逻辑 ===
+	float CurrentTime = GetWorld()->GetTimeSeconds();
+	float TimeSinceLastUpdate = CurrentTime - LastUpdateTime;
+	float MinUpdateInterval = (MaxUpdateFrequency > 0.0f) ? (1.0f / MaxUpdateFrequency) : 0.0f;
+
+	// === 2. 主动轮询 UDP 数据（仅 UDP 模式）===
+	if (!bUseWebSocket && ListenSocket)
+	{
+		uint32 Size;
+		while (ListenSocket->HasPendingData(Size))
+		{
+			TArray<uint8> ReceivedData;
+			ReceivedData.SetNumUninitialized(FMath::Min(Size, 65507u));
+
+			int32 Read = 0;
+			TSharedRef<FInternetAddr> SenderAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+
+			if (ListenSocket->RecvFrom(ReceivedData.GetData(), ReceivedData.Num(), Read, *SenderAddr))
+			{
+				if (Read > 0)
+				{
+					// // 【诊断】每100个包打印一次接收到的原始UDP数据
+					// static int32 RecvCounter = 0;
+					// RecvCounter++;
+
+					// if (RecvCounter % 100 == 0)
+					// {
+					// 	FDateTime Now = FDateTime::Now();
+					// 	FString TimeStr = FString::Printf(TEXT("%02d:%02d:%02d.%03d"),
+					// 		Now.GetHour(), Now.GetMinute(), Now.GetSecond(), Now.GetMillisecond());
+
+					// 	FString RawData = FString::FromBlob(ReceivedData.GetData(), FMath::Min(Read, 400));
+					// 	UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [接收#%d] 来自: %s, 大小: %d 字节"),
+					// 		*TimeStr, RecvCounter, *SenderAddr->ToString(true), Read);
+					// 	UE_LOG(LogTemp, Warning, TEXT("[UDP原始数据]\n%s"), *RawData);
+					// }
+
+					// 【新增】自动检测时标记收到数据
+					if (bAutoDetectPort && CurrentDetectedPort >= 0)
+					{
+						bReceivedDataInAutoDetect = true;
+						// UE_LOG(LogTemp, Warning, TEXT(">>> [AutoDetect] 在端口 %d 收到数据! 检测完成! <<<"), CurrentDetectedPort);
+					}
+
+					// 【修复】频率限制：位置限频，但姿态始终更新
+					if (MaxUpdateFrequency > 0.0f && TimeSinceLastUpdate < MinUpdateInterval)
+					{
+						// 保存最新数据到待处理队列（覆盖旧数据）
+						PendingData = ReceivedData;
+						bHasPendingData = true;
+
+						// 【关键修复】立即更新姿态数据，避免旋转回弹
+						// 解析YAML但只更新姿态，不更新位置
+						UpdateRotationOnly(ReceivedData);
+					}
+					else
+					{
+						// 直接处理数据（位置+姿态）
+						ProcessPacket(ReceivedData);
+						LastUpdateTime = CurrentTime;
+						bHasPendingData = false;
+					}
+				}
+			}
+		}
+
+		// 【新增】处理待处理的数据（按频率限制）
+		if (bHasPendingData && TimeSinceLastUpdate >= MinUpdateInterval)
+		{
+			ProcessPacket(PendingData);
+			LastUpdateTime = CurrentTime;
+			bHasPendingData = false;
+		}
+	}
+
+	// === 2.5 自动端口检测逻辑（仅 UDP 模式）===
+	if (!bUseWebSocket && bAutoDetectPort && CurrentDetectedPort >= 0 && !bReceivedDataInAutoDetect)
+	{
+		float ElapsedTime = GetWorld()->GetTimeSeconds() - AutoDetectStartTime;
+
+		// 每 0.5 秒切换一次端口
+		if (ElapsedTime > 0.5f && CurrentDetectedPort < PortScanEnd)
+		{
+			CurrentDetectedPort++;
+			AutoDetectStartTime = GetWorld()->GetTimeSeconds();
+			bReceivedDataInAutoDetect = false;
+
+			if (!CreateAndBindSocket(CurrentDetectedPort))
+			{
+				CurrentDetectedPort++;
+			}
+
+			// UE_LOG(LogTemp, Warning, TEXT(">>> [AutoDetect] 切换到端口 %d"), CurrentDetectedPort);
+		}
+		else if (ElapsedTime > AutoDetectTimeout || CurrentDetectedPort >= PortScanEnd)
+		{
+			// 超时或扫描完毕，使用最后尝试的端口
+			bAutoDetectPort = false;
+			// UE_LOG(LogTemp, Error, TEXT(">>> [AutoDetect] 端口检测超时! 使用端口 %d"), CurrentDetectedPort);
+		}
+	}
+
+	// === 3. 平滑移动 ===
+	FVector CurrentLoc = GetActorLocation();
+
+	if (bIsPaused)
+	{
+		return;
+	}
+
+	FVector NewLoc = FMath::VInterpTo(CurrentLoc, TargetLocation, DeltaTime, SmoothSpeed);
+
+	// 启用 Sweep 后，飞机移动时会进行碰撞检测
+	SetActorLocation(NewLoc, false);
+
+	// === 4. 平滑旋转 ===
+	// 【优先级1】如果启用了"使用接收的旋转"，则使用无人机发送的姿态
+	if (bUseReceivedRotation)
+	{
+		FRotator CurrentRot = GetActorRotation();
+
+		// 【关键修复】添加旋转死区过滤，避免微小抖动
+		float RotationDiff = FMath::Abs(FRotator::NormalizeAxis(TargetRotation.Pitch - CurrentRot.Pitch)) +
+		                     FMath::Abs(FRotator::NormalizeAxis(TargetRotation.Yaw - CurrentRot.Yaw)) +
+		                     FMath::Abs(FRotator::NormalizeAxis(TargetRotation.Roll - CurrentRot.Roll));
+
+		// 只有旋转变化超过死区阈值时才更新
+		if (RotationDiff > RotationDeadZone)
+		{
+			// 【性能优化】降低旋转插值速度从30.0f到5.0f，避免抖动
+			FRotator NewRot = FMath::RInterpTo(CurrentRot, TargetRotation, DeltaTime, 5.0f);
+			SetActorRotation(NewRot);
+		}
+	}
+	// 【优先级2】否则，如果启用了"自动朝向"，则朝向移动方向
+	else if (bAutoFaceTarget)
+	{
+		FVector Direction = (NewLoc - CurrentLoc);
+		if (Direction.SizeSquared() > 1.0f)
+		{
+			FRotator TargetRot = UKismetMathLibrary::MakeRotFromX(Direction);
+			// 【性能优化】提高旋转插值速度从10.0f到30.0f，减少姿态延迟
+			FRotator NewRot = FMath::RInterpTo(GetActorRotation(), TargetRot, DeltaTime, 30.0f);
+			SetActorRotation(FRotator(0, NewRot.Yaw, 0));  // 只使用 Yaw，保持水平
+		}
+	}
+	// 【优先级3】如果两个都关闭，则保持当前旋转不变
+}
+
+bool ARealTimeDroneReceiver::ParseYAMLData(const FString& YAMLString, FDroneYAMLData& OutData)
+{
+	// 分行处理 YAML 数据
+	TArray<FString> Lines;
+	YAMLString.ParseIntoArray(Lines, TEXT("\n"), true);
+
+	FString TrimmedLine;
+	TArray<float> PositionData;
+	TArray<float> QuatData;
+	TArray<float> VelocityData;
+	TArray<float> AngularVelocityData;
+
+	// 【关键修复】使用标志跟踪当前所在的YAML section，避免解析错误
+	bool bInPositionSection = false;
+	bool bInQuatSection = false;
+	bool bInVelocitySection = false;
+	bool bInAngularVelocitySection = false;
+
+	for (const FString& Line : Lines)
+	{
+		TrimmedLine = Line.TrimStart().TrimEnd();
+
+		// 解析 timestamp
+		if (TrimmedLine.StartsWith(TEXT("timestamp:")))
+		{
+			FString ValueStr = TrimmedLine.RightChop(10).TrimStart();
+			OutData.Timestamp = FCString::Atoi64(*ValueStr);
+			continue;
+		}
+
+		// 【关键修复】检测section标记，切换当前section
+		if (TrimmedLine.Equals(TEXT("position:")))
+		{
+			bInPositionSection = true;
+			bInQuatSection = false;
+			bInVelocitySection = false;
+			bInAngularVelocitySection = false;
+			continue;
+		}
+		else if (TrimmedLine.Equals(TEXT("q:")))
+		{
+			bInPositionSection = false;
+			bInQuatSection = true;
+			bInVelocitySection = false;
+			bInAngularVelocitySection = false;
+			continue;
+		}
+		else if (TrimmedLine.Equals(TEXT("velocity:")))
+		{
+			bInPositionSection = false;
+			bInQuatSection = false;
+			bInVelocitySection = true;
+			bInAngularVelocitySection = false;
+			continue;
+		}
+		else if (TrimmedLine.Equals(TEXT("angular_velocity:")))
+		{
+			bInPositionSection = false;
+			bInQuatSection = false;
+			bInVelocitySection = false;
+			bInAngularVelocitySection = true;
+			continue;
+		}
+
+		// 【关键修复】只在对应的section中解析数组值
+		if (TrimmedLine.StartsWith(TEXT("- ")))
+		{
+			FString ValueStr = TrimmedLine.RightChop(2);
+			float Value = FCString::Atof(*ValueStr);
+
+			if (bInPositionSection && PositionData.Num() < 3)
+			{
+				PositionData.Add(Value);
+			}
+			else if (bInQuatSection && QuatData.Num() < 4)
+			{
+				QuatData.Add(Value);
+			}
+			else if (bInVelocitySection && VelocityData.Num() < 3)
+			{
+				VelocityData.Add(Value);
+			}
+			else if (bInAngularVelocitySection && AngularVelocityData.Num() < 3)
+			{
+				AngularVelocityData.Add(Value);
+			}
+		}
+	}
+
+	// 验证必要数据是否存在
+	if (PositionData.Num() != 3 || QuatData.Num() != 4)
+	{
+		// UE_LOG(LogTemp, Warning, TEXT(">>> [YAML Parse] 解析失败: Position数据=%d, Quat数据=%d"), PositionData.Num(), QuatData.Num());
+		return false;
+	}
+
+	// 填充解析结果
+	OutData.Position = FVector(PositionData[0], PositionData[1], PositionData[2]);
+
+	// 【关键修复】PX4/ROS2的四元数格式是 [w, x, y, z]，但UE5的FQuat构造函数是 (x, y, z, w)
+	// 所以需要重新排列：QuatData[0]=w, QuatData[1]=x, QuatData[2]=y, QuatData[3]=z
+	OutData.Quaternion = FQuat(QuatData[1], QuatData[2], QuatData[3], QuatData[0]);
+
+	if (VelocityData.Num() == 3)
+	{
+		OutData.Velocity = FVector(VelocityData[0], VelocityData[1], VelocityData[2]);
+	}
+
+	if (AngularVelocityData.Num() == 3)
+	{
+		OutData.AngularVelocity = FVector(AngularVelocityData[0], AngularVelocityData[1], AngularVelocityData[2]);
+	}
+
+	return true;
+}
+
+FRotator ARealTimeDroneReceiver::QuatToEuler(const FQuat& Q)
+{
+	// ==================== NED 四元数 → UE5 欧拉角转换 ====================
+	//
+	// 无人机四元数（NED 坐标系）：
+	//   表示从 NED 参考系到机体系的旋转
+	//   q = [w, x, y, z] (已在ParseYAMLData中重新排列)
+	//
+	// UE5 欧拉角（FRotator）：
+	//   Pitch (俯仰，绕 Y 轴)
+	//   Yaw   (偏航，绕 Z 轴)
+	//   Roll  (翻滚，绕 X 轴)
+	//
+	// 注意：NED 和 UE5 坐标系不同，需要转换
+	// ====================================================================
+
+	// 【修复】NED 到 UE5 的坐标系转换
+	// NED: X=North, Y=East, Z=Down
+	// UE5: X=Forward, Y=Right, Z=Up
+	//
+	// 转换方式：将NED的Z轴翻转（Down → Up）
+	// 这相当于对四元数的Z分量取负
+	FQuat UE5Quat(Q.X, Q.Y, -Q.Z, Q.W);
+
+	// 转换为欧拉角
+	FRotator EulerAngles = UE5Quat.Rotator();
+
+	// 【修复】翻转Yaw角方向，使现实中顺时针转动对应UE中顺时针转动
+	// NED坐标系（右手系）到UE5坐标系（左手系）的转换需要翻转Yaw方向
+	EulerAngles.Yaw = -EulerAngles.Yaw;
+
+	return EulerAngles;
+}
+
+FVector ARealTimeDroneReceiver::NEDToUE5(const FVector& NEDPos)
+{
+	// ==================== NED 坐标系 → UE5 坐标系转换 ====================
+	//
+	// 无人机坐标系（NED - North East Down）：
+	//   X = North (北，米)
+	//   Y = East  (东，米)
+	//   Z = Down  (下，米，向下为正)
+	//
+	// UE5 坐标系（左手系）：
+	//   X = Forward (前，厘米)
+	//   Y = Right   (右，厘米)
+	//   Z = Up      (上，厘米，向上为正)
+	//
+	// 转换规则：
+	//   1. NED_X (North) → UE5_X (Forward) - 假设地图的 +X 指向北方
+	//   2. NED_Y (East)  → UE5_Y (Right)
+	//   3. NED_Z (Down)  → UE5_Z (Up)，取负值（Down变Up）
+	//   4. 单位转换：米 × 100 = 厘米
+	//
+	// 注意：如果你的 UE5 地图的 +X 轴不是指向北方，需要额外旋转
+	// ====================================================================
+
+	FVector UE5Pos(
+		NEDPos.X * 100.0f,      // North → X (米 → 厘米)
+		NEDPos.Y * 100.0f,      // East  → Y (米 → 厘米)
+		-NEDPos.Z * 100.0f      // -Down → Up (米 → 厘米，取负)
+	);
+
+	// 应用用户自定义缩放因子（默认 1.0）
+	UE5Pos *= ScaleFactor;
+
+	return UE5Pos;
+}
+
+void ARealTimeDroneReceiver::ApplyDescriptor(const FDroneDescriptor& Descriptor, EDroneAvailability InitialAvailability)
+{
+	DroneId = Descriptor.DroneId;
+	DroneName = Descriptor.Name.IsEmpty()
+		? FString::Printf(TEXT("UAV-%d"), Descriptor.DroneId)
+		: Descriptor.Name;
+	MavlinkSystemId = Descriptor.MavlinkSystemId;
+	BitIndex = Descriptor.BitIndex;
+	ThemeColor = Descriptor.ThemeColor;
+	ListenPort = Descriptor.UEReceivePort;
+
+	if (SelectionComponent)
+	{
+		SelectionComponent->DroneId = DroneId;
+		SelectionComponent->ThemeColor = ThemeColor;
+	}
+
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			Registry->RegisterDrone(Descriptor);
+			Registry->RegisterReceiverActor(DroneId, this);
+			Registry->MarkDroneAvailability(DroneId, InitialAvailability);
+		}
+	}
+
+	if (TelemetryComponent && !bUseWebSocket)
+	{
+		FDroneTelemetrySnapshot Snapshot;
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+			{
+				Registry->GetTelemetry(DroneId, Snapshot);
+			}
+		}
+		Snapshot.DroneId = DroneId;
+		Snapshot.Availability = InitialAvailability;
+		Snapshot.WorldLocation = GetActorLocation();
+		Snapshot.Attitude = GetActorRotation();
+		TelemetryComponent->PushSnapshot(Snapshot);
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver: Applied descriptor %s (ID=%d, Slot=%d, Status=%d)"),
+		*DroneName, DroneId, Descriptor.Slot, static_cast<int32>(InitialAvailability));
+}
+
+void ARealTimeDroneReceiver::UpdateRotationOnly(const TArray<uint8>& Data)
+{
+	// 【优化】仅更新姿态，不更新位置（用于频率限制时避免旋转回弹）
+	// 为了节省内存，我们直接解析四元数，不创建完整的DroneData
+
+	FString YAMLString;
+	YAMLString.AppendChars((const ANSICHAR*)Data.GetData(), Data.Num());
+
+	// 【优化】简化解析，只提取四元数部分
+	TArray<FString> Lines;
+	YAMLString.ParseIntoArray(Lines, TEXT("\n"), true);
+
+	TArray<float> QuatData;
+	bool bFoundQSection = false;
+
+	for (const FString& Line : Lines)
+	{
+		FString TrimmedLine = Line.TrimStart().TrimEnd();
+
+		// 找到 q: 标记
+		if (TrimmedLine.Equals(TEXT("q:")))
+		{
+			bFoundQSection = true;
+			continue;
+		}
+
+		// 在 q: 之后收集4个浮点数
+		if (bFoundQSection && TrimmedLine.StartsWith(TEXT("- ")) && QuatData.Num() < 4)
+		{
+			FString ValueStr = TrimmedLine.RightChop(2);
+			QuatData.Add(FCString::Atof(*ValueStr));
+		}
+
+		// 收集完4个数就退出
+		if (QuatData.Num() >= 4)
+		{
+			break;
+		}
+	}
+
+	// 验证是否成功解析
+	if (QuatData.Num() == 4)
+	{
+		// 【关键修复】PX4/ROS2的四元数格式是 [w, x, y, z]，但UE5的FQuat构造函数是 (x, y, z, w)
+		FQuat Q(QuatData[1], QuatData[2], QuatData[3], QuatData[0]);
+		TargetRotation = QuatToEuler(Q);
+	}
+}
+
+void ARealTimeDroneReceiver::ProcessPacket(const TArray<uint8>& Data)
+{
+	// 将字节数据转换为字符串
+	FString YAMLString;
+	YAMLString.AppendChars((const ANSICHAR*)Data.GetData(), Data.Num());
+
+	// // 【优化】减少日志输出，只在需要时打印
+	// #if !UE_BUILD_SHIPPING
+	// static int32 PacketCounter = 0;
+	// PacketCounter++;
+	// // 每100个包才打印一次
+	// if (PacketCounter % 100 == 0)
+	// {
+	// 	UE_LOG(LogTemp, Log, TEXT(">>> [ProcessPacket] 已处理 %d 个数据包"), PacketCounter);
+	// }
+	// #endif
+
+	// 【性能优化】保留计数器用于其他调试代码，但不输出日志
+	static int32 PacketCounter = 0;
+	PacketCounter++;
+
+	// 解析 YAML 数据
+	FDroneYAMLData DroneData;
+	if (!ParseYAMLData(YAMLString, DroneData))
+	{
+		// UE_LOG(LogTemp, Warning, TEXT(">>> [ProcessPacket] YAML 解析失败"));
+		return;
+	}
+
+	// // 【诊断】打印原始NED数据（每50个包打印一次）
+	// #if !UE_BUILD_SHIPPING
+	// if (PacketCounter % 50 == 0)
+	// {
+	// 	// 获取当前时间
+	// 	FDateTime Now = FDateTime::Now();
+	// 	FString TimeStr = FString::Printf(TEXT("%02d:%02d:%02d.%03d"),
+	// 		Now.GetHour(), Now.GetMinute(), Now.GetSecond(), Now.GetMillisecond());
+
+	// 	UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [原始数据] NED Position: (%.6f, %.6f, %.6f) 米"),
+	// 		*TimeStr, DroneData.Position.X, DroneData.Position.Y, DroneData.Position.Z);
+	// }
+	// #endif
+
+	// 【关键修复】第一次接收数据时，记录参考位置
+	if (!bHasReceivedFirstData)
+	{
+		ReferencePosition = DroneData.Position;
+		bHasReceivedFirstData = true;
+
+		// // 获取当前时间
+		// FDateTime Now = FDateTime::Now();
+		// FString TimeStr = FString::Printf(TEXT("%02d:%02d:%02d.%03d"),
+		// 	Now.GetHour(), Now.GetMinute(), Now.GetSecond(), Now.GetMillisecond());
+
+		// UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [参考位置] 已记录参考位置: (%.6f, %.6f, %.6f) 米"),
+		// 	*TimeStr, ReferencePosition.X, ReferencePosition.Y, ReferencePosition.Z);
+	}
+
+	// 【关键修复】计算相对偏移量（当前位置 - 参考位置）
+	FVector RelativeOffset = DroneData.Position - ReferencePosition;
+
+	// // 【诊断】打印相对偏移量
+	// #if !UE_BUILD_SHIPPING
+	// if (PacketCounter % 50 == 0)
+	// {
+	// 	// 获取当前时间
+	// 	FDateTime Now = FDateTime::Now();
+	// 	FString TimeStr = FString::Printf(TEXT("%02d:%02d:%02d.%03d"),
+	// 		Now.GetHour(), Now.GetMinute(), Now.GetSecond(), Now.GetMillisecond());
+
+	// 	UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [相对偏移] Relative Offset: (%.6f, %.6f, %.6f) 米"),
+	// 		*TimeStr, RelativeOffset.X, RelativeOffset.Y, RelativeOffset.Z);
+	// }
+	// #endif
+
+	// 坐标系和单位转换: NED (米) -> UE5 (厘米)
+	FVector NEDOffset = NEDToUE5(RelativeOffset);
+
+	// // 【诊断】打印转换后的偏移量
+	// #if !UE_BUILD_SHIPPING
+	// if (PacketCounter % 50 == 0)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT(">>> [转换后] UE5 Offset: (%.2f, %.2f, %.2f) 厘米"),
+	// 		NEDOffset.X, NEDOffset.Y, NEDOffset.Z);
+	// }
+	// #endif
+
+	// 【关键修改】以初始位置为原点，NEDOffset 是相对位移
+	FVector NewTarget = InitialLocation + NEDOffset;
+
+	// // 【诊断】打印最终目标位置和初始位置
+	// #if !UE_BUILD_SHIPPING
+	// if (PacketCounter % 50 == 0)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT(">>> [最终位置] Target: (%.2f, %.2f, %.2f) | Initial: (%.2f, %.2f, %.2f)"),
+	// 		NewTarget.X, NewTarget.Y, NewTarget.Z,
+	// 		InitialLocation.X, InitialLocation.Y, InitialLocation.Z);
+	// 	UE_LOG(LogTemp, Warning, TEXT(">>> [距离差] 从Initial到Target的距离: %.2f 厘米"),
+	// 		FVector::Dist(InitialLocation, NewTarget));
+	// }
+	// #endif
+
+	// 四元数转欧拉角
+	FRotator NewRotation = QuatToEuler(DroneData.Quaternion);
+
+	// 【临时调试】打印四元数和转换后的欧拉角（带时间戳）
+	#if !UE_BUILD_SHIPPING
+	if (PacketCounter % 30 == 0)
+	{
+		// 获取当前时间
+		FDateTime Now = FDateTime::Now();
+		FString TimeStr = FString::Printf(TEXT("%02d:%02d:%02d.%03d"),
+			Now.GetHour(), Now.GetMinute(), Now.GetSecond(), Now.GetMillisecond());
+
+		FQuat Q = DroneData.Quaternion;
+		UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [四元数] W=%.4f, X=%.4f, Y=%.4f, Z=%.4f"),
+			*TimeStr, Q.W, Q.X, Q.Y, Q.Z);
+		UE_LOG(LogTemp, Warning, TEXT(">>> [%s] [欧拉角] Pitch=%.2f°, Yaw=%.2f°, Roll=%.2f°"),
+			*TimeStr, NewRotation.Pitch, NewRotation.Yaw, NewRotation.Roll);
+	}
+	#endif
+
+	// 【关键】更新目标位置和旋转
+	TargetLocation = NewTarget;
+	TargetRotation = NewRotation;
+
+	// Push telemetry to component (propagates to DroneRegistrySubsystem)
+	PushTelemetry(DroneData, NewTarget, NewRotation);
+
+}
+
+bool ARealTimeDroneReceiver::CreateAndBindSocket(int32 Port)
+{
+	// 【新增函数】创建并绑定 Socket 到指定端口
+	if (ListenSocket)
+	{
+		ListenSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenSocket);
+		ListenSocket = nullptr;
+	}
+
+	// 绑定到 0.0.0.0 (监听所有网卡)
+	FIPv4Endpoint Endpoint(FIPv4Address::Any, Port);
+
+	ListenSocket = FUdpSocketBuilder(TEXT("RealTimePollingSocket"))
+		.AsNonBlocking()
+		.AsReusable()
+		.BoundToEndpoint(Endpoint)
+		.WithReceiveBufferSize(2 * 1024 * 1024);
+
+	if (ListenSocket)
+	{
+		UE_LOG(LogTemp, Warning, TEXT(">>> [RealTimeDrone] 监听启动! Port: %d <<<"), Port);
+		ListenPort = Port;  // 更新当前监听端口
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT(">>> [RealTimeDrone] 错误: 端口 %d 绑定失败! <<<"), Port);
+		return false;
+	}
+}
+
+void ARealTimeDroneReceiver::AutoDetectPort()
+{
+	// 【新增函数】自动扫描端口范围找到有数据的端口
+	AutoDetectStartTime = GetWorld()->GetTimeSeconds();
+	CurrentDetectedPort = PortScanStart;
+	bReceivedDataInAutoDetect = false;
+
+	// 尝试绑定第一个端口
+	if (!CreateAndBindSocket(CurrentDetectedPort))
+	{
+		CurrentDetectedPort++;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT(">>> [AutoDetect] 开始扫描端口 %d, 等待数据..."), CurrentDetectedPort);
+}
+
+void ARealTimeDroneReceiver::PushTelemetry(const FDroneYAMLData& DroneData, const FVector& WorldPos, const FRotator& WorldRot)
+{
+	if (!TelemetryComponent)
+	{
+		return;
+	}
+
+	FDroneTelemetrySnapshot Snap;
+	Snap.DroneId         = DroneId;
+	Snap.Availability    = EDroneAvailability::Online;
+	Snap.WorldLocation   = WorldPos;
+	Snap.NedLocation     = DroneData.Position; // absolute NED [m]
+	Snap.Velocity        = DroneData.Velocity;
+	Snap.Attitude        = WorldRot;
+	Snap.Altitude        = -DroneData.Position.Z; // NED down is negative altitude
+	Snap.LastUpdateTime  = GetWorld()->GetTimeSeconds();
+
+	TelemetryComponent->PushSnapshot(Snap);
+}
+
+FDroneTelemetrySnapshot ARealTimeDroneReceiver::GetDroneInfoSnapshot_Implementation() const
+{
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			FDroneTelemetrySnapshot RegistrySnapshot;
+			if (Registry->GetTelemetry(DroneId, RegistrySnapshot))
+			{
+				return RegistrySnapshot;
+			}
+		}
+	}
+
+	if (TelemetryComponent && TelemetryComponent->HasValidTelemetry())
+	{
+		return TelemetryComponent->GetCurrentSnapshot();
+	}
+
+	FDroneTelemetrySnapshot EmptySnapshot;
+	EmptySnapshot.DroneId = DroneId;
+	return EmptySnapshot;
+}
+
+// ---- IDroneSelectableInterface implementations ----
+
+void ARealTimeDroneReceiver::OnPrimarySelected_Implementation()
+{
+	if (SelectionComponent)
+	{
+		SelectionComponent->SetPrimarySelected(true);
+		SelectionComponent->SetSecondarySelected(false);
+	}
+}
+
+void ARealTimeDroneReceiver::OnSecondarySelected_Implementation(bool bSelected)
+{
+	if (SelectionComponent)
+	{
+		SelectionComponent->SetSecondarySelected(bSelected);
+	}
+}
+
+void ARealTimeDroneReceiver::OnHoveredChanged_Implementation(bool bHovered)
+{
+	if (SelectionComponent)
+	{
+		SelectionComponent->SetHovered(bHovered);
+	}
+}
+
+void ARealTimeDroneReceiver::OnDeselected_Implementation()
+{
+	if (SelectionComponent)
+	{
+		SelectionComponent->SetPrimarySelected(false);
+		SelectionComponent->SetSecondarySelected(false);
+	}
+}
+
+void ARealTimeDroneReceiver::OnWebSocketTelemetry(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot)
+{
+	if (InDroneId != DroneId)
+	{
+		return;
+	}
+
+	if (bIsPaused)
+	{
+		return;
+	}
+
+	// Only drive position once the GPS anchor is established (power_on event received).
+	// Before that, stay at the spawn location to avoid placing the drone at spawn-height
+	// offset above the real telemetry position.
+	if (!bHasGpsAnchor)
+	{
+		return;
+	}
+
+	// Cesium world axes are defined by the active georeference and must not be assumed to be
+	// UE +X=North / +Y=East.  The old AnchorWorldLocation + Snapshot.WorldLocation path made
+	// exactly that assumption, so the mirror could move 90 degrees away from a shadow path even
+	// though both used the same PX4 NED telemetry.  Prefer the synchronized GPS in this telemetry
+	// sample and let Cesium perform the WGS84 -> world transform.  The legacy linear offset remains
+	// only for non-geographic/offline coordinate services or telemetry without a valid GPS fix.
+	const bool bHasValidGps = Snapshot.bGpsFix
+		&& FMath::IsFinite(Snapshot.GpsLatitude)
+		&& Snapshot.GpsLatitude >= -90.0 && Snapshot.GpsLatitude <= 90.0
+		&& FMath::IsFinite(Snapshot.GpsLongitude)
+		&& Snapshot.GpsLongitude >= -180.0 && Snapshot.GpsLongitude <= 180.0
+		&& FMath::IsFinite(Snapshot.GpsAltitude);
+	if (bHasValidGps)
+	{
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			if (UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>())
+			{
+				const TScriptInterface<ICoordinateService> CoordService = Registry->GetCoordinateService();
+				if (UObject* CoordObject = CoordService.GetObject(); CoordObject
+					&& ICoordinateService::Execute_IsCoordinateSystemReady(CoordObject)
+					&& ICoordinateService::Execute_IsGeographicSupported(CoordObject))
+				{
+					double EllipsoidAltitudeMeters = Snapshot.GpsAltitude;
+					if (const UDroneNetworkManager* NetworkManager = GI->GetSubsystem<UDroneNetworkManager>())
+					{
+						EllipsoidAltitudeMeters = NetworkManager->ConvertMslToWgs84EllipsoidHeight(
+							Snapshot.GpsAltitude);
+					}
+
+					TargetLocation = ICoordinateService::Execute_GeographicToWorld(
+						CoordObject,
+						Snapshot.GpsLatitude,
+						Snapshot.GpsLongitude,
+						EllipsoidAltitudeMeters);
+					TargetRotation = Snapshot.Attitude;
+					return;
+				}
+			}
+		}
+	}
+
+	TargetLocation = AnchorWorldLocation + Snapshot.WorldLocation;
+	TargetRotation = Snapshot.Attitude;
+}
+
+void ARealTimeDroneReceiver::SetPaused(bool bPause)
+{
+	bIsPaused = bPause;
+	if (bPause)
+	{
+		// Immediately cancel any in-progress local move
+		bSendClickTarget = false;
+		TargetLocation = GetActorLocation();
+	}
+}
+
+void ARealTimeDroneReceiver::ApplySimulationPosition(const FVector& Position)
+{
+    // Stage 1 map model follows the authoritative sample exactly, including pause.
+    // Physics must not integrate a second position between Backend samples.
+    if(auto* Movement=GetCharacterMovement())Movement->DisableMovement();
+    if(GroundProjectionComponent){
+        GroundProjectionComponent->SetComponentTickEnabled(false);
+        GroundProjectionComponent->ClearTrail();
+    }
+    // Legacy local-preview shadows normally follow this receiver and draw their
+    // own curtain. Backend Mock execution has one position owner and no preview.
+    if(auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()){
+        if(auto* Preview=Registry->GetSenderPawn(DroneId)){
+            Preview->SetActorHiddenInGame(true);
+            Preview->SetActorTickEnabled(false);
+            Preview->SetActorLocation(Position,false,nullptr,ETeleportType::TeleportPhysics);
+            TArray<UDroneGroundProjectionComponent*> Projections;
+            Preview->GetComponents<UDroneGroundProjectionComponent>(Projections);
+            for(auto* Projection:Projections){Projection->SetComponentTickEnabled(false);Projection->ClearTrail();}
+        }
+    }
+    TargetLocation=Position;
+    SetActorLocation(Position,false,nullptr,ETeleportType::TeleportPhysics);
+}
+
+void ARealTimeDroneReceiver::SetClickTargetLocation(FVector InTargetLocation, int32 Mode)
+{
+	if (bIsPaused)
+	{
+		return;
+	}
+	Super::SetClickTargetLocation(InTargetLocation, Mode);
+}
+
+void ARealTimeDroneReceiver::OnDroneWsEvent(int32 InDroneId, const FString& Event, double GpsLat, double GpsLon, double GpsAlt)
+{
+	if (InDroneId != DroneId)
+	{
+		return;
+	}
+
+	if (Event != TEXT("power_on") && Event != TEXT("reconnect"))
+	{
+		return;
+	}
+
+	UGameInstance* GI = GetGameInstance();
+	if (!GI)
+	{
+		return;
+	}
+
+	UDroneRegistrySubsystem* Registry = GI->GetSubsystem<UDroneRegistrySubsystem>();
+	if (!Registry)
+	{
+		return;
+	}
+
+	TScriptInterface<ICoordinateService> CoordService = Registry->GetCoordinateService();
+	if (!CoordService || !ICoordinateService::Execute_IsGeographicSupported(CoordService.GetObject()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RealTimeDroneReceiver [%s]: Received '%s' event but CoordinateService does not support GPS. "
+			"Enable bUseCesiumCoordinates in DroneOpsGameMode."), *DroneName, *Event);
+		return;
+	}
+
+	// Jetson publishes VehicleGlobalPosition::altitude_amsl. Convert it with the same geoid
+	// separation used by geographic target input before passing the height to Cesium.
+	double EllipsoidAltitudeMeters = GpsAlt;
+	if (const UDroneNetworkManager* NetworkManager = GI->GetSubsystem<UDroneNetworkManager>())
+	{
+		EllipsoidAltitudeMeters = NetworkManager->ConvertMslToWgs84EllipsoidHeight(GpsAlt);
+	}
+
+	AnchorWorldLocation = ICoordinateService::Execute_GeographicToWorld(
+		CoordService.GetObject(), GpsLat, GpsLon, EllipsoidAltitudeMeters);
+	bHasGpsAnchor = true;
+
+	UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver [%s]: '%s' event — GPS anchor (%.6f, %.6f, AMSL %.1fm, ellipsoid %.1fm) → UE world %s"),
+		*DroneName, *Event, GpsLat, GpsLon, GpsAlt, EllipsoidAltitudeMeters, *AnchorWorldLocation.ToString());
+}
+
+void ARealTimeDroneReceiver::OnLabelSettingsChanged(int32 InDroneId, const FDroneLabelSettings& Settings)
+{
+	if (InDroneId != DroneId)
+	{
+		return;
+	}
+	if (!NameLabelWidgetComponent)
+	{
+		return;
+	}
+	if (UDroneNameLabelWidget* LabelWidget = Cast<UDroneNameLabelWidget>(NameLabelWidgetComponent->GetWidget()))
+	{
+		LabelWidget->ApplyLabelSettings(Settings.DisplayName, Settings.LabelColor, Settings.FontSize);
+	}
+}
+
+void ARealTimeDroneReceiver::OnModelTypeChanged(int32 InDroneId, EDroneModelType ModelType)
+{
+	if (InDroneId != DroneId || !VisualComponent)
+	{
+		return;
+	}
+	VisualComponent->ApplyModelType(ModelType);
+}

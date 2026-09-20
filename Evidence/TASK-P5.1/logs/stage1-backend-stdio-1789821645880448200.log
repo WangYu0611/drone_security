@@ -1,0 +1,17 @@
+[2026-09-19 20:40:45.902] [info] Config loaded from 'C:\Users\wy331\Documents\UE5DroneControl-p5-1\Saved\Stage1\backend.yaml': 0 ports, 6 drones max
+[2026-09-19 20:40:45.902] [info] Config validation passed (0 ports, 6 max drones)
+[2026-09-19 20:40:45.903] [info] [:] Logger initialized. Level=info, File=Logs/backend.log
+[2026-09-19 20:40:45.903] [info] [:] ============================================
+[2026-09-19 20:40:45.903] [info] [:]   Drone Backend v1.0.0
+[2026-09-19 20:40:45.903] [info] [:]   HTTP :19480  WS :19481
+[2026-09-19 20:40:45.903] [info] [:] ============================================
+[2026-09-19 20:40:45.904] [info] [:] [UdpSender] JSON protocol session_id=backend-1789821645903258-1405d4bd
+[2026-09-19 20:40:45.904] [info] [:] DroneManager created
+[2026-09-19 20:40:45.905] [info] [:] Drone 1 added: slot=1 name=Synthetic UAV 01
+[2026-09-19 20:40:45.905] [info] [:] Drone 2 added: slot=2 name=Synthetic UAV 02
+[2026-09-19 20:40:45.905] [info] [:] Drone 3 added: slot=3 name=Synthetic UAV 03
+[2026-09-19 20:40:45.905] [info] [:] Drone 4 added: slot=4 name=Synthetic UAV 04
+[2026-09-19 20:40:45.905] [info] [:] [Storage] Loaded 4 drones from data/drones.json
+[2026-09-19 20:40:45.905] [info] [:] Backend started. Press Ctrl+C to stop.
+[2026-09-19 20:40:45.907] [info] [:] [WS] Listening on 0.0.0.0:19481
+[2026-09-19 20:40:45.907] [info] [:] [HTTP] Listening on 0.0.0.0:19480

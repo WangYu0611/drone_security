@@ -1,0 +1,2378 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+#include "DroneOpsGameMode.h"
+#include "DroneOps/Core/DroneRegistrySubsystem.h"
+#include "DroneOps/Core/ICoordinateService.h"
+#include "DroneOps/Core/SimpleCoordinateService.h"
+#include "DroneOps/Core/CesiumCoordinateService.h"
+#include "DroneOps/Network/DroneNetworkManager.h"
+#include "DroneOpsPlayerController.h"
+#include "Camera/PlayerCameraManager.h"
+#include "MultiDroneCharacter.h"
+#include "RealTimeDroneReceiver.h"
+#include "Cesium3DTileset.h"
+#include "Command/CommandMapInteractionService.h"
+#include "Command/CommandScreenManager.h"
+#include "CesiumGeoreference.h"
+#include "CesiumRasterOverlay.h"
+#include "CesiumSunSky.h"
+#include "CesiumTileMapServiceRasterOverlay.h"
+#include "CesiumUrlTemplateRasterOverlay.h"
+#include "CesiumWebMapTileServiceRasterOverlay.h"
+#include "EngineUtils.h"
+#include "HttpModule.h"
+#include "Interfaces/IHttpRequest.h"
+#include "Interfaces/IHttpResponse.h"
+#include "IImageWrapper.h"
+#include "IImageWrapperModule.h"
+#include "Components/SkyLightComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+#include "Misc/ConfigCacheIni.h"
+#include "Modules/ModuleManager.h"
+#include "ProceduralMeshComponent.h"
+#include "TextureResource.h"
+#include "Engine/Texture2D.h"
+
+namespace
+{
+FString NormalizeCesiumConfiguredHttpUrl(const FString& ConfiguredUrl)
+{
+	FString Url = ConfiguredUrl.TrimStartAndEnd();
+	if (Url.IsEmpty() ||
+		Url.Contains(TEXT("://")) ||
+		Url.StartsWith(TEXT("{")) ||
+		Url.StartsWith(TEXT("/")))
+	{
+		return Url;
+	}
+
+	return TEXT("http://") + Url;
+}
+
+FString ExpandCesiumUrlTemplateTokens(const FString& ConfiguredUrl)
+{
+	FString Url = ConfiguredUrl;
+
+	// Unreal ini parsing can strip raw "{z}"-style tokens. Allow a config-safe
+	// "$z" form and convert it back to Cesium's required URL template syntax.
+	Url.ReplaceInline(TEXT("$reverseX"), TEXT("{reverseX}"), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("$reverseY"), TEXT("{reverseY}"), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("$reverseZ"), TEXT("{reverseZ}"), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("$x"), TEXT("{x}"), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("$y"), TEXT("{y}"), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("$z"), TEXT("{z}"), ESearchCase::CaseSensitive);
+
+	return Url;
+}
+
+bool HasCesiumUrlTemplateTokens(const FString& Url)
+{
+	return Url.Contains(TEXT("{x}")) || Url.Contains(TEXT("{y}")) || Url.Contains(TEXT("{z}")) ||
+		Url.Contains(TEXT("{reverseX}")) || Url.Contains(TEXT("{reverseY}")) || Url.Contains(TEXT("{reverseZ}")) ||
+		Url.Contains(TEXT("{TileCol}")) || Url.Contains(TEXT("{TileRow}")) || Url.Contains(TEXT("{TileMatrix}"));
+}
+
+FString BuildCesiumLocalRasterTemplateUrl(const FString& LocalTileServerUrl)
+{
+	FString Url = ExpandCesiumUrlTemplateTokens(NormalizeCesiumConfiguredHttpUrl(LocalTileServerUrl));
+	if (HasCesiumUrlTemplateTokens(Url))
+	{
+		return Url;
+	}
+
+	Url.RemoveFromEnd(TEXT("/"));
+	return Url + TEXT("/{z}/{x}/{y}.png");
+}
+
+// Cesium FromUrl tileset 源需要指向 tileset.json；配置裸服务器地址时自动补全
+FString BuildCesiumLocalTilesetUrl(const FString& LocalTileServerUrl)
+{
+	FString Url = NormalizeCesiumConfiguredHttpUrl(LocalTileServerUrl);
+	if (Url.EndsWith(TEXT(".json")))
+	{
+		return Url;
+	}
+
+	Url.RemoveFromEnd(TEXT("/"));
+	return Url + TEXT("/tileset.json");
+}
+
+bool LonLatToWebMercatorTile(double Longitude, double Latitude, int32 Zoom, int64& OutX, int64& OutY)
+{
+	if (Zoom < 0)
+	{
+		return false;
+	}
+
+	const double ClampedLatitude = FMath::Clamp(Latitude, -85.05112878, 85.05112878);
+	const double N = FMath::Pow(2.0, static_cast<double>(Zoom));
+	const double LatRad = FMath::DegreesToRadians(ClampedLatitude);
+	const double X = (Longitude + 180.0) / 360.0 * N;
+	const double Y = (1.0 - FMath::Loge(FMath::Tan(LatRad) + (1.0 / FMath::Cos(LatRad))) / UE_DOUBLE_PI) * 0.5 * N;
+
+	OutX = static_cast<int64>(FMath::FloorToDouble(X));
+	OutY = static_cast<int64>(FMath::FloorToDouble(Y));
+
+	const int64 MaxTile = (static_cast<int64>(1) << Zoom) - 1;
+	OutX = FMath::Clamp<int64>(OutX, 0, MaxTile);
+	OutY = FMath::Clamp<int64>(OutY, 0, MaxTile);
+	return true;
+}
+
+FString BuildRasterTileUrlFromTemplate(const FString& TemplateUrl, int32 Zoom, int64 X, int64 Y)
+{
+	const int64 MaxTile = (static_cast<int64>(1) << Zoom) - 1;
+	FString Url = TemplateUrl;
+	Url.ReplaceInline(TEXT("{z}"), *FString::FromInt(Zoom), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("{x}"), *FString::Printf(TEXT("%lld"), X), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("{y}"), *FString::Printf(TEXT("%lld"), Y), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("{reverseX}"), *FString::Printf(TEXT("%lld"), MaxTile - X), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("{reverseY}"), *FString::Printf(TEXT("%lld"), MaxTile - Y), ESearchCase::CaseSensitive);
+	Url.ReplaceInline(TEXT("{reverseZ}"), TEXT("0"), ESearchCase::CaseSensitive);
+	return Url;
+}
+
+double WebMercatorTileXToLongitude(int64 X, int32 Zoom)
+{
+	const double N = FMath::Pow(2.0, static_cast<double>(Zoom));
+	return (static_cast<double>(X) / N * 360.0) - 180.0;
+}
+
+double WebMercatorTileYToLatitude(int64 Y, int32 Zoom)
+{
+	const double N = FMath::Pow(2.0, static_cast<double>(Zoom));
+	const double MercatorN = UE_DOUBLE_PI - (2.0 * UE_DOUBLE_PI * static_cast<double>(Y) / N);
+	return FMath::RadiansToDegrees(FMath::Atan(FMath::Sinh(MercatorN)));
+}
+
+bool IsInsideChinaForGcj02(double Longitude, double Latitude)
+{
+	return Longitude >= 72.004 && Longitude <= 137.8347 && Latitude >= 0.8293 && Latitude <= 55.8271;
+}
+
+double TransformGcjLatitude(double X, double Y)
+{
+	double Ret = -100.0 + 2.0 * X + 3.0 * Y + 0.2 * Y * Y + 0.1 * X * Y + 0.2 * FMath::Sqrt(FMath::Abs(X));
+	Ret += (20.0 * FMath::Sin(6.0 * X * UE_DOUBLE_PI) + 20.0 * FMath::Sin(2.0 * X * UE_DOUBLE_PI)) * 2.0 / 3.0;
+	Ret += (20.0 * FMath::Sin(Y * UE_DOUBLE_PI) + 40.0 * FMath::Sin(Y / 3.0 * UE_DOUBLE_PI)) * 2.0 / 3.0;
+	Ret += (160.0 * FMath::Sin(Y / 12.0 * UE_DOUBLE_PI) + 320.0 * FMath::Sin(Y * UE_DOUBLE_PI / 30.0)) * 2.0 / 3.0;
+	return Ret;
+}
+
+double TransformGcjLongitude(double X, double Y)
+{
+	double Ret = 300.0 + X + 2.0 * Y + 0.1 * X * X + 0.1 * X * Y + 0.1 * FMath::Sqrt(FMath::Abs(X));
+	Ret += (20.0 * FMath::Sin(6.0 * X * UE_DOUBLE_PI) + 20.0 * FMath::Sin(2.0 * X * UE_DOUBLE_PI)) * 2.0 / 3.0;
+	Ret += (20.0 * FMath::Sin(X * UE_DOUBLE_PI) + 40.0 * FMath::Sin(X / 3.0 * UE_DOUBLE_PI)) * 2.0 / 3.0;
+	Ret += (150.0 * FMath::Sin(X / 12.0 * UE_DOUBLE_PI) + 300.0 * FMath::Sin(X / 30.0 * UE_DOUBLE_PI)) * 2.0 / 3.0;
+	return Ret;
+}
+
+FVector2D Wgs84ToGcj02(double Longitude, double Latitude)
+{
+	if (!IsInsideChinaForGcj02(Longitude, Latitude))
+	{
+		return FVector2D(Longitude, Latitude);
+	}
+
+	constexpr double SemiMajorAxis = 6378245.0;
+	constexpr double EccentricitySquared = 0.00669342162296594323;
+	double DLat = TransformGcjLatitude(Longitude - 105.0, Latitude - 35.0);
+	double DLon = TransformGcjLongitude(Longitude - 105.0, Latitude - 35.0);
+	const double RadLat = FMath::DegreesToRadians(Latitude);
+	double Magic = FMath::Sin(RadLat);
+	Magic = 1.0 - EccentricitySquared * Magic * Magic;
+	const double SqrtMagic = FMath::Sqrt(Magic);
+	DLat = (DLat * 180.0) / ((SemiMajorAxis * (1.0 - EccentricitySquared)) / (Magic * SqrtMagic) * UE_DOUBLE_PI);
+	DLon = (DLon * 180.0) / (SemiMajorAxis / SqrtMagic * FMath::Cos(RadLat) * UE_DOUBLE_PI);
+	return FVector2D(Longitude + DLon, Latitude + DLat);
+}
+
+FVector2D Gcj02ToWgs84(double Longitude, double Latitude)
+{
+	if (!IsInsideChinaForGcj02(Longitude, Latitude))
+	{
+		return FVector2D(Longitude, Latitude);
+	}
+
+	double WgsLongitude = Longitude;
+	double WgsLatitude = Latitude;
+	for (int32 Iteration = 0; Iteration < 3; ++Iteration)
+	{
+		const FVector2D Gcj = Wgs84ToGcj02(WgsLongitude, WgsLatitude);
+		WgsLongitude -= Gcj.X - Longitude;
+		WgsLatitude -= Gcj.Y - Latitude;
+	}
+	return FVector2D(WgsLongitude, WgsLatitude);
+}
+
+bool RasterCoordinateSystemUsesGcj02(const FString& CoordinateSystem)
+{
+	return CoordinateSystem.Equals(TEXT("GCJ02"), ESearchCase::IgnoreCase) ||
+		CoordinateSystem.Equals(TEXT("GCJ-02"), ESearchCase::IgnoreCase) ||
+		CoordinateSystem.Contains(TEXT("China"), ESearchCase::IgnoreCase) ||
+		CoordinateSystem.Contains(TEXT("Mercator(china)"), ESearchCase::IgnoreCase);
+}
+
+double EstimateLonLatDistanceMeters(double LongitudeA, double LatitudeA, double LongitudeB, double LatitudeB)
+{
+	const double MeanLatitude = (LatitudeA + LatitudeB) * 0.5;
+	const double MetersPerDegreeLatitude = 111320.0;
+	const double MetersPerDegreeLongitude = 111320.0 * FMath::Cos(FMath::DegreesToRadians(MeanLatitude));
+	const double DX = (LongitudeB - LongitudeA) * MetersPerDegreeLongitude;
+	const double DY = (LatitudeB - LatitudeA) * MetersPerDegreeLatitude;
+	return FMath::Sqrt(DX * DX + DY * DY);
+}
+
+FVector2D OffsetWgs84ByMeters(double Longitude, double Latitude, double EastMeters, double NorthMeters)
+{
+	const double MetersPerDegreeLatitude = 111320.0;
+	const double MetersPerDegreeLongitude = FMath::Max(1.0, 111320.0 * FMath::Cos(FMath::DegreesToRadians(Latitude)));
+	return FVector2D(
+		Longitude + (EastMeters / MetersPerDegreeLongitude),
+		Latitude + (NorthMeters / MetersPerDegreeLatitude));
+}
+
+double Cross2D(const FVector2D& A, const FVector2D& B, const FVector2D& C)
+{
+	return (B.X - A.X) * (C.Y - A.Y) - (B.Y - A.Y) * (C.X - A.X);
+}
+
+bool IsPointInTriangle2D(const FVector2D& Point, const FVector2D& A, const FVector2D& B, const FVector2D& C)
+{
+	const double C1 = Cross2D(A, B, Point);
+	const double C2 = Cross2D(B, C, Point);
+	const double C3 = Cross2D(C, A, Point);
+	const bool bHasNegative = C1 < 0.0 || C2 < 0.0 || C3 < 0.0;
+	const bool bHasPositive = C1 > 0.0 || C2 > 0.0 || C3 > 0.0;
+	return !(bHasNegative && bHasPositive);
+}
+
+bool IsPointInQuad2D(const FVector2D& Point, const FVector2D& A, const FVector2D& B, const FVector2D& C, const FVector2D& D)
+{
+	return IsPointInTriangle2D(Point, A, B, C) || IsPointInTriangle2D(Point, A, C, D);
+}
+
+bool GetCesiumTileServerBool(const TCHAR* Key, bool DefaultValue)
+{
+	bool Value = DefaultValue;
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), Key, Value, GEngineIni);
+	}
+	return Value;
+}
+
+FString GetCesiumTileServerString(const TCHAR* Key, const FString& DefaultValue)
+{
+	FString Value = DefaultValue;
+	if (GConfig)
+	{
+		GConfig->GetString(TEXT("CesiumTileServer"), Key, Value, GEngineIni);
+	}
+	return Value;
+}
+
+int32 GetCesiumTileServerInt(const TCHAR* Key, int32 DefaultValue)
+{
+	int32 Value = DefaultValue;
+	if (GConfig)
+	{
+		GConfig->GetInt(TEXT("CesiumTileServer"), Key, Value, GEngineIni);
+	}
+	return Value;
+}
+
+UTexture2D* CreateTextureFromCompressedImage(const TArray<uint8>& CompressedImage, UObject* Outer)
+{
+	if (CompressedImage.IsEmpty() || !Outer)
+	{
+		return nullptr;
+	}
+
+	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
+	const EImageFormat ImageFormat = ImageWrapperModule.DetectImageFormat(CompressedImage.GetData(), CompressedImage.Num());
+	if (ImageFormat == EImageFormat::Invalid)
+	{
+		return nullptr;
+	}
+
+	TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(ImageFormat);
+	if (!ImageWrapper.IsValid() || !ImageWrapper->SetCompressed(CompressedImage.GetData(), CompressedImage.Num()))
+	{
+		return nullptr;
+	}
+
+	TArray64<uint8> RawPixels;
+	if (!ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, RawPixels))
+	{
+		return nullptr;
+	}
+
+	const int32 Width = ImageWrapper->GetWidth();
+	const int32 Height = ImageWrapper->GetHeight();
+	if (Width <= 0 || Height <= 0 || RawPixels.Num() != static_cast<int64>(Width) * Height * 4)
+	{
+		return nullptr;
+	}
+
+	UTexture2D* Texture = UTexture2D::CreateTransient(Width, Height, PF_B8G8R8A8, NAME_None);
+	if (!Texture || !Texture->GetPlatformData() || Texture->GetPlatformData()->Mips.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	Texture->Rename(nullptr, Outer);
+	Texture->SRGB = true;
+	Texture->CompressionSettings = TC_Default;
+#if WITH_EDITORONLY_DATA
+	Texture->MipGenSettings = TMGS_NoMipmaps;
+#endif
+
+	FTexture2DMipMap& Mip = Texture->GetPlatformData()->Mips[0];
+	void* TextureData = Mip.BulkData.Lock(LOCK_READ_WRITE);
+	FMemory::Memcpy(TextureData, RawPixels.GetData(), RawPixels.Num());
+	Mip.BulkData.Unlock();
+	Texture->UpdateResource();
+
+	return Texture;
+}
+
+UTexture2D* CreateSolidColorTexture(const FColor& Color, UObject* Outer)
+{
+	if (!Outer)
+	{
+		return nullptr;
+	}
+
+	UTexture2D* Texture = UTexture2D::CreateTransient(1, 1, PF_B8G8R8A8, NAME_None);
+	if (!Texture || !Texture->GetPlatformData() || Texture->GetPlatformData()->Mips.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	Texture->Rename(nullptr, Outer);
+	Texture->SRGB = true;
+	Texture->CompressionSettings = TC_Default;
+#if WITH_EDITORONLY_DATA
+	Texture->MipGenSettings = TMGS_NoMipmaps;
+#endif
+
+	FTexture2DMipMap& Mip = Texture->GetPlatformData()->Mips[0];
+	void* TextureData = Mip.BulkData.Lock(LOCK_READ_WRITE);
+	FMemory::Memcpy(TextureData, &Color, sizeof(FColor));
+	Mip.BulkData.Unlock();
+	Texture->UpdateResource();
+
+	return Texture;
+}
+}
+
+ADroneOpsGameMode::ADroneOpsGameMode()
+{
+	PlayerControllerClass = ADroneOpsPlayerController::StaticClass();
+	DefaultPawnClass = nullptr;
+	ReceiverDroneClass = ARealTimeDroneReceiver::StaticClass();
+	ShadowDroneClass = AMultiDroneCharacter::StaticClass();
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void ADroneOpsGameMode::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+    if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Map)
+    {
+        CommandMapService = UCommandMapInteractionService::GetOrCreateForWorld(GetWorld());
+    }
+
+    if ((UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Video || UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command))
+    {
+        // Use the existing native controller without legacy Blueprint HUD/BeginPlay overrides.
+        PlayerControllerClass = ADroneOpsPlayerController::StaticClass();
+        return;
+    }
+
+	// Load BP_DroneOpsPlayerController before the PC is spawned,
+	// so blueprint-configured widget classes (DroneInfoPanelWidgetClass etc.) take effect.
+	TSoftClassPtr<ADroneOpsPlayerController> SoftPC(FSoftObjectPath(
+		TEXT("/Game/DroneOps/Blueprints/BP_DroneOpsPlayerController.BP_DroneOpsPlayerController_C")));
+	if (TSubclassOf<APlayerController> LoadedPC = SoftPC.LoadSynchronous())
+	{
+		PlayerControllerClass = LoadedPC;
+		UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Loaded BP_DroneOpsPlayerController"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: BP_DroneOpsPlayerController not found, using C++ class"));
+	}
+}
+
+void ADroneOpsGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	if ((UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Video || UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command))
+	{
+		// Video consumes Registry descriptors, not scene receiver/shadow actors. Shadow
+		// BeginPlay re-registers a partial descriptor and would erase the HTTP VideoUrl.
+		SetActorTickEnabled(false);
+		UE_LOG(LogTemp, Log, TEXT("[Video] Scene spawning and coordinate initialization skipped"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: BeginPlay"));
+
+	// Apply the main-menu selection before any receiver/shadow spawning or preview UI setup.
+	ApplyStagedStrictLocalPreviewIsolation();
+
+	ApplyCesiumTileServerConfig();
+
+	// Always (re)load the blueprint receiver class at BeginPlay.
+	// Do not rely on the CDO value — it may be stale from a previous cook.
+	{
+		TSoftClassPtr<ARealTimeDroneReceiver> SoftClass(FSoftObjectPath(TEXT("/Game/DroneOps/Blueprints/BP_RealTimeDrone.BP_RealTimeDrone_C")));
+		TSubclassOf<ARealTimeDroneReceiver> Loaded = SoftClass.LoadSynchronous();
+		if (Loaded)
+		{
+			ReceiverDroneClass = Loaded;
+			UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Loaded BP_RealTimeDrone successfully"));
+		}
+		else
+		{
+			ReceiverDroneClass = ARealTimeDroneReceiver::StaticClass();
+			UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: BP_RealTimeDrone not found, falling back to C++ base class"));
+		}
+	}
+
+	{
+		TSoftClassPtr<AMultiDroneCharacter> SoftClass(FSoftObjectPath(TEXT("/Game/DroneOps/Blueprints/BP_MultiDroneCharacter.BP_MultiDroneCharacter_C")));
+		TSubclassOf<AMultiDroneCharacter> Loaded = SoftClass.LoadSynchronous();
+		if (Loaded)
+		{
+			ShadowDroneClass = Loaded;
+			UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Loaded BP_MultiDroneCharacter successfully"));
+		}
+		else
+		{
+			ShadowDroneClass = AMultiDroneCharacter::StaticClass();
+			UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: BP_MultiDroneCharacter not found, falling back to C++ base class"));
+		}
+	}
+
+	{
+		TSoftClassPtr<AMultiDroneCharacter> SoftClass(FSoftObjectPath(TEXT("/Game/DroneOps/Blueprints/BP_EnemyDroneCharacter.BP_EnemyDroneCharacter_C")));
+		TSubclassOf<AMultiDroneCharacter> Loaded = SoftClass.LoadSynchronous();
+		if (Loaded)
+		{
+			EnemyShadowDroneClass = Loaded;
+			UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Loaded BP_EnemyDroneCharacter successfully"));
+		}
+		else
+		{
+			// 无专用敌对机 Blueprint 时保持 null，回退到 ShadowDroneClass + 红色 ThemeColor
+			UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: BP_EnemyDroneCharacter not found, enemy drones will use BP_MultiDroneCharacter with red ThemeColor"));
+		}
+	}
+
+	// Initialize coordinate service
+	InitializeCoordinateService();
+
+	// Apply pending Georeference origin from main menu settings (must run after Cesium service init)
+	ApplyPendingGeoreferenceOrigin();
+
+	// Initialize drone registry
+	InitializeDroneRegistry();
+
+	// The backend drone list is polled asynchronously.  Without this binding,
+	// drones that arrive after BeginPlay are saved in the registry but do not
+	// get a BP_RealTimeDrone actor until the level is restarted.
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Registry = GameInstance->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			Registry->OnDroneRegistered.AddDynamic(this, &ADroneOpsGameMode::HandleDroneRegistered);
+		}
+	}
+
+	// If a pending origin was applied, defer spawn until Georeference finishes updating.
+	// Otherwise spawn immediately (direct level launch, no origin change).
+	if (!bPendingSpawnAfterGeoreferenceUpdate)
+	{
+		SpawnReceiversFromRegistry();
+	}
+
+	RemainingPossessRetries = 10;
+	RetryPossessPlacedPawns();
+
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().SetTimer(
+			RetryPossessTimerHandle,
+			this,
+			&ADroneOpsGameMode::RetryPossessPlacedPawns,
+			0.1f,
+			true);
+	}
+}
+
+void ADroneOpsGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Registry = GameInstance->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			Registry->OnDroneRegistered.RemoveDynamic(this, &ADroneOpsGameMode::HandleDroneRegistered);
+		}
+
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
+void ADroneOpsGameMode::ApplyStagedStrictLocalPreviewIsolation()
+{
+	UGameInstance* GameInstance = GetGameInstance();
+	UDroneNetworkManager* NetMgr = GameInstance
+		? GameInstance->GetSubsystem<UDroneNetworkManager>()
+		: nullptr;
+	if (!NetMgr)
+	{
+		return;
+	}
+
+	bool bEnabled = false;
+	if (NetMgr->ConsumeStagedStrictLocalPreviewIsolation(bEnabled))
+	{
+		NetMgr->SetStrictLocalPreviewIsolation(bEnabled);
+		UE_LOG(LogTemp, Log,
+			TEXT("[DroneOpsGameMode] Applied staged strict local preview isolation=%d"),
+			bEnabled ? 1 : 0);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log,
+			TEXT("[DroneOpsGameMode] Direct launch keeps strict local preview isolation=%d"),
+			NetMgr->IsStrictLocalPreviewIsolation() ? 1 : 0);
+	}
+}
+
+void ADroneOpsGameMode::HandleDroneRegistered(int32 DroneId)
+{
+	if (bPendingSpawnAfterGeoreferenceUpdate)
+	{
+		UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Drone %d registered; waiting for Georeference update before spawning"), DroneId);
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Drone %d registered after level startup; spawning receiver now"), DroneId);
+	SpawnReceiversFromRegistry();
+}
+
+void ADroneOpsGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	UpdateOfflineRasterPlaneCoverageFromCamera();
+}
+
+void ADroneOpsGameMode::ApplyMapModeFromConfig(bool bRebuildOfflinePlane)
+{
+	ApplyCesiumTileServerConfig();
+
+	const bool bUseLocalTileServer = GetCesiumTileServerBool(TEXT("UseLocalTileServer"), false);
+    if (CommandMapService) CommandMapService->ApplyPendingMapMode();
+	const bool bUseOfflineRasterPlane = GetCesiumTileServerBool(TEXT("UseOfflineRasterPlane"), true);
+	if (!bUseLocalTileServer || !bUseOfflineRasterPlane)
+	{
+		DestroyOfflineRasterPlane();
+		return;
+	}
+
+	if (!bRebuildOfflinePlane)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	for (TActorIterator<ACesiumGeoreference> It(World); It; ++It)
+	{
+		ACesiumGeoreference* Georeference = *It;
+		if (!IsValid(Georeference))
+		{
+			continue;
+		}
+
+		const double Latitude = bOfflineRasterPlaneActive ? OfflineRasterPlaneLatitude : Georeference->GetOriginLatitude();
+		const double Longitude = bOfflineRasterPlaneActive ? OfflineRasterPlaneLongitude : Georeference->GetOriginLongitude();
+		const double HeightMeters = bOfflineRasterPlaneActive ? OfflineRasterPlaneHeightMeters : Georeference->GetOriginHeight();
+		EnsureOfflineCesiumSunSky(Latitude, Longitude);
+		CreateOfflineRasterPlaneAround(Latitude, Longitude, HeightMeters);
+		return;
+	}
+}
+
+void ADroneOpsGameMode::SetOfflineMapModeRuntime(bool bUseOfflineMap, bool bRebuildNow)
+{
+	if (GConfig)
+	{
+		GConfig->SetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bUseOfflineMap, GEngineIni);
+		GConfig->SetBool(TEXT("CesiumTileServer"), TEXT("UseOfflineRasterPlane"), bUseOfflineMap, GEngineIni);
+		GConfig->SetBool(TEXT("CesiumTileServer"), TEXT("SwitchTilesetsToLocal"), false, GEngineIni);
+		GConfig->SetBool(TEXT("CesiumTileServer"), TEXT("CreateUrlTemplateRasterOverlay"), false, GEngineIni);
+		GConfig->SetBool(TEXT("CesiumTileServer"), TEXT("DisableNonUrlRasterOverlays"), bUseOfflineMap, GEngineIni);
+		GConfig->Flush(false, GEngineIni);
+	}
+
+	ApplyMapModeFromConfig(bRebuildNow);
+}
+
+bool ADroneOpsGameMode::ValidateMapCoordinateAlignment(float ToleranceMeters, FString& OutReport) const
+{
+	OutReport.Reset();
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		OutReport = TEXT("Map validation failed: World is null.");
+		return false;
+	}
+
+	ACesiumGeoreference* Georeference = nullptr;
+	for (TActorIterator<ACesiumGeoreference> It(World); It; ++It)
+	{
+		if (IsValid(*It))
+		{
+			Georeference = *It;
+			break;
+		}
+	}
+
+	if (!Georeference)
+	{
+		OutReport = TEXT("Map validation failed: no ACesiumGeoreference found.");
+		return false;
+	}
+
+	const double Latitude = bOfflineRasterPlaneActive ? OfflineRasterPlaneLatitude : Georeference->GetOriginLatitude();
+	const double Longitude = bOfflineRasterPlaneActive ? OfflineRasterPlaneLongitude : Georeference->GetOriginLongitude();
+	const double HeightMeters = bOfflineRasterPlaneActive ? OfflineRasterPlaneHeightMeters : Georeference->GetOriginHeight();
+	const float ClampedToleranceMeters = FMath::Max(0.01f, ToleranceMeters);
+
+	const FString RasterCoordinateSystem = GetCesiumTileServerString(TEXT("RasterCoordinateSystem"), TEXT("WGS84"));
+	const bool bRasterUsesGcj02 = RasterCoordinateSystemUsesGcj02(RasterCoordinateSystem);
+	const bool bUsePlaneLod = GetCesiumTileServerBool(TEXT("UseOfflineRasterPlaneLod"), true);
+	const int32 ValidationZoom = bUsePlaneLod
+		? GetCesiumTileServerInt(TEXT("OfflineRasterPlaneNearZoom"), 18)
+		: GetCesiumTileServerInt(TEXT("OfflineRasterPlaneZoom"), 18);
+	const int32 ClampedValidationZoom = FMath::Clamp(ValidationZoom, 0, 30);
+
+	UObject* CoordinateServiceObject = nullptr;
+	bool bCoordinateServiceReady = false;
+	bool bCoordinateServiceGeographic = false;
+	if (UGameInstance* GameInstance = World->GetGameInstance())
+	{
+		if (UDroneRegistrySubsystem* Registry = GameInstance->GetSubsystem<UDroneRegistrySubsystem>())
+		{
+			TScriptInterface<ICoordinateService> CoordinateService = Registry->GetCoordinateService();
+			CoordinateServiceObject = CoordinateService.GetObject();
+			if (CoordinateServiceObject)
+			{
+				bCoordinateServiceReady = ICoordinateService::Execute_IsCoordinateSystemReady(CoordinateServiceObject);
+				bCoordinateServiceGeographic = ICoordinateService::Execute_IsGeographicSupported(CoordinateServiceObject);
+			}
+		}
+	}
+
+	struct FValidationSample
+	{
+		FString Name;
+		double EastMeters = 0.0;
+		double NorthMeters = 0.0;
+	};
+
+	TArray<FValidationSample> Samples;
+	auto AddValidationSample = [&Samples](const TCHAR* Name, double EastMeters, double NorthMeters)
+	{
+		FValidationSample Sample;
+		Sample.Name = Name;
+		Sample.EastMeters = EastMeters;
+		Sample.NorthMeters = NorthMeters;
+		Samples.Add(Sample);
+	};
+	AddValidationSample(TEXT("center"), 0.0, 0.0);
+	AddValidationSample(TEXT("east_100m"), 100.0, 0.0);
+	AddValidationSample(TEXT("west_100m"), -100.0, 0.0);
+	AddValidationSample(TEXT("north_100m"), 0.0, 100.0);
+	AddValidationSample(TEXT("south_100m"), 0.0, -100.0);
+	AddValidationSample(TEXT("northeast_250m"), 250.0, 250.0);
+	AddValidationSample(TEXT("southwest_250m"), -250.0, -250.0);
+
+	double MaxCesiumHorizontalErrorMeters = 0.0;
+	double MaxCesiumHeightErrorMeters = 0.0;
+	double MaxRasterRoundTripErrorMeters = 0.0;
+	double MaxCoordinateServiceWorldErrorMeters = 0.0;
+	double MaxCoordinateServiceRoundTripErrorMeters = 0.0;
+	bool bAllSamplesPassed = true;
+
+	FString SampleReport;
+	for (const FValidationSample& Sample : Samples)
+	{
+		const FVector2D SampleWgsLonLat = OffsetWgs84ByMeters(Longitude, Latitude, Sample.EastMeters, Sample.NorthMeters);
+		const FVector SampleWorldPosition = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(
+			FVector(SampleWgsLonLat.X, SampleWgsLonLat.Y, HeightMeters));
+		const FVector RoundTripLonLatHeight = Georeference->TransformUnrealPositionToLongitudeLatitudeHeight(SampleWorldPosition);
+		const double CesiumHorizontalErrorMeters = EstimateLonLatDistanceMeters(
+			SampleWgsLonLat.X,
+			SampleWgsLonLat.Y,
+			RoundTripLonLatHeight.X,
+			RoundTripLonLatHeight.Y);
+		const double CesiumHeightErrorMeters = FMath::Abs(RoundTripLonLatHeight.Z - HeightMeters);
+		MaxCesiumHorizontalErrorMeters = FMath::Max(MaxCesiumHorizontalErrorMeters, CesiumHorizontalErrorMeters);
+		MaxCesiumHeightErrorMeters = FMath::Max(MaxCesiumHeightErrorMeters, CesiumHeightErrorMeters);
+
+		double CoordinateServiceWorldErrorMeters = 0.0;
+		double CoordinateServiceRoundTripErrorMeters = 0.0;
+		bool bCoordinateServiceSampleOk = bCoordinateServiceReady && bCoordinateServiceGeographic && CoordinateServiceObject;
+		if (bCoordinateServiceSampleOk)
+		{
+			const FVector ServiceWorldPosition = ICoordinateService::Execute_GeographicToWorld(
+				CoordinateServiceObject,
+				SampleWgsLonLat.Y,
+				SampleWgsLonLat.X,
+				HeightMeters);
+			CoordinateServiceWorldErrorMeters = FVector::Dist(ServiceWorldPosition, SampleWorldPosition) / 100.0;
+			const FVector ServiceLonLatHeight = ICoordinateService::Execute_WorldToGeographic(CoordinateServiceObject, SampleWorldPosition);
+			CoordinateServiceRoundTripErrorMeters = EstimateLonLatDistanceMeters(
+				SampleWgsLonLat.X,
+				SampleWgsLonLat.Y,
+				ServiceLonLatHeight.X,
+				ServiceLonLatHeight.Y);
+			CoordinateServiceRoundTripErrorMeters = FMath::Max(
+				CoordinateServiceRoundTripErrorMeters,
+				FMath::Abs(ServiceLonLatHeight.Z - HeightMeters));
+			MaxCoordinateServiceWorldErrorMeters = FMath::Max(MaxCoordinateServiceWorldErrorMeters, CoordinateServiceWorldErrorMeters);
+			MaxCoordinateServiceRoundTripErrorMeters = FMath::Max(MaxCoordinateServiceRoundTripErrorMeters, CoordinateServiceRoundTripErrorMeters);
+		}
+
+		const FVector2D RasterLonLat = bRasterUsesGcj02
+			? Wgs84ToGcj02(SampleWgsLonLat.X, SampleWgsLonLat.Y)
+			: SampleWgsLonLat;
+		const FVector2D RasterRoundTripWgs = bRasterUsesGcj02
+			? Gcj02ToWgs84(RasterLonLat.X, RasterLonLat.Y)
+			: RasterLonLat;
+		const double RasterRoundTripMeters = EstimateLonLatDistanceMeters(
+			SampleWgsLonLat.X,
+			SampleWgsLonLat.Y,
+			RasterRoundTripWgs.X,
+			RasterRoundTripWgs.Y);
+		MaxRasterRoundTripErrorMeters = FMath::Max(MaxRasterRoundTripErrorMeters, RasterRoundTripMeters);
+
+		int64 TileX = 0;
+		int64 TileY = 0;
+		const bool bTileOk = LonLatToWebMercatorTile(RasterLonLat.X, RasterLonLat.Y, ClampedValidationZoom, TileX, TileY);
+		bool bInsideTileBounds = false;
+		bool bInsideOfflineMeshQuad = false;
+		if (bTileOk)
+		{
+			const double West = WebMercatorTileXToLongitude(TileX, ClampedValidationZoom);
+			const double East = WebMercatorTileXToLongitude(TileX + 1, ClampedValidationZoom);
+			const double North = WebMercatorTileYToLatitude(TileY, ClampedValidationZoom);
+			const double South = WebMercatorTileYToLatitude(TileY + 1, ClampedValidationZoom);
+			bInsideTileBounds = RasterLonLat.X >= West && RasterLonLat.X <= East && RasterLonLat.Y <= North && RasterLonLat.Y >= South;
+
+			const FVector2D NorthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, North) : FVector2D(West, North);
+			const FVector2D NortheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, North) : FVector2D(East, North);
+			const FVector2D SoutheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, South) : FVector2D(East, South);
+			const FVector2D SouthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, South) : FVector2D(West, South);
+			const FVector NorthwestWorld = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(NorthwestLonLat.X, NorthwestLonLat.Y, HeightMeters));
+			const FVector NortheastWorld = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(NortheastLonLat.X, NortheastLonLat.Y, HeightMeters));
+			const FVector SoutheastWorld = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(SoutheastLonLat.X, SoutheastLonLat.Y, HeightMeters));
+			const FVector SouthwestWorld = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(SouthwestLonLat.X, SouthwestLonLat.Y, HeightMeters));
+
+			bInsideOfflineMeshQuad = IsPointInQuad2D(
+				FVector2D(SampleWorldPosition.X, SampleWorldPosition.Y),
+				FVector2D(NorthwestWorld.X, NorthwestWorld.Y),
+				FVector2D(NortheastWorld.X, NortheastWorld.Y),
+				FVector2D(SoutheastWorld.X, SoutheastWorld.Y),
+				FVector2D(SouthwestWorld.X, SouthwestWorld.Y));
+		}
+
+		const bool bSamplePassed =
+			CesiumHorizontalErrorMeters <= ClampedToleranceMeters &&
+			CesiumHeightErrorMeters <= ClampedToleranceMeters &&
+			RasterRoundTripMeters <= ClampedToleranceMeters &&
+			bCoordinateServiceSampleOk &&
+			CoordinateServiceWorldErrorMeters <= ClampedToleranceMeters &&
+			CoordinateServiceRoundTripErrorMeters <= ClampedToleranceMeters &&
+			bTileOk &&
+			bInsideTileBounds &&
+			bInsideOfflineMeshQuad;
+		bAllSamplesPassed = bAllSamplesPassed && bSamplePassed;
+
+		SampleReport += FString::Printf(
+			TEXT("  [%s] %s WGS(lon=%.8f lat=%.8f) raster(lon=%.8f lat=%.8f) tile=%d/%lld/%lld cesiumErr=%.6fm/%.6fm coordSvcErr=%.6fm/%.6fm rasterErr=%.6fm tileContains=%s meshContains=%s\n"),
+			*Sample.Name,
+			bSamplePassed ? TEXT("OK") : TEXT("FAIL"),
+			SampleWgsLonLat.X,
+			SampleWgsLonLat.Y,
+			RasterLonLat.X,
+			RasterLonLat.Y,
+			ClampedValidationZoom,
+			TileX,
+			TileY,
+			CesiumHorizontalErrorMeters,
+			CesiumHeightErrorMeters,
+			CoordinateServiceWorldErrorMeters,
+			CoordinateServiceRoundTripErrorMeters,
+			RasterRoundTripMeters,
+			bInsideTileBounds ? TEXT("true") : TEXT("false"),
+			bInsideOfflineMeshQuad ? TEXT("true") : TEXT("false"));
+	}
+
+	const bool bPassed = bAllSamplesPassed;
+
+	OutReport = FString::Printf(
+		TEXT("Map validation %s\nWGS84 origin: lon=%.8f lat=%.8f height=%.3fm\nTolerance: %.3fm\nRaster CS: %s usesGcj02=%s validationZoom=%d\nCoordinateService: object=%s ready=%s geographic=%s\nMax errors: cesiumHorizontal=%.6fm cesiumHeight=%.6fm coordinateServiceWorld=%.6fm coordinateServiceRoundTrip=%.6fm rasterRoundTrip=%.6fm\nSamples:\n%s"),
+		bPassed ? TEXT("PASSED") : TEXT("FAILED"),
+		Longitude,
+		Latitude,
+		HeightMeters,
+		ClampedToleranceMeters,
+		*RasterCoordinateSystem,
+		bRasterUsesGcj02 ? TEXT("true") : TEXT("false"),
+		ClampedValidationZoom,
+		CoordinateServiceObject ? *CoordinateServiceObject->GetClass()->GetName() : TEXT("<null>"),
+		bCoordinateServiceReady ? TEXT("true") : TEXT("false"),
+		bCoordinateServiceGeographic ? TEXT("true") : TEXT("false"),
+		MaxCesiumHorizontalErrorMeters,
+		MaxCesiumHeightErrorMeters,
+		MaxCoordinateServiceWorldErrorMeters,
+		MaxCoordinateServiceRoundTripErrorMeters,
+		MaxRasterRoundTripErrorMeters,
+		*SampleReport);
+	OutReport += TEXT("Conclusion: online Cesium and offline plane use the same ACesiumGeoreference WGS84 world coordinates; offline raster imagery is corrected from its configured raster coordinate system before mesh placement.\n");
+
+	UE_LOG(LogTemp, Log, TEXT("%s"), *OutReport);
+	return bPassed;
+}
+
+void ADroneOpsGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	PossessPlacedPawn(NewPlayer, true, false);
+}
+
+APawn* ADroneOpsGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
+{
+	return nullptr;
+}
+
+void ADroneOpsGameMode::InitializeCoordinateService()
+{
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance)
+	{
+		UE_LOG(LogTemp, Error, TEXT("DroneOpsGameMode: No GameInstance found"));
+		return;
+	}
+
+	UDroneRegistrySubsystem* Registry = GameInstance->GetSubsystem<UDroneRegistrySubsystem>();
+	if (!Registry)
+	{
+		UE_LOG(LogTemp, Error, TEXT("DroneOpsGameMode: DroneRegistrySubsystem not found"));
+		return;
+	}
+
+	// Choose coordinate service based on bUseCesiumCoordinates
+	if (bUseCesiumCoordinates)
+	{
+		UCesiumCoordinateService* CoordService = NewObject<UCesiumCoordinateService>(this);
+		CoordService->Initialize(GetWorld());
+		Registry->SetCoordinateService(CoordService);
+		UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: CesiumCoordinateService initialized"));
+	}
+	else
+	{
+		USimpleCoordinateService* CoordService = NewObject<USimpleCoordinateService>(this);
+		if (CoordService)
+		{
+			Registry->SetCoordinateService(CoordService);
+			UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: SimpleCoordinateService initialized"));
+		}
+	}
+}
+
+void ADroneOpsGameMode::InitializeDroneRegistry()
+{
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance)
+	{
+		return;
+	}
+
+	UDroneRegistrySubsystem* Registry = GameInstance->GetSubsystem<UDroneRegistrySubsystem>();
+	if (!Registry)
+	{
+		return;
+	}
+
+	// Registry is ready for drone registration
+	// Drones will be registered by MultiDroneManager or individual actors
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: DroneRegistry ready for registration"));
+}
+
+ARealTimeDroneReceiver* ADroneOpsGameMode::FindReceiverForDroneId(int32 DroneId) const
+{
+	UWorld* World = GetWorld();
+	if (!World || DroneId <= 0)
+	{
+		return nullptr;
+	}
+
+	for (TActorIterator<ARealTimeDroneReceiver> It(World); It; ++It)
+	{
+		ARealTimeDroneReceiver* Receiver = *It;
+		if (IsValid(Receiver) && Receiver->DroneId == DroneId)
+		{
+			return Receiver;
+		}
+	}
+
+	return nullptr;
+}
+
+AMultiDroneCharacter* ADroneOpsGameMode::FindShadowForDroneId(int32 DroneId) const
+{
+	UWorld* World = GetWorld();
+	if (!World || DroneId <= 0)
+	{
+		return nullptr;
+	}
+
+	for (TActorIterator<AMultiDroneCharacter> It(World); It; ++It)
+	{
+		AMultiDroneCharacter* Shadow = *It;
+		if (IsValid(Shadow) && Shadow->DroneId == DroneId)
+		{
+			return Shadow;
+		}
+	}
+
+	return nullptr;
+}
+
+void ADroneOpsGameMode::SpawnReceiversFromRegistry()
+{
+	if (!bSpawnReceiversFromRegistry)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!World || !GameInstance)
+	{
+		return;
+	}
+
+	UDroneRegistrySubsystem* Registry = GameInstance->GetSubsystem<UDroneRegistrySubsystem>();
+	if (!Registry)
+	{
+		return;
+	}
+
+	const UDroneNetworkManager* NetMgr =
+		GameInstance->GetSubsystem<UDroneNetworkManager>();
+	const bool bStrictIsolation =
+		NetMgr && NetMgr->IsStrictLocalPreviewIsolation();
+	const FVector SpawnBase = ReceiverSpawnOrigin;
+
+	TArray<FDroneDescriptor> Descriptors = Registry->GetAllDroneDescriptors();
+	Descriptors.Sort([](const FDroneDescriptor& A, const FDroneDescriptor& B)
+	{
+		const int32 AOrder = A.Slot > 0 ? A.Slot : A.DroneId;
+		const int32 BOrder = B.Slot > 0 ? B.Slot : B.DroneId;
+		return AOrder < BOrder;
+	});
+
+	TSubclassOf<ARealTimeDroneReceiver> ReceiverSpawnClass = ReceiverDroneClass
+		? ReceiverDroneClass
+		: TSubclassOf<ARealTimeDroneReceiver>(ARealTimeDroneReceiver::StaticClass());
+
+	TSubclassOf<AMultiDroneCharacter> ShadowSpawnClass = ShadowDroneClass
+		? ShadowDroneClass
+		: TSubclassOf<AMultiDroneCharacter>(AMultiDroneCharacter::StaticClass());
+
+	// 预统计友方无人机数量，用于确定敌对机的回退生成位置（排在友方最后一架之后）
+	int32 FriendlyDroneCount = 0;
+	for (const FDroneDescriptor& Desc : Descriptors)
+	{
+		if (Desc.DroneId > 0 && !Desc.bIsEnemyTarget)
+		{
+			++FriendlyDroneCount;
+		}
+	}
+
+	int32 SpawnIndex = 0;
+	int32 ReceiverCount = 0;
+	int32 ShadowCount = 0;
+	int32 EnemySpawnIndex = 0;
+	for (const FDroneDescriptor& Desc : Descriptors)
+	{
+		if (Desc.DroneId <= 0)
+		{
+			continue;
+		}
+
+		// 敌对目标：不生成镜像机，只生成影子机（以注册时记录的 EnemyInitialLocation 为起点）
+		if (Desc.bIsEnemyTarget)
+		{
+			if (bSpawnShadowDrones)
+			{
+				const FVector EnemySpawnLocation = Desc.EnemyInitialLocation.IsZero()
+					? SpawnBase + FVector((FriendlyDroneCount + EnemySpawnIndex) * ReceiverSpawnSpacingCm, 0.0f, 0.0f)
+					: Desc.EnemyInitialLocation;
+				++EnemySpawnIndex;
+				const FTransform EnemySpawnTransform(FRotator::ZeroRotator, EnemySpawnLocation);
+
+				// 优先使用专用敌对机 class，不存在时回退到友方 ShadowSpawnClass
+				TSubclassOf<AMultiDroneCharacter> EnemyClass = EnemyShadowDroneClass
+					? EnemyShadowDroneClass
+					: ShadowSpawnClass;
+
+				AMultiDroneCharacter* Shadow = FindShadowForDroneId(Desc.DroneId);
+				if (!Shadow)
+				{
+					Shadow = World->SpawnActorDeferred<AMultiDroneCharacter>(
+						EnemyClass, EnemySpawnTransform, nullptr, nullptr,
+						ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+					if (Shadow)
+					{
+						Shadow->DroneId        = Desc.DroneId;
+						Shadow->bIsEnemyTarget = true;
+						Shadow->DroneName = Desc.Name.IsEmpty()
+							? FString::Printf(TEXT("ENEMY-%d"), DroneOpsConst::DroneIdToTargetId(Desc.DroneId))
+							: Desc.Name;
+						Shadow->ThemeColor = FLinearColor::Red;
+						Shadow->FinishSpawning(EnemySpawnTransform);
+						UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Spawned enemy shadow drone %s (ID=%d)"), *Shadow->DroneName, Desc.DroneId);
+
+						// 为敌对影子机配套 spawn AHostileTargetActor，使巡逻检测系统能感知到该目标
+						if (UHostileTargetManager* Manager = World->GetSubsystem<UHostileTargetManager>())
+						{
+							const int32 TargetId = DroneOpsConst::DroneIdToTargetId(Desc.DroneId);
+							// 只在尚无对应 HostileTargetActor 时才 spawn
+							if (!Manager->GetTarget(TargetId))
+							{
+								AHostileTargetActor* TargetActor = World->SpawnActorDeferred<AHostileTargetActor>(
+									AHostileTargetActor::StaticClass(),
+									FTransform(FRotator::ZeroRotator, EnemySpawnLocation),
+									nullptr, nullptr,
+									ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+								if (TargetActor)
+								{
+									// 在 BeginPlay 之前设好 TargetId，避免自动分配冲突
+									TargetActor->TargetId = TargetId;
+									TargetActor->FinishSpawning(FTransform(FRotator::ZeroRotator, EnemySpawnLocation));
+									TargetActor->SetMovingRepresentative(Shadow);
+									UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Spawned HostileTargetActor T-%d linked to shadow %s"),
+										TargetId, *Shadow->DroneName);
+								}
+							}
+							else
+							{
+								// HostileTargetActor 已存在（如手动放置），只补连影子机
+								Manager->GetTarget(TargetId)->SetMovingRepresentative(Shadow);
+							}
+						}
+					}
+				}
+				else
+				{
+					Shadow->SetActorLocation(EnemySpawnLocation);
+					UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Enemy shadow drone for ID=%d already exists, moved to spawn location"), Desc.DroneId);
+				}
+			}
+			continue;
+		}
+
+		FDroneTelemetrySnapshot Snapshot;
+		EDroneAvailability InitialAvailability = EDroneAvailability::Lost;
+		if (Registry->GetTelemetry(Desc.DroneId, Snapshot))
+		{
+			InitialAvailability = Snapshot.Availability;
+		}
+
+		const FVector SpawnLocation = SpawnBase + FVector(SpawnIndex * ReceiverSpawnSpacingCm, 0.0f, 0.0f);
+		const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation);
+
+		// ---- 镜像机 ----
+		ARealTimeDroneReceiver* Receiver = nullptr;
+		if (ShouldSpawnMirrorDrones(bStrictIsolation))
+		{
+			Receiver = FindReceiverForDroneId(Desc.DroneId);
+			if (!Receiver)
+			{
+				Receiver = World->SpawnActorDeferred<ARealTimeDroneReceiver>(
+					ReceiverSpawnClass, SpawnTransform, nullptr, nullptr,
+					ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+				if (Receiver)
+				{
+					Receiver->ApplyDescriptor(Desc, InitialAvailability);
+					Receiver->FinishSpawning(SpawnTransform);
+				}
+			}
+			else
+			{
+				Receiver->SetActorLocation(SpawnLocation);
+				Receiver->ApplyDescriptor(Desc, InitialAvailability);
+			}
+
+			if (Receiver)
+			{
+				++ReceiverCount;
+			}
+		}
+
+		// ---- 影子机（与镜像机初始位置相同）----
+		if (bSpawnShadowDrones)
+		{
+			AMultiDroneCharacter* Shadow = FindShadowForDroneId(Desc.DroneId);
+			if (!Shadow)
+			{
+				Shadow = World->SpawnActorDeferred<AMultiDroneCharacter>(
+					ShadowSpawnClass, SpawnTransform, nullptr, nullptr,
+					ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+				if (Shadow)
+				{
+					Shadow->DroneId         = Desc.DroneId;
+					Shadow->DroneName       = Desc.Name.IsEmpty()
+						? FString::Printf(TEXT("UAV-%d"), Desc.DroneId)
+						: Desc.Name;
+					Shadow->MavlinkSystemId = Desc.MavlinkSystemId;
+					Shadow->BitIndex        = Desc.BitIndex;
+					Shadow->ThemeColor      = Desc.ThemeColor;
+					Shadow->UEReceivePort   = Desc.UEReceivePort;
+					Shadow->TopicPrefix     = Desc.TopicPrefix;
+					Shadow->FinishSpawning(SpawnTransform);
+					UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Spawned shadow drone %s (ID=%d)"), *Shadow->DroneName, Desc.DroneId);
+					++ShadowCount;
+				}
+			}
+			else
+			{
+				Shadow->SetActorLocation(SpawnLocation);
+				UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Shadow drone for ID=%d already exists, moved to spawn location"), Desc.DroneId);
+				++ShadowCount;
+			}
+		}
+
+		// Advance per descriptor so isolated shadow drones retain deterministic spacing.
+		++SpawnIndex;
+	}
+
+	UE_LOG(LogTemp, Log,
+		TEXT("[DroneOpsGameMode] Spawn summary: isolation=%d receivers=%d shadows=%d descriptors=%d"),
+		bStrictIsolation ? 1 : 0, ReceiverCount, ShadowCount, SpawnIndex);
+}
+
+APawn* ADroneOpsGameMode::FindUnpossessedPlacedPawn(bool bLogDiscoveredPawns) const
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return nullptr;
+	}
+
+	int32 DiscoveredPawnCount = 0;
+	for (TActorIterator<AMultiDroneCharacter> It(World); It; ++It)
+	{
+		AMultiDroneCharacter* DronePawn = *It;
+		if (!IsValid(DronePawn) || DronePawn->IsPendingKillPending())
+		{
+			continue;
+		}
+
+		++DiscoveredPawnCount;
+		if (bLogDiscoveredPawns)
+		{
+			UE_LOG(
+				LogTemp,
+				Log,
+				TEXT("DroneOpsGameMode: Found placed pawn %s (Controller=%s)"),
+				*DronePawn->GetName(),
+				DronePawn->Controller ? *DronePawn->Controller->GetName() : TEXT("None"));
+		}
+
+		if (DronePawn->Controller == nullptr)
+		{
+			return DronePawn;
+		}
+	}
+
+	if (bLogDiscoveredPawns)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Found %d AMultiDroneCharacter actors, none unpossessed"), DiscoveredPawnCount);
+	}
+
+	return nullptr;
+}
+
+void ADroneOpsGameMode::PossessPlacedPawn(APlayerController* PlayerController, bool bSilentIfNotFound, bool bLogDiscoveredPawns)
+{
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	if (PlayerController->GetPawn())
+	{
+		return;
+	}
+
+	if (APawn* ExistingPawn = FindUnpossessedPlacedPawn(bLogDiscoveredPawns))
+	{
+		PlayerController->Possess(ExistingPawn);
+		UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Possessed placed pawn %s"), *ExistingPawn->GetName());
+		return;
+	}
+
+	if (!bSilentIfNotFound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: No unpossessed placed AMultiDroneCharacter found for %s"), *PlayerController->GetName());
+	}
+}
+
+void ADroneOpsGameMode::RetryPossessPlacedPawns()
+{	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	bool bAnyPawnPossessedThisPass = false;
+	bool bAnyControllerMissingPawn = false;
+
+	for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PlayerController = It->Get();
+		if (!PlayerController)
+		{
+			continue;
+		}
+
+		if (PlayerController->GetPawn())
+		{
+			continue;
+		}
+
+		bAnyControllerMissingPawn = true;
+		APawn* PawnBefore = PlayerController->GetPawn();
+		PossessPlacedPawn(PlayerController, RemainingPossessRetries > 1, true);
+		if (!PawnBefore && PlayerController->GetPawn())
+		{
+			bAnyPawnPossessedThisPass = true;
+		}
+	}
+
+	--RemainingPossessRetries;
+
+	if (!bAnyControllerMissingPawn || RemainingPossessRetries <= 0 || !World->GetTimerManager().IsTimerActive(RetryPossessTimerHandle))
+	{
+		World->GetTimerManager().ClearTimer(RetryPossessTimerHandle);
+		return;
+	}
+
+	if (bAnyPawnPossessedThisPass)
+	{
+		RemainingPossessRetries = FMath::Max(RemainingPossessRetries, 3);
+	}
+}
+
+void ADroneOpsGameMode::ApplyPendingGeoreferenceOrigin()
+{
+	if (!bUseCesiumCoordinates)
+	{
+		return;
+	}
+
+	UGameInstance* GI = GetGameInstance();
+	if (!GI)
+	{
+		return;
+	}
+
+	UDroneNetworkManager* NetMgr = GI->GetSubsystem<UDroneNetworkManager>();
+	if (!NetMgr || !NetMgr->HasPendingGeoreferenceOrigin())
+	{
+		return;
+	}
+
+	const double Lat = NetMgr->PendingOriginLatitude;
+	const double Lon = NetMgr->PendingOriginLongitude;
+	const double Alt = NetMgr->PendingOriginAltitude;
+	NetMgr->ClearPendingGeoreferenceOrigin();
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	for (TActorIterator<ACesiumGeoreference> It(World); It; ++It)
+	{
+		ACesiumGeoreference* Georeference = *It;
+		if (!IsValid(Georeference))
+		{
+			continue;
+		}
+
+		// Bind update event next tick to skip Cesium's own initialization broadcast.
+		bPendingSpawnAfterGeoreferenceUpdate = true;
+		GetWorld()->GetTimerManager().SetTimerForNextTick([this, Georeference, Lat, Lon, Alt]()
+		{
+			Georeference->OnGeoreferenceUpdated.AddDynamic(this, &ADroneOpsGameMode::OnGeoreferenceUpdated);
+			Georeference->SetOriginLatitude(Lat);
+			Georeference->SetOriginLongitude(Lon);
+			Georeference->SetOriginHeight(Alt);
+			UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: CesiumGeoreference origin set to (%.6f, %.6f, %.1fm), waiting for update..."),
+				Lat, Lon, Alt);
+			PrefetchLocalRasterTilesAround(Lat, Lon);
+			EnsureOfflineCesiumSunSky(Lat, Lon);
+			CreateOfflineRasterPlaneAround(Lat, Lon, Alt);
+		});
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: ApplyPendingGeoreferenceOrigin — no ACesiumGeoreference found in level"));
+}
+
+void ADroneOpsGameMode::PrefetchLocalRasterTilesAround(double Latitude, double Longitude)
+{
+	bool bUseLocalTileServer = false;
+	bool bPrefetchLocalRasterTiles = true;
+	FString LocalTileServerUrl = TEXT("http://localhost:8070");
+	FString RasterTemplateUrlConfig;
+	FString RasterCoordinateSystem = TEXT("WGS84");
+	int32 PrefetchMinimumLevel = 14;
+	int32 PrefetchMaximumLevel = 16;
+	int32 PrefetchRadius = 2;
+	int32 PrefetchMaxRequests = 96;
+
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bUseLocalTileServer, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("PrefetchLocalRasterTiles"), bPrefetchLocalRasterTiles, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("LocalTileServerUrl"), LocalTileServerUrl, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("RasterTemplateUrl"), RasterTemplateUrlConfig, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("RasterCoordinateSystem"), RasterCoordinateSystem, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("PrefetchMinimumLevel"), PrefetchMinimumLevel, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("PrefetchMaximumLevel"), PrefetchMaximumLevel, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("PrefetchRadius"), PrefetchRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("PrefetchMaxRequests"), PrefetchMaxRequests, GEngineIni);
+	}
+
+	if (!bUseLocalTileServer || !bPrefetchLocalRasterTiles)
+	{
+		return;
+	}
+
+	const FString RasterTemplateUrl = RasterTemplateUrlConfig.TrimStartAndEnd().IsEmpty()
+		? BuildCesiumLocalRasterTemplateUrl(LocalTileServerUrl)
+		: ExpandCesiumUrlTemplateTokens(NormalizeCesiumConfiguredHttpUrl(RasterTemplateUrlConfig));
+
+	if (!HasCesiumUrlTemplateTokens(RasterTemplateUrl))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Skipping raster prefetch because RasterTemplateUrl '%s' has no usable Cesium URL template tokens."),
+			*RasterTemplateUrl);
+		return;
+	}
+
+	PrefetchMinimumLevel = FMath::Max(0, PrefetchMinimumLevel);
+	PrefetchMaximumLevel = FMath::Max(PrefetchMinimumLevel, PrefetchMaximumLevel);
+	PrefetchRadius = FMath::Clamp(PrefetchRadius, 0, 16);
+	PrefetchMaxRequests = FMath::Max(0, PrefetchMaxRequests);
+	if (PrefetchMaxRequests == 0)
+	{
+		return;
+	}
+
+	int32 RequestCount = 0;
+	const FVector2D TileCenterLonLat = RasterCoordinateSystemUsesGcj02(RasterCoordinateSystem)
+		? Wgs84ToGcj02(Longitude, Latitude)
+		: FVector2D(Longitude, Latitude);
+	for (int32 Zoom = PrefetchMinimumLevel; Zoom <= PrefetchMaximumLevel && RequestCount < PrefetchMaxRequests; ++Zoom)
+	{
+		int64 CenterX = 0;
+		int64 CenterY = 0;
+		if (!LonLatToWebMercatorTile(TileCenterLonLat.X, TileCenterLonLat.Y, Zoom, CenterX, CenterY))
+		{
+			continue;
+		}
+
+		const int64 MaxTile = (static_cast<int64>(1) << Zoom) - 1;
+		for (int64 DY = -PrefetchRadius; DY <= PrefetchRadius && RequestCount < PrefetchMaxRequests; ++DY)
+		{
+			for (int64 DX = -PrefetchRadius; DX <= PrefetchRadius && RequestCount < PrefetchMaxRequests; ++DX)
+			{
+				const int64 X = FMath::Clamp<int64>(CenterX + DX, 0, MaxTile);
+				const int64 Y = FMath::Clamp<int64>(CenterY + DY, 0, MaxTile);
+				const FString TileUrl = BuildRasterTileUrlFromTemplate(RasterTemplateUrl, Zoom, X, Y);
+
+				TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+				Request->SetURL(TileUrl);
+				Request->SetVerb(TEXT("GET"));
+				Request->SetTimeout(5.0f);
+				Request->OnProcessRequestComplete().BindLambda([](FHttpRequestPtr CompletedRequest, FHttpResponsePtr Response, bool bSucceeded)
+				{
+					if (!bSucceeded || !Response.IsValid() || Response->GetResponseCode() >= 400)
+					{
+						UE_LOG(LogTemp, Verbose, TEXT("DroneOpsGameMode: Local raster prefetch missed '%s' status=%d"),
+							CompletedRequest.IsValid() ? *CompletedRequest->GetURL() : TEXT("<invalid>"),
+							Response.IsValid() ? Response->GetResponseCode() : -1);
+					}
+				});
+				Request->ProcessRequest();
+				++RequestCount;
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Prefetching %d local raster tiles around lat=%.6f lon=%.6f, zoom=%d-%d, radius=%d."),
+		RequestCount,
+		Latitude,
+		Longitude,
+		PrefetchMinimumLevel,
+		PrefetchMaximumLevel,
+		PrefetchRadius);
+}
+
+void ADroneOpsGameMode::EnsureOfflineCesiumSunSky(double Latitude, double Longitude)
+{
+	bool bUseLocalTileServer = false;
+	bool bUseOfflineCesiumSunSky = true;
+	double SolarTime = 13.0;
+	float SkyLightIntensity = 0.45f;
+	float DirectionalLightIntensity = 2.0f;
+
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bUseLocalTileServer, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseOfflineCesiumSunSky"), bUseOfflineCesiumSunSky, GEngineIni);
+		GConfig->GetDouble(TEXT("CesiumTileServer"), TEXT("OfflineSunSkySolarTime"), SolarTime, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineSunSkySkyLightIntensity"), SkyLightIntensity, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineSunSkyDirectionalLightIntensity"), DirectionalLightIntensity, GEngineIni);
+	}
+
+	if (!bUseLocalTileServer || !bUseOfflineCesiumSunSky)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	ACesiumSunSky* SunSky = nullptr;
+	for (TActorIterator<ACesiumSunSky> It(World); It; ++It)
+	{
+		if (IsValid(*It))
+		{
+			SunSky = *It;
+			break;
+		}
+	}
+
+	if (!SunSky)
+	{
+		SunSky = World->SpawnActor<ACesiumSunSky>(ACesiumSunSky::StaticClass(), FTransform::Identity);
+		if (!SunSky)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Failed to spawn CesiumSunSky for offline raster mode."));
+			return;
+		}
+#if WITH_EDITOR
+		SunSky->SetActorLabel(TEXT("DroneOpsOfflineCesiumSunSky"));
+#endif
+	}
+
+	SunSky->SetActorHiddenInGame(false);
+	SunSky->SetActorEnableCollision(false);
+	SunSky->SolarTime = FMath::Clamp(SolarTime, 0.0, 23.9999);
+	SunSky->EstimateTimeZoneForLongitude(Longitude);
+	if (SunSky->SkyLight)
+	{
+		SunSky->SkyLight->SetIntensity(FMath::Clamp(SkyLightIntensity, 0.0f, 10.0f));
+		SunSky->SkyLight->SetVisibility(true);
+	}
+	if (SunSky->DirectionalLight)
+	{
+		SunSky->DirectionalLight->SetIntensity(FMath::Clamp(DirectionalLightIntensity, 0.0f, 25.0f));
+		SunSky->DirectionalLight->SetVisibility(true);
+	}
+	SunSky->UpdateSun();
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Ensured CesiumSunSky for offline raster mode at lat=%.6f lon=%.6f solarTime=%.2f skylight=%.2f directional=%.2f."),
+		Latitude,
+		Longitude,
+		SunSky->SolarTime,
+		SkyLightIntensity,
+		DirectionalLightIntensity);
+}
+
+UTexture2D* ADroneOpsGameMode::GetOfflineRasterFallbackTexture()
+{
+	if (!OfflineRasterFallbackTexture)
+	{
+		OfflineRasterFallbackTexture = CreateSolidColorTexture(FColor(96, 104, 96, 255), this);
+	}
+	return OfflineRasterFallbackTexture;
+}
+
+void ADroneOpsGameMode::PruneOfflineRasterTileCache()
+{
+	OfflineRasterTileMaxCacheItems = FMath::Max(32, OfflineRasterTileMaxCacheItems);
+	while (OfflineRasterTileTextureCache.Num() > OfflineRasterTileMaxCacheItems)
+	{
+		FString OldestUrl;
+		int32 OldestFrame = TNumericLimits<int32>::Max();
+		for (const TPair<FString, int32>& Entry : OfflineRasterTileLastUsedFrame)
+		{
+			if (OfflineRasterTileTextureCache.Contains(Entry.Key) && Entry.Value < OldestFrame)
+			{
+				OldestUrl = Entry.Key;
+				OldestFrame = Entry.Value;
+			}
+		}
+
+		if (OldestUrl.IsEmpty())
+		{
+			break;
+		}
+
+		OfflineRasterTileTextureCache.Remove(OldestUrl);
+		OfflineRasterTileLastUsedFrame.Remove(OldestUrl);
+		OfflineRasterTileRetryCounts.Remove(OldestUrl);
+	}
+}
+
+void ADroneOpsGameMode::DestroyOfflineRasterPlane()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	const FName PlaneTag(TEXT("DroneOpsOfflineRasterPlane"));
+	int32 DestroyedActors = 0;
+	for (TActorIterator<AActor> It(World); It; ++It)
+	{
+		AActor* ExistingActor = *It;
+		if (IsValid(ExistingActor) && ExistingActor->Tags.Contains(PlaneTag))
+		{
+			ExistingActor->Destroy();
+			++DestroyedActors;
+		}
+	}
+
+	bOfflineRasterPlaneActive = false;
+	LastOfflineRasterPlaneCoverageKey.Reset();
+	OfflineRasterTileWaitingMaterials.Empty();
+	OfflineRasterTileRequestsInFlight.Empty();
+
+	if (DestroyedActors > 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Destroyed %d offline raster plane actor(s)."), DestroyedActors);
+	}
+}
+
+void ADroneOpsGameMode::RequestOfflineRasterTile(const FString& TileUrl, UMaterialInstanceDynamic* DynamicMaterial)
+{
+	if (TileUrl.IsEmpty() || !DynamicMaterial)
+	{
+		return;
+	}
+
+	++OfflineRasterTileCacheFrame;
+
+	if (TObjectPtr<UTexture2D>* CachedTexture = OfflineRasterTileTextureCache.Find(TileUrl))
+	{
+		if (CachedTexture->Get())
+		{
+			DynamicMaterial->SetTextureParameterValue(TEXT("TileTexture"), CachedTexture->Get());
+			OfflineRasterTileLastUsedFrame.FindOrAdd(TileUrl) = OfflineRasterTileCacheFrame;
+			return;
+		}
+	}
+
+	if (UTexture2D* FallbackTexture = GetOfflineRasterFallbackTexture())
+	{
+		DynamicMaterial->SetTextureParameterValue(TEXT("TileTexture"), FallbackTexture);
+	}
+
+	OfflineRasterTileWaitingMaterials.FindOrAdd(TileUrl).Add(DynamicMaterial);
+	if (OfflineRasterTileRequestsInFlight.Contains(TileUrl))
+	{
+		return;
+	}
+
+	const int32 RetryCount = OfflineRasterTileRetryCounts.FindRef(TileUrl);
+	if (RetryCount >= OfflineRasterTileMaxRetries)
+	{
+		return;
+	}
+
+	OfflineRasterTileRequestsInFlight.Add(TileUrl);
+
+	TWeakObjectPtr<ADroneOpsGameMode> WeakThis(this);
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
+	Request->SetURL(TileUrl);
+	Request->SetVerb(TEXT("GET"));
+	Request->SetTimeout(8.0f);
+	Request->OnProcessRequestComplete().BindLambda([WeakThis, TileUrl](FHttpRequestPtr CompletedRequest, FHttpResponsePtr Response, bool bSucceeded)
+	{
+		if (!WeakThis.IsValid())
+		{
+			return;
+		}
+
+		ADroneOpsGameMode* GameMode = WeakThis.Get();
+		GameMode->OfflineRasterTileRequestsInFlight.Remove(TileUrl);
+
+		const bool bHttpOk = bSucceeded &&
+			Response.IsValid() &&
+			Response->GetResponseCode() < 400 &&
+			Response->GetContent().Num() >= GameMode->OfflineRasterTileMinimumBytes;
+		UTexture2D* TileTexture = bHttpOk ? CreateTextureFromCompressedImage(Response->GetContent(), GameMode) : nullptr;
+		if (TileTexture)
+		{
+			GameMode->OfflineRasterTileTextureCache.Add(TileUrl, TileTexture);
+			GameMode->OfflineRasterTileLastUsedFrame.FindOrAdd(TileUrl) = ++GameMode->OfflineRasterTileCacheFrame;
+			GameMode->OfflineRasterTileRetryCounts.Remove(TileUrl);
+
+			if (TArray<TWeakObjectPtr<UMaterialInstanceDynamic>>* WaitingMaterials = GameMode->OfflineRasterTileWaitingMaterials.Find(TileUrl))
+			{
+				for (const TWeakObjectPtr<UMaterialInstanceDynamic>& WaitingMaterial : *WaitingMaterials)
+				{
+					if (WaitingMaterial.IsValid())
+					{
+						WaitingMaterial->SetTextureParameterValue(TEXT("TileTexture"), TileTexture);
+					}
+				}
+			}
+			GameMode->OfflineRasterTileWaitingMaterials.Remove(TileUrl);
+			GameMode->PruneOfflineRasterTileCache();
+			return;
+		}
+
+		const int32 NewRetryCount = GameMode->OfflineRasterTileRetryCounts.FindOrAdd(TileUrl) + 1;
+		GameMode->OfflineRasterTileRetryCounts.Add(TileUrl, NewRetryCount);
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Offline raster tile request failed '%s' status=%d retry=%d/%d"),
+			CompletedRequest.IsValid() ? *CompletedRequest->GetURL() : *TileUrl,
+			Response.IsValid() ? Response->GetResponseCode() : -1,
+			NewRetryCount,
+			GameMode->OfflineRasterTileMaxRetries);
+
+		if (NewRetryCount < GameMode->OfflineRasterTileMaxRetries && GameMode->GetWorld())
+		{
+			FTimerHandle RetryTimerHandle;
+			TWeakObjectPtr<ADroneOpsGameMode> RetryWeakThis(GameMode);
+			GameMode->GetWorld()->GetTimerManager().SetTimer(RetryTimerHandle, FTimerDelegate::CreateLambda([RetryWeakThis, TileUrl]()
+			{
+				if (!RetryWeakThis.IsValid())
+				{
+					return;
+				}
+
+				if (TArray<TWeakObjectPtr<UMaterialInstanceDynamic>>* WaitingMaterials = RetryWeakThis->OfflineRasterTileWaitingMaterials.Find(TileUrl))
+				{
+					for (const TWeakObjectPtr<UMaterialInstanceDynamic>& WaitingMaterial : *WaitingMaterials)
+					{
+						if (WaitingMaterial.IsValid())
+						{
+							RetryWeakThis->RequestOfflineRasterTile(TileUrl, WaitingMaterial.Get());
+							return;
+						}
+					}
+				}
+			}), GameMode->OfflineRasterTileRetryDelaySeconds, false);
+		}
+	});
+	Request->ProcessRequest();
+}
+
+int32 ADroneOpsGameMode::ComputeOfflineRasterPlaneRadiusForCamera(int32 Zoom, int32 BaseRadius, double Latitude, double HeightMeters) const
+{
+	bool bDynamicCoverage = true;
+	int32 PaddingTiles = 2;
+	int32 MaxDynamicRadius = 32;
+	float FootprintScale = 1.35f;
+
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneDynamicCoverage"), bDynamicCoverage, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneCoveragePaddingTiles"), PaddingTiles, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMaxDynamicRadius"), MaxDynamicRadius, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneFootprintScale"), FootprintScale, GEngineIni);
+	}
+
+	if (!bDynamicCoverage)
+	{
+		return BaseRadius;
+	}
+
+	UWorld* World = GetWorld();
+	const APlayerController* PlayerController = World ? World->GetFirstPlayerController() : nullptr;
+	const APlayerCameraManager* CameraManager = PlayerController ? PlayerController->PlayerCameraManager : nullptr;
+	if (!CameraManager)
+	{
+		return BaseRadius;
+	}
+
+	double PlaneZ = 0.0;
+	if (World)
+	{
+		for (TActorIterator<ACesiumGeoreference> It(World); It; ++It)
+		{
+			if (IsValid(*It))
+			{
+				PlaneZ = It->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(OfflineRasterPlaneLongitude, OfflineRasterPlaneLatitude, HeightMeters)).Z;
+				break;
+			}
+		}
+	}
+
+	const FVector CameraLocation = CameraManager->GetCameraLocation();
+	const double CameraHeightMeters = FMath::Max(0.0, FMath::Abs(CameraLocation.Z - PlaneZ) / 100.0);
+	const double FovRadians = FMath::DegreesToRadians(FMath::Clamp(CameraManager->GetFOVAngle(), 30.0f, 120.0f));
+	const double FootprintRadiusMeters = FMath::Tan(FovRadians * 0.5) * CameraHeightMeters * static_cast<double>(FMath::Max(0.5f, FootprintScale));
+	const double TileWidthMeters = (40075016.68557849 * FMath::Max(0.1, FMath::Cos(FMath::DegreesToRadians(Latitude)))) / FMath::Pow(2.0, static_cast<double>(FMath::Clamp(Zoom, 0, 30)));
+	const int32 DynamicRadius = static_cast<int32>(FMath::CeilToDouble(FootprintRadiusMeters / FMath::Max(1.0, TileWidthMeters))) + FMath::Max(0, PaddingTiles);
+
+	return FMath::Clamp(FMath::Max(BaseRadius, DynamicRadius), BaseRadius, FMath::Max(BaseRadius, MaxDynamicRadius));
+}
+
+void ADroneOpsGameMode::UpdateOfflineRasterPlaneCoverageFromCamera()
+{
+	if (!bOfflineRasterPlaneActive)
+	{
+		return;
+	}
+
+	bool bUseLocalTileServer = false;
+	bool bDynamicCoverage = true;
+	bool bUsePlaneLod = true;
+	float UpdateIntervalSeconds = 1.0f;
+	int32 FarZoom = 16;
+	int32 FarRadius = 8;
+	int32 MidZoom = 17;
+	int32 MidRadius = 6;
+	int32 NearZoom = 18;
+	int32 NearRadius = 4;
+	int32 PlaneZoom = 18;
+	int32 PlaneRadius = 4;
+
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bUseLocalTileServer, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneDynamicCoverage"), bDynamicCoverage, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseOfflineRasterPlaneLod"), bUsePlaneLod, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneDynamicUpdateInterval"), UpdateIntervalSeconds, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneFarZoom"), FarZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneFarRadius"), FarRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMidZoom"), MidZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMidRadius"), MidRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneNearZoom"), NearZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneNearRadius"), NearRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneZoom"), PlaneZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneRadius"), PlaneRadius, GEngineIni);
+	}
+
+	if (!bUseLocalTileServer || !bDynamicCoverage)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	const double NowSeconds = World->GetTimeSeconds();
+	if (NowSeconds - LastOfflineRasterPlaneCoverageUpdateSeconds < FMath::Max(0.25f, UpdateIntervalSeconds))
+	{
+		return;
+	}
+	LastOfflineRasterPlaneCoverageUpdateSeconds = NowSeconds;
+
+	const int32 DesiredFarRadius = ComputeOfflineRasterPlaneRadiusForCamera(FarZoom, FarRadius, OfflineRasterPlaneLatitude, OfflineRasterPlaneHeightMeters);
+	const int32 DesiredMidRadius = ComputeOfflineRasterPlaneRadiusForCamera(MidZoom, MidRadius, OfflineRasterPlaneLatitude, OfflineRasterPlaneHeightMeters);
+	const int32 DesiredNearRadius = ComputeOfflineRasterPlaneRadiusForCamera(NearZoom, NearRadius, OfflineRasterPlaneLatitude, OfflineRasterPlaneHeightMeters);
+	const int32 DesiredPlaneRadius = ComputeOfflineRasterPlaneRadiusForCamera(PlaneZoom, PlaneRadius, OfflineRasterPlaneLatitude, OfflineRasterPlaneHeightMeters);
+	const FString DesiredKey = bUsePlaneLod
+		? FString::Printf(TEXT("lod:%d/%d:%d/%d:%d/%d"), FarZoom, DesiredFarRadius, MidZoom, DesiredMidRadius, NearZoom, DesiredNearRadius)
+		: FString::Printf(TEXT("single:%d/%d"), PlaneZoom, DesiredPlaneRadius);
+
+	if (DesiredKey.Equals(LastOfflineRasterPlaneCoverageKey, ESearchCase::CaseSensitive))
+	{
+		return;
+	}
+
+	CreateOfflineRasterPlaneAround(OfflineRasterPlaneLatitude, OfflineRasterPlaneLongitude, OfflineRasterPlaneHeightMeters);
+}
+
+void ADroneOpsGameMode::CreateOfflineRasterPlaneAround(double Latitude, double Longitude, double HeightMeters)
+{
+	bool bUseLocalTileServer = false;
+	bool bUseOfflineRasterPlane = true;
+	FString LocalTileServerUrl = TEXT("http://localhost:8070");
+	FString RasterTemplateUrlConfig;
+	FString RasterCoordinateSystem = TEXT("WGS84");
+	FString PlaneMaterialPath = TEXT("/Game/DroneOps/Materials/M_OfflineRasterTile.M_OfflineRasterTile");
+	bool bUsePlaneLod = true;
+	int32 PlaneZoom = 18;
+	int32 PlaneRadius = 4;
+	int32 PlaneFarZoom = 16;
+	int32 PlaneFarRadius = 8;
+	int32 PlaneMidZoom = 17;
+	int32 PlaneMidRadius = 6;
+	int32 PlaneNearZoom = 18;
+	int32 PlaneNearRadius = 4;
+	int32 PlaneMaxTiles = 600;
+	float PlaneVerticalOffsetCm = 0.0f;
+	float PlaneLodVerticalStepCm = 2.0f;
+	float PlaneTileBrightness = 0.72f;
+	bool bPlaneCollision = true;
+
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bUseLocalTileServer, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseOfflineRasterPlane"), bUseOfflineRasterPlane, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("LocalTileServerUrl"), LocalTileServerUrl, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("RasterTemplateUrl"), RasterTemplateUrlConfig, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("RasterCoordinateSystem"), RasterCoordinateSystem, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMaterial"), PlaneMaterialPath, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseOfflineRasterPlaneLod"), bUsePlaneLod, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneZoom"), PlaneZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneRadius"), PlaneRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneFarZoom"), PlaneFarZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneFarRadius"), PlaneFarRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMidZoom"), PlaneMidZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMidRadius"), PlaneMidRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneNearZoom"), PlaneNearZoom, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneNearRadius"), PlaneNearRadius, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneMaxTiles"), PlaneMaxTiles, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneVerticalOffsetCm"), PlaneVerticalOffsetCm, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneLodVerticalStepCm"), PlaneLodVerticalStepCm, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneTileBrightness"), PlaneTileBrightness, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("OfflineRasterPlaneCollision"), bPlaneCollision, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterTileMaxCacheItems"), OfflineRasterTileMaxCacheItems, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterTileMaxRetries"), OfflineRasterTileMaxRetries, GEngineIni);
+		GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("OfflineRasterTileMinimumBytes"), OfflineRasterTileMinimumBytes, GEngineIni);
+		GConfig->GetFloat(TEXT("CesiumTileServer"), TEXT("OfflineRasterTileRetryDelaySeconds"), OfflineRasterTileRetryDelaySeconds, GEngineIni);
+	}
+
+	if (!bUseLocalTileServer || !bUseOfflineRasterPlane)
+	{
+		return;
+	}
+
+	OfflineRasterPlaneLatitude = Latitude;
+	OfflineRasterPlaneLongitude = Longitude;
+	OfflineRasterPlaneHeightMeters = HeightMeters;
+	bOfflineRasterPlaneActive = true;
+	OfflineRasterTileMaxCacheItems = FMath::Clamp(OfflineRasterTileMaxCacheItems, 32, 8192);
+	OfflineRasterTileMaxRetries = FMath::Clamp(OfflineRasterTileMaxRetries, 1, 8);
+	OfflineRasterTileMinimumBytes = FMath::Clamp(OfflineRasterTileMinimumBytes, 0, 1024 * 1024);
+	OfflineRasterTileRetryDelaySeconds = FMath::Clamp(OfflineRasterTileRetryDelaySeconds, 0.1f, 30.0f);
+	PlaneTileBrightness = FMath::Clamp(PlaneTileBrightness, 0.05f, 2.0f);
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	ACesiumGeoreference* Georeference = nullptr;
+	for (TActorIterator<ACesiumGeoreference> It(World); It; ++It)
+	{
+		if (IsValid(*It))
+		{
+			Georeference = *It;
+			break;
+		}
+	}
+
+	if (!Georeference)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Cannot create offline raster plane because no ACesiumGeoreference was found."));
+		return;
+	}
+
+	const FString RasterTemplateUrl = RasterTemplateUrlConfig.TrimStartAndEnd().IsEmpty()
+		? BuildCesiumLocalRasterTemplateUrl(LocalTileServerUrl)
+		: ExpandCesiumUrlTemplateTokens(NormalizeCesiumConfiguredHttpUrl(RasterTemplateUrlConfig));
+
+	if (!HasCesiumUrlTemplateTokens(RasterTemplateUrl))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Cannot create offline raster plane because RasterTemplateUrl '%s' has no tile tokens."),
+			*RasterTemplateUrl);
+		return;
+	}
+
+	struct FOfflineRasterPlaneLod
+	{
+		int32 Zoom = 0;
+		int32 Radius = 0;
+		int32 LayerIndex = 0;
+	};
+
+	TArray<FOfflineRasterPlaneLod> LodLevels;
+	if (bUsePlaneLod)
+	{
+		const int32 ClampedFarZoom = FMath::Clamp(PlaneFarZoom, 0, 30);
+		const int32 ClampedMidZoom = FMath::Clamp(PlaneMidZoom, 0, 30);
+		const int32 ClampedNearZoom = FMath::Clamp(PlaneNearZoom, 0, 30);
+		LodLevels.Add({ ClampedFarZoom, ComputeOfflineRasterPlaneRadiusForCamera(ClampedFarZoom, FMath::Clamp(PlaneFarRadius, 0, 32), Latitude, HeightMeters), 0 });
+		LodLevels.Add({ ClampedMidZoom, ComputeOfflineRasterPlaneRadiusForCamera(ClampedMidZoom, FMath::Clamp(PlaneMidRadius, 0, 32), Latitude, HeightMeters), 1 });
+		LodLevels.Add({ ClampedNearZoom, ComputeOfflineRasterPlaneRadiusForCamera(ClampedNearZoom, FMath::Clamp(PlaneNearRadius, 0, 32), Latitude, HeightMeters), 2 });
+	}
+	else
+	{
+		const int32 ClampedPlaneZoom = FMath::Clamp(PlaneZoom, 0, 30);
+		LodLevels.Add({ ClampedPlaneZoom, ComputeOfflineRasterPlaneRadiusForCamera(ClampedPlaneZoom, FMath::Clamp(PlaneRadius, 0, 32), Latitude, HeightMeters), 0 });
+	}
+
+	LodLevels.Sort([](const FOfflineRasterPlaneLod& A, const FOfflineRasterPlaneLod& B)
+	{
+		return A.Zoom < B.Zoom;
+	});
+
+	PlaneMaxTiles = FMath::Max(0, PlaneMaxTiles);
+	if (PlaneMaxTiles == 0)
+	{
+		return;
+	}
+	PlaneLodVerticalStepCm = FMath::Clamp(PlaneLodVerticalStepCm, 0.0f, 50.0f);
+	LastOfflineRasterPlaneCoverageKey = bUsePlaneLod && LodLevels.Num() >= 3
+		? FString::Printf(TEXT("lod:%d/%d:%d/%d:%d/%d"), LodLevels[0].Zoom, LodLevels[0].Radius, LodLevels[1].Zoom, LodLevels[1].Radius, LodLevels[2].Zoom, LodLevels[2].Radius)
+		: FString::Printf(TEXT("single:%d/%d"), LodLevels[0].Zoom, LodLevels[0].Radius);
+
+	const FName PlaneTag(TEXT("DroneOpsOfflineRasterPlane"));
+	for (TActorIterator<AActor> It(World); It; ++It)
+	{
+		AActor* ExistingActor = *It;
+		if (IsValid(ExistingActor) && ExistingActor->Tags.Contains(PlaneTag))
+		{
+			ExistingActor->Destroy();
+		}
+	}
+
+	AActor* PlaneRoot = World->SpawnActor<AActor>(AActor::StaticClass(), FTransform::Identity);
+	if (!PlaneRoot)
+	{
+		return;
+	}
+	PlaneRoot->Tags.AddUnique(PlaneTag);
+	PlaneRoot->SetActorHiddenInGame(false);
+
+	USceneComponent* PlaneSceneRoot = NewObject<USceneComponent>(PlaneRoot, TEXT("OfflineRasterPlaneRoot"));
+	PlaneRoot->SetRootComponent(PlaneSceneRoot);
+	PlaneSceneRoot->RegisterComponent();
+
+	UMaterialInterface* PlaneMaterial = Cast<UMaterialInterface>(StaticLoadObject(UMaterialInterface::StaticClass(), nullptr, *PlaneMaterialPath));
+	if (!PlaneMaterial)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: Offline raster plane material '%s' was not found. Create it with a Texture2D parameter named TileTexture."),
+			*PlaneMaterialPath);
+	}
+
+	const FVector CenterWorld = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(Longitude, Latitude, HeightMeters));
+	const bool bRasterUsesGcj02 = RasterCoordinateSystemUsesGcj02(RasterCoordinateSystem);
+	const FVector2D TileCenterLonLat = bRasterUsesGcj02
+		? Wgs84ToGcj02(Longitude, Latitude)
+		: FVector2D(Longitude, Latitude);
+	int32 CreatedTiles = 0;
+
+	for (const FOfflineRasterPlaneLod& Lod : LodLevels)
+	{
+		int64 CenterX = 0;
+		int64 CenterY = 0;
+		if (!LonLatToWebMercatorTile(TileCenterLonLat.X, TileCenterLonLat.Y, Lod.Zoom, CenterX, CenterY))
+		{
+			continue;
+		}
+
+		const int64 MaxTile = (static_cast<int64>(1) << Lod.Zoom) - 1;
+		const float PlaneZ = static_cast<float>(CenterWorld.Z + PlaneVerticalOffsetCm + (PlaneLodVerticalStepCm * static_cast<float>(Lod.LayerIndex)));
+
+		for (int64 DY = -Lod.Radius; DY <= Lod.Radius && CreatedTiles < PlaneMaxTiles; ++DY)
+		{
+			for (int64 DX = -Lod.Radius; DX <= Lod.Radius && CreatedTiles < PlaneMaxTiles; ++DX)
+			{
+				const int64 TileX = FMath::Clamp<int64>(CenterX + DX, 0, MaxTile);
+				const int64 TileY = FMath::Clamp<int64>(CenterY + DY, 0, MaxTile);
+
+				const double West = WebMercatorTileXToLongitude(TileX, Lod.Zoom);
+				const double East = WebMercatorTileXToLongitude(TileX + 1, Lod.Zoom);
+				const double North = WebMercatorTileYToLatitude(TileY, Lod.Zoom);
+				const double South = WebMercatorTileYToLatitude(TileY + 1, Lod.Zoom);
+
+				const FVector2D NorthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, North) : FVector2D(West, North);
+				const FVector2D NortheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, North) : FVector2D(East, North);
+				const FVector2D SoutheastLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(East, South) : FVector2D(East, South);
+				const FVector2D SouthwestLonLat = bRasterUsesGcj02 ? Gcj02ToWgs84(West, South) : FVector2D(West, South);
+
+				FVector Northwest = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(NorthwestLonLat.X, NorthwestLonLat.Y, HeightMeters));
+				FVector Northeast = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(NortheastLonLat.X, NortheastLonLat.Y, HeightMeters));
+				FVector Southeast = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(SoutheastLonLat.X, SoutheastLonLat.Y, HeightMeters));
+				FVector Southwest = Georeference->TransformLongitudeLatitudeHeightPositionToUnreal(FVector(SouthwestLonLat.X, SouthwestLonLat.Y, HeightMeters));
+				Northwest.Z = PlaneZ;
+				Northeast.Z = PlaneZ;
+				Southeast.Z = PlaneZ;
+				Southwest.Z = PlaneZ;
+
+				TArray<FVector> Vertices;
+				Vertices.Add(Northwest);
+				Vertices.Add(Northeast);
+				Vertices.Add(Southeast);
+				Vertices.Add(Southwest);
+
+				TArray<int32> Triangles;
+				Triangles.Add(0);
+				Triangles.Add(1);
+				Triangles.Add(2);
+				Triangles.Add(0);
+				Triangles.Add(2);
+				Triangles.Add(3);
+
+				TArray<FVector> Normals;
+				Normals.Init(FVector::UpVector, 4);
+
+				TArray<FVector2D> UVs;
+				UVs.Add(FVector2D(0.0f, 0.0f));
+				UVs.Add(FVector2D(1.0f, 0.0f));
+				UVs.Add(FVector2D(1.0f, 1.0f));
+				UVs.Add(FVector2D(0.0f, 1.0f));
+
+				TArray<FColor> VertexColors;
+				VertexColors.Init(FColor::White, 4);
+
+				TArray<FProcMeshTangent> Tangents;
+				Tangents.Init(FProcMeshTangent(1.0f, 0.0f, 0.0f), 4);
+
+				const FName ComponentName(*FString::Printf(TEXT("OfflineRasterTile_LOD%d_%d_%lld_%lld"), Lod.LayerIndex, Lod.Zoom, TileX, TileY));
+				UProceduralMeshComponent* TileMesh = NewObject<UProceduralMeshComponent>(PlaneRoot, ComponentName);
+				if (!TileMesh)
+				{
+					continue;
+				}
+
+				TileMesh->SetupAttachment(PlaneSceneRoot);
+				TileMesh->RegisterComponent();
+				PlaneRoot->AddInstanceComponent(TileMesh);
+				TileMesh->SetCollisionEnabled(bPlaneCollision ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+				TileMesh->SetCollisionProfileName(bPlaneCollision ? TEXT("BlockAll") : TEXT("NoCollision"));
+				TileMesh->SetGenerateOverlapEvents(false);
+				TileMesh->bUseComplexAsSimpleCollision = true;
+				TileMesh->CreateMeshSection(0, Vertices, Triangles, Normals, UVs, VertexColors, Tangents, bPlaneCollision);
+
+				if (PlaneMaterial)
+				{
+					UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(PlaneMaterial, TileMesh);
+					TileMesh->SetMaterial(0, DynamicMaterial);
+					DynamicMaterial->SetScalarParameterValue(TEXT("TileBrightness"), PlaneTileBrightness);
+
+					const FString TileUrl = BuildRasterTileUrlFromTemplate(RasterTemplateUrl, Lod.Zoom, TileX, TileY);
+					RequestOfflineRasterTile(TileUrl, DynamicMaterial);
+				}
+
+				++CreatedTiles;
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Created offline raster plane tiles=%d lod=%s collision=%s center=(lat=%.6f lon=%.6f height=%.1fm) material='%s'."),
+		CreatedTiles,
+		bUsePlaneLod ? TEXT("true") : TEXT("false"),
+		bPlaneCollision ? TEXT("true") : TEXT("false"),
+		Latitude,
+		Longitude,
+		HeightMeters,
+		*PlaneMaterialPath);
+}
+
+void ADroneOpsGameMode::ApplyCesiumTileServerConfig()
+{
+    // Command's online raster is configured before Cesium BeginPlay. Keep the existing offline pipeline below.
+    bool bLocalRaster = false;
+    GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bLocalRaster, GEngineIni);
+    if (CommandMapService && !bLocalRaster) { CommandMapService->ApplyPendingMapMode(); return; }
+	bool bUseLocalTileServer = false;
+	bool bSwitchTilesetsToLocal = true;
+	bool bCreateUrlTemplateRasterOverlay = true;
+	bool bDisableNonUrlRasterOverlays = true;
+	FString LocalTileServerUrl = TEXT("http://localhost:8070");
+	FString RasterTemplateUrlConfig;
+	FString TilesetUrlConfig;
+	FString RasterProjection = TEXT("WebMercator");
+	int32 RasterTileWidth = 256;
+	int32 RasterTileHeight = 256;
+	int32 RasterMinimumLevel = 0;
+	int32 RasterMaximumLevel = 25;
+	bool bHasRasterTileWidth = false;
+	bool bHasRasterTileHeight = false;
+	bool bHasRasterMinimumLevel = false;
+	bool bHasRasterMaximumLevel = false;
+
+	if (GConfig)
+	{
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("UseLocalTileServer"), bUseLocalTileServer, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("SwitchTilesetsToLocal"), bSwitchTilesetsToLocal, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("CreateUrlTemplateRasterOverlay"), bCreateUrlTemplateRasterOverlay, GEngineIni);
+		GConfig->GetBool(TEXT("CesiumTileServer"), TEXT("DisableNonUrlRasterOverlays"), bDisableNonUrlRasterOverlays, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("LocalTileServerUrl"), LocalTileServerUrl, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("RasterTemplateUrl"), RasterTemplateUrlConfig, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("TilesetUrl"), TilesetUrlConfig, GEngineIni);
+		GConfig->GetString(TEXT("CesiumTileServer"), TEXT("RasterProjection"), RasterProjection, GEngineIni);
+		bHasRasterTileWidth = GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("RasterTileWidth"), RasterTileWidth, GEngineIni);
+		bHasRasterTileHeight = GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("RasterTileHeight"), RasterTileHeight, GEngineIni);
+		bHasRasterMinimumLevel = GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("RasterMinimumLevel"), RasterMinimumLevel, GEngineIni);
+		bHasRasterMaximumLevel = GConfig->GetInt(TEXT("CesiumTileServer"), TEXT("RasterMaximumLevel"), RasterMaximumLevel, GEngineIni);
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	if (!bUseLocalTileServer)
+	{
+		DestroyOfflineRasterPlane();
+		int32 ReactivatedOverlayCount = 0;
+		int32 DisabledLocalOverlayCount = 0;
+		for (TActorIterator<ACesium3DTileset> It(World); It; ++It)
+		{
+			ACesium3DTileset* Tileset = *It;
+			if (!IsValid(Tileset))
+			{
+				continue;
+			}
+
+			TArray<UCesiumRasterOverlay*> RasterOverlays;
+			Tileset->GetComponents<UCesiumRasterOverlay>(RasterOverlays);
+			for (UCesiumRasterOverlay* Overlay : RasterOverlays)
+			{
+				if (!IsValid(Overlay))
+				{
+					continue;
+				}
+
+				if (Overlay->GetName().StartsWith(TEXT("OvitLocalRasterOverlay")))
+				{
+					Overlay->Deactivate();
+					++DisabledLocalOverlayCount;
+					continue;
+				}
+
+				Overlay->Activate(true);
+				Overlay->Refresh();
+				++ReactivatedOverlayCount;
+			}
+		}
+
+		UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Cesium local tile server disabled; online Cesium/Google sources reactivated=%d localOverlaysDisabled=%d."),
+			ReactivatedOverlayCount,
+			DisabledLocalOverlayCount);
+		return;
+	}
+
+	LocalTileServerUrl = NormalizeCesiumConfiguredHttpUrl(LocalTileServerUrl);
+	if (LocalTileServerUrl.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: UseLocalTileServer=true but LocalTileServerUrl is empty; keeping existing Cesium sources."));
+		return;
+	}
+
+	const FString RasterTemplateUrl = RasterTemplateUrlConfig.TrimStartAndEnd().IsEmpty()
+		? BuildCesiumLocalRasterTemplateUrl(LocalTileServerUrl)
+		: ExpandCesiumUrlTemplateTokens(NormalizeCesiumConfiguredHttpUrl(RasterTemplateUrlConfig));
+	const FString TilesetUrl = TilesetUrlConfig.TrimStartAndEnd().IsEmpty()
+		? BuildCesiumLocalTilesetUrl(LocalTileServerUrl)
+		: NormalizeCesiumConfiguredHttpUrl(TilesetUrlConfig);
+
+	if (!HasCesiumUrlTemplateTokens(RasterTemplateUrl))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DroneOpsGameMode: RasterTemplateUrl '%s' has no Cesium URL template tokens. Use config-safe tokens like $z, $x, $y in DefaultEngine.ini."),
+			*RasterTemplateUrl);
+	}
+	const int32 ClampedRasterTileWidth = FMath::Clamp(RasterTileWidth, 64, 2048);
+	const int32 ClampedRasterTileHeight = FMath::Clamp(RasterTileHeight, 64, 2048);
+	const int32 ClampedRasterMinimumLevel = FMath::Max(0, RasterMinimumLevel);
+	const int32 ClampedRasterMaximumLevel = FMath::Max(ClampedRasterMinimumLevel, RasterMaximumLevel);
+	const ECesiumUrlTemplateRasterOverlayProjection UrlTemplateProjection =
+		RasterProjection.Equals(TEXT("Geographic"), ESearchCase::IgnoreCase)
+		? ECesiumUrlTemplateRasterOverlayProjection::Geographic
+		: ECesiumUrlTemplateRasterOverlayProjection::WebMercator;
+	int32 TilesetCount = 0;
+	int32 RasterOverlayCount = 0;
+	int32 CreatedRasterOverlayCount = 0;
+	int32 DisabledRasterOverlayCount = 0;
+	int32 UnsupportedOverlayCount = 0;
+
+	for (TActorIterator<ACesium3DTileset> It(World); It; ++It)
+	{
+		ACesium3DTileset* Tileset = *It;
+		if (!IsValid(Tileset))
+		{
+			continue;
+		}
+
+		if (bSwitchTilesetsToLocal)
+		{
+			Tileset->SetTilesetSource(ETilesetSource::FromUrl);
+			Tileset->SetUrl(TilesetUrl);
+			Tileset->RefreshTileset();
+			++TilesetCount;
+		}
+
+		TArray<UCesiumRasterOverlay*> RasterOverlays;
+		Tileset->GetComponents<UCesiumRasterOverlay>(RasterOverlays);
+		bool bHasUrlTemplateOverlay = false;
+
+		for (UCesiumRasterOverlay* Overlay : RasterOverlays)
+		{
+			if (IsValid(Overlay) && Overlay->IsA<UCesiumUrlTemplateRasterOverlay>())
+			{
+				bHasUrlTemplateOverlay = true;
+				break;
+			}
+		}
+
+		if (!bHasUrlTemplateOverlay && bCreateUrlTemplateRasterOverlay)
+		{
+			UCesiumUrlTemplateRasterOverlay* CreatedOverlay = NewObject<UCesiumUrlTemplateRasterOverlay>(
+				Tileset,
+				UCesiumUrlTemplateRasterOverlay::StaticClass(),
+				TEXT("OvitLocalRasterOverlay"));
+			if (IsValid(CreatedOverlay))
+			{
+				CreatedOverlay->MaterialLayerKey = TEXT("Overlay0");
+				CreatedOverlay->RegisterComponent();
+				Tileset->AddInstanceComponent(CreatedOverlay);
+				RasterOverlays.Add(CreatedOverlay);
+				++CreatedRasterOverlayCount;
+				UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Created URL template raster overlay on '%s' for local tile service."),
+					*Tileset->GetName());
+			}
+		}
+
+		for (UCesiumRasterOverlay* Overlay : RasterOverlays)
+		{
+			if (!IsValid(Overlay))
+			{
+				continue;
+			}
+
+			if (UCesiumUrlTemplateRasterOverlay* UrlTemplateOverlay = Cast<UCesiumUrlTemplateRasterOverlay>(Overlay))
+			{
+				UrlTemplateOverlay->TemplateUrl = RasterTemplateUrl;
+				UrlTemplateOverlay->Projection = UrlTemplateProjection;
+				if (bHasRasterTileWidth)
+				{
+					UrlTemplateOverlay->TileWidth = ClampedRasterTileWidth;
+				}
+				if (bHasRasterTileHeight)
+				{
+					UrlTemplateOverlay->TileHeight = ClampedRasterTileHeight;
+				}
+				if (bHasRasterMinimumLevel)
+				{
+					UrlTemplateOverlay->MinimumLevel = ClampedRasterMinimumLevel;
+				}
+				if (bHasRasterMaximumLevel)
+				{
+					UrlTemplateOverlay->MaximumLevel = ClampedRasterMaximumLevel;
+				}
+				UrlTemplateOverlay->Refresh();
+				++RasterOverlayCount;
+			}
+			else if (UCesiumTileMapServiceRasterOverlay* TmsOverlay = Cast<UCesiumTileMapServiceRasterOverlay>(Overlay))
+			{
+				TmsOverlay->Url = LocalTileServerUrl;
+				TmsOverlay->Refresh();
+				++RasterOverlayCount;
+			}
+			else if (UCesiumWebMapTileServiceRasterOverlay* WmtsOverlay = Cast<UCesiumWebMapTileServiceRasterOverlay>(Overlay))
+			{
+				WmtsOverlay->BaseUrl = RasterTemplateUrl;
+				WmtsOverlay->Refresh();
+				++RasterOverlayCount;
+			}
+			else
+			{
+				++UnsupportedOverlayCount;
+				if (bDisableNonUrlRasterOverlays)
+				{
+					Overlay->Deactivate();
+					++DisabledRasterOverlayCount;
+				}
+				UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Cesium overlay '%s' on '%s' is not URL-configurable at runtime; class=%s%s"),
+					*Overlay->GetName(),
+					*Tileset->GetName(),
+					*Overlay->GetClass()->GetName(),
+					bDisableNonUrlRasterOverlays ? TEXT("; deactivated for local raster mode") : TEXT(""));
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Cesium local tile server enabled. SwitchTilesetsToLocal=%s Tilesets=%d Url='%s', URL raster overlays=%d created=%d disabled=%d TemplateUrl='%s', TileSize=%dx%d, Level=%d-%d, unsupported overlays=%d"),
+		bSwitchTilesetsToLocal ? TEXT("true") : TEXT("false"),
+		TilesetCount,
+		*TilesetUrl,
+		RasterOverlayCount,
+		CreatedRasterOverlayCount,
+		DisabledRasterOverlayCount,
+		*RasterTemplateUrl,
+		bHasRasterTileWidth ? ClampedRasterTileWidth : -1,
+		bHasRasterTileHeight ? ClampedRasterTileHeight : -1,
+		bHasRasterMinimumLevel ? ClampedRasterMinimumLevel : -1,
+		bHasRasterMaximumLevel ? ClampedRasterMaximumLevel : -1,
+		UnsupportedOverlayCount);
+}
+
+void ADroneOpsGameMode::OnGeoreferenceUpdated()
+{
+	if (!bPendingSpawnAfterGeoreferenceUpdate)
+	{
+		return;
+	}
+	bPendingSpawnAfterGeoreferenceUpdate = false;
+
+	// Unbind so this only fires once.
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		for (TActorIterator<ACesiumGeoreference> It(World); It; ++It)
+		{
+			if (IsValid(*It))
+			{
+				(*It)->OnGeoreferenceUpdated.RemoveDynamic(this, &ADroneOpsGameMode::OnGeoreferenceUpdated);
+				break;
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DroneOpsGameMode: Georeference updated, spawning receivers now"));
+	SpawnReceiversFromRegistry();
+}

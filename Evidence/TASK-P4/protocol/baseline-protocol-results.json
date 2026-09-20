@@ -1,0 +1,20 @@
+{
+  "executed": 13,
+  "passed": 13,
+  "tests": [
+    "P3.SecurityPlan.Create",
+    "P3.SecurityPlan.ActiveSelection",
+    "P3.Mission.Create",
+    "P3.Mission.Assignment",
+    "P3.Mission.DuplicateUavRejected",
+    "P3.Plan.ValidationFailure",
+    "P3.Route.Create",
+    "P3.Route.Persistence",
+    "P3.Plan.Ready",
+    "P3.Plan.Deploy",
+    "P3.CrossClient.PlanSelection",
+    "P3.Video.NoPlanSideEffects.Protocol",
+    "P3.Plan.ClientRestartRecovery"
+  ],
+  "note": "Real HTTP/WS; simulated protocol clients, not native UE acceptance"
+}

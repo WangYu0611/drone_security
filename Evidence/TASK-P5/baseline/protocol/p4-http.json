@@ -1,0 +1,3225 @@
+[
+  {
+    "path": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "client_id": "P4-QA-Command",
+      "client_role": "Command",
+      "hostname": "SYNTHETIC-QA",
+      "app_version": "P4"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "P4-QA-Command",
+      "client_role": "Command",
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "hostname": "SYNTHETIC-QA",
+      "app_version": "P4",
+      "connected_at": null,
+      "state": "OFFLINE",
+      "client_version": 1
+    }
+  },
+  {
+    "path": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "client_id": "P4-QA-Map",
+      "client_role": "Map",
+      "hostname": "SYNTHETIC-QA",
+      "app_version": "P4"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "P4-QA-Map",
+      "client_role": "Map",
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "hostname": "SYNTHETIC-QA",
+      "app_version": "P4",
+      "connected_at": null,
+      "state": "OFFLINE",
+      "client_version": 3
+    }
+  },
+  {
+    "path": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "client_id": "P4-QA-Video",
+      "client_role": "Video",
+      "hostname": "SYNTHETIC-QA",
+      "app_version": "P4"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "P4-QA-Video",
+      "client_role": "Video",
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "hostname": "SYNTHETIC-QA",
+      "app_version": "P4",
+      "connected_at": null,
+      "state": "OFFLINE",
+      "client_version": 5
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 0,
+      "next_id": 1,
+      "plans": {},
+      "missions": {},
+      "paths": {},
+      "events": [],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "create_plan",
+      "plan_id": "",
+      "mission_id": "",
+      "expected_version": 0,
+      "name": "P4 原名",
+      "description": "Configuration only"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 1,
+        "next_id": 2,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.5310173,
+            "mission_ids": [],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "",
+                  "code": "NO_MISSIONS",
+                  "params": {}
+                }
+              ],
+              "mission_count": 0,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {},
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      },
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "context": {
+        "context_version": 1,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": null,
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.5340323,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "create_plan",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "update_plan",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "add_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "rename_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "delete_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "assign",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "review",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "deploy",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "3012b131-c376-43ba-89cb-40b9efe55564",
+      "action": "copy_plan",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "Forbidden"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "begin_route_edit",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "mark_route_dirty",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "save_route",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "discard_route_edit",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "create_plan",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "update_plan",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "add_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "rename_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "delete_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "assign",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "validate",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "review",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "deploy",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "copy_plan",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "select",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "begin_route_edit",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "mark_route_dirty",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "save_route",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "discard_route_edit",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "fe5c5c87-c385-42f1-b36f-72814abb6dc6",
+      "action": "request_map_route_edit",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 1,
+      "next_id": 2,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.5310173,
+          "mission_ids": [],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "",
+                "code": "NO_MISSIONS",
+                "params": {}
+              }
+            ],
+            "mission_count": 0,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {},
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "add_mission",
+      "plan_id": "plan-1",
+      "mission_id": "",
+      "expected_version": 1,
+      "name": "East Perimeter"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 2,
+            "review": null,
+            "version": 2,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6507173,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "context": {
+        "context_version": 2,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-2",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6539023,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 2,
+      "next_id": 3,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 2,
+          "review": null,
+          "version": 2,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.6507173,
+          "mission_ids": [
+            "mission-2"
+          ],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-2",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-2",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "East Perimeter",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1789809423.6507137,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "East Perimeter",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Mission created: East Perimeter",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "add_mission",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "expected_version": 2,
+      "name": "Temporary"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 3,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 3,
+            "review": null,
+            "version": 3,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6596715,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "East Perimeter",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-3",
+      "context": {
+        "context_version": 3,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-3",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1789809423.6617074,
+        "updated_by": "P4-QA-Command"
+      }
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 3,
+      "next_id": 4,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 3,
+          "review": null,
+          "version": 3,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.6596715,
+          "mission_ids": [
+            "mission-2",
+            "mission-3"
+          ],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-2",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-2",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-3",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-3",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 2,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "East Perimeter",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        },
+        "mission-3": {
+          "id": "mission-3",
+          "plan_id": "plan-1",
+          "name": "Temporary",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1789809423.6507137,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "East Perimeter",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Mission created: East Perimeter",
+          "source": "P4-QA-Command"
+        },
+        {
+          "sequence": 3,
+          "timestamp": 1789809423.6596656,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-3",
+            "mission_name": "Temporary",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-3",
+          "message": "Mission created: Temporary",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "rename_mission",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "expected_version": 3,
+      "name": "Retained original input"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 4,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 4,
+            "review": null,
+            "version": 4,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6687143,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Retained original input",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1789809423.6687052,
+            "event_type": "MISSION_UPDATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Retained original input",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission renamed: Retained original input",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 4,
+      "next_id": 4,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P4 原名",
+          "description": "Configuration only",
+          "status": "DRAFT",
+          "content_revision": 4,
+          "review": null,
+          "version": 4,
+          "created_at": 1789809423.5310173,
+          "updated_at": 1789809423.6687143,
+          "mission_ids": [
+            "mission-2",
+            "mission-3"
+          ],
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-2",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-2",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-3",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-3",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 2,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "Retained original input",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        },
+        "mission-3": {
+          "id": "mission-3",
+          "plan_id": "plan-1",
+          "name": "Temporary",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1789809423.531026,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P4 原名"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P4 原名",
+          "source": "P4-QA-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1789809423.6507137,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "East Perimeter",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Mission created: East Perimeter",
+          "source": "P4-QA-Command"
+        },
+        {
+          "sequence": 3,
+          "timestamp": 1789809423.6596656,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-3",
+            "mission_name": "Temporary",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-3",
+          "message": "Mission created: Temporary",
+          "source": "P4-QA-Command"
+        },
+        {
+          "sequence": 4,
+          "timestamp": 1789809423.6687052,
+          "event_type": "MISSION_UPDATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Retained original input",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Mission renamed: Retained original input",
+          "source": "P4-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {}
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "d5357486-2b97-4101-99f3-5620bf7665d8",
+      "action": "assign",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "expected_version": 4,
+      "assigned_uav_id": "UAV-01"
+    },
+    "status": 409,
+    "data": {
+      "code": "INVALID_UAV",
+      "params": {},
+      "message": "Unknown UAV: UAV-01",
+      "state": {
+        "version": 4,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "P4 原名",
+            "description": "Configuration only",
+            "status": "DRAFT",
+            "content_revision": 4,
+            "review": null,
+            "version": 4,
+            "created_at": 1789809423.5310173,
+            "updated_at": 1789809423.6687143,
+            "mission_ids": [
+              "mission-2",
+              "mission-3"
+            ],
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-3",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 2,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Retained original input",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Temporary",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1789809423.531026,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "P4 原名"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: P4 原名",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1789809423.6507137,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "East Perimeter",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission created: East Perimeter",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1789809423.6596656,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-3",
+              "mission_name": "Temporary",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-3",
+            "message": "Mission created: Temporary",
+            "source": "P4-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1789809423.6687052,
+            "event_type": "MISSION_UPDATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Retained original input",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Mission renamed: Retained original input",
+            "source": "P4-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {}
+      }
+    }
+  }
+]

@@ -1,0 +1,74 @@
+physical-v2-acceptance
+[2026.09.14-09.55.26:136][  0]LogWorld: BeginTearingDown for /Temp/Untitled_0
+[2026.09.14-09.55.26:243][  0]LogTemp: [Video] Scene spawning and coordinate initialization skipped
+[2026.09.14-09.55.26:335][  0]LogTemp: [Video] Source selected UAV=1 generation=1 hasSource=0
+[2026.09.14-09.55.26:336][  0]LogTemp: [Video] role=Video Command Shell skipped; Video Shell created
+[2026.09.14-09.55.27:847][ 18]LogTemp: [Video] Source selected UAV=1 generation=2 hasSource=1
+[2026.09.14-09.56.18:294][ 33]LogTemp: [Video] Source selected UAV=2 generation=3 hasSource=1
+[2026.09.14-09.56.42:120][974]LogTemp: [Video] Source selected UAV=3 generation=4 hasSource=1
+[2026.09.14-09.57.47:842][339]LogTemp: [Video] Source selected UAV=4 generation=5 hasSource=0
+[2026.09.14-09.58.18:225][845]LogTemp: [Video] Browser stopped
+[2026.09.14-09.58.18:306][846]LogWorld: BeginTearingDown for /Game/Level/CesiumWorld
+[2026.09.14-09.58.20:732][846]LogExit: Exiting.
+
+physical-v2-final-states
+[2026.09.14-09.59.00:377][  0]LogWorld: BeginTearingDown for /Temp/Untitled_0
+[2026.09.14-09.59.00:469][  0]LogTemp: [Video] Scene spawning and coordinate initialization skipped
+[2026.09.14-09.59.00:560][  0]LogTemp: [Video] Source selected UAV=1 generation=1 hasSource=0
+[2026.09.14-09.59.00:560][  0]LogTemp: [Video] role=Video Command Shell skipped; Video Shell created
+[2026.09.14-09.59.02:150][ 18]LogTemp: [Video] Source selected UAV=1 generation=2 hasSource=1
+[2026.09.14-09.59.50:487][643]LogTemp: [Video] Source selected UAV=4 generation=3 hasSource=0
+[2026.09.14-10.00.25:255][516]LogTemp: [Video] Source selected UAV=5 generation=4 hasSource=1
+[2026.09.14-10.00.56:761][109]LogTemp: [Video] Source selected UAV=5 generation=5 hasSource=1
+[2026.09.14-10.01.10:387][230]LogTemp: [Video] Source selected UAV=1 generation=6 hasSource=1
+[2026.09.14-10.01.30:515][822]LogTemp: [Video] Source selected UAV=1 generation=7 hasSource=1
+[2026.09.14-10.02.02:155][398]LogTemp: [Video] Browser stopped
+[2026.09.14-10.02.02:230][399]LogWorld: BeginTearingDown for /Game/Level/CesiumWorld
+[2026.09.14-10.02.03:716][399]LogExit: Exiting.
+
+physical-v2-empty
+[2026.09.14-10.02.27:337][  0]LogWorld: BeginTearingDown for /Temp/Untitled_0
+[2026.09.14-10.02.27:429][  0]LogTemp: [Video] Scene spawning and coordinate initialization skipped
+[2026.09.14-10.02.27:467][  0]LogTemp: [Video] role=Video Command Shell skipped; Video Shell created
+[2026.09.14-10.03.54:696][ 41]LogTemp: [Video] Browser stopped
+[2026.09.14-10.03.54:781][ 42]LogWorld: BeginTearingDown for /Game/Level/CesiumWorld
+[2026.09.14-10.03.56:599][ 42]LogExit: Exiting.
+
+v2-video-final
+[2026.09.14-10.04.23:674][574]LogAutomationCommandLine: Display: Found 2 automation tests based on 'DroneOps.Command.StartupRole+DroneOps.Video.RoleLifecycle'
+[2026.09.14-10.04.23:732][576]LogAutomationController: Display: Test Completed. Result={Success} Name={StartupRole} Path={DroneOps.Command.StartupRole}
+[2026.09.14-10.04.31:106][579]LogTemp: [Video] Scene spawning and coordinate initialization skipped
+[2026.09.14-10.04.31:115][579]LogTemp: [Video] role=Video Command Shell skipped; Video Shell created
+[2026.09.14-10.04.39:041][995]LogTemp: [Video] Source selected UAV=9001 generation=1 hasSource=1
+[2026.09.14-10.04.39:043][995]LogTemp: [Video] Source selected UAV=9002 generation=2 hasSource=1
+[2026.09.14-10.04.39:043][995]LogTemp: [Video] Source selected UAV=9001 generation=3 hasSource=1
+[2026.09.14-10.04.39:043][995]LogTemp: [Video] Source selected UAV=9006 generation=4 hasSource=0
+[2026.09.14-10.04.39:043][995]LogTemp: [Video] Source selected UAV=9002 generation=5 hasSource=1
+[2026.09.14-10.04.39:043][995]LogTemp: [Video] Source selected UAV=9002 generation=6 hasSource=1
+[2026.09.14-10.04.39:044][995]LogTemp: [Video] Browser stopped
+[2026.09.14-10.04.39:044][995]LogTemp: [Video] Source selected UAV=9002 generation=8 hasSource=1
+[2026.09.14-10.04.39:045][995]LogTemp: [Video] Source selected UAV=9001 generation=9 hasSource=1
+[2026.09.14-10.04.39:046][995]LogTemp: [Video] Source selected UAV=9002 generation=10 hasSource=1
+[2026.09.14-10.04.39:047][995]LogTemp: [Video] Browser stopped
+[2026.09.14-10.04.39:062][995]LogTemp: [Video] Source selected UAV=9002 generation=1 hasSource=1
+[2026.09.14-10.04.39:063][995]LogTemp: [Video] role=Video Command Shell skipped; Video Shell created
+[2026.09.14-10.04.39:122][996]LogTemp: [Video] Browser stopped
+[2026.09.14-10.04.39:123][996]LogWorld: BeginTearingDown for /Game/Level/UEDPIE_0_CesiumWorld
+[2026.09.14-10.04.39:897][996]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}
+
+v2-command
+[2026.09.14-09.53.32:574][576]LogAutomationCommandLine: Display: Found 5 automation tests based on 'DroneOps.Command+DroneOps.Video.RoleLifecycle'
+[2026.09.14-09.53.46:601][262]LogWorld: BeginTearingDown for /Game/Level/UEDPIE_0_CesiumWorld
+[2026.09.14-09.53.47:609][262]LogAutomationController: Display: Test Completed. Result={Success} Name={A2MapMode} Path={DroneOps.Command.A2MapMode}
+[2026.09.14-09.53.47:684][265]LogAutomationController: Display: Test Completed. Result={Success} Name={AlertStore} Path={DroneOps.Command.AlertStore}
+[2026.09.14-09.54.02:633][ 63]LogWorld: BeginTearingDown for /Game/Level/UEDPIE_0_CesiumWorld
+[2026.09.14-09.54.02:801][ 63]LogAutomationController: Error: Test Completed. Result={Fail} Name={CesiumWorld} Path={DroneOps.Command.CesiumWorld}
+[2026.09.14-09.54.02:804][ 64]LogAutomationController: Error: Expected 'viewport height' to be 1080, but it was 1082. [C:\Users\wy331\Documents\UE5DroneControl-command\Source\UE5DroneControl\Tests\CommandClientTest.cpp(94)]
+[2026.09.14-09.54.02:887][ 65]LogAutomationController: Display: Test Completed. Result={Success} Name={StartupRole} Path={DroneOps.Command.StartupRole}
+[2026.09.14-09.54.11:348][528]LogWorld: BeginTearingDown for /Game/Level/UEDPIE_0_CesiumWorld
+[2026.09.14-09.54.11:470][528]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}
+
+v2-standalone
+[2026.09.14-09.54.40:112][562]LogAutomationCommandLine: Display: Found 1 automation tests based on 'DroneOps.Video.RoleLifecycle'
+[2026.09.14-09.54.48:512][970]LogWorld: BeginTearingDown for /Game/Level/UEDPIE_0_CesiumWorld
+[2026.09.14-09.54.48:681][970]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}

@@ -1,0 +1,144 @@
+struct FDroneDescriptor
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	FString Name = TEXT("UAV");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	int32 DroneId = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	int32 Slot = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	FString BackendIdString;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	FString IpAddress;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	int32 ControlPort = 8889;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	int32 MavlinkSystemId = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	int32 BitIndex = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	FLinearColor ThemeColor = FLinearColor::White;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	int32 UEReceivePort = 8888;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	FString TopicPrefix = TEXT("/px4_1");
+
+	/** Browser-playable MediaMTX WebRTC page for this drone (for example http://mediamtx:8889/drone-1). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video")
+	FString VideoUrl;
+
+	/** True for enemy targets: local-only, never sent to backend. DroneId must be >= DroneOpsConst::EnemyIdBase. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	bool bIsEnemyTarget = false;
+
+	/** World-space spawn location recorded at registration time; used as the first waypoint origin in path-edit mode. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone")
+	FVector EnemyInitialLocation = FVector::ZeroVector;
+
+	FDroneDescriptor() = default;
+};
+
+struct FDroneTelemetrySnapshot
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	int32 DroneId = 0;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	EDroneAvailability Availability = EDroneAvailability::Offline;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	FVector WorldLocation = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	FVector NedLocation = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	FVector GeographicLocation = FVector::ZeroVector; // Lat, Lon, Alt
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	FVector Velocity = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	FRotator Attitude = FRotator::ZeroRotator;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	float Altitude = 0.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	int32 Battery = -1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	bool bArmed = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	bool bOffboard = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	bool bGpsFix = false;
+
+	/** True only for PX4 VehicleLocalPosition in the TrajectorySetpoint NED frame. */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	bool bLocalPositionValid = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	double LastUpdateTime = 0.0;
+
+	// ===== adding =====
+	// 1. GPS
+	UPROPERTY(BlueprintReadOnly) double GpsLatitude = 0.0;
+	UPROPERTY(BlueprintReadOnly) double GpsLongitude = 0.0;
+	UPROPERTY(BlueprintReadOnly) double GpsAltitude = 0.0;  
+
+	// 2.BatteryPercent 
+	UPROPERTY(BlueprintReadOnly) int32 BatteryPercent = -1; 
+
+	// 3. taskstate
+	UPROPERTY(BlueprintReadOnly) EDroneCommandMode TaskMode = EDroneCommandMode::Move;
+	UPROPERTY(BlueprintReadOnly) EDroneTaskState TaskState = EDroneTaskState::Standby;
+	UPROPERTY(BlueprintReadOnly) FString TaskErrorDetail;
+
+	// 4. waypoint info
+	UPROPERTY(BlueprintReadOnly) int32 CurrentWaypointIndex = 0;
+	UPROPERTY(BlueprintReadOnly) int32 TotalWaypoints = 0;
+
+	// 5. UE-only
+	UPROPERTY(BlueprintReadOnly) EUELocalDroneState LocalState = EUELocalDroneState::None;
+
+	FDroneTelemetrySnapshot() = default;
+};
+
+struct FDroneTaskStateSnapshot
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	int32 DroneId = 0;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	FString ArrayId;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	EDroneCommandMode Mode = EDroneCommandMode::Move;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	EDroneTaskState State = EDroneTaskState::Standby;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	int32 CurrentWaypoint = 0;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	int32 WaypointCount = 0;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	FString Detail;
+	UPROPERTY(BlueprintReadOnly, Category = "Task")
+	double UpdatedAt = 0.0;
+};

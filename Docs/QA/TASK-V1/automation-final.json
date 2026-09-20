@@ -1,0 +1,113 @@
+[
+  {
+    "run": "final-command",
+    "reportCreatedOn": "2026.09.14-08.12.34",
+    "succeeded": 2,
+    "succeededWithWarnings": 2,
+    "failed": 1,
+    "notRun": 0,
+    "discovered": 5,
+    "tests": [
+      {
+        "fullTestPath": "DroneOps.Command.A2MapMode",
+        "state": "Success",
+        "warnings": 59,
+        "errors": 0,
+        "errorMessages": []
+      },
+      {
+        "fullTestPath": "DroneOps.Command.AlertStore",
+        "state": "Success",
+        "warnings": 0,
+        "errors": 0,
+        "errorMessages": []
+      },
+      {
+        "fullTestPath": "DroneOps.Command.CesiumWorld",
+        "state": "Fail",
+        "warnings": 81,
+        "errors": 1,
+        "errorMessages": [
+          "Expected 'viewport height' to be 1080, but it was 1082."
+        ]
+      },
+      {
+        "fullTestPath": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "warnings": 0,
+        "errors": 0,
+        "errorMessages": []
+      },
+      {
+        "fullTestPath": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "warnings": 36,
+        "errors": 0,
+        "errorMessages": []
+      }
+    ],
+    "completionEvidence": [
+      "[2026.09.14-08.11.56:047][559]LogAutomationCommandLine: Display: Found 5 automation tests based on 'DroneOps.Command+DroneOps.Video.RoleLifecycle'",
+      "[2026.09.14-08.12.10:929][257]LogAutomationController: Display: Test Completed. Result={Success} Name={A2MapMode} Path={DroneOps.Command.A2MapMode}",
+      "[2026.09.14-08.12.10:998][259]LogAutomationController: Display: Test Completed. Result={Success} Name={AlertStore} Path={DroneOps.Command.AlertStore}",
+      "[2026.09.14-08.12.26:032][ 64]LogAutomationController: Error: Test Completed. Result={Fail} Name={CesiumWorld} Path={DroneOps.Command.CesiumWorld}",
+      "[2026.09.14-08.12.26:131][ 66]LogAutomationController: Display: Test Completed. Result={Success} Name={StartupRole} Path={DroneOps.Command.StartupRole}",
+      "[2026.09.14-08.12.34:625][531]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}",
+      "[2026.09.14-08.12.34:634][531]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 5 tests performed."
+    ]
+  },
+  {
+    "run": "final-video",
+    "reportCreatedOn": "2026.09.14-08.13.14",
+    "succeeded": 1,
+    "succeededWithWarnings": 1,
+    "failed": 0,
+    "notRun": 0,
+    "discovered": 2,
+    "tests": [
+      {
+        "fullTestPath": "DroneOps.Command.StartupRole",
+        "state": "Success",
+        "warnings": 0,
+        "errors": 0,
+        "errorMessages": []
+      },
+      {
+        "fullTestPath": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "warnings": 39,
+        "errors": 0,
+        "errorMessages": []
+      }
+    ],
+    "completionEvidence": [
+      "[2026.09.14-08.13.03:531][573]LogAutomationCommandLine: Display: Found 2 automation tests based on 'DroneOps.Video.RoleLifecycle+DroneOps.Command.StartupRole'",
+      "[2026.09.14-08.13.03:574][575]LogAutomationController: Display: Test Completed. Result={Success} Name={StartupRole} Path={DroneOps.Command.StartupRole}",
+      "[2026.09.14-08.13.14:520][ 21]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}",
+      "[2026.09.14-08.13.14:525][ 21]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 2 tests performed."
+    ]
+  },
+  {
+    "run": "final-standalone",
+    "reportCreatedOn": "2026.09.14-08.13.52",
+    "succeeded": 0,
+    "succeededWithWarnings": 1,
+    "failed": 0,
+    "notRun": 0,
+    "discovered": 1,
+    "tests": [
+      {
+        "fullTestPath": "DroneOps.Video.RoleLifecycle",
+        "state": "Success",
+        "warnings": 40,
+        "errors": 0,
+        "errorMessages": []
+      }
+    ],
+    "completionEvidence": [
+      "[2026.09.14-08.13.43:584][575]LogAutomationCommandLine: Display: Found 1 automation tests based on 'DroneOps.Video.RoleLifecycle'",
+      "[2026.09.14-08.13.52:148][991]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}",
+      "[2026.09.14-08.13.52:153][991]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 1 tests performed."
+    ]
+  }
+]

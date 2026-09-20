@@ -1,0 +1,39 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development C:\Users\wy331\Documents\UE5DroneControl-p5-2\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p5-2).
+Creating makefile for UE5DroneControlEditor (no existing makefile)
+UbaServer - Listening on 0.0.0.0:1345
+C:\Users\wy331\Documents\UE5DroneControl-p5-2\Plugins\VisualStudioTools\Source\VisualStudioTools\VisualStudioTools.Build.cs(26,17): warning CS0618: 'ModuleRules.UnsafeTypeCastWarningLevel' is obsolete: 'Deprecated in UE5.6 - Replace with ModuleRules.CppCompileWarningSettings.UnsafeTypeCastWarningLevel'
+UHT compiled-in object format Default
+C:\Users\wy331\Documents\UE5DroneControl-p5-2\Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(1): error: Expected OperationalContextSubsystem.h to be first header included.
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandShellWidget.cpp, MapExecutionWidget.cpp, MapShellWidget.cpp, OperationalContextSubsystem.cpp, OperationalEventStore.cpp, ProductText.cpp, SecurityPlanWorkspaceWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 122 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 18.88 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/122] Compile Resource [x64] Default.rc2
+UbaSessionServer - SetFileInformationByHandle (FileDispositionInfo) failed on 4294971344 C:\Users\wy331\Documents\UE5DroneControl-p5-2\Intermediate\Build\Win64\x64\UE5DroneControlEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.pch (There is not enough space on the disk.)
+Compile [x64] SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.cpp: Exited with error code 9001. This action will retry without UBA
+[2/122] Compile Resource [x64] Default.rc2
+[3/122] Compile [x64] SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.cpp [NoUba]
+C:\Users\wy331\Documents\UE5DroneControl-p5-2\Intermediate\Build\Win64\x64\UE5DroneControlEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.cpp(3,2): fatal error C1085: ￎ￞ﾷﾨ￐ﾴ￈￫ￔﾤﾱ￠ￒ￫ￍﾷￎￄﾼ￾: ﾡﾰC:/Users/wy331/Documents/UE5DroneControl-p5-2/Intermediate/Build/Win64/x64/UE5DroneControlEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.pchﾡﾱ: ﾴￅￅￌ﾿ￕﾼ￤ﾲﾻￗ￣ﾡﾣ
+
+
+#include "SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+ ^
+Total time in Unreal Build Accelerator local executor: 107.33 seconds
+Unhandled 1 aggregate exceptions
+Unhandled exception: IOException: 磁盘空间不足。 : 'C:\Users\wy331\Documents\UE5DroneControl-p5-2\Intermediate\Build\SourceFileCache.bin'.
+   at System.IO.RandomAccess.WriteAtOffset(SafeFileHandle handle, ReadOnlySpan`1 buffer, Int64 fileOffset)
+   at System.IO.Strategies.OSFileStreamStrategy.Write(ReadOnlySpan`1 buffer)
+   at System.IO.Strategies.BufferedFileStreamStrategy.Flush(Boolean flushToDisk)
+   at System.IO.Strategies.BufferedFileStreamStrategy.Dispose(Boolean disposing)

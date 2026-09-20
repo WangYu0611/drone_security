@@ -1,0 +1,187 @@
+{
+  "version": 26,
+  "next_id": 6,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "P4 Native Security",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 7,
+      "review": null,
+      "version": 7,
+      "created_at": 1789434945.1681423,
+      "updated_at": 1789436428.021738,
+      "mission_ids": [
+        "mission-2",
+        "mission-3",
+        "mission-4"
+      ],
+      "validation": {
+        "ready": false,
+        "issues": [
+          {
+            "mission_id": "mission-2",
+            "code": "ROUTE_MISSING",
+            "params": {}
+          },
+          {
+            "mission_id": "mission-3",
+            "code": "ROUTE_MISSING",
+            "params": {}
+          },
+          {
+            "mission_id": "mission-4",
+            "code": "ROUTE_MISSING",
+            "params": {}
+          }
+        ],
+        "mission_count": 3,
+        "assigned_count": 3,
+        "routes_ready": 0,
+        "validated_content_revision": null
+      }
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Mission East",
+      "assigned_uav_id": "UAV-01",
+      "route_id": null,
+      "status": "DRAFT"
+    },
+    "mission-3": {
+      "id": "mission-3",
+      "plan_id": "plan-1",
+      "name": "Mission West",
+      "assigned_uav_id": "UAV-02",
+      "route_id": null,
+      "status": "DRAFT"
+    },
+    "mission-4": {
+      "id": "mission-4",
+      "plan_id": "plan-1",
+      "name": "Mission North",
+      "assigned_uav_id": "UAV-03",
+      "route_id": null,
+      "status": "DRAFT"
+    }
+  },
+  "paths": {},
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1789434945.1681497,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P4 Native Security"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P4 Native Security",
+      "source": "CLIENT-COMMAND-2D014286"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1789435352.9674392,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Mission East",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Mission created: Mission East",
+      "source": "CLIENT-COMMAND-2D014286"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1789436260.4616866,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Mission East",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV-01 assigned to Mission East",
+      "source": "CLIENT-COMMAND-A8C1B532"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1789436293.9209037,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Mission West",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Mission created: Mission West",
+      "source": "CLIENT-COMMAND-A8C1B532"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1789436360.320832,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Mission West",
+        "uav_id": "UAV-02"
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "UAV-02 assigned to Mission West",
+      "source": "CLIENT-COMMAND-A8C1B532"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1789436395.8699787,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-4",
+        "mission_name": "Mission North",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-4",
+      "message": "Mission created: Mission North",
+      "source": "CLIENT-COMMAND-A8C1B532"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1789436428.0217285,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-4",
+        "mission_name": "Mission North",
+        "uav_id": "UAV-03"
+      },
+      "category": "MISSION",
+      "target_id": "mission-4",
+      "message": "UAV-03 assigned to Mission North",
+      "source": "CLIENT-COMMAND-A8C1B532"
+    }
+  ],
+  "deployments": {},
+  "edit_sessions": {
+    "edit-5": {
+      "edit_session_id": "edit-5",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "owner_instance_id": "514C94B3-4F2B-B9C9-884F-86AE37CBB897",
+      "owner_client_id": "CLIENT-MAP-514C94B3",
+      "base_content_revision": 7,
+      "state": "EDITING",
+      "started_at": 1789436437.862078,
+      "last_seen_at": 1789436491.4401643,
+      "lease_expires_at": 1789436511.4401643
+    }
+  }
+}

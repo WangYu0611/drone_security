@@ -1,0 +1,231 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "UE5DroneControlCharacter.h"
+#include "DroneOps/Interfaces/DroneSelectableInterface.h"
+#include "DroneOps/Interfaces/DroneInfoProviderInterface.h"
+#include "DroneOps/Core/DroneOpsTypes.h"
+#include "DroneOps/Drone/DroneModelTypes.h"
+#include "Networking.h"
+#include "Sockets.h"
+#include "RealTimeDroneReceiver.generated.h"
+
+class UDroneTelemetryComponent;
+class UDroneSelectionComponent;
+class UDroneGroundProjectionComponent;
+class UDroneVisualComponent;
+class UWidgetComponent;
+
+/**
+ * YAML format telemetry data structure
+ */
+USTRUCT(BlueprintType)
+struct FDroneYAMLData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int64 Timestamp = 0;
+
+	// Position (NED, meters)
+	UPROPERTY()
+	FVector Position = FVector::ZeroVector;
+
+	// Quaternion (X, Y, Z, W)
+	UPROPERTY()
+	FQuat Quaternion = FQuat::Identity;
+
+	// Velocity (optional)
+	UPROPERTY()
+	FVector Velocity = FVector::ZeroVector;
+
+	// Angular velocity (optional)
+	UPROPERTY()
+	FVector AngularVelocity = FVector::ZeroVector;
+};
+
+/**
+ * Real-time drone receiver (ARealTimeDroneReceiver)
+ * Polling mode, supports YAML telemetry.
+ * Converts NED -> UE5 coordinates and drives the drone mesh.
+ * Also implements IDroneSelectableInterface for click selection.
+ */
+UCLASS()
+class UE5DRONECONTROL_API ARealTimeDroneReceiver : public AUE5DroneControlCharacter, public IDroneSelectableInterface, public IDroneInfoProvider
+{
+	GENERATED_BODY()
+
+public:
+	ARealTimeDroneReceiver();
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+	// ---- Drone Identity ----
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+	FString DroneName = TEXT("UAV");
+
+	// Integer DroneId (1/2/3...) - primary key in DroneRegistrySubsystem
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+	int32 DroneId = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+	int32 MavlinkSystemId = 2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+	int32 BitIndex = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Identity")
+	FLinearColor ThemeColor = FLinearColor::White;
+
+	// ---- Selection Component ----
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UDroneSelectionComponent> SelectionComponent;
+
+	// ---- Telemetry Component ----
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UDroneTelemetryComponent> TelemetryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UDroneGroundProjectionComponent> GroundProjectionComponent;
+
+	/** 外观模型挂载点。Registry 的模型选择经此组件生效，Original 时不创建任何分件。 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UDroneVisualComponent> VisualComponent;
+
+	/** Screen-space name label shown above this drone.  Updated via Registry label delegate. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UWidgetComponent> NameLabelWidgetComponent;
+
+	/** Vertical offset (cm) of the name label above the actor origin. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Label UI")
+	FVector NameLabelRelativeLocation = FVector(0.0f, 0.0f, 220.0f);
+
+	// ---- IDroneSelectableInterface ----
+	virtual int32 GetDroneId_Implementation() const override { return DroneId; }
+	virtual void OnPrimarySelected_Implementation() override;
+	virtual void OnSecondarySelected_Implementation(bool bSelected) override;
+	virtual void OnHoveredChanged_Implementation(bool bHovered) override;
+	virtual void OnDeselected_Implementation() override;
+
+	// ---- IDroneInfoProvider ----
+	virtual FDroneTelemetrySnapshot GetDroneInfoSnapshot_Implementation() const override;
+	virtual FString GetDroneDisplayName_Implementation() const override { return DroneName; }
+	virtual FLinearColor GetThemeColor_Implementation() const override { return ThemeColor; }
+
+	// GetDroneId is already inherited from IDroneSelectableInterface
+
+	// ---- Receive Config ----
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	int32 ListenPort = 8888;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	bool bAutoDetectPort = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config", meta = (EditCondition = "bAutoDetectPort"))
+	int32 PortScanStart = 7000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config", meta = (EditCondition = "bAutoDetectPort"))
+	int32 PortScanEnd = 9000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config", meta = (EditCondition = "bAutoDetectPort"))
+	float AutoDetectTimeout = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	float SmoothSpeed = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	float ScaleFactor = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	bool bAutoFaceTarget = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	bool bUseReceivedRotation = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	float MaxUpdateFrequency = 60.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	float RotationDeadZone = 0.5f;
+
+	// When true, drive position/attitude from WebSocket telemetry via Registry instead of UDP
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RealTime Config")
+	bool bUseWebSocket = true;
+
+	// Freeze local movement (set by P-key pause; does not affect incoming telemetry parsing)
+	UFUNCTION(BlueprintCallable, Category = "RealTime Config")
+	void SetPaused(bool bPause);
+
+	UFUNCTION(BlueprintPure, Category = "RealTime Config")
+	bool IsPaused() const { return bIsPaused; }
+
+	UFUNCTION(BlueprintCallable, Category = "Drone Identity")
+	void ApplyDescriptor(const FDroneDescriptor& Descriptor, EDroneAvailability InitialAvailability);
+
+	// Override to block SetClickTargetLocation while paused
+	virtual void SetClickTargetLocation(FVector TargetLocation, int32 Mode = 1) override;
+
+	// GPS anchor (UE5 world coords, cm) set on power_on / reconnect.
+	// Exposed publicly so dispatch logic can use it for coordinate remapping.
+	FVector AnchorWorldLocation = FVector::ZeroVector;
+	bool bHasGpsAnchor = false;
+
+    // Stage 1 presentation of a confirmed Backend simulation snapshot only.
+    // Does not arm, establish a flight GPS anchor, or send any vehicle command.
+    void ApplySimulationPosition(const FVector& Position);
+
+private:
+	bool bIsPaused = false;
+	FSocket* ListenSocket;
+
+	UFUNCTION()
+	void OnWebSocketTelemetry(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot);
+
+	// Called when a power_on or reconnect event arrives from the backend
+	void OnDroneWsEvent(int32 InDroneId, const FString& Event, double GpsLat, double GpsLon, double GpsAlt);
+
+	/** Refresh the name-label widget when Registry broadcasts a settings change. */
+	UFUNCTION()
+	void OnLabelSettingsChanged(int32 InDroneId, const FDroneLabelSettings& Settings);
+
+	/** 切换外观模型。Registry 广播时按 DroneId 过滤，只响应自己那一架。 */
+	UFUNCTION()
+	void OnModelTypeChanged(int32 InDroneId, EDroneModelType ModelType);
+
+	FVector InitialLocation = FVector::ZeroVector;
+	FVector TargetLocation;
+	FRotator TargetRotation;
+	FRotator LastRotation;
+	FVector ReferencePosition = FVector::ZeroVector;
+	bool bHasReceivedFirstData = false;
+
+	float AutoDetectStartTime = 0.0f;
+	bool bReceivedDataInAutoDetect = false;
+	float LastUpdateTime = 0.0f;
+	int32 CurrentDetectedPort = -1;
+
+	TArray<uint8> PendingData;
+	bool bHasPendingData = false;
+
+	void ProcessPacket(const TArray<uint8>& Data);
+	void UpdateRotationOnly(const TArray<uint8>& Data);
+	bool ParseYAMLData(const FString& YAMLString, FDroneYAMLData& OutData);
+	FRotator QuatToEuler(const FQuat& Q);
+	FVector NEDToUE5(const FVector& NEDPos);
+	void AutoDetectPort();
+	bool CreateAndBindSocket(int32 Port);
+
+	// Push current position/attitude into TelemetryComponent
+	void PushTelemetry(const FDroneYAMLData& DroneData, const FVector& WorldPos, const FRotator& WorldRot);
+};

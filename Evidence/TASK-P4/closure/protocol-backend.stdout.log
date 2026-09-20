@@ -1,0 +1,304 @@
+[2026-09-19 16:42:16.041] [info] Config loaded from 'Saved/P4QA/protocol2/config.yaml': 6 ports, 6 drones max
+[2026-09-19 16:42:16.044] [info] Config validation passed (6 ports, 6 max drones)
+[2026-09-19 16:42:16.045] [info] [:] Logger initialized. Level=debug, File=./Saved/P4QA/protocol2/backend.log
+[2026-09-19 16:42:16.048] [info] [:] ============================================
+[2026-09-19 16:42:16.050] [info] [:]   Drone Backend v1.0.0
+[2026-09-19 16:42:16.052] [info] [:]   HTTP :19280  WS :19281
+[2026-09-19 16:42:16.055] [info] [:] ============================================
+[2026-09-19 16:42:16.057] [info] [:] [UdpSender] JSON protocol session_id=backend-1789807336055786-16be5b39
+[2026-09-19 16:42:16.057] [info] [:] DroneManager created
+[2026-09-19 16:42:16.096] [info] [:] Drone 1 added: slot=1 name=Drone 1
+[2026-09-19 16:42:16.096] [info] [:] Drone 2 added: slot=2 name=Drone 2
+[2026-09-19 16:42:16.096] [info] [:] Drone 3 added: slot=3 name=Drone 3
+[2026-09-19 16:42:16.096] [info] [:] Drone 4 added: slot=4 name=d4
+[2026-09-19 16:42:16.096] [info] [:] Drone 5 added: slot=5 name=d5
+[2026-09-19 16:42:16.097] [info] [:] Drone 6 added: slot=6 name=d6
+[2026-09-19 16:42:16.097] [info] [:] [Storage] Loaded 6 drones from ./Saved/P4QA/protocol2/data/drones.json
+[2026-09-19 16:42:16.097] [info] [:] [UdpReceiver] Slot 1: listening port 21888 for drone 1
+[2026-09-19 16:42:16.097] [info] [:] [UdpReceiver] Slot 2: listening port 21890 for drone 2
+[2026-09-19 16:42:16.097] [info] [:] [UdpReceiver] Slot 3: listening port 21892 for drone 3
+[2026-09-19 16:42:16.097] [info] [:] [UdpReceiver] Slot 4: listening port 21894 for drone 4
+[2026-09-19 16:42:16.098] [info] [:] [UdpReceiver] Slot 5: listening port 21896 for drone 5
+[2026-09-19 16:42:16.098] [info] [:] [UdpReceiver] Slot 6: listening port 21898 for drone 6
+[2026-09-19 16:42:16.099] [info] [:] [UdpSender] Drone 1 target set: 127.0.0.1:21889
+[2026-09-19 16:42:16.099] [info] [:] [UdpSender] Drone 2 target set: 127.0.0.1:21891
+[2026-09-19 16:42:16.099] [info] [:] [UdpSender] Drone 3 target set: 127.0.0.1:21893
+[2026-09-19 16:42:16.099] [info] [:] [UdpSender] Drone 4 target set: 127.0.0.1:21895
+[2026-09-19 16:42:16.099] [info] [:] [UdpSender] Drone 5 target set: 127.0.0.1:21897
+[2026-09-19 16:42:16.100] [info] [:] [UdpSender] Drone 6 target set: 127.0.0.1:21899
+[2026-09-19 16:42:16.100] [info] [:] [UdpReceiver] Listening on port 21888
+[2026-09-19 16:42:16.100] [info] [:] [UdpReceiver] Listening on port 21890
+[2026-09-19 16:42:16.100] [info] [:] [UdpReceiver] Listening on port 21892
+[2026-09-19 16:42:16.100] [info] [:] [UdpReceiver] Listening on port 21894
+[2026-09-19 16:42:16.101] [info] [:] [UdpReceiver] Listening on port 21896
+[2026-09-19 16:42:16.101] [info] [:] [UdpReceiver] Listening on port 21898
+[2026-09-19 16:42:16.101] [info] [:] Backend started. Press Ctrl+C to stop.
+[DebugCLI] Started. Type 'help' for commands.
+[2026-09-19 16:42:16.102] [info] [:] [WS] Listening on 0.0.0.0:19281
+[2026-09-19 16:42:16.102] [info] [:] [HTTP] Listening on 0.0.0.0:19280
+[2026-09-19 16:42:51.747] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:42:51.764] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-19 16:42:51.767] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"7baed47b-c460-4cd1-8bd7-3241c8ddf3d1"}
+[2026-09-19 16:42:51.825] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:42:51.828] [debug] [:] [WS] Client connected, total sessions=2
+[2026-09-19 16:42:51.829] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"eb8f2509-ac5c-40ff-90e9-b6d62e28753e"}
+[2026-09-19 16:42:51.887] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:42:51.890] [debug] [:] [WS] Client connected, total sessions=3
+[2026-09-19 16:42:51.890] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"dc21cf93-e0e0-429f-b3e6-31b7edf1e0d4"}
+[2026-09-19 16:42:51.948] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.951] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.961] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.965] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.967] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.970] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.972] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.975] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.977] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.980] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.981] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.984] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.986] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.988] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.990] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.992] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.993] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:51.996] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:51.998] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.000] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.002] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.004] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.006] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.008] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.011] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.013] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.015] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.017] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.019] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.022] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.023] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.026] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.027] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.030] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.031] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.033] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.035] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.037] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.038] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.041] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.043] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.045] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.047] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.049] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.051] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.053] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.054] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.057] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.059] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.061] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.063] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.065] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.066] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.070] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.073] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.078] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.079] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.082] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.083] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.085] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.087] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.090] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.098] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.100] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.108] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.111] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.117] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.119] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.125] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.127] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.130] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.132] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.138] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.141] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.147] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.149] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.157] [debug] [:] [HTTP Request] PATCH /api/video-view
+[2026-09-19 16:42:52.159] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:42:52.161] [debug] [:] [HTTP Request] PATCH /api/video-view
+[2026-09-19 16:42:52.163] [debug] [:] [HTTP Request] PATCH /api/video-view
+[2026-09-19 16:42:52.165] [debug] [:] [HTTP Request] PATCH /api/context
+[2026-09-19 16:42:52.167] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.169] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.173] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:42:52.175] [debug] [:] [HTTP Request] PATCH /api/video-view
+[2026-09-19 16:42:52.179] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:42:52.180] [debug] [:] [HTTP Request] PATCH /api/video-view
+[2026-09-19 16:42:52.185] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:42:52.186] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.188] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.191] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.193] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.196] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.202] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.204] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.212] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.215] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.218] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.220] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.222] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.224] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.227] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.229] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.233] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.235] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.238] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.245] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.247] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.253] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.256] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.258] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.261] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.263] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.271] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.273] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:42:52.276] [debug] [:] [HTTP Request] PATCH /api/ui-preferences
+[2026-09-19 16:42:52.280] [debug] [:] [HTTP Request] PATCH /api/ui-preferences
+[2026-09-19 16:42:52.282] [debug] [:] [HTTP Request] PATCH /api/ui-preferences
+[2026-09-19 16:42:52.284] [debug] [:] [HTTP Request] PATCH /api/ui-preferences
+[2026-09-19 16:42:52.288] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.290] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:42:52.292] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:42:52.294] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.296] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.302] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.305] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.307] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.313] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.316] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.322] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.325] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:52.327] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:52.334] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-19 16:42:52.335] [debug] [:] [WS] Client disconnected, total sessions=2
+[2026-09-19 16:42:53.140] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:42:53.217] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:42:54.831] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:42:54.956] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:42:57.834] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:42:57.961] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:00.841] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:00.966] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:03.847] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:03.971] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:06.849] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:06.972] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:09.863] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:09.986] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:12.878] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:12.999] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:14.729] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:15.171] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:15.176] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:43:15.624] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:15.886] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:16.011] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:43:16.240] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:43:16.388] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:16.393] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:16.400] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:43:16.418] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:16.425] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:43:16.437] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:16.445] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:43:16.450] [debug] [:] [WS] Client connected, total sessions=3
+[2026-09-19 16:43:16.451] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"5585fa04-6907-4107-873b-ac93533b86c7"}
+[2026-09-19 16:43:16.508] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:43:16.512] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:43:16.517] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:43:16.521] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:43:16.527] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:43:16.533] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:43:16.655] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-19 16:43:16.656] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-19 16:43:16.656] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-19 16:43:16.657] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:43:16.657] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:43:16.657] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:44:20.839] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:44:20.952] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:44:21.007] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-19 16:44:21.019] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "0C3650A4-4ED4-A810-A3DF-98AFD2EA6E13"
+}
+[2026-09-19 16:44:21.044] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:44:21.045] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:44:21.046] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:44:21.116] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:44:24.160] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:44:27.163] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:44:28.080] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.117] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.150] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.183] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.218] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.255] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.279] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:28.367] [info] [:] [WS] session closed: ÄãµÄÖ÷»úÖÐµÄÈí¼þÖÐÖ¹ÁËÒ»¸öÒÑ½¨Á¢µÄÁ¬½Ó¡£ [system:10053]
+[2026-09-19 16:44:28.367] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:44:28.871] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:44:28.898] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:44:28.930] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-19 16:44:28.945] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "AD4B0703-44F5-19EB-B997-DD94306FDD84"
+}
+[2026-09-19 16:44:28.965] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:44:28.965] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:44:28.965] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:44:29.104] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:44:32.119] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:44:35.148] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:44:36.684] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:36.732] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:36.769] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:36.803] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:36.836] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:44:36.908] [info] [:] [WS] session closed: ÄãµÄÖ÷»úÖÐµÄÈí¼þÖÐÖ¹ÁËÒ»¸öÒÑ½¨Á¢µÄÁ¬½Ó¡£ [system:10053]
+[2026-09-19 16:44:36.908] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:45:43.131] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:45:43.301] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:45:43.357] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-19 16:45:43.551] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "BCA5EB37-49F0-A839-8B87-928A5BBCECDE"
+}
+[2026-09-19 16:45:43.565] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:43.567] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:45:43.567] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:45:43.567] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:45:46.582] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:49.586] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:52.665] [info] [:] [WS] session closed: ÄãµÄÖ÷»úÖÐµÄÈí¼þÖÐÖ¹ÁËÒ»¸öÒÑ½¨Á¢µÄÁ¬½Ó¡£ [system:10053]
+[2026-09-19 16:45:52.665] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-19 16:45:53.536] [debug] [:] [HTTP Request] POST /api/context/clients
+[2026-09-19 16:45:53.579] [debug] [:] [HTTP Request] GET /api/context
+[2026-09-19 16:45:53.643] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-19 16:45:53.752] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "400ABD47-4144-989C-0C98-BAAB06A51797"
+}
+[2026-09-19 16:45:53.775] [debug] [:] [HTTP Request] GET /api/security-plans
+[2026-09-19 16:45:53.775] [debug] [:] [HTTP Request] GET /api/ui-preferences
+[2026-09-19 16:45:53.775] [debug] [:] [HTTP Request] GET /api/video-view
+[2026-09-19 16:45:53.818] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:45:56.819] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:00.068] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-19 16:46:01.241] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.321] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.383] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.408] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.483] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.539] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.572] [debug] [:] [HTTP Request] POST /api/security-plans
+[2026-09-19 16:46:01.701] [info] [:] [WS] session closed: ÄãµÄÖ÷»úÖÐµÄÈí¼þÖÐÖ¹ÁËÒ»¸öÒÑ½¨Á¢µÄÁ¬½Ó¡£ [system:10053]
+[2026-09-19 16:46:01.702] [debug] [:] [WS] Client disconnected, total sessions=0

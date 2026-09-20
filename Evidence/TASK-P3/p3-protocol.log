@@ -1,0 +1,97 @@
+PASS P3.SecurityPlan.Create
+PASS P3.SecurityPlan.ActiveSelection
+PASS P3.Mission.Create
+PASS P3.Mission.Assignment
+PASS P3.Mission.DuplicateUavRejected
+PASS P3.Plan.ValidationFailure
+PASS P3.Route.Create
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+... Skipped lines
+
+  [
+    {
+      altitude: 60,
+      latitude: 39.98,
+      location: {
+...
+      },
++     longitude: 116.341,
+-     longitude: 116.34100000000001,
+      segmentSpeed: 5,
+      sequence: 2,
+      waitTime: 0
+    },
+    {
+
+    at file:///C:/Users/wy331/Documents/UE5DroneControl-p3/Backend/tests/p3_plan_integration.mjs:26:61
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      sequence: 1,
+      latitude: 39.98,
+      longitude: 116.34,
+      altitude: 60,
+      location: { x: 0, y: 0, z: 0 },
+      segmentSpeed: 0,
+      waitTime: 0
+    },
+    {
+      sequence: 2,
+      latitude: 39.980999999999995,
+      longitude: 116.341,
+      altitude: 60,
+      location: { x: 100, y: 0, z: 0 },
+      segmentSpeed: 5,
+      waitTime: 0
+    },
+    {
+      sequence: 3,
+      latitude: 39.982,
+      longitude: 116.342,
+      altitude: 60,
+      location: { x: 200, y: 0, z: 0 },
+      segmentSpeed: 5,
+      waitTime: 0
+    }
+  ],
+  expected: [
+    {
+      sequence: 1,
+      latitude: 39.98,
+      longitude: 116.34,
+      altitude: 60,
+      location: { x: 0, y: 0, z: 0 },
+      segmentSpeed: 0,
+      waitTime: 0
+    },
+    {
+      sequence: 2,
+      latitude: 39.980999999999995,
+      longitude: 116.34100000000001,
+      altitude: 60,
+      location: { x: 100, y: 0, z: 0 },
+      segmentSpeed: 5,
+      waitTime: 0
+    },
+    {
+      sequence: 3,
+      latitude: 39.982,
+      longitude: 116.342,
+      altitude: 60,
+      location: { x: 200, y: 0, z: 0 },
+      segmentSpeed: 5,
+      waitTime: 0
+    }
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.13.0

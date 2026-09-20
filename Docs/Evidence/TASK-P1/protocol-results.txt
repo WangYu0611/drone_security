@@ -1,0 +1,11 @@
+PASS P1.CommandSync UAV-02 5 ms
+PASS P1.MapSync UAV-03 4 ms
+PASS P1.VideoSync UAV-01 4 ms
+PASS P1.Noop no version bump or feedback loop
+PASS P1.AlertSync atomic alert/UAV/mode
+PASS P1.ValidationAndRolePolicy
+PASS P1.MissionPlanAreaMode
+PASS P1.LateJoinRestart snapshot restores UAV-02
+PASS P1.ClientConnectionState
+PASS P1.Reconnect same instance, fresh snapshot and newer presence version
+PASS P1.NoEventLoop

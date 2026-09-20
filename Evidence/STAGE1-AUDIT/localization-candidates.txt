@@ -1,0 +1,585 @@
+Scripts/P4/connect_widgets.py:38: s=s[:a]+'''            SystemHeader->SetText(FText::Format(ProductText::Get(TEXT("Video.Header")),FText::AsCultureInvariant(Sync->GetStatusText()),FText::AsNumber(DisplayedDroneId),FText::AsCultureInvariant(Global)));
+Scripts/P4/generate_localization.py:6: for key,(en,zh) in data.items():cpp.append('{TEXT('+quote(key)+'),NSLOCTEXT("DroneOps",'+quote(key)+','+quote(en)+')},')
+Scripts/P4/generate_localization.py:7: cpp+=['};return C;}','}','FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}',
+Scripts/P4/generate_localization.py:8: 'FText ProductText::Source(const FString& Source){']
+Scripts/P4/localize_widgets.py:8: s=s.replace('FText::FromString(', 'ProductText::Source(')
+Scripts/P4/localize_widgets.py:11: s=s[:a]+'''    Status->SetText(FText::Format(ProductText::Get(TEXT("Command.Header")),ProductText::Source(Mode),FText::AsCultureInvariant(Sync->GetStatusText()),FText::AsNumber(OnlineRoles.Num())));'''+s[b:];p.write_text(s)
+Scripts/P4/localize_widgets.py:13: s=s[:a]+'''    if(CenterPanel) Overview->SetText(FText::Format(ProductText::Get(TEXT("Command.Count")),FText::AsNumber(Drones.Num()),FText::AsNumber(Online),FText::AsNumber(Store?Store->GetUnhandledCount():0)));'''+s[b:]
+Scripts/P4/localize_widgets.py:14: s=s.replace('Metrics = FString::Printf(TEXT("ALT %s   SPD %s   BAT %s"), *Altitude, *Speed, *Battery);','Metrics=FText::Format(ProductText::Get(TEXT("Command.Metrics")),FText::AsCultureInvariant(Altitude),FText::AsCultureInvariant(Speed),FText::AsCultureInvariant(Battery)).ToString();')
+Scripts/P4/localize_widgets.py:17: bHasTask ? *TaskText(Task) : TEXT("N/A"));''','''Mission=FText::Format(ProductText::Get(TEXT("Command.Link")),ProductText::Source(bHasTelemetry?AvailabilityText(Telemetry.Availability):TEXT("N/A")),ProductText::Source(bHasTask?TaskText(Task):TEXT("N/A"))).ToString();''')
+Scripts/P4/localize_widgets.py:20: s=s[:a]+'''    return FText::Format(ProductText::Get(TEXT("Video.Feed")),FText::AsCultureInvariant(FString::Printf(TEXT("UAV-%02d"),Id)),ProductText::Source(Link),ProductText::Source(D.VideoUrl.IsEmpty()?TEXT("NO SOURCE"):TEXT("SOURCE SET")),Secondary?ProductText::Source(TEXT("VIDEO SLOT\\nNO ACTIVE STREAM")):FText::GetEmpty()).ToString();'''+s[b:]
+Scripts/P4/localize_widgets.py:22: s=s[:a]+'''    Heading->SetText(FText::Format(ProductText::Get(TEXT("Video.Heading")),bValid?FText::AsCultureInvariant(FString::Printf(TEXT("UAV-%02d"),Id)):ProductText::Source(TEXT("NO TARGET"))));'''+s[b:]
+Scripts/P4/localize_widgets.py:24: s=s[:a]+'''    Details->SetText(FText::Format(ProductText::Get(TEXT("Video.Details")),FText::AsCultureInvariant(DisplayedDroneId>0?FString::Printf(TEXT("UAV-%02d"),DisplayedDroneId):TEXT("")),FText::AsCultureInvariant(Resolution),FText::AsCultureInvariant(Rate),ProductText::Source(MediaState)));'''+s[b:]
+Scripts/P4/localize_widgets.py:27: s=s[:a]+'''    return FText::Format(ProductText::Get(TEXT("Common.Sync")),ProductText::Source(IsReady()?TEXT("ONLINE"):TEXT("OFFLINE")),ProductText::Source(State),FText::AsCultureInvariant(Id),FText::AsNumber(Version)).ToString();'''+s[b:];p.write_text(s)
+Scripts/P4/localize_widgets.py:37: return FText::Format(ProductText::Get(TEXT("Events.")+EventType),Args);
+Scripts/P4/localize_widgets.py:40: p=root/'Command/OperationalLogWidget.cpp';s=p.read_text();s=s.replace('*Category,*E.Message','*ProductText::Source(Category).ToString(),*E.DisplayText().ToString()')
+Scripts/P4/localize_widgets.py:41: a=s.index('    Counts->SetText(');b=s.index('\n',a);s=s[:a]+'''    Counts->SetText(FText::Format(ProductText::Get(TEXT("Log.Count")),FText::AsNumber(Critical),FText::AsNumber(Warning)));'''+s[b:];p.write_text(s)
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:55: Empty->SetText(ProductText::Source(TEXT("尚未收到告警（本会话）")));
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:73: Severity->SetText(FText::Format(ProductText::Get(TEXT("Alarm.Severity")),
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:74: ProductText::Get(bCritical?TEXT("Alarm.Critical"):bWarning?TEXT("Alarm.Warning"):TEXT("Alarm.Info")),
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:75: FText::AsCultureInvariant(Alert.ReceivedAt.ToString(TEXT("%H:%M:%S"))),Alert.bHandled?ProductText::Get(TEXT("Alarm.Handled")):FText::GetEmpty()));
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:80: Message->SetText(ProductText::Source(Alert.Message));
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:85: Target->SetText(FText::Format(ProductText::Get(TEXT("Alarm.Target")),FText::AsNumber(Alert.DroneId),FText::AsCultureInvariant(Alert.Type)));
+Source/UE5DroneControl/Command/CommandAlarmPanel.cpp:95: Text->SetText(ProductText::Source(Label));
+Source/UE5DroneControl/Command/CommandCenterPanel.cpp:44: Status->SetText(FText::Format(ProductText::Get(TEXT("Command.Header")),ProductText::Source(Mode),FText::AsCultureInvariant(Sync->GetStatusText()),FText::AsNumber(OnlineRoles.Num())));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:83: Item->SetText(ProductText::Source(Value));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:169: Item->SetToolTipText(ProductText::Source(Label));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:219: PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Nav.Overview")),26);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:221: CurrentExecutionSummary=PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Execution.None")),20);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:225: PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Workflow.RecentEvents")),18);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:229: PlanUI::Label(WidgetTree,Fleet,ProductText::Get(TEXT("Nav.Fleet")),26);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:235: auto* Hint=PlanUI::Label(WidgetTree,Root,ProductText::Get(TEXT("Workflow.GlobalHint")),12);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:283: if(auto* Label=Cast<UTextBlock>(Header->GetContent())) {Label->SetText(ProductText::Source(CenterPanel->GetHeaderText()));CommandTheme::Text(Label,15);}
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:304: Overview->SetText(ProductText::Source(FString::Printf(TEXT("注册 %d   在线 %d   活动任务 %d\n待命 %d   未处理告警 %d\n通信质量 / AI：未接入"),
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:307: Overview->SetText(ProductText::Source(Sync->GetStatusText() + TEXT("\n") + Overview->GetText().ToString()));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:308: if(CenterPanel) Overview->SetText(FText::Format(ProductText::Get(TEXT("Command.Count")),FText::AsNumber(Drones.Num()),FText::AsNumber(Online),FText::AsNumber(Store?Store->GetUnhandledCount():0)));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:314: CurrentPlanSummary->SetText(Plan?FText::Format(ProductText::Get(TEXT("Workflow.CurrentPlan")),PlanUI::User(PlanUI::Field(Plan,TEXT("name"))),ProductText::Get(TEXT("Plan.")+PlanUI::Field(Plan,TEXT("status")))):ProductText::Get(TEXT("Plan.NoPlan")));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:321: Tasks->SetText(ProductText::Source(TaskLines.IsEmpty() ? TEXT("暂无已注册无人机") : TaskLines));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:342: Metrics=FText::Format(ProductText::Get(TEXT("Command.Metrics")),FText::AsCultureInvariant(Altitude),FText::AsCultureInvariant(Speed),FText::AsCultureInvariant(Battery)).ToString();
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:343: Mission=FText::Format(ProductText::Get(TEXT("Command.Link")),ProductText::Source(bHasTelemetry?AvailabilityText(Telemetry.Availability):TEXT("N/A")),ProductText::Source(bHasTask?TaskText(Task):TEXT("N/A"))).ToString();
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:345: SelectedInfo->SetText(ProductText::Source(Info));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:346: SelectedMetrics->SetText(ProductText::Source(Metrics));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:347: SelectedMission->SetText(ProductText::Source(Mission));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:408: ActionStatus->SetText(ProductText::Source(bOk ? TEXT("请求已提交；等待任务状态更新。") : TEXT("请求不可用：检查选择及连接状态。")));
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:431: ActionStatus->SetText(ProductText::Source(bOk
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:122: auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(FText::FromString(FString::Printf(TEXT("%s UAV-%02d%s"),Active?*ProductText::Get(TEXT("Tactical.Active")).ToString():TEXT("+"),D.DroneId,AlertDrones.Contains(D.DroneId)?*ProductText::Get(TEXT("Tactical.Alert")).ToString():TEXT(""))));
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:126: Label(FText::Format(ProductText::Get(TEXT("Tactical.Header")),FText::AsNumber(Zoom),FText::AsNumber(Missing)).ToString(),FVector2D(12,8),15,CommandTheme::PrimaryText);
+Source/UE5DroneControl/Command/OperationalLogWidget.cpp:29: auto* Text=WidgetTree->ConstructWidget<UTextBlock>();Text->SetText(ProductText::Source(TEXT("CLEAR DISPLAY")));CommandTheme::Text(Text,13);Clear->SetContent(Text);
+Source/UE5DroneControl/Command/OperationalLogWidget.cpp:52: Lines+=FString::Printf(TEXT("%s   %-10s   %s\n"),*E.Timestamp.ToString(TEXT("%H:%M:%S")),*ProductText::Source(Category).ToString(),*E.DisplayText().ToString());
+Source/UE5DroneControl/Command/OperationalLogWidget.cpp:54: Counts->SetText(FText::Format(ProductText::Get(TEXT("Log.Count")),FText::AsNumber(Critical),FText::AsNumber(Warning)));
+Source/UE5DroneControl/Command/OperationalLogWidget.cpp:55: Rows->SetText(ProductText::Source(Lines.IsEmpty()?TEXT("No events in this view"):Lines));Scroll->ScrollToEnd();
+Source/UE5DroneControl/Command/OperationalLogWidget.cpp:58: UWidget* UOperationalLogWidget::FilterLabel(FString Value){auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(ProductText::Source(Value));CommandTheme::Text(L,13);return L;}
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:138: return FText::FromString(TEXT("侦察"));
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:140: return FText::FromString(TEXT("巡逻"));
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:142: return FText::FromString(TEXT("攻击"));
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:145: return FText::FromString(TEXT("移动"));
+Source/UE5DroneControl/DroneOps/Core/HostileTargetActor.cpp:62: LabelComponent->SetText(FText::FromString(TEXT("T-0")));
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:38: FText SelectionLabelText = FText::FromString(TEXT("已选中"));
+Source/UE5DroneControl/DroneOps/Drone/DroneSelectionComponent.h:47: FText SelectionMarkerText = FText::FromString(TEXT("●"));
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:98: Label->SetText(FText::FromString(TEXT("纯本地预演（隔离后端）")));
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:111: TArray<FText> Lines{User(Field(P,TEXT("name"))),User(Field(M,TEXT("name"))),User(Field(M,TEXT("assigned_uav_id"))),ProductText::Get(TEXT("Plan.")+Field(P,TEXT("status"))),ProductText::Get(TEXT("Map.")+State),FText::Format(T(TEXT("Map.Count")),FText::AsNumber(RouteJson()->GetArrayField(TEXT("waypoints")).Num()))};
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:113: const auto V=Object(P,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues;if(V && V->TryGetArrayField(TEXT("issues"),Issues))for(const auto& I:*Issues)if(Field(I->AsObject(),TEXT("mission_id"))==MissionId)Lines.Add(ProductText::Get(TEXT("Errors.")+Field(I->AsObject(),TEXT("code"))));
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:126: Summary->SetText(FText::Join(User(TEXT("\n")),Lines));Result->SetText(bPrompt?T(TEXT("Map.DirtyPrompt")):bDiscardConfirm?T(TEXT("Map.DiscardPrompt")):ErrorCode.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+ErrorCode));
+Source/UE5DroneControl/Map/MapShellWidget.cpp:63: auto* W = WidgetTree->ConstructWidget<UTextBlock>(); W->SetText(ProductText::Source(Value));
+Source/UE5DroneControl/Map/MapShellWidget.cpp:120: Status->SetText(ProductText::Source(FString::Printf(TEXT("UAV %02d  |  %s  |  %s"), Registry->GetPrimarySelectedDrone(),
+Source/UE5DroneControl/Map/MapShellWidget.cpp:123: Status->SetText(ProductText::Source(Sync->GetStatusText()));
+Source/UE5DroneControl/Map/MapShellWidget.cpp:164: ActionStatus->SetText(ProductText::Source(TEXT("Use Security Plan Editor controls for this mission route.")));return;
+Source/UE5DroneControl/Map/MapShellWidget.cpp:177: ActionStatus->SetText(ProductText::Source(bOk ? TEXT("Operation submitted.")
+Source/UE5DroneControl/MultiDroneCharacter.h:98: FText SelectedWidgetText = FText::FromString(TEXT("已选中"));
+Source/UE5DroneControl/PathEditor/DroneWaypointActor.cpp:98: TextRenderComponent->SetText(FText::FromString(TEXT("D1|S:0")));
+Source/UE5DroneControl/Shared/ExecutionPresentation.h:15: if(!E)return ProductText::Get(TEXT("Execution.None"));
+Source/UE5DroneControl/Shared/ExecutionPresentation.h:16: return FText::Format(ProductText::Get(TEXT("Execution.Summary")),PlanUI::User(PlanUI::Field(E,TEXT("plan_name"))),PlanUI::User(PlanUI::Field(E,TEXT("mission_name"))),
+Source/UE5DroneControl/Shared/ExecutionPresentation.h:17: PlanUI::User(PlanUI::Field(E,TEXT("uav_id"))),ProductText::Get(TEXT("Execution.")+PlanUI::Field(E,TEXT("state"))),
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:257: const FString Status=FText::Format(ProductText::Get(TEXT("Common.Sync")),ProductText::Source(IsReady()?TEXT("ONLINE"):TEXT("OFFLINE")),ProductText::Source(State),FText::AsCultureInvariant(Id),FText::AsNumber(Version)).ToString();
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:258: return ViewSyncError.IsEmpty()?Status:Status+TEXT(" | ")+ProductText::Get(TEXT("Errors.")+ViewSyncError).ToString();
+Source/UE5DroneControl/Shared/OperationalEventStore.cpp:88: GetGameInstance()->GetSubsystem<UCommandAlertStore>()->AddSharedAlert(FString::Printf(TEXT("execution-%lld"),Serial),Id,TEXT("execution_failed"),ProductText::Get(TEXT("Errors.")+Params->GetStringField(TEXT("reason"))).ToString());
+Source/UE5DroneControl/Shared/OperationalEventStore.cpp:100: return FText::Format(ProductText::Get(TEXT("Events.")+EventType),Args);
+Source/UE5DroneControl/Shared/PlanWidgetSupport.h:16: inline FText T(const TCHAR* K){return ProductText::Get(K);}
+Source/UE5DroneControl/Shared/ProductText.cpp:4: {TEXT("Plan.Title"),NSLOCTEXT("DroneOps","Plan.Title","SECURITY PLAN")},
+Source/UE5DroneControl/Shared/ProductText.cpp:5: {TEXT("Plan.Name"),NSLOCTEXT("DroneOps","Plan.Name","Plan name")},
+Source/UE5DroneControl/Shared/ProductText.cpp:6: {TEXT("Plan.Description"),NSLOCTEXT("DroneOps","Plan.Description","Description")},
+Source/UE5DroneControl/Shared/ProductText.cpp:7: {TEXT("Plan.New"),NSLOCTEXT("DroneOps","Plan.New","NEW PLAN")},
+Source/UE5DroneControl/Shared/ProductText.cpp:8: {TEXT("Plan.Update"),NSLOCTEXT("DroneOps","Plan.Update","SAVE PLAN INFORMATION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:9: {TEXT("Plan.Mission"),NSLOCTEXT("DroneOps","Plan.Mission","Task")},
+Source/UE5DroneControl/Shared/ProductText.cpp:10: {TEXT("Plan.Missions"),NSLOCTEXT("DroneOps","Plan.Missions","MISSIONS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:11: {TEXT("Plan.MissionName"),NSLOCTEXT("DroneOps","Plan.MissionName","Task name")},
+Source/UE5DroneControl/Shared/ProductText.cpp:12: {TEXT("Plan.AddMission"),NSLOCTEXT("DroneOps","Plan.AddMission","ADD TASK")},
+Source/UE5DroneControl/Shared/ProductText.cpp:13: {TEXT("Plan.Rename"),NSLOCTEXT("DroneOps","Plan.Rename","RENAME TASK")},
+Source/UE5DroneControl/Shared/ProductText.cpp:14: {TEXT("Plan.Delete"),NSLOCTEXT("DroneOps","Plan.Delete","DELETE MISSION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:15: {TEXT("Plan.Assign"),NSLOCTEXT("DroneOps","Plan.Assign","ASSIGN UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:16: {TEXT("Plan.Unassign"),NSLOCTEXT("DroneOps","Plan.Unassign","UNASSIGN UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:17: {TEXT("Plan.NoMissions"),NSLOCTEXT("DroneOps","Plan.NoMissions","No missions / Add first mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:18: {TEXT("Plan.NoPlan"),NSLOCTEXT("DroneOps","Plan.NoPlan","No active plan")},
+Source/UE5DroneControl/Shared/ProductText.cpp:19: {TEXT("Plan.EditMap"),NSLOCTEXT("DroneOps","Plan.EditMap","EDIT ROUTE ON MAP")},
+Source/UE5DroneControl/Shared/ProductText.cpp:20: {TEXT("Plan.Check"),NSLOCTEXT("DroneOps","Plan.Check","CHECK CONFIGURATION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:21: {TEXT("Plan.Review"),NSLOCTEXT("DroneOps","Plan.Review","REVIEW PLAN")},
+Source/UE5DroneControl/Shared/ProductText.cpp:22: {TEXT("Plan.ConfirmReview"),NSLOCTEXT("DroneOps","Plan.ConfirmReview","CONFIRM REVIEW")},
+Source/UE5DroneControl/Shared/ProductText.cpp:23: {TEXT("Plan.Deploy"),NSLOCTEXT("DroneOps","Plan.Deploy","DEPLOY PLAN")},
+Source/UE5DroneControl/Shared/ProductText.cpp:24: {TEXT("Plan.ConfirmDeploy"),NSLOCTEXT("DroneOps","Plan.ConfirmDeploy","CONFIRM DEPLOY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:25: {TEXT("Plan.Copy"),NSLOCTEXT("DroneOps","Plan.Copy","COPY AS DRAFT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:26: {TEXT("Plan.DRAFT"),NSLOCTEXT("DroneOps","Plan.DRAFT","DRAFT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:27: {TEXT("Plan.READY"),NSLOCTEXT("DroneOps","Plan.READY","CONFIGURATION VALID")},
+Source/UE5DroneControl/Shared/ProductText.cpp:28: {TEXT("Plan.DEPLOYED"),NSLOCTEXT("DroneOps","Plan.DEPLOYED","Deployed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:29: {TEXT("Plan.ReviewNotice"),NSLOCTEXT("DroneOps","Plan.ReviewNotice","This review confirms the current plan configuration. Deployment freezes the business configuration and does not start aircraft execution.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:30: {TEXT("Plan.Revision"),NSLOCTEXT("DroneOps","Plan.Revision","Revision {0}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:31: {TEXT("Plan.Reviewed"),NSLOCTEXT("DroneOps","Plan.Reviewed","Reviewed revision {0}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:32: {TEXT("Plan.MissionSummary"),NSLOCTEXT("DroneOps","Plan.MissionSummary","{0} | UAV: {1} | Waypoints: {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:33: {TEXT("Plan.Counts"),NSLOCTEXT("DroneOps","Plan.Counts","Tasks: {0} | UAV assigned: {1} | Routes configured: {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:34: {TEXT("Plan.RouteParameters"),NSLOCTEXT("DroneOps","Plan.RouteParameters","Loop: {0} | Speed: {1} | Wait: {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:35: {TEXT("Plan.Blocking"),NSLOCTEXT("DroneOps","Plan.Blocking","Blocking issues")},
+Source/UE5DroneControl/Shared/ProductText.cpp:36: {TEXT("Plan.Warnings"),NSLOCTEXT("DroneOps","Plan.Warnings","Configuration check only. Terrain, airspace, endurance and flight safety are not assessed.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:37: {TEXT("Plan.Deployment"),NSLOCTEXT("DroneOps","Plan.Deployment","Deployment record")},
+Source/UE5DroneControl/Shared/ProductText.cpp:38: {TEXT("Common.Save"),NSLOCTEXT("DroneOps","Common.Save","SAVE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:39: {TEXT("Common.Cancel"),NSLOCTEXT("DroneOps","Common.Cancel","CANCEL")},
+Source/UE5DroneControl/Shared/ProductText.cpp:40: {TEXT("Common.Discard"),NSLOCTEXT("DroneOps","Common.Discard","DISCARD CHANGES")},
+Source/UE5DroneControl/Shared/ProductText.cpp:41: {TEXT("Common.Exit"),NSLOCTEXT("DroneOps","Common.Exit","EXIT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:42: {TEXT("Common.None"),NSLOCTEXT("DroneOps","Common.None","Not assigned")},
+Source/UE5DroneControl/Shared/ProductText.cpp:43: {TEXT("Common.Waiting"),NSLOCTEXT("DroneOps","Common.Waiting","Waiting for Backend confirmation...")},
+Source/UE5DroneControl/Shared/ProductText.cpp:44: {TEXT("Common.Confirmed"),NSLOCTEXT("DroneOps","Common.Confirmed","Backend confirmed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:45: {TEXT("Common.Language"),NSLOCTEXT("DroneOps","Common.Language","Language")},
+Source/UE5DroneControl/Shared/ProductText.cpp:46: {TEXT("Map.Route"),NSLOCTEXT("DroneOps","Map.Route","MISSION ROUTE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:47: {TEXT("Map.Begin"),NSLOCTEXT("DroneOps","Map.Begin","BEGIN ROUTE EDIT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:48: {TEXT("Map.Add"),NSLOCTEXT("DroneOps","Map.Add","ADD WAYPOINT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:49: {TEXT("Map.Delete"),NSLOCTEXT("DroneOps","Map.Delete","DELETE WAYPOINT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:50: {TEXT("Map.Clear"),NSLOCTEXT("DroneOps","Map.Clear","CLEAR ROUTE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:51: {TEXT("Map.Focus"),NSLOCTEXT("DroneOps","Map.Focus","FOCUS ROUTE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:52: {TEXT("Map.DirtyPrompt"),NSLOCTEXT("DroneOps","Map.DirtyPrompt","Unsaved route changes. Save, discard, or cancel before leaving.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:53: {TEXT("Map.DiscardPrompt"),NSLOCTEXT("DroneOps","Map.DiscardPrompt","Discard local changes and reload the saved route?")},
+Source/UE5DroneControl/Shared/ProductText.cpp:54: {TEXT("Map.EDITING"),NSLOCTEXT("DroneOps","Map.EDITING","EDITING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:55: {TEXT("Map.DIRTY"),NSLOCTEXT("DroneOps","Map.DIRTY","DIRTY / UNSAVED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:56: {TEXT("Map.SAVING"),NSLOCTEXT("DroneOps","Map.SAVING","SAVING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:57: {TEXT("Map.CLEAN"),NSLOCTEXT("DroneOps","Map.CLEAN","SAVED / READ ONLY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:58: {TEXT("Map.Count"),NSLOCTEXT("DroneOps","Map.Count","Waypoints: {0}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:59: {TEXT("Video.Open"),NSLOCTEXT("DroneOps","Video.Open","OPEN VIDEO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:60: {TEXT("Video.Active"),NSLOCTEXT("DroneOps","Video.Active","VIEW ACTIVE UAV VIDEO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:61: {TEXT("Video.Assigned"),NSLOCTEXT("DroneOps","Video.Assigned","VIEW ASSIGNED UAV VIDEO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:62: {TEXT("Video.Target"),NSLOCTEXT("DroneOps","Video.Target","VIDEO TARGET")},
+Source/UE5DroneControl/Shared/ProductText.cpp:63: {TEXT("Errors.SYNC_OFFLINE"),NSLOCTEXT("DroneOps","Errors.SYNC_OFFLINE","Backend offline. No change submitted.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:64: {TEXT("Errors.SYNC_FAILED"),NSLOCTEXT("DroneOps","Errors.SYNC_FAILED","Synchronization failed. Last confirmed state retained.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:65: {TEXT("Errors.PLAN_EDIT_IN_PROGRESS"),NSLOCTEXT("DroneOps","Errors.PLAN_EDIT_IN_PROGRESS","Map route editing is in progress. Save or discard before review or deployment.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:66: {TEXT("Errors.PLAN_REVIEW_REQUIRED"),NSLOCTEXT("DroneOps","Errors.PLAN_REVIEW_REQUIRED","Review the current configuration first.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:67: {TEXT("Errors.REVIEW_STALE"),NSLOCTEXT("DroneOps","Errors.REVIEW_STALE","Review is stale. Review the current revision again.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:68: {TEXT("Errors.VALIDATION_STALE"),NSLOCTEXT("DroneOps","Errors.VALIDATION_STALE","Configuration validation is stale.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:69: {TEXT("Errors.VERSION_CONFLICT"),NSLOCTEXT("DroneOps","Errors.VERSION_CONFLICT","Version conflict. Local draft retained. Discard and reload to resolve.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:70: {TEXT("Errors.EDIT_SESSION_CONFLICT"),NSLOCTEXT("DroneOps","Errors.EDIT_SESSION_CONFLICT","Another editor owns this route session.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:71: {TEXT("Errors.EDIT_SESSION_EXPIRED"),NSLOCTEXT("DroneOps","Errors.EDIT_SESSION_EXPIRED","Editing lease expired. Local draft retained; discard and reload.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:72: {TEXT("Errors.MAP_CLIENT_UNAVAILABLE"),NSLOCTEXT("DroneOps","Errors.MAP_CLIENT_UNAVAILABLE","Map client unavailable")},
+Source/UE5DroneControl/Shared/ProductText.cpp:73: {TEXT("Errors.PLAN_DEPLOYED"),NSLOCTEXT("DroneOps","Errors.PLAN_DEPLOYED","Deployed plan is read only.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:74: {TEXT("Errors.PLAN_NOT_READY"),NSLOCTEXT("DroneOps","Errors.PLAN_NOT_READY","Check configuration and resolve blocking issues.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:75: {TEXT("Errors.NO_MISSIONS"),NSLOCTEXT("DroneOps","Errors.NO_MISSIONS","Add at least one mission.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:76: {TEXT("Errors.NO_UAV_ASSIGNED"),NSLOCTEXT("DroneOps","Errors.NO_UAV_ASSIGNED","Assign a UAV to this mission.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:77: {TEXT("Errors.INVALID_UAV"),NSLOCTEXT("DroneOps","Errors.INVALID_UAV","The assigned UAV is not in the Registry.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:78: {TEXT("Errors.UAV_ALREADY_ASSIGNED"),NSLOCTEXT("DroneOps","Errors.UAV_ALREADY_ASSIGNED","This UAV is assigned to another mission in this plan.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:79: {TEXT("Errors.ROUTE_MISSING"),NSLOCTEXT("DroneOps","Errors.ROUTE_MISSING","Edit and save a route on Map.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:80: {TEXT("Errors.ROUTE_TOO_SHORT"),NSLOCTEXT("DroneOps","Errors.ROUTE_TOO_SHORT","Route requires at least 2 waypoints.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:81: {TEXT("Errors.INVALID_WAYPOINT"),NSLOCTEXT("DroneOps","Errors.INVALID_WAYPOINT","Waypoint coordinates or parameters are invalid.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:82: {TEXT("Errors.INVALID_NAME"),NSLOCTEXT("DroneOps","Errors.INVALID_NAME","Enter a valid name.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:83: {TEXT("Errors.INVALID_LANGUAGE"),NSLOCTEXT("DroneOps","Errors.INVALID_LANGUAGE","Unsupported language.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:84: {TEXT("Errors.INVALID_VIDEO_TARGET"),NSLOCTEXT("DroneOps","Errors.INVALID_VIDEO_TARGET","Select a registered UAV video target.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:85: {TEXT("Errors.Request"),NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:86: {TEXT("Video.Header"),NSLOCTEXT("DroneOps","Video.Header","{0} | VIDEO TARGET: {1} | ACTIVE UAV: {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:87: {TEXT("Video.Feed"),NSLOCTEXT("DroneOps","Video.Feed","{0}\nModel: N/A | Link: {1}\n{2}\n{3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:88: {TEXT("Video.Heading"),NSLOCTEXT("DroneOps","Video.Heading","PRIMARY VIDEO / {0}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:89: {TEXT("Video.Details"),NSLOCTEXT("DroneOps","Video.Details","{0} | Camera: N/A | Resolution: {1} | FPS: {2} | {3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:90: {TEXT("Command.Header"),NSLOCTEXT("DroneOps","Command.Header","COMMAND CENTER | {0} | {1} | Clients {2}/3")},
+Source/UE5DroneControl/Shared/ProductText.cpp:91: {TEXT("Command.Count"),NSLOCTEXT("DroneOps","Command.Count","{0} UAV | {1} ONLINE | {2} ALERTS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:92: {TEXT("Command.Metrics"),NSLOCTEXT("DroneOps","Command.Metrics","ALT {0} | SPD {1} | BAT {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:93: {TEXT("Command.Link"),NSLOCTEXT("DroneOps","Command.Link","LINK {0}\nMISSION {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:94: {TEXT("Log.Count"),NSLOCTEXT("DroneOps","Log.Count","EVENT / OPERATION LOG (UTC) | Critical {0} | Warning {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:95: {TEXT("Map.Header"),NSLOCTEXT("DroneOps","Map.Header","MAP OPERATIONS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:96: {TEXT("Map.Init"),NSLOCTEXT("DroneOps","Map.Init","Map initializing")},
+Source/UE5DroneControl/Shared/ProductText.cpp:97: {TEXT("Map.Select"),NSLOCTEXT("DroneOps","Map.Select","Select a UAV here or on the map.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:98: {TEXT("Map.Locate"),NSLOCTEXT("DroneOps","Map.Locate","LOCATE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:99: {TEXT("Video.Title"),NSLOCTEXT("DroneOps","Video.Title","UAV VIDEO MONITOR CENTER")},
+Source/UE5DroneControl/Shared/ProductText.cpp:100: {TEXT("Video.Aircraft"),NSLOCTEXT("DroneOps","Video.Aircraft","AIRCRAFT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:101: {TEXT("Video.SelectFeed"),NSLOCTEXT("DroneOps","Video.SelectFeed","SELECT VIDEO TARGET")},
+Source/UE5DroneControl/Shared/ProductText.cpp:102: {TEXT("Video.ModelNotice"),NSLOCTEXT("DroneOps","Video.ModelNotice","Model not supplied by Registry. Visual presets are not aircraft specifications.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:103: {TEXT("Video.Primary"),NSLOCTEXT("DroneOps","Video.Primary","PRIMARY VIDEO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:104: {TEXT("Video.NoTarget"),NSLOCTEXT("DroneOps","Video.NoTarget","NO TARGET\nNO ACTIVE STREAM")},
+Source/UE5DroneControl/Shared/ProductText.cpp:105: {TEXT("Video.Camera"),NSLOCTEXT("DroneOps","Video.Camera","Camera: N/A")},
+Source/UE5DroneControl/Shared/ProductText.cpp:106: {TEXT("Video.AI"),NSLOCTEXT("DroneOps","Video.AI","AI DETECTION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:107: {TEXT("Video.AINotConnected"),NSLOCTEXT("DroneOps","Video.AINotConnected","AI DETECTION NOT CONNECTED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:108: {TEXT("Video.Categories"),NSLOCTEXT("DroneOps","Video.Categories","PERSON\n\nVEHICLE\n\nUAV\n\nBEHAVIOR\n\nOTHER")},
+Source/UE5DroneControl/Shared/ProductText.cpp:109: {TEXT("Video.RecentAlerts"),NSLOCTEXT("DroneOps","Video.RecentAlerts","RECENT ALERTS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:110: {TEXT("Video.NoAlerts"),NSLOCTEXT("DroneOps","Video.NoAlerts","NO ACTIVE ALERTS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:111: {TEXT("Video.ReservedFields"),NSLOCTEXT("DroneOps","Video.ReservedFields","Reserved fields\nTitle · UAV · Target\nTimestamp · Severity")},
+Source/UE5DroneControl/Shared/ProductText.cpp:112: {TEXT("Video.ReservedStatus"),NSLOCTEXT("DroneOps","Video.ReservedStatus","UAV ONLINE: N/A\nAI ENGINE: NOT CONNECTED\nSTORAGE: N/A\nNETWORK: N/A")},
+Source/UE5DroneControl/Shared/ProductText.cpp:113: {TEXT("Common.Reserved"),NSLOCTEXT("DroneOps","Common.Reserved","Reserved for future integration")},
+Source/UE5DroneControl/Shared/ProductText.cpp:114: {TEXT("Video.Four"),NSLOCTEXT("DroneOps","Video.Four","4 VIEW")},
+Source/UE5DroneControl/Shared/ProductText.cpp:115: {TEXT("Video.Six"),NSLOCTEXT("DroneOps","Video.Six","6 VIEW")},
+Source/UE5DroneControl/Shared/ProductText.cpp:116: {TEXT("Video.Focus"),NSLOCTEXT("DroneOps","Video.Focus","FOCUS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:117: {TEXT("Video.SetActive"),NSLOCTEXT("DroneOps","Video.SetActive","SET AS ACTIVE UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:118: {TEXT("Video.Retry"),NSLOCTEXT("DroneOps","Video.Retry","RETRY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:119: {TEXT("Video.Single"),NSLOCTEXT("DroneOps","Video.Single","SINGLE ACTIVE PLAYER · Secondary feeds are reserved slots · No AI backend connected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:120: {TEXT("Video.Reserved"),NSLOCTEXT("DroneOps","Video.Reserved","RESERVED\nNO UAV ASSIGNED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:121: {TEXT("Video.NoSource"),NSLOCTEXT("DroneOps","Video.NoSource","NO SOURCE\nAssign a video source to this UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:122: {TEXT("Command.Title"),NSLOCTEXT("DroneOps","Command.Title","SECURITY COMMAND CENTER")},
+Source/UE5DroneControl/Shared/ProductText.cpp:123: {TEXT("Command.Fleet"),NSLOCTEXT("DroneOps","Command.Fleet","UAV FLEET")},
+Source/UE5DroneControl/Shared/ProductText.cpp:124: {TEXT("Command.Waiting"),NSLOCTEXT("DroneOps","Command.Waiting","Waiting for Registry")},
+Source/UE5DroneControl/Shared/ProductText.cpp:125: {TEXT("Command.Alerts"),NSLOCTEXT("DroneOps","Command.Alerts","ALERTS · Last 200 / Session")},
+Source/UE5DroneControl/Shared/ProductText.cpp:126: {TEXT("Command.Tactical"),NSLOCTEXT("DroneOps","Command.Tactical","TACTICAL DATA")},
+Source/UE5DroneControl/Shared/ProductText.cpp:127: {TEXT("Command.NoSelection"),NSLOCTEXT("DroneOps","Command.NoSelection","No UAV selected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:128: {TEXT("Command.NoMetrics"),NSLOCTEXT("DroneOps","Command.NoMetrics","ALT N/A | SPD N/A | BAT N/A")},
+Source/UE5DroneControl/Shared/ProductText.cpp:129: {TEXT("Command.NoMission"),NSLOCTEXT("DroneOps","Command.NoMission","LINK N/A | MISSION N/A")},
+Source/UE5DroneControl/Shared/ProductText.cpp:130: {TEXT("Command.ActionNotice"),NSLOCTEXT("DroneOps","Command.ActionNotice","Request results require Backend confirmation. Use Map for route editing.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:131: {TEXT("Command.Details"),NSLOCTEXT("DroneOps","Command.Details","UAV DETAILS / ACTIONS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:132: {TEXT("Command.Pause"),NSLOCTEXT("DroneOps","Command.Pause","REQUEST PAUSE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:133: {TEXT("Command.Resume"),NSLOCTEXT("DroneOps","Command.Resume","REQUEST RESUME")},
+Source/UE5DroneControl/Shared/ProductText.cpp:134: {TEXT("Command.NoAlerts"),NSLOCTEXT("DroneOps","Command.NoAlerts","No alerts in this session")},
+Source/UE5DroneControl/Shared/ProductText.cpp:135: {TEXT("Command.Select"),NSLOCTEXT("DroneOps","Command.Select","SELECT UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:136: {TEXT("Command.Handled"),NSLOCTEXT("DroneOps","Command.Handled","MARK HANDLED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:137: {TEXT("Command.Remove"),NSLOCTEXT("DroneOps","Command.Remove","REMOVE RECORD")},
+Source/UE5DroneControl/Shared/ProductText.cpp:138: {TEXT("Log.Clear"),NSLOCTEXT("DroneOps","Log.Clear","CLEAR DISPLAY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:139: {TEXT("Log.Empty"),NSLOCTEXT("DroneOps","Log.Empty","No events in this view")},
+Source/UE5DroneControl/Shared/ProductText.cpp:140: {TEXT("Common.Online"),NSLOCTEXT("DroneOps","Common.Online","ONLINE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:141: {TEXT("Common.Lost"),NSLOCTEXT("DroneOps","Common.Lost","LOST")},
+Source/UE5DroneControl/Shared/ProductText.cpp:142: {TEXT("Common.Offline"),NSLOCTEXT("DroneOps","Common.Offline","OFFLINE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:143: {TEXT("Common.Selected"),NSLOCTEXT("DroneOps","Common.Selected","SELECTED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:144: {TEXT("Common.Select"),NSLOCTEXT("DroneOps","Common.Select","SELECT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:145: {TEXT("Common.Expand"),NSLOCTEXT("DroneOps","Common.Expand","EXPAND")},
+Source/UE5DroneControl/Shared/ProductText.cpp:146: {TEXT("Common.Collapse"),NSLOCTEXT("DroneOps","Common.Collapse","COLLAPSE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:147: {TEXT("Common.Rename"),NSLOCTEXT("DroneOps","Common.Rename","RENAME")},
+Source/UE5DroneControl/Shared/ProductText.cpp:148: {TEXT("Status.RESERVED"),NSLOCTEXT("DroneOps","Status.RESERVED","RESERVED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:149: {TEXT("Status.INFO"),NSLOCTEXT("DroneOps","Status.INFO","INFO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:150: {TEXT("Status.WARNING"),NSLOCTEXT("DroneOps","Status.WARNING","WARNING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:151: {TEXT("Status.CRITICAL"),NSLOCTEXT("DroneOps","Status.CRITICAL","CRITICAL")},
+Source/UE5DroneControl/Shared/ProductText.cpp:152: {TEXT("Status.RECORD"),NSLOCTEXT("DroneOps","Status.RECORD","RECORD")},
+Source/UE5DroneControl/Shared/ProductText.cpp:153: {TEXT("Status.PLAYBACK"),NSLOCTEXT("DroneOps","Status.PLAYBACK","PLAYBACK")},
+Source/UE5DroneControl/Shared/ProductText.cpp:154: {TEXT("Status.SCREENSHOT"),NSLOCTEXT("DroneOps","Status.SCREENSHOT","SCREENSHOT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:155: {TEXT("Status.ALERT_FILTER"),NSLOCTEXT("DroneOps","Status.ALERT_FILTER","ALERT FILTER")},
+Source/UE5DroneControl/Shared/ProductText.cpp:156: {TEXT("Status.NO_TARGET"),NSLOCTEXT("DroneOps","Status.NO_TARGET","NO TARGET")},
+Source/UE5DroneControl/Shared/ProductText.cpp:157: {TEXT("Status.NO_SOURCE"),NSLOCTEXT("DroneOps","Status.NO_SOURCE","NO SOURCE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:158: {TEXT("Status.CONNECTING"),NSLOCTEXT("DroneOps","Status.CONNECTING","CONNECTING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:159: {TEXT("Status.PAGE_READY___WAITING_VIDEO"),NSLOCTEXT("DroneOps","Status.PAGE_READY___WAITING_VIDEO","PAGE READY / WAITING VIDEO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:160: {TEXT("Status.PLAYING"),NSLOCTEXT("DroneOps","Status.PLAYING","PLAYING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:161: {TEXT("Status.STALLED___NO_FRAMES"),NSLOCTEXT("DroneOps","Status.STALLED___NO_FRAMES","STALLED / NO FRAMES")},
+Source/UE5DroneControl/Shared/ProductText.cpp:162: {TEXT("Status.OFFLINE___LOAD_FAILED"),NSLOCTEXT("DroneOps","Status.OFFLINE___LOAD_FAILED","OFFLINE / LOAD FAILED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:163: {TEXT("Status.MEDIA_ERROR"),NSLOCTEXT("DroneOps","Status.MEDIA_ERROR","MEDIA ERROR")},
+Source/UE5DroneControl/Shared/ProductText.cpp:164: {TEXT("Status.RETRYING"),NSLOCTEXT("DroneOps","Status.RETRYING","RETRYING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:165: {TEXT("Status.CLOSED"),NSLOCTEXT("DroneOps","Status.CLOSED","CLOSED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:166: {TEXT("Status.SOURCE_SET"),NSLOCTEXT("DroneOps","Status.SOURCE_SET","SOURCE SET")},
+Source/UE5DroneControl/Shared/ProductText.cpp:167: {TEXT("Status.VIDEO_SLOT_NO_ACTIVE_STREAM"),NSLOCTEXT("DroneOps","Status.VIDEO_SLOT_NO_ACTIVE_STREAM","VIDEO SLOT\nNO ACTIVE STREAM")},
+Source/UE5DroneControl/Shared/ProductText.cpp:168: {TEXT("Status.MONITOR"),NSLOCTEXT("DroneOps","Status.MONITOR","MONITOR")},
+Source/UE5DroneControl/Shared/ProductText.cpp:169: {TEXT("Status.PLAN_EDIT"),NSLOCTEXT("DroneOps","Status.PLAN_EDIT","PLAN_EDIT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:170: {TEXT("Status.ALERT_RESPONSE"),NSLOCTEXT("DroneOps","Status.ALERT_RESPONSE","ALERT_RESPONSE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:171: {TEXT("Status.MISSION_EXECUTION"),NSLOCTEXT("DroneOps","Status.MISSION_EXECUTION","MISSION_EXECUTION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:172: {TEXT("Status.ALL"),NSLOCTEXT("DroneOps","Status.ALL","ALL")},
+Source/UE5DroneControl/Shared/ProductText.cpp:173: {TEXT("Status.SYSTEM"),NSLOCTEXT("DroneOps","Status.SYSTEM","SYSTEM")},
+Source/UE5DroneControl/Shared/ProductText.cpp:174: {TEXT("Status.OPERATION"),NSLOCTEXT("DroneOps","Status.OPERATION","OPERATION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:175: {TEXT("Status.ALERT"),NSLOCTEXT("DroneOps","Status.ALERT","ALERT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:176: {TEXT("Status.MISSION"),NSLOCTEXT("DroneOps","Status.MISSION","MISSION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:177: {TEXT("Status.PLAN"),NSLOCTEXT("DroneOps","Status.PLAN","PLAN")},
+Source/UE5DroneControl/Shared/ProductText.cpp:178: {TEXT("Events.PLAN_CREATED"),NSLOCTEXT("DroneOps","Events.PLAN_CREATED","Plan {plan_name} created")},
+Source/UE5DroneControl/Shared/ProductText.cpp:179: {TEXT("Events.PLAN_UPDATED"),NSLOCTEXT("DroneOps","Events.PLAN_UPDATED","Plan {plan_name} updated")},
+Source/UE5DroneControl/Shared/ProductText.cpp:180: {TEXT("Events.PLAN_COPIED"),NSLOCTEXT("DroneOps","Events.PLAN_COPIED","Plan {plan_name} copied as draft")},
+Source/UE5DroneControl/Shared/ProductText.cpp:181: {TEXT("Events.MISSION_CREATED"),NSLOCTEXT("DroneOps","Events.MISSION_CREATED","Mission {mission_name} created")},
+Source/UE5DroneControl/Shared/ProductText.cpp:182: {TEXT("Events.MISSION_UPDATED"),NSLOCTEXT("DroneOps","Events.MISSION_UPDATED","Mission {mission_name} renamed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:183: {TEXT("Events.MISSION_DELETED"),NSLOCTEXT("DroneOps","Events.MISSION_DELETED","Mission {target_id} deleted")},
+Source/UE5DroneControl/Shared/ProductText.cpp:184: {TEXT("Events.UAV_ASSIGNED"),NSLOCTEXT("DroneOps","Events.UAV_ASSIGNED","{uav_id} assigned to mission {mission_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:185: {TEXT("Events.UAV_UNASSIGNED"),NSLOCTEXT("DroneOps","Events.UAV_UNASSIGNED","Mission {mission_name} UAV unassigned")},
+Source/UE5DroneControl/Shared/ProductText.cpp:186: {TEXT("Events.ROUTE_CREATED"),NSLOCTEXT("DroneOps","Events.ROUTE_CREATED","Mission {mission_name} route saved")},
+Source/UE5DroneControl/Shared/ProductText.cpp:187: {TEXT("Events.ROUTE_UPDATED"),NSLOCTEXT("DroneOps","Events.ROUTE_UPDATED","Mission {mission_name} route updated")},
+Source/UE5DroneControl/Shared/ProductText.cpp:188: {TEXT("Events.ROUTE_CLEARED"),NSLOCTEXT("DroneOps","Events.ROUTE_CLEARED","Mission {mission_name} route cleared")},
+Source/UE5DroneControl/Shared/ProductText.cpp:189: {TEXT("Events.PLAN_VALIDATED"),NSLOCTEXT("DroneOps","Events.PLAN_VALIDATED","Plan {plan_name} configuration checked")},
+Source/UE5DroneControl/Shared/ProductText.cpp:190: {TEXT("Events.PLAN_REVIEWED"),NSLOCTEXT("DroneOps","Events.PLAN_REVIEWED","Plan {plan_name} reviewed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:191: {TEXT("Events.PLAN_DEPLOYED"),NSLOCTEXT("DroneOps","Events.PLAN_DEPLOYED","Plan {plan_name} deployed. Execution has not started.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:192: {TEXT("Common.Sync"),NSLOCTEXT("DroneOps","Common.Sync","BACKEND {0} | SYNC {1} | ACTIVE {2} | v{3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:193: {TEXT("Common.Connected"),NSLOCTEXT("DroneOps","Common.Connected","CONNECTED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:194: {TEXT("Common.Disconnected"),NSLOCTEXT("DroneOps","Common.Disconnected","DISCONNECTED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:195: {TEXT("Common.Reconnecting"),NSLOCTEXT("DroneOps","Common.Reconnecting","RECONNECTING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:196: {TEXT("Tactical.Header"),NSLOCTEXT("DroneOps","Tactical.Header","2D TACTICAL MAP | Z{0} | {1} UAV without GPS")},
+Source/UE5DroneControl/Shared/ProductText.cpp:197: {TEXT("Tactical.Active"),NSLOCTEXT("DroneOps","Tactical.Active","ACTIVE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:198: {TEXT("Tactical.Alert"),NSLOCTEXT("DroneOps","Tactical.Alert","ALERT")},
+Source/UE5DroneControl/Shared/ProductText.cpp:199: {TEXT("Fleet.Summary"),NSLOCTEXT("DroneOps","Fleet.Summary","UAV {0} | BAT {1}\nMISSION {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:200: {TEXT("Fleet.Local"),NSLOCTEXT("DroneOps","Fleet.Local","Local rehearsal: backend refresh disabled")},
+Source/UE5DroneControl/Shared/ProductText.cpp:201: {TEXT("Fleet.Online"),NSLOCTEXT("DroneOps","Fleet.Online","Online")},
+Source/UE5DroneControl/Shared/ProductText.cpp:202: {TEXT("Fleet.Offline"),NSLOCTEXT("DroneOps","Fleet.Offline","Offline")},
+Source/UE5DroneControl/Shared/ProductText.cpp:203: {TEXT("Fleet.Lost"),NSLOCTEXT("DroneOps","Fleet.Lost","Disconnected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:204: {TEXT("Fleet.Idle"),NSLOCTEXT("DroneOps","Fleet.Idle","Idle")},
+Source/UE5DroneControl/Shared/ProductText.cpp:205: {TEXT("Fleet.Unknown"),NSLOCTEXT("DroneOps","Fleet.Unknown","Unknown")},
+Source/UE5DroneControl/Shared/ProductText.cpp:206: {TEXT("Alarm.Severity"),NSLOCTEXT("DroneOps","Alarm.Severity","{0} / {1} UTC {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:207: {TEXT("Alarm.Target"),NSLOCTEXT("DroneOps","Alarm.Target","TARGET UAV {0} | {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:208: {TEXT("Alarm.Handled"),NSLOCTEXT("DroneOps","Alarm.Handled","Handled")},
+Source/UE5DroneControl/Shared/ProductText.cpp:209: {TEXT("Alarm.Info"),NSLOCTEXT("DroneOps","Alarm.Info","INFO")},
+Source/UE5DroneControl/Shared/ProductText.cpp:210: {TEXT("Alarm.Warning"),NSLOCTEXT("DroneOps","Alarm.Warning","WARNING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:211: {TEXT("Alarm.Critical"),NSLOCTEXT("DroneOps","Alarm.Critical","CRITICAL")},
+Source/UE5DroneControl/Shared/ProductText.cpp:212: {TEXT("Log.All"),NSLOCTEXT("DroneOps","Log.All","ALL")},
+Source/UE5DroneControl/Shared/ProductText.cpp:213: {TEXT("Errors.COORDINATES_NOT_READY"),NSLOCTEXT("DroneOps","Errors.COORDINATES_NOT_READY","Map coordinates are not ready. Retry when the map is loaded.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:214: {TEXT("Video.System"),NSLOCTEXT("DroneOps","Video.System","SYSTEM ONLINE: N/A | {0} UAVs | {1} VIEW POSITIONS | {2} PLAYING | AI: NOT CONNECTED | {3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:215: {TEXT("Plan.EditingBlock"),NSLOCTEXT("DroneOps","Plan.EditingBlock","Route editing in progress: {0}. Review and deployment are blocked.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:216: {TEXT("Errors.ROLE_FORBIDDEN"),NSLOCTEXT("DroneOps","Errors.ROLE_FORBIDDEN","This client cannot perform this action.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:217: {TEXT("Errors.REQUEST_REJECTED"),NSLOCTEXT("DroneOps","Errors.REQUEST_REJECTED","The server rejected this request. Refresh and retry.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:218: {TEXT("Video.NoTargetHint"),NSLOCTEXT("DroneOps","Video.NoTargetHint","NO VIDEO TARGET\nChoose View Video to open a UAV feed.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:219: {TEXT("Fleet.Primary"),NSLOCTEXT("DroneOps","Fleet.Primary","PRIMARY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:220: {TEXT("Fleet.Multi"),NSLOCTEXT("DroneOps","Fleet.Multi","MULTI SELECTED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:221: {TEXT("Video.DescriptorTip"),NSLOCTEXT("DroneOps","Video.DescriptorTip","{0}\nConfigured visual: {1}\nAircraft model is not supplied by Descriptor.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:222: {TEXT("Events.backend_connected"),NSLOCTEXT("DroneOps","Events.backend_connected","Backend connected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:223: {TEXT("Events.backend_reconnected"),NSLOCTEXT("DroneOps","Events.backend_reconnected","Backend reconnected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:224: {TEXT("Events.backend_disconnected"),NSLOCTEXT("DroneOps","Events.backend_disconnected","Backend disconnected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:225: {TEXT("Events.client_connected"),NSLOCTEXT("DroneOps","Events.client_connected","{source} client connected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:226: {TEXT("Events.client_disconnected"),NSLOCTEXT("DroneOps","Events.client_disconnected","{source} client disconnected")},
+Source/UE5DroneControl/Shared/ProductText.cpp:227: {TEXT("Events.active_uav_changed"),NSLOCTEXT("DroneOps","Events.active_uav_changed","Active UAV changed: {target}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:228: {TEXT("Events.alert_selected"),NSLOCTEXT("DroneOps","Events.alert_selected","Alert selected: {target}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:229: {TEXT("Events.operation_mode_changed"),NSLOCTEXT("DroneOps","Events.operation_mode_changed","Operation mode changed: {target}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:230: {TEXT("Events.enter_alert_response"),NSLOCTEXT("DroneOps","Events.enter_alert_response","Entered alert response")},
+Source/UE5DroneControl/Shared/ProductText.cpp:231: {TEXT("Events.active_mission_id_changed"),NSLOCTEXT("DroneOps","Events.active_mission_id_changed","Mission selected: {target}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:232: {TEXT("Events.active_security_plan_id_changed"),NSLOCTEXT("DroneOps","Events.active_security_plan_id_changed","Plan selected: {target}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:233: {TEXT("Events.active_area_id_changed"),NSLOCTEXT("DroneOps","Events.active_area_id_changed","Area selected: {target}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:234: {TEXT("Stage1.Name"),NSLOCTEXT("DroneOps","Stage1.Name","DRONE SECURITY COMMAND SYSTEM")},
+Source/UE5DroneControl/Shared/ProductText.cpp:235: {TEXT("Stage1.Command"),NSLOCTEXT("DroneOps","Stage1.Command","COMMAND CENTER")},
+Source/UE5DroneControl/Shared/ProductText.cpp:236: {TEXT("Stage1.Map"),NSLOCTEXT("DroneOps","Stage1.Map","TACTICAL MAP")},
+Source/UE5DroneControl/Shared/ProductText.cpp:237: {TEXT("Stage1.Video"),NSLOCTEXT("DroneOps","Stage1.Video","VIDEO INTELLIGENCE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:238: {TEXT("Stage1.Identity"),NSLOCTEXT("DroneOps","Stage1.Identity","{0}  |  {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:239: {TEXT("Stage1.Health"),NSLOCTEXT("DroneOps","Stage1.Health","{0}   |   CMD {1}   MAP {2}   VID {3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:240: {TEXT("Stage1.System.READY"),NSLOCTEXT("DroneOps","Stage1.System.READY","SYSTEM READY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:241: {TEXT("Stage1.System.DEGRADED"),NSLOCTEXT("DroneOps","Stage1.System.DEGRADED","SYSTEM DEGRADED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:242: {TEXT("Stage1.System.OFFLINE"),NSLOCTEXT("DroneOps","Stage1.System.OFFLINE","BACKEND OFFLINE / RECONNECTING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:243: {TEXT("Stage1.Online"),NSLOCTEXT("DroneOps","Stage1.Online","ONLINE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:244: {TEXT("Stage1.Offline"),NSLOCTEXT("DroneOps","Stage1.Offline","OFFLINE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:245: {TEXT("Stage1.Detail"),NSLOCTEXT("DroneOps","Stage1.Detail","Language {0}  |  {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:246: {TEXT("Launcher.Layout"),NSLOCTEXT("DroneOps","Launcher.Layout","SINGLE-SCREEN MULTI-WINDOW  |  Focus a window for detailed work")},
+Source/UE5DroneControl/Shared/ProductText.cpp:247: {TEXT("Launcher.Start"),NSLOCTEXT("DroneOps","Launcher.Start","Launch System")},
+Source/UE5DroneControl/Shared/ProductText.cpp:248: {TEXT("Launcher.Shutdown"),NSLOCTEXT("DroneOps","Launcher.Shutdown","Shutdown System")},
+Source/UE5DroneControl/Shared/ProductText.cpp:249: {TEXT("Launcher.Restart"),NSLOCTEXT("DroneOps","Launcher.Restart","Restart")},
+Source/UE5DroneControl/Shared/ProductText.cpp:250: {TEXT("Launcher.Stop"),NSLOCTEXT("DroneOps","Launcher.Stop","Stop")},
+Source/UE5DroneControl/Shared/ProductText.cpp:251: {TEXT("Launcher.Focus"),NSLOCTEXT("DroneOps","Launcher.Focus","Focus")},
+Source/UE5DroneControl/Shared/ProductText.cpp:252: {TEXT("Launcher.Arrange"),NSLOCTEXT("DroneOps","Launcher.Arrange","Arrange Windows")},
+Source/UE5DroneControl/Shared/ProductText.cpp:253: {TEXT("Launcher.Existing"),NSLOCTEXT("DroneOps","Launcher.Existing","CONNECTED TO EXISTING INSTANCE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:254: {TEXT("Launcher.Error"),NSLOCTEXT("DroneOps","Launcher.Error","Operation failed:")},
+Source/UE5DroneControl/Shared/ProductText.cpp:255: {TEXT("Launcher.STARTING"),NSLOCTEXT("DroneOps","Launcher.STARTING","STARTING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:256: {TEXT("Launcher.READY"),NSLOCTEXT("DroneOps","Launcher.READY","SYSTEM READY")},
+Source/UE5DroneControl/Shared/ProductText.cpp:257: {TEXT("Launcher.DEGRADED"),NSLOCTEXT("DroneOps","Launcher.DEGRADED","SYSTEM DEGRADED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:258: {TEXT("Launcher.FAILED"),NSLOCTEXT("DroneOps","Launcher.FAILED","FAILED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:259: {TEXT("Launcher.STOPPING"),NSLOCTEXT("DroneOps","Launcher.STOPPING","STOPPING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:260: {TEXT("Launcher.STOPPED"),NSLOCTEXT("DroneOps","Launcher.STOPPED","STOPPED")},
+Source/UE5DroneControl/Shared/ProductText.cpp:261: {TEXT("Launcher.ONLINE"),NSLOCTEXT("DroneOps","Launcher.ONLINE","ONLINE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:262: {TEXT("Launcher.OFFLINE"),NSLOCTEXT("DroneOps","Launcher.OFFLINE","OFFLINE")},
+Source/UE5DroneControl/Shared/ProductText.cpp:263: {TEXT("Launcher.RECONNECTING"),NSLOCTEXT("DroneOps","Launcher.RECONNECTING","RECONNECTING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:264: {TEXT("Nav.Overview"),NSLOCTEXT("DroneOps","Nav.Overview","Overview")},
+Source/UE5DroneControl/Shared/ProductText.cpp:265: {TEXT("Nav.Plans"),NSLOCTEXT("DroneOps","Nav.Plans","Security Plans")},
+Source/UE5DroneControl/Shared/ProductText.cpp:266: {TEXT("Nav.Fleet"),NSLOCTEXT("DroneOps","Nav.Fleet","UAV Fleet")},
+Source/UE5DroneControl/Shared/ProductText.cpp:267: {TEXT("Nav.Alerts"),NSLOCTEXT("DroneOps","Nav.Alerts","Alerts")},
+Source/UE5DroneControl/Shared/ProductText.cpp:268: {TEXT("Nav.Logs"),NSLOCTEXT("DroneOps","Nav.Logs","Logs")},
+Source/UE5DroneControl/Shared/ProductText.cpp:269: {TEXT("Workflow.NewPlan"),NSLOCTEXT("DroneOps","Workflow.NewPlan","+ New security plan")},
+Source/UE5DroneControl/Shared/ProductText.cpp:270: {TEXT("Workflow.BackPlans"),NSLOCTEXT("DroneOps","Workflow.BackPlans","Back to security plans")},
+Source/UE5DroneControl/Shared/ProductText.cpp:271: {TEXT("Workflow.OpenPlan"),NSLOCTEXT("DroneOps","Workflow.OpenPlan","Open plan")},
+Source/UE5DroneControl/Shared/ProductText.cpp:272: {TEXT("Workflow.CreateContinue"),NSLOCTEXT("DroneOps","Workflow.CreateContinue","Create and continue")},
+Source/UE5DroneControl/Shared/ProductText.cpp:273: {TEXT("Workflow.NextTask"),NSLOCTEXT("DroneOps","Workflow.NextTask","Next: task configuration")},
+Source/UE5DroneControl/Shared/ProductText.cpp:274: {TEXT("Workflow.BasicInfo"),NSLOCTEXT("DroneOps","Workflow.BasicInfo","Basic information")},
+Source/UE5DroneControl/Shared/ProductText.cpp:275: {TEXT("Workflow.TaskConfig"),NSLOCTEXT("DroneOps","Workflow.TaskConfig","Task configuration")},
+Source/UE5DroneControl/Shared/ProductText.cpp:276: {TEXT("Workflow.RouteEditing"),NSLOCTEXT("DroneOps","Workflow.RouteEditing","Route editing")},
+Source/UE5DroneControl/Shared/ProductText.cpp:277: {TEXT("Workflow.PreDeployReview"),NSLOCTEXT("DroneOps","Workflow.PreDeployReview","Pre-deployment check")},
+Source/UE5DroneControl/Shared/ProductText.cpp:278: {TEXT("Workflow.Deployed"),NSLOCTEXT("DroneOps","Workflow.Deployed","Deployed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:279: {TEXT("Workflow.EditMap"),NSLOCTEXT("DroneOps","Workflow.EditMap","Edit Route in Map →")},
+Source/UE5DroneControl/Shared/ProductText.cpp:280: {TEXT("Workflow.ReturnMap"),NSLOCTEXT("DroneOps","Workflow.ReturnMap","Switch to Map / Retry")},
+Source/UE5DroneControl/Shared/ProductText.cpp:281: {TEXT("Workflow.BackEdit"),NSLOCTEXT("DroneOps","Workflow.BackEdit","Return to task configuration")},
+Source/UE5DroneControl/Shared/ProductText.cpp:282: {TEXT("Workflow.ConfirmDeploy"),NSLOCTEXT("DroneOps","Workflow.ConfirmDeploy","Confirm and deploy →")},
+Source/UE5DroneControl/Shared/ProductText.cpp:283: {TEXT("Workflow.NewVersion"),NSLOCTEXT("DroneOps","Workflow.NewVersion","Create a new version from this plan")},
+Source/UE5DroneControl/Shared/ProductText.cpp:284: {TEXT("Workflow.DefaultTask"),NSLOCTEXT("DroneOps","Workflow.DefaultTask","Task 01")},
+Source/UE5DroneControl/Shared/ProductText.cpp:285: {TEXT("Workflow.Step"),NSLOCTEXT("DroneOps","Workflow.Step","{0}  {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:286: {TEXT("Workflow.ActiveStep"),NSLOCTEXT("DroneOps","Workflow.ActiveStep","● {0}  {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:287: {TEXT("Workflow.PlanCard"),NSLOCTEXT("DroneOps","Workflow.PlanCard","{0}  ·  Tasks: {1}\nLast modified: {2}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:288: {TEXT("Workflow.MapEditingStatus"),NSLOCTEXT("DroneOps","Workflow.MapEditingStatus","Editing in Map\n{0}\n{1} · {2}\nSaved waypoints: {3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:289: {TEXT("Workflow.MapOfflineStatus"),NSLOCTEXT("DroneOps","Workflow.MapOfflineStatus","Map client offline\nYour saved draft is retained.\n{0}\n{1} · {2}\nSaved waypoints: {3}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:290: {TEXT("Workflow.SaveDraft"),NSLOCTEXT("DroneOps","Workflow.SaveDraft","Save draft")},
+Source/UE5DroneControl/Shared/ProductText.cpp:291: {TEXT("Workflow.FinishRoute"),NSLOCTEXT("DroneOps","Workflow.FinishRoute","Finish route editing")},
+Source/UE5DroneControl/Shared/ProductText.cpp:292: {TEXT("Workflow.ContinueEditing"),NSLOCTEXT("DroneOps","Workflow.ContinueEditing","Continue editing")},
+Source/UE5DroneControl/Shared/ProductText.cpp:293: {TEXT("Workflow.CurrentPlan"),NSLOCTEXT("DroneOps","Workflow.CurrentPlan","Current security plan\n{0}\n{1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:294: {TEXT("Workflow.RecentEvents"),NSLOCTEXT("DroneOps","Workflow.RecentEvents","Recent events")},
+Source/UE5DroneControl/Shared/ProductText.cpp:295: {TEXT("Workflow.GlobalHint"),NSLOCTEXT("DroneOps","Workflow.GlobalHint","Create → Configure → Edit route → Check → Deploy")},
+Source/UE5DroneControl/Shared/ProductText.cpp:296: {TEXT("Workflow.DeploymentNotice"),NSLOCTEXT("DroneOps","Workflow.DeploymentNotice","Configuration is deployed. The UAV has not started executing.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:297: {TEXT("Events.ROUTE_EDIT_STARTED"),NSLOCTEXT("DroneOps","Events.ROUTE_EDIT_STARTED","Route editing started: {mission_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:298: {TEXT("Events.ROUTE_SAVED"),NSLOCTEXT("DroneOps","Events.ROUTE_SAVED","Route draft saved: {mission_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:299: {TEXT("Events.ROUTE_EDIT_COMPLETED"),NSLOCTEXT("DroneOps","Events.ROUTE_EDIT_COMPLETED","Route editing completed: {mission_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:300: {TEXT("Workflow.Chinese"),NSLOCTEXT("DroneOps","Workflow.Chinese","中文")},
+Source/UE5DroneControl/Shared/ProductText.cpp:301: {TEXT("Workflow.English"),NSLOCTEXT("DroneOps","Workflow.English","English")},
+Source/UE5DroneControl/Shared/ProductText.cpp:302: {TEXT("Workflow.Undo"),NSLOCTEXT("DroneOps","Workflow.Undo","Undo")},
+Source/UE5DroneControl/Shared/ProductText.cpp:303: {TEXT("Workflow.EditSpeed"),NSLOCTEXT("DroneOps","Workflow.EditSpeed","Edit speed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:304: {TEXT("Workflow.Waypoint"),NSLOCTEXT("DroneOps","Workflow.Waypoint","Waypoint {0}  ·  Height {1} m  ·  Speed {2} m/s")},
+Source/UE5DroneControl/Shared/ProductText.cpp:305: {TEXT("Workflow.RouteStats"),NSLOCTEXT("DroneOps","Workflow.RouteStats","Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)")},
+Source/UE5DroneControl/Shared/ProductText.cpp:306: {TEXT("Events.PLAN_DELETED"),NSLOCTEXT("DroneOps","Events.PLAN_DELETED","Draft deleted: {plan_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:307: {TEXT("Workflow.DeleteDraft"),NSLOCTEXT("DroneOps","Workflow.DeleteDraft","Confirm delete draft")},
+Source/UE5DroneControl/Shared/ProductText.cpp:308: {TEXT("Workflow.Duplicate"),NSLOCTEXT("DroneOps","Workflow.Duplicate","Duplicate")},
+Source/UE5DroneControl/Shared/ProductText.cpp:309: {TEXT("Workflow.SaveExit"),NSLOCTEXT("DroneOps","Workflow.SaveExit","Save and exit")},
+Source/UE5DroneControl/Shared/ProductText.cpp:310: {TEXT("Workflow.AssignedUAV"),NSLOCTEXT("DroneOps","Workflow.AssignedUAV","Assigned UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:311: {TEXT("Workflow.Patrol"),NSLOCTEXT("DroneOps","Workflow.Patrol","Task type: Patrol")},
+Source/UE5DroneControl/Shared/ProductText.cpp:312: {TEXT("Workflow.StepInfo"),NSLOCTEXT("DroneOps","Workflow.StepInfo","Info")},
+Source/UE5DroneControl/Shared/ProductText.cpp:313: {TEXT("Workflow.StepTask"),NSLOCTEXT("DroneOps","Workflow.StepTask","Tasks")},
+Source/UE5DroneControl/Shared/ProductText.cpp:314: {TEXT("Workflow.StepRoute"),NSLOCTEXT("DroneOps","Workflow.StepRoute","Route")},
+Source/UE5DroneControl/Shared/ProductText.cpp:315: {TEXT("Workflow.StepCheck"),NSLOCTEXT("DroneOps","Workflow.StepCheck","Check")},
+Source/UE5DroneControl/Shared/ProductText.cpp:316: {TEXT("Workflow.StepDeploy"),NSLOCTEXT("DroneOps","Workflow.StepDeploy","Deploy")},
+Source/UE5DroneControl/Shared/ProductText.cpp:317: {TEXT("Workflow.DeploymentSuccess"),NSLOCTEXT("DroneOps","Workflow.DeploymentSuccess","✓ Security plan deployed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:318: {TEXT("Workflow.CheckInformation"),NSLOCTEXT("DroneOps","Workflow.CheckInformation","Check task assignment and saved route below.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:319: {TEXT("Workflow.Readiness"),NSLOCTEXT("DroneOps","Workflow.Readiness","Backend: {0}   ·   Map: {1}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:320: {TEXT("Workflow.RouteEditBanner"),NSLOCTEXT("DroneOps","Workflow.RouteEditBanner","● ROUTE EDITING")},
+Source/UE5DroneControl/Shared/ProductText.cpp:321: {TEXT("Map.SAVED"),NSLOCTEXT("DroneOps","Map.SAVED","Saved · editing continues")},
+Source/UE5DroneControl/Shared/ProductText.cpp:322: {TEXT("Workflow.VersionName"),NSLOCTEXT("DroneOps","Workflow.VersionName","{0} — new version")},
+Source/UE5DroneControl/Shared/ProductText.cpp:323: {TEXT("Workflow.LastSaved"),NSLOCTEXT("DroneOps","Workflow.LastSaved","Last saved: {0}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:324: {TEXT("Events.PLAN_OPENED"),NSLOCTEXT("DroneOps","Events.PLAN_OPENED","Opened {plan_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:325: {TEXT("Events.PLAN_VERSION_CREATED"),NSLOCTEXT("DroneOps","Events.PLAN_VERSION_CREATED","Created a new version: {plan_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:326: {TEXT("Events.PLAN_REVIEW_READY"),NSLOCTEXT("DroneOps","Events.PLAN_REVIEW_READY","Pre-deployment check ready: {plan_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:327: {TEXT("Events.MISSION_CONFIGURED"),NSLOCTEXT("DroneOps","Events.MISSION_CONFIGURED","Task configured: {mission_name} · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:328: {TEXT("Errors.MAP_FOCUS_MANUAL"),NSLOCTEXT("DroneOps","Errors.MAP_FOCUS_MANUAL","Select the Map window or use Launcher Focus.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:329: {TEXT("Workflow.CreatedAt"),NSLOCTEXT("DroneOps","Workflow.CreatedAt","Created: {0}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:330: {TEXT("Workflow.ReviewDistance"),NSLOCTEXT("DroneOps","Workflow.ReviewDistance","Route distance: {0} m")},
+Source/UE5DroneControl/Shared/ProductText.cpp:331: {TEXT("Execution.Deploy"),NSLOCTEXT("DroneOps","Execution.Deploy","Deploy Plan →")},
+Source/UE5DroneControl/Shared/ProductText.cpp:332: {TEXT("Execution.Start"),NSLOCTEXT("DroneOps","Execution.Start","Start Mission →")},
+Source/UE5DroneControl/Shared/ProductText.cpp:333: {TEXT("Execution.Open"),NSLOCTEXT("DroneOps","Execution.Open","Open mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:334: {TEXT("Execution.None"),NSLOCTEXT("DroneOps","Execution.None","No active mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:335: {TEXT("Execution.Simulation"),NSLOCTEXT("DroneOps","Execution.Simulation","SIMULATION · Mock UAV")},
+Source/UE5DroneControl/Shared/ProductText.cpp:336: {TEXT("Execution.Monitor"),NSLOCTEXT("DroneOps","Execution.Monitor","Execution Monitor · SIMULATION")},
+Source/UE5DroneControl/Shared/ProductText.cpp:337: {TEXT("Execution.ReadOnly"),NSLOCTEXT("DroneOps","Execution.ReadOnly","Deployed route is read-only")},
+Source/UE5DroneControl/Shared/ProductText.cpp:338: {TEXT("Execution.Summary"),NSLOCTEXT("DroneOps","Execution.Summary","{0}\n{1} · {2}\n{3}\nWaypoint {4} / {5} · {6}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:339: {TEXT("Execution.Confirm"),NSLOCTEXT("DroneOps","Execution.Confirm","Confirm")},
+Source/UE5DroneControl/Shared/ProductText.cpp:340: {TEXT("Execution.Pause"),NSLOCTEXT("DroneOps","Execution.Pause","Pause mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:341: {TEXT("Execution.Resume"),NSLOCTEXT("DroneOps","Execution.Resume","Resume mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:342: {TEXT("Execution.Return"),NSLOCTEXT("DroneOps","Execution.Return","Return Home")},
+Source/UE5DroneControl/Shared/ProductText.cpp:343: {TEXT("Execution.Abort"),NSLOCTEXT("DroneOps","Execution.Abort","Abort mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:344: {TEXT("Execution.Cancel"),NSLOCTEXT("DroneOps","Execution.Cancel","Cancel")},
+Source/UE5DroneControl/Shared/ProductText.cpp:345: {TEXT("Execution.History"),NSLOCTEXT("DroneOps","Execution.History","Execution history / View plan")},
+Source/UE5DroneControl/Shared/ProductText.cpp:346: {TEXT("Execution.Video"),NSLOCTEXT("DroneOps","Execution.Video","View mission UAV video")},
+Source/UE5DroneControl/Shared/ProductText.cpp:347: {TEXT("Execution.Duration"),NSLOCTEXT("DroneOps","Execution.Duration","Execution time: {0} seconds")},
+Source/UE5DroneControl/Shared/ProductText.cpp:348: {TEXT("Execution.StartConfirm"),NSLOCTEXT("DroneOps","Execution.StartConfirm","Confirm mission execution")},
+Source/UE5DroneControl/Shared/ProductText.cpp:349: {TEXT("Execution.MockCheck"),NSLOCTEXT("DroneOps","Execution.MockCheck","Simulation preflight checks deployment, route, Mock UAV availability and execution conflicts. Backend confirms every action.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:350: {TEXT("Execution.returnConfirm"),NSLOCTEXT("DroneOps","Execution.returnConfirm","Confirm Return Home? Remaining waypoints will be skipped. The Mock UAV will return to its defined Home.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:351: {TEXT("Execution.abortConfirm"),NSLOCTEXT("DroneOps","Execution.abortConfirm","Confirm abort? This execution cannot be resumed. The Mock UAV will stop at its current position.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:352: {TEXT("Execution.ShutdownConfirm"),NSLOCTEXT("DroneOps","Execution.ShutdownConfirm","A simulated mission is active. Shutdown will persist it as paused and stop local simulation. Continue?")},
+Source/UE5DroneControl/Shared/ProductText.cpp:353: {TEXT("Execution.ROUTE_FINISHED"),NSLOCTEXT("DroneOps","Execution.ROUTE_FINISHED","All waypoints completed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:354: {TEXT("Execution.RETURNED_HOME"),NSLOCTEXT("DroneOps","Execution.RETURNED_HOME","Returned to simulation Home")},
+Source/UE5DroneControl/Shared/ProductText.cpp:355: {TEXT("Execution.CREATED"),NSLOCTEXT("DroneOps","Execution.CREATED","Mission created")},
+Source/UE5DroneControl/Shared/ProductText.cpp:356: {TEXT("Execution.PREFLIGHT"),NSLOCTEXT("DroneOps","Execution.PREFLIGHT","Checking simulation conditions")},
+Source/UE5DroneControl/Shared/ProductText.cpp:357: {TEXT("Execution.STARTING"),NSLOCTEXT("DroneOps","Execution.STARTING","Starting mission…")},
+Source/UE5DroneControl/Shared/ProductText.cpp:358: {TEXT("Execution.EXECUTING"),NSLOCTEXT("DroneOps","Execution.EXECUTING","Mission executing")},
+Source/UE5DroneControl/Shared/ProductText.cpp:359: {TEXT("Execution.PAUSED"),NSLOCTEXT("DroneOps","Execution.PAUSED","Mission paused")},
+Source/UE5DroneControl/Shared/ProductText.cpp:360: {TEXT("Execution.RETURNING"),NSLOCTEXT("DroneOps","Execution.RETURNING","Returning Home")},
+Source/UE5DroneControl/Shared/ProductText.cpp:361: {TEXT("Execution.COMPLETED"),NSLOCTEXT("DroneOps","Execution.COMPLETED","Mission completed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:362: {TEXT("Execution.ABORTED"),NSLOCTEXT("DroneOps","Execution.ABORTED","Mission aborted")},
+Source/UE5DroneControl/Shared/ProductText.cpp:363: {TEXT("Execution.FAILED"),NSLOCTEXT("DroneOps","Execution.FAILED","Mission failed")},
+Source/UE5DroneControl/Shared/ProductText.cpp:364: {TEXT("Errors.MOCK_UAV_UNAVAILABLE"),NSLOCTEXT("DroneOps","Errors.MOCK_UAV_UNAVAILABLE","Mock UAV unavailable. Check the simulation fixture and registry.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:365: {TEXT("Errors.EXECUTION_CONFLICT"),NSLOCTEXT("DroneOps","Errors.EXECUTION_CONFLICT","This UAV already has an active mission.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:366: {TEXT("Errors.EXECUTION_STALE"),NSLOCTEXT("DroneOps","Errors.EXECUTION_STALE","Mission state changed. Review the current state and retry.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:367: {TEXT("Errors.EXECUTION_STATE_INVALID"),NSLOCTEXT("DroneOps","Errors.EXECUTION_STATE_INVALID","This action is unavailable in the current mission state.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:368: {TEXT("Errors.EXECUTION_NOT_FOUND"),NSLOCTEXT("DroneOps","Errors.EXECUTION_NOT_FOUND","Execution no longer exists.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:369: {TEXT("Errors.IMMUTABLE_ROUTE_MISSING"),NSLOCTEXT("DroneOps","Errors.IMMUTABLE_ROUTE_MISSING","The deployed route snapshot is missing.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:370: {TEXT("Errors.REQUEST_ID_REQUIRED"),NSLOCTEXT("DroneOps","Errors.REQUEST_ID_REQUIRED","Execution request identifier is required.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:371: {TEXT("Errors.REQUEST_ID_REUSED"),NSLOCTEXT("DroneOps","Errors.REQUEST_ID_REUSED","Request identifier conflict.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:372: {TEXT("Errors.DEPLOYMENT_MISSING"),NSLOCTEXT("DroneOps","Errors.DEPLOYMENT_MISSING","Deployment snapshot is missing.")},
+Source/UE5DroneControl/Shared/ProductText.cpp:373: {TEXT("Events.EXECUTION_CREATED"),NSLOCTEXT("DroneOps","Events.EXECUTION_CREATED","Mission execution created · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:374: {TEXT("Events.PREFLIGHT_STARTED"),NSLOCTEXT("DroneOps","Events.PREFLIGHT_STARTED","Simulation preflight started · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:375: {TEXT("Events.PREFLIGHT_PASSED"),NSLOCTEXT("DroneOps","Events.PREFLIGHT_PASSED","Simulation preflight passed · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:376: {TEXT("Events.MISSION_STARTING"),NSLOCTEXT("DroneOps","Events.MISSION_STARTING","Mission starting · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:377: {TEXT("Events.MISSION_STARTED"),NSLOCTEXT("DroneOps","Events.MISSION_STARTED","Mission started · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:378: {TEXT("Events.MISSION_PAUSED"),NSLOCTEXT("DroneOps","Events.MISSION_PAUSED","Mission paused · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:379: {TEXT("Events.MISSION_RESUMED"),NSLOCTEXT("DroneOps","Events.MISSION_RESUMED","Mission resumed · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:380: {TEXT("Events.WAYPOINT_REACHED"),NSLOCTEXT("DroneOps","Events.WAYPOINT_REACHED","Waypoint reached · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:381: {TEXT("Events.MISSION_RETURNING"),NSLOCTEXT("DroneOps","Events.MISSION_RETURNING","Returning Home · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:382: {TEXT("Events.MISSION_ABORTED"),NSLOCTEXT("DroneOps","Events.MISSION_ABORTED","Mission aborted · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:383: {TEXT("Events.MISSION_COMPLETED"),NSLOCTEXT("DroneOps","Events.MISSION_COMPLETED","Mission completed · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:384: {TEXT("Events.MISSION_FAILED"),NSLOCTEXT("DroneOps","Events.MISSION_FAILED","Mission failed · {uav_id}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:385: {TEXT("Execution.Estimate"),NSLOCTEXT("DroneOps","Execution.Estimate","Estimated distance: {0} m · Time: {1} seconds")},
+Source/UE5DroneControl/Shared/ProductText.cpp:386: {TEXT("Execution.MockAvailable"),NSLOCTEXT("DroneOps","Execution.MockAvailable","✓ Mock UAV configured")},
+Source/UE5DroneControl/Shared/ProductText.cpp:387: {TEXT("Events.DEPLOYMENT_CREATED"),NSLOCTEXT("DroneOps","Events.DEPLOYMENT_CREATED","Deployment created: {plan_name}")},
+Source/UE5DroneControl/Shared/ProductText.cpp:388: {TEXT("Execution.ConfirmStart"),NSLOCTEXT("DroneOps","Execution.ConfirmStart","Confirm Start Mission")},
+Source/UE5DroneControl/Shared/ProductText.cpp:389: {TEXT("Execution.ConfirmReturn"),NSLOCTEXT("DroneOps","Execution.ConfirmReturn","Confirm Return")},
+Source/UE5DroneControl/Shared/ProductText.cpp:390: {TEXT("Execution.ConfirmAbort"),NSLOCTEXT("DroneOps","Execution.ConfirmAbort","Confirm Abort")},
+Source/UE5DroneControl/Shared/ProductText.cpp:391: {TEXT("Execution.NoConflict"),NSLOCTEXT("DroneOps","Execution.NoConflict","No active execution conflict")},
+Source/UE5DroneControl/Shared/ProductText.cpp:392: {TEXT("Execution.DeploymentValid"),NSLOCTEXT("DroneOps","Execution.DeploymentValid","Immutable deployment and saved route")},
+Source/UE5DroneControl/Shared/ProductText.cpp:395: FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
+Source/UE5DroneControl/Shared/ProductText.cpp:396: FText ProductText::Source(const FString& Source){
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:41: auto* UavLabel=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(UavLabel,14);UavLabel->SetText(FText::FromString(TEXT("ASSIGNMENT UAV")));Editing->AddChild(UavLabel);UAVs=Combo(Editing);
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:72: if(State){const int64 Version=static_cast<int64>(State->GetNumberField(TEXT("version")));if(Version!=ViewedVersion){if(ViewedVersion>=0 && !bPending){bConfirm=false;Result->SetText(FText::FromString(TEXT("Backend state updated")));}ViewedVersion=Version;}}
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:107: if(bPending)return;bPending=true;Result->SetText(FText::FromString(TEXT("Waiting for Backend...")));
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:115: })) {bPending=false;Result->SetText(FText::FromString(TEXT("Backend not connected")));}
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:146: if(Name==TEXT("cancel")){bConfirm=false;Result->SetText(FText::FromString(TEXT("Deployment cancelled")));return;}
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:150: if(bMap && (!bEditor || (Plan && Field(Plan,TEXT("status"))==TEXT("DEPLOYED") && Name!=TEXT("create_plan")))){Result->SetText(FText::FromString(TEXT("Plan is read-only")));return;}
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:151: if(Name==TEXT("edit_route")){if(!CurrentMission())return;LoadRoute(true);PC->SetMissionPathEditing(true);Result->SetText(FText::FromString(TEXT("Click map to add; select waypoint and drag its axes to move.")));return;}
+Source/UE5DroneControl/Shared/SecurityPlanPanel.cpp:153: if(Name==TEXT("clear_route")){FDronePathSaveData Empty;Empty.PathId=FMath::Max(1,GetAssignedUAV());PC->LoadMissionPath(Empty,true);Result->SetText(FText::FromString(TEXT("Route cleared locally. SAVE ROUTE to persist.")));return;}
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:53: Lines.Add(ProductText::Get(TEXT("Plan.")+Field(M,TEXT("status"))));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:58: if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();Lines.Add(FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(Field(Find(State,TEXT("missions"),Field(I,TEXT("mission_id"))),TEXT("name"))),ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code")))));}
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:63: Lines.Add(FText::Format(T(TEXT("Workflow.Readiness")),ProductText::Get(Sync->IsReady()?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),ProductText::Get(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:176: Label(WidgetTree,PlanCards,FText::Format(T(TEXT("Workflow.PlanCard")),ProductText::Get(TEXT("Plan.")+Field(Card,TEXT("status"))),FText::AsNumber(Card->GetArrayField(TEXT("mission_ids")).Num()),FText::AsDateTime(FDateTime::FromUnixTimestamp(Card->GetNumberField(TEXT("updated_at"))))));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:182: TArray<FText> Lines{P?ProductText::Get(TEXT("Plan.")+Status):T(TEXT("Plan.NoPlan"))};const auto V=Object(P,TEXT("validation"));if(V)Lines.Add(FText::Format(T(TEXT("Plan.Counts")),FText::AsNumber(V->GetNumberField(TEXT("mission_count"))),FText::AsNumber(V->GetNumberField(TEXT("assigned_count"))),FText::AsNumber(V->GetNumberField(TEXT("routes_ready")))));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:191: Result->SetText(bPending?T(TEXT("Common.Waiting")):ErrorCode.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+ErrorCode));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:297: }else if(Prompt)Lines.Add(ProductText::Get(TEXT("Execution.")+ExecutionIntent+TEXT("Confirm")));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:300: if(!Field(E,TEXT("completion_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Execution.")+Field(E,TEXT("completion_reason"))));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:301: if(!Field(E,TEXT("failure_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Errors.")+Field(E,TEXT("failure_reason"))));
+Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp:305: if(All)for(const auto& Entry:All->Values){const auto Item=Entry.Value->AsObject();if(Field(Item,TEXT("plan_id"))==PlanId)Lines.Add(FText::Format(User(TEXT("{0}  {1}  {2}")),User(Field(Item,TEXT("execution_id"))),ProductText::Get(TEXT("Execution.")+Field(Item,TEXT("state"))),FText::AsDateTime(FDateTime::FromUnixTimestamp(Item->GetNumberField(TEXT("created_at"))))));}
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:27: Identity->SetText(FText::Format(ProductText::Get(TEXT("Stage1.Identity")),ProductText::Get(TEXT("Stage1.Name")),ProductText::Get(RoleKey)));
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:31: Health->SetText(FText::Format(ProductText::Get(TEXT("Stage1.Health")),ProductText::Get(TEXT("Stage1.System.")+State),
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:32: ProductText::Get(Sync->IsRoleOnline(TEXT("Command"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:33: ProductText::Get(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:34: ProductText::Get(Sync->IsRoleOnline(TEXT("Video"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
+Source/UE5DroneControl/Shared/Stage1HeaderWidget.cpp:37: Detail->SetText(FText::Format(ProductText::Get(TEXT("Stage1.Detail")),FText::AsCultureInvariant(Language),
+Source/UE5DroneControl/Tests/P4WorkflowTest.cpp:41: Test->TestTrue(TEXT("no target catalog contains explicit instruction"),ProductText::Get(TEXT("Video.NoTargetHint")).ToString().Contains(TEXT("video")) || ProductText::Get(TEXT("Video.NoTargetHint")).ToString().Contains(TEXT("视频")));
+Source/UE5DroneControl/Tests/P4WorkflowTest.cpp:42: const FText Stable=ProductText::Get(TEXT("Plan.Title"));S->ApplyUIPreferences(Language(90000,TEXT("zh-Hans")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:81: Title->SetText(FText::FromString(TEXT("飞行速度")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:87: Hint->SetText(FText::FromString(TEXT("新航点和地图点击移动")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:98: SpeedLabel->SetText(FText::FromString(TEXT("速度")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:107: SpeedInput->SetHintText(FText::FromString(TEXT("0 / 0.5 - 15")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:108: SpeedInput->SetText(FText::FromString(TEXT("1")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:118: UnitLabel->SetText(FText::FromString(TEXT("m/s")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:129: ApplyLabel->SetText(FText::FromString(TEXT("应用")));
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:147: SetStatus(FText::FromString(TEXT("当前 1 m/s · 0 不限速")), StatusNormalColor);
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:183: SetStatus(FText::FromString(TEXT("速度控制器不可用")), StatusErrorColor);
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:191: SetStatus(FText::FromString(TEXT("请输入数字：0 或 0.5 - 15")), StatusErrorColor);
+Source/UE5DroneControl/UI/DefaultSegmentSpeedWidget.cpp:197: SetStatus(FText::FromString(TEXT("限速值必须是 0.5 - 15 m/s；0 表示不限速")), StatusErrorColor);
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:12: FText BoolText(bool bValue) { return bValue ? FText::FromString(TEXT("是")) : FText::FromString(TEXT("否")); }
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:18: case EDroneTaskState::Moving: return FText::FromString(TEXT("移动中"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:19: case EDroneTaskState::Assembling: return FText::FromString(TEXT("集结中"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:20: case EDroneTaskState::Scouting: return FText::FromString(TEXT("侦察中"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:21: case EDroneTaskState::Patrolling: return FText::FromString(TEXT("巡逻中"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:22: case EDroneTaskState::Attacking: return FText::FromString(TEXT("执行攻击"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:23: case EDroneTaskState::Paused: return FText::FromString(TEXT("已暂停"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:24: case EDroneTaskState::Avoiding: return FText::FromString(TEXT("避障中"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:25: case EDroneTaskState::Completed: return FText::FromString(TEXT("已完成"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:26: case EDroneTaskState::Error: return FText::FromString(TEXT("异常"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:27: default: return FText::FromString(TEXT("待命"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:70: SetVideoStatus(FText::FromString(TEXT("已断联 / 视频中断")), !VideoUrl.IsEmpty());
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:76: SetText(BatteryText, Snapshot.Battery >= 0 ? FText::FromString(FString::Printf(TEXT("%d%%"), Snapshot.Battery)) : FText::FromString(TEXT("--")));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:85: : FText::FromString(TEXT("尚无遥测")));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:89: SetVideoStatus(FText::FromString(TEXT("已断联 / 视频中断")), !VideoUrl.IsEmpty());
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:115: SetVideoStatus(FText::FromString(TEXT("无视频源")), false);
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:120: SetVideoStatus(FText::FromString(TEXT("视频控件未配置")), true);
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:156: case EDroneAvailability::Online: return FText::FromString(TEXT("在线"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:157: case EDroneAvailability::Lost: return FText::FromString(TEXT("已断联"));
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:158: default: return FText::FromString(TEXT("离线"));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:55: CommandSummary->SetText(FText::Format(ProductText::Get(TEXT("Fleet.Summary")),FText::AsNumber(DroneId),FText::AsCultureInvariant(Battery),ProductText::Source(TaskName)));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:68: DroneNameText->SetText(ProductText::Source(Name));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:76: StatusText->SetText(ProductText::Source(TEXT("连接")));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:79: StatusText->SetText(ProductText::Source(TEXT("失联")));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:83: StatusText->SetText(ProductText::Source(TEXT("离线")));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:216: SelectButtonText->SetText(ProductText::Source(bCommandSelection
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:275: Text->SetText(ProductText::Source(Value));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:449: Ptr->SetText(ProductText::Source(Label));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:541: ProductText::Source(bIsCollapsed ? TEXT("▶") : TEXT("▼")));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:559: DroneIdText->SetText(ProductText::Source(FString::Printf(TEXT("ID: %d"), InDroneId)));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:592: ConnectionStatusText->SetText(ProductText::Source(ConnText));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:597: StatusText->SetText(ProductText::Source(ConnText));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:610: GpsText->SetText(ProductText::Source(FString::Printf(
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:618: AltitudeText->SetText(ProductText::Source(FString::Printf(
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:635: BatteryText->SetText(ProductText::Source(BatText));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:723: TaskStatusText->SetText(ProductText::Source(DisplayText));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:730: StatusSourceText->SetText(ProductText::Source(
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:745: WaypointText->SetText(ProductText::Source(FString::Printf(
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:753: TargetIndexText->SetText(ProductText::Source(FString::Printf(
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:776: UpdateTimeText->SetText(ProductText::Source(TimeStr));
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:842: DroneNameText->SetText(ProductText::Source(Settings.DisplayName));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:115: Text->SetText(ProductText::Source(Value));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:133: RefreshLabel->SetText(FText::FromString(TEXT("刷新连接")));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:155: VideoKeyboardControlLabel->SetText(FText::FromString(TEXT("视频键盘操控")));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:386: RefreshStatusText->SetText(ProductText::Get(TEXT("Fleet.Local")));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:511: RefreshStatusText->SetText(ProductText::Get(TEXT("Fleet.Local")));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:533: RefreshStatusText->SetText(FText::FromString(TEXT("严格本地预演模式：无法请求刷新")));
+Source/UE5DroneControl/UI/DroneListWidget.cpp:550: RefreshStatusText->SetText(FText::FromString(TEXT("正在探测断连无人机...")));
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.cpp:163: NameInput->SetHintText(FText::FromString(TEXT("无人机名称…")));
+Source/UE5DroneControl/UI/DroneNameEditPopupWidget.cpp:184: Dot->SetText(FText::FromString(TEXT("  ")));
+Source/UE5DroneControl/UI/DroneNameLabelWidget.cpp:28: LabelText->SetText(FText::FromString(TEXT("UAV")));
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.cpp:119: SetVideoStatus(FText::FromString(TEXT("无视频源")), false);
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.cpp:124: SetVideoStatus(FText::FromString(TEXT("视频控件未配置")), true);
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.cpp:161: SetVideoStatus(FText::FromString(TEXT("视频加载失败，请点“重试”")), true);
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.cpp:193: SetVideoStatus(FText::FromString(TEXT("视频加载失败，请点“重试”")), true);
+Source/UE5DroneControl/UI/EnemyDroneListWidget.cpp:300: NameText->SetText(FText::FromString(TEXT("敌方目标")));
+Source/UE5DroneControl/UI/EnemyDroneListWidget.cpp:320: SelectButtonText->SetText(FText::FromString(TEXT("选中")));
+Source/UE5DroneControl/UI/EnemyDroneListWidget.cpp:332: DeleteLabel->SetText(FText::FromString(TEXT("删除")));
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:267: CoordinateVectorInput->SetHintText(FText::FromString(TEXT("例如  (116.347, 39.981, 63)")));
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:475: AltitudeLabel->SetText(FText::FromString(TEXT("海拔（m，平均海平面）")));
+Source/UE5DroneControl/UI/GeographicTargetPanelWidget.cpp:605: Input->SetHintText(FText::FromString(TEXT("(经度, 纬度, 海拔 m)")));
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.cpp:168: ClearButton->SetToolTipText(FText::FromString(TEXT("立即清除当前显示的全部投影线")));
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.cpp:324: StatusText->SetText(FText::FromString(TEXT("投影线将在 30 秒后自动消失")));
+Source/UE5DroneControl/UI/GroundProjectionSettingsWidget.cpp:338: StatusText->SetText(FText::FromString(TEXT("投影线已清除")));
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.cpp:41: MessageText->SetText(FText::FromString(TEXT("请选择操作")));
+Source/UE5DroneControl/UI/PreviewConfirmPopupWidget.cpp:51: AttackPromptText->SetText(FText::FromString(TEXT("是否攻击？")));
+Source/UE5DroneControl/Variant_TwinStick/AI/TwinStickStateTreeUtility.cpp:10: #define LOCTEXT_NAMESPACE "TopDownTemplate"
+Source/UE5DroneControl/Variant_TwinStick/AI/TwinStickStateTreeUtility.cpp:27: return LOCTEXT("StateTreeTaskGetPlayerDescription", "<b>Get Player</b>");
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:60: W->SetText(ProductText::Source(Value));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:157: if (!Enabled) B->SetToolTipText(ProductText::Source(TEXT("Reserved for future integration")));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:212: return FText::Format(ProductText::Get(TEXT("Video.Feed")),FText::AsCultureInvariant(FString::Printf(TEXT("UAV-%02d"),Id)),ProductText::Source(Link),ProductText::Source(D.VideoUrl.IsEmpty()?TEXT("NO SOURCE"):TEXT("SOURCE SET")),Secondary?ProductText::Source(TEXT("VIDEO SLOT\nNO ACTIVE STREAM")):FText::GetEmpty()).ToString();
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:235: B->Label->SetText(ProductText::Source(FeedDescription(B->DroneId,false)));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:237: if (Registry->GetDroneDescriptor(B->DroneId,D)) B->SetToolTipText(FText::Format(ProductText::Get(TEXT("Video.DescriptorTip")),FText::AsCultureInvariant(D.Name),FText::AsCultureInvariant(GetDroneModelDisplayName(Registry->GetDroneModelType(B->DroneId)))));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:242: B->Label->SetText(ProductText::Source(FeedDescription(B->DroneId,true)));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:246: SystemHeader->SetText(FText::Format(ProductText::Get(TEXT("Video.System")),FText::AsNumber(Ids.Num()),FText::AsNumber(ViewMode),FText::AsNumber(MediaState==TEXT("PLAYING")?1:0),FText::AsCultureInvariant(FDateTime::Now().ToString(TEXT("%Y-%m-%d %H:%M:%S")))));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:265: Heading->SetText(FText::Format(ProductText::Get(TEXT("Video.Heading")),bValid?FText::AsCultureInvariant(FString::Printf(TEXT("UAV-%02d"),Id)):ProductText::Source(TEXT("NO TARGET"))));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:270: SystemHeader->SetText(FText::Format(ProductText::Get(TEXT("Video.Header")),FText::AsCultureInvariant(Sync->GetStatusText()),DisplayedDroneId>0?FText::AsCultureInvariant(FString::Printf(TEXT("UAV-%02d"),DisplayedDroneId)):ProductText::Source(TEXT("NO TARGET")),Global.IsEmpty()?ProductText::Source(TEXT("NO TARGET")):FText::AsCultureInvariant(Global)));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:344: Status->SetText(ProductText::Source(MediaState));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:348: Details->SetText(FText::Format(ProductText::Get(TEXT("Video.Details")),FText::AsCultureInvariant(DisplayedDroneId>0?FString::Printf(TEXT("UAV-%02d"),DisplayedDroneId):TEXT("")),FText::AsCultureInvariant(Resolution),FText::AsCultureInvariant(Rate),ProductText::Source(MediaState)));
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:353: EmptyVideo->SetText(DisplayedDroneId<=0?ProductText::Get(TEXT("Video.NoTargetHint")):ProductText::Source(SourceUrl.IsEmpty()?TEXT("NO SOURCE\nAssign a video source to this UAV"):*MediaState));

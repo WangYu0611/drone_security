@@ -1,0 +1,28 @@
+# Demo-only MediaMTX configuration for the UE drone information panel.
+# Publisher (Jetson or ffmpeg test source): rtsp://<host>:8554/drone-<id>
+# UE video_url (browser page, not the raw WHEP endpoint): http://<host>:8889/drone-<id>
+
+rtsp: true
+rtspAddress: :8554
+
+webrtc: true
+webrtcAddress: :8889
+# Current MediaMTX host. If MediaMTX is moved away from the UE/backend,
+# replace this with the MediaMTX machine's client-reachable LAN address.
+webrtcAdditionalHosts: [127.0.0.1]
+webrtcAllowOrigins: ['*']
+
+pathDefaults:
+  source: publisher
+  # Demo playback republishes existing recordings and must not record them again.
+  record: false
+  recordPath: D:/DroneData/recordings/%path/%Y-%m-%d_%H-%M-%S-%f
+  recordFormat: fmp4
+  recordPartDuration: 1s
+  recordSegmentDuration: 10m
+  recordDeleteAfter: 0s
+
+paths:
+  drone-1: {}
+  drone-2: {}
+  drone-3: {}

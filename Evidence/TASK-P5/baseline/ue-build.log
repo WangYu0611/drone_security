@@ -1,0 +1,152 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p5\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p5).
+Creating makefile for UE5DroneControlEditor (no existing makefile)
+UbaStorageServer - Previous run was not gracefully shutdown. Reparsing cas directory C:\ProgramData\Epic\UnrealBuildAccelerator\cas\ to check for added/missing/corrupt files (Saved 2026-09-14 22:21:56)
+UbaStorageServer - Validated storage (size 0b) in <1ms
+UbaServer - Listening on 0.0.0.0:1345
+C:\Users\wy331\Documents\UE5DroneControl-p5\Plugins\VisualStudioTools\Source\VisualStudioTools\VisualStudioTools.Build.cs(26,17): warning CS0618: 'ModuleRules.UnsafeTypeCastWarningLevel' is obsolete: 'Deprecated in UE5.6 - Replace with ModuleRules.CppCompileWarningSettings.UnsafeTypeCastWarningLevel'
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+=================================
+Using Unreal Build Accelerator local executor to run 120 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 17.58 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/120] Compile Resource [x64] Default.rc2
+[2/120] Compile Resource [x64] Default.rc2
+UbaSessionServer - Killed process CommandAlertStore.cpp (Compile [x64]) (681ms) - Low on memory (35.0gb/36.4gb). Kill threshold is 34.6gb
+[3/120] Compile [x64] SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.cpp
+[4/120] Compile [x64] AssemblyPopupWidget.cpp
+[5/120] Compile [x64] CommandActionButton.cpp
+[6/120] Compile [x64] CesiumCoordinateService.cpp
+[7/120] Compile [x64] CommandAlertStore.cpp
+[8/120] Compile [x64] CommandCenterPanel.cpp
+[9/120] Compile [x64] CommandCenterVisualQA.cpp
+[10/120] Compile [x64] CommandAlarmPanel.cpp
+[11/120] Compile [x64] CommandCenterV2Test.cpp
+[12/120] Compile [x64] CommandClientTest.cpp
+[13/120] Compile [x64] CommandMapInteractionService.cpp
+[14/120] Compile [x64] CommandStartupTest.cpp
+[15/120] Compile [x64] CommandMapModeTest.cpp
+[16/120] Compile [x64] CommandVisualQA.cpp
+[17/120] Compile [x64] CommandScreenManager.cpp
+[18/120] Compile [x64] CommandTacticalMap.cpp
+[19/120] Compile [x64] DroneCommandSenderComponent.cpp
+[20/120] Compile [x64] DefaultSegmentSpeedWidget.cpp
+[21/120] Compile [x64] DroneGroundProjectionComponent.cpp
+[22/120] Compile [x64] CommandShellWidget.cpp
+[23/120] Compile [x64] DroneHttpClient.cpp
+[24/120] Compile [x64] DroneInfoProviderInterface.cpp
+[25/120] Compile [x64] DroneInfoPanelWidget.cpp
+[26/120] Compile [x64] DroneListItemWidget.cpp
+[27/120] Compile [x64] DroneMapSettingsBlueprintLibrary.cpp
+[28/120] Compile [x64] DroneMissionService.cpp
+[29/120] Compile [x64] DroneListWidget.cpp
+[30/120] Compile [x64] DroneModelTypes.cpp
+[31/120] Compile [x64] DroneNameLabelWidget.cpp
+[32/120] Compile [x64] DroneNameEditPopupWidget.cpp
+[33/120] Compile [x64] DroneNetworkManager.cpp
+[34/120] Compile [x64] DronePathActor.cpp
+[35/120] Compile [x64] DronePathConflictLibrary.cpp
+[36/120] Compile [x64] DronePathSaveLibrary.cpp
+[37/120] Compile [x64] DronePathPlaybackWidget.cpp
+[38/120] Compile [x64] DroneOpsGameMode.cpp
+[39/120] Compile [x64] DroneOpsPlayerController.cpp
+[40/120] Compile [x64] DroneRuntimeInteractionGameMode.cpp
+[41/120] Compile [x64] DronePlaybackManager.cpp
+[42/120] Compile [x64] DroneRegistrySubsystem.cpp
+[43/120] Compile [x64] DroneSelectableInterface.cpp
+[44/120] Compile [x64] DroneSelectionComponent.cpp
+[45/120] Compile [x64] DroneRuntimeInteractionPlayerController.cpp
+[46/120] Compile [x64] DroneTaskManager.cpp
+[47/120] Compile [x64] DroneTelemetryComponent.cpp
+[48/120] Compile [x64] DroneVideoWindowManager.cpp
+[49/120] Compile [x64] DroneVideoWindowWidget.cpp
+[50/120] Compile [x64] DroneVisualComponent.cpp
+[51/120] Compile [x64] DroneWebSocketClient.cpp
+[52/120] Compile [x64] FormationRotationGizmoActor.cpp
+[53/120] Compile [x64] DroneWaypointActor.cpp
+[54/120] Compile [x64] GeographicCoordinateTextParserTest.cpp
+[55/120] Compile [x64] EnemyDroneListWidget.cpp
+[56/120] Compile [x64] GeographicTypes.cpp
+[57/120] Compile [x64] GeographicTargetPanelWidget.cpp
+[58/120] Compile [x64] HostileTargetActor.cpp
+[59/120] Compile [x64] GroundProjectionSettingsWidget.cpp
+[60/120] Compile [x64] HostileTargetManager.cpp
+[61/120] Compile [x64] MainMenuGameMode.cpp
+[62/120] Compile [x64] MainMenuPlayerController.cpp
+[63/120] Compile [x64] MainMenuWidget.cpp
+[64/120] Compile [x64] MapVisualQA.cpp
+[65/120] Compile [x64] MapMissionRouteWidget.cpp
+[66/120] Compile [x64] MapExtractionTest.cpp
+[67/120] Compile [x64] MapShellWidget.cpp
+[68/120] Compile [x64] MultiDroneManager.cpp
+[69/120] Compile [x64] MultiDroneCharacter.cpp
+[70/120] Compile [x64] OperationalContextSubsystem.cpp
+[71/120] Compile [x64] MultiDronePlayerController.cpp
+[72/120] Compile [x64] OperationalContextTest.cpp
+[73/120] Compile [x64] OperationalEventStore.cpp
+[74/120] Compile [x64] OperationalLogWidget.cpp
+[75/120] Compile [x64] Module.UE5DroneControl.gen.cpp
+[76/120] Compile [x64] PathDroneMatchItemWidget.cpp
+[77/120] Compile [x64] PerModuleInline.gen.cpp
+[78/120] Compile [x64] P4WorkflowTest.cpp
+[79/120] Compile [x64] PathFileListItemWidget.cpp
+[80/120] Compile [x64] PreviewConfirmPopupWidget.cpp
+[81/120] Compile [x64] RealTimeDroneReceiver.cpp
+[82/120] Compile [x64] SecurityPlanTest.cpp
+[83/120] Compile [x64] ProductText.cpp
+[84/120] Compile [x64] SimpleCoordinateService.cpp
+[85/120] Compile [x64] SecurityPlanWorkspaceWidget.cpp
+[86/120] Compile [x64] SecurityPlanPanel.cpp
+[87/120] Compile [x64] StrategyGameMode.cpp
+[88/120] Compile [x64] StrategyPawn.cpp
+[89/120] Compile [x64] StrategyHUD.cpp
+[90/120] Compile [x64] SequenceDispatchPanelWidget.cpp
+[91/120] Compile [x64] StrategyUI.cpp
+[92/120] Compile [x64] StrategyUnit.cpp
+[93/120] Compile [x64] StrategyPlayerController.cpp
+[94/120] Compile [x64] ToastWidget.cpp
+[95/120] Compile [x64] TwinStickAoEAttack.cpp
+[96/120] Compile [x64] TwinStickAIController.cpp
+[97/120] Compile [x64] TwinStickCharacter.cpp
+[98/120] Compile [x64] TwinStickGameMode.cpp
+[99/120] Compile [x64] TwinStickNPCDestruction.cpp
+[100/120] Compile [x64] TwinStickNPC.cpp
+[101/120] Compile [x64] TwinStickPickup.cpp
+[102/120] Compile [x64] TwinStickProjectile.cpp
+[103/120] Compile [x64] TwinStickPlayerController.cpp
+[104/120] Compile [x64] TwinStickSpawner.cpp
+[105/120] Compile [x64] TwinStickStateTreeUtility.cpp
+[106/120] Compile [x64] TwinStickUI.cpp
+[107/120] Compile [x64] UE5DroneControlCharacter.cpp
+[108/120] Compile [x64] UE5DroneControlGameMode.cpp
+[109/120] Compile [x64] UILanguageSubsystem.cpp
+[110/120] Compile [x64] UE5DroneControl.cpp
+[111/120] Compile [x64] UE5DroneControlPlayerController.cpp
+[112/120] Compile [x64] Module.SimpleWebSocket.cpp
+[113/120] Link [x64] UnrealEditor-SimpleWebSocket.lib
+  正在创建库 C:/Users/wy331/Documents/UE5DroneControl-p5/Plugins/SimpleWe0e9acbcbf62aV6/Intermediate/Build/Win64/x64/UnrealEditor/Development/SimpleWebSocket/UnrealEditor-SimpleWebSocket.lib 和对象 C:/Users/wy331/Documents/UE5DroneControl-p5/Plugins/SimpleWe0e9acbcbf62aV6/Intermediate/Build/Win64/x64/UnrealEditor/Development/SimpleWebSocket/UnrealEditor-SimpleWebSocket.exp
+[114/120] Compile [x64] UIManagerBlueprintLibrary.cpp
+[115/120] Compile [x64] VideoShellWidget.cpp
+[116/120] Link [x64] UnrealEditor-SimpleWebSocket.dll
+[117/120] Compile [x64] VideoClientTest.cpp
+[118/120] Link [x64] UnrealEditor-UE5DroneControl.lib
+  正在创建库 C:/Users/wy331/Documents/UE5DroneControl-p5/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib 和对象 C:/Users/wy331/Documents/UE5DroneControl-p5/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[119/120] Link [x64] UnrealEditor-UE5DroneControl.dll
+[120/120] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 261.97 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 271.58 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 55.1kb

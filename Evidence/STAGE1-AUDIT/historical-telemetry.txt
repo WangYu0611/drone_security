@@ -1,0 +1,26 @@
+Pattern \[UdpReceiver\].*recv; matches=4368; first samples:
+eb44db4:logs/backend.log:70: [2026-07-24 18:37:00.950] [debug] [:] [UdpReceiver] Slot 1 recv 679B from <DEVICE_IP>:37450: NED(1.17,-0.16,1.92) bat=-1 gps_fix=true
+eb44db4:logs/backend.log:78: [2026-07-24 18:37:01.022] [debug] [:] [UdpReceiver] Slot 1 recv 673B from <DEVICE_IP>:37450: NED(1.16,-0.16,1.92) bat=-1 gps_fix=true
+eb44db4:logs/backend.log:79: [2026-07-24 18:37:01.029] [debug] [:] [UdpReceiver] Slot 1 recv 675B from <DEVICE_IP>:37450: NED(1.16,-0.16,1.92) bat=-1 gps_fix=true
+eb44db4:logs/backend.log:80: [2026-07-24 18:37:01.033] [debug] [:] [UdpReceiver] Slot 1 recv 675B from <DEVICE_IP>:37450: NED(1.16,-0.16,1.92) bat=-1 gps_fix=true
+
+Pattern GPS Anchor; matches=5; first samples:
+eb44db4:logs/backend.log:71: [2026-07-24 18:37:00.952] [info] [:] [GPS Anchor] Drone 1 first anchor: (38.946584, 115.946638, 2.76m)
+eb44db4:logs/backend.log:72: [2026-07-24 18:37:00.953] [debug] [:] [DroneManager] Drone 1 power-on GPS anchor: (38.946584,115.946638,2.8m)
+eb44db4:logs/backend.log:708: [2026-07-24 18:37:43.380] [info] [:] [GPS Anchor] Drone 1 anchor cleared
+eb44db4:logs/backend.log:736: [2026-07-24 18:38:58.408] [info] [:] [GPS Anchor] Drone 1 first anchor: (38.946579, 115.946626, 3.46m)
+
+Pattern \[StateMachine\]; matches=3; first samples:
+eb44db4:logs/backend.log:73: [2026-07-24 18:37:00.953] [info] [:] [StateMachine] Offline -> Online (PowerOn)
+eb44db4:logs/backend.log:706: [2026-07-24 18:37:43.287] [warning] [:] [StateMachine] Online -> Lost (10s timeout)
+eb44db4:logs/backend.log:738: [2026-07-24 18:38:58.410] [info] [:] [StateMachine] Lost -> Online (Reconnect)
+
+Pattern \[UdpSender\].*mode=move; matches=225; first samples:
+eb44db4:logs/backend.log:115: [2026-07-24 18:37:07.212] [debug] [:] [UdpSender] JSON drone=1 slot=1 id=backend-1784889234948037-856f4d1b-d1-s1784889394218971 mode=move repeat=1/5 NED=(0.000,0.005,-0.500) bytes=498 -> <DEVICE_IP>:8889
+eb44db4:logs/backend.log:125: [2026-07-24 18:37:07.427] [debug] [:] [UdpSender] JSON drone=1 slot=1 id=backend-1784889234948037-856f4d1b-d1-s1784889394218971 mode=move repeat=2/5 NED=(0.000,0.005,-0.500) bytes=499 -> <DEVICE_IP>:8889
+eb44db4:logs/backend.log:132: [2026-07-24 18:37:07.628] [debug] [:] [UdpSender] JSON drone=1 slot=1 id=backend-1784889234948037-856f4d1b-d1-s1784889394218971 mode=move repeat=3/5 NED=(0.000,0.005,-0.500) bytes=499 -> <DEVICE_IP>:8889
+eb44db4:logs/backend.log:142: [2026-07-24 18:37:07.833] [debug] [:] [UdpSender] JSON drone=1 slot=1 id=backend-1784889234948037-856f4d1b-d1-s1784889394218971 mode=move repeat=4/5 NED=(0.000,0.005,-0.500) bytes=499 -> <DEVICE_IP>:8889
+
+Pattern \[CommandQueue\].*ack; matches=0; first samples:
+
+Historical transport evidence; sender hardware identity and completed flight are not independently certified.

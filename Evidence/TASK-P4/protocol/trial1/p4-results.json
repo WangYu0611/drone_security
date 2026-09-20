@@ -1,0 +1,24 @@
+{
+  "passed": 18,
+  "tests": [
+    "Command creates plan revision 1",
+    "Map business mutations forbidden",
+    "Command route mutations forbidden",
+    "Video all plan actions forbidden",
+    "Mission CRUD assignment unassignment duplicate rejection",
+    "Video domain validation and same-value no-op",
+    "Active UAV and mission selection do not change video target",
+    "Explicit feed selection changes video only",
+    "Explicit Map edit request delivered",
+    "Dirty session blocks review and deployment",
+    "Save failure retains dirty session and authoritative route",
+    "Save ACK increments content revision and closes session",
+    "Validation and review separate and revision bound",
+    "Three-client language convergence no-op and business isolation",
+    "Content change invalidates review",
+    "Offline Map edit request rejected",
+    "Finite lease automatically expires without owner heartbeat",
+    "Deployment atomic snapshot and repeated deployment rejection"
+  ],
+  "note": "Real Backend HTTP/WS; synthetic clients, not native UI acceptance"
+}

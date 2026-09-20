@@ -1,0 +1,28 @@
+{
+  "reportCreatedOn": "2026.09.14-08.06.21",
+  "succeeded": 1,
+  "succeededWithWarnings": 1,
+  "failed": 0,
+  "notRun": 0,
+  "discovered": 2,
+  "tests": [
+    {
+      "fullTestPath": "DroneOps.Command.StartupRole",
+      "state": "Success",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "fullTestPath": "DroneOps.Video.RoleLifecycle",
+      "state": "Success",
+      "warnings": 33,
+      "errors": 0
+    }
+  ],
+  "testCompleted": [
+    "[2026.09.14-08.06.11:652][605]LogAutomationCommandLine: Display: Found 2 automation tests based on 'DroneOps.Video.RoleLifecycle+DroneOps.Command.StartupRole'",
+    "[2026.09.14-08.06.11:704][608]LogAutomationController: Display: Test Completed. Result={Success} Name={StartupRole} Path={DroneOps.Command.StartupRole}",
+    "[2026.09.14-08.06.21:743][ 36]LogAutomationController: Display: Test Completed. Result={Success} Name={RoleLifecycle} Path={DroneOps.Video.RoleLifecycle}",
+    "[2026.09.14-08.06.21:747][ 36]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 2 tests performed."
+  ]
+}

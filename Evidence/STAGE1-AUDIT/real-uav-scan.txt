@@ -1,0 +1,955 @@
+Backend/communication/udp_receiver.cpp:150: TelemetryData tel{};
+Backend/communication/udp_receiver.cpp:225: // by PX4 TrajectorySetpoint. Do not substitute VehicleOdometry.
+Backend/communication/udp_receiver.h:19: using ReceiveCallback = std::function<void(int slot, const TelemetryData&)>;
+Backend/config.yaml:11: heartbeat_hz: 5           # 后端→Jetson JSON 发送频率；5Hz 下 3 包确认约 0.4s
+Backend/config.yaml:33: ros_topic_prefix: "/px4_2"
+Backend/config.yaml:37: ros_topic_prefix: "/px4_3"
+Backend/config.yaml:41: ros_topic_prefix: "/px4_4"
+Backend/config.yaml:45: ros_topic_prefix: "/px4_5"
+Backend/config.yaml:49: ros_topic_prefix: "/px4_6"
+Backend/conversion/quaternion_utils.h:19: /// 输入: 四元数 [w, x, y, z]（来自 PX4 / YAML 顺序）
+Backend/core/config_loader.cpp:23: cfg.heartbeat_hz            = d["heartbeat_hz"].as<int>(cfg.heartbeat_hz);
+Backend/core/config_loader.cpp:83: if (cfg.heartbeat_hz < 2) {
+Backend/core/config_loader.cpp:85: "heartbeat_hz must be >= 2 (PX4 offboard requirement)");
+Backend/core/config_loader.h:17: int heartbeat_hz = 5;
+Backend/core/types.h:32: uint32_t mode = 0;         // 0=hold/heartbeat, 1=move
+Backend/core/types.h:36: bool     use_unlimited_speed = false; // serialize speed as NaN for Jetson
+Backend/core/types.h:52: struct TelemetryData {
+Backend/core/types.h:67: // True only when local_position came from an estimator-valid PX4
+Backend/core/types.h:68: // VehicleLocalPosition sample (the TrajectorySetpoint frame).
+Backend/core/types.h:71: uint8_t arming_state = 0; // 1=DISARMED, 2=ARMED
+Backend/core/types.h:143: using TelemetryCallback = std::function<void(int drone_id, const TelemetryData&)>;
+Backend/data/drones.json:5: "model": "PX4",
+Backend/data/drones.json:14: "model": "PX4",
+Backend/data/drones.json:23: "model": "PX4",
+Backend/data/drones.json:32: "model": "PX4",
+Backend/data/drones.json:41: "model": "PX4",
+Backend/data/drones.json:50: "model": "PX4",
+Backend/debug_cli.h:167: auto hb = drone_mgr.GetHeartbeatStats(id);
+Backend/debug_cli.h:175: << "  heartbeat: running=" << hb.running << "  sent=" << hb.sent_count << "\n"
+Backend/debug_cli.h:195: TelemetryData tel{};
+Backend/debug_cli.h:209: drone_mgr.OnTelemetryReceived(id, tel);
+Backend/drone/command_queue.cpp:38: // the heartbeat worker. Replacing it is safe because both commands keep
+Backend/drone/command_queue.h:27: * The command currently being repeated by HeartbeatManager is never touched.
+Backend/drone/drone_context.h:18: TelemetryData latest_telemetry{};
+Backend/drone/drone_context.h:19: bool has_telemetry = false;
+Backend/drone/drone_context.h:20: double last_telemetry_unix = 0.0;
+Backend/drone/drone_manager.cpp:48: bool is_valid_gps_anchor(const TelemetryData& data)
+Backend/drone/drone_manager.cpp:60: constexpr double kMaxSafeHoldTelemetryAgeSeconds = 3.0;
+Backend/drone/drone_manager.cpp:61: const double age_seconds = now_unix_seconds() - ctx.last_telemetry_unix;
+Backend/drone/drone_manager.cpp:62: return ctx.has_telemetry
+Backend/drone/drone_manager.cpp:63: && ctx.latest_telemetry.local_position_valid
+Backend/drone/drone_manager.cpp:64: && std::isfinite(ctx.latest_telemetry.position_ned[0])
+Backend/drone/drone_manager.cpp:65: && std::isfinite(ctx.latest_telemetry.position_ned[1])
+Backend/drone/drone_manager.cpp:66: && std::isfinite(ctx.latest_telemetry.position_ned[2])
+Backend/drone/drone_manager.cpp:67: && ctx.last_telemetry_unix > 0.0
+Backend/drone/drone_manager.cpp:69: && age_seconds <= kMaxSafeHoldTelemetryAgeSeconds;
+Backend/drone/drone_manager.cpp:74: DroneManager::DroneManager(HeartbeatManager& hb_manager, int low_battery_threshold)
+Backend/drone/drone_manager.cpp:86: void DroneManager::SetTelemetryCallback(TelemetryCallback cb)   { telemetry_cb_ = std::move(cb); }
+Backend/drone/drone_manager.cpp:127: // never the guessed PX4 local origin.
+Backend/drone/drone_manager.cpp:128: const double hold_x = ctx->latest_telemetry.position_ned[0];
+Backend/drone/drone_manager.cpp:129: const double hold_y = ctx->latest_telemetry.position_ned[1];
+Backend/drone/drone_manager.cpp:130: const double hold_z = ctx->latest_telemetry.position_ned[2];
+Backend/drone/drone_manager.cpp:148: // RemoveDrone stops and joins this heartbeat thread.
+Backend/drone/drone_manager.cpp:151: // stops the heartbeat, so reacquiring it would deadlock.
+Backend/drone/drone_manager.cpp:165: // PX4 local origin and its GPS anchor must both be rebuilt.
+Backend/drone/drone_manager.cpp:167: ctx->latest_telemetry.local_position_valid = false;
+Backend/drone/drone_manager.cpp:168: ctx->has_telemetry = false;
+Backend/drone/drone_manager.cpp:169: ctx->last_telemetry_unix = 0.0;
+Backend/drone/drone_manager.cpp:232: s.battery = ctx->has_telemetry ? ctx->latest_telemetry.battery : -1;
+Backend/drone/drone_manager.cpp:241: if (ctx->has_telemetry) {
+Backend/drone/drone_manager.cpp:242: const auto& tel = ctx->latest_telemetry;
+Backend/drone/drone_manager.cpp:252: if (ctx->has_telemetry) {
+Backend/drone/drone_manager.cpp:253: s.control_ack_command_id = ctx->latest_telemetry.control_ack_command_id;
+Backend/drone/drone_manager.cpp:254: s.control_ack_sequence = ctx->latest_telemetry.control_ack_sequence;
+Backend/drone/drone_manager.cpp:285: HeartbeatStats DroneManager::GetHeartbeatStats(int drone_id) const
+Backend/drone/drone_manager.cpp:293: void DroneManager::OnTelemetryReceived(int drone_id, const TelemetryData& data)
+Backend/drone/drone_manager.cpp:298: spdlog::warn("Telemetry for unknown drone {}", drone_id);
+Backend/drone/drone_manager.cpp:301: HandleTelemetry(*ctx, data);
+Backend/drone/drone_manager.cpp:304: void DroneManager::OnTelemetryReceivedBySlot(int slot, const TelemetryData& data)
+Backend/drone/drone_manager.cpp:309: spdlog::warn("Telemetry for unregistered slot {}", slot);
+Backend/drone/drone_manager.cpp:312: HandleTelemetry(*ctx, data);
+Backend/drone/drone_manager.cpp:378: // A queue stop must also discard commands that have not reached the heartbeat worker yet.
+Backend/drone/drone_manager.cpp:383: // Never fall back to (0,0,0): that is the PX4 local origin, not a safe airborne hold point.
+Backend/drone/drone_manager.cpp:385: spdlog::warn("Abort drone {}: no fresh valid local telemetry, refusing to invent a hold target", drone_id);
+Backend/drone/drone_manager.cpp:389: ctx->last_ned_x = ctx->latest_telemetry.position_ned[0];
+Backend/drone/drone_manager.cpp:390: ctx->last_ned_y = ctx->latest_telemetry.position_ned[1];
+Backend/drone/drone_manager.cpp:391: ctx->last_ned_z = ctx->latest_telemetry.position_ned[2];
+Backend/drone/drone_manager.cpp:407: if (ctx->has_telemetry) {
+Backend/drone/drone_manager.cpp:408: ctx->last_ned_x = ctx->latest_telemetry.position_ned[0];
+Backend/drone/drone_manager.cpp:409: ctx->last_ned_y = ctx->latest_telemetry.position_ned[1];
+Backend/drone/drone_manager.cpp:410: ctx->last_ned_z = ctx->latest_telemetry.position_ned[2];
+Backend/drone/drone_manager.cpp:442: TelemetryData DroneManager::GetLatestTelemetry(int drone_id) const
+Backend/drone/drone_manager.cpp:446: return (it != drones_.end()) ? it->second->latest_telemetry : TelemetryData{};
+Backend/drone/drone_manager.cpp:473: // Never start a heartbeat at a guessed local origin.  However, a
+Backend/drone/drone_manager.cpp:475: // backend's current source IP, after which its normal telemetry can
+Backend/drone/drone_manager.cpp:483: "waiting for telemetry",
+Backend/drone/drone_manager.cpp:492: const double hold_x = ctx->latest_telemetry.position_ned[0];
+Backend/drone/drone_manager.cpp:493: const double hold_y = ctx->latest_telemetry.position_ned[1];
+Backend/drone/drone_manager.cpp:494: const double hold_z = ctx->latest_telemetry.position_ned[2];
+Backend/drone/drone_manager.cpp:554: void DroneManager::HandleTelemetry(DroneContext& ctx, const TelemetryData& data)
+Backend/drone/drone_manager.cpp:564: ctx.latest_telemetry = data;
+Backend/drone/drone_manager.cpp:565: ctx.latest_telemetry.local_position_valid = local_position_valid;
+Backend/drone/drone_manager.cpp:566: ctx.has_telemetry = true;
+Backend/drone/drone_manager.cpp:567: ctx.last_telemetry_unix = now_unix_seconds();
+Backend/drone/drone_manager.cpp:577: // Starting the heartbeat from odometry in a different pose frame, or from
+Backend/drone/drone_manager.cpp:580: ctx.state_machine->OnTelemetryReceived();
+Backend/drone/drone_manager.cpp:590: // 否则 move 只发一帧，下一帧 heartbeat 就会把目标改成当前点，导致飞机停住。
+Backend/drone/drone_manager.cpp:612: if (telemetry_cb_) {
+Backend/drone/drone_manager.cpp:613: telemetry_cb_(drone_id, ctx.latest_telemetry);
+Backend/drone/drone_manager.h:6: #include "heartbeat_manager.h"
+Backend/drone/drone_manager.h:17: explicit DroneManager(HeartbeatManager& hb_manager, int low_battery_threshold = 20);
+Backend/drone/drone_manager.h:20: void SetTelemetryCallback(TelemetryCallback cb);
+Backend/drone/drone_manager.h:36: HeartbeatStats GetHeartbeatStats(int drone_id) const;
+Backend/drone/drone_manager.h:38: void OnTelemetryReceived(int drone_id, const TelemetryData& data);
+Backend/drone/drone_manager.h:39: void OnTelemetryReceivedBySlot(int slot, const TelemetryData& data);
+Backend/drone/drone_manager.h:54: TelemetryData GetLatestTelemetry(int drone_id) const;
+Backend/drone/drone_manager.h:83: void HandleTelemetry(DroneContext& ctx, const TelemetryData& data);
+Backend/drone/drone_manager.h:85: HeartbeatManager& hb_manager_;
+Backend/drone/drone_manager.h:91: TelemetryCallback telemetry_cb_;
+Backend/drone/heartbeat_manager.cpp:1: #include "heartbeat_manager.h"
+Backend/drone/heartbeat_manager.cpp:8: HeartbeatManager::HeartbeatManager(UdpSender& sender, int heartbeat_hz,
+Backend/drone/heartbeat_manager.cpp:11: , heartbeat_interval_ms_(std::max(1, 1000 / std::max(heartbeat_hz, 1)))
+Backend/drone/heartbeat_manager.cpp:16: HeartbeatManager::~HeartbeatManager()
+Backend/drone/heartbeat_manager.cpp:24: void HeartbeatManager::Start(int drone_id, int slot, const std::string& jetson_ip,
+Backend/drone/heartbeat_manager.cpp:32: auto state = std::make_shared<HeartbeatState>();
+Backend/drone/heartbeat_manager.cpp:37: // vehicle at a guessed (0,0,0) would command the PX4 local origin.
+Backend/drone/heartbeat_manager.cpp:48: &HeartbeatManager::HeartbeatLoop, this, drone_id);
+Backend/drone/heartbeat_manager.cpp:52: "[Heartbeat] Started drone {} slot {} -> {}:{} interval={}ms repeat={}",
+Backend/drone/heartbeat_manager.cpp:54: heartbeat_interval_ms_, command_repeat_count_);
+Backend/drone/heartbeat_manager.cpp:57: bool HeartbeatManager::SendDiscoveryProbe(int drone_id, int slot,
+Backend/drone/heartbeat_manager.cpp:63: "[Heartbeat] Cannot send discovery probe for drone {}: slot={}, target={}:{}",
+Backend/drone/heartbeat_manager.cpp:82: "[Heartbeat] Discovery probe drone {} slot {} -> {}:{} sent={} (single unconfirmed packet)",
+Backend/drone/heartbeat_manager.cpp:87: void HeartbeatManager::RequestHold(int drone_id, double x, double y, double z)
+Backend/drone/heartbeat_manager.cpp:97: "[Heartbeat] Hold requested drone {} NED({:.3f},{:.3f},{:.3f})",
+Backend/drone/heartbeat_manager.cpp:102: void HeartbeatManager::Stop(int drone_id)
+Backend/drone/heartbeat_manager.cpp:104: std::shared_ptr<HeartbeatState> state;
+Backend/drone/heartbeat_manager.cpp:129: spdlog::info("[Heartbeat] Stopped drone {}", drone_id);
+Backend/drone/heartbeat_manager.cpp:132: void HeartbeatManager::StopInternal(int drone_id)
+Backend/drone/heartbeat_manager.cpp:134: std::shared_ptr<HeartbeatState> state;
+Backend/drone/heartbeat_manager.cpp:157: void HeartbeatManager::StopAll()
+Backend/drone/heartbeat_manager.cpp:178: spdlog::info("[Heartbeat] All stopped");
+Backend/drone/heartbeat_manager.cpp:181: HeartbeatStats HeartbeatManager::GetStats(int drone_id) const
+Backend/drone/heartbeat_manager.cpp:183: HeartbeatStats stats;
+Backend/drone/heartbeat_manager.cpp:208: void HeartbeatManager::HeartbeatLoop(int drone_id)
+Backend/drone/heartbeat_manager.cpp:210: std::shared_ptr<HeartbeatState> state;
+Backend/drone/heartbeat_manager.cpp:255: "[Heartbeat] Drone {} explicit hold sequence={} "
+Backend/drone/heartbeat_manager.cpp:276: "[Heartbeat] Drone {} begin move sequence={} repeat={} "
+Backend/drone/heartbeat_manager.cpp:308: "[Heartbeat] Drone {} move sequence={} sent {}/{} times; "
+Backend/drone/heartbeat_manager.cpp:324: std::this_thread::sleep_for(std::chrono::milliseconds(heartbeat_interval_ms_));
+Backend/drone/heartbeat_manager.h:15: struct HeartbeatState {
+Backend/drone/heartbeat_manager.h:32: struct HeartbeatStats {
+Backend/drone/heartbeat_manager.h:46: class HeartbeatManager {
+Backend/drone/heartbeat_manager.h:48: explicit HeartbeatManager(UdpSender& sender, int heartbeat_hz = 5,
+Backend/drone/heartbeat_manager.h:50: ~HeartbeatManager();
+Backend/drone/heartbeat_manager.h:59: // 不创建心跳线程，也不会在默认的 3 包确认策略下应用到 PX4。
+Backend/drone/heartbeat_manager.h:66: HeartbeatStats GetStats(int drone_id) const;
+Backend/drone/heartbeat_manager.h:70: void HeartbeatLoop(int drone_id);
+Backend/drone/heartbeat_manager.h:73: int heartbeat_interval_ms_ = 200;
+Backend/drone/heartbeat_manager.h:75: std::unordered_map<int, std::shared_ptr<HeartbeatState>> states_;
+Backend/drone/state_machine.cpp:14: last_telemetry_us_ = now_us();
+Backend/drone/state_machine.cpp:22: void StateMachine::OnTelemetryReceived()
+Backend/drone/state_machine.cpp:24: last_telemetry_us_ = now_us();
+Backend/drone/state_machine.cpp:47: int64_t elapsed_us = now_us() - last_telemetry_us_.load();
+Backend/drone/state_machine.cpp:65: last_telemetry_us_ = now_us();
+Backend/drone/state_machine.h:28: void OnTelemetryReceived();
+Backend/drone/state_machine.h:40: std::atomic<int64_t> last_telemetry_us_{0};  // 微秒 since steady_clock epoch
+Backend/execution/assembly_controller.h:56: using DronePositionGetter = std::function<TelemetryData(int drone_id)>;
+Backend/execution/execution_engine.cpp:154: void ExecutionEngine::SetTelemetryGetter(TelemetryGetter cb) { telemetry_getter_ = std::move(cb); }
+Backend/execution/execution_engine.cpp:296: void ExecutionEngine::OnTelemetry(int drone_id, const TelemetryData& tel)
+Backend/execution/execution_engine.cpp:562: if (!telemetry_getter_) {
+Backend/execution/execution_engine.cpp:567: auto tel = telemetry_getter_(drone_id);
+Backend/execution/execution_engine.cpp:586: if (!move_cb_ || !telemetry_getter_) return;
+Backend/execution/execution_engine.cpp:619: auto tel = telemetry_getter_(id);
+Backend/execution/execution_engine.h:88: using TelemetryGetter = std::function<TelemetryData(int drone_id)>;
+Backend/execution/execution_engine.h:98: void SetTelemetryGetter(TelemetryGetter cb);
+Backend/execution/execution_engine.h:110: void OnTelemetry(int drone_id, const TelemetryData& tel);
+Backend/execution/execution_engine.h:134: TelemetryGetter telemetry_getter_;
+Backend/execution_legacy/execution_engine.cpp:145: void ExecutionEngine::SetTelemetryGetter(TelemetryGetter cb) { telemetry_getter_ = std::move(cb); }
+Backend/execution_legacy/execution_engine.cpp:231: void ExecutionEngine::OnTelemetry(int drone_id, const TelemetryData& tel)
+Backend/execution_legacy/execution_engine.cpp:427: if (!telemetry_getter_) {
+Backend/execution_legacy/execution_engine.cpp:432: auto tel = telemetry_getter_(drone_id);
+Backend/execution_legacy/execution_engine.cpp:451: if (!move_cb_ || !telemetry_getter_) return;
+Backend/execution_legacy/execution_engine.cpp:484: auto tel = telemetry_getter_(id);
+Backend/execution_legacy/execution_engine.h:83: using TelemetryGetter = std::function<TelemetryData(int drone_id)>;
+Backend/execution_legacy/execution_engine.h:93: void SetTelemetryGetter(TelemetryGetter cb);
+Backend/execution_legacy/execution_engine.h:104: void OnTelemetry(int drone_id, const TelemetryData& tel);
+Backend/execution_legacy/execution_engine.h:125: TelemetryGetter telemetry_getter_;
+Backend/http/http_server.cpp:123: drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel) {
+Backend/http/http_server.cpp:132: {"type",     "telemetry"},
+Backend/http/http_server.cpp:318: ws_manager_.send(session,"{\"type\":\"error\",\"message\":\"context heartbeat expired\"}");
+Backend/http/http_server.cpp:320: security_plans_.heartbeat("",[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});}
+Backend/http/http_server.cpp:496: if (method == "GET"  && PathMatch(path, "/api/debug/heartbeat/", "", id))
+Backend/http/http_server.cpp:497: return MakeResponse(req, 200, json_stringify(DebugHeartbeat(id)));
+Backend/http/http_server.cpp:499: return MakeResponse(req, 200, json_stringify(DebugInjectTelemetry(id, require_object(body, "body"))));
+Backend/http/http_server.cpp:542: const auto telemetry = drone_mgr_.GetLatestTelemetry(numeric_id);
+Backend/http/http_server.cpp:547: : "/px4_" + std::to_string(rec.slot);
+Backend/http/http_server.cpp:576: {"gps_lat", telemetry.gps_lat},
+Backend/http/http_server.cpp:577: {"gps_lon", telemetry.gps_lon},
+Backend/http/http_server.cpp:578: {"gps_alt", telemetry.gps_alt},
+Backend/http/http_server.cpp:579: {"gps_fix", telemetry.gps_fix},
+Backend/http/http_server.cpp:580: {"armed", telemetry.IsArmed()},
+Backend/http/http_server.cpp:581: {"offboard", telemetry.IsOffboard()},
+Backend/http/http_server.cpp:592: {"mavlink_system_id", rec.slot},
+Backend/http/http_server.cpp:611: {"message", "safe hold probes sent; a drone becomes online only after telemetry is received"},
+Backend/http/http_server.cpp:832: const auto tel = drone_mgr_.GetLatestTelemetry(id);
+Backend/http/http_server.cpp:940: auto hb = drone_mgr_.GetHeartbeatStats(drone_id);
+Backend/http/http_server.cpp:951: {"heartbeat_running", hb.running},
+Backend/http/http_server.cpp:952: {"last_heartbeat_time", hb.last_sent_time},
+Backend/http/http_server.cpp:953: {"heartbeat_count", static_cast<int64_t>(hb.sent_count)},
+Backend/http/http_server.cpp:990: boost::json::value HttpServer::DebugHeartbeat(const std::string& id) {
+Backend/http/http_server.cpp:993: auto hb = drone_mgr_.GetHeartbeatStats(drone_id);
+Backend/http/http_server.cpp:1011: boost::json::value HttpServer::DebugInjectTelemetry(const std::string& id, const boost::json::object& body) {
+Backend/http/http_server.cpp:1014: TelemetryData tel{};
+Backend/http/http_server.cpp:1053: drone_mgr_.OnTelemetryReceived(drone_id, tel);
+Backend/http/http_server.cpp:1597: if(!owner.empty())security_plans_.heartbeat(owner,[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
+Backend/http/http_server.cpp:1672: static std::atomic<uint64_t> serial{0};
+Backend/http/http_server.cpp:1673: boost::json::object payload{{"request_id","map-edit-"+std::to_string(++serial)},{"plan_id",plan},{"mission_id",mission},{"requested_by",source},{"timestamp",OperationalContext::now()}};
+Backend/http/http_server.h:50: return boost::json::serialize(v);
+Backend/http/http_server.h:127: boost::json::value DebugHeartbeat(const std::string& id);
+Backend/http/http_server.h:128: boost::json::value DebugInjectTelemetry(const std::string& id, const boost::json::object& body);
+Backend/main.cpp:8: #include "drone/heartbeat_manager.h"
+Backend/main.cpp:54: HeartbeatManager   hb_manager(
+Backend/main.cpp:55: udp_sender, config.heartbeat_hz, config.command_repeat_count);
+Backend/main.cpp:71: return drone_mgr.GetLatestTelemetry(drone_id);
+Backend/main.cpp:78: exec_engine.SetTelemetryGetter([&](int drone_id) {
+Backend/main.cpp:79: return drone_mgr.GetLatestTelemetry(drone_id);
+Backend/main.cpp:96: udp_receiver.SetCallback([&](int slot, const TelemetryData& tel) {
+Backend/main.cpp:97: drone_mgr.OnTelemetryReceivedBySlot(slot, tel);
+Backend/main.cpp:109: exec_engine.OnTelemetry(drone_id, tel);
+Backend/storage/operational_context.h:20: // One server-owned document. Persist before publishing, and serialize competing writers.
+Backend/storage/operational_context.h:88: { std::ofstream out(temp, std::ios::trunc); out << boost::json::serialize(value); out.flush();
+Backend/storage/security_plan_store.h:298: void heartbeat(const std::string& owner, const std::function<void(const Object&)>& publish) {
+Backend/storage/security_plan_store.h:385: {std::ofstream out(temp,std::ios::trunc);out<<boost::json::serialize(value);out.flush();if(!out)throw std::runtime_error("plan persistence failed");}
+Backend/storage/shared_view_store.h:33: {std::ofstream out(temp);out<<boost::json::serialize(next);out.flush();if(!out)throw std::runtime_error("view persistence failed");}
+Backend/storage/video_metadata_store.cpp:85: output << boost::json::serialize(value);
+Backend/storage/video_metadata_store.cpp:141: output << boost::json::serialize(frame) << '\n';
+Backend/storage/video_metadata_store.cpp:155: for (const char* key : {"stream_path", "rtsp_url", "video_url",
+Backend/tests/integration_week3.py:103: heartbeat_hz: 2
+Backend/tests/integration_week3.py:115: ros_topic_prefix: "/px4_1"
+Backend/tests/integration_week3.py:119: ros_topic_prefix: "/px4_2"
+Backend/tests/integration_week3.py:157: {"name": "week3-d1", "model": "PX4", "slot": 1, "ip": "127.0.0.1", "port": 18889},
+Backend/tests/integration_week3.py:165: {"name": "week3-dup", "model": "PX4", "slot": 1, "ip": "127.0.0.1", "port": 18889},
+Backend/tests/integration_week3.py:173: assert drones[0]["topic_prefix"] == "/px4_1"
+Backend/tests/integration_week3.py:194: telemetry = await expect_ws(
+Backend/tests/integration_week3.py:196: lambda m: m.get("type") == "telemetry" and m.get("drone_id") == 1,
+Backend/tests/integration_week3.py:197: "telemetry",
+Backend/tests/integration_week3.py:199: assert telemetry["drone_id_str"] == "d1"
+Backend/tests/integration_week3.py:200: assert math.isclose(telemetry["x"], 100.0)
+Backend/tests/integration_week3.py:201: assert math.isclose(telemetry["y"], 200.0)
+Backend/tests/integration_week3.py:202: assert math.isclose(telemetry["z"], 300.0)
+Backend/tests/integration_week3.py:203: assert math.isclose(telemetry["yaw"], -30.0, abs_tol=0.02)
+Backend/tests/integration_week3.py:204: assert math.isclose(telemetry["speed"], 5.0)
+Backend/tests/integration_week3.py:205: assert telemetry["armed"] is True and telemetry["offboard"] is True
+Backend/tests/integration_week3.py:264: await expect_ws(ws, lambda m: m.get("type") == "telemetry", "low battery telemetry")
+Backend/tests/integration_week3.py:290: await expect_ws(ws, lambda m: m.get("type") == "telemetry", "reconnect telemetry")
+Backend/tests/test_p52_execution.cpp:43: TEST_F(P52Execution, DurableRestartRetainsPositionAndContinues){running();tick(1);const auto path=std::filesystem::temp_directory_path()/("p52-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");{std::ofstream out(path);out<<boost::json::serialize(store.snapshot());}SecurityPlanStore recovered(path.string());EXPECT_EQ(recovered.snapshot(),store.snapshot());recovered.configureMock({{"uavs",O{{"UAV-01",O{}}}}});recovered.tickExecutions(1,uavs,[](const O&){});EXPECT_NE(recovered.snapshot().at("executions").as_object().at(execution).as_object().at("position"),exec().at("position"));std::filesystem::remove(path);}
+Backend/tests/test_state_machine.cpp:12: TEST(StateMachineTest, TelemetryTransitionsToOnline)
+Backend/tests/test_state_machine.cpp:15: sm.OnTelemetryReceived();
+Backend/tests/test_state_machine.cpp:22: sm.OnTelemetryReceived();  // Offline → Online
+Backend/tests/test_state_machine.cpp:31: TEST(StateMachineTest, TelemetryAfterTimeoutResetsToOnline)
+Backend/tests/test_state_machine.cpp:34: sm.OnTelemetryReceived();  // Online
+Backend/tests/test_state_machine.cpp:38: sm.OnTelemetryReceived();  // Lost → Online (Reconnect)
+Backend/tests/test_state_machine.cpp:45: sm.OnTelemetryReceived();  // Online
+Backend/tests/test_state_machine.cpp:55: sm.OnTelemetryReceived();  // Offline → Online → PowerOn
+Backend/tests/test_state_machine.cpp:64: sm.OnTelemetryReceived();  // Online
+Backend/tests/test_state_machine.cpp:74: sm.OnTelemetryReceived();  // PowerOn
+Backend/tests/test_state_machine.cpp:76: sm.OnTelemetryReceived();  // Reconnect
+Backend/tools/mock_server.py:5: - WebSocket: ws://127.0.0.1:8081/ws  (telemetry push at 10Hz, receives control commands)
+Backend/tools/mock_server.py:24: {"id": 1, "name": "UAV1", "mavlink_system_id": 2, "bit_index": 0,
+Backend/tools/mock_server.py:25: "ue_receive_port": 8888, "topic_prefix": "/px4_1"},
+Backend/tools/mock_server.py:26: {"id": 2, "name": "UAV2", "mavlink_system_id": 3, "bit_index": 1,
+Backend/tools/mock_server.py:27: "ue_receive_port": 8890, "topic_prefix": "/px4_2"},
+Backend/tools/mock_server.py:58: "mavlink_system_id": data.get("mavlink_system_id", _next_id + 1),
+Backend/tools/mock_server.py:61: "topic_prefix": data.get("topic_prefix", f"/px4_{_next_id}"),
+Backend/tools/mock_server.py:158: # ---- Telemetry override (for rotation/position test injection) ----
+Backend/tools/mock_server.py:160: # When set, telemetry_push_zero uses these values instead of zeros.
+Backend/tools/mock_server.py:163: @app.route("/test/telemetry", methods=["POST"])
+Backend/tools/mock_server.py:164: def test_telemetry():
+Backend/tools/mock_server.py:165: """Override telemetry for one drone (persists until /test/telemetry_clear).
+Backend/tools/mock_server.py:180: print(f"[HTTP] POST /test/telemetry -> drone_id={did}  "
+Backend/tools/mock_server.py:184: @app.route("/test/telemetry_clear", methods=["POST"])
+Backend/tools/mock_server.py:185: def test_telemetry_clear():
+Backend/tools/mock_server.py:186: """Remove telemetry override for a drone (reverts to zero push).
+Backend/tools/mock_server.py:192: print(f"[HTTP] POST /test/telemetry_clear -> drone_id={did}")
+Backend/tools/mock_server.py:195: print("[HTTP] POST /test/telemetry_clear -> all cleared")
+Backend/tools/mock_server.py:263: async def telemetry_push():
+Backend/tools/mock_server.py:275: "type": "telemetry",
+Backend/tools/mock_server.py:288: async def telemetry_push_zero():
+Backend/tools/mock_server.py:289: """Push zero-offset telemetry for anchor verification. Drones stay at anchor point.
+Backend/tools/mock_server.py:305: msg = json.dumps({"type": "telemetry", "drone_id": did, **fields})
+Backend/tools/mock_server.py:314: await telemetry_push_zero()
+Backend/tools/test_rotation.py:44: """设置 mock_server 的 telemetry override，10Hz 后台推送会自动使用此值。"""
+Backend/tools/test_rotation.py:45: return _post(base, "/test/telemetry", {
+Backend/tools/test_rotation.py:61: _post(base, "/test/telemetry_clear", {"drone_id": drone_id})
+DroneLinkMonitorSubsystem.cpp:46: void UDroneLinkMonitorSubsystem::RecordTelemetryReceived(int32 DroneId, double TelemetryTimestamp)
+DroneLinkMonitorSubsystem.h:28: void RecordTelemetryReceived(int32 DroneId, double TelemetryTimestamp);
+Jetson/jetson_bridge.py:3: jetson_bridge.py — Jetson 端轻量 UDP↔ROS2 透明桥 (PX4 v1.17)
+Jetson/jetson_bridge.py:9: ROS2 OffboardControlMode + TrajectorySetpoint
+Jetson/jetson_bridge.py:10: → 切 Offboard 模式 / 解锁（仅在需要时发一次 VehicleCommand）
+Jetson/jetson_bridge.py:14: PX4 v1.17 话题变更：
+Jetson/jetson_bridge.py:35: from px4_msgs.msg import (
+Jetson/jetson_bridge.py:37: TrajectorySetpoint,
+Jetson/jetson_bridge.py:38: VehicleCommand,
+Jetson/jetson_bridge.py:46: # Some deployed PX4/px4_msgs combinations do not provide VehicleCommandAck.
+Jetson/jetson_bridge.py:50: from px4_msgs.msg import VehicleCommandAck
+Jetson/jetson_bridge.py:52: VehicleCommandAck = None
+Jetson/jetson_bridge.py:62: # 默认沿用当前单机实机环境的无前缀 PX4 话题。多机命名空间环境可设置：
+Jetson/jetson_bridge.py:63: #   ROS_TOPIC_PREFIX=/px4_1
+Jetson/jetson_bridge.py:84: MAX_TELEMETRY_SAMPLE_AGE_SEC = float(
+Jetson/jetson_bridge.py:85: os.environ.get("MAX_TELEMETRY_SAMPLE_AGE_SEC", "1.0")
+Jetson/jetson_bridge.py:98: TELEMETRY_HZ = 10
+Jetson/jetson_bridge.py:259: """Return a finite PX4 VehicleLocalPosition NED tuple, or ``None``."""
+Jetson/jetson_bridge.py:282: """Whether a named ROS sample is recent enough to drive control telemetry."""
+Jetson/jetson_bridge.py:302: if not math.isfinite(MAX_TELEMETRY_SAMPLE_AGE_SEC) or MAX_TELEMETRY_SAMPLE_AGE_SEC <= 0:
+Jetson/jetson_bridge.py:303: raise ValueError("MAX_TELEMETRY_SAMPLE_AGE_SEC must be finite and > 0")
+Jetson/jetson_bridge.py:319: # PX4 SYSID must be explicitly provided by MAVLINK_SYSTEM_ID, rather
+Jetson/jetson_bridge.py:321: self._mavlink_system_id = int(
+Jetson/jetson_bridge.py:322: os.environ.get("MAVLINK_SYSTEM_ID", str(slot))
+Jetson/jetson_bridge.py:324: if not 1 <= self._mavlink_system_id <= 255:
+Jetson/jetson_bridge.py:326: f"MAVLINK_SYSTEM_ID must be in 1..255, got {self._mavlink_system_id}"
+Jetson/jetson_bridge.py:338: "TELEMETRY_PORT", str(8888 + (slot - 1) * 2)
+Jetson/jetson_bridge.py:342: f"invalid UDP ports: control={self._ctrl_port}, telemetry={self._tel_port}"
+Jetson/jetson_bridge.py:360: TrajectorySetpoint,
+Jetson/jetson_bridge.py:365: VehicleCommand,
+Jetson/jetson_bridge.py:382: # PX4 v1.17: vehicle_status_v1
+Jetson/jetson_bridge.py:388: # PX4 v1 messages retain the VehicleLocalPosition type, but expose it
+Jetson/jetson_bridge.py:400: # PX4 v1: battery_status_v1
+Jetson/jetson_bridge.py:406: if VehicleCommandAck is not None:
+Jetson/jetson_bridge.py:408: VehicleCommandAck,
+Jetson/jetson_bridge.py:414: "[ROS-CHECK] VehicleCommandAck is unavailable in this px4_msgs "
+Jetson/jetson_bridge.py:434: self._telemetry_sent = 0
+Jetson/jetson_bridge.py:435: self._telemetry_send_errors = 0
+Jetson/jetson_bridge.py:436: self._telemetry_last_bytes = 0
+Jetson/jetson_bridge.py:440: # None 表示尚未收到 PX4 状态；之后只在解锁/上锁状态切换时输出一次。
+Jetson/jetson_bridge.py:441: self._px4_armed = None
+Jetson/jetson_bridge.py:463: # 在 PX4 给出首个有效 VehicleLocalPosition 前不得猜测本地原点。
+Jetson/jetson_bridge.py:482: 1.0 / TELEMETRY_HZ, self._send_telemetry
+Jetson/jetson_bridge.py:510: f"MAVLink system_id: {self._mavlink_system_id}"
+Jetson/jetson_bridge.py:530: f"[slot {slot}] Offboard heartbeat: {OFFBOARD_HZ}Hz | "
+Jetson/jetson_bridge.py:546: # VehicleStatus.ARMING_STATE_ARMED 在不同 px4_msgs 版本中均为 2；
+Jetson/jetson_bridge.py:550: if self._px4_armed is None:
+Jetson/jetson_bridge.py:551: self._px4_armed = is_armed
+Jetson/jetson_bridge.py:554: f"[PX4-ARM] Drone is ARMED / 已解锁 (arming_state={state[0]})."
+Jetson/jetson_bridge.py:556: elif is_armed != self._px4_armed:
+Jetson/jetson_bridge.py:557: self._px4_armed = is_armed
+Jetson/jetson_bridge.py:560: f"[PX4-ARM] Drone is ARMED / 已解锁 (arming_state={state[0]})."
+Jetson/jetson_bridge.py:564: f"[PX4-ARM] Drone is DISARMED / 已上锁 (arming_state={state[0]})."
+Jetson/jetson_bridge.py:569: f"[PX4-STATE] arming_state={state[0]}, nav_state={state[1]} "
+Jetson/jetson_bridge.py:584: "[SAFE-HOLD] PX4 local position became invalid; "
+Jetson/jetson_bridge.py:591: """Initialize the first setpoint from a valid PX4 local NED sample."""
+Jetson/jetson_bridge.py:637: int(VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM): "ARM_DISARM",
+Jetson/jetson_bridge.py:638: int(VehicleCommand.VEHICLE_CMD_DO_SET_MODE): "DO_SET_MODE",
+Jetson/jetson_bridge.py:643: f"[PX4-ACK] #{self._command_ack_count} "
+Jetson/jetson_bridge.py:704: # ARM/OFFBOARD before the PX4 local estimator is valid.
+Jetson/jetson_bridge.py:711: # from PX4's current local NED position at 50 Hz, so its 3D magnitude is
+Jetson/jetson_bridge.py:730: # 2. 持续发布 TrajectorySetpoint（最新缓存值）
+Jetson/jetson_bridge.py:731: tsp = TrajectorySetpoint()
+Jetson/jetson_bridge.py:750: f"[slot {self.slot}] Heartbeat ready. "
+Jetson/jetson_bridge.py:762: VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM,
+Jetson/jetson_bridge.py:773: VehicleCommand.VEHICLE_CMD_DO_SET_MODE,
+Jetson/jetson_bridge.py:775: param2=6.0,  # PX4_CUSTOM_MAIN_MODE_OFFBOARD
+Jetson/jetson_bridge.py:786: def _send_telemetry(self):
+Jetson/jetson_bridge.py:806: MAX_TELEMETRY_SAMPLE_AGE_SEC,
+Jetson/jetson_bridge.py:812: # Use the exact frame consumed by TrajectorySetpoint. VehicleOdometry
+Jetson/jetson_bridge.py:825: MAX_TELEMETRY_SAMPLE_AGE_SEC,
+Jetson/jetson_bridge.py:829: # PX4 v1.17: lat / lon / alt / lat_lon_valid
+Jetson/jetson_bridge.py:869: self._telemetry_sent += 1
+Jetson/jetson_bridge.py:870: self._telemetry_last_bytes = sent
+Jetson/jetson_bridge.py:871: if self._telemetry_sent == 1:
+Jetson/jetson_bridge.py:873: f"[UDP-TX] first telemetry sent: {sent}B → "
+Jetson/jetson_bridge.py:878: self._telemetry_send_errors += 1
+Jetson/jetson_bridge.py:880: f"[UDP-TX] telemetry send failed #{self._telemetry_send_errors} "
+Jetson/jetson_bridge.py:985: # telemetry_sent 不能证明后端收到了包。已通过协议校验的控制包
+Jetson/jetson_bridge.py:987: # telemetry port（slot 1 为 8888）。这样后端重启或切换局域网后，
+Jetson/jetson_bridge.py:995: f"[UDP-TX] telemetry target corrected from "
+Jetson/jetson_bridge.py:1162: # JSON 中已经是 PX4 所需的 NED 米坐标，原点为本次上电位置。
+Jetson/jetson_bridge.py:1163: # Jetson 只透传到 TrajectorySetpoint，不做 UE/NED 二次转换。
+Jetson/jetson_bridge.py:1217: # 发送 VehicleCommand 辅助函数
+Jetson/jetson_bridge.py:1230: cmd = VehicleCommand()
+Jetson/jetson_bridge.py:1248: f"[ROS-TX] VehicleCommand #{self._vehicle_command_count}: "
+Jetson/jetson_bridge.py:1255: """Return the configured PX4 MAVLink system ID for this bridge."""
+Jetson/jetson_bridge.py:1256: return self._mavlink_system_id
+Jetson/jetson_bridge.py:1326: f"published={self._offboard_publish_count} PX4={status_text} "
+Jetson/jetson_bridge.py:1328: f"telemetry target={self._backend_addr[0]}:{self._backend_addr[1]} "
+Jetson/jetson_bridge.py:1330: f"{self._telemetry_sent}/{self._telemetry_send_errors}/{self._telemetry_last_bytes}"
+Jetson/jetson_bridge.py:1336: and self._telemetry_sent > 0
+Jetson/jetson_bridge.py:1341: f"[ONE-WAY-LINK] telemetry is being sent to backend, but no valid "
+Jetson/jetson_bridge.py:1344: f"send_port={self._ctrl_port}, backend heartbeat sent_count, "
+Jetson/jetson_bridge.py:1355: f"[ROS-LINK] at least one PX4 input publisher has 0 subscribers "
+Jetson/jetson_bridge.py:1410: # 退出时发送 DISARM 指令，防止电机继续转
+Jetson/jetson_bridge.py:1411: bridge.get_logger().info("Shutting down: sending DISARM...")
+Jetson/jetson_bridge.py:1413: VehicleCommand.VEHICLE_CMD_COMPONENT_ARM_DISARM,
+Jetson/jetson_bridge.py:1421: bridge.get_logger().info("Waiting for heartbeat warmup (~1s)...")
+Jetson/jetson_bridge.py:1435: sys.stdout.write("\n>>> Heartbeat ready. Press ENTER to ARM + OFFBOARD (Ctrl+C to abort): ")
+Jetson/jetson_bridge.py:1439: print(">>> Press Ctrl+C to DISARM immediately.\n")
+Jetson/jetson_speed_diagnose.py:6: field safely to jetson_bridge.py and PX4 TrajectorySetpoint handling.
+Jetson/jetson_speed_diagnose.py:122: ("CONTROL_PORT", "parse_control_packet", "speed", "TrajectorySetpoint", "OffboardControlMode"),
+Jetson/jetson_speed_diagnose.py:137: section("PX4 / ROS 2 MESSAGE DEFINITIONS")
+Jetson/jetson_speed_diagnose.py:138: run(["ros2", "pkg", "prefix", "px4_msgs"])
+Jetson/jetson_speed_diagnose.py:139: run(["ros2", "interface", "show", "px4_msgs/msg/TrajectorySetpoint"])
+Jetson/jetson_speed_diagnose.py:140: run(["ros2", "interface", "show", "px4_msgs/msg/OffboardControlMode"])
+Jetson/jetson_speed_diagnose.py:165: "from px4_msgs.msg import TrajectorySetpoint, OffboardControlMode; "
+Jetson/jetson_speed_diagnose.py:166: "print('px4_msgs import: OK'); print(TrajectorySetpoint()); print(OffboardControlMode())",
+Jetson/jetson_speed_diagnose.py:171: line("We need: the speed-field acceptance result, TrajectorySetpoint definition,")
+Jetson/jetson_video_stream.py:3: Jetson ROS2 camera -> H.264 RTSP publisher with SfM metadata capture.
+Jetson/jetson_video_stream.py:8: - it never opens the PX4 serial port or the bridge UDP ports;
+Jetson/jetson_video_stream.py:9: - it publishes no PX4 command topics.
+Jetson/jetson_video_stream.py:15: RTSP:     rtsp://<DEVICE_IP>:8554/drone-1
+Jetson/jetson_video_stream.py:25: PX4 has no valid global fix. Original PX4 timestamps are retained alongside a
+Jetson/jetson_video_stream.py:73: from px4_msgs.msg import VehicleGlobalPosition, VehicleOdometry
+Jetson/jetson_video_stream.py:118: def probe_rtsp_server(rtsp_url: str, timeout_seconds: float) -> None:
+Jetson/jetson_video_stream.py:119: """Fail quickly when the RTSP control port cannot be reached.
+Jetson/jetson_video_stream.py:121: RTSP always uses TCP for its control connection, even when media is sent
+Jetson/jetson_video_stream.py:125: parsed = urllib.parse.urlparse(rtsp_url)
+Jetson/jetson_video_stream.py:126: if parsed.scheme != "rtsp" or not parsed.hostname:
+Jetson/jetson_video_stream.py:127: raise ValueError(f"invalid RTSP URL: {rtsp_url}")
+Jetson/jetson_video_stream.py:177: # ROS clock time captured when this PX4 sample reached this node. PX4's
+Jetson/jetson_video_stream.py:395: rtsp_url: str
+Jetson/jetson_video_stream.py:396: rtsp_transport: str
+Jetson/jetson_video_stream.py:397: rtsp_connect_timeout_seconds: float
+Jetson/jetson_video_stream.py:430: rtsp_branch = (
+Jetson/jetson_video_stream.py:433: f"! rtspclientsink location={gst_quote(config.rtsp_url)} "
+Jetson/jetson_video_stream.py:434: f"protocols={config.rtsp_transport}"
+Jetson/jetson_video_stream.py:437: return common + "! " + rtsp_branch
+Jetson/jetson_video_stream.py:450: return common + "! tee name=encoded encoded. ! " + rtsp_branch + " encoded. ! " + record_branch
+Jetson/jetson_video_stream.py:461: "rtspclientsink",
+Jetson/jetson_video_stream.py:495: "gstreamer1.0-rtsp and verify Jetson multimedia plugins"
+Jetson/jetson_video_stream.py:505: probe_rtsp_server(
+Jetson/jetson_video_stream.py:506: self.config.rtsp_url,
+Jetson/jetson_video_stream.py:507: self.config.rtsp_connect_timeout_seconds,
+Jetson/jetson_video_stream.py:573: # PLAYING means frames can be sent to rtspclientsink.  It
+Jetson/jetson_video_stream.py:724: "gps_px4_timestamp_us",
+Jetson/jetson_video_stream.py:725: "gps_px4_timestamp_sample_us",
+Jetson/jetson_video_stream.py:828: "gps_px4_timestamp_us": (
+Jetson/jetson_video_stream.py:831: "gps_px4_timestamp_sample_us": (
+Jetson/jetson_video_stream.py:972: """Uploads frame metadata without using the telemetry WebSocket.
+Jetson/jetson_video_stream.py:1170: rtsp_url=args.rtsp_url,
+Jetson/jetson_video_stream.py:1171: rtsp_transport=args.rtsp_transport,
+Jetson/jetson_video_stream.py:1172: rtsp_connect_timeout_seconds=args.rtsp_connect_timeout,
+Jetson/jetson_video_stream.py:1192: "rtsp_url": args.rtsp_url,
+Jetson/jetson_video_stream.py:1193: "rtsp_transport": args.rtsp_transport,
+Jetson/jetson_video_stream.py:1226: target=self._stream_loop, name="rtsp-stream", daemon=True
+Jetson/jetson_video_stream.py:1268: f"RTSP target: {args.rtsp_url} ({args.rtsp_transport}); "
+Jetson/jetson_video_stream.py:1296: "rtsp_url": self.args.rtsp_url,
+Jetson/jetson_video_stream.py:1297: "rtsp_transport": self.args.rtsp_transport,
+Jetson/jetson_video_stream.py:1398: # node's ROS clock domain. Otherwise use callback receipt time. PX4
+Jetson/jetson_video_stream.py:1538: description="ROS2 camera -> Jetson H.264 -> MediaMTX RTSP with SfM metadata"
+Jetson/jetson_video_stream.py:1544: parser.add_argument("--rtsp-port", type=int, default=8554)
+Jetson/jetson_video_stream.py:1546: "--rtsp-transport",
+Jetson/jetson_video_stream.py:1555: "--rtsp-connect-timeout",
+Jetson/jetson_video_stream.py:1558: help="seconds to wait for the MediaMTX RTSP control port before retrying",
+Jetson/jetson_video_stream.py:1560: parser.add_argument("--webrtc-port", type=int, default=8889)
+Jetson/jetson_video_stream.py:1565: help="PX4 topic prefix only, for example /px4_1 or /uav_0",
+Jetson/jetson_video_stream.py:1633: if args.rtsp_connect_timeout <= 0:
+Jetson/jetson_video_stream.py:1634: raise ValueError("RTSP connect timeout must be positive")
+Jetson/jetson_video_stream.py:1654: args.rtsp_url = (
+Jetson/jetson_video_stream.py:1655: f"rtsp://{args.mediamtx_host}:{args.rtsp_port}/{args.stream_path}"
+Jetson/jetson_video_stream.py:1658: f"http://{args.mediamtx_host}:{args.webrtc_port}/{args.stream_path}"
+Jetson/jetson_video_stream.py:1670: "and the PX4 workspace install/setup.bash"
+Jetson/test_jetson_bridge_protocol.py:25: """加载纯协议代码，避免测试机必须安装 ROS2/px4_msgs。"""
+Jetson/test_jetson_video_stream.py:18: self.assertEqual(MODULE.normalize_topic_prefix("px4_1/"), "/px4_1")
+Jetson/test_jetson_video_stream.py:20: MODULE.prefixed_topic("/px4_1", "/fmu/out/vehicle_odometry"),
+Jetson/test_jetson_video_stream.py:21: "/px4_1/fmu/out/vehicle_odometry",
+Jetson/test_jetson_video_stream.py:27: parser.parse_args(["--drone-id", "1", "--topic-prefix", "/px4_1"])
+Jetson/test_jetson_video_stream.py:29: self.assertEqual(args.rtsp_url, "rtsp://<DEVICE_IP>:8554/drone-1")
+Jetson/test_jetson_video_stream.py:38: self.assertEqual(args.rtsp_transport, "tcp")
+Jetson/test_jetson_video_stream.py:39: self.assertEqual(args.rtsp_connect_timeout, 2.0)
+Jetson/test_jetson_video_stream.py:42: args.gps_topic, "/px4_1/fmu/out/vehicle_global_position"
+Jetson/test_jetson_video_stream.py:85: def test_ros_sync_clock_is_used_instead_of_px4_boot_clock(self):
+Jetson/test_jetson_video_stream.py:130: def test_pipeline_uses_hardware_encoder_rtsp_tcp_and_local_segments(self):
+Jetson/test_jetson_video_stream.py:132: rtsp_url="rtsp://<DEVICE_IP>:8554/drone-1",
+Jetson/test_jetson_video_stream.py:133: rtsp_transport="tcp",
+Jetson/test_jetson_video_stream.py:134: rtsp_connect_timeout_seconds=2.0,
+Jetson/test_jetson_video_stream.py:147: self.assertIn("rtspclientsink", pipeline)
+Jetson/test_jetson_video_stream.py:155: rtsp_url="rtsp://<DEVICE_IP>:8554/drone-1",
+Jetson/test_jetson_video_stream.py:156: rtsp_transport="udp",
+Jetson/test_jetson_video_stream.py:157: rtsp_connect_timeout_seconds=2.0,
+Jetson/test_jetson_video_stream.py:205: "rtsp_url": "rtsp://<DEVICE_IP>:8554/drone-1",
+Scripts/P4/localize_widgets.py:16: bHasTelemetry ? *AvailabilityText(Telemetry.Availability) : TEXT("N/A"),
+Scripts/P4/localize_widgets.py:17: bHasTask ? *TaskText(Task) : TEXT("N/A"));''','''Mission=FText::Format(ProductText::Get(TEXT("Command.Link")),ProductText::Source(bHasTelemetry?AvailabilityText(Telemetry.Availability):TEXT("N/A")),ProductText::Source(bHasTask?TaskText(Task):TEXT("N/A"))).ToString();''')
+Scripts/P4/upgrade_domain.py:133: static Object& lookup''','''    void heartbeat(const std::string& owner, const std::function<void(const Object&)>& publish) {
+Scripts/P4/upgrade_transport.py:13: try {security_plans_.heartbeat("",[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});}
+Scripts/P4/upgrade_transport.py:29: if(!owner.empty())security_plans_.heartbeat(owner,[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
+Scripts/P4/upgrade_transport.py:42: static std::atomic<uint64_t> serial{0};
+Scripts/P4/upgrade_transport.py:43: boost::json::object payload{{"request_id","map-edit-"+std::to_string(++serial)},{"plan_id",plan},{"mission_id",mission},{"requested_by",source},{"timestamp",OperationalContext::now()}};
+Scripts/video_demo_fixture.py:1: """Local MOCK MP4 -> existing MediaMTX -> WebRTC fixture. No real UAV/backend.
+Scripts/video_demo_fixture.py:91: "-stream_loop", "-1", "-re", "-i", x["file"], "-c:v", "copy", "-an", "-f", "rtsp",
+Scripts/video_demo_fixture.py:92: "-rtsp_transport", "tcp", f"rtsp://127.0.0.1:8554/drone-{x['drone']}"])
+Source/UE5DroneControl/Command/CommandAlertStore.h:22: /** Session-local event history. Survives shell recreation; never invents telemetry or GPS. */
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:62: Registry->OnTelemetryUpdated.AddUniqueDynamic(this, &UCommandScreenManager::TelemetryChanged);
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:66: // Coalesces per-drone telemetry bursts; also handles deletion and late-spawned actors.
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:123: Registry->OnTelemetryUpdated.RemoveAll(this);
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:145: void UCommandScreenManager::TelemetryChanged(int32 Id, const FDroneTelemetrySnapshot& Snapshot)
+Source/UE5DroneControl/Command/CommandScreenManager.cpp:147: // The shell reads Registry at the next coalesced refresh; no second telemetry cache.
+Source/UE5DroneControl/Command/CommandScreenManager.h:58: UFUNCTION() void TelemetryChanged(int32 Id, const FDroneTelemetrySnapshot& Snapshot);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:294: FDroneTelemetrySnapshot Telemetry;
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:295: if (Registry->GetTelemetry(Drone.DroneId, Telemetry) && Telemetry.Availability == EDroneAvailability::Online) ++Online;
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:324: FDroneTelemetrySnapshot Telemetry;
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:331: const bool bHasTelemetry = Registry->GetTelemetry(Id, Telemetry);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:333: const FString Battery = bHasTelemetry && Telemetry.BatteryPercent >= 0
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:334: ? FString::Printf(TEXT("%d%%"), Telemetry.BatteryPercent) : TEXT("N/A");
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:335: const bool bGps = bHasTelemetry && Telemetry.bGpsFix && FMath::IsFinite(Telemetry.GpsLatitude)
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:336: && FMath::IsFinite(Telemetry.GpsLongitude) && FMath::IsFinite(Telemetry.GpsAltitude);
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:337: const bool bLive = bHasTelemetry && Telemetry.Availability == EDroneAvailability::Online;
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:338: const FString Altitude = bGps ? FString::Printf(TEXT("%.1f m"), Telemetry.GpsAltitude) : TEXT("N/A");
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:339: const FString Speed = bLive && Telemetry.LastUpdateTime > 0 && !Telemetry.Velocity.ContainsNaN()
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:340: ? FString::Printf(TEXT("%.1f m/s"), Telemetry.Velocity.Size()) : TEXT("N/A");
+Source/UE5DroneControl/Command/CommandShellWidget.cpp:343: Mission=FText::Format(ProductText::Get(TEXT("Command.Link")),ProductText::Source(bHasTelemetry?AvailabilityText(Telemetry.Availability):TEXT("N/A")),ProductText::Source(bHasTask?TaskText(Task):TEXT("N/A"))).ToString();
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:86: FDroneTelemetrySnapshot T;
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:87: if(Registry->GetTelemetry(D.DroneId,T) && T.bGpsFix && FMath::IsFinite(T.GpsLatitude) && FMath::IsFinite(T.GpsLongitude) && FMath::Abs(T.GpsLatitude)<=90 && FMath::Abs(T.GpsLongitude)<=180)
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:117: FDroneTelemetrySnapshot T;
+Source/UE5DroneControl/Command/CommandTacticalMap.cpp:118: if(!Registry->GetTelemetry(D.DroneId,T) || !T.bGpsFix || !FMath::IsFinite(T.GpsLatitude) || !FMath::IsFinite(T.GpsLongitude) || FMath::Abs(T.GpsLatitude)>90 || FMath::Abs(T.GpsLongitude)>180){++Missing;continue;}
+Source/UE5DroneControl/Command/CommandTheme.h:12: /** Shared presentation tokens. No mission, telemetry or input ownership. */
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:870: APawn* ADroneOpsGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:1104: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:1106: if (Registry->GetTelemetry(Desc.DroneId, Snapshot))
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.cpp:1157: Shadow->MavlinkSystemId = Desc.MavlinkSystemId;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsGameMode.h:53: virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot) override;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:953: // The backend recognizes the manual-target flag and serializes the Jetson
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1331: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1332: if (!DroneRegistry->GetTelemetry(CurrentDroneInfoDroneId, Snapshot))
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1729: // dispatch path to build a PX4-local NED target. This is shared by online
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1828: FDroneTelemetrySnapshot Telemetry;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1829: if (!DroneRegistry->GetTelemetry(DroneId, Telemetry)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1830: || Telemetry.Availability != EDroneAvailability::Online)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1835: if (!Telemetry.bLocalPositionValid)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1840: if (!Telemetry.bGpsFix
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1841: || !FMath::IsFinite(Telemetry.GpsLatitude)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1842: || Telemetry.GpsLatitude < -90.0 || Telemetry.GpsLatitude > 90.0
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1843: || !FMath::IsFinite(Telemetry.GpsLongitude)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1844: || Telemetry.GpsLongitude < -180.0 || Telemetry.GpsLongitude > 180.0
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1845: || !FMath::IsFinite(Telemetry.GpsAltitude))
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1851: constexpr double MaxTelemetryAgeSeconds = 3.0;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1852: const double TelemetryAgeSeconds = FPlatformTime::Seconds() - Telemetry.LastUpdateTime;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1853: if (Telemetry.LastUpdateTime <= 0.0
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1854: || !FMath::IsFinite(TelemetryAgeSeconds)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1855: || TelemetryAgeSeconds < 0.0
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1856: || TelemetryAgeSeconds > MaxTelemetryAgeSeconds)
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1863: CurrentCoordinate.Longitude = Telemetry.GpsLongitude;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1864: CurrentCoordinate.Latitude = Telemetry.GpsLatitude;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1865: CurrentCoordinate.AltitudeMslMeters = Telemetry.GpsAltitude;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1867: Telemetry.NedLocation.X * 100.0,
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1868: Telemetry.NedLocation.Y * 100.0,
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1869: -Telemetry.NedLocation.Z * 100.0);
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1938: // Cesium consumes WGS84 ellipsoid height while the UI and PX4 anchor altitude are AMSL.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:2083: // Cesium consumes WGS84 ellipsoid height while the UI and PX4 anchor altitude are AMSL.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:2213: // command per drone; the backend heartbeat owns reliable resend and queue consumption.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:3572: // serializer will convert it to NaN at the protocol boundary.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:77: * drone to have a connected backend, a frozen GPS anchor, and fresh valid GPS/local-NED telemetry;
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:100: * each drone's power-on GPS anchor, and fresh time-coherent GPS/local-NED telemetry.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:158: * drone's fresh GPS/local-NED telemetry, avoiding Cesium world-axis and earth-curvature leakage.
+Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.h:439: /** Absolute PX4-local target encoded as X=North/Y=East/Z=Up centimetres. */
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:190: int32 MavlinkSystemId = 0;
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:202: FString TopicPrefix = TEXT("/px4_1");
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:204: /** Browser-playable MediaMTX WebRTC page for this drone (for example http://mediamtx:8889/drone-1). */
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:220: * Drone telemetry snapshot - runtime state
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:223: struct FDroneTelemetrySnapshot
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:227: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:230: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:233: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:236: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:239: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:242: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:245: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:248: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:251: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:254: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:257: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:260: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:263: /** True only for PX4 VehicleLocalPosition in the TrajectorySetpoint NED frame. */
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:264: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:267: UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Core/DroneOpsTypes.h:291: FDroneTelemetrySnapshot() = default;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:11: #include "Serialization/JsonReader.h"
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:12: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:13: #include "Serialization/JsonWriter.h"
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:68: TelemetryCache.Empty();
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:113: Existing->MavlinkSystemId != Descriptor.MavlinkSystemId ||
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:119: FDroneTelemetrySnapshot& Snapshot = TelemetryCache.FindOrAdd(Descriptor.DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:162: Obj->SetNumberField(TEXT("mavlink_system_id"), Desc.MavlinkSystemId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:173: const FDroneTelemetrySnapshot* Snapshot = TelemetryCache.Find(Desc.DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:200: if (!FJsonSerializer::Serialize(Root.ToSharedRef(), Writer))
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:202: UE_LOG(LogTemp, Warning, TEXT("Failed to serialize drone registry"));
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:228: if (!FJsonSerializer::Deserialize(Reader, Root) || !Root.IsValid())
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:260: Obj->TryGetNumberField(TEXT("mavlink_system_id"), Desc.MavlinkSystemId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:303: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:309: // prove connectivity again through backend polling or telemetry.
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:312: TelemetryCache.Add(Desc.DroneId, Snapshot);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:326: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:327: if (const FDroneTelemetrySnapshot* Existing = TelemetryCache.Find(DroneId))
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:337: // Availability is a connection-state transition, not fresh telemetry. Keep
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:340: TelemetryCache.Add(DroneId, Snapshot);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:341: OnTelemetryUpdated.Broadcast(DroneId, Snapshot);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:374: TelemetryCache.Remove(DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:394: void UDroneRegistrySubsystem::UpdateTelemetry(int32 DroneId, const FDroneTelemetrySnapshot& Snapshot)
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:396: const FDroneTelemetrySnapshot* Existing = TelemetryCache.Find(DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:398: FDroneTelemetrySnapshot Merged = Snapshot;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:401: // telemetry 只负责位置/连接等高频数据，不能将由 drone_task_state 和
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:410: TelemetryCache.Add(DroneId, Merged);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:411: OnTelemetryUpdated.Broadcast(DroneId, Merged);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:418: bool UDroneRegistrySubsystem::GetTelemetry(int32 DroneId, FDroneTelemetrySnapshot& OutSnapshot) const
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:420: const FDroneTelemetrySnapshot* Found = TelemetryCache.Find(DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:440: FDroneTelemetrySnapshot& Telemetry = TelemetryCache.FindOrAdd(DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:441: Telemetry.DroneId = DroneId;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:442: Telemetry.TaskMode = Stored.Mode;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:443: Telemetry.TaskState = Stored.State;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:444: Telemetry.TaskErrorDetail = Stored.Detail;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:445: Telemetry.CurrentWaypointIndex = Stored.CurrentWaypoint;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:446: Telemetry.TotalWaypoints = Stored.WaypointCount;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:447: Telemetry.LastUpdateTime = FPlatformTime::Seconds();
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:450: OnTelemetryUpdated.Broadcast(DroneId, Telemetry);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:748: FDroneTelemetrySnapshot& Snap = TelemetryCache.FindOrAdd(DroneId);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:752: OnTelemetryUpdated.Broadcast(DroneId, Snap);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:26: * Delegate for telemetry update
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:28: DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTelemetryUpdated, int32, DroneId, const FDroneTelemetrySnapshot&, Snapshot);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:112: // Telemetry management
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:114: void UpdateTelemetry(int32 DroneId, const FDroneTelemetrySnapshot& Snapshot);
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:117: bool GetTelemetry(int32 DroneId, FDroneTelemetrySnapshot& OutSnapshot) const;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:217: FOnTelemetryUpdated OnTelemetryUpdated;
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:287: // Telemetry cache
+Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.h:289: TMap<int32, FDroneTelemetrySnapshot> TelemetryCache;
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.cpp:317: // precise while avoiding any Cesium-world/PX4-axis coupling.
+Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h:71: * Builds an absolute PX4-local target using one fresh, time-coherent GPS/local-NED
+Source/UE5DroneControl/DroneOps/Core/HostileTargetManager.cpp:400: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/DroneOps/Core/HostileTargetManager.cpp:408: if (!CachedRegistry->GetTelemetry(Desc.DroneId, Snap))
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:215: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/DroneOps/Drone/DroneCommandSenderComponent.cpp:216: if (Registry->GetTelemetry(DroneId, Snap))
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:3: #include "DroneOps/Drone/DroneTelemetryComponent.h"
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:8: UDroneTelemetryComponent::UDroneTelemetryComponent()
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:14: void UDroneTelemetryComponent::BeginPlay()
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:19: void UDroneTelemetryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:23: if (!bHasValidTelemetry)
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:40: void UDroneTelemetryComponent::PushSnapshot(const FDroneTelemetrySnapshot& Snapshot)
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:52: bHasValidTelemetry = true;
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:58: float UDroneTelemetryComponent::GetSecondsSinceLastUpdate() const
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:60: if (!bHasValidTelemetry)
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:67: void UDroneTelemetryComponent::PropagateToRegistry()
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.cpp:84: Registry->UpdateTelemetry(CurrentSnapshot.DroneId, CurrentSnapshot);
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:8: #include "DroneTelemetryComponent.generated.h"
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:10: DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTelemetrySnapshotUpdated, const FDroneTelemetrySnapshot&, Snapshot);
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:13: * Component for caching and broadcasting real-time telemetry.
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:19: class UE5DRONECONTROL_API UDroneTelemetryComponent : public UActorComponent
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:24: UDroneTelemetryComponent();
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:28: UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:33: UFUNCTION(BlueprintCallable, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:34: void PushSnapshot(const FDroneTelemetrySnapshot& Snapshot);
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:38: UFUNCTION(BlueprintPure, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:39: const FDroneTelemetrySnapshot& GetCurrentSnapshot() const { return CurrentSnapshot; }
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:41: UFUNCTION(BlueprintPure, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:42: bool HasValidTelemetry() const { return bHasValidTelemetry; }
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:44: UFUNCTION(BlueprintPure, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:48: UPROPERTY(BlueprintAssignable, Category = "Telemetry")
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:49: FOnTelemetrySnapshotUpdated OnSnapshotUpdated;
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:57: FDroneTelemetrySnapshot CurrentSnapshot;
+Source/UE5DroneControl/DroneOps/Drone/DroneTelemetryComponent.h:59: bool bHasValidTelemetry = false;
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:25: * Get the current telemetry snapshot of this drone.
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:28: FDroneTelemetrySnapshot GetDroneInfoSnapshot() const;
+Source/UE5DroneControl/DroneOps/Interfaces/DroneInfoProviderInterface.h:29: virtual FDroneTelemetrySnapshot GetDroneInfoSnapshot_Implementation() const = 0;
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.cpp:5: #include "Serialization/JsonReader.h"
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.cpp:6: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/DroneOps/Network/DroneHttpClient.cpp:159: if (FJsonSerializer::Deserialize(Reader, JsonObj) && JsonObj.IsValid())
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:12: #include "Serialization/JsonReader.h"
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:13: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:14: #include "Serialization/JsonWriter.h"
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:245: if (!FJsonSerializer::Deserialize(Reader, RootValue) || !RootValue.IsValid())
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:276: if (FJsonSerializer::Deserialize(Reader, Root) && Root.IsValid())
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:289: Desc.MavlinkSystemId = PendingRegisterSlot;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:291: Desc.TopicPrefix = FString::Printf(TEXT("/px4_%d"), PendingRegisterSlot);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:389: if (Obj->TryGetNumberField(TEXT("mavlink_system_id"), MavId))
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:391: Desc.MavlinkSystemId = MavId;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:413: // with the high-frequency telemetry WebSocket.
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:519: if (!FJsonSerializer::Deserialize(Reader, Root) || !Root.IsValid())
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:530: if (MsgType != TEXT("telemetry"))
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:532: UE_LOG(LogTemp, Log, TEXT("[DroneNetworkManager] WS non-telemetry: type=%s"), *MsgType);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:571: // Telemetry push (flat): { "type": "telemetry", "drone_id": N, "x":..., "y":..., "z":...,
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:573: if (MsgType == TEXT("telemetry"))
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:587: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:619: FDroneTelemetrySnapshot ExistingSnap;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:620: if (Registry->GetTelemetry(DroneId, ExistingSnap))
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:662: Registry->UpdateTelemetry(DroneId, Snap);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:727: // 确保 UI 列表能通过 GetTelemetry 读到 GPS 数据
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:735: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:736: Registry->GetTelemetry(DroneId, Snap);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:741: // An anchor event is not a synchronized GPS/local-NED telemetry sample.
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:745: Registry->UpdateTelemetry(DroneId, Snap);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:750: // The next reconnect belongs to a new PX4 local-origin lifecycle.
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:751: // Removing the old cache also lets telemetry catch-up install the new
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:758: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:759: Registry->GetTelemetry(DroneId, Snap);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:765: Registry->UpdateTelemetry(DroneId, Snap);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:974: Root->SetStringField(TEXT("model"), TEXT("PX4"));
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:982: FJsonSerializer::Serialize(Root.ToSharedRef(), Writer);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:1061: FJsonSerializer::Serialize(Root.ToSharedRef(), Writer);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.cpp:1119: FJsonSerializer::Serialize(Root.ToSharedRef(), Writer);
+Source/UE5DroneControl/DroneOps/Network/DroneNetworkManager.h:75: * The geographic target panel and PX4 VehicleGlobalPosition::altitude_amsl both use height above
+Source/UE5DroneControl/DroneOps/Network/DroneWebSocketClient.h:13: * WebSocket client for real-time drone telemetry and event push.
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:210: Desc.MavlinkSystemId = DroneId;
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:212: Desc.TopicPrefix = FString::Printf(TEXT("/px4_%d"), DroneId);
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:245: Desc.MavlinkSystemId = DroneId;
+Source/UE5DroneControl/MainMenu/MainMenuWidget.cpp:247: Desc.TopicPrefix = FString::Printf(TEXT("/px4_%d"), DroneId);
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:8: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:37: FString UMapMissionRouteWidget::Fingerprint() const {FString S;FJsonSerializer::Serialize(RouteJson(),TJsonWriterFactory<>::Create(&S));return S;}
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:43: PC->LoadMissionPath(Data,false);CleanFingerprint=Fingerprint();bDirty=false;bSaved=R.IsValid();LoadedRoute.Empty();if(R)FJsonSerializer::Serialize(R.ToSharedRef(),TJsonWriterFactory<>::Create(&LoadedRoute));else LoadedRoute=TEXT("empty");return true;
+Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp:105: FString RemoteRoute=TEXT("empty");if(Route){RemoteRoute.Empty();FJsonSerializer::Serialize(Route.ToSharedRef(),TJsonWriterFactory<>::Create(&RemoteRoute));}
+Source/UE5DroneControl/MultiDroneCharacter.cpp:150: Desc.MavlinkSystemId = MavlinkSystemId;
+Source/UE5DroneControl/MultiDroneCharacter.cpp:213: // fall back to a telemetry mirror that is intentionally absent.
+Source/UE5DroneControl/MultiDroneCharacter.cpp:347: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/MultiDroneCharacter.cpp:348: if (Registry->GetTelemetry(DroneId, Snap))
+Source/UE5DroneControl/MultiDroneCharacter.cpp:352: Registry->UpdateTelemetry(DroneId, Snap);
+Source/UE5DroneControl/MultiDroneCharacter.cpp:399: FDroneTelemetrySnapshot MirrorSnap;
+Source/UE5DroneControl/MultiDroneCharacter.cpp:400: if (Registry->GetTelemetry(DroneId, MirrorSnap))
+Source/UE5DroneControl/MultiDroneCharacter.cpp:510: // Normal preview rejoins authoritative telemetry. Strict isolation has no
+Source/UE5DroneControl/MultiDroneCharacter.cpp:971: // following when no local owner remains and backend telemetry is allowed.
+Source/UE5DroneControl/MultiDroneCharacter.h:53: // MAVLink system id (2 / 3 / 4 …)
+Source/UE5DroneControl/MultiDroneCharacter.h:55: int32 MavlinkSystemId = 2;
+Source/UE5DroneControl/MultiDroneCharacter.h:65: // ROS2 topic prefix (e.g. "/px4_1")
+Source/UE5DroneControl/MultiDroneCharacter.h:67: FString TopicPrefix = TEXT("/px4_1");
+Source/UE5DroneControl/MultiDroneCharacter.h:69: // UE5 telemetry receive port (8888 / 8890 / 8892)
+Source/UE5DroneControl/MultiDroneCharacter.h:161: UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Telemetry")
+Source/UE5DroneControl/MultiDroneManager.cpp:65: Desc.MavlinkSystemId = Char->MavlinkSystemId;
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.cpp:11: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.cpp:12: #include "Serialization/JsonWriter.h"
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.cpp:67: if (!FJsonSerializer::Serialize(RootJsonObject, JsonWriter))
+Source/UE5DroneControl/PathEditor/DronePathSaveLibrary.cpp:69: UE_LOG(LogDronePathSaveLibrary, Error, TEXT("Failed to serialize JSON output. SaveFilePath='%s'"), *SaveFilePath);
+Source/UE5DroneControl/PathEditor/DroneWaypointTypes.h:22: // Stored in local space relative to the owning path actor for stable serialization.
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:2: #include "DroneOps/Drone/DroneTelemetryComponent.h"
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:34: TelemetryComponent = CreateDefaultSubobject<UDroneTelemetryComponent>(TEXT("TelemetryComponent"));
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:124: Registry->OnTelemetryUpdated.AddDynamic(this, &ARealTimeDroneReceiver::OnWebSocketTelemetry);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:125: UE_LOG(LogTemp, Log, TEXT("RealTimeDroneReceiver [%s]: WebSocket mode, subscribed to Registry telemetry"), *DroneName);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:167: Desc.MavlinkSystemId = MavlinkSystemId;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:178: // Sync TelemetryComponent DroneId
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:179: if (TelemetryComponent && !bUseWebSocket)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:181: FDroneTelemetrySnapshot InitSnap;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:187: Registry->GetTelemetry(DroneId, InitSnap);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:191: TelemetryComponent->PushSnapshot(InitSnap);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:521: // 【关键修复】PX4/ROS2的四元数格式是 [w, x, y, z]，但UE5的FQuat构造函数是 (x, y, z, w)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:613: MavlinkSystemId = Descriptor.MavlinkSystemId;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:634: if (TelemetryComponent && !bUseWebSocket)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:636: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:641: Registry->GetTelemetry(DroneId, Snapshot);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:648: TelemetryComponent->PushSnapshot(Snapshot);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:698: // 【关键修复】PX4/ROS2的四元数格式是 [w, x, y, z]，但UE5的FQuat构造函数是 (x, y, z, w)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:830: // Push telemetry to component (propagates to DroneRegistrySubsystem)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:831: PushTelemetry(DroneData, NewTarget, NewRotation);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:883: void ARealTimeDroneReceiver::PushTelemetry(const FDroneYAMLData& DroneData, const FVector& WorldPos, const FRotator& WorldRot)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:885: if (!TelemetryComponent)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:890: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:900: TelemetryComponent->PushSnapshot(Snap);
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:903: FDroneTelemetrySnapshot ARealTimeDroneReceiver::GetDroneInfoSnapshot_Implementation() const
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:909: FDroneTelemetrySnapshot RegistrySnapshot;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:910: if (Registry->GetTelemetry(DroneId, RegistrySnapshot))
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:917: if (TelemetryComponent && TelemetryComponent->HasValidTelemetry())
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:919: return TelemetryComponent->GetCurrentSnapshot();
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:922: FDroneTelemetrySnapshot EmptySnapshot;
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:963: void ARealTimeDroneReceiver::OnWebSocketTelemetry(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot)
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:977: // offset above the real telemetry position.
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:986: // though both used the same PX4 NED telemetry.  Prefer the synchronized GPS in this telemetry
+Source/UE5DroneControl/RealTimeDroneReceiver.cpp:988: // only for non-geographic/offline coordinate services or telemetry without a valid GPS fix.
+Source/UE5DroneControl/RealTimeDroneReceiver.h:15: class UDroneTelemetryComponent;
+Source/UE5DroneControl/RealTimeDroneReceiver.h:22: * YAML format telemetry data structure
+Source/UE5DroneControl/RealTimeDroneReceiver.h:51: * Polling mode, supports YAML telemetry.
+Source/UE5DroneControl/RealTimeDroneReceiver.h:80: int32 MavlinkSystemId = 2;
+Source/UE5DroneControl/RealTimeDroneReceiver.h:93: // ---- Telemetry Component ----
+Source/UE5DroneControl/RealTimeDroneReceiver.h:96: TObjectPtr<UDroneTelemetryComponent> TelemetryComponent;
+Source/UE5DroneControl/RealTimeDroneReceiver.h:121: virtual FDroneTelemetrySnapshot GetDroneInfoSnapshot_Implementation() const override;
+Source/UE5DroneControl/RealTimeDroneReceiver.h:162: // When true, drive position/attitude from WebSocket telemetry via Registry instead of UDP
+Source/UE5DroneControl/RealTimeDroneReceiver.h:166: // Freeze local movement (set by P-key pause; does not affect incoming telemetry parsing)
+Source/UE5DroneControl/RealTimeDroneReceiver.h:193: void OnWebSocketTelemetry(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot);
+Source/UE5DroneControl/RealTimeDroneReceiver.h:229: // Push current position/attitude into TelemetryComponent
+Source/UE5DroneControl/RealTimeDroneReceiver.h:230: void PushTelemetry(const FDroneYAMLData& DroneData, const FVector& WorldPos, const FRotator& WorldRot);
+Source/UE5DroneControl/Shared/DroneMissionService.cpp:15: FDroneTelemetrySnapshot Telemetry;
+Source/UE5DroneControl/Shared/DroneMissionService.cpp:16: if (!Registry->GetTelemetry(Id, Telemetry) || Telemetry.Availability != EDroneAvailability::Online) return false;
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:17: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:26: FJsonSerializer::Serialize(Json, Writer); return Result;
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:76: FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Response->GetContentAsString()), Json);
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:118: if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Message), Json) || !Json) return;
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:216: if (Patch->HasField(TEXT("active_uav_id"))) ++SelectionSerial;
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:232: const int32 Serial = ++SelectionSerial;
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:237: Request(TEXT("PATCH"), TEXT("/api/context"), Body, [this, Serial, Id, Multi](TSharedPtr<FJsonObject> Reply) {
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:244: if (Serial != SelectionSerial || AckVersion != Version || Registry->GetPrimarySelectedDrone() != Id) return;
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:283: FDroneTelemetrySnapshot T;T.DroneId=Id;T.GpsLatitude=P->GetNumberField(TEXT("latitude"));T.GpsLongitude=P->GetNumberField(TEXT("longitude"));T.GpsAltitude=P->GetNumberField(TEXT("altitude"));
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:289: Registry->UpdateTelemetry(Id,T);
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.cpp:305: if(Ok && Response)FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Response->GetContentAsString()),Reply);
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.h:24: void CancelPendingLocalSelection() { ++SelectionSerial; }
+Source/UE5DroneControl/Shared/OperationalContextSubsystem.h:59: int32 SelectionSerial = 0;
+Source/UE5DroneControl/Shared/OperationalEventStore.cpp:84: const int64 Serial=static_cast<int64>(E->GetNumberField(TEXT("sequence")));if(Serial<=LastPlanSequence)continue;
+Source/UE5DroneControl/Shared/OperationalEventStore.cpp:85: LastPlanSequence=Serial;
+Source/UE5DroneControl/Shared/OperationalEventStore.cpp:88: GetGameInstance()->GetSubsystem<UCommandAlertStore>()->AddSharedAlert(FString::Printf(TEXT("execution-%lld"),Serial),Id,TEXT("execution_failed"),ProductText::Get(TEXT("Errors.")+Params->GetStringField(TEXT("reason"))).ToString());
+Source/UE5DroneControl/Tests/CommandCenterVisualQA.cpp:11: // Explicit opt-in fixture. Coordinates are labelled synthetic, never uploaded as real telemetry.
+Source/UE5DroneControl/Tests/CommandCenterVisualQA.cpp:24: FDroneTelemetrySnapshot T;T.DroneId=Id;T.bGpsFix=true;T.GpsLatitude=39.981+(Id-2)*.003;T.GpsLongitude=116.347+(Id-2)*.006;
+Source/UE5DroneControl/Tests/CommandCenterVisualQA.cpp:26: R->UpdateTelemetry(Id,T);
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:119: FDroneTelemetrySnapshot Telemetry;
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:122: Test->TestTrue(TEXT("UDP to backend to WebSocket to Registry telemetry"), Registry->GetTelemetry(3, Telemetry)
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:123: && Telemetry.Availability == EDroneAvailability::Online && Telemetry.bGpsFix);
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:134: FDroneTelemetrySnapshot Telemetry; Telemetry.DroneId = Id; Telemetry.Availability = EDroneAvailability::Offline;
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:135: Telemetry.BatteryPercent = Id == 9001 ? 64 : 82;
+Source/UE5DroneControl/Tests/CommandClientTest.cpp:136: Registry->UpdateTelemetry(Id, Telemetry);
+Source/UE5DroneControl/Tests/MapExtractionTest.cpp:69: FDroneTelemetrySnapshot T; T.DroneId = D.DroneId; T.BatteryPercent = 64; R->UpdateTelemetry(D.DroneId, T);
+Source/UE5DroneControl/Tests/MapVisualQA.cpp:10: // Explicit local development fixture; never automatic, never sends mission/telemetry to Backend.
+Source/UE5DroneControl/Tests/MapVisualQA.cpp:11: static FAutoConsoleCommand M1VisualQA(TEXT("M1.QA"), TEXT("Create labelled local QA descriptors, telemetry and alerts for physical acceptance."),
+Source/UE5DroneControl/Tests/MapVisualQA.cpp:25: FDroneTelemetrySnapshot T; T.DroneId = Id; T.BatteryPercent = 60 + Id;
+Source/UE5DroneControl/Tests/MapVisualQA.cpp:26: T.Availability = EDroneAvailability::Offline; R->UpdateTelemetry(Id, T);
+Source/UE5DroneControl/Tests/P4WorkflowTest.cpp:18: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/Tests/P4WorkflowTest.cpp:146: FJsonSerializer::Serialize(PlanUI::Object(S->GetPlans(),TEXT("deployments")).ToSharedRef(),TJsonWriterFactory<>::Create(&DeploymentBefore));Send(TEXT("select"),Original);++Step;return false;}
+Source/UE5DroneControl/Tests/P4WorkflowTest.cpp:154: FString After;FJsonSerializer::Serialize(PlanUI::Object(S->GetPlans(),TEXT("deployments")).ToSharedRef(),TJsonWriterFactory<>::Create(&After));Test->TestEqual(TEXT("copy and edit leave original deployment immutable"),After,DeploymentBefore);return true;
+Source/UE5DroneControl/UE5DroneControlCharacter.h:130: int32 RemotePort = 8889; // 目标端口 (UE5 -> PX4 桥接默认端口)
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:55: void UDroneInfoPanelWidget::UpdateFromSnapshot(const FDroneTelemetrySnapshot& Snapshot, const FString& InDroneName,
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.cpp:83: SetText(LastTelemetryText, Snapshot.LastUpdateTime > 0.0
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:29: void UpdateFromSnapshot(const FDroneTelemetrySnapshot& Snapshot, const FString& InDroneName,
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:63: UPROPERTY(meta = (BindWidgetOptional)) UTextBlock* LastTelemetryText = nullptr;
+Source/UE5DroneControl/UI/DroneInfoPanelWidget.h:78: FDroneTelemetrySnapshot LastSnapshot;
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:48: FDroneTelemetrySnapshot Telemetry;
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:50: const bool bTelemetry = Registry && Registry->GetTelemetry(DroneId, Telemetry);
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:52: const FString Battery = bTelemetry && Telemetry.BatteryPercent >= 0
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:53: ? FString::Printf(TEXT("%d%%"), Telemetry.BatteryPercent) : TEXT("N/A");
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:553: void UDroneListItemWidget::SetDroneFullState(int32 InDroneId, const FDroneTelemetrySnapshot& Snap)
+Source/UE5DroneControl/UI/DroneListItemWidget.cpp:607: // 数据来源：DroneNetworkManager 从 WS telemetry/event 解析后写入 Registry
+Source/UE5DroneControl/UI/DroneListItemWidget.h:114: void SetDroneFullState(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot);
+Source/UE5DroneControl/UI/DroneListWidget.cpp:258: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/UI/DroneListWidget.cpp:259: if (!Registry->GetTelemetry(Desc.DroneId, Snap))
+Source/UE5DroneControl/UI/DroneListWidget.cpp:421: // 启动刷新定时器作为“兜底”：主更新走事件驱动（OnRegistryTelemetryUpdated），
+Source/UE5DroneControl/UI/DroneListWidget.cpp:431: // - OnTelemetryUpdated：遥测变化时就地刷新对应单项（真正的实时更新，独立于定时器）。
+Source/UE5DroneControl/UI/DroneListWidget.cpp:438: Registry->OnTelemetryUpdated.AddDynamic(this, &UDroneListWidget::OnRegistryTelemetryUpdated);
+Source/UE5DroneControl/UI/DroneListWidget.cpp:464: Registry->OnTelemetryUpdated.RemoveAll(this);
+Source/UE5DroneControl/UI/DroneListWidget.cpp:476: void UDroneListWidget::OnRegistryTelemetryUpdated(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot)
+Source/UE5DroneControl/UI/DroneListWidget.h:111: void OnRegistryTelemetryUpdated(int32 InDroneId, const FDroneTelemetrySnapshot& Snapshot);
+Source/UE5DroneControl/UI/DroneVideoWindowWidget.h:18: * Unlike UDroneInfoPanelWidget (a viewport UMG overlay carrying 0.2 s telemetry),
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:691: // PX4, however, consumes a power-on-origin-relative NED target.  Build a separate wire copy
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:729: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:731: && Registry->GetTelemetry(Desc.DroneId, Snapshot)
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1127: FDroneTelemetrySnapshot Snapshot;
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1128: if (!Registry->GetTelemetry(DroneId, Snapshot))
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1154: FDroneTelemetrySnapshot Snap;
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1155: if (!Registry->GetTelemetry(DroneId, Snap) || Snap.Availability != EDroneAvailability::Online)
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1277: // Online telemetry put the shadow path into the assembly_complete wait queue.
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1648: // power-on-origin-relative UE offsets, without coupling Cesium world axes into PX4.
+Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.h:177: // Local preview must start shadow playback immediately, even when telemetry still reports Online.
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:24: #include "Serialization/JsonReader.h"
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:25: #include "Serialization/JsonSerializer.h"
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:208: FDroneTelemetrySnapshot T;
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:210: if (Registry->GetTelemetry(Id,T) && T.LastUpdateTime > 0)
+Source/UE5DroneControl/Video/VideoShellWidget.cpp:317: if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Message.Mid(Prefix.Len())), Data) || !Data.IsValid()) return;
+Source/UE5DroneControl/Video/VideoShellWidget.h:61: // Presentation order only; descriptors, selection and telemetry remain in Registry.
+tools/MediaMTX/mediamtx.yml:2: # Publisher (Jetson or ffmpeg test source): rtsp://<host>:8554/drone-<id>
+tools/MediaMTX/mediamtx.yml:5: rtsp: true
+tools/MediaMTX/mediamtx.yml:6: rtspAddress: :8554
+tools/MediaMTX/mediamtx.yml:8: webrtc: true
+tools/MediaMTX/mediamtx.yml:9: webrtcAddress: :8889
+tools/MediaMTX/mediamtx.yml:12: webrtcAdditionalHosts: [127.0.0.1]
+tools/MediaMTX/mediamtx.yml:13: webrtcAllowOrigins: ['*']
+tools/MediaMTX/ue-demo.yml:1: # Local UE drone-panel demo: publish RTSP to drone-1, play it through WebRTC.
+tools/MediaMTX/ue-demo.yml:2: rtsp: true
+tools/MediaMTX/ue-demo.yml:3: rtspAddress: :8554
+tools/MediaMTX/ue-demo.yml:5: webrtc: true
+tools/MediaMTX/ue-demo.yml:6: webrtcAddress: :8889
+tools/MediaMTX/ue-demo.yml:7: webrtcAllowOrigins: ['*']
+tools/integration_week3.py:103: heartbeat_hz: 2
+tools/integration_week3.py:115: ros_topic_prefix: "/px4_1"
+tools/integration_week3.py:119: ros_topic_prefix: "/px4_2"
+tools/integration_week3.py:157: {"name": "week3-d1", "model": "PX4", "slot": 1, "ip": "127.0.0.1", "port": 18889},
+tools/integration_week3.py:165: {"name": "week3-dup", "model": "PX4", "slot": 1, "ip": "127.0.0.1", "port": 18889},
+tools/integration_week3.py:173: assert drones[0]["topic_prefix"] == "/px4_1"
+tools/integration_week3.py:194: telemetry = await expect_ws(
+tools/integration_week3.py:196: lambda m: m.get("type") == "telemetry" and m.get("drone_id") == 1,
+tools/integration_week3.py:197: "telemetry",
+tools/integration_week3.py:199: assert telemetry["drone_id_str"] == "d1"
+tools/integration_week3.py:200: assert math.isclose(telemetry["x"], 100.0)
+tools/integration_week3.py:201: assert math.isclose(telemetry["y"], 200.0)
+tools/integration_week3.py:202: assert math.isclose(telemetry["z"], 300.0)
+tools/integration_week3.py:203: assert math.isclose(telemetry["yaw"], -30.0, abs_tol=0.02)
+tools/integration_week3.py:204: assert math.isclose(telemetry["speed"], 5.0)
+tools/integration_week3.py:205: assert telemetry["armed"] is True and telemetry["offboard"] is True
+tools/integration_week3.py:264: await expect_ws(ws, lambda m: m.get("type") == "telemetry", "low battery telemetry")
+tools/integration_week3.py:290: await expect_ws(ws, lambda m: m.get("type") == "telemetry", "reconnect telemetry")
+tools/integration_week4.py:96: heartbeat_hz: 2
+tools/integration_week4.py:108: ros_topic_prefix: "/px4_1"
+tools/integration_week4.py:112: ros_topic_prefix: "/px4_2"
+tools/integration_week4.py:163: # Telemetry injection helpers
+tools/integration_week4.py:478: await expect_ws(ws, lambda m: m.get("type") == "telemetry" and m.get("drone_id") == 1, "d1 telemetry")
+tools/integration_week4.py:479: await expect_ws(ws, lambda m: m.get("type") == "telemetry" and m.get("drone_id") == 2, "d2 telemetry")
+tools/integration_week5.py:72: heartbeat_hz: 2
+tools/integration_week5.py:84: ros_topic_prefix: "/px4_1"
+tools/integration_week5.py:88: ros_topic_prefix: "/px4_2"
+tools/mock_server.py:5: - WebSocket: ws://127.0.0.1:8081/ws  (telemetry push at 10Hz, receives control commands)
+tools/mock_server.py:22: {"id": 1, "name": "UAV1", "mavlink_system_id": 2, "bit_index": 0,
+tools/mock_server.py:23: "ue_receive_port": 8888, "topic_prefix": "/px4_1"},
+tools/mock_server.py:24: {"id": 2, "name": "UAV2", "mavlink_system_id": 3, "bit_index": 1,
+tools/mock_server.py:25: "ue_receive_port": 8890, "topic_prefix": "/px4_2"},
+tools/mock_server.py:43: "mavlink_system_id": data.get("mavlink_system_id", _next_id + 1),
+tools/mock_server.py:46: "topic_prefix": data.get("topic_prefix", f"/px4_{_next_id}"),
+tools/mock_server.py:151: if '"type": "telemetry"' not in msg:
+tools/mock_server.py:211: async def telemetry_push():
+tools/mock_server.py:223: "type": "telemetry",
+tools/mock_server.py:236: async def telemetry_push_zero():
+tools/mock_server.py:237: """Push zero-offset telemetry for anchor verification. Drones stay at anchor point."""
+tools/mock_server.py:246: "type": "telemetry",
+tools/mock_server.py:260: await telemetry_push()
+tools/mock_ue/mock_ue/app.py:25: verbose_telemetry: bool = False,
+tools/mock_ue/mock_ue/app.py:30: self.verbose_telemetry = verbose_telemetry
+tools/mock_ue/mock_ue/app.py:66: message = self.state.handle_ws_message(payload, verbose_telemetry=self.verbose_telemetry)
+tools/mock_ue/mock_ue/app.py:96: def list_telemetry(self, drone_id: Optional[str] = None) -> str:
+tools/mock_ue/mock_ue/app.py:97: return self.state.format_telemetry(drone_id)
+tools/mock_ue/mock_ue/main.py:86: def do_telemetry(self, line: str) -> None:
+tools/mock_ue/mock_ue/main.py:89: print(self.app.list_telemetry(drone_id))
+tools/mock_ue/mock_ue/main.py:116: "model": args.get("model", "PX4-SITL"),
+tools/mock_ue/mock_ue/main.py:240: parser.add_argument("--verbose-telemetry", action="store_true", help="打印每一帧 telemetry")
+tools/mock_ue/mock_ue/main.py:255: verbose_telemetry=args.verbose_telemetry,
+tools/mock_ue/mock_ue/models.py:21: class TelemetryState:
+tools/mock_ue/mock_ue/models.py:61: telemetry: Optional[TelemetryState] = None
+tools/mock_ue/mock_ue/state.py:7: from .models import AlertState, AnchorState, ArrayState, DroneState, TelemetryState, now_iso
+tools/mock_ue/mock_ue/state.py:89: def handle_ws_message(self, message: dict[str, Any], verbose_telemetry: bool = False) -> Optional[str]:
+tools/mock_ue/mock_ue/state.py:100: if message_type == "telemetry" and drone is not None:
+tools/mock_ue/mock_ue/state.py:101: drone.telemetry = TelemetryState(
+tools/mock_ue/mock_ue/state.py:111: drone.battery = drone.telemetry.battery
+tools/mock_ue/mock_ue/state.py:113: if verbose_telemetry:
+tools/mock_ue/mock_ue/state.py:115: f"遥测 {drone_id}: pos=({drone.telemetry.x:.1f}, {drone.telemetry.y:.1f}, {drone.telemetry.z:.1f}) "
+tools/mock_ue/mock_ue/state.py:116: f"yaw={drone.telemetry.yaw:.1f} speed={drone.telemetry.speed:.2f} battery={drone.telemetry.battery}%"
+tools/mock_ue/mock_ue/state.py:179: "id   slot  name            status      battery  anchor  telemetry",
+tools/mock_ue/mock_ue/state.py:190: f"{'Y' if drone.telemetry else 'N':<9}"
+tools/mock_ue/mock_ue/state.py:209: def format_telemetry(self, drone_id: Optional[str] = None) -> str:
+tools/mock_ue/mock_ue/state.py:221: if drone.telemetry is None:
+tools/mock_ue/mock_ue/state.py:225: f"x={drone.telemetry.x:.1f} y={drone.telemetry.y:.1f} z={drone.telemetry.z:.1f} "
+tools/mock_ue/mock_ue/state.py:226: f"yaw={drone.telemetry.yaw:.1f} pitch={drone.telemetry.pitch:.1f} roll={drone.telemetry.roll:.1f} "
+tools/mock_ue/mock_ue/state.py:227: f"speed={drone.telemetry.speed:.2f} battery={drone.telemetry.battery}% "
+tools/mock_ue/mock_ue/state.py:228: f"(updated {drone.telemetry.updated_at})"
+tools/simulate_telemetry.py:2: simulate_telemetry.py — 持续向后端注入模拟遥测数据，替代真实 Jetson/PX4。
+tools/simulate_telemetry.py:5: python tools/simulate_telemetry.py
+tools/simulate_telemetry.py:6: python tools/simulate_telemetry.py --drones 1 2 --register
+tools/simulate_telemetry.py:7: python tools/simulate_telemetry.py --transport udp --drones 1 2
+tools/simulate_telemetry.py:8: python tools/simulate_telemetry.py --ue-target 1000 0 -500
+tools/simulate_telemetry.py:9: python tools/simulate_telemetry.py --move-circle --battery 15
+tools/simulate_telemetry.py:84: "model": "PX4-SIM",
+tools/simulate_telemetry.py:96: def make_telemetry(
+tools/simulate_telemetry.py:144: def telemetry_to_yaml(tel: dict[str, Any]) -> str:
+tools/simulate_telemetry.py:196: tel = make_telemetry(
+tools/simulate_telemetry.py:209: sock.sendto(telemetry_to_yaml(tel).encode("utf-8"), udp_addr)
+tools/simulate_telemetry.py:224: description="向后端持续注入模拟遥测数据（替代真实 Jetson/PX4）",
+ue_px4_msgs/__init__.py:1: # UE5端PX4消息定义
+ue_px4_msgs/__init__.py:3: # 用于UE5与PX4通信的数据结构
+ue_px4_msgs/__init__.py:10: TrajectorySetpoint,
+ue_px4_msgs/__init__.py:11: VehicleCommand,
+ue_px4_msgs/__init__.py:21: 'TrajectorySetpoint',
+ue_px4_msgs/__init__.py:22: 'VehicleCommand',
+ue_px4_msgs/messages.py:2: PX4消息定义 (纯Python实现)
+ue_px4_msgs/messages.py:3: 对应 px4_msgs 包中的消息类型
+ue_px4_msgs/messages.py:15: """车辆里程计数据 (对应 px4_msgs/msg/VehicleOdometry.msg)
+ue_px4_msgs/messages.py:85: """车辆全局位置 (对应 px4_msgs/msg/VehicleGlobalPosition.msg)
+ue_px4_msgs/messages.py:164: """车辆状态 (对应 px4_msgs/msg/VehicleStatus.msg)"""
+ue_px4_msgs/messages.py:166: arming_state: int = 0  # 0=DISARMED, 1=ARMED, 2=STANDBY, 3=IN_AIR
+ue_px4_msgs/messages.py:172: ARMED_STATE_DISARMED = 0
+ue_px4_msgs/messages.py:193: """Offboard控制模式消息 (对应 px4_msgs/msg/OffboardControlMode.msg)
+ue_px4_msgs/messages.py:195: 用于告知PX4飞控当前期望的控制模式
+ue_px4_msgs/messages.py:196: PX4 v1.16要求持续接收此消息（至少2Hz）以维持OFFBOARD模式
+ue_px4_msgs/messages.py:204: thrust_and_torque: bool = False  # 推力扭矩控制 (PX4 v1.16新增)
+ue_px4_msgs/messages.py:205: direct_actuator: bool = False   # 直接作动器控制 (PX4 v1.16新增)
+ue_px4_msgs/messages.py:234: class TrajectorySetpoint:
+ue_px4_msgs/messages.py:235: """轨迹设定点 (对应 px4_msgs/msg/TrajectorySetpoint.msg)
+ue_px4_msgs/messages.py:248: def from_dict(cls, data: Dict[str, Any]) -> "TrajectorySetpoint":
+ue_px4_msgs/messages.py:278: class VehicleCommand:
+ue_px4_msgs/messages.py:279: """车辆命令 (对应 px4_msgs/msg/VehicleCommand.msg)
+ue_px4_msgs/messages.py:283: - VEHICLE_CMD_COMPONENT_ARM_DISARM (400): 解锁/上锁
+ue_px4_msgs/messages.py:296: target_system: int = 0      # 目标系统ID (MAVLink system ID)
+ue_px4_msgs/messages.py:305: VEHICLE_CMD_COMPONENT_ARM_DISARM = 400
+ue_px4_msgs/messages.py:309: PX4_CUSTOM_MAIN_MODE_OFFBOARD = 6.0
+ue_px4_msgs/messages.py:312: def from_dict(cls, data: Dict[str, Any]) -> "VehicleCommand":

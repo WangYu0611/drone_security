@@ -1,0 +1,703 @@
+{
+  "version": 28,
+  "next_id": 18,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "P3 automated QA",
+      "description": "SYNTHETIC QA",
+      "status": "DRAFT",
+      "version": 7,
+      "created_at": 1789402135.3804085,
+      "updated_at": 1789402135.467312,
+      "mission_ids": [
+        "mission-2",
+        "mission-3"
+      ],
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 2,
+        "assigned_count": 2,
+        "routes_ready": 2
+      }
+    },
+    "plan-6": {
+      "id": "plan-6",
+      "name": "P3 automated QA",
+      "description": "SYNTHETIC QA",
+      "status": "DEPLOYED",
+      "version": 9,
+      "created_at": 1789402152.3548622,
+      "updated_at": 1789402152.417954,
+      "mission_ids": [
+        "mission-7",
+        "mission-8"
+      ],
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 2,
+        "assigned_count": 2,
+        "routes_ready": 2
+      }
+    },
+    "plan-11": {
+      "id": "plan-11",
+      "name": "Perimeter Patrol A",
+      "description": "",
+      "status": "DEPLOYED",
+      "version": 12,
+      "created_at": 1789403884.8333063,
+      "updated_at": 1789404581.1871407,
+      "mission_ids": [
+        "mission-12",
+        "mission-13",
+        "mission-16"
+      ],
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 3,
+        "assigned_count": 3,
+        "routes_ready": 3
+      }
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Mission-01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-4",
+      "status": "READY"
+    },
+    "mission-3": {
+      "id": "mission-3",
+      "plan_id": "plan-1",
+      "name": "Mission-02",
+      "assigned_uav_id": "UAV-02",
+      "route_id": "route-5",
+      "status": "READY"
+    },
+    "mission-7": {
+      "id": "mission-7",
+      "plan_id": "plan-6",
+      "name": "Mission-01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-9",
+      "status": "DEPLOYED"
+    },
+    "mission-8": {
+      "id": "mission-8",
+      "plan_id": "plan-6",
+      "name": "Mission-02",
+      "assigned_uav_id": "UAV-02",
+      "route_id": "route-10",
+      "status": "DEPLOYED"
+    },
+    "mission-12": {
+      "id": "mission-12",
+      "plan_id": "plan-11",
+      "name": "Mission-01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-15",
+      "status": "DEPLOYED"
+    },
+    "mission-13": {
+      "id": "mission-13",
+      "plan_id": "plan-11",
+      "name": "Mission-02",
+      "assigned_uav_id": "UAV-02",
+      "route_id": "route-14",
+      "status": "DEPLOYED"
+    },
+    "mission-16": {
+      "id": "mission-16",
+      "plan_id": "plan-11",
+      "name": "Mission-03",
+      "assigned_uav_id": "UAV-03",
+      "route_id": "route-17",
+      "status": "DEPLOYED"
+    }
+  },
+  "paths": {
+    "route-4": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-4"
+    },
+    "route-5": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-5"
+    },
+    "route-9": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-9"
+    },
+    "route-10": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 0,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "route_id": "route-10"
+    },
+    "route-14": {
+      "pathId": 2,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.980854331014136,
+          "longitude": 116.34689526272948,
+          "altitude": 1.10000830219542,
+          "segmentSpeed": 0,
+          "waitTime": 0,
+          "location": {
+            "x": -894.6418434824196,
+            "y": 1617.4245540272047,
+            "z": -4190.00188856788
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.98064323081529,
+          "longitude": 116.34684175623984,
+          "altitude": 1.0999923595497023,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -1351.6862167635022,
+            "y": 3961.359777722579,
+            "z": -4190.014616188188
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.98056414657096,
+          "longitude": 116.3465976017409,
+          "altitude": 1.0999813326111318,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -3437.208564585252,
+            "y": 4839.4594270027455,
+            "z": -4190.029630580295
+          }
+        }
+      ],
+      "route_id": "route-14"
+    },
+    "route-15": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98088439961966,
+          "longitude": 116.34714985131876,
+          "altitude": 1.1000064946033263,
+          "segmentSpeed": 0,
+          "waitTime": 0,
+          "location": {
+            "x": 1279.9951790541622,
+            "y": 1283.5593949674208,
+            "z": -4190.001956570728
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980681223628544,
+          "longitude": 116.34720374312,
+          "altitude": 1.0999980190899044,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": 1740.331589794556,
+            "y": 3539.5085217288997,
+            "z": -4190.012494550472
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.98051873997354,
+          "longitude": 116.34702835108016,
+          "altitude": 1.0999995276847745,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": 242.16963643272447,
+            "y": 5343.6360194717345,
+            "z": -4190.022654632359
+          }
+        }
+      ],
+      "route_id": "route-15"
+    },
+    "route-17": {
+      "pathId": 3,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98069107796494,
+          "longitude": 116.34692072597544,
+          "altitude": 1.099997310788798,
+          "segmentSpeed": 0,
+          "waitTime": 0,
+          "location": {
+            "x": -677.1422234710737,
+            "y": 3430.0932935698947,
+            "z": -4190.009951527025
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980416521999366,
+          "longitude": 116.3469333936944,
+          "altitude": 1.099986750687147,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -568.9394808971256,
+            "y": 6478.605725378617,
+            "z": -4190.034710841293
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.980314833036175,
+          "longitude": 116.34720265838726,
+          "altitude": 1.1000024711566476,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": 1731.075272361565,
+            "y": 7607.6999958815295,
+            "z": -4190.0477567338785
+          }
+        }
+      ],
+      "route_id": "route-17"
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1789402135.380412,
+      "event_type": "PLAN_CREATED",
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P3 automated QA",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1789402135.405377,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Mission created: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1789402135.4298773,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Mission created: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1789402135.4389317,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV-01 assigned to Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1789402135.4461346,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "UAV-02 assigned to Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1789402135.4630244,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1789402135.467308,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Route saved: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1789402152.3548653,
+      "event_type": "PLAN_CREATED",
+      "category": "PLAN",
+      "target_id": "plan-6",
+      "message": "Security plan created: P3 automated QA",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1789402152.3639345,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-7",
+      "message": "Mission created: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 10,
+      "timestamp": 1789402152.370561,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-8",
+      "message": "Mission created: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 11,
+      "timestamp": 1789402152.3796284,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-7",
+      "message": "UAV-01 assigned to Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 12,
+      "timestamp": 1789402152.384751,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-8",
+      "message": "UAV-02 assigned to Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 13,
+      "timestamp": 1789402152.3991916,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-7",
+      "message": "Route saved: Mission-01",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 14,
+      "timestamp": 1789402152.4035444,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-8",
+      "message": "Route saved: Mission-02",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 15,
+      "timestamp": 1789402152.4114385,
+      "event_type": "PLAN_READY",
+      "category": "PLAN",
+      "target_id": "plan-6",
+      "message": "Security plan READY: P3 automated QA",
+      "source": "P3-QA-Map"
+    },
+    {
+      "sequence": 16,
+      "timestamp": 1789402152.4179509,
+      "event_type": "PLAN_DEPLOYED",
+      "category": "PLAN",
+      "target_id": "plan-6",
+      "message": "Security plan DEPLOYED: P3 automated QA",
+      "source": "P3-QA-Command"
+    },
+    {
+      "sequence": 17,
+      "timestamp": 1789403884.8333092,
+      "event_type": "PLAN_CREATED",
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Security plan created: Perimeter Patrol A",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 18,
+      "timestamp": 1789403940.5848067,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Mission created: Mission-01",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 19,
+      "timestamp": 1789403981.585302,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-13",
+      "message": "Mission created: Mission-02",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 20,
+      "timestamp": 1789404009.1347196,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-13",
+      "message": "UAV-02 assigned to Mission-02",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 21,
+      "timestamp": 1789404054.1854532,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "UAV-01 assigned to Mission-01",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 22,
+      "timestamp": 1789404204.3374627,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-13",
+      "message": "Route saved: Mission-02",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 23,
+      "timestamp": 1789404263.9375036,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Route saved: Mission-01",
+      "source": "CLIENT-MAP-CFD5AE9F"
+    },
+    {
+      "sequence": 24,
+      "timestamp": 1789404370.8594513,
+      "event_type": "MISSION_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-16",
+      "message": "Mission created: Mission-03",
+      "source": "CLIENT-MAP-8C06073F"
+    },
+    {
+      "sequence": 25,
+      "timestamp": 1789404406.5093536,
+      "event_type": "UAV_ASSIGNED",
+      "category": "MISSION",
+      "target_id": "mission-16",
+      "message": "UAV-03 assigned to Mission-03",
+      "source": "CLIENT-MAP-8C06073F"
+    },
+    {
+      "sequence": 26,
+      "timestamp": 1789404535.113243,
+      "event_type": "ROUTE_CREATED",
+      "category": "MISSION",
+      "target_id": "mission-16",
+      "message": "Route saved: Mission-03",
+      "source": "CLIENT-MAP-8C06073F"
+    },
+    {
+      "sequence": 27,
+      "timestamp": 1789404542.9628458,
+      "event_type": "PLAN_READY",
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Security plan READY: Perimeter Patrol A",
+      "source": "CLIENT-MAP-8C06073F"
+    },
+    {
+      "sequence": 28,
+      "timestamp": 1789404581.1871364,
+      "event_type": "PLAN_DEPLOYED",
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Security plan DEPLOYED: Perimeter Patrol A",
+      "source": "CLIENT-COMMAND-3A18B928"
+    }
+  ]
+}

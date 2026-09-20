@@ -1,0 +1,55 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=C:\Users\wy331\Documents\UE5DroneControl-p5\UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=4
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 4 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p5).
+UbaServer - Listening on 0.0.0.0:1345
+Invalidating makefile for UE5DroneControlEditor (source file added)
+UHT compiled-in object format Default
+C:\Users\wy331\Documents\UE5DroneControl-p5\Source\UE5DroneControl\Command\CommandShellWidget.cpp(1): error: Expected CommandShellWidget.h to be first header included.
+C:\Users\wy331\Documents\UE5DroneControl-p5\Source\UE5DroneControl\DroneOps\Network\DroneNetworkManager.cpp(1): error: Expected DroneNetworkManager.h to be first header included.
+C:\Users\wy331\Documents\UE5DroneControl-p5\Source\UE5DroneControl\Map\MapShellWidget.cpp(1): error: Expected MapShellWidget.h to be first header included.
+C:\Users\wy331\Documents\UE5DroneControl-p5\Source\UE5DroneControl\Video\VideoShellWidget.cpp(1): error: Expected VideoShellWidget.h to be first header included.
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2)
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandShellWidget.cpp, DroneNetworkManager.cpp, MapShellWidget.cpp, OperationalContextSubsystem.cpp, ProductText.cpp, Stage1HeaderWidget.cpp, VideoShellWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 24 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 17.31 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/24] Compile [x64] CommandAlertStore.cpp
+[2/24] Compile [x64] CommandCenterPanel.cpp
+[3/24] Compile [x64] CommandTacticalMap.cpp
+[4/24] Compile [x64] CommandAlarmPanel.cpp
+[5/24] Compile [x64] CommandCenterV2Test.cpp
+[6/24] Compile [x64] DroneNetworkManager.cpp
+[7/24] Compile [x64] DroneRegistrySubsystem.cpp
+[8/24] Compile [x64] CommandShellWidget.cpp
+[9/24] Compile [x64] OperationalContextSubsystem.cpp
+[10/24] Compile [x64] MapMissionRouteWidget.cpp
+[11/24] Compile [x64] OperationalContextTest.cpp
+[12/24] Compile [x64] MapShellWidget.cpp
+[13/24] Compile [x64] OperationalEventStore.cpp
+[14/24] Compile [x64] P4WorkflowTest.cpp
+[15/24] Compile [x64] Module.UE5DroneControl.gen.cpp
+[16/24] Compile [x64] SecurityPlanTest.cpp
+[17/24] Compile [x64] ProductText.cpp
+[18/24] Compile [x64] SecurityPlanPanel.cpp
+[19/24] Compile [x64] Stage1HeaderWidget.cpp
+[20/24] Compile [x64] SecurityPlanWorkspaceWidget.cpp
+[21/24] Compile [x64] VideoShellWidget.cpp
+[22/24] Link [x64] UnrealEditor-UE5DroneControl.lib
+  正在创建库 C:/Users/wy331/Documents/UE5DroneControl-p5/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib 和对象 C:/Users/wy331/Documents/UE5DroneControl-p5/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[23/24] Link [x64] UnrealEditor-UE5DroneControl.dll
+[24/24] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 58.11 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 63.10 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 14.9kb

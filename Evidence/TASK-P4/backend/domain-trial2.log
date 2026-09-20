@@ -1,0 +1,34 @@
+Note: Google Test filter = P4Workflow.*:PlanFixture.*
+[==========] Running 11 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 6 tests from PlanFixture
+[ RUN      ] PlanFixture.Create
+[       OK ] PlanFixture.Create (0 ms)
+[ RUN      ] PlanFixture.AssignmentAndDuplicateRejected
+[       OK ] PlanFixture.AssignmentAndDuplicateRejected (0 ms)
+[ RUN      ] PlanFixture.ValidationFailureAndAtomicDeploy
+[       OK ] PlanFixture.ValidationFailureAndAtomicDeploy (0 ms)
+[ RUN      ] PlanFixture.InvalidCoordinatesAndStaleVersion
+[       OK ] PlanFixture.InvalidCoordinatesAndStaleVersion (0 ms)
+[ RUN      ] PlanFixture.SelectionAndReadinessInvalidation
+[       OK ] PlanFixture.SelectionAndReadinessInvalidation (0 ms)
+[ RUN      ] PlanFixture.PersistenceRestart
+[       OK ] PlanFixture.PersistenceRestart (8 ms)
+[----------] 6 tests from PlanFixture (9 ms total)
+
+[----------] 5 tests from P4Workflow
+[ RUN      ] P4Workflow.RevisionValidationReviewInvalidation
+[       OK ] P4Workflow.RevisionValidationReviewInvalidation (0 ms)
+[ RUN      ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable
+[       OK ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable (1 ms)
+[ RUN      ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains
+[       OK ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains (0 ms)
+[ RUN      ] P4Workflow.OwnerRevisionAndDiscard
+[       OK ] P4Workflow.OwnerRevisionAndDiscard (0 ms)
+[ RUN      ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation
+[       OK ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation (0 ms)
+[----------] 5 tests from P4Workflow (3 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 2 test suites ran. (13 ms total)
+[  PASSED  ] 11 tests.

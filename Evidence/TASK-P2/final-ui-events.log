@@ -1,0 +1,75 @@
+LogCsvProfiler: Display: Metadata set : commandline="" C:\Users\wy331\Documents\UE5DroneControl-p2\UE5DroneControl.uproject -ClientRole=Command -P1Http=http://127.0.0.1:19089 -P1Ws=ws://127.0.0.1:19090/ws -unattended -nosplash -ExecCmds="Automation RunTests DroneOps.P2.CommandLayoutSmoke+DroneOps.P2.EventLogProjection" -TestExit="Automation Test Queue Empty" -ReportExportPath=C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui -abslog=C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui.log""
+LogInit: Command Line: -ClientRole=Command -P1Http=http://127.0.0.1:19089 -P1Ws=ws://127.0.0.1:19090/ws -unattended -nosplash -ExecCmds="Automation RunTests DroneOps.P2.CommandLayoutSmoke+DroneOps.P2.EventLogProjection" -TestExit="Automation Test Queue Empty" -ReportExportPath=C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui -abslog=C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui.log
+[2026.09.14-15.06.07:638][605]LogAutomationController: Received FindWorkersResponseMessage from 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:638][605]LogAutomationController: Requesting test list from 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:838][606]LogAutomationController: Received RequestTestsReplyCompleteMessage from 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:844][606]LogAutomationController: 9444 tests available on 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:901][606]LogAutomationCommandLine: Display: Found 2 automation tests based on 'DroneOps.P2.CommandLayoutSmoke+DroneOps.P2.EventLogProjection'
+[2026.09.14-15.06.07:902][606]LogAutomationController: Sending StopTests to 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:908][606]LogAutomationController: Display: Loading results html template...
+[2026.09.14-15.06.07:909][606]LogAutomationController: Display: Successfully wrote html results file!
+[2026.09.14-15.06.07:909][606]LogAutomationController: Sending StartTestSession to 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:909][606]LogAutomationController: Display: Clearing ../../../../../../Users/wy331/Documents/UE5DroneControl-p2/Saved/Automation/Logs/ and ../../../../../../Users/wy331/Documents/UE5DroneControl-p2/Saved/Automation/Tmp/
+[2026.09.14-15.06.07:913][606]LogAutomationController: Sending RunTest CommandLayoutSmoke to 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.07:913][606]LogAutomationController: Display: Test Started. Name={CommandLayoutSmoke} Path={DroneOps.P2.CommandLayoutSmoke}
+[2026.09.14-15.06.17:074][ 71]LogAutomationController: Display: Test Completed. Result={Success} Name={CommandLayoutSmoke} Path={DroneOps.P2.CommandLayoutSmoke}
+[2026.09.14-15.06.17:074][ 71]LogAutomationController: BeginEvents: DroneOps.P2.CommandLayoutSmoke
+[2026.09.14-15.06.17:074][ 71]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.17:074][ 71]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:8080  WebSocketUrl=ws://127.0.0.1:8081/ws  PollIntervalSec=3.0 [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB7ED08C00: request failed, libcurl error: 7 (Could not connect to server) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB7ED08C00: libcurl info message cache 0 (  Trying 127.0.0.1:19089...) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB7ED08C00: libcurl info message cache 1 (connect to 127.0.0.1 port 19089 from 0.0.0.0 port 57257 failed: Connection refused) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB7ED08C00: libcurl info message cache 2 (Failed to connect to 127.0.0.1 port 19089 after 2041 ms: Could not connect to server) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB7ED08C00: libcurl info message cache 3 (closing connection #8) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB7ED08C00 POST http://127.0.0.1:19089/api/context/clients completed with reason 'ConnectionError' after 2.04s [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: request failed, libcurl error: 7 (Could not connect to server) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 0 (Connection 10 seems to be dead) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 1 (shutting down connection #10) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 2 (Hostname 127.0.0.1 was found in DNS cache) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 3 (  Trying 127.0.0.1:19089...) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 4 (connect to 127.0.0.1 port 19089 from 0.0.0.0 port 57270 failed: Connection refused) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 5 (Failed to connect to 127.0.0.1 port 19089 after 2042 ms: Could not connect to server) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00: libcurl info message cache 6 (closing connection #11) [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Warning: LogHttp: 000002CB828D4D00 POST http://127.0.0.1:19089/api/context/clients completed with reason 'ConnectionError' after 2.04s [log] 
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: EndEvents: DroneOps.P2.CommandLayoutSmoke
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Sending RunTest EventLogProjection to 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.17:075][ 71]LogAutomationController: Display: Test Started. Name={EventLogProjection} Path={DroneOps.P2.EventLogProjection}
+[2026.09.14-15.06.25:386][546]LogAutomationController: Display: Test Completed. Result={Success} Name={EventLogProjection} Path={DroneOps.P2.EventLogProjection}
+[2026.09.14-15.06.25:386][546]LogAutomationController: BeginEvents: DroneOps.P2.EventLogProjection
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogCesium: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues. [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:8080  WebSocketUrl=ws://127.0.0.1:8081/ws  PollIntervalSec=3.0 [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00: request failed, libcurl error: 7 (Could not connect to server) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00: libcurl info message cache 0 (Hostname 127.0.0.1 was found in DNS cache) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00: libcurl info message cache 1 (  Trying 127.0.0.1:19089...) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00: libcurl info message cache 2 (connect to 127.0.0.1 port 19089 from 0.0.0.0 port 57285 failed: Connection refused) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00: libcurl info message cache 3 (Failed to connect to 127.0.0.1 port 19089 after 2044 ms: Could not connect to server) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00: libcurl info message cache 4 (closing connection #14) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB88C0AF00 POST http://127.0.0.1:19089/api/context/clients completed with reason 'ConnectionError' after 2.04s [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: request failed, libcurl error: 7 (Could not connect to server) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 0 (Connection 16 seems to be dead) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 1 (shutting down connection #16) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 2 (Hostname 127.0.0.1 was found in DNS cache) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 3 (  Trying 127.0.0.1:19089...) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 4 (connect to 127.0.0.1 port 19089 from 0.0.0.0 port 57767 failed: Connection refused) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 5 (Failed to connect to 127.0.0.1 port 19089 after 2036 ms: Could not connect to server) [log] 
+[2026.09.14-15.06.25:386][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600: libcurl info message cache 6 (closing connection #17) [log] 
+[2026.09.14-15.06.25:387][546]LogAutomationController: Warning: LogHttp: 000002CB891B4600 POST http://127.0.0.1:19089/api/context/clients completed with reason 'ConnectionError' after 2.04s [log] 
+[2026.09.14-15.06.25:387][546]LogAutomationController: EndEvents: DroneOps.P2.EventLogProjection
+[2026.09.14-15.06.25:388][546]LogAutomationController: Display: Exporting Automation Report.
+[2026.09.14-15.06.25:388][546]LogAutomationController: Display: Converting results to json object...
+[2026.09.14-15.06.25:388][546]LogAutomationController: Writing reports to C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui...
+[2026.09.14-15.06.25:389][546]LogAutomationController: Display: Successfully wrote json results file!
+[2026.09.14-15.06.25:389][546]LogAutomationController: Exported report to 'C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui' in 0.00 Seconds
+[2026.09.14-15.06.25:389][546]LogAutomationController: Display: Report can be opened in the editor at 'C:\Users\wy331\Documents\UE5DroneControl-p2\Saved\P2QA\final-ui'
+[2026.09.14-15.06.25:389][546]LogAutomationController: Sending StopTestSession to 7AAE7FA641A5D0326EA3F58C80BE6638
+[2026.09.14-15.06.25:390][547]LogExit: Display: **** TestExit: Automation Test Queue Empty ****
+[2026.09.14-15.06.25:390][547]LogWindows: FPlatformMisc::RequestExit(1, FEngineLoop::Tick.GScopedTestExit)
+[2026.09.14-15.06.25:390][547]LogWindows: FPlatformMisc::RequestExitWithStatus(1, 0, FEngineLoop::Tick.GScopedTestExit)

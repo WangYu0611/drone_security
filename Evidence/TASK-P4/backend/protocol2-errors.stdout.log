@@ -1,0 +1,78 @@
+[2026-09-15 09:34:33.887] [info] Config loaded from 'Saved/P4QA/protocol2/config.yaml': 6 ports, 6 drones max
+[2026-09-15 09:34:33.891] [info] Config validation passed (6 ports, 6 max drones)
+[2026-09-15 09:34:33.894] [info] [:] Logger initialized. Level=debug, File=./Saved/P4QA/protocol2/backend.log
+[2026-09-15 09:34:33.896] [info] [:] ============================================
+[2026-09-15 09:34:33.898] [info] [:]   Drone Backend v1.0.0
+[2026-09-15 09:34:33.900] [info] [:]   HTTP :19280  WS :19281
+[2026-09-15 09:34:33.902] [info] [:] ============================================
+[2026-09-15 09:34:33.904] [info] [:] [UdpSender] JSON protocol session_id=backend-1789436073903339-bb2cf226
+[2026-09-15 09:34:33.905] [info] [:] DroneManager created
+[2026-09-15 09:34:33.906] [info] [:] Drone 1 added: slot=1 name=Drone 1
+[2026-09-15 09:34:33.906] [info] [:] Drone 2 added: slot=2 name=Drone 2
+[2026-09-15 09:34:33.906] [info] [:] Drone 3 added: slot=3 name=Drone 3
+[2026-09-15 09:34:33.906] [info] [:] Drone 4 added: slot=4 name=d4
+[2026-09-15 09:34:33.907] [info] [:] Drone 5 added: slot=5 name=d5
+[2026-09-15 09:34:33.907] [info] [:] Drone 6 added: slot=6 name=d6
+[2026-09-15 09:34:33.907] [info] [:] [Storage] Loaded 6 drones from ./Saved/P4QA/protocol2/data/drones.json
+[2026-09-15 09:34:33.907] [info] [:] [UdpReceiver] Slot 1: listening port 21888 for drone 1
+[2026-09-15 09:34:33.908] [info] [:] [UdpReceiver] Slot 2: listening port 21890 for drone 2
+[2026-09-15 09:34:33.908] [info] [:] [UdpReceiver] Slot 3: listening port 21892 for drone 3
+[2026-09-15 09:34:33.908] [info] [:] [UdpReceiver] Slot 4: listening port 21894 for drone 4
+[2026-09-15 09:34:33.909] [info] [:] [UdpReceiver] Slot 5: listening port 21896 for drone 5
+[2026-09-15 09:34:33.909] [info] [:] [UdpReceiver] Slot 6: listening port 21898 for drone 6
+[2026-09-15 09:34:33.910] [info] [:] [UdpSender] Drone 1 target set: 127.0.0.1:21889
+[2026-09-15 09:34:33.911] [info] [:] [UdpSender] Drone 2 target set: 127.0.0.1:21891
+[2026-09-15 09:34:33.911] [info] [:] [UdpSender] Drone 3 target set: 127.0.0.1:21893
+[2026-09-15 09:34:33.911] [info] [:] [UdpSender] Drone 4 target set: 127.0.0.1:21895
+[2026-09-15 09:34:33.911] [info] [:] [UdpSender] Drone 5 target set: 127.0.0.1:21897
+[2026-09-15 09:34:33.912] [info] [:] [UdpSender] Drone 6 target set: 127.0.0.1:21899
+[2026-09-15 09:34:33.912] [info] [:] [UdpReceiver] Listening on port 21888
+[2026-09-15 09:34:33.912] [info] [:] [UdpReceiver] Listening on port 21890
+[2026-09-15 09:34:33.913] [info] [:] [UdpReceiver] Listening on port 21892
+[2026-09-15 09:34:33.913] [info] [:] [UdpReceiver] Listening on port 21894
+[2026-09-15 09:34:33.913] [info] [:] [UdpReceiver] Listening on port 21896
+[2026-09-15 09:34:33.914] [info] [:] [UdpReceiver] Listening on port 21898
+[2026-09-15 09:34:33.914] [info] [:] Backend started. Press Ctrl+C to stop.
+[DebugCLI] Started. Type 'help' for commands.
+[2026-09-15 09:34:33.916] [info] [:] [HTTP] Listening on 0.0.0.0:19280
+[2026-09-15 09:34:33.916] [info] [:] [WS] Listening on 0.0.0.0:19281
+[2026-09-15 09:34:46.210] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-15 09:34:46.212] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"e9564ee4-de8b-4f41-bd6b-1386d0a8f819"}
+[2026-09-15 09:34:46.282] [debug] [:] [WS] Client connected, total sessions=2
+[2026-09-15 09:34:46.283] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"a59a98e9-4d95-427f-9a65-c5c3e53554c8"}
+[2026-09-15 09:34:46.341] [debug] [:] [WS] Client connected, total sessions=3
+[2026-09-15 09:34:46.342] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"f1940548-012d-494b-8c17-b581d665b93e"}
+[2026-09-15 09:34:47.038] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-15 09:34:47.038] [debug] [:] [WS] Client disconnected, total sessions=2
+[2026-09-15 09:34:49.281] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:49.405] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:52.285] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:52.416] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:55.296] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:55.420] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:58.297] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:34:58.424] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:01.305] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:01.434] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:04.318] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:04.441] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:07.332] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:07.449] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:35:09.397] [debug] [:] [WS] Client connected, total sessions=3
+[2026-09-15 09:35:09.397] [debug] [:] [WS Recv] {"type":"subscribe_context","instance_id":"2a3913be-dd88-403b-a496-ebd6c9c23279"}
+[2026-09-15 09:35:09.493] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-15 09:35:09.493] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-15 09:35:09.493] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at C:/Users/wy331/Documents/ChatGPT/æ— äººæœºå®‰é˜²é¡¹ç›®/UE5DroneControl/Backend/build-command/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-15 09:35:09.494] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-15 09:35:09.494] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-15 09:35:09.494] [debug] [:] [WS] Client disconnected, total sessions=0
+[2026-09-15 09:36:05.011] [debug] [:] [WS] Client connected, total sessions=1
+[2026-09-15 09:36:05.027] [debug] [:] [WS Recv] {
+	"type": "subscribe_context",
+	"instance_id": "A07C9E06-421B-5126-D2C6-E6B8F85709E2"
+}
+[2026-09-15 09:36:05.198] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:36:08.447] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:36:11.697] [debug] [:] [WS Recv] {"type":"context_ping"}
+[2026-09-15 09:36:12.919] [info] [:] [WS] session closed: Ô¶³ÌÖ÷»úÇ¿ÆÈ¹Ø±ÕÁËÒ»¸öÏÖÓÐµÄÁ¬½Ó¡£ [system:10054]
+[2026-09-15 09:36:12.919] [debug] [:] [WS] Client disconnected, total sessions=0

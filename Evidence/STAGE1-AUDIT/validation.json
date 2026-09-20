@@ -1,0 +1,35 @@
+{
+  "audit_result": "CONDITIONAL PASS",
+  "document_validation": "PASS",
+  "errors": [],
+  "required_documents": 7,
+  "http_routes": 33,
+  "http_catalog_exact_match": true,
+  "feature_groups": 62,
+  "feature_classification": {
+    "ACTIVE_VERIFIED": 32,
+    "LEGACY_PRESERVED": 14,
+    "ACTIVE_PARTIAL": 7,
+    "AVAILABLE_NOT_USED": 2,
+    "HISTORICAL_ONLY": 1,
+    "HISTORICAL_VERIFIED": 1,
+    "STAGE2_RESERVED": 2,
+    "UNKNOWN": 3
+  },
+  "source_hashes_verified": 347,
+  "tracked_changes": "",
+  "staged_changes": "",
+  "head": "e9ce39402f3bc6222e9d7b2f3c93ef65b5870941",
+  "new_runtime_tests": 0,
+  "hardware_connections": 0,
+  "saved_native_visuals_reviewed": [
+    "Evidence/TASK-P5.2/native/12-completed.jpg",
+    "Evidence/TASK-P5.2/native/06-executing-map.jpg"
+  ],
+  "limits": [
+    "Blueprint graphs not exported",
+    "External PX4/ROS/media runtime not revalidated",
+    "Existing historical test failures retained",
+    "No native rerun this audit"
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "counts": {
+    "executed": 21,
+    "success": 20,
+    "failed": 1
+  },
+  "tests": [
+    {
+      "run": "command-accepted",
+      "test": "DroneOps.P1.VersionAndRoleSync",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 19,
+      "test_completed": true
+    },
+    {
+      "run": "final-ui",
+      "test": "DroneOps.P2.CommandLayoutSmoke",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 21,
+      "test_completed": true
+    },
+    {
+      "run": "final-ui",
+      "test": "DroneOps.P2.EventLogProjection",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 22,
+      "test_completed": true
+    },
+    {
+      "run": "command-reg-accepted",
+      "test": "DroneOps.Command.AlertStore",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "test_completed": true
+    },
+    {
+      "run": "command-reg-accepted",
+      "test": "DroneOps.Command.StartupRole",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "test_completed": true
+    },
+    {
+      "run": "command-reg-delivery",
+      "test": "DroneOps.M1.CommandRegression",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 8,
+      "test_completed": true
+    },
+    {
+      "run": "command-reg-delivery",
+      "test": "DroneOps.Video.RoleLifecycle",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 6,
+      "test_completed": true
+    },
+    {
+      "run": "command-live-accepted",
+      "test": "DroneOps.P2.CommandMapSelection",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 6,
+      "test_completed": true
+    },
+    {
+      "run": "map-core",
+      "test": "DroneOps.P1.VersionAndRoleSync",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 38,
+      "test_completed": true
+    },
+    {
+      "run": "map-live",
+      "test": "DroneOps.P1.MultiSelectionAcks",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 25,
+      "test_completed": true
+    },
+    {
+      "run": "map-reg",
+      "test": "DroneOps.Command.A2MapMode",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 32,
+      "test_completed": true
+    },
+    {
+      "run": "map-reg",
+      "test": "DroneOps.Command.StartupRole",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "test_completed": true
+    },
+    {
+      "run": "map-reg",
+      "test": "DroneOps.Video.RoleLifecycle",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 24,
+      "test_completed": true
+    },
+    {
+      "run": "video-reg",
+      "test": "DroneOps.Command.StartupRole",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "test_completed": true
+    },
+    {
+      "run": "video-reg",
+      "test": "DroneOps.Video.RoleLifecycle",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 14,
+      "test_completed": true
+    },
+    {
+      "run": "standalone-reg",
+      "test": "DroneOps.Command.CesiumWorld",
+      "state": "Fail",
+      "errors": 1,
+      "warnings": 36,
+      "test_completed": true
+    },
+    {
+      "run": "standalone-reg",
+      "test": "DroneOps.Video.RoleLifecycle",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 25,
+      "test_completed": true
+    },
+    {
+      "run": "video-core",
+      "test": "DroneOps.P1.VersionAndRoleSync",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 24,
+      "test_completed": true
+    },
+    {
+      "run": "video-core",
+      "test": "DroneOps.P2.VideoFollowTarget",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 25,
+      "test_completed": true
+    },
+    {
+      "run": "video-core",
+      "test": "DroneOps.P2.VideoIndependentSelection",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 25,
+      "test_completed": true
+    },
+    {
+      "run": "video-live",
+      "test": "DroneOps.P2.VideoSetActiveTarget",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 12,
+      "test_completed": true
+    }
+  ]
+}

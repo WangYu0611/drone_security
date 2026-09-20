@@ -1,0 +1,160 @@
+[==========] Running 53 tests from 11 test suites.
+[----------] Global test environment set-up.
+[----------] 3 tests from P1BackendContext
+[ RUN      ] P1BackendContext.SnapshotVersionAtomicUpdateAndNoop
+[       OK ] P1BackendContext.SnapshotVersionAtomicUpdateAndNoop (0 ms)
+[ RUN      ] P1BackendContext.ConcurrentWritersPublishMonotonically
+[       OK ] P1BackendContext.ConcurrentWritersPublishMonotonically (1 ms)
+[ RUN      ] P1BackendContext.RestartPreservesVersionAndAllFields
+[       OK ] P1BackendContext.RestartPreservesVersionAndAllFields (7 ms)
+[----------] 3 tests from P1BackendContext (9 ms total)
+
+[----------] 6 tests from PlanFixture
+[ RUN      ] PlanFixture.Create
+[       OK ] PlanFixture.Create (0 ms)
+[ RUN      ] PlanFixture.AssignmentAndDuplicateRejected
+[       OK ] PlanFixture.AssignmentAndDuplicateRejected (0 ms)
+[ RUN      ] PlanFixture.ValidationFailureAndAtomicDeploy
+[       OK ] PlanFixture.ValidationFailureAndAtomicDeploy (0 ms)
+[ RUN      ] PlanFixture.InvalidCoordinatesAndStaleVersion
+[       OK ] PlanFixture.InvalidCoordinatesAndStaleVersion (0 ms)
+[ RUN      ] PlanFixture.SelectionAndReadinessInvalidation
+[       OK ] PlanFixture.SelectionAndReadinessInvalidation (0 ms)
+[ RUN      ] PlanFixture.PersistenceRestart
+[       OK ] PlanFixture.PersistenceRestart (9 ms)
+[----------] 6 tests from PlanFixture (10 ms total)
+
+[----------] 3 tests from CoordinateConverterTest
+[ RUN      ] CoordinateConverterTest.NedToUeOffset
+[       OK ] CoordinateConverterTest.NedToUeOffset (0 ms)
+[ RUN      ] CoordinateConverterTest.UeOffsetToNed
+[       OK ] CoordinateConverterTest.UeOffsetToNed (0 ms)
+[ RUN      ] CoordinateConverterTest.RoundTrip
+[       OK ] CoordinateConverterTest.RoundTrip (0 ms)
+[----------] 3 tests from CoordinateConverterTest (0 ms total)
+
+[----------] 4 tests from QuaternionUtilsTest
+[ RUN      ] QuaternionUtilsTest.SpeedFromVelocity
+[       OK ] QuaternionUtilsTest.SpeedFromVelocity (0 ms)
+[ RUN      ] QuaternionUtilsTest.IdentityQuaternion
+[       OK ] QuaternionUtilsTest.IdentityQuaternion (0 ms)
+[ RUN      ] QuaternionUtilsTest.YawFlip
+[       OK ] QuaternionUtilsTest.YawFlip (0 ms)
+[ RUN      ] QuaternionUtilsTest.GetUeYaw
+[       OK ] QuaternionUtilsTest.GetUeYaw (0 ms)
+[----------] 4 tests from QuaternionUtilsTest (0 ms total)
+
+[----------] 5 tests from GpsAnchorManagerTest
+[ RUN      ] GpsAnchorManagerTest.SetAndGetAnchor
+[       OK ] GpsAnchorManagerTest.SetAndGetAnchor (0 ms)
+[ RUN      ] GpsAnchorManagerTest.UpdateAnchor
+[       OK ] GpsAnchorManagerTest.UpdateAnchor (0 ms)
+[ RUN      ] GpsAnchorManagerTest.ClearAnchor
+[       OK ] GpsAnchorManagerTest.ClearAnchor (0 ms)
+[ RUN      ] GpsAnchorManagerTest.MultipleDrones
+[       OK ] GpsAnchorManagerTest.MultipleDrones (0 ms)
+[ RUN      ] GpsAnchorManagerTest.GetNonExistent
+[       OK ] GpsAnchorManagerTest.GetNonExistent (0 ms)
+[----------] 5 tests from GpsAnchorManagerTest (0 ms total)
+
+[----------] 11 tests from CommandQueueTest
+[ RUN      ] CommandQueueTest.PushAndPop
+[       OK ] CommandQueueTest.PushAndPop (0 ms)
+[ RUN      ] CommandQueueTest.PopFromEmpty
+[       OK ] CommandQueueTest.PopFromEmpty (0 ms)
+[ RUN      ] CommandQueueTest.FifoOrder
+[       OK ] CommandQueueTest.FifoOrder (0 ms)
+[ RUN      ] CommandQueueTest.CoalescesPendingVerticalTargets
+[       OK ] CommandQueueTest.CoalescesPendingVerticalTargets (0 ms)
+[ RUN      ] CommandQueueTest.DoesNotCoalesceDifferentHorizontalTargets
+[       OK ] CommandQueueTest.DoesNotCoalesceDifferentHorizontalTargets (0 ms)
+[ RUN      ] CommandQueueTest.CoalescesPendingManualTargetsToLatest
+[       OK ] CommandQueueTest.CoalescesPendingManualTargetsToLatest (0 ms)
+[ RUN      ] CommandQueueTest.PreservesRequestedSpeedWhenReplacingManualTarget
+[       OK ] CommandQueueTest.PreservesRequestedSpeedWhenReplacingManualTarget (0 ms)
+[ RUN      ] CommandQueueTest.OverflowDropsOldest
+[       OK ] CommandQueueTest.OverflowDropsOldest (0 ms)
+[ RUN      ] CommandQueueTest.PauseBlocksPop
+[       OK ] CommandQueueTest.PauseBlocksPop (0 ms)
+[ RUN      ] CommandQueueTest.Clear
+[       OK ] CommandQueueTest.Clear (0 ms)
+[ RUN      ] CommandQueueTest.ThreadSafety
+[       OK ] CommandQueueTest.ThreadSafety (1 ms)
+[----------] 11 tests from CommandQueueTest (1 ms total)
+
+[----------] 9 tests from StateMachineTest
+[ RUN      ] StateMachineTest.InitialStateIsOffline
+[       OK ] StateMachineTest.InitialStateIsOffline (0 ms)
+[ RUN      ] StateMachineTest.TelemetryTransitionsToOnline
+[       OK ] StateMachineTest.TelemetryTransitionsToOnline (0 ms)
+[ RUN      ] StateMachineTest.TimeoutTransitionsToLost
+[       OK ] StateMachineTest.TimeoutTransitionsToLost (0 ms)
+[ RUN      ] StateMachineTest.TelemetryAfterTimeoutResetsToOnline
+[       OK ] StateMachineTest.TelemetryAfterTimeoutResetsToOnline (0 ms)
+[ RUN      ] StateMachineTest.ResetGoesToOffline
+[       OK ] StateMachineTest.ResetGoesToOffline (0 ms)
+[ RUN      ] StateMachineTest.PowerOnEvent
+[       OK ] StateMachineTest.PowerOnEvent (0 ms)
+[ RUN      ] StateMachineTest.LostConnectionEvent
+[       OK ] StateMachineTest.LostConnectionEvent (0 ms)
+[ RUN      ] StateMachineTest.ReconnectEvent
+[       OK ] StateMachineTest.ReconnectEvent (0 ms)
+[ RUN      ] StateMachineTest.NoTimeoutWhenNotOnline
+[       OK ] StateMachineTest.NoTimeoutWhenNotOnline (0 ms)
+[----------] 9 tests from StateMachineTest (0 ms total)
+
+[----------] 2 tests from AssignmentSolverTest
+[ RUN      ] AssignmentSolverTest.Hungarian3x3
+[       OK ] AssignmentSolverTest.Hungarian3x3 (0 ms)
+[ RUN      ] AssignmentSolverTest.HungarianDiagonal
+[       OK ] AssignmentSolverTest.HungarianDiagonal (0 ms)
+[----------] 2 tests from AssignmentSolverTest (0 ms total)
+
+[----------] 4 tests from SegmentDistanceTest
+[ RUN      ] SegmentDistanceTest.Parallel
+[       OK ] SegmentDistanceTest.Parallel (0 ms)
+[ RUN      ] SegmentDistanceTest.Crossing
+C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\tests\test_assembly_planner.cpp(66): error: The difference between d and 0.0 is 5, which exceeds 1e-4, where
+d evaluates to 5,
+0.0 evaluates to 0, and
+1e-4 evaluates to 0.0001.
+
+[  FAILED  ] SegmentDistanceTest.Crossing (0 ms)
+[ RUN      ] SegmentDistanceTest.EndpointClosest
+[       OK ] SegmentDistanceTest.EndpointClosest (0 ms)
+[ RUN      ] SegmentDistanceTest.VerticalSeparation
+[       OK ] SegmentDistanceTest.VerticalSeparation (0 ms)
+[----------] 4 tests from SegmentDistanceTest (0 ms total)
+
+[----------] 3 tests from AssemblyPlannerTest
+[ RUN      ] AssemblyPlannerTest.NoConflictSparse
+[       OK ] AssemblyPlannerTest.NoConflictSparse (0 ms)
+[ RUN      ] AssemblyPlannerTest.ConflictHeightSeparation
+C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\tests\test_assembly_planner.cpp(128): error: Expected: (conflicts.size()) >= (1u), actual: 0 vs 1
+
+C:\Users\wy331\Documents\UE5DroneControl-p3\Backend\tests\test_assembly_planner.cpp(133): error: Value of: z_changed
+  Actual: false
+Expected: true
+
+[  FAILED  ] AssemblyPlannerTest.ConflictHeightSeparation (0 ms)
+[ RUN      ] AssemblyPlannerTest.PreservePreassignedTargets
+[       OK ] AssemblyPlannerTest.PreservePreassignedTargets (0 ms)
+[----------] 3 tests from AssemblyPlannerTest (0 ms total)
+
+[----------] 3 tests from VideoMetadataStoreTest
+[ RUN      ] VideoMetadataStoreTest.StoresJsonLinesAndDeduplicatesRetry
+[       OK ] VideoMetadataStoreTest.StoresJsonLinesAndDeduplicatesRetry (12 ms)
+[ RUN      ] VideoMetadataStoreTest.RejectsUnsafeMissionNameAndOversizedBatch
+[       OK ] VideoMetadataStoreTest.RejectsUnsafeMissionNameAndOversizedBatch (0 ms)
+[ RUN      ] VideoMetadataStoreTest.AcceptsEmptyFinalBatchAndWritesCompletionMarker
+[       OK ] VideoMetadataStoreTest.AcceptsEmptyFinalBatchAndWritesCompletionMarker (5 ms)
+[----------] 3 tests from VideoMetadataStoreTest (18 ms total)
+
+[----------] Global test environment tear-down
+[==========] 53 tests from 11 test suites ran. (40 ms total)
+[  PASSED  ] 51 tests.
+[  FAILED  ] 2 tests, listed below:
+[  FAILED  ] SegmentDistanceTest.Crossing
+[  FAILED  ] AssemblyPlannerTest.ConflictHeightSeparation
+
+ 2 FAILED TESTS
