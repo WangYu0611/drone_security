@@ -1,12 +1,16 @@
 # UE5DroneControl
 
-UE5DroneControl 是一个基于 Unreal Engine 5.7、Cesium 和 C++ 后端的无人机集群指挥、三维态势展示与任务预演项目。系统连接 UE5 交互界面、DroneBackend、Jetson/PX4 机载控制链路和 MediaMTX 视频链路。
+UE5DroneControl 是一个基于 Unreal Engine 5.8、Cesium 和 C++17 后端的无人机安保指挥、三维态势展示与任务模拟演示项目。当前 Stage 1 采用 Command（指挥端）、Map（地图端）和 Video（视频端）三个独立客户端，由 DroneBackend 统一管理业务状态，并通过 HTTP / WebSocket 同步。
 
-本文是仓库级入口，依据当前源码、配置和维护文档编写。协议字段、坐标公式和验收步骤以 `Docs/` 与源码为准；历史需求草案、旧 Python bridge、旧 24 字节控制包和历史运行日志不能覆盖当前实现事实。
+当前已实现安保方案创建、任务与无人机分配、地图航线编辑、方案部署、显式开始任务，以及 Mock 执行监控、暂停、继续、模拟返航和终止的业务闭环。部署只激活配置，任务执行需单独开始；当前执行能力属于 Mock / Simulation，不代表真实无人机飞行。
 
-> 当前基线：Windows + Unreal Engine 5.7 + Visual Studio 2022 + C++17 后端。
+仓库保留 Jetson/PX4 控制与遥测接口，以及 MediaMTX RTSP / WebRTC 视频链路实现。它们尚未作为当前 Stage 1 主流程完成真机端到端复验；当前视频演示以布局和视频目标切换为主，实际播放需另行配置并验证视频源。
+
+本文是仓库级入口。当前功能范围、数据接口和演示步骤以 [Stage 1 功能审计](Docs/Stage1/Stage1-Feature-Audit.md)、[汇报摘要](Docs/Stage1/Stage1-Presentation-Summary.md)、[演示手册](Docs/Stage1/Stage1-Demo-Runbook.md)及对应源码为依据；下文保留的传统控制与机载链路说明需结合这些文档区分当前主流程和历史能力。
+
+> 当前工程基线：Windows + Unreal Engine 5.8（工程关联与已保存运行日志一致）+ Visual Studio 2022 / MSVC 工具链 + C++17 后端。
 >
-> 当前代码或提交不等于真机验收。真实 Jetson/PX4、跨机器 UDP、UE 5.7 Play Mode、Cesium 地理对齐和 WebRTC 播放需要单独运行验证。
+> 当前 Stage 1 已有自动化测试与原生客户端运行证据，可在文档约定的条件下进行 Mock 业务演示。真实 Jetson/PX4 飞行、跨机器 UDP、真实相机 WebRTC 播放，以及实际场景的 Cesium 地理对齐与资源加载仍需专项验证；已有证据不等于当前环境已重新验收。
 
 ## 1. 系统职责
 
@@ -97,7 +101,7 @@ UE5DroneControl/
 
 | 依赖 | 用途 |
 |---|---|
-| Unreal Engine 5.7 | 打开、编译和运行 UE 工程 |
+| Unreal Engine 5.8 | 打开、编译和运行 UE 工程 |
 | Visual Studio 2022 | UE Editor 和后端编译 |
 | CMake + vcpkg | Backend 配置、Boost/yaml-cpp/JSON/spdlog/GTest |
 | PowerShell | 工具脚本和启动流程 |
@@ -111,7 +115,7 @@ UE5DroneControl/
 
 ```powershell
 .\setup_environment.ps1 `
-  -UnrealRoot "C:\Path\To\UE_5.7" `
+  -UnrealRoot "C:\Path\To\UE_5.8" `
   -VcpkgToolchain "C:\dev\vcpkg\scripts\buildsystems\vcpkg.cmake"
 ```
 
@@ -156,7 +160,7 @@ curl.exe http://127.0.0.1:8080/api/drones
 
 ### 5.3 打开 UE5
 
-1. 安装 UE 5.7 和 `.vsconfig` 所需 VS 组件。
+1. 安装 UE 5.8 和 `.vsconfig` 所需 VS 组件。
 2. 右键 `UE5DroneControl.uproject` 生成工程文件，或使用已有 `.sln`。
 3. 编译 `UE5DroneControlEditor`。
 4. 打开编辑器并进入目标关卡/预演场景。
@@ -385,7 +389,7 @@ curl.exe http://127.0.0.1:8080/api/debug/heartbeat/1
 1. 编译并运行后端单元测试。
 2. 启动后端，检查 `/`、`/api/drones` 和端口监听。
 3. 用 debug 或 mock UE 验证注册、遥测、队列、速度和暂停/恢复。
-4. 编译 UE 5.7 Editor，验证 Registry、锚点、路径和严格本地预演。
+4. 编译 UE 5.8 Editor，验证 Registry、锚点、路径和严格本地预演。
 5. 单独验证 MediaMTX 视频窗口。
 6. 使用真实 Jetson/PX4 验证 UDP、ACK、坐标、断联和安全停止。
 7. 最后验证多机阵列的原点补偿、集结、自动分配和任务停止。
