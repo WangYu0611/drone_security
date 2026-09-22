@@ -50,6 +50,7 @@ private:
     UPROPERTY() TObjectPtr<class UVerticalBox> RoutePage;
     UPROPERTY() TObjectPtr<class UVerticalBox> ReviewPage;
     UPROPERTY() TObjectPtr<class UTextBlock> WorkspaceTitle;
+    UPROPERTY() TObjectPtr<class UTextBlock> GeometryStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> Steps;
     UPROPERTY() TObjectPtr<class UTextBlock> RouteStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> ReviewHeading;

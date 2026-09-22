@@ -1,0 +1,293 @@
+{
+  "version": 221,
+  "next_id": 9,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "P5.3 Native Patrol",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 4,
+      "review": null,
+      "version": 4,
+      "created_at": 1789919137.4439192,
+      "updated_at": 1789920345.0563588,
+      "mission_ids": [
+        "mission-2"
+      ],
+      "workflow_step": "PreDeployReview",
+      "workflow_mission_id": "mission-2",
+      "validation": {
+        "ready": false,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": null
+      }
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Task 01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-4",
+      "status": "READY"
+    }
+  },
+  "paths": {
+    "route-4": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98053419847438,
+          "longitude": 116.34715688635598,
+          "altitude": 1.1001287926622,
+          "segmentSpeed": 0,
+          "waitTime": 0,
+          "location": {
+            "x": 1340.093675166739,
+            "y": 5171.992531700645,
+            "z": -4190.009665668011
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.98027762242421,
+          "longitude": 116.3471568860448,
+          "altitude": 1.1002192714720682,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": 1340.096029252184,
+            "y": 8020.866109593426,
+            "z": -4190.030220806599
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.98027780812862,
+          "longitude": 116.34669579479171,
+          "altitude": 1.100267643080266,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -2598.473248898613,
+            "y": 8018.800900919947,
+            "z": -4190.029237568378
+          }
+        },
+        {
+          "sequence": 4,
+          "latitude": 39.98053429366239,
+          "longitude": 116.3466957938421,
+          "altitude": 1.1001549880501602,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -2598.471645116436,
+            "y": 5170.932365162883,
+            "z": -4190.01091748476
+          }
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-4",
+      "revision": 2
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1789919137.4439278,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P5.3 Native Patrol"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P5.3 Native Patrol",
+      "source": "CLIENT-COMMAND-0b73a403"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1789919137.4439468,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Default task created",
+      "source": "CLIENT-COMMAND-0b73a403"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1789919155.6442685,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV-01 assigned to Task 01",
+      "source": "CLIENT-COMMAND-0b73a403"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1789919155.6442752,
+      "event_type": "MISSION_CONFIGURED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Task configured",
+      "source": "CLIENT-COMMAND-0b73a403"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1789919167.0076997,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-d0efcf3d"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1789919274.1571825,
+      "event_type": "ROUTE_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Task 01",
+      "source": "CLIENT-MAP-d0efcf3d"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1789919274.157194,
+      "event_type": "ROUTE_SAVED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route draft saved",
+      "source": "CLIENT-MAP-d0efcf3d"
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1789919286.0079315,
+      "event_type": "ROUTE_EDIT_COMPLETED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing completed",
+      "source": "CLIENT-MAP-d0efcf3d"
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1789920345.0563636,
+      "event_type": "PLAN_TRANSLATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P5.3 Native Patrol"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Plan position confirmed",
+      "source": "CLIENT-MAP-8cc07faf"
+    }
+  ],
+  "deployments": {},
+  "edit_sessions": {},
+  "executions": {},
+  "execution_version": 3,
+  "execution_requests": {
+    "ed939b05-fde1-4286-b599-ba18075e5200": {
+      "request": {
+        "request_id": "ed939b05-fde1-4286-b599-ba18075e5200",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "48c229ae-e6bb-47b2-a9fb-cbccd8c9b9f2": {
+      "request": {
+        "request_id": "48c229ae-e6bb-47b2-a9fb-cbccd8c9b9f2",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "3f8bdaed-87d6-4444-8b12-719adef355f1": {
+      "request": {
+        "request_id": "3f8bdaed-87d6-4444-8b12-719adef355f1",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    }
+  },
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8.0,
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30.0
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34706,
+          "altitude": 30.0
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34709,
+          "altitude": 30.0
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34712,
+          "altitude": 30.0
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@
 #include "Shared/Stage1HeaderWidget.h"
 #include "Shared/ProductText.h"
 #include "Map/MapMissionRouteWidget.h"
+#include "Map/MapPlanMoveWidget.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Engine/GameInstance.h"
 #include "Command/CommandScreenManager.h"
@@ -87,13 +88,16 @@ void UMapShellWidget::NativeOnInitialized()
     PlanPanel=CreateWidget<UMapMissionRouteWidget>(GetOwningPlayer(),UMapMissionRouteWidget::StaticClass());
     auto* PlanSlot=Root->AddChildToCanvas(PlanPanel);PlanSlot->SetAnchors(FAnchors(0,0,0,1));PlanSlot->SetOffsets(FMargin(8,184,600,8));PlanSlot->SetZOrder(3);
     PlanPanel->SetEditorEnabled(false);
+    MovePanel=CreateWidget<UMapPlanMoveWidget>(GetOwningPlayer());auto* MoveSlot=Root->AddChildToCanvas(MovePanel);MoveSlot->SetAnchors(FAnchors(0,0,1,1));MoveSlot->SetOffsets(FMargin(0));MoveSlot->SetZOrder(10);
     ExecutionMonitor=CreateWidget<UMapExecutionWidget>(GetOwningPlayer());
     auto* ExecSlot=Root->AddChildToCanvas(ExecutionMonitor);ExecSlot->SetAnchors(FAnchors(0,0,1,1));ExecSlot->SetOffsets(FMargin(0));ExecSlot->SetZOrder(2);
 }
 void UMapShellWidget::Refresh()
 {
-    if(PlanPanel)PlanPanel->Refresh();
-    if(ExecutionMonitor){ExecutionMonitor->Refresh();if(PlanPanel && PlanPanel->IsEditorEnabled())ExecutionMonitor->SetVisibility(ESlateVisibility::Collapsed);}
+    if(MovePanel)MovePanel->Refresh();const bool Moving=MovePanel && MovePanel->IsMoving();
+    if(PlanPanel && !Moving){if(bWasMoving)PlanPanel->ReloadGeometry();PlanPanel->Refresh();}
+    if(Moving && PlanPanel)PlanPanel->SetVisibility(ESlateVisibility::Collapsed);bWasMoving=Moving;
+    if(ExecutionMonitor){ExecutionMonitor->Refresh();if(Moving || (PlanPanel && PlanPanel->IsEditorEnabled()))ExecutionMonitor->SetVisibility(ESlateVisibility::Collapsed);}
     if (!Manager.IsValid() || !Manager->GetRegistry() || !Status) return;
     auto* Registry = Manager->GetRegistry(); auto* Map = Manager->GetMapService();
     TArray<FString> Options; AircraftIds.Reset();

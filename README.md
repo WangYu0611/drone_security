@@ -1,5 +1,18 @@
 # UE5DroneControl
 
+## P5.3 / 新电脑首次运行
+
+已加入闭合航线、安保方案整体移动与闭环 Mock 执行。完整交付边界见 [P5.3 说明](Docs/TASK-P5.3-PlanGeometryClosure.md)。
+
+**新电脑必须额外安装 Cesium for Unreal 到 UE 5.8**，并通过 Git LFS 下载资源。只安装 UE 和 VS 尚不足以运行。
+
+1. 阅读 [Windows 首次运行指南](Docs/First-Run-Windows.md)，安装 Cesium、VS C++ 工具、Python 3.10+ 和 Git LFS。
+2. 双击 `SetupDroneSecurity.cmd` 编译后端和 UE 模块。
+3. 在 Unreal Editor 中配置自己的 Cesium ion Token。
+4. 双击 `CheckDroneSecurity.cmd` 检查，再运行 `DroneSecurityLauncher.cmd`。
+
+启动器自动定位 UE，本地路径覆盖写入 `Launcher/config.local.json`。Stage 1 默认端口是 **19880/19881**；下方 8080/8081 属于传统独立后端流程。
+
 UE5DroneControl 是一个基于 Unreal Engine 5.8、Cesium 和 C++17 后端的无人机安保指挥、三维态势展示与任务模拟演示项目。当前 Stage 1 采用 Command（指挥端）、Map（地图端）和 Video（视频端）三个独立客户端，由 DroneBackend 统一管理业务状态，并通过 HTTP / WebSocket 同步。
 
 当前已实现安保方案创建、任务与无人机分配、地图航线编辑、方案部署、显式开始任务，以及 Mock 执行监控、暂停、继续、模拟返航和终止的业务闭环。部署只激活配置，任务执行需单独开始；当前执行能力属于 Mock / Simulation，不代表真实无人机飞行。

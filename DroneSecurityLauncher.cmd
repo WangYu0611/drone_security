@@ -1,3 +1,3 @@
 @echo off
 cd /d "%~dp0"
-start "" pyw -3.13 "%~dp0Launcher\launcher.pyw"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0Launcher\Start.ps1" -Mode Launch

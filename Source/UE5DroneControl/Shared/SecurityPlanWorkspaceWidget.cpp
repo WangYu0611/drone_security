@@ -48,7 +48,7 @@ void UPlanReviewWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TShar
         const auto M=Find(State,TEXT("missions"),V->AsString());const auto R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points;int Count=0;double Speed=0,Wait=0,Distance=0;bool Loop=false;
         if(R){R->TryGetBoolField(TEXT("bClosedLoop"),Loop);if(R->TryGetArrayField(TEXT("waypoints"),Points)){Count=Points->Num();for(const auto& P:*Points){Speed=FMath::Max(Speed,P->AsObject()->GetNumberField(TEXT("segmentSpeed")));Wait+=P->AsObject()->GetNumberField(TEXT("waitTime"));}}}
         Lines.Add(FText::Format(T(TEXT("Plan.MissionSummary")),User(Field(M,TEXT("name"))),User(Field(M,TEXT("assigned_uav_id"))),FText::AsNumber(Count)));
-        if(R && R->TryGetArrayField(TEXT("waypoints"),Points))for(int I=1;I<Points->Num();++I){const auto A=(*Points)[I-1]->AsObject(),B=(*Points)[I]->AsObject();const double Lat=FMath::DegreesToRadians((A->GetNumberField(TEXT("latitude"))+B->GetNumberField(TEXT("latitude")))*.5);const double Y=FMath::DegreesToRadians(A->GetNumberField(TEXT("latitude"))-B->GetNumberField(TEXT("latitude")))*6371000.,X=FMath::DegreesToRadians(A->GetNumberField(TEXT("longitude"))-B->GetNumberField(TEXT("longitude")))*6371000.*FMath::Cos(Lat);Distance+=FMath::Sqrt(X*X+Y*Y);}
+        if(R && R->TryGetArrayField(TEXT("waypoints"),Points))for(int I=1;I<Points->Num()+(Loop && Points->Num()>2?1:0);++I){const auto A=(*Points)[I-1]->AsObject(),B=(*Points)[I%Points->Num()]->AsObject();const double Lat=FMath::DegreesToRadians((A->GetNumberField(TEXT("latitude"))+B->GetNumberField(TEXT("latitude")))*.5);const double Y=FMath::DegreesToRadians(A->GetNumberField(TEXT("latitude"))-B->GetNumberField(TEXT("latitude")))*6371000.,X=FMath::DegreesToRadians(A->GetNumberField(TEXT("longitude"))-B->GetNumberField(TEXT("longitude")))*6371000.*FMath::Cos(Lat);Distance+=FMath::Sqrt(X*X+Y*Y);}
         Lines.Add(FText::Format(T(TEXT("Workflow.ReviewDistance")),FText::AsNumber(Distance)));
         Lines.Add(ProductText::Get(TEXT("Plan.")+Field(M,TEXT("status"))));
 
@@ -74,6 +74,8 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     Add(Workspace,TEXT("back_list"),TEXT("Workflow.BackPlans"));
     WorkspaceTitle=Label(WidgetTree,Workspace,FText::GetEmpty(),26);
     Summary=Label(WidgetTree,Workspace,FText::GetEmpty(),14);
+    Add(Workspace,TEXT("request_map_plan_move"),TEXT("Geometry.MovePlan"));
+    GeometryStatus=Label(WidgetTree,Workspace,FText::GetEmpty(),16);
     Steps=Label(WidgetTree,Workspace,FText::GetEmpty(),16);
     auto Page=[&](){auto* V=WidgetTree->ConstructWidget<UVerticalBox>();Workspace->AddChild(V);return V;};
     BasicPage=Page();TaskPage=Page();RoutePage=Page();ReviewPage=Page();
@@ -141,6 +143,9 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     PlanName->SetIsReadOnly(Deployed && !bCreating);Description->SetIsReadOnly(Deployed && !bCreating);MissionName->SetIsReadOnly(Deployed);UAVs->SetIsEnabled(!Deployed);
     for(const auto& A:Actions)A.Value->SetIsEnabled(!bPending && Sync->IsReady());
     for(const TCHAR* A:{TEXT("update_plan"),TEXT("add_mission"),TEXT("rename_mission"),TEXT("delete_mission"),TEXT("assign"),TEXT("unassign"),TEXT("request_map_route_edit")})Actions[A]->SetIsEnabled(!bPending && Sync->IsReady() && P && !Deployed);
+    const bool MovingBlocked=ExecutionUI::Latest(State,PlanId,true).IsValid();
+    Actions[TEXT("request_map_plan_move")]->SetIsEnabled(!bPending && Sync->IsReady() && P && M && !MovingBlocked);
+    GeometryStatus->SetText(MovingBlocked?T(TEXT("Errors.PLAN_EXECUTING")):FText::GetEmpty());GeometryStatus->SetVisibility(MovingBlocked?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     Actions[TEXT("create_plan")]->SetIsEnabled(!bPending && Sync->IsReady() && !PlanName->GetText().IsEmpty());
     auto Show=[&](const TCHAR* A,bool B){Actions[A]->SetVisibility(B?ESlateVisibility::Visible:ESlateVisibility::Collapsed);};
     Show(TEXT("confirm_delete"),!PendingDeletePlan.IsEmpty());Show(TEXT("cancel_delete"),!PendingDeletePlan.IsEmpty());Show(TEXT("copy_plan"),Deployed);Show(TEXT("deploy_page"),false);
@@ -287,6 +292,8 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         auto From=Object(Fixture,TEXT("home_position"));const auto AllExecutions=Object(State,TEXT("executions"));double Latest=-1;
         if(AllExecutions)for(const auto& It:AllExecutions->Values){const auto Item=It.Value->AsObject();if(Field(Item,TEXT("uav_id"))==Field(M,TEXT("assigned_uav_id")) && Item->GetNumberField(TEXT("created_at"))>Latest){Latest=Item->GetNumberField(TEXT("created_at"));From=Object(Item,TEXT("position"));}}
         double Distance=0,Seconds=0;if(From && Points && Config)for(const auto& V:*Points){const auto Point=V->AsObject();const double Y=(Point->GetNumberField(TEXT("latitude"))-From->GetNumberField(TEXT("latitude")))*PI/180.*6371000.;const double X=(Point->GetNumberField(TEXT("longitude"))-From->GetNumberField(TEXT("longitude")))*PI/180.*6371000.*FMath::Cos((Point->GetNumberField(TEXT("latitude"))+From->GetNumberField(TEXT("latitude")))*.5*PI/180.);const double Z=Point->GetNumberField(TEXT("altitude"))-From->GetNumberField(TEXT("altitude"));const double D=FMath::Sqrt(X*X+Y*Y+Z*Z),Speed=Point->GetNumberField(TEXT("segmentSpeed"));Distance+=D;Seconds+=D/(Speed>0?Speed:Config->GetNumberField(TEXT("default_speed_mps")))+Point->GetNumberField(TEXT("waitTime"));From=Point;}
+        bool Closed=false;if(R)R->TryGetBoolField(TEXT("bClosedLoop"),Closed);
+        if(Closed && From && Points && Points->Num()>2 && Config){const auto Point=(*Points)[0]->AsObject();const double Y=(Point->GetNumberField(TEXT("latitude"))-From->GetNumberField(TEXT("latitude")))*PI/180.*6371000.,X=(Point->GetNumberField(TEXT("longitude"))-From->GetNumberField(TEXT("longitude")))*PI/180.*6371000.*FMath::Cos((Point->GetNumberField(TEXT("latitude"))+From->GetNumberField(TEXT("latitude")))*.5*PI/180.),Z=Point->GetNumberField(TEXT("altitude"))-From->GetNumberField(TEXT("altitude"));const double D=FMath::Sqrt(X*X+Y*Y+Z*Z),Speed=From->GetNumberField(TEXT("segmentSpeed"));Distance+=D;Seconds+=D/(Speed>0?Speed:Config->GetNumberField(TEXT("default_speed_mps")));}
         Lines.Add(FText::Format(T(TEXT("Execution.Estimate")),FText::AsNumber(FMath::RoundToInt(Distance)),FText::AsNumber(FMath::RoundToInt(Seconds))));
         Lines.Add(T(Fixture?TEXT("Execution.MockAvailable"):TEXT("Errors.MOCK_UAV_UNAVAILABLE")));Lines.Add(T(TEXT("Execution.MockCheck")));
         bool Conflict=false;const auto All=Object(State,TEXT("executions"));if(All)for(const auto& It:All->Values)if(ExecutionUI::Active(It.Value->AsObject()) && Field(It.Value->AsObject(),TEXT("uav_id"))==Field(M,TEXT("assigned_uav_id")))Conflict=true;

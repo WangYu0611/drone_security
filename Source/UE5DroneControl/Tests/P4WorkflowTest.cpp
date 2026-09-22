@@ -13,6 +13,8 @@
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Engine/Engine.h"
+#include "EngineUtils.h"
+#include "Components/SplineMeshComponent.h"
 #include "Engine/GameInstance.h"
 #include "Internationalization/Internationalization.h"
 #include "Serialization/JsonSerializer.h"
@@ -21,6 +23,8 @@
 #include "PathEditor/DronePathActor.h"
 #include "Shared/ExecutionPresentation.h"
 #include "Map/MapExecutionWidget.h"
+#include "Map/MapPlanMoveWidget.h"
+#include "DroneOps/Core/ICoordinateService.h"
 namespace {
 UWorld* World(){for(const auto& C:GEngine->GetWorldContexts())if(C.WorldType==EWorldType::PIE)return C.World();return nullptr;}
 TSharedRef<FJsonObject> Context(int V,const FString& UAV){auto O=MakeShared<FJsonObject>();O->SetNumberField(TEXT("context_version"),V);for(const TCHAR* K:{TEXT("active_alert_id"),TEXT("active_mission_id"),TEXT("active_security_plan_id"),TEXT("active_area_id")})O->SetField(K,MakeShared<FJsonValueNull>());O->SetStringField(TEXT("active_uav_id"),UAV);O->SetStringField(TEXT("operation_mode"),TEXT("MONITOR"));return O;}
@@ -181,6 +185,40 @@ public:FP52ExecutionWidgets(FAutomationTestBase* T,bool C):Test(T),Command(C){}
         P->bExecutionView=false;P->Refresh();Test->TestTrue(TEXT("recent execution is available from deployed page"),P->Actions[TEXT("execution_open")]->IsVisible());return true;
     }
 };
+
+class FP53GeometryUI:public IAutomationLatentCommand {
+    FAutomationTestBase* Test;int Step=0;double Started=FPlatformTime::Seconds();FString Plan,Mission,Before;
+    TArray<FVector> Original;const FVector Offset=FVector(15000,-25000,0);
+public:explicit FP53GeometryUI(FAutomationTestBase* T):Test(T){}
+    bool Update() override {
+        if(FPlatformTime::Seconds()-Started>80){Test->AddError(TEXT("P53 geometry UI timeout"));return true;}
+        auto* W=World();if(!W)return false;auto* S=W->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();if(!S->IsHydrated())return false;
+        auto* PC=Cast<ADroneOpsPlayerController>(W->GetFirstPlayerController());auto* C=W->GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();if(!PC || !C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
+        UMapMissionRouteWidget* P=nullptr;UMapPlanMoveWidget* M=nullptr;
+        for(TObjectIterator<UMapMissionRouteWidget> I;I;++I)if(I->GetWorld()==W)P=*I;
+        for(TObjectIterator<UMapPlanMoveWidget> I;I;++I)if(I->GetWorld()==W)M=*I;
+        if(!P || !M)return false;if(P->bPending || M->bPending)return false;
+        auto Route=[&](){return PlanUI::Find(S->GetPlans(),TEXT("paths"),PlanUI::Field(PlanUI::Find(S->GetPlans(),TEXT("missions"),Mission),TEXT("route_id")));};
+        auto Move=[&](){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("mode"),TEXT("MOVE"));R->SetStringField(TEXT("plan_id"),Plan);R->SetStringField(TEXT("mission_id"),Mission);M->Requested(R);};
+        if(Step==0){for(const auto& E:PlanUI::Object(S->GetPlans(),TEXT("plans"))->Values)if(PlanUI::Field(E.Value->AsObject(),TEXT("name"))==TEXT("P4 UE ROUTE GUARD")){Plan=E.Key;Mission=E.Value->AsObject()->GetArrayField(TEXT("mission_ids"))[0]->AsString();break;}
+            if(Plan.IsEmpty()){Test->AddError(TEXT("Route guard fixture missing"));return true;}auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),Plan);R->SetStringField(TEXT("mission_id"),Mission);S->SubmitPlan(R,[](TSharedPtr<FJsonObject>){});++Step;return false;}
+        if(Step==1){P->SwitchTo(Plan,Mission,true);++Step;return false;}
+        if(Step==2){if(P->SessionId.IsEmpty()){Test->AddError(TEXT("Route session rejected: ")+P->ErrorCode);return true;}FDronePathSaveData D;D.PathId=1;
+            for(int I=0;I<4;++I){FDroneWaypointSaveData V;V.Location=ICoordinateService::Execute_GeographicToWorld(C,39.98+(I>=2?.001:0),116.34+(I==1 || I==2?.001:0),80);V.SegmentSpeed=8;D.Waypoints.Add(V);Original.Add(V.Location);}PC->LoadMissionPath(D,true);P->ClosedChanged(true);P->Refresh();++Step;return false;}
+        if(Step==3){Test->TestTrue(TEXT("closed toggle changes existing path topology"),P->RouteJson()->GetBoolField(TEXT("bClosedLoop")));Test->TestEqual(TEXT("no first-point duplication"),P->RouteJson()->GetArrayField(TEXT("waypoints")).Num(),4);for(TActorIterator<ADronePathActor> I(W);I;++I)if(I->PathNumericId==1){TArray<USplineMeshComponent*> Meshes;I->GetComponents(Meshes);Test->TestEqual(TEXT("four real spline segments"),Meshes.Num(),4);const FVector First=I->GetWaypointWorldLocation(0);I->UpdateWaypoint(0,First+FVector(500,0,0));Meshes.Empty();I->GetComponents(Meshes);Test->TestEqual(TEXT("moving first waypoint keeps closure segments"),Meshes.Num(),4);I->UpdateWaypoint(0,First);I->AddWaypoint(First+FVector(0,500,0),8);Meshes.Empty();I->GetComponents(Meshes);Test->TestEqual(TEXT("closed add rebuilds five segments"),Meshes.Num(),5);I->RemoveWaypoint(4);Meshes.Empty();I->GetComponents(Meshes);Test->TestEqual(TEXT("closed delete reconnects four segments"),Meshes.Num(),4);}P->Save();++Step;return false;}
+        if(Step==4){Test->TestTrue(TEXT("closed save acknowledged"),P->ErrorCode.IsEmpty());P->Finish();++Step;return false;}
+        if(Step==5){if(!P->SessionId.IsEmpty())return false;Test->TestTrue(TEXT("closed flag survives Backend roundtrip"),Route()->GetBoolField(TEXT("bClosedLoop")));FJsonSerializer::Serialize(Route().ToSharedRef(),TJsonWriterFactory<>::Create(&Before));Move();++Step;return false;}
+        if(Step==6){if(!M->IsMoving()){Test->AddError(TEXT("Move rejected: ")+M->ErrorCode);return true;}Test->TestEqual(TEXT("move includes route"),M->Routes.Num(),1);M->Delta=Offset;M->Action(TEXT("cancel"),0);++Step;return false;}
+        if(Step==7){Test->TestFalse(TEXT("cancel exits move mode"),M->IsMoving());FString After;FJsonSerializer::Serialize(Route().ToSharedRef(),TJsonWriterFactory<>::Create(&After));Test->TestEqual(TEXT("cancel preserves exact saved JSON"),After,Before);Move();++Step;return false;}
+        if(Step==8){if(!M->IsMoving()){Test->AddError(TEXT("Second move rejected: ")+M->ErrorCode);return true;}M->Delta=Offset;M->Action(TEXT("confirm"),0);++Step;return false;}
+        if(M->IsMoving()){Test->AddError(TEXT("Move confirm rejected: ")+M->ErrorCode);return true;}
+        const auto R=Route();Test->TestTrue(TEXT("translation retains closed route"),R->GetBoolField(TEXT("bClosedLoop")));const auto& Points=R->GetArrayField(TEXT("waypoints"));TArray<FVector> Restored;
+        for(int I=0;I<Points.Num();++I){auto V=Points[I]->AsObject();auto WorldPoint=ICoordinateService::Execute_GeographicToWorld(C,V->GetNumberField(TEXT("latitude")),V->GetNumberField(TEXT("longitude")),V->GetNumberField(TEXT("altitude")));Restored.Add(WorldPoint);Test->TestTrue(TEXT("Cesium WGS84 roundtrip matches translated world position"),WorldPoint.Equals(Original[I]+Offset,.1));}
+        for(int I=0;I<Original.Num();++I){const int J=(I+1)%Original.Num();Test->TestTrue(TEXT("all edge lengths including closure preserved within 1mm"),FMath::Abs(FVector::Distance(Restored[I],Restored[J])-FVector::Distance(Original[I],Original[J]))<.1);}
+        P->ReloadGeometry();Test->TestEqual(TEXT("reloaded route still four logical waypoints"),PC->BuildEditingPathsData().CreateConstIterator().Value().Waypoints.Num(),4);return true;
+    }
+};
+
 #define P4_TEST(Class,Name,Command) \
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(Class,"DroneOps.P4." Name,EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter) \
 bool Class::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(Command);ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
@@ -191,5 +229,6 @@ P4_TEST(FP4MapDraftTest,"Workflow.MapLiveDraftGuard",FP4MapDraft(this))
 P4_TEST(FP4CommandReviewCopyTest,"Workflow.CommandReviewReadonlyCopyAndCombo",FP4CommandReviewCopy(this))
 P4_TEST(FP52CommandExecution,"P52.CommandExecutionControls",FP52ExecutionWidgets(this,true))
 P4_TEST(FP52MapExecution,"P52.MapExecutionMonitor",FP52ExecutionWidgets(this,false))
+P4_TEST(FP53GeometryUITest,"P53.GeometryUIAndCesiumRoundtrip",FP53GeometryUI(this))
 #undef P4_TEST
 #endif

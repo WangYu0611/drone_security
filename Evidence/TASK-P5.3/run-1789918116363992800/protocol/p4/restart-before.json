@@ -1,0 +1,672 @@
+{
+  "plans": {
+    "version": 21,
+    "next_id": 11,
+    "plans": {
+      "plan-1": {
+        "id": "plan-1",
+        "name": "Revised 原名",
+        "description": "Changed after review",
+        "status": "DEPLOYED",
+        "content_revision": 10,
+        "review": {
+          "content_revision": 10,
+          "reviewed_at": 1789918117.444029,
+          "reviewed_by": "P4-QA-Command"
+        },
+        "version": 15,
+        "created_at": 1789918117.2123508,
+        "updated_at": 1789918139.770434,
+        "mission_ids": [
+          "mission-2"
+        ],
+        "validation": {
+          "ready": true,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": 10
+        },
+        "deployment_id": "deployment-7"
+      },
+      "plan-8": {
+        "id": "plan-8",
+        "name": "Independent copy",
+        "description": "",
+        "status": "DRAFT",
+        "content_revision": 2,
+        "review": null,
+        "version": 2,
+        "created_at": 1789918139.7814784,
+        "updated_at": 1789918139.78803,
+        "mission_ids": [
+          "mission-9"
+        ],
+        "source_plan_id": "plan-1",
+        "source_deployment_id": "deployment-7",
+        "deployment": null,
+        "workflow_step": "TaskConfig",
+        "validation": {
+          "ready": false,
+          "issues": [],
+          "mission_count": 1,
+          "assigned_count": 1,
+          "routes_ready": 1,
+          "validated_content_revision": null
+        }
+      }
+    },
+    "missions": {
+      "mission-2": {
+        "id": "mission-2",
+        "plan_id": "plan-1",
+        "name": "Retained original input",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-5",
+        "status": "DEPLOYED"
+      },
+      "mission-9": {
+        "id": "mission-9",
+        "plan_id": "plan-8",
+        "name": "Retained original input",
+        "assigned_uav_id": "UAV-01",
+        "route_id": "route-10",
+        "status": "READY"
+      }
+    },
+    "paths": {
+      "route-5": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.98,
+            "longitude": 116.34,
+            "altitude": 60,
+            "segmentSpeed": 0,
+            "waitTime": 2,
+            "location": {
+              "x": 0,
+              "y": 0,
+              "z": 60
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.980999999999995,
+            "longitude": 116.341,
+            "altitude": 60,
+            "segmentSpeed": 5,
+            "waitTime": 2,
+            "location": {
+              "x": 100,
+              "y": 0,
+              "z": 60
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.982,
+            "longitude": 116.342,
+            "altitude": 60,
+            "segmentSpeed": 5,
+            "waitTime": 2,
+            "location": {
+              "x": 200,
+              "y": 0,
+              "z": 60
+            }
+          }
+        ],
+        "route_id": "route-5",
+        "revision": 1
+      },
+      "route-10": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.98,
+            "longitude": 116.34,
+            "altitude": 60,
+            "segmentSpeed": 0,
+            "waitTime": 2,
+            "location": {
+              "x": 0,
+              "y": 0,
+              "z": 60
+            }
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.980999999999995,
+            "longitude": 116.341,
+            "altitude": 60,
+            "segmentSpeed": 5,
+            "waitTime": 2,
+            "location": {
+              "x": 100,
+              "y": 0,
+              "z": 60
+            }
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.982,
+            "longitude": 116.342,
+            "altitude": 60,
+            "segmentSpeed": 5,
+            "waitTime": 2,
+            "location": {
+              "x": 200,
+              "y": 0,
+              "z": 60
+            }
+          }
+        ],
+        "route_id": "route-10",
+        "revision": 1
+      }
+    },
+    "events": [
+      {
+        "sequence": 1,
+        "timestamp": 1789918117.2123575,
+        "event_type": "PLAN_CREATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P4 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Security plan created: P4 原名",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 2,
+        "timestamp": 1789918117.297704,
+        "event_type": "MISSION_CREATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "East Perimeter",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Mission created: East Perimeter",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 3,
+        "timestamp": 1789918117.3040404,
+        "event_type": "MISSION_CREATED",
+        "params": {
+          "target_id": "mission-3",
+          "mission_name": "Temporary",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-3",
+        "message": "Mission created: Temporary",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 4,
+        "timestamp": 1789918117.3097768,
+        "event_type": "MISSION_UPDATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Mission renamed: Retained original input",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 5,
+        "timestamp": 1789918117.3146017,
+        "event_type": "UAV_ASSIGNED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "UAV-01 assigned to Retained original input",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 6,
+        "timestamp": 1789918117.314607,
+        "event_type": "MISSION_CONFIGURED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Task configured",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 7,
+        "timestamp": 1789918117.3220568,
+        "event_type": "UAV_UNASSIGNED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": null
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "UAV unassigned",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 8,
+        "timestamp": 1789918117.3277335,
+        "event_type": "UAV_ASSIGNED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "UAV-01 assigned to Retained original input",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 9,
+        "timestamp": 1789918117.3277385,
+        "event_type": "MISSION_CONFIGURED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Task configured",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 10,
+        "timestamp": 1789918117.3342578,
+        "event_type": "MISSION_DELETED",
+        "params": {
+          "target_id": "mission-3"
+        },
+        "category": "MISSION",
+        "target_id": "mission-3",
+        "message": "Mission deleted",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 11,
+        "timestamp": 1789918117.3707895,
+        "event_type": "ROUTE_EDIT_STARTED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route editing started",
+        "source": "P4-QA-Map"
+      },
+      {
+        "sequence": 12,
+        "timestamp": 1789918117.3945093,
+        "event_type": "ROUTE_CREATED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route saved: Retained original input",
+        "source": "P4-QA-Map"
+      },
+      {
+        "sequence": 13,
+        "timestamp": 1789918117.3996506,
+        "event_type": "PLAN_VALIDATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P4 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Configuration checked",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 14,
+        "timestamp": 1789918117.3996553,
+        "event_type": "PLAN_REVIEW_READY",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P4 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Pre-deployment check ready",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 15,
+        "timestamp": 1789918117.409425,
+        "event_type": "PLAN_REVIEWED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "P4 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Current configuration reviewed",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 16,
+        "timestamp": 1789918117.4319007,
+        "event_type": "PLAN_UPDATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Security plan updated: Revised 原名",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 17,
+        "timestamp": 1789918117.4386268,
+        "event_type": "PLAN_VALIDATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Configuration checked",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 18,
+        "timestamp": 1789918117.4386296,
+        "event_type": "PLAN_REVIEW_READY",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Pre-deployment check ready",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 19,
+        "timestamp": 1789918117.4440317,
+        "event_type": "PLAN_REVIEWED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Current configuration reviewed",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 20,
+        "timestamp": 1789918117.4508278,
+        "event_type": "ROUTE_EDIT_STARTED",
+        "params": {
+          "target_id": "mission-2",
+          "mission_name": "Retained original input",
+          "uav_id": "UAV-01"
+        },
+        "category": "MISSION",
+        "target_id": "mission-2",
+        "message": "Route editing started",
+        "source": "P4-QA-Map"
+      },
+      {
+        "sequence": 21,
+        "timestamp": 1789918139.7704284,
+        "event_type": "DEPLOYMENT_CREATED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Deployment snapshot created",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 22,
+        "timestamp": 1789918139.7704313,
+        "event_type": "PLAN_DEPLOYED",
+        "params": {
+          "target_id": "plan-1",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-1",
+        "message": "Deployed. Execution has not started.",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 23,
+        "timestamp": 1789918139.7814908,
+        "event_type": "PLAN_COPIED",
+        "params": {
+          "target_id": "plan-8",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-8",
+        "message": "Plan copied as draft",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 24,
+        "timestamp": 1789918139.7814941,
+        "event_type": "PLAN_VERSION_CREATED",
+        "params": {
+          "target_id": "plan-8",
+          "plan_name": "Revised 原名"
+        },
+        "category": "PLAN",
+        "target_id": "plan-8",
+        "message": "New plan version created",
+        "source": "P4-QA-Command"
+      },
+      {
+        "sequence": 25,
+        "timestamp": 1789918139.788025,
+        "event_type": "PLAN_UPDATED",
+        "params": {
+          "target_id": "plan-8",
+          "plan_name": "Independent copy"
+        },
+        "category": "PLAN",
+        "target_id": "plan-8",
+        "message": "Security plan updated: Independent copy",
+        "source": "P4-QA-Command"
+      }
+    ],
+    "deployments": {
+      "deployment-7": {
+        "id": "deployment-7",
+        "plan_id": "plan-1",
+        "content_revision": 10,
+        "deployed_at": 1789918139.7704203,
+        "deployed_by": "P4-QA-Command",
+        "reviewed_by": "P4-QA-Command",
+        "reviewed_at": 1789918117.444029,
+        "snapshot": {
+          "plan": {
+            "id": "plan-1",
+            "name": "Revised 原名",
+            "description": "Changed after review",
+            "status": "DEPLOYED",
+            "content_revision": 10,
+            "review": {
+              "content_revision": 10,
+              "reviewed_at": 1789918117.444029,
+              "reviewed_by": "P4-QA-Command"
+            },
+            "version": 14,
+            "created_at": 1789918117.2123508,
+            "updated_at": 1789918117.4440343,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 1,
+              "routes_ready": 1,
+              "validated_content_revision": 10
+            },
+            "deployment_id": "deployment-7"
+          },
+          "missions": {
+            "mission-2": {
+              "id": "mission-2",
+              "plan_id": "plan-1",
+              "name": "Retained original input",
+              "assigned_uav_id": "UAV-01",
+              "route_id": "route-5",
+              "status": "DEPLOYED"
+            }
+          },
+          "paths": {
+            "route-5": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.98,
+                  "longitude": 116.34,
+                  "altitude": 60,
+                  "segmentSpeed": 0,
+                  "waitTime": 2,
+                  "location": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 60
+                  }
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.980999999999995,
+                  "longitude": 116.341,
+                  "altitude": 60,
+                  "segmentSpeed": 5,
+                  "waitTime": 2,
+                  "location": {
+                    "x": 100,
+                    "y": 0,
+                    "z": 60
+                  }
+                },
+                {
+                  "sequence": 3,
+                  "latitude": 39.982,
+                  "longitude": 116.342,
+                  "altitude": 60,
+                  "segmentSpeed": 5,
+                  "waitTime": 2,
+                  "location": {
+                    "x": 200,
+                    "y": 0,
+                    "z": 60
+                  }
+                }
+              ],
+              "route_id": "route-5",
+              "revision": 1
+            }
+          }
+        }
+      }
+    },
+    "edit_sessions": {},
+    "executions": {},
+    "execution_version": 0,
+    "execution_requests": {},
+    "mock_execution": {
+      "simulation": true,
+      "default_speed_mps": 8,
+      "uavs": {
+        "UAV-01": {
+          "home_position": {
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30
+          }
+        },
+        "UAV-02": {
+          "home_position": {
+            "latitude": 39.9807,
+            "longitude": 116.34706,
+            "altitude": 30
+          }
+        },
+        "UAV-03": {
+          "home_position": {
+            "latitude": 39.9807,
+            "longitude": 116.34709,
+            "altitude": 30
+          }
+        },
+        "UAV-04": {
+          "home_position": {
+            "latitude": 39.9807,
+            "longitude": 116.34712,
+            "altitude": 30
+          }
+        }
+      }
+    }
+  },
+  "context": {
+    "context_version": 7,
+    "active_uav_id": "UAV-02",
+    "active_alert_id": null,
+    "active_mission_id": "mission-9",
+    "active_security_plan_id": "plan-8",
+    "active_area_id": null,
+    "operation_mode": "MONITOR",
+    "updated_at": 1789918139.7832313,
+    "updated_by": "P4-QA-Command"
+  },
+  "language": {
+    "language": "en",
+    "ui_preferences_version": 2,
+    "updated_at": 1789918117.4210432,
+    "updated_by": "P4-QA-Video"
+  },
+  "video": {
+    "video_target_uav_id": "UAV-01",
+    "video_view_version": 3,
+    "updated_at": 1789918117.3602064,
+    "updated_by": "P4-QA-Video"
+  }
+}

@@ -6,13 +6,17 @@ import time
 import tkinter as tk
 from tkinter import messagebox
 from runtime import Runtime, SingleInstance, ROLES
+from environment import load_config, preflight
 from windows import rectangles, work_area, place, focus
 
 ROOT = Path(__file__).resolve().parents[1]
 
 class Application:
     def __init__(self):
-        self.config = json.loads((ROOT/'Launcher/config.json').read_text(encoding='utf-8-sig'))
+        self.config = load_config(ROOT)
+        issues = preflight(ROOT, self.config)
+        if issues:
+            raise RuntimeError('\n\n'.join(issues))
         self.guard = SingleInstance(self.config['http_endpoint'])
         self.runtime = Runtime(ROOT, self.config)
         self.catalog = json.loads((ROOT/'Scripts/P4/localization.json').read_text(encoding='utf-8-sig'))

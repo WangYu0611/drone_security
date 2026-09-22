@@ -134,6 +134,7 @@ bool ADronePathActor::RemoveWaypoint(int32 Index)
 	}
 
 	Waypoints.RemoveAt(Index);
+	if (Waypoints.Num() < 3) bClosedLoop = false;
 	SyncPathState(true);
 	return true;
 }

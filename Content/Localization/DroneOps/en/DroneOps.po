@@ -124,8 +124,8 @@ msgid "Tasks: {0} | UAV assigned: {1} | Routes configured: {2}"
 msgstr "Tasks: {0} | UAV assigned: {1} | Routes configured: {2}"
 
 msgctxt "DroneOps,Plan.RouteParameters"
-msgid "Loop: {0} | Speed: {1} | Wait: {2}"
-msgstr "Loop: {0} | Speed: {1} | Wait: {2}"
+msgid "Closed route: {0} | Execution: once | Speed: {1} | Wait: {2}"
+msgstr "Closed route: {0} | Execution: once | Speed: {1} | Wait: {2}"
 
 msgctxt "DroneOps,Plan.Blocking"
 msgid "Blocking issues"
@@ -1558,3 +1558,47 @@ msgstr "No active execution conflict"
 msgctxt "DroneOps,Execution.DeploymentValid"
 msgid "Immutable deployment and saved route"
 msgstr "Immutable deployment and saved route"
+
+msgctxt "DroneOps,Geometry.ClosedRoute"
+msgid "Closed Route"
+msgstr "Closed Route"
+
+msgctxt "DroneOps,Geometry.MovePlan"
+msgid "Move Plan"
+msgstr "Move Plan"
+
+msgctxt "DroneOps,Geometry.Moving"
+msgid "Moving Security Plan: {0}"
+msgstr "Moving Security Plan: {0}"
+
+msgctxt "DroneOps,Geometry.Drag"
+msgid "Drag the center handle to move all routes."
+msgstr "Drag the center handle to move all routes."
+
+msgctxt "DroneOps,Geometry.Preview"
+msgid "Preview only — confirm position to save."
+msgstr "Preview only — confirm position to save."
+
+msgctxt "DroneOps,Geometry.Confirm"
+msgid "Confirm Position"
+msgstr "Confirm Position"
+
+msgctxt "DroneOps,Errors.CLOSED_ROUTE_TOO_SHORT"
+msgid "Closed route requires at least 3 waypoints."
+msgstr "Closed route requires at least 3 waypoints."
+
+msgctxt "DroneOps,Errors.PLAN_EXECUTING"
+msgid "Cannot move the plan while the mission is running."
+msgstr "Cannot move the plan while the mission is running."
+
+msgctxt "DroneOps,Errors.INVALID_TRANSLATION"
+msgid "The route changed. Cancel and retry moving the plan."
+msgstr "The route changed. Cancel and retry moving the plan."
+
+msgctxt "DroneOps,Events.PLAN_TRANSLATED"
+msgid "Plan position confirmed"
+msgstr "Plan position confirmed"
+
+msgctxt "DroneOps,Events.ROUTE_CLOSURE_REACHED"
+msgid "Closed route completed once"
+msgstr "Closed route completed once"

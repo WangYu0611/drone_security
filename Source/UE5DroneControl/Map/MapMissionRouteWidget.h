@@ -6,8 +6,10 @@
 UCLASS()
 class UE5DRONECONTROL_API UMapMissionRouteWidget:public UUserWidget {
     GENERATED_BODY()
+    friend class FP53GeometryUI;
     friend class FP4MapDraft;
 public:
+    void ReloadGeometry(){LoadedRoute.Empty();LoadSaved();}
     void Refresh();void SetEditorEnabled(bool Enabled);
     bool IsEditorEnabled() const {return bEditor;}
     int32 GetAssignedUAV() const;
@@ -15,6 +17,8 @@ public:
     FString GetDraftState() const {return bSaving?TEXT("SAVING"):bDirty?TEXT("DIRTY"):SessionId.IsEmpty()?TEXT("CLEAN"):bSaved?TEXT("SAVED"):TEXT("EDITING");}
 protected:virtual void NativeOnInitialized() override;
 private:
+    UPROPERTY() TObjectPtr<class UCheckBox> ClosedRoute;
+    UFUNCTION() void ClosedChanged(bool Checked);
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     UPROPERTY() TObjectPtr<class UTextBlock> Result;

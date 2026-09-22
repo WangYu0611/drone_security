@@ -124,8 +124,8 @@ msgid "Tasks: {0} | UAV assigned: {1} | Routes configured: {2}"
 msgstr "任务：{0} | 已分配无人机：{1} | 已配置航线：{2}"
 
 msgctxt "DroneOps,Plan.RouteParameters"
-msgid "Loop: {0} | Speed: {1} | Wait: {2}"
-msgstr "循环：{0} | 速度：{1} | 等待：{2}"
+msgid "Closed route: {0} | Execution: once | Speed: {1} | Wait: {2}"
+msgstr "闭合航线：{0} | 单次执行 | 速度：{1} | 等待：{2}"
 
 msgctxt "DroneOps,Plan.Blocking"
 msgid "Blocking issues"
@@ -1558,3 +1558,47 @@ msgstr "当前无任务执行冲突"
 msgctxt "DroneOps,Execution.DeploymentValid"
 msgid "Immutable deployment and saved route"
 msgstr "部署有效，航线版本已固定"
+
+msgctxt "DroneOps,Geometry.ClosedRoute"
+msgid "Closed Route"
+msgstr "闭合航线"
+
+msgctxt "DroneOps,Geometry.MovePlan"
+msgid "Move Plan"
+msgstr "整体移动"
+
+msgctxt "DroneOps,Geometry.Moving"
+msgid "Moving Security Plan: {0}"
+msgstr "正在移动安保方案：{0}"
+
+msgctxt "DroneOps,Geometry.Drag"
+msgid "Drag the center handle to move all routes."
+msgstr "拖动中心手柄，整体移动方案内所有航线。"
+
+msgctxt "DroneOps,Geometry.Preview"
+msgid "Preview only — confirm position to save."
+msgstr "当前位置为预览，确认位置后保存。"
+
+msgctxt "DroneOps,Geometry.Confirm"
+msgid "Confirm Position"
+msgstr "确认位置"
+
+msgctxt "DroneOps,Errors.CLOSED_ROUTE_TOO_SHORT"
+msgid "Closed route requires at least 3 waypoints."
+msgstr "闭合航线至少需要 3 个航点。"
+
+msgctxt "DroneOps,Errors.PLAN_EXECUTING"
+msgid "Cannot move the plan while the mission is running."
+msgstr "任务执行中，无法移动方案。"
+
+msgctxt "DroneOps,Errors.INVALID_TRANSLATION"
+msgid "The route changed. Cancel and retry moving the plan."
+msgstr "航线已发生变化，请取消后重新移动方案。"
+
+msgctxt "DroneOps,Events.PLAN_TRANSLATED"
+msgid "Plan position confirmed"
+msgstr "方案位置已确认"
+
+msgctxt "DroneOps,Events.ROUTE_CLOSURE_REACHED"
+msgid "Closed route completed once"
+msgstr "闭环航线单次执行完成"

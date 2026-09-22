@@ -1,4 +1,7 @@
 #include "Command/CommandTacticalMap.h"
+#include "Shared/PlanWidgetSupport.h"
+#include "Rendering/DrawElements.h"
+#include "Styling/CoreStyle.h"
 #include "Shared/ProductText.h"
 #include "Command/CommandTheme.h"
 #include "Command/CommandActionButton.h"
@@ -135,3 +138,15 @@ FReply UCommandTacticalMap::NativeOnMouseButtonUp(const FGeometry&,const FPointe
 {bDragging=false;return FReply::Handled().ReleaseMouseCapture();}
 FReply UCommandTacticalMap::NativeOnMouseMove(const FGeometry& G,const FPointerEvent& E)
 {if(!bDragging)return FReply::Unhandled();Center-=(G.AbsoluteToLocal(E.GetScreenSpacePosition())-G.AbsoluteToLocal(E.GetLastScreenSpacePosition()))/(256.0*FMath::Pow(2.0,Zoom));bCentered=true;Refresh();return FReply::Handled();}
+
+int32 UCommandTacticalMap::NativePaint(const FPaintArgs& A,const FGeometry& G,const FSlateRect& C,FSlateWindowElementList& Out,int32 L,const FWidgetStyle& S,bool E) const {
+    const int Base=Super::NativePaint(A,G,C,Out,L,S,E);using namespace PlanUI;
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Sync->GetContext(),TEXT("active_security_plan_id")));if(!Plan)return Base;
+    const auto Origin=Center*(256.*FMath::Pow(2.,Zoom))-G.GetLocalSize()*.5;
+    for(const auto& Id:Plan->GetArrayField(TEXT("mission_ids"))){const auto Mission=Find(Sync->GetPlans(),TEXT("missions"),Id->AsString());const auto Route=Find(Sync->GetPlans(),TEXT("paths"),Field(Mission,TEXT("route_id")));if(!Route)continue;
+        TArray<FVector2D> Line;for(const auto& V:Route->GetArrayField(TEXT("waypoints"))){const auto P=V->AsObject();Line.Add(Project(P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),Zoom)-Origin);}
+        bool Closed=false;Route->TryGetBoolField(TEXT("bClosedLoop"),Closed);if(Closed && Line.Num()>2)Line.Add(FVector2D(Line[0]));
+        if(Line.Num()>1)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,CommandTheme::Cyan,true,3);
+        if(!Line.IsEmpty())FSlateDrawElement::MakeText(Out,Base+2,G.ToPaintGeometry(FVector2D(220,24),FSlateLayoutTransform(Line[0])),User(Field(Plan,TEXT("name"))),FCoreStyle::GetDefaultFontStyle("Bold",12),ESlateDrawEffect::None,CommandTheme::Cyan);
+    }return Base+2;
+}

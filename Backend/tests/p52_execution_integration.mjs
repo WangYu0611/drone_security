@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const base=process.env.P1_HTTP??'http://127.0.0.1:19680',ws=process.env.P1_WS??'ws://127.0.0.1:19681/ws';
-const out='Evidence/TASK-P5.2/protocol';fs.mkdirSync(out,{recursive:true});
+const out=process.env.P52_EVIDENCE_DIR??'Evidence/TASK-P5.2/protocol';fs.mkdirSync(out,{recursive:true});
 const passed=[],clients=[],timeline=[];const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function api(path,body,ok=true){const r=await fetch(base+path,body?{method:path==='/api/ui-preferences'?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(ok)assert(r.ok,JSON.stringify(j));return j;}
 async function connect(role){const id=crypto.randomUUID();await api('/api/context/clients',{instance_id:id,client_id:'P52-QA-'+role,client_role:role,hostname:'SYNTHETIC-QA',app_version:'P5.2'});

@@ -1649,8 +1649,8 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     }
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
-    const std::set<std::string> commandActions{"execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit"};
-    const std::set<std::string> mapActions{"select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
+    const std::set<std::string> commandActions{"execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
+    const std::set<std::string> mapActions{"begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     auto select=[&](const std::string& plan,const std::string& mission) {
         security_plans_.checkSelection(plan,mission);
@@ -1662,15 +1662,17 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
         bool online=false;{std::lock_guard<std::mutex> lock(context_clients_mutex_);for(const auto& e:context_clients_)if(e.second.at("client_role")=="Map" && e.second.at("state")=="ONLINE")online=true;}
         if(!online)throw PlanError("MAP_CLIENT_UNAVAILABLE","Map client unavailable");
     }
-    if(action=="request_map_route_edit") {
+    if(action=="request_map_route_edit" || action=="request_map_plan_move") {
         const auto plan=get_string(body,"plan_id"),mission=get_string(body,"mission_id");security_plans_.checkSelection(plan,mission);
         if(mission.empty())throw PlanError("MISSION_NOT_FOUND","Mission required");
         const auto snapshot=security_plans_.snapshot();
-        if(SecurityPlanStore::str(snapshot.at("plans").as_object().at(plan).as_object(),"status")=="DEPLOYED")throw PlanError("PLAN_DEPLOYED","Deployed plan is read-only");
+        if(action=="request_map_route_edit" && SecurityPlanStore::str(snapshot.at("plans").as_object().at(plan).as_object(),"status")=="DEPLOYED")throw PlanError("PLAN_DEPLOYED","Deployed plan is read-only");
         bool online=false;{std::lock_guard<std::mutex> lock(context_clients_mutex_);for(const auto& e:context_clients_)if(e.second.at("client_role")=="Map" && e.second.at("state")=="ONLINE")online=true;}
         if(!online)throw PlanError("MAP_CLIENT_UNAVAILABLE","Map client unavailable");
         static std::atomic<uint64_t> serial{0};
         boost::json::object payload{{"request_id","map-edit-"+std::to_string(++serial)},{"plan_id",plan},{"mission_id",mission},{"requested_by",source},{"timestamp",OperationalContext::now()}};
+        payload["mode"]=action=="request_map_plan_move"?"MOVE":"EDIT";
+        if(action=="request_map_plan_move")for(const auto& item:snapshot.at("executions").as_object())if(SecurityPlanStore::str(item.value().as_object(),"plan_id")==plan && SecurityPlanStore::executionActive(item.value().as_object()))throw PlanError("PLAN_EXECUTING","Cannot move the plan while the mission is running.");
         const auto context=select(plan,mission);
         ws_manager_.broadcast(json_stringify(boost::json::object{{"type","MapRouteEditRequested"},{"payload",payload}}));
         return boost::json::object{{"request",payload},{"state",snapshot},{"context",context}};

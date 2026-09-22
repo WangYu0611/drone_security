@@ -1,4 +1,5 @@
 #include "Map/MapMissionRouteWidget.h"
+#include "Components/CheckBox.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
@@ -17,6 +18,7 @@ void UMapMissionRouteWidget::NativeOnInitialized(){
     Add(TEXT("undo"),TEXT("Workflow.Undo"));Add(TEXT("coordinates"),TEXT("Map.Add"));Add(TEXT("speed"),TEXT("Workflow.EditSpeed"));Add(TEXT("begin"),TEXT("Map.Begin"));Add(TEXT("add"),TEXT("Map.Add"));Add(TEXT("delete"),TEXT("Map.Delete"));Add(TEXT("clear"),TEXT("Map.Clear"));
     Add(TEXT("save"),TEXT("Workflow.SaveDraft"));Add(TEXT("finish"),TEXT("Workflow.FinishRoute"));Add(TEXT("discard"),TEXT("Common.Discard"));Add(TEXT("cancel"),TEXT("Workflow.ContinueEditing"));Add(TEXT("exit"),TEXT("Common.Exit"));Add(TEXT("focus"),TEXT("Map.Focus"));Add(TEXT("video"),TEXT("Video.Assigned"));
     CommandTheme::Button(Actions[TEXT("finish")],true);
+    ClosedRoute=WidgetTree->ConstructWidget<UCheckBox>();Content->AddChild(ClosedRoute);Label(WidgetTree,ClosedRoute,T(TEXT("Geometry.ClosedRoute")),20);ClosedRoute->OnCheckStateChanged.AddDynamic(this,&UMapMissionRouteWidget::ClosedChanged);
     WaypointDetails=Label(WidgetTree,Content,FText::GetEmpty(),19);
     Result=Label(WidgetTree,Content,FText::GetEmpty(),20);GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->OnMapRouteEditRequested.AddUObject(this,&UMapMissionRouteWidget::MapRequested);
 }
@@ -88,7 +90,7 @@ void UMapMissionRouteWidget::SwitchTo(const FString& P,const FString& M,bool Edi
     if(bDirty || !SessionId.IsEmpty() || bSaving){PendingPlan=P;PendingMission=M;bSelectionPending=true;bBeginPending=Edit;bPrompt=true;return;}
     PlanId=P;MissionId=M;LoadedRoute.Empty();ErrorCode.Empty();LoadSaved();if(Edit){SetEditorEnabled(true);Begin();}
 }
-void UMapMissionRouteWidget::MapRequested(const TSharedPtr<FJsonObject>& R){if(!R)return;SwitchTo(Field(R,TEXT("plan_id")),Field(R,TEXT("mission_id")),true);SetVisibility(ESlateVisibility::Visible);}
+void UMapMissionRouteWidget::MapRequested(const TSharedPtr<FJsonObject>& R){if(!R || Field(R,TEXT("mode"))==TEXT("MOVE"))return;SwitchTo(Field(R,TEXT("plan_id")),Field(R,TEXT("mission_id")),true);SetVisibility(ESlateVisibility::Visible);}
 void UMapMissionRouteWidget::Focus(){auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());if(!PC || !PC->GetCommandScreenManager())return;const auto Data=PC->BuildEditingPathsData();if(Data.Num()==1 && !Data.CreateConstIterator().Value().Waypoints.IsEmpty())PC->GetCommandScreenManager()->GetMapService()->FocusLocation(Data.CreateConstIterator().Value().Waypoints[0].Location);}
 void UMapMissionRouteWidget::Refresh(){
     if(!Summary)return;auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto RemotePlan=Field(S->GetContext(),TEXT("active_security_plan_id")),RemoteMission=Field(S->GetContext(),TEXT("active_mission_id"));
@@ -121,6 +123,8 @@ void UMapMissionRouteWidget::Refresh(){
             const double D=FMath::Sqrt(X*X+Y*Y);Distance+=D;Seconds+=D/FMath::Max(1.,W->GetNumberField(TEXT("segmentSpeed")));}
         Seconds+=W->GetNumberField(TEXT("waitTime"));
     }
+    bool IsClosed=false;Geometry->TryGetBoolField(TEXT("bClosedLoop"),IsClosed);
+    if(IsClosed && Waypoints.Num()>2){const auto Data=Cast<ADroneOpsPlayerController>(GetOwningPlayer())->BuildEditingPathsData();if(Data.Num()==1){const auto& W=Data.CreateConstIterator().Value().Waypoints;const double D=FVector::Distance(W.Last().Location,W[0].Location)/100.;Distance+=D;Seconds+=D/FMath::Max(1.f,W.Last().SegmentSpeed);}}
     WaypointLines.Insert(FText::Format(T(TEXT("Workflow.RouteStats")),FText::AsNumber(Distance),FText::AsNumber(Seconds/60)),0);
     WaypointDetails->SetText(FText::Join(User(TEXT("\n")),WaypointLines));
     Summary->SetText(FText::Join(User(TEXT("\n")),Lines));Result->SetText(bPrompt?T(TEXT("Map.DirtyPrompt")):bDiscardConfirm?T(TEXT("Map.DiscardPrompt")):ErrorCode.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+ErrorCode));
@@ -128,6 +132,8 @@ void UMapMissionRouteWidget::Refresh(){
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionPathEditing(!SessionId.IsEmpty() && !bPrompt && !bSaving);
     const bool CanEdit=!SessionId.IsEmpty() && !bPending && !bSaving && S->IsReady();
     for(const TCHAR* A:{TEXT("add"),TEXT("delete"),TEXT("clear"),TEXT("save"),TEXT("finish"),TEXT("undo"),TEXT("coordinates"),TEXT("speed")})Actions[A]->SetIsEnabled(CanEdit && !bPrompt);
+    bool Closed=false;Geometry->TryGetBoolField(TEXT("bClosedLoop"),Closed);
+    ClosedRoute->SetIsChecked(Closed);ClosedRoute->SetIsEnabled(CanEdit && !bPrompt && (Closed || Waypoints.Num()>=3));ClosedRoute->SetToolTipText(T(TEXT("Errors.CLOSED_ROUTE_TOO_SHORT")));
     Actions[TEXT("begin")]->SetIsEnabled(P && M && Field(P,TEXT("status"))!=TEXT("DEPLOYED") && SessionId.IsEmpty() && !bPending && S->IsReady());
     Actions[TEXT("begin")]->SetVisibility(SessionId.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     Actions[TEXT("cancel")]->SetVisibility(bPrompt || bDiscardConfirm?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
@@ -143,7 +149,9 @@ void UMapMissionRouteWidget::Action(FName Name,int32){
     if(Name==TEXT("undo"))PC->UndoMissionRouteEdit();
     if(Name==TEXT("coordinates") && PC->GetCommandScreenManager())PC->GetCommandScreenManager()->ToggleGeographicPanel();
     if(Name==TEXT("speed") && PC->GetCommandScreenManager())PC->GetCommandScreenManager()->ToggleSpeedPanel();
-    if(Name==TEXT("add"))PC->SetMissionPathEditing(true);if(Name==TEXT("delete"))PC->DeleteCommandWaypoint();
+    if(Name==TEXT("add"))PC->SetMissionPathEditing(true);if(Name==TEXT("delete")){PC->DeleteCommandWaypoint();if(RouteJson()->GetArrayField(TEXT("waypoints")).Num()<3)PC->SetAllEditingPathsClosedLoop(false);}
     if(Name==TEXT("clear")){FDronePathSaveData Empty;Empty.PathId=FMath::Max(1,GetAssignedUAV());PC->LoadMissionPath(Empty,true);}
 }
 
+
+void UMapMissionRouteWidget::ClosedChanged(bool Checked){if(SessionId.IsEmpty() || bPending || bSaving)return;if(Checked && RouteJson()->GetArrayField(TEXT("waypoints")).Num()<3)return;if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetAllEditingPathsClosedLoop(Checked);}

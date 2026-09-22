@@ -109,6 +109,8 @@ public:
                 paths.erase(str(missions.at(id.as_string()).as_object(),"route_id"));missions.erase(id.as_string());
             }
             event(next,"PLAN_DELETED","PLAN",planId,"Draft deleted",source);plans.erase(planId);planId.clear();missionId.clear();
+        } else if (action=="begin_plan_move" || action=="move_plan" || action=="cancel_plan_move") {
+            movePlan(next,request,planId,source);
         } else {
             auto& plan = lookup(plans, planId, "PLAN_NOT_FOUND");
             if (str(plan,"status") == "DEPLOYED") throw PlanError("PLAN_DEPLOYED", "Deployed plan is read-only");
@@ -139,7 +141,7 @@ public:
                     for(const auto& entry:sessions) {
                         const auto& existing=entry.value().as_object();
                         if(str(existing,"plan_id")==planId) {
-                            if(str(existing,"owner_instance_id")==owner && str(existing,"mission_id")==missionId)
+                            if(str(existing,"mode")!="MOVE" && str(existing,"owner_instance_id")==owner && str(existing,"mission_id")==missionId)
                                 return Object{{"state",state_},{"edit_session_id",entry.key()},{"plan_id",planId},{"mission_id",missionId}};
                             throw PlanError("EDIT_SESSION_CONFLICT","Plan already has an editor");
                         }
@@ -155,6 +157,7 @@ public:
                     event(next,"ROUTE_EDIT_STARTED","MISSION",missionId,"Route editing started",source);
                 } else {
                     auto& session=ownedSession(next,request,planId,missionId);
+                    if(str(session,"mode")=="MOVE")throw PlanError("EDIT_SESSION_CONFLICT","Finish plan movement first");
                     if(action=="mark_route_dirty")session["state"]="DIRTY";
                     else {
                         if(action=="finish_route_edit") {
@@ -240,11 +243,13 @@ public:
                     if(!uav.empty())event(next,"MISSION_CONFIGURED","MISSION",missionId,"Task configured",source);
                 } else if (action == "save_route") {
                     auto& session=ownedSession(next,request,planId,missionId);
+                    if(str(session,"mode")=="MOVE")throw PlanError("EDIT_SESSION_CONFLICT","Finish plan movement first");
                     if(session.at("base_content_revision")!=plan.at("content_revision"))throw PlanError("VERSION_CONFLICT","Draft base revision changed");
                     session["state"]="SAVING";
                     const auto* value = request.if_contains("path");
                     if (!value || !value->is_object()) throw PlanError("INVALID_ROUTE","path must be an object");
                     Object route = value->as_object(); checkPath(route);
+                    route["bClosedLoop"]=closedRoute(route);route["closedRoute"]=closedRoute(route);
                     auto routeId = str(mission,"route_id"); const bool created = routeId.empty();
                     if (created) routeId = allocate(next,"route-");
                     route["route_id"] = routeId;
@@ -283,7 +288,7 @@ public:
         catch (...) { persist(state_); throw; }
         state_.swap(next);
         Object reply{{"state",state_},{"plan_id",planId},{"mission_id",missionId}};
-        if(action=="begin_route_edit")for(const auto& e:state_.at("edit_sessions").as_object())if(str(e.value().as_object(),"plan_id")==planId)reply["edit_session_id"]=e.key();
+        if(action=="begin_route_edit" || action=="begin_plan_move")for(const auto& e:state_.at("edit_sessions").as_object())if(str(e.value().as_object(),"plan_id")==planId)reply["edit_session_id"]=e.key();
         return reply;
     }
     void checkSelection(const std::string& planId, const std::string& missionId) const {
@@ -306,6 +311,7 @@ public:
         if(changed){next["version"]=state_.at("version").to_number<int64_t>()+1;persist(next);state_=next;publish({{"type","SecurityPlansChanged"},{"payload",state_}});}
     }
 private:
+#include "storage/plan_geometry.inl"
     static bool expire(Object& state,double now) {
         auto& sessions=state.at("edit_sessions").as_object();std::vector<std::string> expired;
         for(const auto& e:sessions)if(e.value().as_object().at("lease_expires_at").to_number<double>()<=now)expired.emplace_back(e.key());
@@ -327,9 +333,23 @@ private:
     static std::string allocate(Object& s, const char* prefix) {
         auto n = s.at("next_id").to_number<int64_t>(); s["next_id"] = n+1; return prefix+std::to_string(n);
     }
+    static bool closedRoute(const Object& path) {
+        const auto* flag=path.if_contains("closedRoute");
+        if(!flag)flag=path.if_contains("bClosedLoop");
+        return flag && flag->is_bool() && flag->as_bool();
+    }
     static void checkPath(const Object& path) {
         auto* points = path.if_contains("waypoints");
         if (!points || !points->is_array() || points->as_array().size()>1000) throw PlanError("INVALID_ROUTE","Expected up to 1000 waypoints");
+        if(auto* canonical=path.if_contains("closedRoute")) {
+            if(!canonical->is_bool())throw PlanError("INVALID_ROUTE","closedRoute must be boolean");
+            if(auto* legacy=path.if_contains("bClosedLoop"))if(*legacy!=*canonical)throw PlanError("INVALID_ROUTE","Route topology fields disagree");
+        }
+        if(auto* flag=path.if_contains("bClosedLoop")) {
+            if(!flag->is_bool())throw PlanError("INVALID_ROUTE","bClosedLoop must be boolean");
+            if(flag->as_bool() && points->as_array().size()<3)throw PlanError("CLOSED_ROUTE_TOO_SHORT","Closed route requires three waypoints");
+        }
+        if(closedRoute(path) && points->as_array().size()<3)throw PlanError("CLOSED_ROUTE_TOO_SHORT","Closed route requires three waypoints");
         int index=0;
         for (const auto& v : points->as_array()) {
             if (!v.is_object()) throw PlanError("INVALID_WAYPOINT","Waypoint must be an object");

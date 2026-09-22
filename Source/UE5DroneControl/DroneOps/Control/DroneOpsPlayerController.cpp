@@ -1,3 +1,5 @@
+#include "Map/MapShellWidget.h"
+#include "Map/MapPlanMoveWidget.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DroneOpsPlayerController.h"
@@ -457,6 +459,10 @@ void ADroneOpsPlayerController::SetupInputComponent()
 void ADroneOpsPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
+        auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
+        if(Move && Move->IsMoving()){return;}
+    }
 
 	// Video keyboard control intentionally owns all six movement keys. Returning
 	// here prevents free-camera movement, vertical multi-select control, path
@@ -958,6 +964,10 @@ void ADroneOpsPlayerController::SendVideoKeyboardTarget()
 
 void ADroneOpsPlayerController::OnPrimaryClick()
 {
+    if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
+        auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
+        if(Move && Move->IsMoving()){return;}
+    }
     if (CommandScreenManager && !CommandScreenManager->IsCursorOverMap()) return;
 	if (bVideoKeyboardControlActive)
 	{
@@ -1061,6 +1071,10 @@ void ADroneOpsPlayerController::OnPrimaryClick()
 
 void ADroneOpsPlayerController::OnPrimaryReleased()
 {
+    if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
+        auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
+        if(Move && Move->IsMoving()){return;}
+    }
 	if (bDraggingFormationRing)
 	{
 		EndFormationRingDrag();

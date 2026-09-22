@@ -79,6 +79,7 @@ private:
             const auto pid=str(r,"plan_id"),mid=str(r,"mission_id");
             const auto& plan=lookup(next.at("plans").as_object(),pid,"PLAN_NOT_FOUND");
             if(str(plan,"status")!="DEPLOYED")throw PlanError("PLAN_NOT_DEPLOYED","Deploy before starting");
+            for(const auto& item:next.at("edit_sessions").as_object())if(str(item.value().as_object(),"plan_id")==pid)throw PlanError("PLAN_EDIT_IN_PROGRESS","Finish plan editing before execution");
             const auto did=str(plan,"deployment_id");
             const auto& deployment=lookup(next.at("deployments").as_object(),did,"DEPLOYMENT_MISSING");
             const auto& snap=deployment.at("snapshot").as_object();
@@ -97,6 +98,7 @@ private:
             for(const auto& entry:all){const auto& prev=entry.value().as_object();if(str(prev,"uav_id")==uid && number(prev,"updated_at")>=latest){latest=number(prev,"updated_at");start=prev.at("position").as_object();}}
             double total=0,seconds=0;auto from=start;
             for(const auto& v:points){const auto& point=v.as_object();const auto d=distance(from,point);const auto speed=number(point,"segmentSpeed")>0?number(point,"segmentSpeed"):number(mock_,"default_speed_mps");total+=d;seconds+=d/speed+number(point,"waitTime");from=point;}
+            if(closedRoute(route)){const auto d=distance(points.back().as_object(),points.front().as_object());const double configured=number(points.back().as_object(),"segmentSpeed");total+=d;seconds+=d/(configured>0?configured:number(mock_,"default_speed_mps"));}
             id=allocate(next,"execution-");const auto now=OperationalContext::now();
             all[id]=Object{{"execution_id",id},{"deployment_id",did},{"plan_id",pid},{"mission_id",mid},{"route_id",rid},
                 {"route_revision",route.contains("revision")?route.at("revision"):deployment.at("content_revision")},{"route_snapshot",route},{"plan_name",plan.at("name")},{"mission_name",mission.at("name")},
@@ -104,7 +106,7 @@ private:
                 {"segment_progress",0.},{"overall_progress",0.},{"progress",0.},{"position",start},{"segment_start",start},{"home_position",home},
                 {"default_speed_mps",mock_.at("default_speed_mps")},{"distance_m",total},{"estimated_seconds",seconds},{"distance_travelled_m",0.},
                 {"wait_remaining",0.},{"elapsed_seconds",0.},{"created_at",now},{"started_at",nullptr},{"updated_at",now},{"completed_at",nullptr},
-                {"completion_reason",""},{"failure_reason",""},{"simulation",true}};
+                {"completion_reason",""},{"failure_reason",""},{"simulation",true},{"loopMode","Once"},{"closure_completed",false}};
             executionEvent(next,all.at(id).as_object(),"EXECUTION_CREATED");
         } else if(action=="execution_shutdown") {
             for(auto& entry:all){auto& e=entry.value().as_object();if(executionActive(e) && str(e,"state")!="PAUSED") {
@@ -136,10 +138,13 @@ private:
             const double wait=number(e,"wait_remaining");
             if(!returning && wait>0){const auto used=std::min(wait,remaining);e["wait_remaining"]=wait-used;remaining-=used;if(remaining<=0)break;}
             const int completed=static_cast<int>(number(e,"completed_waypoints"));
-            if(!returning && completed>=static_cast<int>(points.size())) {finishExecution(doc,e,"ROUTE_FINISHED");break;}
-            const Object target=returning?e.at("home_position").as_object():position(points[completed].as_object());
+            const bool closing=!returning && completed>=static_cast<int>(points.size()) && closedRoute(e.at("route_snapshot").as_object()) && !(e.contains("closure_completed") && e.at("closure_completed").as_bool());
+            if(!returning && completed>=static_cast<int>(points.size()) && !closing) {finishExecution(doc,e,"ROUTE_FINISHED");break;}
+            if(closing)e["current_waypoint"]=1;
+            const auto index=closing?0:completed;
+            const Object target=returning?e.at("home_position").as_object():position(points[index].as_object());
             auto pos=e.at("position").as_object();const double length=distance(pos,target);
-            const double configured=returning?0:number(points[completed].as_object(),"segmentSpeed");
+            const double configured=returning?0:number(points[closing?points.size()-1:completed].as_object(),"segmentSpeed");
             const double speed=configured>0?configured:number(e,"default_speed_mps");
             const double moved=std::min(length,speed*remaining),fraction=length>1e-8?moved/length:1.;
             for(const char* k:{"latitude","longitude","altitude"})pos[k]=number(pos,k)+(number(target,k)-number(pos,k))*fraction;
@@ -152,10 +157,11 @@ private:
             if(fraction<1.)break;
             e["position"]=target;
             if(returning){finishExecution(doc,e,"RETURNED_HOME");break;}
+            if(closing){e["closure_completed"]=true;e["current_waypoint"]=1;executionEvent(doc,e,"ROUTE_CLOSURE_REACHED");finishExecution(doc,e,"ROUTE_FINISHED");break;}
             e["completed_waypoints"]=completed+1;executionEvent(doc,e,"WAYPOINT_REACHED");
             e["wait_remaining"]=number(points[completed].as_object(),"waitTime");e["segment_start"]=target;
             e["current_waypoint"]=std::min(completed+2,static_cast<int>(points.size()));e["segment_progress"]=0.;
-            if(completed+1==static_cast<int>(points.size()) && number(e,"wait_remaining")==0){finishExecution(doc,e,"ROUTE_FINISHED");break;}
+            if(completed+1==static_cast<int>(points.size()) && number(e,"wait_remaining")==0 && !closedRoute(e.at("route_snapshot").as_object())){finishExecution(doc,e,"ROUTE_FINISHED");break;}
         }
     }
     static void finishExecution(Object& doc,Object& e,const char* reason) {

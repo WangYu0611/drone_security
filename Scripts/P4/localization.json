@@ -120,8 +120,8 @@
     "任务：{0} | 已分配无人机：{1} | 已配置航线：{2}"
   ],
   "Plan.RouteParameters": [
-    "Loop: {0} | Speed: {1} | Wait: {2}",
-    "循环：{0} | 速度：{1} | 等待：{2}"
+    "Closed route: {0} | Execution: once | Speed: {1} | Wait: {2}",
+    "闭合航线：{0} | 单次执行 | 速度：{1} | 等待：{2}"
   ],
   "Plan.Blocking": [
     "Blocking issues",
@@ -1554,5 +1554,49 @@
   "Execution.DeploymentValid": [
     "Immutable deployment and saved route",
     "部署有效，航线版本已固定"
+  ],
+  "Geometry.ClosedRoute": [
+    "Closed Route",
+    "闭合航线"
+  ],
+  "Geometry.MovePlan": [
+    "Move Plan",
+    "整体移动"
+  ],
+  "Geometry.Moving": [
+    "Moving Security Plan: {0}",
+    "正在移动安保方案：{0}"
+  ],
+  "Geometry.Drag": [
+    "Drag the center handle to move all routes.",
+    "拖动中心手柄，整体移动方案内所有航线。"
+  ],
+  "Geometry.Preview": [
+    "Preview only — confirm position to save.",
+    "当前位置为预览，确认位置后保存。"
+  ],
+  "Geometry.Confirm": [
+    "Confirm Position",
+    "确认位置"
+  ],
+  "Errors.CLOSED_ROUTE_TOO_SHORT": [
+    "Closed route requires at least 3 waypoints.",
+    "闭合航线至少需要 3 个航点。"
+  ],
+  "Errors.PLAN_EXECUTING": [
+    "Cannot move the plan while the mission is running.",
+    "任务执行中，无法移动方案。"
+  ],
+  "Errors.INVALID_TRANSLATION": [
+    "The route changed. Cancel and retry moving the plan.",
+    "航线已发生变化，请取消后重新移动方案。"
+  ],
+  "Events.PLAN_TRANSLATED": [
+    "Plan position confirmed",
+    "方案位置已确认"
+  ],
+  "Events.ROUTE_CLOSURE_REACHED": [
+    "Closed route completed once",
+    "闭环航线单次执行完成"
   ]
 }

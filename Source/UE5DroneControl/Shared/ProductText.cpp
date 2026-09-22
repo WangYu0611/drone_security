@@ -31,7 +31,7 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Plan.Reviewed"),NSLOCTEXT("DroneOps","Plan.Reviewed","Reviewed revision {0}")},
 {TEXT("Plan.MissionSummary"),NSLOCTEXT("DroneOps","Plan.MissionSummary","{0} | UAV: {1} | Waypoints: {2}")},
 {TEXT("Plan.Counts"),NSLOCTEXT("DroneOps","Plan.Counts","Tasks: {0} | UAV assigned: {1} | Routes configured: {2}")},
-{TEXT("Plan.RouteParameters"),NSLOCTEXT("DroneOps","Plan.RouteParameters","Loop: {0} | Speed: {1} | Wait: {2}")},
+{TEXT("Plan.RouteParameters"),NSLOCTEXT("DroneOps","Plan.RouteParameters","Closed route: {0} | Execution: once | Speed: {1} | Wait: {2}")},
 {TEXT("Plan.Blocking"),NSLOCTEXT("DroneOps","Plan.Blocking","Blocking issues")},
 {TEXT("Plan.Warnings"),NSLOCTEXT("DroneOps","Plan.Warnings","Configuration check only. Terrain, airspace, endurance and flight safety are not assessed.")},
 {TEXT("Plan.Deployment"),NSLOCTEXT("DroneOps","Plan.Deployment","Deployment record")},
@@ -390,6 +390,17 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Execution.ConfirmAbort"),NSLOCTEXT("DroneOps","Execution.ConfirmAbort","Confirm Abort")},
 {TEXT("Execution.NoConflict"),NSLOCTEXT("DroneOps","Execution.NoConflict","No active execution conflict")},
 {TEXT("Execution.DeploymentValid"),NSLOCTEXT("DroneOps","Execution.DeploymentValid","Immutable deployment and saved route")},
+{TEXT("Geometry.ClosedRoute"),NSLOCTEXT("DroneOps","Geometry.ClosedRoute","Closed Route")},
+{TEXT("Geometry.MovePlan"),NSLOCTEXT("DroneOps","Geometry.MovePlan","Move Plan")},
+{TEXT("Geometry.Moving"),NSLOCTEXT("DroneOps","Geometry.Moving","Moving Security Plan: {0}")},
+{TEXT("Geometry.Drag"),NSLOCTEXT("DroneOps","Geometry.Drag","Drag the center handle to move all routes.")},
+{TEXT("Geometry.Preview"),NSLOCTEXT("DroneOps","Geometry.Preview","Preview only — confirm position to save.")},
+{TEXT("Geometry.Confirm"),NSLOCTEXT("DroneOps","Geometry.Confirm","Confirm Position")},
+{TEXT("Errors.CLOSED_ROUTE_TOO_SHORT"),NSLOCTEXT("DroneOps","Errors.CLOSED_ROUTE_TOO_SHORT","Closed route requires at least 3 waypoints.")},
+{TEXT("Errors.PLAN_EXECUTING"),NSLOCTEXT("DroneOps","Errors.PLAN_EXECUTING","Cannot move the plan while the mission is running.")},
+{TEXT("Errors.INVALID_TRANSLATION"),NSLOCTEXT("DroneOps","Errors.INVALID_TRANSLATION","The route changed. Cancel and retry moving the plan.")},
+{TEXT("Events.PLAN_TRANSLATED"),NSLOCTEXT("DroneOps","Events.PLAN_TRANSLATED","Plan position confirmed")},
+{TEXT("Events.ROUTE_CLOSURE_REACHED"),NSLOCTEXT("DroneOps","Events.ROUTE_CLOSURE_REACHED","Closed route completed once")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -424,7 +435,7 @@ if(Source==TEXT("Revision {0}"))return Get(TEXT("Plan.Revision"));
 if(Source==TEXT("Reviewed revision {0}"))return Get(TEXT("Plan.Reviewed"));
 if(Source==TEXT("{0} | UAV: {1} | Waypoints: {2}"))return Get(TEXT("Plan.MissionSummary"));
 if(Source==TEXT("Tasks: {0} | UAV assigned: {1} | Routes configured: {2}"))return Get(TEXT("Plan.Counts"));
-if(Source==TEXT("Loop: {0} | Speed: {1} | Wait: {2}"))return Get(TEXT("Plan.RouteParameters"));
+if(Source==TEXT("Closed route: {0} | Execution: once | Speed: {1} | Wait: {2}"))return Get(TEXT("Plan.RouteParameters"));
 if(Source==TEXT("Blocking issues"))return Get(TEXT("Plan.Blocking"));
 if(Source==TEXT("Configuration check only. Terrain, airspace, endurance and flight safety are not assessed."))return Get(TEXT("Plan.Warnings"));
 if(Source==TEXT("Deployment record"))return Get(TEXT("Plan.Deployment"));
@@ -783,6 +794,17 @@ if(Source==TEXT("Confirm Return"))return Get(TEXT("Execution.ConfirmReturn"));
 if(Source==TEXT("Confirm Abort"))return Get(TEXT("Execution.ConfirmAbort"));
 if(Source==TEXT("No active execution conflict"))return Get(TEXT("Execution.NoConflict"));
 if(Source==TEXT("Immutable deployment and saved route"))return Get(TEXT("Execution.DeploymentValid"));
+if(Source==TEXT("Closed Route"))return Get(TEXT("Geometry.ClosedRoute"));
+if(Source==TEXT("Move Plan"))return Get(TEXT("Geometry.MovePlan"));
+if(Source==TEXT("Moving Security Plan: {0}"))return Get(TEXT("Geometry.Moving"));
+if(Source==TEXT("Drag the center handle to move all routes."))return Get(TEXT("Geometry.Drag"));
+if(Source==TEXT("Preview only — confirm position to save."))return Get(TEXT("Geometry.Preview"));
+if(Source==TEXT("Confirm Position"))return Get(TEXT("Geometry.Confirm"));
+if(Source==TEXT("Closed route requires at least 3 waypoints."))return Get(TEXT("Errors.CLOSED_ROUTE_TOO_SHORT"));
+if(Source==TEXT("Cannot move the plan while the mission is running."))return Get(TEXT("Errors.PLAN_EXECUTING"));
+if(Source==TEXT("The route changed. Cancel and retry moving the plan."))return Get(TEXT("Errors.INVALID_TRANSLATION"));
+if(Source==TEXT("Plan position confirmed"))return Get(TEXT("Events.PLAN_TRANSLATED"));
+if(Source==TEXT("Closed route completed once"))return Get(TEXT("Events.ROUTE_CLOSURE_REACHED"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

@@ -13,6 +13,7 @@ public:
     void Refresh();
     void AttachCenterWidget(UUserWidget* Widget);
     bool IsCursorOverMap() const;
+    class UMapPlanMoveWidget* GetMovePanel() const { return MovePanel; }
 protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeTick(const FGeometry& Geometry, float DeltaSeconds) override;
@@ -31,6 +32,8 @@ private:
     TMap<FString, int32> AircraftIds;
     TArray<FString> AircraftOptions;
     UPROPERTY() TObjectPtr<class UMapExecutionWidget> ExecutionMonitor;
+    UPROPERTY() TObjectPtr<class UMapPlanMoveWidget> MovePanel;
+    bool bWasMoving=false;
     bool bRefreshing = false;
     UFUNCTION() void ActionRequested(FName Action, int32 ItemId);
     UFUNCTION() void AircraftSelected(FString Item, ESelectInfo::Type Type);
