@@ -6,6 +6,9 @@ $backend = Join-Path $projectRoot "Backend\build\Release\DroneBackend.exe"
 $backendConfig = Join-Path $projectRoot "Backend\config.yaml"
 $mediaMtx = Join-Path $mediaRoot "mediamtx.exe"
 $mediaMtxConfig = Join-Path $mediaRoot "mediamtx.yml"
+if (-not (Test-Path -LiteralPath $mediaMtx -PathType Leaf)) {
+    throw 'MediaMTX is an optional local dependency. See tools/MediaMTX/INSTALL.md; Stage 1 Mock does not require it.'
+}
 $ffmpeg = "C:\ffmpeg-8.0.1-essentials_build\ffmpeg-8.0.1-essentials_build\bin\ffmpeg.exe"
 $ffprobe = "C:\ffmpeg-8.0.1-essentials_build\ffmpeg-8.0.1-essentials_build\bin\ffprobe.exe"
 $recordings = "D:\DroneData\recordings\drone-4"

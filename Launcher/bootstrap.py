@@ -79,6 +79,9 @@ def main():
 
 
 if __name__ == '__main__':
+    if '--probe' in sys.argv:
+        import tkinter
+        sys.exit(0 if sys.version_info >= (3, 10) else 1)
     try:
         sys.exit(main())
     except Exception as exc:

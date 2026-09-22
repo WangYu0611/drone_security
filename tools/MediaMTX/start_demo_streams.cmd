@@ -2,7 +2,7 @@
 setlocal
 title UE5 Drone Promo Streams
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0start_demo_streams.ps1"
+powershell.exe -NoProfile -File "%~dp0start_demo_streams.ps1"
 set "EXIT_CODE=%ERRORLEVEL%"
 
 echo.

@@ -75,3 +75,8 @@ GitHub Download ZIP 可能包含 LFS 占位文件；资源缺失时请改用以�
 ## 验证边界
 
 本次验证包含本机依赖探测、缺失 Cesium/LFS/二进制/错误引擎等自动化场景及启动器回归。另一台电脑尚未现场验证；安装好依赖后仍需实际启动确认。P5.3 的原始业务验收记录见 `TASK-P5.3-PlanGeometryClosure.md`。
+
+## 2026-09-22 下载安全问题修正
+
+启动入口现直接调用本机 Python，不再通过 PowerShell 绕过执行策略。源码分发不再包含 MediaMTX EXE/ZIP；需要真实视频服务时按 `tools/MediaMTX/INSTALL.md` 单独安装官方发行版。Mock 流程不需要 MediaMTX。
+这些是发布内容与启动实现的改进；历史 Defender 报警只定位到整个 ZIP，尚未证实具体触发文件。不要恢复被隔离的旧下载包或关闭防护。
