@@ -80,3 +80,13 @@ GitHub Download ZIP 可能包含 LFS 占位文件；资源缺失时请改用以�
 
 启动入口现直接调用本机 Python，不再通过 PowerShell 绕过执行策略。源码分发不再包含 MediaMTX EXE/ZIP；需要真实视频服务时按 `tools/MediaMTX/INSTALL.md` 单独安装官方发行版。Mock 流程不需要 MediaMTX。
 这些是发布内容与启动实现的改进；历史 Defender 报警只定位到整个 ZIP，尚未证实具体触发文件。不要恢复被隔离的旧下载包或关闭防护。
+
+## CesiumIonSaaS 提示 only been partially loaded
+
+此错误表示资产加载不完整，当前内存中的对象不能正常保存。它不是单纯的 Token 无权限提示；需要查看启动日志中更早的 LogLinker/LoadErrors 才能确认原因。字体缺字警告另行处理。
+
+仓库现提供经 UE 5.8 + Cesium 2.28.0 正式清空凭据、保存并用新进程重载验证的 `Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset`。原公开资产本机也能加载，因此此更新不代表已复现并修复所有环境的加载失败。
+
+遇到保存弹窗先选 Continue 保存其他资源，然后关闭编辑器和客户端。把旧 CesiumIonSaaS.uasset 备份到 Content 目录外，再用仓库中的新文件替换；不要在 UE 打开时替换。重新打开工程，配置自己的 Cesium ion Token 并保存。此次替换会清空该资产中的旧 Token，需要重新设置。无需清空 Content、Saved 或整个工程。
+
+若仍报同样错误，请保留完整启动日志并核对插件版本；不要反复 Retry。验证记录见 `Cesium-Asset-Validation.json`。
