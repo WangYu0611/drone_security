@@ -6,6 +6,7 @@ import runpy
 import shutil
 import subprocess
 import sys
+import traceback
 from environment import load_config, preflight
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +17,7 @@ def build(config):
     if not vswhere.is_file():
         raise RuntimeError('Install Visual Studio with Desktop C++ and Game development with C++ workloads.')
     installations = json.loads(subprocess.check_output([str(vswhere), '-latest', '-products', '*', '-requires',
-        'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-format', 'json'], encoding='utf-8-sig'))
+        'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-format', 'json', '-utf8'], encoding='utf-8-sig'))
     if not installations:
         raise RuntimeError('Visual Studio C++ tools missing. Modify installation: Desktop C++ / Game development with C++.')
     vs = Path(installations[0]['installationPath'])
@@ -86,4 +87,11 @@ if __name__ == '__main__':
         sys.exit(main())
     except Exception as exc:
         print('ERROR:', exc)
+        try:
+            (ROOT / 'Saved').mkdir(exist_ok=True)
+            with (ROOT / 'Saved/first-run-error.log').open('a', encoding='utf-8') as log:
+                traceback.print_exc(file=log)
+            print('Details: Saved/first-run-error.log')
+        except OSError:
+            pass
         sys.exit(1)

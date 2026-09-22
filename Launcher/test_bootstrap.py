@@ -10,7 +10,7 @@ import bootstrap
 
 class BuildTests(unittest.TestCase):
     def test_build_steps_use_current_project_and_fail_fast(self):
-        with tempfile.TemporaryDirectory(prefix='drone build ') as folder:
+        with tempfile.TemporaryDirectory(prefix='drone 中文 build ') as folder:
             root = Path(folder)
             (root / 'Saved').mkdir()
             sentinel = root / 'Saved/user-plan.json'
@@ -27,7 +27,8 @@ class BuildTests(unittest.TestCase):
                 with patch.object(bootstrap, 'ROOT', root), patch.dict(os.environ, {
                     'ProgramFiles(x86)': folder, 'UE5DRONE_VCPKG_TOOLCHAIN': str(toolchain)}), \
                     patch('bootstrap.subprocess.check_output', return_value=json.dumps([
-                        {'installationPath': str(root / 'VS'), 'installationVersion': '17.14'}])), \
+                        {'installationPath': str(root / 'VS'), 'installationVersion': '17.14',
+                         'displayName': 'Visual Studio 生成工具'}], ensure_ascii=False)) as discovery, \
                     patch('bootstrap.shutil.which', return_value='cmake.exe'), \
                     patch('bootstrap.subprocess.Popen', side_effect=lambda *a, **k: Mock(
                         stdout=io.BytesIO(b'build output\n'), wait=Mock(return_value=exit_code))) as popen:
@@ -37,6 +38,8 @@ class BuildTests(unittest.TestCase):
                     else:
                         bootstrap.build(config)
                     self.assertEqual(popen.call_count, expected_count)
+                    self.assertIn('-utf8', discovery.call_args.args[0])
+                    self.assertEqual(discovery.call_args.kwargs['encoding'], 'utf-8-sig')
                     self.assertIn(str(root / 'Backend/build'), popen.call_args_list[0].args[0])
                     self.assertEqual(sentinel.read_text(), 'preserve')
 
