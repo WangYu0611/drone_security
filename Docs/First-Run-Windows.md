@@ -24,7 +24,7 @@ git lfs pull
 ```
 
 已有克隆可执行 `git pull --ff-only` 和 `git lfs pull`。如有本地修改，先保留自己的修改再更新。
-GitHub Download ZIP 可能包含 LFS 占位文件；资源缺失时请改用以上克隆方式。空的 `px4_msgs` 历史子模块不参与 Stage 1 构建，不需要递归初始化。
+已确认当前 GitHub Download ZIP 包含 LFS 占位文件，不能直接运行；请使用以上 Git + Git LFS 克隆方式。ZIP 解压目录没有 .git，不能直接在其中运行 git lfs pull。空的 `px4_msgs` 历史子模块不参与 Stage 1 构建，不需要递归初始化。
 
 ## 3. 首次编译
 
@@ -90,3 +90,9 @@ GitHub Download ZIP 可能包含 LFS 占位文件；资源缺失时请改用以�
 遇到保存弹窗先选 Continue 保存其他资源，然后关闭编辑器和客户端。把旧 CesiumIonSaaS.uasset 备份到 Content 目录外，再用仓库中的新文件替换；不要在 UE 打开时替换。重新打开工程，配置自己的 Cesium ion Token 并保存。此次替换会清空该资产中的旧 Token，需要重新设置。无需清空 Content、Saved 或整个工程。
 
 若仍报同样错误，请保留完整启动日志并核对插件版本；不要反复 Retry。验证记录见 `Cesium-Asset-Validation.json`。
+
+### 2026-09-22 ZIP 内容实测
+
+检查 GitHub 为修订 `7928ea3` 生成的实际 ZIP：CesiumWorld.umap = 130 字节、CesiumIonSaaS.uasset = 129 字节，二者第一行均为 `version https://git-lfs.github.com/spec/v1`。真正地图为 47,098 字节。因此 map appears to be an asset file 和配置资产 partially loaded 应先检查 LFS 资源是否真实存在，而非先改 Token 或认定二进制损坏。
+
+ZIP 中所有 LFS 资源均需补齐，单独替换一个配置文件不够。管理员可在 GitHub Settings → General → Archives 开启 Include Git LFS objects in archives 后，再验证实际 ZIP 内容；未验证前继续采用 Git LFS 克隆。

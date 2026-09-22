@@ -2,6 +2,16 @@
 
 ## P5.3 / 新电脑首次运行
 
+> **当前请使用 Git + Git LFS 克隆，不要用 Code → Download ZIP 启动项目。** 已实测 GitHub ZIP 中 CesiumWorld.umap 只有 130 字节、CesiumIonSaaS.uasset 只有 129 字节，均为 LFS 占位文本，无法由 Unreal 加载。
+>
+> ```powershell
+> git lfs install
+> git clone https://github.com/WangYu0611/drone_security.git C:\Projects\drone_security
+> cd C:\Projects\drone_security
+> git lfs pull
+> ```
+> 克隆目录必须是新的空目录；保留旧工程中的个人修改。下载资源后先运行 `CheckDroneSecurity.cmd`，再首次编译。
+
 已加入闭合航线、安保方案整体移动与闭环 Mock 执行。完整交付边界见 [P5.3 说明](Docs/TASK-P5.3-PlanGeometryClosure.md)。
 
 **新电脑必须额外安装 Cesium for Unreal 到 UE 5.8**，并通过 Git LFS 下载资源。只安装 UE 和 VS 尚不足以运行。
