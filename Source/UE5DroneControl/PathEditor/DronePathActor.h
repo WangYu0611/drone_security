@@ -182,6 +182,7 @@ public:
 	void SetMapDisplayRadius(float RadiusCm);
     // Presentation only. Execution monitors may supply acknowledged state.
     void SetRoutePresentation(ERouteVisualState State, bool Selected);
+    void RefreshRouteVisualPreview();
     const TArray<FDronePathSegmentVisualState>& GetSegmentVisuals() const { return SegmentVisuals; }
     bool IsVisualSelected() const { return bVisualSelected; }
     bool HasResolvedGeographicAltitude() const { return bVisualGeographicAltitude; }
@@ -294,6 +295,7 @@ private:
     UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> HaloMIDs;
     UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> JointMIDs;
     void UpdateVisualGeometry();
+    FVector VisualWaypointWorldLocation(int32 Index) const;
 	float MapDisplayRadius = 0.f;
 	int32 MapDisplayState = -1; // Presentation only: planning, confirmed, active, completed.
 	UPROPERTY()

@@ -2,12 +2,13 @@
 import unreal
 
 path = '/Game/Command/Materials/M_CommandPathV2'
-assert not unreal.EditorAssetLibrary.does_asset_exist(path), 'Do not overwrite a reviewed asset'
+assert not unreal.EditorAssetLibrary.does_asset_exist(path), 'Asset already exists; use update_route_material.py for shader-only changes'
 m = unreal.AssetToolsHelpers.get_asset_tools().create_asset('M_CommandPathV2', '/Game/Command/Materials', unreal.Material, unreal.MaterialFactoryNew())
 m.set_editor_property('shading_model', unreal.MaterialShadingModel.MSM_UNLIT)
 m.set_editor_property('blend_mode', unreal.BlendMode.BLEND_TRANSLUCENT)
 m.set_editor_property('two_sided', True)
 m.set_editor_property('disable_depth_test', False)
+m.set_editor_property('use_translucency_vertex_fog', False)
 m.set_editor_property('used_with_spline_meshes', True)
 lib = unreal.MaterialEditingLibrary
 nodes = {}
@@ -36,15 +37,17 @@ float pulse = smoothstep(0.65,0.82,phase) * (1-smoothstep(0.88,1.0,phase));
 float alarm = 0.5 + 0.5*sin(Clock*12.56637);
 float3 base = lerp(StartColor.rgb,EndColor.rgb,u);
 base = lerp(base,base*0.55,Completed);
-float3 core = base*(0.65+0.25*SelectionStrength) + pulse*FlowStrength*0.55;
+float3 core = base*(0.45+0.25*SelectionStrength+pulse*FlowStrength*0.75);
+// A dark silhouette preserves continuity on bright terrain without whitening altitude hues.
+core = lerp(core,float3(0.008,0.012,0.02),smoothstep(0.2,0.65,Rim)*0.8*(1-IsRing));
 core = lerp(core,lerp(float3(1,0,0),float3(1,0.8,0.8),alarm*0.65),ConflictStrength);
 float3 halo = lerp(HaloColor.rgb, float3(1,0,0)*(0.55+alarm*0.65),ConflictStrength);
 float edge = smoothstep(0.2,0.85,Rim);
 halo = lerp(halo,float3(0.015,0.02,0.03),edge*0.85);
 float3 rgb = lerp(core,halo,IsHalo);
-float alpha = lerp(0.85+0.15*SelectionStrength,0.24+0.16*SelectionStrength+edge*0.3,IsHalo);
+float alpha = lerp(0.85+0.15*SelectionStrength,edge*(0.45+0.25*SelectionStrength),IsHalo);
 alpha = lerp(alpha,smoothstep(0.12,0.6,Rim)*0.9,IsRing);
-return float4(rgb/max(Exposure,0.001),alpha);
+return float4(rgb/max(Exposure,0.00000001),alpha);
 ''')
 for name,n in nodes.items():
     assert lib.connect_material_expressions(n,'',custom,name)

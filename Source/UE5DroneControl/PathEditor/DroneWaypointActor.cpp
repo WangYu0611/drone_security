@@ -316,6 +316,7 @@ void ADroneWaypointActor::EndDeferredPathUpdate(bool bCommitPathUpdate)
 	else
 	{
 		LastObservedWorldLocation = GetActorLocation();
+        if(IsValid(PathActor))PathActor->RefreshRouteVisualPreview();
 		ApplyVisualState();
 	}
 }
@@ -358,6 +359,7 @@ void ADroneWaypointActor::MoveAlongGizmoAxis(EGizmoAxis Axis, float DeltaDistanc
 	{
 		ApplyCurrentLocationToPath();
 	}
+    else PathActor->RefreshRouteVisualPreview();
 }
 
 void ADroneWaypointActor::SetWaypointWorldLocation(const FVector& NewLocation)

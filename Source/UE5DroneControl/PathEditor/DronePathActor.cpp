@@ -744,6 +744,7 @@ void ADronePathActor::RebuildSplineMeshes()
             M->CreationMethod=EComponentCreationMethod::UserConstructionScript;M->SetMobility(EComponentMobility::Movable);
             M->SetupAttachment(PathSpline);M->SetStaticMesh(SplineSegmentStaticMesh);
             M->SetCollisionEnabled(ECollisionEnabled::NoCollision);M->SetGenerateOverlapEvents(false);M->SetCastShadow(false);
+            M->SetbNeverNeedsCookedCollisionData(true);M->SetCanEverAffectNavigation(false);
             M->SetForwardAxis(ESplineMeshAxis::Z,false);M->ComponentTags.AddUnique(DronePathVisual::RuntimeSplineSegmentTag);
             M->RegisterComponent();AddInstanceComponent(M);return M;
         };
@@ -761,24 +762,35 @@ void ADronePathActor::RebuildSplineMeshes()
     }
     UpdateVisualGeometry();ApplyPathVisualState();
 }
+FVector ADronePathActor::VisualWaypointWorldLocation(int32 Index) const
+{
+    if(WaypointHandleActors.IsValidIndex(Index)){auto* H=WaypointHandleActors[Index].Get();if(IsValid(H) && H->IsDeferringPathUpdate())return H->GetActorLocation();}
+    return GetWaypointWorldLocation(Index);
+}
+void ADronePathActor::RefreshRouteVisualPreview(){UpdateVisualGeometry();ApplyPathVisualState();}
 void ADronePathActor::UpdateVisualGeometry()
 {
-    const float Radius=FMath::Max3(PathSplineThickness,MapDisplayRadius,.05f);
+    const float Radius=FMath::Max3(PathSplineThickness,MapDisplayRadius,.05f)*1.4f;
     for(int32 I=0;I<SplineMeshComponents.Num();++I){
-        const int32 J=(I+1)%Waypoints.Num();const FVector A=Waypoints[I].Location,B=Waypoints[J].Location;
+        const int32 J=(I+1)%Waypoints.Num();const FVector A=WorldToLocalLocation(VisualWaypointWorldLocation(I)),B=WorldToLocalLocation(VisualWaypointWorldLocation(J));
         const FVector Delta=B-A;const double Length=Delta.Size();const FVector Dir=Delta.GetSafeNormal();
         const double Overlap=FMath::Min(double(Radius)*.6,Length*.2);
         // Nonzero linear tangents eliminate the old cylinder pinching at joins.
         const FVector Start=A-Dir*Overlap,End=B+Dir*Overlap,Tangent=End-Start;
         const FVector Up=FMath::Abs(Dir.Z)>.95?FVector::ForwardVector:FVector::UpVector;
         for(int Layer=0;Layer<2;++Layer){auto* M=Layer?HaloComponents[I].Get():SplineMeshComponents[I].Get();
-            M->SetVisibility(Length>.01);M->SetSplineUpDir(Up,false);
-            M->SetStartAndEnd(Start,Tangent,End,Tangent,false);
+            M->SetVisibility(Length>.01);
             const FVector2D Scale(Radius*(Layer?1.65f:1.f)/50.f);
-            M->SetStartScale(Scale,false);M->SetEndScale(Scale,true);
+            if(M->GetStartPosition().Equals(Start) && M->GetEndPosition().Equals(End) &&
+                M->GetStartTangent().Equals(Tangent) && M->GetEndTangent().Equals(Tangent) &&
+                M->GetStartScale().Equals(Scale) && M->GetEndScale().Equals(Scale) && M->GetSplineUpDir().Equals(Up))continue;
+            M->SetSplineUpDir(Up,false);M->SetStartAndEnd(Start,Tangent,End,Tangent,false);
+            M->SetStartScale(Scale,false);M->SetEndScale(Scale,false);
+            // Scale setters may early-out at an unchanged radius; always publish moved geometry.
+            M->UpdateMesh();
         }
     }
-    for(int32 I=0;I<JointComponents.Num();++I){JointComponents[I]->SetRelativeLocation(Waypoints[I].Location);JointComponents[I]->SetRelativeScale3D(FVector(Radius*1.02f/50.f));}
+    for(int32 I=0;I<JointComponents.Num();++I){JointComponents[I]->SetRelativeLocation(WorldToLocalLocation(VisualWaypointWorldLocation(I)));JointComponents[I]->SetRelativeScale3D(FVector(Radius*1.02f/50.f));}
 }
 
 void ADronePathActor::DestroySplineMeshes()
@@ -928,7 +940,7 @@ void ADronePathActor::ApplyPathVisualState()
     auto* Coordinates=Registry?Registry->GetCoordinateService().GetObject():nullptr;
     bVisualGeographicAltitude=Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates);
     for(int32 I=0;I<Waypoints.Num();++I){
-        const FVector World=GetWaypointWorldLocation(I);
+        const FVector World=VisualWaypointWorldLocation(I);
         Heights.Add(bVisualGeographicAltitude?ICoordinateService::Execute_WorldToGeographic(Coordinates,World).Z:World.Z/100.);
         Speeds.Add(Waypoints[I].SegmentSpeed);
     }
@@ -947,7 +959,7 @@ void ADronePathActor::ApplyPathVisualState()
     for(int32 I=0;I<SegmentVisuals.Num() && I<SplineMeshComponents.Num();++I){
         Set(SplineMeshComponents[I],SplineVisualizationMIDs[I],SegmentVisuals[I],false,false);
         Set(HaloComponents[I],HaloMIDs[I],SegmentVisuals[I],true,false);
-        const FVector A=GetWaypointWorldLocation(I),B=GetWaypointWorldLocation(SegmentVisuals[I].EndWaypointIndex);
+        const FVector A=VisualWaypointWorldLocation(I),B=VisualWaypointWorldLocation(SegmentVisuals[I].EndWaypointIndex);
         for(auto* MID:{SplineVisualizationMIDs[I].Get(),HaloMIDs[I].Get()})if(MID){MID->SetVectorParameterValue(TEXT("StartWorld"),FLinearColor(A));MID->SetVectorParameterValue(TEXT("EndWorld"),FLinearColor(B));}
     }
     double Min=Heights.IsEmpty()?0:Heights[0],Max=Min;for(double H:Heights){Min=FMath::Min(Min,H);Max=FMath::Max(Max,H);}

@@ -59,7 +59,10 @@ void UMapExecutionWidget::Refresh(){
                     double Speed=0;P->TryGetNumberField(TEXT("segmentSpeed"),Speed);W.SegmentSpeed=Speed;Path->Waypoints.Add(W);
                 }Path->RefreshPath();VisualSnapshots.Add(Key,Snapshot);
             }
-            Path->SetRoutePresentation(Field(E,TEXT("state"))==TEXT("COMPLETED")?ERouteVisualState::Completed:ExecutionUI::Active(E)?ERouteVisualState::Active:ERouteVisualState::Confirmed,E==Execution);
+            const FString State=Field(E,TEXT("state"));
+            const bool Running=ExecutionUI::Active(E) && State!=TEXT("CREATED") && State!=TEXT("SCHEDULED");
+            const bool Selected=Field(E,TEXT("uav_id"))==FString::Printf(TEXT("UAV-%02d"),Registry->GetPrimarySelectedDrone());
+            Path->SetRoutePresentation(State==TEXT("COMPLETED")?ERouteVisualState::Completed:Running?ERouteVisualState::Active:ERouteVisualState::Confirmed,Selected);
             Path->SetActorHiddenInGame(PC && PC->IsPathEditMode());
         }
         for(auto It=VisualRoutes.CreateIterator();It;++It)if(!Live.Contains(It.Key())){if(It.Value())It.Value()->Destroy();VisualSnapshots.Remove(It.Key());It.RemoveCurrent();}
