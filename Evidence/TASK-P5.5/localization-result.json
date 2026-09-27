@@ -1,0 +1,12 @@
+{
+  "command": [
+    "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+    "D:\\CodexPublish\\drone_security\\UE5DroneControl.uproject",
+    "-run=GatherText",
+    "-config=D:\\CodexPublish\\drone_security\\Config\\Localization\\DroneOps.ini",
+    "-unattended",
+    "-NullRHI",
+    "-abslog=D:\\CodexPublish\\drone_security\\Evidence\\TASK-P5.5\\localization.log"
+  ],
+  "exit": 1
+}

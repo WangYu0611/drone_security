@@ -48,8 +48,10 @@ public:FP4Replica(FAutomationTestBase* T,bool V):Test(T),IsVideo(V){}
         const int Generation=Shell?Shell->GetBrowserGeneration():0;const auto* Browser=Shell?Shell->GetBrowser():nullptr;
         auto ContextBefore=S->GetContext();const auto PlansBefore=S->GetPlans();
         Test->TestTrue(TEXT("no target catalog contains explicit instruction"),ProductText::Get(TEXT("Video.NoTargetHint")).ToString().Contains(TEXT("video")) || ProductText::Get(TEXT("Video.NoTargetHint")).ToString().Contains(TEXT("视频")));
+        const FText LegendText=ProductText::Get(TEXT("RouteVisual.Legend"));
         const FText LockedText=ProductText::Get(TEXT("Map.ViewLocked"));
         const FText Stable=ProductText::Get(TEXT("Plan.Title"));S->ApplyUIPreferences(Language(90000,TEXT("zh-Hans")));
+        Test->TestTrue(TEXT("route visual legend Chinese"),LegendText.ToString().Contains(TEXT("航线视觉")));
         Test->TestEqual(TEXT("route lock status Chinese"),LockedText.ToString(),FString(TEXT("航线编辑中 | 地图视角已锁定")));
         Test->TestEqual(TEXT("formal localization changes retained FText"),Stable.ToString(),FString(TEXT("安保方案")));
         FOperationalEvent E;E.EventType=TEXT("UAV_ASSIGNED");E.Params=MakeShared<FJsonObject>();E.Params->SetStringField(TEXT("uav_id"),TEXT("UAV-01"));E.Params->SetStringField(TEXT("mission_name"),TEXT("East Perimeter"));
@@ -443,7 +445,7 @@ public: explicit FP54MapControls(FAutomationTestBase* T):Test(T){}
 
 #define P4_TEST(Class,Name,Command) \
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(Class,"DroneOps.P4." Name,EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter) \
-bool Class::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(Command);ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
+bool Class::RunTest(const FString&){ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(FParse::Param(FCommandLine::Get(),TEXT("P55OfflineVisualQA"))?TEXT("/Game/Tests/P55OfflineMap"):TEXT("/Game/Level/CesiumWorld")));ADD_LATENT_AUTOMATION_COMMAND(FStartPIECommand(false));ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));ADD_LATENT_AUTOMATION_COMMAND(Command);ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;}
 P4_TEST(FP4Localization,"Localization.FTextAndDraftIsolation",FP4Replica(this,false))
 P4_TEST(FP4VideoTarget,"VideoTarget.ExplicitSelectionAndBrowserIsolation",FP4Replica(this,true))
 P4_TEST(FP4CommandWorkflow,"Workflow.CommandLiveCRUD",FP4CommandLive(this))

@@ -1,0 +1,60 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:\CodexPublish\drone_security\UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: DronePathActor.cpp, DroneWaypointActor.cpp, P4WorkflowTest.cpp, RouteVisualComponentsTest.cpp, RouteVisualQA.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 33 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 16.19 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/33] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[2/33] Compile [x64] CommandClientTest.cpp [NoUba]
+[3/33] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/33] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[5/33] Compile [x64] DroneNetworkManager.cpp [NoUba]
+[6/33] Compile [x64] CommandShellWidget.cpp [NoUba]
+[7/33] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[8/33] Compile [x64] DronePathActor.cpp [NoUba]
+[9/33] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[10/33] Compile [x64] DronePathConflictLibrary.cpp [NoUba]
+[11/33] Compile [x64] DronePathPlaybackWidget.cpp [NoUba]
+[12/33] Compile [x64] DronePathSaveLibrary.cpp [NoUba]
+[13/33] Compile [x64] DronePlaybackManager.cpp [NoUba]
+[14/33] Compile [x64] DroneRuntimeInteractionPlayerController.cpp [NoUba]
+[15/33] Compile [x64] DroneTaskManager.cpp [NoUba]
+[16/33] Compile [x64] DroneWaypointActor.cpp [NoUba]
+[17/33] Compile [x64] EnemyDroneListWidget.cpp [NoUba]
+[18/33] Compile [x64] HostileTargetManager.cpp [NoUba]
+[19/33] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[20/33] Compile [x64] MapExtractionTest.cpp [NoUba]
+[21/33] Compile [x64] MapShellWidget.cpp [NoUba]
+[22/33] Compile [x64] MultiDroneCharacter.cpp [NoUba]
+[23/33] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[24/33] Compile [x64] MultiDroneManager.cpp [NoUba]
+[25/33] Compile [x64] RouteVisualComponentsTest.cpp [NoUba]
+[26/33] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[27/33] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[28/33] Compile [x64] RouteVisualQA.cpp [NoUba]
+[29/33] Compile [x64] SequenceDispatchPanelWidget.cpp [NoUba]
+[30/33] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[31/33] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ D:/CodexPublish/drone_security/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ D:/CodexPublish/drone_security/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[32/33] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[33/33] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 131.62 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 136.47 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 17.0kb

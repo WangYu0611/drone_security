@@ -1,0 +1,12 @@
+{
+  "command": [
+    "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+    "D:\\CodexPublish\\drone_security\\UE5DroneControl.uproject",
+    "-run=pythonscript",
+    "-script=D:\\CodexPublish\\drone_security\\Scripts\\P55\\create_route_material.py",
+    "-unattended",
+    "-NullRHI",
+    "-abslog=D:\\CodexPublish\\drone_security\\Evidence\\TASK-P5.5\\material.log"
+  ],
+  "exit": 4294967295
+}

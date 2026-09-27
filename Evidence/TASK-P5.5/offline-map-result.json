@@ -1,0 +1,12 @@
+{
+  "exit": 1,
+  "command": [
+    "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+    "D:\\CodexPublish\\drone_security\\UE5DroneControl.uproject",
+    "-run=pythonscript",
+    "-script=D:\\CodexPublish\\drone_security\\Scripts\\P55\\create_offline_fixture.py",
+    "-unattended",
+    "-NullRHI",
+    "-abslog=D:\\CodexPublish\\drone_security\\Evidence\\TASK-P5.5\\offline-map.log"
+  ]
+}

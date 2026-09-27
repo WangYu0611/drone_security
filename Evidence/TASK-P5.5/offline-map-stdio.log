@@ -1,0 +1,282 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" -Mode=ValidatePlatforms -OutputSDKs  -AllPlatforms  -project="D:/CodexPublish/drone_security/UE5DroneControl.uproject" -log="D:/CodexPublish/drone_security/Saved/Logs/AutoSDKInfo.txt" -verbose -timestamps
+Log file: D:\CodexPublish\drone_security\Saved\Logs\AutoSDKInfo.txt
+[2026.09.27-03.27.37:307][  0]LogInit: Display: Running engine for game: UE5DroneControl
+[2026.09.27-03.27.37:307][  0]LogCore: Display: Requested channels: 'cpu,gpu,frame,log,bookmark,screenshot,region'
+[2026.09.27-03.27.37:307][  0]LogTrace: Display: Control listening on port 1985
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : platform="Windows"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : config="Development"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : buildversion="++UE5+Release-5.8-CL-55116800"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : engineversion="5.8.0-55116800+++UE5+Release-5.8"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : enginereleaseversion="5.8.0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : os="Windows 11 (25H2) [10.0.26200.9457] "
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : cpu="AuthenticAMD|AMD Ryzen 7 5800H with Radeon Graphics"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : pgoenabled="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : pgoprofilingenabled="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : ltoenabled="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : asan="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : mergedmodules="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : compacttset="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : commandline="" D:\CodexPublish\drone_security\UE5DroneControl.uproject -run=pythonscript -script=D:\CodexPublish\drone_security\Scripts\P55\create_offline_fixture.py -unattended -NullRHI -abslog=D:\CodexPublish\drone_security\Evidence\TASK-P5.5\offline-map.log""
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : loginid="d4e8ffba46e752f478b902afee18f6d8"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : llm="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : zenstreaming="0"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : systemresolution.resx="1280"
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : systemresolution.resy="720"
+[2026.09.27-03.27.37:307][  0]LogAudio: Display: Audio Device Manager not initializing due to all audio being disabled. If this is not intentional, please check command line arguments for "-nosound".
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading Android ini files took 0.05 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading Mac ini files took 0.06 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading VulkanPC ini files took 0.06 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading IOS ini files took 0.06 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading VisionOS ini files took 0.06 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading Unix ini files took 0.07 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading TVOS ini files took 0.07 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading Windows ini files took 0.07 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading LinuxArm64 ini files took 0.07 seconds
+[2026.09.27-03.27.37:307][  0]LogConfig: Display: Loading Linux ini files took 0.07 seconds
+[2026.09.27-03.27.37:307][  0]LogPluginManager: Warning: Plugin 'SimpleWebSocket' requires engine version '5.7.0' and may not be compatible with the current current engine version '5.8.0-55116800+++UE5+Release-5.8'
+[2026.09.27-03.27.37:307][  0]LogPluginManager: Display: Skipping load of 'SimpleWebSocket'.
+[2026.09.27-03.27.37:307][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Log is disabled for this application
+[2026.09.27-03.27.37:307][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.CSV is disabled for this application
+[2026.09.27-03.27.37:307][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Horde is disabled for this application
+[2026.09.27-03.27.37:307][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Log is disabled for this application
+[2026.09.27-03.27.37:307][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.CSV is disabled for this application
+[2026.09.27-03.27.37:307][  0]LogAnalytics: Display: Provider StudioTelemetry.Provider.Horde is disabled for this application
+[2026.09.27-03.27.37:307][  0]RenderDocPlugin: Display: RenderDoc plugin will not be loaded. Use '-AttachRenderDoc' on the cmd line or enable 'renderdoc.AutoAttach' in the plugin settings.
+[2026.09.27-03.27.37:307][  0]LogAsyncCompilation: Display: MemorySharingInfo: UsedMemory=327MiB, MaxMemoryAvailable=34717MiB
+[2026.09.27-03.27.37:307][  0]LogStreaming: Display: AsyncLoading2 - Created: Async Loading Thread: false, Async Post Load: false, Multithreaded: false
+[2026.09.27-03.27.37:307][  0]LogHAL: Display: Platform has ~ 32 GB [34256932864 / 34359738368 / 32], which maps to Largest [LargestMinGB=32, LargerMinGB=12, DefaultMinGB=8, SmallerMinGB=6, SmallestMinGB=0)
+[2026.09.27-03.27.37:307][  0]LogCsvProfiler: Display: Metadata set : extradevelopmentmemorymb="0"
+[2026.09.27-03.27.37:307][  0]LogObj: Display: Attempting to load config data for Default__DownlinkBandwidthManagerConfig before the Class has been constructed/registered/linked (likely during module loading or early startup). This will result in the load silently failing and should be fixed.
+##PlatformValidate: Win64 VALID 10.0.22621.0
+##PlatformValidate: Mac VALID 26.1.1
+##PlatformValidate: IOS VALID 26.1.1
+##PlatformValidate: Android INVALID r27c
+##PlatformValidate: Linux INVALID v26_clang-20.1.8-rockylinux8
+##PlatformValidate: LinuxArm64 INVALID v26_clang-20.1.8-rockylinux8
+##PlatformValidate: TVOS VALID 26.1.1
+##PlatformValidate: VisionOS INVALID <UNKNOWN>
+Unable to find required SDK version 'MainVersion' for platform VisionOS. Check your SDK.json files
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 311b
+[2026.09.27-03.27.37:680][  0]LogObj: Display: Attempting to load config data for Default__SlateThemeManager before the Class has been constructed/registered/linked (likely during module loading or early startup). This will result in the load silently failing and should be fixed.
+[2026.09.27-03.27.37:830][  0]LogCsvProfiler: Display: Metadata set : verbatimrhiname="Null"
+[2026.09.27-03.27.37:830][  0]LogCsvProfiler: Display: Metadata set : rhiname="Null"
+[2026.09.27-03.27.37:830][  0]LogCsvProfiler: Display: Metadata set : rhifeaturelevel="SM6"
+[2026.09.27-03.27.37:830][  0]LogCsvProfiler: Display: Metadata set : shaderplatform="PCD3D_SM6"
+[2026.09.27-03.27.37:830][  0]LogCsvProfiler: Display: Metadata set : gpu=""
+[2026.09.27-03.27.37:830][  0]LogCsvProfiler: Display: Metadata set : gpudriver=""
+[2026.09.27-03.27.37:838][  0]LogTextureFormatASTC: Display: ASTCEnc version 5.0.1 library loaded
+[2026.09.27-03.27.37:838][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatASTC
+[2026.09.27-03.27.37:838][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatDXT
+[2026.09.27-03.27.37:838][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatETC2
+[2026.09.27-03.27.37:838][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatIntelISPCTexComp
+[2026.09.27-03.27.37:838][  0]LogTextureFormatOodle: Display: Oodle Texture TFO init; latest sdk version = 2.9.16
+[2026.09.27-03.27.37:839][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.16.dll
+[2026.09.27-03.27.37:839][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatOodle
+[2026.09.27-03.27.37:839][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatUncompressed
+[2026.09.27-03.27.37:889][  0]LogTargetPlatformManager: Display: Failed to SetupSDK for platform 'Android'
+[2026.09.27-03.27.37:918][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOS'
+[2026.09.27-03.27.37:918][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOSClient'
+[2026.09.27-03.27.37:946][  0]LogTargetPlatformManager: Display: Failed to SetupSDK for platform 'Linux'
+[2026.09.27-03.27.37:974][  0]LogTargetPlatformManager: Display: Failed to SetupSDK for platform 'LinuxArm64'
+[2026.09.27-03.27.38:003][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Mac'
+[2026.09.27-03.27.38:003][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacEditor'
+[2026.09.27-03.27.38:003][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacServer'
+[2026.09.27-03.27.38:003][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacClient'
+[2026.09.27-03.27.38:034][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOS'
+[2026.09.27-03.27.38:034][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOSClient'
+[2026.09.27-03.27.38:062][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Windows'
+[2026.09.27-03.27.38:062][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsEditor'
+[2026.09.27-03.27.38:062][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsServer'
+[2026.09.27-03.27.38:062][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsClient'
+[2026.09.27-03.27.38:062][  0]LogTargetPlatformManager: Display: Building Assets For WindowsEditor
+[2026.09.27-03.27.38:067][  0]LogAudioDebug: Display: Lib vorbis DLL was dynamically loaded.
+[2026.09.27-03.27.38:413][  0]LogDerivedDataCache: Display: ../../../Engine/DerivedDataCache/Compressed.ddp: Opened pak cache for reading. (1667 MiB)
+[2026.09.27-03.27.38:414][  0]LogZenServiceInstance: Display: Launching zen utility 'C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/zen.exe service status'.
+[2026.09.27-03.27.38:925][  0]LogZenServiceInstance: Display: Writing plugin version info to 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zen_plugin_versions.json'
+[2026.09.27-03.27.38:926][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/wy331/AppData/Local/UnrealEngine/5.8/Saved/Zen/zen.version', version: '5.8.13-202605190912-windows-x64-release-094f62c2'
+[2026.09.27-03.27.38:926][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.8.13-202605190912-windows-x64-release-094f62c2'
+[2026.09.27-03.27.38:926][  0]LogZenServiceInstance: Display: Installed service at 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
+[2026.09.27-03.27.38:927][  0]LogZenServiceInstance: Display: Launching executable 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\wy331\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --restrict-content-types --allow-external-oidctoken-exe=false --plugins-config "C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/zen_plugins_v1.json" --security-config-path "C:/Users/wy331/AppData/Local/UnrealEngine/Common/Zen/Install/security-config.json" --owner-pid 84852  --child-id Zen_84852_Startup'
+[2026.09.27-03.27.41:802][  0]LogZenServiceInstance: Display: Unreal Zen Storage Server HTTP service at http://[::1]:8558 status: OK!.
+[2026.09.27-03.27.41:804][  0]LogDerivedDataCache: Display: ZenLocal: Using ZenServer HTTP service at [::1] with namespace ue.ddc. Status: OK!.
+[2026.09.27-03.27.41:813][  0]LogDerivedDataCache: Display: C:/Users/wy331/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.03ms. RandomReadSpeed=521.92MBs, RandomWriteSpeed=130.07MBs. Assigned SpeedClass 'Local'
+[2026.09.27-03.27.41:818][  0]LogUbaHorde: Display: UBA/Horde Configuration [Uba.Provider.Horde]: Not Enabled
+[2026.09.27-03.27.41:818][  0]LogShaderCompilers: Display: No distributed shader compiler controller found
+[2026.09.27-03.27.41:818][  0]LogShaderCompilers: Display: Using 13 local workers for shader compilation
+[2026.09.27-03.27.41:819][  0]LogShaderCompilers: Display: Compiling shader autogen file: D:/CodexPublish/drone_security/Intermediate/ShaderAutogen/PCD3D_SM6/AutogenShaderHeaders.ush
+[2026.09.27-03.27.41:820][  0]LogShaderCompilers: Display: Autogen file is unchanged, skipping write.
+[2026.09.27-03.27.42:367][  0]LogEditorDomain: Display: EditorDomain is Disabled
+[2026.09.27-03.27.42:680][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64Editor not found.
+[2026.09.27-03.27.42:680][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64 not found.
+[2026.09.27-03.27.42:731][  0]LogCsvProfiler: Display: Metadata set : deviceprofile="WindowsEditor"
+[2026.09.27-03.27.42:734][  0]LogStreaming: Display: FlushAsyncLoading(1): 1 QueuedPackages, 0 AsyncPackages
+[2026.09.27-03.27.42:751][  0]LogTextureEncodingSettings: Display: Texture Encode Speed: Final (cook).
+[2026.09.27-03.27.42:751][  0]LogTextureEncodingSettings: Display: Oodle Texture Encode Speed settings: Fast: RDO Off Lambda=0, Effort=Normal Final: RDO Off Lambda=0, Effort=Normal
+[2026.09.27-03.27.42:751][  0]LogTextureEncodingSettings: Display: Shared linear texture encoding: Disabled
+[2026.09.27-03.27.42:772][  0]LogMeshReduction: Display: Using QuadricMeshReduction for automatic static mesh reduction
+[2026.09.27-03.27.42:772][  0]LogMeshReduction: Display: Using SkeletalMeshReduction for automatic skeletal mesh reduction
+[2026.09.27-03.27.42:772][  0]LogMeshReduction: Display: Using ProxyLODMeshReduction for automatic mesh merging
+[2026.09.27-03.27.42:772][  0]LogMeshReduction: Display: No distributed automatic mesh merging module available
+[2026.09.27-03.27.43:000][  0]LogShaderCompilers: Display: Compiling shader autogen file: D:/CodexPublish/drone_security/Intermediate/ShaderAutogen/PCD3D_SM5/AutogenShaderHeaders.ush
+[2026.09.27-03.27.43:000][  0]LogShaderCompilers: Display: Autogen file is unchanged, skipping write.
+[2026.09.27-03.27.43:001][  0]LogVirtualization: Display: VirtualizationSystem name found in ini file: None
+[2026.09.27-03.27.43:001][  0]LogVirtualization: Display: FNullVirtualizationSystem mounted, virtualization will be disabled
+[2026.09.27-03.27.43:074][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize started...
+[2026.09.27-03.27.43:077][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize took 2.280 ms
+[2026.09.27-03.27.43:604][  0]LogMetaSound: Display: MetaSound Page Target Initialized to 'Default'
+[2026.09.27-03.27.43:607][  0]LogAudio: Display: Registering Engine Module Parameter Interfaces...
+[2026.09.27-03.27.44:064][  0]LogSemanticSearch: Display: No codebook found, creating flat index
+[2026.09.27-03.27.44:312][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.09.27-03.27.44:312][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.09.27-03.27.44:492][  0]LogToolsetRegistry: Display: Registering Toolset ToolsetRegistry.AgentSkillToolset
+[2026.09.27-03.27.44:527][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles (PreLoad): 1 .ref files found, 1 referenced binaries
+[2026.09.27-03.27.44:527][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles: 1 total binaries, 1 referenced (kept), 0 old-style pre-migration (kept), 0 orphans deleted, 0 orphans locked (kept)
+[2026.09.27-03.27.44:527][  0]LogAssetRegistry: Display: FindShardedCacheFiles: 1 via .ref, 0 via migration fallback, 1 total
+[2026.09.27-03.27.44:527][  0]LogAssetRegistry: Display: LoadCacheFiles: loading 1 cache files, memory-mapping=enabled
+[2026.09.27-03.27.44:633][  0]LogAssetRegistry: Display: Asset registry cache read as 126.7 MiB from D:/CodexPublish/drone_security/Intermediate/CachedAssetRegistry/CachedAssetRegistry_0_FFEB9B2E4AD428DEABD6E7BB99C314CE.bin (memory-mapped=yes)
+[2026.09.27-03.27.44:633][  0]LogAssetRegistry: Display: AssetDataGatherer spent 0.107s loading caches from D:/CodexPublish/drone_security/Intermediate/CachedAssetRegistry.
+[2026.09.27-03.27.44:655][  0]LogGameFeatures: Error: Asset manager settings do not include a rule for assets of type GameFeatureData, which is required for game feature plugins to function
+[2026.09.27-03.27.44:656][  0]LogGameFeatures: Display: Total built in plugin load time 0.0010s
+[2026.09.27-03.27.44:656][  0]LoadErrors: Error: Asset Manager settings do not include an entry for assets of type GameFeatureData, which is required for game feature plugins to function. Add entry to PrimaryAssetTypesToScan?
+[2026.09.27-03.27.44:673][  0]LogCsvProfiler: Display: Metadata set : largeworldcoordinates="1"
+[2026.09.27-03.27.44:735][  0]LogPython: Display: No pip-enabled plugins with python dependencies found, skipping
+[2026.09.27-03.27.45:127][  0]LogCsvProfiler: Display: Metadata set : raytracing="0"
+[2026.09.27-03.27.45:302][  0]LogToolsetRegistry: Display: Registering Toolset EditorToolset.EditorAppToolset
+[2026.09.27-03.27.45:302][  0]LogToolsetRegistry: Display: Registering Toolset EditorToolset.LogsToolset
+[2026.09.27-03.27.45:307][  0]LogToolsetRegistry: Display: Registering Toolset ConfigSettingsToolset.ConfigSettingsToolset
+[2026.09.27-03.27.45:309][  0]LogToolsetRegistry: Display: Registering Toolset AutomationTestToolset.AutomationTestToolset
+[2026.09.27-03.27.45:311][  0]LogToolsetRegistry: Display: Registering Toolset GameFeaturesToolset.GameFeaturesToolset
+[2026.09.27-03.27.45:312][  0]LogToolsetRegistry: Display: Registering Toolset GameplayTagsToolset.GameplayTagsToolset
+[2026.09.27-03.27.45:314][  0]LogToolsetRegistry: Display: Registering Toolset DataRegistryToolset.DataRegistryTools
+[2026.09.27-03.27.45:318][  0]LogToolsetRegistry: Display: Registering Toolset DataflowAgent.DataflowAgentToolset
+[2026.09.27-03.27.45:320][  0]LogToolsetRegistry: Display: Registering Toolset GASToolsets.GameplayCueToolset
+[2026.09.27-03.27.45:320][  0]LogToolsetRegistry: Display: Registering Toolset GASToolsets.AttributeSetToolset
+[2026.09.27-03.27.45:321][  0]LogToolsetRegistry: Display: Registering Toolset GASToolsets.AbilitySystemInspectorToolset
+[2026.09.27-03.27.45:327][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Info
+[2026.09.27-03.27.45:327][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Component
+[2026.09.27-03.27.45:327][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Blueprint
+[2026.09.27-03.27.45:337][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_System
+[2026.09.27-03.27.45:337][  0]LogToolsetRegistry: Display: Registering Toolset NiagaraToolsets.NiagaraToolset_Assets
+[2026.09.27-03.27.45:340][  0]LogToolsetRegistry: Display: Registering Toolset SemanticSearchToolset.SemanticSearchToolset
+[2026.09.27-03.27.45:345][  0]LogToolsetRegistry: Display: Registering Toolset PCGToolset.PCGToolset
+[2026.09.27-03.27.45:346][  0]LogToolsetRegistry: Display: Registering Toolset PCGToolset.PCGSpatialToolset
+[2026.09.27-03.27.45:349][  0]LogToolsetRegistry: Display: Registering Toolset PhysicsToolsets.PhysicsAssetToolset
+[2026.09.27-03.27.45:352][  0]LogToolsetRegistry: Display: Registering Toolset SlateInspectorToolset.SlateInspectorToolset
+[2026.09.27-03.27.45:357][  0]LogToolsetRegistry: Display: Registering Toolset PluginToolset.PluginToolset
+[2026.09.27-03.27.45:359][  0]LogToolsetRegistry: Display: Registering Toolset WorldConditionsToolset.WorldConditionTools
+[2026.09.27-03.27.45:366][  0]LogToolsetRegistry: Display: Registering Toolset UMGToolSet.UMGToolSet
+[2026.09.27-03.27.45:392][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/StateTreeToolset/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:457][  0]LogToolsetRegistry: Display: Registering Toolset state_tree_toolset.toolsets.state_tree.StateTreeTools
+[2026.09.27-03.27.45:458][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/StateTreeToolset/Content/Python/init_unreal.py... took 65.888 ms
+[2026.09.27-03.27.45:458][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/NiagaraToolsets/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:463][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/NiagaraToolsets/Content/Python/init_unreal.py... took 5.081 ms (total: 70.969 ms)
+[2026.09.27-03.27.45:463][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/AnimationAssistantToolset/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:500][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.controlrig.ControlRigTools
+[2026.09.27-03.27.45:508][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.sequencer.SequencerTools
+[2026.09.27-03.27.45:510][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.keyframing.SequencerKeyframingTools
+[2026.09.27-03.27.45:514][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.controlrig_sequencer.SequencerControlRigTools
+[2026.09.27-03.27.45:515][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.outliner.SequencerOutlinerTools
+[2026.09.27-03.27.45:515][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.conditions.SequencerConditionTools
+[2026.09.27-03.27.45:516][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.custom_bindings.SequencerCustomBindingTools
+[2026.09.27-03.27.45:517][  0]LogToolsetRegistry: Display: Registering Toolset animation_toolset.toolsets.import_export.SequencerImportExportTools
+[2026.09.27-03.27.45:549][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/AnimationAssistantToolset/Content/Python/init_unreal.py... took 84.912 ms (total: 155.882 ms)
+[2026.09.27-03.27.45:549][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/ConversationToolset/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:553][  0]LogToolsetRegistry: Display: Registering Toolset conversation_toolset.toolsets.conversation.ConversationTools
+[2026.09.27-03.27.45:553][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/ConversationToolset/Content/Python/init_unreal.py... took 4.151 ms (total: 160.033 ms)
+[2026.09.27-03.27.45:553][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/EditorToolset/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:597][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.actor.ActorTools
+[2026.09.27-03.27.45:598][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.asset.AssetTools
+[2026.09.27-03.27.45:602][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.blueprint.BlueprintTools
+[2026.09.27-03.27.45:603][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.curve_table.CurveTableTools
+[2026.09.27-03.27.45:603][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.data_asset.DataAssetTools
+[2026.09.27-03.27.45:604][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.data_table.DataTableTools
+[2026.09.27-03.27.45:605][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.material.MaterialTools
+[2026.09.27-03.27.45:606][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.material_instance.MaterialInstanceTools
+[2026.09.27-03.27.45:607][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.object.ObjectTools
+[2026.09.27-03.27.45:607][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.primitive.PrimitiveTools
+[2026.09.27-03.27.45:609][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.scene.SceneTools
+[2026.09.27-03.27.45:610][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.skeletal_mesh.SkeletalMeshTools
+[2026.09.27-03.27.45:611][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.static_mesh.StaticMeshTools
+[2026.09.27-03.27.45:612][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.string_table.StringTableTools
+[2026.09.27-03.27.45:612][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.programmatic.ProgrammaticToolset
+[2026.09.27-03.27.45:612][  0]LogToolsetRegistry: Display: Registering Toolset editor_toolset.toolsets.texture.TextureTools
+[2026.09.27-03.27.45:612][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/EditorToolset/Content/Python/init_unreal.py... took 59.756 ms (total: 219.790 ms)
+[2026.09.27-03.27.45:612][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/AIModuleToolset/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:617][  0]LogToolsetRegistry: Display: Registering Toolset aimodule_toolset.toolsets.behavior_tree.BehaviorTreeTools
+[2026.09.27-03.27.45:617][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/Toolsets/AIModuleToolset/Content/Python/init_unreal.py... took 4.456 ms (total: 224.246 ms)
+[2026.09.27-03.27.45:617][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:637][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py... took 19.829 ms (total: 244.075 ms)
+[2026.09.27-03.27.45:637][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:640][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py... took 3.258 ms (total: 247.334 ms)
+[2026.09.27-03.27.45:641][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/MovieScene/MovieRenderPipeline/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:643][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/MovieScene/MovieRenderPipeline/Content/Python/init_unreal.py... took 2.885 ms (total: 250.219 ms)
+[2026.09.27-03.27.45:643][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/ToolsetRegistry/Content/Python/init_unreal.py... started...
+[2026.09.27-03.27.45:643][  0]LogPython: Display: Running start-up script C:/Program Files/Epic Games/UE_5.8/Engine/Plugins/Experimental/ToolsetRegistry/Content/Python/init_unreal.py... took 301 us (total: 250.521 ms)
+[2026.09.27-03.27.45:644][  0]LogPythonScriptCommandlet: Display: Running Python script: D:\CodexPublish\drone_security\Scripts\P55\create_offline_fixture.py
+[2026.09.27-03.27.45:825][  0]LogCesium: Warning: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.
+[2026.09.27-03.27.45:825][  0]LogCesium: Display: Caching Cesium requests in D:/CodexPublish/drone_security/cesium-request-cache.sqlite
+[2026.09.27-03.27.45:832][  0]LogCesium: Warning: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.
+[2026.09.27-03.27.45:832][  0]LogCesium: Warning: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.
+[2026.09.27-03.27.45:832][  0]LogCesium: Warning: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.
+[2026.09.27-03.27.46:495][  0]LogCesium: Error: [2026-09-27 11:27:46.495] [error] [ErrorList.h:89] Errors when loading tileset:
+- Received status code 401 for asset response https://api.cesium.com/v1/assets/2275207/endpoint?access_token=
+
+[2026.09.27-03.27.46:669][  0]LogCesium: Error: [2026-09-27 11:27:46.669] [error] [ErrorList.h:89] Errors when loading tileset:
+- Received status code 401 for asset response https://api.cesium.com/v1/assets/1/endpoint?access_token=
+
+[2026.09.27-03.27.46:878][  0]LogCesium: Error: [2026-09-27 11:27:46.878] [error] [ErrorList.h:89] Errors when loading tileset:
+- Received status code 401 for asset response https://api.cesium.com/v1/assets/96188/endpoint?access_token=
+
+[2026.09.27-03.27.46:901][  0]LogCesium: Display: [2026-09-27 11:27:46.902] [info] [IonRasterOverlay.cpp:552] Failed to refresh Cesium ion token for URL https://api.cesium.com/v1/assets/2/endpoint?access_token=.
+
+[2026.09.27-03.27.46:901][  0]LogCesium: Error: [2026-09-27 11:27:46.902] [error] [ErrorList.h:125] The following messages were reported while refreshing the token:
+- [Error] Request for https://api.cesium.com/v1/assets/2/endpoint?access_token= failed with code 401
+
+[2026.09.27-03.27.46:901][  0]LogCesium: Display: [2026-09-27 11:27:46.902] [info] [IonRasterOverlay.cpp:202] Refreshing Cesium ion token for URL https://api.cesium.com/v1/assets/2/endpoint?access_token=.
+
+[2026.09.27-03.27.47:688][  0]LogCesium: Display: [2026-09-27 11:27:47.689] [info] [IonRasterOverlay.cpp:552] Failed to refresh Cesium ion token for URL https://api.cesium.com/v1/assets/2/endpoint?access_token=.
+
+[2026.09.27-03.27.47:688][  0]LogCesium: Error: [2026-09-27 11:27:47.689] [error] [ErrorList.h:125] The following messages were reported while refreshing the token:
+- [Error] Request for https://api.cesium.com/v1/assets/2/endpoint?access_token= failed with code 401
+
+[2026.09.27-03.27.47:688][  0]LogCesium: Error: [2026-09-27 11:27:47.689] [error] [RasterOverlay.cpp:121] Could not access Cesium ion asset.
+
+[2026.09.27-03.27.47:731][  0]LogSourceControl: Display: Uncontrolled Changelist persistency file loaded D:/CodexPublish/drone_security/Saved/SourceControl/UncontrolledChangelists.json
+[2026.09.27-03.27.47:904][  0]LogPythonScriptCommandlet: Display: Python script executed successfully
+[2026.09.27-03.27.47:904][  0]LogInit: Display: 
+[2026.09.27-03.27.47:904][  0]LogInit: Display: Warning/Error Summary (Unique only)
+[2026.09.27-03.27.47:904][  0]LogInit: Display: -----------------------------------
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogGameFeatures: Error: Asset manager settings do not include a rule for assets of type GameFeatureData, which is required for game feature plugins to function
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LoadErrors: Error: Asset Manager settings do not include an entry for assets of type GameFeatureData, which is required for game feature plugins to function. Add entry to PrimaryAssetTypesToScan?
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Error: [2026-09-27 11:27:46.495] [error] [ErrorList.h:89] Errors when loading tileset:
+- Received status code 401 for asset response https://api.cesium.com/v1/assets/2275207/endpoint?access_token=
+
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Error: [2026-09-27 11:27:46.669] [error] [ErrorList.h:89] Errors when loading tileset:
+- Received status code 401 for asset response https://api.cesium.com/v1/assets/1/endpoint?access_token=
+
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Error: [2026-09-27 11:27:46.878] [error] [ErrorList.h:89] Errors when loading tileset:
+- Received status code 401 for asset response https://api.cesium.com/v1/assets/96188/endpoint?access_token=
+
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Error: [2026-09-27 11:27:46.902] [error] [ErrorList.h:125] The following messages were reported while refreshing the token:
+- [Error] Request for https://api.cesium.com/v1/assets/2/endpoint?access_token= failed with code 401
+
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Error: [2026-09-27 11:27:47.689] [error] [ErrorList.h:125] The following messages were reported while refreshing the token:
+- [Error] Request for https://api.cesium.com/v1/assets/2/endpoint?access_token= failed with code 401
+
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Error: [2026-09-27 11:27:47.689] [error] [RasterOverlay.cpp:121] Could not access Cesium ion asset.
+
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogPluginManager: Warning: Plugin 'SimpleWebSocket' requires engine version '5.7.0' and may not be compatible with the current current engine version '5.8.0-55116800+++UE5+Release-5.8'
+[2026.09.27-03.27.47:904][  0]LogInit: Display: LogCesium: Warning: "Enable World Bounds Checks" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.
+[2026.09.27-03.27.47:904][  0]LogInit: Display: 
+[2026.09.27-03.27.47:904][  0]LogInit: Display: Failure - 8 error(s), 5 warning(s)
+[2026.09.27-03.27.47:904][  0]LogInit: Display: 
+Execution of commandlet took:  2.51 seconds, PeakPhysMemoryMB=1808 MB, PeakVirtMemoryMB=1594 MB
+[2026.09.27-03.27.47:915][  0]LogToolsetRegistry: Display: Unregistering Toolset ToolsetRegistry.AgentSkillToolset
+[2026.09.27-03.27.47:916][  0]LogToolsetRegistry: Display: Unregistering Toolset AutomationTestToolset.AutomationTestToolset
+[2026.09.27-03.27.47:916][  0]LogToolsetRegistry: Display: Unregistering Toolset SlateInspectorToolset.SlateInspectorToolset
+[2026.09.27-03.27.47:919][  0]LogNiagara: Warning: NiagaraSystem was nullptr for OverrideName "SplatInterface".
+[2026.09.27-03.27.48:057][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles (PostWrite): 1 .ref files found, 1 referenced binaries
+[2026.09.27-03.27.48:057][  0]LogAssetRegistry: Display: CleanupOrphanedCacheFiles: 1 total binaries, 1 referenced (kept), 0 old-style pre-migration (kept), 0 orphans deleted, 0 orphans locked (kept)
+[2026.09.27-03.27.48:223][  0]LogShaderCompilers: Display: Exiting ShaderCompilingThread
+[2026.09.27-03.27.48:275][  0]LogSourceControl: Display: Uncontrolled Changelist persistency file saved D:/CodexPublish/drone_security/Saved/SourceControl/UncontrolledChangelists.json

@@ -1,0 +1,669 @@
+-- Running vcpkg install
+Fetching registry information from https://github.com/microsoft/vcpkg (HEAD)...
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe
+The following packages will be built and installed:
+  * boost-algorithm:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@3ee83dcfbe76d56a445af30c8475f7ceb92deb90
+  * boost-align:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@cdc40833d65b90a10f622786d747a1ad5c72ebd1
+  * boost-array:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@53a38d9df50a94549967fa8b7e47714c4d5761db
+  * boost-asio[core,deadline-timer,spawn]:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@0b9f4b3bcac4595f6591b88319cb8f69f5b1c47a
+  * boost-assert:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@4b40db7ad8e6420b04da87e8266e5eca7c3c059f
+    boost-beast:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@9889a76cc61dc17c1e5262079a7eadc6b1c3d1b8
+  * boost-bind:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@b2fdb396a7064165de3c60c4da30dffd751f82e2
+  * boost-cmake:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@8c7d8286875eac4b6e5995d63337cfd3e16d66ef
+  * boost-concept-check:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@4f43e61a82b1e215fbea09fe321fb63b89d70ccf
+  * boost-config:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@73499959016446ec7272976b0abaab1ed123c3c8
+  * boost-container:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@a84f02c4aec8fc8119e2a84a5a7667c14250829a
+  * boost-container-hash:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@f808bcb3fafb29847b0e7f07f78525e036eee56b
+  * boost-context:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@36baeb259e307e7c9c8ce190cfe90a256b2ec94d
+  * boost-conversion:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@72f5608e82127ab4b384bcc268fb92c59d36bbc7
+  * boost-core:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@9823973b46eb48abfc4d773b8461e98165b6eb6b
+  * boost-date-time:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@038586c4564e5118c1b92862902c5b53fcbb24b3
+  * boost-describe:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@b6c39726cb8a5ed76d564c222cfd5a59f24d3e02
+  * boost-detail:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@42321194aba4197b21532f5e146ddd36f4ec1a4f
+  * boost-endian:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@f45abc0b300cbadaae57d40a9a5a11dc3eae720d
+  * boost-exception:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@98b58a80a68f639ca40b433428a69967227d75c9
+  * boost-function:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@5d75dc069bb0685bfa48febfc0d4bffc0f46f8c9
+  * boost-function-types:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@21f4acfebeb149a3de71f341be55a5ce59cb32aa
+  * boost-functional:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@ade45ba6b3c1ceec40f8eb3ac8d3a523f80b2038
+  * boost-fusion:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@c63f6e3ba7e2890a640553e6caaf2a5418c60913
+  * boost-headers:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@95dbcdac30de15e8f72cdba71aedb4fb06638718
+  * boost-integer:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@a37945e3e5b2c880c256c6266cc76c40e425b008
+  * boost-intrusive:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@bb11f3b2df959ba7a4852059eefefc23c08cf3be
+  * boost-io:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@52997d9b6a05b007e2897de28beaeea18968cc0e
+  * boost-iterator:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@afb261ecce2d7eb9a01aa41c835608482c129e03
+    boost-json:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@301d7c0bdf066a1d7d2ad4bdca400ec3a498368f
+  * boost-lexical-cast:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@422011af1156f3e9c09bfa3e20a2d8119d7e523c
+  * boost-logic:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@743015e76ec67d43d3d8b87c812103ff65a0d138
+  * boost-move:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@9e2f411e14732036732cece814356699a76cc91e
+  * boost-mp11:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@b8f038d03ba53847d4b120f55730c0737aab5587
+  * boost-mpl:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@419ecb733b84695280f408232c73470ab30be15d
+  * boost-numeric-conversion:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@4a4daafbe60c9ff995541373ec7df4b8b35c4773
+  * boost-optional:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@a00224cf1d434cc257cae3146aed00651f9700c4
+  * boost-pool:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@8afc11f58cef060ee80f2ab8fd1e719f414bbf67
+  * boost-predef:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@44b5803d820eb060f0727227d0ae9171912df6ce
+  * boost-preprocessor:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@b24666cb6f30bbace4fa4f602072ff22a1926e6d
+  * boost-range:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@ab4c025322e42dec411e33f17d3952fac5d7f00a
+  * boost-regex:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@411f23facef811713ece1498443d376f4fc375da
+  * boost-smart-ptr:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@3520f2bdf1ddfd6b9b9e83fa0db82bb9a28fe6a5
+  * boost-static-assert:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@c297fdc10a4751a0813d174da5b3d6ee8ac4fcd2
+  * boost-static-string:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@b7d554e23f8fc6f39a6960bd6a10cc9f9b244964
+    boost-system:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@930f1da0c62be8d5eb884b12e9f6453786f92339
+  * boost-throw-exception:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@2595f3f64c49285c68fde05cca87afa79eb4d664
+  * boost-tokenizer:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@54edc02e70826bee8f52d8d324a5ffb2cee432b7
+  * boost-tuple:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@4975ef963fa02d53b2fca5eb8936b32e4de2e9da
+  * boost-type-index:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@eeb4d55443b956770203825a87a8db3a0b456c99
+  * boost-type-traits:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@8c46d2bab6817bbbb8382efaed7aeb1ae8b15119
+  * boost-typeof:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@bc97dedd1bd7d66c437b13b38786e182c54fc924
+  * boost-uninstall:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@83ce7d42de32cacf540be39b74cfcb462ab034b8
+  * boost-unordered:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@248854482d2a457a46060b8f77d80a8242e7c02a
+  * boost-utility:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@13afb12031051f9b937985deade5bbeb7c5cc256
+  * boost-variant2:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@8433fae25d9ccbaa40dc442c750eec2ed6c0cabe
+  * boost-winapi:x64-windows@1.89.0 -- git+https://github.com/microsoft/vcpkg@f4552c468e3f22d10354f05d70af19f36f5da585
+  * fmt:x64-windows@12.1.0 -- git+https://github.com/microsoft/vcpkg@936231a2c765082457d348a8781ea9d3610eb331
+    gtest:x64-windows@1.17.0#2 -- git+https://github.com/microsoft/vcpkg@b8a81820356e90917e5eb5dfe0092bfac57dbb12
+    nlohmann-json:x64-windows@3.12.0#1 -- git+https://github.com/microsoft/vcpkg@f89a58e6478ca1e39120e93e7ed535c4aaf8198c
+    spdlog[core,fmt]:x64-windows@1.16.0#1 -- git+https://github.com/microsoft/vcpkg@33853c1dc569252eb1df77164b3357d63fc15cb6
+  * vcpkg-boost:x64-windows@2025-03-29 -- git+https://github.com/microsoft/vcpkg@858b0333b773b5650c3f19ef271e3205542d7ceb
+  * vcpkg-cmake:x64-windows@2024-04-23 -- git+https://github.com/microsoft/vcpkg@e74aa1e8f93278a8e71372f1fa08c3df420eb840
+  * vcpkg-cmake-config:x64-windows@2024-05-23 -- git+https://github.com/microsoft/vcpkg@97a63e4bc1a17422ffe4eff71da53b4b561a7841
+    yaml-cpp:x64-windows@0.8.0#3 -- git+https://github.com/microsoft/vcpkg@30bb4f655d874206182c1db07bb6cd4f1f9f1c79
+Additional packages (*) will be modified to complete this operation.
+Restored 65 package(s) from C:\Users\wy331\AppData\Local\vcpkg\archives in 7.4 s. Use --debug to see more details.
+Installing 1/65 vcpkg-cmake-config:x64-windows@2024-05-23...
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 3.4 ms
+vcpkg-cmake-config:x64-windows package ABI: d5e75b30864ae99b0760d24444c2e0c868e2a7f33ec1c64a41f6bfad1d1eed09
+Installing 2/65 vcpkg-cmake:x64-windows@2024-04-23...
+Elapsed time to handle vcpkg-cmake:x64-windows: 28.9 ms
+vcpkg-cmake:x64-windows package ABI: 7a9179a8744ef169c31de93c68b32c86f675b1007332aecd11a6219810f8aa8e
+Installing 3/65 vcpkg-boost:x64-windows@2025-03-29...
+Elapsed time to handle vcpkg-boost:x64-windows: 9.67 ms
+vcpkg-boost:x64-windows package ABI: fbd7523b89e6babecb16209a84e2b8f381d67e82b56c66a5d6985edc689ee69d
+Installing 4/65 boost-uninstall:x64-windows@1.89.0...
+Elapsed time to handle boost-uninstall:x64-windows: 8.1 ms
+boost-uninstall:x64-windows package ABI: c319aeb208f1841386a7527ae56a8f019e40c4730dcf78636bc706298d0bb0cb
+Installing 5/65 boost-cmake:x64-windows@1.89.0...
+Elapsed time to handle boost-cmake:x64-windows: 9.85 ms
+boost-cmake:x64-windows package ABI: 4e4ab48d956546d2f4b3d9e41e90c1d5d35d605f3795088a20b69530c33167f2
+Installing 6/65 boost-headers:x64-windows@1.89.0...
+Elapsed time to handle boost-headers:x64-windows: 9.85 ms
+boost-headers:x64-windows package ABI: 32a20c76304096d1991c0b0674f9034214710fcfcb7a5bd3f02b86300db82ff3
+Installing 7/65 boost-config:x64-windows@1.89.0...
+Elapsed time to handle boost-config:x64-windows: 52.7 ms
+boost-config:x64-windows package ABI: 342babe2bb61013345c2f57eb403a336f2059db92818c4473c69dcc2c74b527d
+Installing 8/65 boost-predef:x64-windows@1.89.0...
+Elapsed time to handle boost-predef:x64-windows: 39.7 ms
+boost-predef:x64-windows package ABI: 05551cadf2f5585c95a97d1a7b6fc526b2dd4373b5736297ffc2b588d7c88e41
+Installing 9/65 boost-winapi:x64-windows@1.89.0...
+Elapsed time to handle boost-winapi:x64-windows: 34.8 ms
+boost-winapi:x64-windows package ABI: 671c360fd4bb97ff84f8b4aff16c52f1560840b9f2c80523444f27814e1e01a3
+Installing 10/65 boost-static-assert:x64-windows@1.89.0...
+Elapsed time to handle boost-static-assert:x64-windows: 11.9 ms
+boost-static-assert:x64-windows package ABI: 726360ef3f9d78e293576f8f316ddbf5a1152004e20a7d5bb42f4627f425136b
+Installing 11/65 boost-type-traits:x64-windows@1.89.0...
+Elapsed time to handle boost-type-traits:x64-windows: 43.8 ms
+boost-type-traits:x64-windows package ABI: f85265e8c9f7ffab41f06e567f6afffed5896bdea00650f609dc4979f6a8ea15
+Installing 12/65 boost-assert:x64-windows@1.89.0...
+Elapsed time to handle boost-assert:x64-windows: 12.3 ms
+boost-assert:x64-windows package ABI: 0f6c52f31590458c3e8a810baae8460562b11b82e19afcced6b48a955d95508b
+Installing 13/65 boost-throw-exception:x64-windows@1.89.0...
+Elapsed time to handle boost-throw-exception:x64-windows: 11.9 ms
+boost-throw-exception:x64-windows package ABI: d37b62b33e2857faf6b44832c16cd255f1c6960a491c78911d92f93122cd4ec6
+Installing 14/65 boost-core:x64-windows@1.89.0...
+Elapsed time to handle boost-core:x64-windows: 23.9 ms
+boost-core:x64-windows package ABI: dc7144d88fae882c042a1868d55df515f71e6ab73cd4448e1b230b9465a25ef9
+Installing 15/65 boost-mp11:x64-windows@1.89.0...
+Elapsed time to handle boost-mp11:x64-windows: 19.7 ms
+boost-mp11:x64-windows package ABI: c9733d419f608fe4bbd9ce9def571b70929ee1136df09e29bb2911c13807ae5b
+Installing 16/65 boost-describe:x64-windows@1.89.0...
+Elapsed time to handle boost-describe:x64-windows: 17.4 ms
+boost-describe:x64-windows package ABI: 438077938127231f35676d951b016af5b4ccd0fc8939a1a887fe6c9189b915d2
+Installing 17/65 boost-container-hash:x64-windows@1.89.0...
+Elapsed time to handle boost-container-hash:x64-windows: 16.2 ms
+boost-container-hash:x64-windows package ABI: 14cd56fe618a3a3ca10d4d6b6879c776ab751435b1ae21495b5b55a5487e33ee
+Installing 18/65 boost-type-index:x64-windows@1.89.0...
+Elapsed time to handle boost-type-index:x64-windows: 16.2 ms
+boost-type-index:x64-windows package ABI: ca20e643c070ebaacb5940e658b3eeb5866f3e763df94fc6a10c27e9a77ea122
+Installing 19/65 boost-variant2:x64-windows@1.89.0...
+Elapsed time to handle boost-variant2:x64-windows: 10.7 ms
+boost-variant2:x64-windows package ABI: 98b613de80100c3767c0158ec367c01c8ffe556c23892204568ce1684fe15b03
+Installing 20/65 boost-system:x64-windows@1.89.0...
+Elapsed time to handle boost-system:x64-windows: 17.2 ms
+boost-system:x64-windows package ABI: d6555796b8d455eda0bb1a98be972e29265283913dec0f943ed209e8758c559b
+Installing 21/65 boost-preprocessor:x64-windows@1.89.0...
+Elapsed time to handle boost-preprocessor:x64-windows: 85.4 ms
+boost-preprocessor:x64-windows package ABI: 6a6a583b3cb394cc3399f4d9360485e3b86d0bbfbf933c3f7d8894c9f04e9b57
+Installing 22/65 boost-io:x64-windows@1.89.0...
+Elapsed time to handle boost-io:x64-windows: 16.5 ms
+boost-io:x64-windows package ABI: 7fb4e263c150f007727ccf4a0d27fb0b7ad2c8139b67268a752c774f63c000f6
+Installing 23/65 boost-utility:x64-windows@1.89.0...
+Elapsed time to handle boost-utility:x64-windows: 17.6 ms
+boost-utility:x64-windows package ABI: 610d3bd7a9a874fdd9d042bf3ef81de2d6d6ae62987c40ede928570e9631b64f
+Installing 24/65 boost-static-string:x64-windows@1.89.0...
+Elapsed time to handle boost-static-string:x64-windows: 13.7 ms
+boost-static-string:x64-windows package ABI: c1112eb20635fe221a9baff1d5774b98e6ff5d07c1186861ab5ce98c30587445
+Installing 25/65 boost-smart-ptr:x64-windows@1.89.0...
+Elapsed time to handle boost-smart-ptr:x64-windows: 32 ms
+boost-smart-ptr:x64-windows package ABI: f98c0e566eb9819d96c103ea9b9d54b98e77e1c2f9059699cae8c8130c112e84
+Installing 26/65 boost-optional:x64-windows@1.89.0...
+Elapsed time to handle boost-optional:x64-windows: 19.2 ms
+boost-optional:x64-windows package ABI: 4d04d6be6a6c689ede4972cc252ccfdde1532cbb2cf35cb237f7f354b01ce9ca
+Installing 27/65 boost-logic:x64-windows@1.89.0...
+Elapsed time to handle boost-logic:x64-windows: 13.6 ms
+boost-logic:x64-windows package ABI: ca35f87992ca5b927c320e49d286e145ef3f284e9a9382321a5aaa4b81d6593f
+Installing 28/65 boost-move:x64-windows@1.89.0...
+Elapsed time to handle boost-move:x64-windows: 20.3 ms
+boost-move:x64-windows package ABI: 5cab927e2a0b3ca447d7007cd4b71ff8d0f48074ee73f53f739389c203ff6116
+Installing 29/65 boost-intrusive:x64-windows@1.89.0...
+Elapsed time to handle boost-intrusive:x64-windows: 30.3 ms
+boost-intrusive:x64-windows package ABI: 9e1b0b76b176119cbdc61dc06df64b8fd0361cde90a4098be01307f5b5cb093c
+Installing 30/65 boost-endian:x64-windows@1.89.0...
+Elapsed time to handle boost-endian:x64-windows: 20.5 ms
+boost-endian:x64-windows package ABI: 603b32f891845d43f9a54d44e9e65acf2f4e40bd3c394cfc6df18d89e5e4e5fb
+Installing 31/65 boost-container:x64-windows@1.89.0...
+Elapsed time to handle boost-container:x64-windows: 31.6 ms
+boost-container:x64-windows package ABI: 0bf8b782e8c1442277ac421e3603e6d74957f30e8aef9fa4a8c4d8bbaa58a604
+Installing 32/65 boost-bind:x64-windows@1.89.0...
+Elapsed time to handle boost-bind:x64-windows: 18.9 ms
+boost-bind:x64-windows package ABI: 378f2b19dbbe852fcb62af078c538dd1b9b59918e9d1f1ef8cc85f0850449c33
+Installing 33/65 boost-integer:x64-windows@1.89.0...
+Elapsed time to handle boost-integer:x64-windows: 15.3 ms
+boost-integer:x64-windows package ABI: cc631b88774eb8981b495771d7c8f34a68befcf1775a7eec8287d8bdccf3bef6
+Installing 34/65 boost-pool:x64-windows@1.89.0...
+Elapsed time to handle boost-pool:x64-windows: 16.1 ms
+boost-pool:x64-windows package ABI: 4cfc6abf1ecc19296440ce8ac28c72a59c0d498429da0d139e2cf68f19dacf8d
+Installing 35/65 boost-context:x64-windows@1.89.0...
+Elapsed time to handle boost-context:x64-windows: 19.7 ms
+boost-context:x64-windows package ABI: 09cb0747205cf8dbc9813c781f379efc1424a7ade22d736b4892f8e420118bd6
+Installing 36/65 boost-mpl:x64-windows@1.89.0...
+Elapsed time to handle boost-mpl:x64-windows: 191 ms
+boost-mpl:x64-windows package ABI: ec004e85978723ef53775a1c6bc1aece92407c66d2c8ddff10aa39942cb245b1
+Installing 37/65 boost-typeof:x64-windows@1.89.0...
+Elapsed time to handle boost-typeof:x64-windows: 19.8 ms
+boost-typeof:x64-windows package ABI: 4c8ffdb828f41c1ac2c9fef38703f796b8a3566ec714747e95bdddb6cd6b24c9
+Installing 38/65 boost-tuple:x64-windows@1.89.0...
+Elapsed time to handle boost-tuple:x64-windows: 15.5 ms
+boost-tuple:x64-windows package ABI: 97fd0c2eb00ba59584f508766494e5c36b6d1ca0c84612f82467fc94356b36ad
+Installing 39/65 boost-detail:x64-windows@1.89.0...
+Elapsed time to handle boost-detail:x64-windows: 19.7 ms
+boost-detail:x64-windows package ABI: 6f6c26562d474c4a20817fe49694023077440048fbe12bbfc8e0eaed3d1ba99b
+Installing 40/65 boost-function-types:x64-windows@1.89.0...
+Elapsed time to handle boost-function-types:x64-windows: 27.8 ms
+boost-function-types:x64-windows package ABI: c769838b33c7b922a67f900ef61f5c8b53d506d7a0b98df63ebf5c55af4c4c3d
+Installing 41/65 boost-function:x64-windows@1.89.0...
+Elapsed time to handle boost-function:x64-windows: 29.1 ms
+boost-function:x64-windows package ABI: 8f27913a98de13c8255101f774076f43ef8ef3b7bfbb70f283ae6c6933637290
+Installing 42/65 boost-functional:x64-windows@1.89.0...
+Elapsed time to handle boost-functional:x64-windows: 21.3 ms
+boost-functional:x64-windows package ABI: cf182d9441802c856d5113ee1c6e6d4459676c9d5e617690799c540fdb923cfe
+Installing 43/65 boost-fusion:x64-windows@1.89.0...
+Elapsed time to handle boost-fusion:x64-windows: 204 ms
+boost-fusion:x64-windows package ABI: d75f425674beda099e4821acf343b2604e70ac7309bc87d1cdaeb251f13224ce
+Installing 44/65 boost-concept-check:x64-windows@1.89.0...
+Elapsed time to handle boost-concept-check:x64-windows: 20.2 ms
+boost-concept-check:x64-windows package ABI: c2a1e868ac41041bc2155da3e9fdb4b52b9dce15c6deb8f9d3e5617b19e98cce
+Installing 45/65 boost-iterator:x64-windows@1.89.0...
+Elapsed time to handle boost-iterator:x64-windows: 23.5 ms
+boost-iterator:x64-windows package ABI: 4d92f90642e62e686392a4cb2e1de27d67ec691367a92d9744baa5b8330047b6
+Installing 46/65 boost-tokenizer:x64-windows@1.89.0...
+Elapsed time to handle boost-tokenizer:x64-windows: 20.5 ms
+boost-tokenizer:x64-windows package ABI: 39cf31ecee82359818cfc9ff2d1386e1708b61a7099674ffec690e01a975a543
+Installing 47/65 boost-regex:x64-windows@1.89.0...
+Elapsed time to handle boost-regex:x64-windows: 25.6 ms
+boost-regex:x64-windows package ABI: e45c792b2528d42d14392eaac31b7650fde7ec0c4c16f273b51078754e99956a
+Installing 48/65 boost-conversion:x64-windows@1.89.0...
+Elapsed time to handle boost-conversion:x64-windows: 16.5 ms
+boost-conversion:x64-windows package ABI: 460934385493edb9163a5f1bc7d5decaacbef77ec2c194e523ea3eaab19f270b
+Installing 49/65 boost-array:x64-windows@1.89.0...
+Elapsed time to handle boost-array:x64-windows: 15.9 ms
+boost-array:x64-windows package ABI: 8470f5ca36e1bce80d7c0283a540f5c9b5899fb4564e628c1f2610a74b269f6a
+Installing 50/65 boost-range:x64-windows@1.89.0...
+Elapsed time to handle boost-range:x64-windows: 40.2 ms
+boost-range:x64-windows package ABI: 86b877b0475918ccdf9555d13239b8b7b59349bba928a7d802efa80c6fc7a4fc
+Installing 51/65 boost-numeric-conversion:x64-windows@1.89.0...
+Elapsed time to handle boost-numeric-conversion:x64-windows: 21.5 ms
+boost-numeric-conversion:x64-windows package ABI: 327588c3c5ea992e8016701560c97c9d38f1c8afefa2a462c844a0091e7ebb9b
+Installing 52/65 boost-lexical-cast:x64-windows@1.89.0...
+Elapsed time to handle boost-lexical-cast:x64-windows: 18.9 ms
+boost-lexical-cast:x64-windows package ABI: 4e0867a8b4104096e9ce1b2b155e1e86f0f440fc27f9bdeb33bd9c576b8a747e
+Installing 53/65 boost-unordered:x64-windows@1.89.0...
+Elapsed time to handle boost-unordered:x64-windows: 26.1 ms
+boost-unordered:x64-windows package ABI: 4c865d538b12a4ca5bb1a8736e7cc9c2d07bc324cf3efea27e2ac2b09ed8b6c6
+Installing 54/65 boost-exception:x64-windows@1.89.0...
+Elapsed time to handle boost-exception:x64-windows: 21.4 ms
+boost-exception:x64-windows package ABI: 7f4b02337f268dafe0d65c295624cdcde316344d0ef65e1488585f0602a2c0bc
+Installing 55/65 boost-algorithm:x64-windows@1.89.0...
+Elapsed time to handle boost-algorithm:x64-windows: 33.5 ms
+boost-algorithm:x64-windows package ABI: 5bb9a10d9667b00eaa7f3f207dc1fb5ffe46843d9f5ff8dc4f7547c85de8620a
+Installing 56/65 boost-date-time:x64-windows@1.89.0...
+Elapsed time to handle boost-date-time:x64-windows: 37.3 ms
+boost-date-time:x64-windows package ABI: 8fba46350fa567baeeff5e53fc48540dab55e24f13bb0fda13142688efcc3e83
+Installing 57/65 boost-align:x64-windows@1.89.0...
+Elapsed time to handle boost-align:x64-windows: 30.1 ms
+boost-align:x64-windows package ABI: 1d4e349ea5a01948e0ba970b42a8616b1711768f2ce4182e82305cfff203e8cc
+Installing 58/65 boost-asio[core,deadline-timer,spawn]:x64-windows@1.89.0...
+Elapsed time to handle boost-asio:x64-windows: 123 ms
+boost-asio:x64-windows package ABI: 12e3ca00a4810b8c9e7d8bca23747eed2532590af240607253dfe85de8aea506
+Installing 59/65 boost-beast:x64-windows@1.89.0...
+Elapsed time to handle boost-beast:x64-windows: 60.4 ms
+boost-beast:x64-windows package ABI: 4fc847364b978c8fddf5ba5a99b26aabd1cb6711c6c1a06689ff441168e2ff03
+Installing 60/65 boost-json:x64-windows@1.89.0...
+Elapsed time to handle boost-json:x64-windows: 44.4 ms
+boost-json:x64-windows package ABI: 8431a1c8be53695be78ec0b1d61952335addacfb1d8799664ec19054f26753a0
+Installing 61/65 gtest:x64-windows@1.17.0#2...
+Elapsed time to handle gtest:x64-windows: 34.5 ms
+gtest:x64-windows package ABI: 5183c41f8b074318cc33009d640bab26b77d2425fa686e141a1f365d86f375f8
+Installing 62/65 nlohmann-json:x64-windows@3.12.0#1...
+Elapsed time to handle nlohmann-json:x64-windows: 29.3 ms
+nlohmann-json:x64-windows package ABI: 4f082e2a46935ca818ee7b860186832f223a296195e5ebd1579c56b26f7a21c9
+Installing 63/65 fmt:x64-windows@12.1.0...
+Elapsed time to handle fmt:x64-windows: 23.7 ms
+fmt:x64-windows package ABI: c4340d258ec9f73b8b5011bcc9bf886419f96767961a16542fc9942063d53acd
+Installing 64/65 spdlog[core,fmt]:x64-windows@1.16.0#1...
+Elapsed time to handle spdlog:x64-windows: 38.6 ms
+spdlog:x64-windows package ABI: 6a242d6a473c3548da9914e8118e9d0c1deef1d488658aacbff61852066baad3
+Installing 65/65 yaml-cpp:x64-windows@0.8.0#3...
+Elapsed time to handle yaml-cpp:x64-windows: 26.8 ms
+yaml-cpp:x64-windows package ABI: 912e943827a37b91746861b4e9f1bbe2f1f2a74388fbe9abd93ec3e2f9489cb3
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+BSD-3-Clause
+BSL-1.0
+MIT
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-json provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_json CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::json)
+
+The package gtest is compatible with built-in CMake targets:
+
+    enable_testing()
+    
+    find_package(GTest CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+    
+    add_test(AllTestsInMain main)
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+The package spdlog provides CMake targets:
+
+    find_package(spdlog CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE spdlog::spdlog)
+
+    # Or use the header-only version
+    find_package(spdlog CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE spdlog::spdlog_header_only)
+
+yaml-cpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(yaml-cpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE yaml-cpp::yaml-cpp)
+
+yaml-cpp provides pkg-config modules:
+
+  # A YAML parser and emitter for C++
+  yaml-cpp
+
+All requested installations completed successfully in: 2.1 s
+-- Running vcpkg install - done
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.
+-- The CXX compiler identification is MSVC 19.44.35222.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Warning (dev) at build-p54/vcpkg_installed/x64-windows/share/boost/vcpkg-cmake-wrapper.cmake:3 (_find_package):
+  Policy CMP0167 is not set: The FindBoost module is removed.  Run "cmake
+  --help-policy CMP0167" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/vcpkg/scripts/buildsystems/vcpkg.cmake:862 (include)
+  CMakeLists.txt:14 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found Boost: D:/CodexPublish/drone_security/Backend/build-p54/vcpkg_installed/x64-windows/share/boost/BoostConfig.cmake (found version "1.89.0") found components: system json beast
+-- Found nlohmann_json: D:/CodexPublish/drone_security/Backend/build-p54/vcpkg_installed/x64-windows/share/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.12.0")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Configuring done (47.8s)
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:70 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:113 (target_link_libraries):
+  The library that is being linked to, yaml-cpp, is marked as being
+  deprecated by the owner.  The message provided by the developer is:
+
+  The target yaml-cpp is deprecated and will be removed in version 0.10.0.
+  Use the yaml-cpp::yaml-cpp target instead.
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Generating done (0.1s)
+-- Build files have been written to: D:/CodexPublish/drone_security/Backend/build-p54

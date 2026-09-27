@@ -1,0 +1,20 @@
+[2026-09-27 11:22:40.656] [info] Config loaded from 'D:\CodexPublish\drone_security\Saved\P55-QA\backend.yaml': 0 ports, 6 drones max
+[2026-09-27 11:22:40.657] [info] Config validation passed (0 ports, 6 max drones)
+[2026-09-27 11:22:40.657] [info] [:] Logger initialized. Level=info, File=Logs/backend.log
+[2026-09-27 11:22:40.657] [info] [:] ============================================
+[2026-09-27 11:22:40.657] [info] [:]   Drone Backend v1.0.0
+[2026-09-27 11:22:40.657] [info] [:]   HTTP :20280  WS :20281
+[2026-09-27 11:22:40.657] [info] [:] ============================================
+[2026-09-27 11:22:40.659] [info] [:] [UdpSender] JSON protocol session_id=backend-1790479360658016-bb139750
+[2026-09-27 11:22:40.659] [info] [:] DroneManager created
+[2026-09-27 11:22:40.682] [info] [:] Drone 1 added: slot=1 name=Mock UAV 01
+[2026-09-27 11:22:40.682] [info] [:] Drone 2 added: slot=2 name=Mock UAV 02
+[2026-09-27 11:22:40.682] [info] [:] Drone 3 added: slot=3 name=Mock UAV 03
+[2026-09-27 11:22:40.682] [info] [:] Drone 4 added: slot=4 name=Mock UAV 04
+[2026-09-27 11:22:40.682] [info] [:] [Storage] Loaded 4 drones from data/drones.json
+[2026-09-27 11:22:40.682] [info] [:] Backend started. Press Ctrl+C to stop.
+[2026-09-27 11:22:40.684] [info] [:] [WS] Listening on 0.0.0.0:20281
+[2026-09-27 11:22:40.684] [info] [:] [HTTP] Listening on 0.0.0.0:20280
+[2026-09-27 11:23:56.880] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at D:/CodexPublish/drone_security/Backend/build-p54/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-27 11:23:56.880] [info] [:] [WS] session closed: The WebSocket stream was gracefully closed at both endpoints [boost.beast.websocket:1 at D:/CodexPublish/drone_security/Backend/build-p54/vcpkg_installed/x64-windows/include\boost/beast/websocket/impl/stream.hpp:377:9 in function 'void __cdecl boost::beast::websocket::stream<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,1>::do_fail(unsigned short,class boost::system::error_code,class boost::system::error_code &)']
+[2026-09-27 11:27:19.446] [warning] [:] [HTTP] connection error: end of stream [beast.http:1 at D:/CodexPublish/drone_security/Backend/build-p54/vcpkg_installed/x64-windows/include\boost/beast/http/impl/read.hpp:383:13 in function 'unsigned __int64 __cdecl boost::beast::http::detail::read_some<class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor>,class boost::beast::basic_flat_buffer<class std::allocator<char> >,true>(class boost::asio::basic_stream_socket<class boost::asio::ip::tcp,class boost::asio::any_io_executor> &,class boost::beast::basic_flat_buffer<class std::allocator<char> > &,class boost::beast::http::basic_parser<1> &,class boost::system::error_code &)']
