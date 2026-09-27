@@ -481,6 +481,10 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("RouteVisual.Legend"),NSLOCTEXT("DroneOps","RouteVisual.Legend","ROUTE VISUAL  |  Low → High\nAltitude {0}–{1} m ({4})\nSpeed {2}–{3} m/s · Slow ▶  Fast ▶▶▶\nDirection →  |  Conflict: red pulse")},
 {TEXT("RouteVisual.Ellipsoid"),NSLOCTEXT("DroneOps","RouteVisual.Ellipsoid","Ellipsoid")},
 {TEXT("RouteVisual.WorldHeight"),NSLOCTEXT("DroneOps","RouteVisual.WorldHeight","World height")},
+{TEXT("Reservation.InUse"),NSLOCTEXT("DroneOps","Reservation.InUse","{0} · In Use · {1}")},
+{TEXT("Reservation.Conflict"),NSLOCTEXT("DroneOps","Reservation.Conflict","{0} is currently executing Security Plan {1} and cannot be assigned to another plan.")},
+{TEXT("Errors.DRONE_ACTIVE_PLAN_CONFLICT"),NSLOCTEXT("DroneOps","Errors.DRONE_ACTIVE_PLAN_CONFLICT","This UAV is executing another security plan. Refresh the assignment and choose an available UAV.")},
+{TEXT("Reservation.ClearUnavailable"),NSLOCTEXT("DroneOps","Reservation.ClearUnavailable","Clear unavailable selections (save to apply)")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -965,6 +969,10 @@ if(Source==TEXT("No valid map position"))return Get(TEXT("Map.InvalidPosition"))
 if(Source==TEXT("ROUTE VISUAL  |  Low → High\nAltitude {0}–{1} m ({4})\nSpeed {2}–{3} m/s · Slow ▶  Fast ▶▶▶\nDirection →  |  Conflict: red pulse"))return Get(TEXT("RouteVisual.Legend"));
 if(Source==TEXT("Ellipsoid"))return Get(TEXT("RouteVisual.Ellipsoid"));
 if(Source==TEXT("World height"))return Get(TEXT("RouteVisual.WorldHeight"));
+if(Source==TEXT("{0} · In Use · {1}"))return Get(TEXT("Reservation.InUse"));
+if(Source==TEXT("{0} is currently executing Security Plan {1} and cannot be assigned to another plan."))return Get(TEXT("Reservation.Conflict"));
+if(Source==TEXT("This UAV is executing another security plan. Refresh the assignment and choose an available UAV."))return Get(TEXT("Errors.DRONE_ACTIVE_PLAN_CONFLICT"));
+if(Source==TEXT("Clear unavailable selections (save to apply)"))return Get(TEXT("Reservation.ClearUnavailable"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

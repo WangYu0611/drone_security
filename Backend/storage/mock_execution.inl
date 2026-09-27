@@ -238,6 +238,7 @@ private:
             for(const auto& member:trajectories) {
                 const std::string uid(member.key());
                 if(!uavs.count(uid) || !mock_.at("uavs").as_object().contains(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Mock UAV unavailable");
+                checkReservation(next,pid,uid);
                 for(const auto& entry:all)if(str(entry.value().as_object(),"uav_id")==uid && executionActive(entry.value().as_object()))
                     throw PlanError("EXECUTION_CONFLICT",uid+" already has an active or scheduled mission");
             }

@@ -76,7 +76,7 @@ bool UMapMissionRouteWidget::LoadSaved(){
 }
 void UMapMissionRouteWidget::Submit(const TCHAR* Name,TFunction<void(TSharedPtr<FJsonObject>)> Complete,const TSharedPtr<FJsonObject>& Extra){
     auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();auto R=Extra?Extra.ToSharedRef():MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name);R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),MissionId);if(!SessionId.IsEmpty())R->SetStringField(TEXT("edit_session_id"),SessionId);
-    bPending=true;const auto Weak=TWeakObjectPtr<UMapMissionRouteWidget>(this);if(!S->SubmitPlan(R,[Weak,Complete](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Complete(Reply);})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");Complete(nullptr);}
+    bPending=true;const auto Weak=TWeakObjectPtr<UMapMissionRouteWidget>(this);if(!S->SubmitPlan(R,[Weak,Complete](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ReservationDetails=ReservationError(Reply);Complete(Reply);})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");Complete(nullptr);}
 }
 void UMapMissionRouteWidget::Begin(){
     if(bPending || !SessionId.IsEmpty())return;auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto P=Find(S->GetPlans(),TEXT("plans"),PlanId);if(!P)return;
@@ -160,7 +160,7 @@ void UMapMissionRouteWidget::Refresh(){
     if(IsClosed && Waypoints.Num()>2){const auto Data=Cast<ADroneOpsPlayerController>(GetOwningPlayer())->BuildEditingPathsData();if(Data.Num()==1){const auto& W=Data.CreateConstIterator().Value().Waypoints;const double D=FVector::Distance(W.Last().Location,W[0].Location)/100.;Distance+=D;Seconds+=D/FMath::Max(1.f,W.Last().SegmentSpeed);}}
     WaypointLines.Insert(FText::Format(T(TEXT("Workflow.RouteStats")),FText::AsNumber(Distance),FText::AsNumber(Seconds/60)),0);
     WaypointDetails->SetText(FText::Join(User(TEXT("\n")),WaypointLines));
-    Summary->SetText(FText::Join(User(TEXT("\n")),Lines));Result->SetText(bPrompt?T(TEXT("Map.DirtyPrompt")):bDiscardConfirm?T(TEXT("Map.DiscardPrompt")):ErrorCode.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+ErrorCode));
+    Summary->SetText(FText::Join(User(TEXT("\n")),Lines));Result->SetText(bPrompt?T(TEXT("Map.DirtyPrompt")):bDiscardConfirm?T(TEXT("Map.DiscardPrompt")):ErrorCode.IsEmpty()?FText::GetEmpty():ErrorCode==TEXT("DRONE_ACTIVE_PLAN_CONFLICT") && !ReservationDetails.IsEmpty()?ReservationDetails:ProductText::Get(TEXT("Errors.")+ErrorCode));
     UnsavedDialog->SetVisibility(bPrompt?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionPathEditing(!SessionId.IsEmpty() && !bPrompt && !bSaving, !SessionId.IsEmpty() || bBeginning);
     const bool CanEdit=!SessionId.IsEmpty() && !bPending && !bSaving && S->IsReady();

@@ -46,6 +46,7 @@ private:
     bool bSaved=false;
     int SaveRetries=0;
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Actions;
+    FText ReservationDetails;
     FString PlanId,MissionId,SessionId,CleanFingerprint,ErrorCode,PendingPlan,PendingMission,LastRemoteSelection;
     bool bEditor=false,bDirty=false,bSaving=false,bPending=false,bPrompt=false,bDiscardConfirm=false,bExitPending=false,bBeginPending=false,bSelectionPending=false;
     FString LoadedRoute;

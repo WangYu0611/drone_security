@@ -50,6 +50,28 @@ public:
     static std::string str(const Object& o, const char* key) {
         auto* v = o.if_contains(key); return v && v->is_string() ? std::string(v->as_string()) : "";
     }
+    // Called under mutex_: derive reservations from durable execution state, never a drone flag.
+    static bool reservesUav(const Object& e) {
+        const auto status=str(e,"state");
+        return status=="CREATED" || status=="PREFLIGHT" || status=="STARTING" ||
+            status=="START_REQUESTED" || status=="WAITING_ACK" || status=="EXECUTING" ||
+            status=="PAUSED" || status=="RETURNING";
+    }
+    static void checkReservation(const Object& state,const std::string& plan,const std::string& drone) {
+        for(const auto& entry:state.at("executions").as_object()) {
+            const auto& e=entry.value().as_object();const auto owner=str(e,"plan_id");
+            if(owner.empty() || owner==plan || str(e,"uav_id")!=drone || !reservesUav(e))continue;
+            throw PlanError("DRONE_ACTIVE_PLAN_CONFLICT",drone+" is in use by "+str(e,"plan_name"),
+                {{"drone_id",drone},{"active_plan_id",owner},{"active_plan_name",str(e,"plan_name")},
+                 {"active_execution_id",str(e,"execution_id")}});
+        }
+    }
+    static void checkPlanReservations(const Object& state,const std::string& plan) {
+        for(const auto& item:state.at("missions").as_object()) {
+            const auto& mission=item.value().as_object();if(str(mission,"plan_id")!=plan)continue;
+            for(const auto& member:assignment(mission))checkReservation(state,plan,std::string(member.as_string()));
+        }
+    }
     Object transact(const Object& request, const std::set<std::string>& uavs,
                     const std::string& source, const std::function<void(const Object&)>& publish) {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -186,6 +208,7 @@ public:
                 plan["name"] = requiredName(request); plan["description"] = str(request,"description");
                 event(next,"PLAN_UPDATED","PLAN",planId,"Security plan updated: " + str(plan,"name"),source);
             } else if (action == "validate" || action == "review" || action == "deploy") {
+                checkPlanReservations(next,planId);
                 auto result = validate(next, planId, uavs);
                 if(action=="validate") {
                     result["validated_content_revision"]=revision;plan["validation"]=result;
@@ -238,6 +261,7 @@ public:
                     const auto assigned=assignment(request);
                     std::set<std::string> unique;
                     for(const auto& v:assigned){const std::string uav(v.as_string());
+                        checkReservation(next,planId,uav);
                         if(!uavs.count(uav) || !unique.insert(uav).second)throw PlanError("INVALID_UAV","Unknown or duplicate UAV: "+uav);
                         for(const auto& id:ids)if(std::string(id.as_string())!=missionId)
                             for(const auto& other:assignment(missions.at(id.as_string()).as_object()))if(other==v)
@@ -254,6 +278,7 @@ public:
                     mission["spacing_m"]=spacing?*spacing:boost::json::value(safetySeparation()*2.);
                     event(next,assigned.empty()?"UAV_UNASSIGNED":"UAV_ASSIGNED","MISSION",missionId,"UAV assignment updated",source);
                 } else if (action == "save_route") {
+                    checkPlanReservations(next,planId);
                     auto& session=ownedSession(next,request,planId,missionId);
                     if(str(session,"mode")=="MOVE")throw PlanError("EDIT_SESSION_CONFLICT","Finish plan movement first");
                     if(session.at("base_content_revision")!=plan.at("content_revision"))throw PlanError("VERSION_CONFLICT","Draft base revision changed");
@@ -402,6 +427,8 @@ private:
             const auto members=assignment(m);
             if(members.empty())issue(key,"NO_UAV_ASSIGNED");
             for(const auto& member:members){const std::string uid(member.as_string());
+                try { checkReservation(s,id,uid); }
+                catch(const PlanError& ex){issues.emplace_back(Object{{"mission_id",key},{"code",ex.code},{"params",ex.params}});}
                 if(!uavs.count(uid))issue(key,"INVALID_UAV");
                 else {++assigned;if(!seen.insert(uid).second)issue(key,"UAV_ALREADY_ASSIGNED");}
             }

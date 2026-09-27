@@ -39,6 +39,7 @@ class UE5DRONECONTROL_API USecurityPlanWorkspaceWidget:public UUserWidget {
     GENERATED_BODY()
     friend class FP4CommandReviewCopy;
     friend class FP52ExecutionWidgets;
+    friend class FP55ReservationWidgets;
 public:void Refresh();
 protected:virtual void NativeOnInitialized() override;
 private:

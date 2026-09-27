@@ -1922,3 +1922,19 @@ msgstr "椭球高"
 msgctxt "DroneOps,RouteVisual.WorldHeight"
 msgid "World height"
 msgstr "世界高度"
+
+msgctxt "DroneOps,Reservation.InUse"
+msgid "{0} · In Use · {1}"
+msgstr "{0} · 执行中 · {1}"
+
+msgctxt "DroneOps,Reservation.Conflict"
+msgid "{0} is currently executing Security Plan {1} and cannot be assigned to another plan."
+msgstr "{0} 正在执行安保方案「{1}」，当前无法分配到其他方案。"
+
+msgctxt "DroneOps,Errors.DRONE_ACTIVE_PLAN_CONFLICT"
+msgid "This UAV is executing another security plan. Refresh the assignment and choose an available UAV."
+msgstr "该无人机正在执行其他安保方案，请刷新分配并选择可用无人机。"
+
+msgctxt "DroneOps,Reservation.ClearUnavailable"
+msgid "Clear unavailable selections (save to apply)"
+msgstr "取消不可用无人机的勾选（保存后生效）"

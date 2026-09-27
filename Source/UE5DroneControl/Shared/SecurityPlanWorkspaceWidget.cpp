@@ -96,6 +96,7 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     auto ComboStyle=UAVs->GetWidgetStyle();auto ComboButton=ComboStyle.ComboButtonStyle;FButtonStyle ButtonStyle;ButtonStyle.SetNormal(FSlateRoundedBoxBrush(CommandTheme::Elevated,5));ButtonStyle.SetHovered(FSlateRoundedBoxBrush(CommandTheme::Hover,5));ButtonStyle.SetPressed(FSlateRoundedBoxBrush(CommandTheme::Selected,5));ComboButton.SetButtonStyle(ButtonStyle);ComboStyle.SetComboButtonStyle(ComboButton);UAVs->SetWidgetStyle(ComboStyle);
     UAVHeight->SetVisibility(ESlateVisibility::Collapsed);
     AssignmentList=WidgetTree->ConstructWidget<UVerticalBox>();TaskPage->AddChild(AssignmentList);
+    Add(TaskPage,TEXT("clear_unavailable"),TEXT("Reservation.ClearUnavailable"));
     SpacingInput=Input(TaskPage,TEXT("Formation.LineSpacing"));SpacingInput->SetText(User(TEXT("3.0")));
     Add(TaskPage,TEXT("assign_group"),TEXT("Formation.SaveAssignment"));
     Label(WidgetTree,TaskPage,T(TEXT("Workflow.Patrol")),14);
@@ -149,10 +150,18 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     const FString AssignmentKey=PlanId+TEXT("/")+MissionId+FString::Join(Ids,TEXT(","))+AssignedUAVs(M)+(M && M->HasField(TEXT("spacing_m"))?FString::SanitizeFloat(M->GetNumberField(TEXT("spacing_m"))):TEXT(""));
     if(AssignmentSelection!=AssignmentKey){AssignmentSelection=AssignmentKey;AssignmentList->ClearChildren();AssignmentChecks.Empty();
         const TArray<TSharedPtr<FJsonValue>>* Members=nullptr;if(M)M->TryGetArrayField(TEXT("assigned_uav_ids"),Members);
-        for(const auto& ID:Ids){auto* Check=WidgetTree->ConstructWidget<UCheckBox>();AssignmentList->AddChild(Check);Label(WidgetTree,Check,User(ID),16);bool Assigned=Field(M,TEXT("assigned_uav_id"))==ID;
+        for(const auto& ID:Ids){auto* Check=WidgetTree->ConstructWidget<UCheckBox>();Check->HorizontalAlignment=HAlign_Fill;AssignmentList->AddChildToVerticalBox(Check)->SetHorizontalAlignment(HAlign_Fill);Label(WidgetTree,Check,User(ID),16)->SetAutoWrapText(false);bool Assigned=Field(M,TEXT("assigned_uav_id"))==ID;
             if(Members)for(const auto& V:*Members)Assigned|=V->AsString()==ID;Check->SetIsChecked(Assigned);AssignmentChecks.Add(ID,Check);}
         double Spacing=3.;if(M)M->TryGetNumberField(TEXT("spacing_m"),Spacing);SpacingInput->SetText(User(FString::SanitizeFloat(Spacing)));
     }
+    // Refresh in place on every execution update: preserve unsaved checkbox choices.
+    bool HasUnavailableSelection=false;
+    for(const auto& Item:AssignmentChecks){const auto E=UAVReservation(State,PlanId,Item.Key);
+        HasUnavailableSelection|=E.IsValid() && Item.Value->IsChecked();
+        Item.Value->SetIsEnabled(!E);if(auto* Caption=Cast<UTextBlock>(Item.Value->GetContent()))
+            Caption->SetText(E?FText::Format(T(TEXT("Reservation.InUse")),User(Item.Key),User(Field(E,TEXT("plan_name")))):User(Item.Key));
+    }
+    Actions[TEXT("clear_unavailable")]->SetVisibility(HasUnavailableSelection?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     bRefreshing=false;const FString Selection=PlanId+TEXT("/")+MissionId;
     if(Selection!=LoadedSelection && (PlanId.IsEmpty() || P)){LoadedSelection=Selection;bReview=false;bConfirm=false;PlanName->SetText(User(Field(P,TEXT("name"))));Description->SetText(User(Field(P,TEXT("description"))));MissionName->SetText(User(Field(M,TEXT("name"))));if(Field(M,TEXT("assigned_uav_id")).IsEmpty())UAVs->ClearSelection();else UAVs->SetSelectedOption(Field(M,TEXT("assigned_uav_id")));}
     const auto Status=Field(P,TEXT("status"));const bool Deployed=Status==TEXT("DEPLOYED"),Ready=Status==TEXT("READY"),Reviewed=PlanUI::Reviewed(P);
@@ -215,7 +224,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
 }
 void USecurityPlanWorkspaceWidget::Submit(const TSharedRef<FJsonObject>& R){
     if(bPending)return;bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
-    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);if(Weak->ErrorCode.IsEmpty()){Weak->bCreating=false;Weak->bList=Field(Weak->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetContext(),TEXT("active_security_plan_id")).IsEmpty();}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);if(Weak->ErrorCode.IsEmpty()){Weak->bCreating=false;Weak->bList=Field(Weak->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetContext(),TEXT("active_security_plan_id")).IsEmpty();}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
 }
 void USecurityPlanWorkspaceWidget::PlanSelected(FString Item,ESelectInfo::Type){if(bRefreshing)return;const int I=PlanLabels.IndexOfByKey(Item);if(I<0)return;auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanIds[I]);const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanIds[I]);if(P && !P->GetArrayField(TEXT("mission_ids")).IsEmpty())R->SetStringField(TEXT("mission_id"),P->GetArrayField(TEXT("mission_ids"))[0]->AsString());Submit(R);}
 void USecurityPlanWorkspaceWidget::MissionAction(FName Name,int32 Index){
@@ -224,6 +233,11 @@ void USecurityPlanWorkspaceWidget::MissionAction(FName Name,int32 Index){
     auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name==TEXT("edit_mission")?TEXT("request_map_route_edit"):TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),ID);Submit(R);
 }
 void USecurityPlanWorkspaceWidget::Action(FName Name,int32 Index){
+    if(Name==TEXT("clear_unavailable")){
+        if(bPending)return;const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();
+        for(const auto& Item:AssignmentChecks)if(UAVReservation(State,PlanId,Item.Key))Item.Value->SetIsChecked(false);
+        ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();Refresh();return;
+    }
     if(Name.ToString().StartsWith(TEXT("execution_"))){ExecutionAction(Name);return;}
     if(Name==TEXT("back_list") || Name==TEXT("cancel_new")){bList=true;bCreating=false;Refresh();return;}
     if(Name==TEXT("new_plan")){bList=false;bCreating=true;PlanName->SetText(FText::GetEmpty());Description->SetText(FText::GetEmpty());Refresh();return;}
@@ -270,12 +284,12 @@ void USecurityPlanWorkspaceWidget::ConfirmDeployment(){
     const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
     auto Check=MakeShared<FJsonObject>();Check->SetStringField(TEXT("action"),TEXT("validate"));Check->SetStringField(TEXT("plan_id"),PlanId);
     if(!Sync->SubmitPlan(Check,[Weak,Sync](TSharedPtr<FJsonObject> Reply){
-        if(!Weak.IsValid())return;Weak->ErrorCode=PlanUI::Error(Reply);
+        if(!Weak.IsValid())return;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);
         const auto P=Find(Sync->GetPlans(),TEXT("plans"),Weak->PlanId);
         if(!Weak->ErrorCode.IsEmpty() || Field(P,TEXT("status"))!=TEXT("READY")){Weak->bPending=false;Weak->Refresh();return;}
         auto ReviewRequest=MakeShared<FJsonObject>();ReviewRequest->SetStringField(TEXT("action"),TEXT("review"));ReviewRequest->SetStringField(TEXT("plan_id"),Weak->PlanId);
         if(!Sync->SubmitPlan(ReviewRequest,[Weak,Sync](TSharedPtr<FJsonObject> ReviewedReply){
-            if(!Weak.IsValid())return;Weak->ErrorCode=PlanUI::Error(ReviewedReply);Weak->bPending=false;
+            if(!Weak.IsValid())return;Weak->ErrorCode=PlanUI::Error(ReviewedReply);Weak->ExecutionErrorDetails=ReservationError(ReviewedReply);Weak->bPending=false;
             if(!Weak->ErrorCode.IsEmpty()){Weak->Refresh();return;}
             auto Deploy=MakeShared<FJsonObject>();Deploy->SetStringField(TEXT("action"),TEXT("deploy"));Deploy->SetStringField(TEXT("plan_id"),Weak->PlanId);Weak->Submit(Deploy);
         })){Weak->bPending=false;Weak->ErrorCode=TEXT("SYNC_OFFLINE");}
@@ -284,7 +298,8 @@ void USecurityPlanWorkspaceWidget::ConfirmDeployment(){
 
 void UPlanUAVOptionWidget::NativeOnInitialized(){Super::NativeOnInitialized();Caption=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(Caption,16,CommandTheme::PrimaryText);WidgetTree->RootWidget=Caption;}
 void UPlanUAVOptionWidget::SetCaption(const FString& Item){Caption->SetText(User(Item));}
-UWidget* USecurityPlanWorkspaceWidget::UAVOption(FString Item){auto* Option=CreateWidget<UPlanUAVOptionWidget>(GetOwningPlayer());Option->SetCaption(Item);return Option;}
+UWidget* USecurityPlanWorkspaceWidget::UAVOption(FString Item){auto* Option=CreateWidget<UPlanUAVOptionWidget>(GetOwningPlayer());const auto E=UAVReservation(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),PlanId,Item);
+    Option->SetCaption(E?FText::Format(T(TEXT("Reservation.InUse")),User(Item),User(Field(E,TEXT("plan_name")))).ToString():Item);Option->SetIsEnabled(!E);return Option;}
 void USecurityPlanWorkspaceWidget::UAVSelected(FString,ESelectInfo::Type Type){if(!bRefreshing && Type!=ESelectInfo::Direct && !bPending)Action(TEXT("assign"),0);}
 
 void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& P){
@@ -370,7 +385,7 @@ void USecurityPlanWorkspaceWidget::ExecutionAction(FName Name){
         R->SetStringField(TEXT("scheduled_start_at"),UTC.ToString(TEXT("%Y-%m-%dT%H:%M:%SZ")));
     }
     bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
-    if(!Sync->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=FText::GetEmpty();const auto Params=Object(Reply,TEXT("params"));
+    if(!Sync->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);const auto Params=Object(Reply,TEXT("params"));
         if(Params && Params->HasField(TEXT("minimum_separation_m")))Weak->ExecutionErrorDetails=FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m"))));
         if(Weak->ErrorCode.IsEmpty()){Weak->ExecutionIntent.Empty();Weak->bExecutionView=true;}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}Refresh();
 }

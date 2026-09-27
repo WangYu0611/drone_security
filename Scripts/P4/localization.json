@@ -1918,5 +1918,21 @@
   "RouteVisual.WorldHeight": [
     "World height",
     "世界高度"
+  ],
+  "Reservation.InUse": [
+    "{0} · In Use · {1}",
+    "{0} · 执行中 · {1}"
+  ],
+  "Reservation.Conflict": [
+    "{0} is currently executing Security Plan {1} and cannot be assigned to another plan.",
+    "{0} 正在执行安保方案「{1}」，当前无法分配到其他方案。"
+  ],
+  "Errors.DRONE_ACTIVE_PLAN_CONFLICT": [
+    "This UAV is executing another security plan. Refresh the assignment and choose an available UAV.",
+    "该无人机正在执行其他安保方案，请刷新分配并选择可用无人机。"
+  ],
+  "Reservation.ClearUnavailable": [
+    "Clear unavailable selections (save to apply)",
+    "取消不可用无人机的勾选（保存后生效）"
   ]
 }
