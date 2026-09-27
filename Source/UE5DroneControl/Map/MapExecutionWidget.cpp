@@ -1,4 +1,5 @@
 #include "Map/MapExecutionWidget.h"
+#include "Map/PlanRouteVisualSet.h"
 #include "PathEditor/DronePathActor.h"
 #include "Shared/ExecutionPresentation.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
@@ -44,7 +45,7 @@ void UMapExecutionWidget::Refresh(){
     // No invented progress and no geometry updates from the presentation clock.
     if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){
         TSet<FString> Live;
-        for(const auto& E:RenderedExecutions){const FString Key=Field(E,TEXT("execution_id"));Live.Add(Key);
+        for(const auto& E:RenderedExecutions){if(IsRouteSuppressed(E))continue;const FString Key=Field(E,TEXT("execution_id"));Live.Add(Key);
             const auto R=Object(E,TEXT("route_snapshot"));if(!R)continue;
             FString Snapshot;FJsonSerializer::Serialize(R.ToSharedRef(),TJsonWriterFactory<>::Create(&Snapshot));
             auto& Path=VisualRoutes.FindOrAdd(Key);
@@ -53,17 +54,18 @@ void UMapExecutionWidget::Refresh(){
                 Path->bSpawnWaypointHandlesAtRuntime=false;Path->bSpawnWaypointHandlesInEditor=false;
             }
             if(VisualSnapshots.FindRef(Key)!=Snapshot){
-                Path->Waypoints.Empty();R->TryGetBoolField(TEXT("bClosedLoop"),Path->bClosedLoop);
-                for(const auto& Point:R->GetArrayField(TEXT("waypoints"))){const auto P=Point->AsObject();FDroneWaypoint W;
-                    W.Location=ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude")));
-                    double Speed=0;P->TryGetNumberField(TEXT("segmentSpeed"),Speed);W.SegmentSpeed=Speed;Path->Waypoints.Add(W);
+                const auto Data=FPlanRouteVisualSet::Decode(R,Coordinates);
+                Path->Waypoints.Empty();Path->bClosedLoop=Data.bClosedLoop;
+                for(const auto& Point:Data.Waypoints){FDroneWaypoint W;
+                    W.Location=Point.Location;W.SegmentSpeed=Point.SegmentSpeed;W.WaitTime=Point.WaitTime;
+                    W.AltitudeReference=Point.AltitudeReference;W.AltitudeOffsetMeters=Point.AltitudeOffsetMeters;Path->Waypoints.Add(W);
                 }Path->RefreshPath();VisualSnapshots.Add(Key,Snapshot);
             }
             const FString State=Field(E,TEXT("state"));
             const bool Running=ExecutionUI::Active(E) && State!=TEXT("CREATED") && State!=TEXT("SCHEDULED");
             const bool Selected=Field(E,TEXT("uav_id"))==FString::Printf(TEXT("UAV-%02d"),Registry->GetPrimarySelectedDrone());
             Path->SetRoutePresentation(State==TEXT("COMPLETED")?ERouteVisualState::Completed:Running?ERouteVisualState::Active:ERouteVisualState::Confirmed,Selected);
-            Path->SetActorHiddenInGame(PC && PC->IsPathEditMode());
+            Path->SetActorHiddenInGame(false);
         }
         for(auto It=VisualRoutes.CreateIterator();It;++It)if(!Live.Contains(It.Key())){if(It.Value())It.Value()->Destroy();VisualSnapshots.Remove(It.Key());It.RemoveCurrent();}
     }
@@ -91,6 +93,7 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
         Screen=View;return true;
     };
     for(const auto& Current:RenderedExecutions){
+    if(IsRouteSuppressed(Current))continue;
     const auto Route=Object(Current,TEXT("route_snapshot"));if(!Route)continue;
     const auto& Points=Route->GetArrayField(TEXT("waypoints"));TArray<FVector2D> Line;
     const int Completed=Current->GetNumberField(TEXT("completed_waypoints"));
@@ -114,4 +117,15 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
 void UMapExecutionWidget::NativeDestruct(){
     for(auto& Item:VisualRoutes)if(IsValid(Item.Value))Item.Value->Destroy();VisualRoutes.Empty();VisualSnapshots.Empty();
     Super::NativeDestruct();
+}
+
+bool UMapExecutionWidget::IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const {
+    return !SuppressedPlan.IsEmpty() && Field(E,TEXT("plan_id"))==SuppressedPlan
+        && (bPlanMoving || Field(E,TEXT("mission_id"))==SuppressedMission);
+}
+bool UMapExecutionWidget::OwnsMission(const FString& Plan,const FString& Mission) const {
+    for(const auto& E:RenderedExecutions)if(Field(E,TEXT("plan_id"))==Plan && Field(E,TEXT("mission_id"))==Mission){
+        const auto* P=VisualRoutes.Find(Field(E,TEXT("execution_id")));
+        if(P && IsValid(P->Get()) && !(*P)->IsHidden())return true;
+    }return false;
 }

@@ -5676,6 +5676,13 @@ void ADroneOpsPlayerController::LoadMissionPath(const FDronePathSaveData& Data,b
     bMissionPathMode=true;SetMissionPathEditing(Editable);
     Path->RefreshPath();
 }
+ADronePathActor* ADroneOpsPlayerController::GetMissionRouteVisual() const {return bMissionPathMode && EditingPaths.Num()==1?EditingPaths[0].Get():nullptr;}
+void ADroneOpsPlayerController::SetMissionRouteVisualVisible(bool Visible){
+    if(auto* Path=GetMissionRouteVisual()){
+        Path->SetActorHiddenInGame(!Visible);
+        for(auto Handle:Path->GetWaypointHandleActors())if(Handle){Handle->SetActorHiddenInGame(!Visible);Handle->SetActorEnableCollision(Visible && bPathEditMode);}
+    }
+}
 
 bool ADroneOpsPlayerController::GetSelectedMissionWaypoint(FDroneWaypointSaveData& Out,int32& Index) const {
     if(!bMissionPathMode || !IsValid(EditSelectedWaypoint) || !IsValid(EditSelectedWaypoint->PathActor))return false;

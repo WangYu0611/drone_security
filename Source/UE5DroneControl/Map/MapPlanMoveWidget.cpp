@@ -53,13 +53,21 @@ void UMapPlanMoveWidget::Requested(const TSharedPtr<FJsonObject>& Request) {
 void UMapPlanMoveWidget::Refresh() {
     if(!Summary)return;auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     const auto Sessions=Object(S->GetPlans(),TEXT("edit_sessions"));
-    if(IsMoving() && !bPending && S->IsReady() && Sessions && !Sessions->HasField(SessionId)){ErrorCode=TEXT("EDIT_SESSION_EXPIRED");}
+    if(IsMoving() && !bPending && S->IsReady() && Sessions && !Sessions->HasField(SessionId)){ErrorCode=TEXT("EDIT_SESSION_EXPIRED");Leave();}
+    if(IsMoving() && PreviewVisuals.Num()==0){
+        auto* C=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();
+        TSet<FString> Live;
+        for(const auto& Route:Routes){Live.Add(Route.Id);PreviewVisuals.Put(GetWorld(),C,Route.Id,Route.Saved,ERouteVisualState::Planning,true);}
+        PreviewVisuals.Retain(Live);PreviewVisuals.CheckConflicts();
+    }
+    if(IsMoving())PreviewVisuals.Translate(Delta);else PreviewVisuals.Reset();
     Summary->SetText(FText::Format(User(TEXT("{0}\n{1}\n{2}")),FText::Format(T(TEXT("Geometry.Moving")),User(PlanName)),T(TEXT("Geometry.Drag")),ErrorCode.IsEmpty()?(bPending?T(TEXT("Common.Waiting")):T(TEXT("Geometry.Preview"))):ProductText::Get(TEXT("Errors.")+ErrorCode)));
     if(Handle){Handle->SetToolTipText(T(TEXT("Geometry.Drag")));Handle->SetIsEnabled(!bPending);}
     Confirm->SetIsEnabled(IsMoving() && !bPending && S->IsReady() && ErrorCode!=TEXT("EDIT_SESSION_EXPIRED"));Cancel->SetIsEnabled(!bPending);
     InvalidateLayoutAndVolatility();
 }
-void UMapPlanMoveWidget::Leave(){SessionId.Empty();Routes.Empty();Delta=FVector::ZeroVector;bDragging=false;SetVisibility(ESlateVisibility::Collapsed);}
+void UMapPlanMoveWidget::NativeDestruct(){PreviewVisuals.Reset();Super::NativeDestruct();}
+void UMapPlanMoveWidget::Leave(){PreviewVisuals.Reset();SessionId.Empty();Routes.Empty();Delta=FVector::ZeroVector;bDragging=false;SetVisibility(ESlateVisibility::Collapsed);}
 void UMapPlanMoveWidget::Action(FName Name,int32) {
     if(bPending)return;if(SessionId.IsEmpty()){Leave();return;}
     auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();auto R=MakeShared<FJsonObject>();
@@ -96,7 +104,7 @@ FReply UMapPlanMoveWidget::NativeOnPreviewMouseButtonDown(const FGeometry&,const
     }return FReply::Unhandled();
 }
 FReply UMapPlanMoveWidget::NativeOnMouseMove(const FGeometry&,const FPointerEvent& E){
-    FVector P;if(bDragging && CursorOnPlane(E.GetScreenSpacePosition(),P)){Delta=DragDelta+P-DragStart;InvalidateLayoutAndVolatility();return FReply::Handled();}return FReply::Unhandled();
+    FVector P;if(bDragging && CursorOnPlane(E.GetScreenSpacePosition(),P)){Delta=DragDelta+P-DragStart;PreviewVisuals.Translate(Delta);InvalidateLayoutAndVolatility();return FReply::Handled();}return FReply::Unhandled();
 }
 FReply UMapPlanMoveWidget::NativeOnMouseButtonUp(const FGeometry& G,const FPointerEvent& E){
     if(!bDragging)return FReply::Unhandled();NativeOnMouseMove(G,E);bDragging=false;
@@ -106,12 +114,8 @@ int32 UMapPlanMoveWidget::NativePaint(const FPaintArgs& A,const FGeometry& G,con
     const int Base=Super::NativePaint(A,G,C,Out,L,S,E);if(!IsMoving())return Base;
     const auto Color=FLinearColor(1,.65f,.1f);FBox2D Bounds(ForceInit);
     auto Line=[&](const TArray<FVector2D>& P,float Width){if(P.Num()>1)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),P,ESlateDrawEffect::None,Color,true,Width);};
-    for(const auto& Route:Routes){TArray<FVector2D> Points;for(int I=0;I<Route.Original.Num();++I){FVector2D P;if(!Project(Route.Original[I]+Delta,P))continue;Points.Add(P);Bounds+=P;
-        FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(12),FSlateLayoutTransform(P-FVector2D(6))),FCoreStyle::Get().GetBrush("WhiteBrush"),ESlateDrawEffect::None,Color);
-        FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(FVector2D(60,24),FSlateLayoutTransform(P+FVector2D(9,-12))),FText::AsNumber(I+1),FCoreStyle::GetDefaultFontStyle("Bold",16),ESlateDrawEffect::None,Color);}
-        if(Route.Closed && Points.Num()>2)Points.Add(FVector2D(Points[0]));Line(Points,4);
-        for(int I=1;I<Points.Num();++I){const auto D=(Points[I]-Points[I-1]).GetSafeNormal(),N=FVector2D(-D.Y,D.X),M=(Points[I]+Points[I-1])*.5;Line({M-D*9+N*5,M,M-D*9-N*5},3);}
-    }
+    // Slate owns the move affordance only. Route geometry belongs to Route V2.
+    for(const auto& Route:Routes)for(const auto& Original:Route.Original){FVector2D P;if(Project(Original+Delta,P))Bounds+=P;}
     if(Bounds.bIsValid){const auto Min=Bounds.Min-FVector2D(18),Max=Bounds.Max+FVector2D(18);Line({Min,FVector2D(Max.X,Min.Y),Max,FVector2D(Min.X,Max.Y),Min},1);}
     FVector2D P;if(Project(Anchor+Delta,P)){Line({P+FVector2D(-30,0),P+FVector2D(30,0)},5);Line({P+FVector2D(0,-30),P+FVector2D(0,30)},5);
         FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(FVector2D(180,28),FSlateLayoutTransform(P+FVector2D(32,0))),T(TEXT("Geometry.MovePlan")),FCoreStyle::GetDefaultFontStyle("Bold",18),ESlateDrawEffect::None,Color);}

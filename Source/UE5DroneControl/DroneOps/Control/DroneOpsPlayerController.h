@@ -155,6 +155,8 @@ TArray<int32> GetSelectedDroneIdsForDispatch() const;
     bool RefreshMissionTerrainMetadata();
 
     void LoadMissionPath(const FDronePathSaveData& Data, bool Editable);
+    ADronePathActor* GetMissionRouteVisual() const;
+    void SetMissionRouteVisualVisible(bool Visible);
     void SetMissionPathEditing(bool Enabled, bool KeepCameraLocked=false);
     bool IsMissionPathMode() const { return bMissionPathMode; }
     bool IsEditingRoute(const ADronePathActor* Path) const { return EditingPaths.Contains(Path); }

@@ -768,6 +768,15 @@ FVector ADronePathActor::VisualWaypointWorldLocation(int32 Index) const
     return GetWaypointWorldLocation(Index);
 }
 void ADronePathActor::RefreshRouteVisualPreview(){UpdateVisualGeometry();ApplyPathVisualState();}
+void ADronePathActor::SetVisualPresentationOffset(const FVector& Delta){
+    VisualPresentationOffset=Delta;
+    if(GetActorLocation().Equals(Delta))return;SetActorLocation(Delta);
+    // Preserve original resolved colors/speeds during rigid preview, but move shader flow endpoints.
+    for(int I=0;I<SegmentVisuals.Num();++I)for(auto* MID:{SplineVisualizationMIDs[I].Get(),HaloMIDs[I].Get()})if(MID){
+        MID->SetVectorParameterValue(TEXT("StartWorld"),FLinearColor(GetWaypointWorldLocation(I)));
+        MID->SetVectorParameterValue(TEXT("EndWorld"),FLinearColor(GetWaypointWorldLocation(SegmentVisuals[I].EndWaypointIndex)));
+    }
+}
 void ADronePathActor::UpdateVisualGeometry()
 {
     const float Radius=FMath::Max3(PathSplineThickness,MapDisplayRadius,.05f)*1.4f;
@@ -940,7 +949,7 @@ void ADronePathActor::ApplyPathVisualState()
     auto* Coordinates=Registry?Registry->GetCoordinateService().GetObject():nullptr;
     bVisualGeographicAltitude=Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates);
     for(int32 I=0;I<Waypoints.Num();++I){
-        const FVector World=VisualWaypointWorldLocation(I);
+        const FVector World=VisualWaypointWorldLocation(I)-VisualPresentationOffset;
         Heights.Add(bVisualGeographicAltitude?ICoordinateService::Execute_WorldToGeographic(Coordinates,World).Z:World.Z/100.);
         Speeds.Add(Waypoints[I].SegmentSpeed);
     }

@@ -6,6 +6,7 @@
 UCLASS()
 class UE5DRONECONTROL_API UMapMissionRouteWidget:public UUserWidget {
     GENERATED_BODY()
+    friend class FP55SecurityPlanVisual;
     bool bBeginning=false;
     friend class FP53GeometryUI;
     friend class FP4MapDraft;
@@ -13,6 +14,9 @@ public:
     void ReloadGeometry(){LoadedRoute.Empty();LoadSaved();}
     void Refresh();void SetEditorEnabled(bool Enabled);
     bool IsEditorEnabled() const {return bEditor;}
+    bool OwnsRouteVisual() const {return !SessionId.IsEmpty() || bDirty || bBeginning;}
+    FString GetVisualPlanId() const {return PlanId;}
+    FString GetVisualMissionId() const {return MissionId;}
     int32 GetAssignedUAV() const;
     bool HasDirtyDraft() const {return bDirty;}
     FString GetDraftState() const {return bSaving?TEXT("SAVING"):bDirty?TEXT("DIRTY"):SessionId.IsEmpty()?TEXT("CLEAN"):bSaved?TEXT("SAVED"):TEXT("EDITING");}

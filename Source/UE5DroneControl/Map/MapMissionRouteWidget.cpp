@@ -1,4 +1,5 @@
 #include "Map/MapMissionRouteWidget.h"
+#include "Map/PlanRouteVisualSet.h"
 #include "Components/CheckBox.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Shared/PlanWidgetSupport.h"
@@ -69,11 +70,8 @@ FString UMapMissionRouteWidget::Fingerprint() const {FString S;FJsonSerializer::
 bool UMapMissionRouteWidget::LoadSaved(){
     auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());if(!PC)return false;auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto M=Find(S->GetPlans(),TEXT("missions"),MissionId);if(!M){PC->ClearEditingPaths();LoadedRoute=TEXT("empty");return false;}
     auto* C=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();if(!C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
-    FDronePathSaveData Data;Data.PathId=FMath::Max(1,GetAssignedUAV());const auto R=Find(S->GetPlans(),TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points;
-    if(R){R->TryGetBoolField(TEXT("bClosedLoop"),Data.bClosedLoop);if(R->TryGetArrayField(TEXT("waypoints"),Points))for(const auto& P:*Points){const auto O=P->AsObject();FDroneWaypointSaveData W;O->TryGetStringField(TEXT("altitude_reference"),W.AltitudeReference);
-        if(W.AltitudeReference==TEXT("AGL"))O->TryGetNumberField(TEXT("terrain_ellipsoid_m"),W.AltitudeOffsetMeters);
-        if(W.AltitudeReference==TEXT("MSL"))O->TryGetNumberField(TEXT("geoid_undulation_m"),W.AltitudeOffsetMeters);
-        W.Location=ICoordinateService::Execute_GeographicToWorld(C,O->GetNumberField(TEXT("latitude")),O->GetNumberField(TEXT("longitude")),O->GetNumberField(TEXT("altitude"))+W.AltitudeOffsetMeters);W.SegmentSpeed=O->GetNumberField(TEXT("segmentSpeed"));W.WaitTime=O->GetNumberField(TEXT("waitTime"));Data.Waypoints.Add(W);}}
+    const auto R=Find(S->GetPlans(),TEXT("paths"),Field(M,TEXT("route_id")));
+    const auto Data=FPlanRouteVisualSet::Decode(R,C,FMath::Max(1,GetAssignedUAV()));
     LoadedWaypoint=INDEX_NONE;PC->LoadMissionPath(Data,false);CleanFingerprint=Fingerprint();bDirty=false;bSaved=R.IsValid();LoadedRoute.Empty();if(R)FJsonSerializer::Serialize(R.ToSharedRef(),TJsonWriterFactory<>::Create(&LoadedRoute));else LoadedRoute=TEXT("empty");return true;
 }
 void UMapMissionRouteWidget::Submit(const TCHAR* Name,TFunction<void(TSharedPtr<FJsonObject>)> Complete,const TSharedPtr<FJsonObject>& Extra){

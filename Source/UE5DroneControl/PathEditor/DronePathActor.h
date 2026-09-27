@@ -183,6 +183,7 @@ public:
     // Presentation only. Execution monitors may supply acknowledged state.
     void SetRoutePresentation(ERouteVisualState State, bool Selected);
     void RefreshRouteVisualPreview();
+    void SetVisualPresentationOffset(const FVector& Delta);
     const TArray<FDronePathSegmentVisualState>& GetSegmentVisuals() const { return SegmentVisuals; }
     bool IsVisualSelected() const { return bVisualSelected; }
     bool HasResolvedGeographicAltitude() const { return bVisualGeographicAltitude; }
@@ -286,6 +287,7 @@ protected:
 
 private:
     friend class FRouteVisualComponentsTest;
+    FVector VisualPresentationOffset=FVector::ZeroVector;
     TArray<FDronePathSegmentVisualState> SegmentVisuals;
     ERouteVisualState VisualState=ERouteVisualState::Confirmed;
     bool bVisualSelected=false,bVisualGeographicAltitude=false,bExternalPresentation=false;

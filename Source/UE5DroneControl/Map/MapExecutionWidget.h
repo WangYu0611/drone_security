@@ -8,6 +8,8 @@ class UE5DRONECONTROL_API UMapExecutionWidget:public UUserWidget {
     GENERATED_BODY()
     friend class FP52ExecutionWidgets;
 public:void Refresh();
+    void SetRouteSuppression(const FString& Plan,const FString& Mission,bool Moving) { SuppressedPlan=Plan;SuppressedMission=Mission;bPlanMoving=Moving; }
+    bool OwnsMission(const FString& Plan,const FString& Mission) const;
 protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeDestruct() override;
@@ -17,6 +19,9 @@ private:
     TSharedPtr<FJsonObject> Execution;
     TArray<TSharedPtr<FJsonObject>> RenderedExecutions;
     FString FocusedExecution;
+    FString SuppressedPlan,SuppressedMission;
+    bool bPlanMoving=false;
+    bool IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const;
     UPROPERTY(Transient) TMap<FString,TObjectPtr<class ADronePathActor>> VisualRoutes;
     TMap<FString,FString> VisualSnapshots;
 };

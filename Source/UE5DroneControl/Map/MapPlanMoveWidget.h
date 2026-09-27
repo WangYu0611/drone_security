@@ -2,17 +2,21 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Dom/JsonObject.h"
+#include "Map/PlanRouteVisualSet.h"
 #include "MapPlanMoveWidget.generated.h"
 
 UCLASS()
 class UE5DRONECONTROL_API UMapPlanMoveWidget : public UUserWidget {
     GENERATED_BODY()
+    friend class FP55SecurityPlanVisual;
     friend class FP53GeometryUI;
 public:
     bool IsMoving() const { return !SessionId.IsEmpty(); }
+    FString GetVisualPlanId() const { return PlanId; }
     void Refresh();
 protected:
     virtual void NativeOnInitialized() override;
+    virtual void NativeDestruct() override;
     virtual void NativeTick(const FGeometry&,float) override;
     virtual FReply NativeOnPreviewMouseButtonDown(const FGeometry&,const FPointerEvent&) override;
     virtual FReply NativeOnMouseButtonUp(const FGeometry&,const FPointerEvent&) override;
@@ -21,6 +25,7 @@ protected:
 private:
     struct FRoutePreview { FString Id; TSharedPtr<FJsonObject> Saved; TArray<FVector> Original; bool Closed=false; };
     TArray<FRoutePreview> Routes;
+    FPlanRouteVisualSet PreviewVisuals;
     FString PlanId,MissionId,SessionId,PlanName,ErrorCode;
     FVector Anchor=FVector::ZeroVector,Delta=FVector::ZeroVector,DragStart=FVector::ZeroVector,DragDelta=FVector::ZeroVector;
     bool bPending=false,bDragging=false;

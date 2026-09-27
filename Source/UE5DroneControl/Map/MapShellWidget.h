@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Map/PlanRouteVisualSet.h"
 #include "MapShellWidget.generated.h"
 
 /** Map-only presentation. All planning and playback actions use existing adapters. */
@@ -8,6 +9,7 @@ UCLASS()
 class UE5DRONECONTROL_API UMapShellWidget : public UUserWidget
 {
     GENERATED_BODY()
+    friend class FP55SecurityPlanVisual;
 public:
     void InitializeManager(class UCommandScreenManager* InManager);
     void Refresh();
@@ -16,6 +18,7 @@ public:
     class UMapPlanMoveWidget* GetMovePanel() const { return MovePanel; }
 protected:
     virtual void NativeOnInitialized() override;
+    virtual void NativeDestruct() override;
     virtual void NativeTick(const FGeometry& Geometry, float DeltaSeconds) override;
 private:
     TWeakObjectPtr<class UCommandScreenManager> Manager;
@@ -36,6 +39,8 @@ private:
     UPROPERTY() TObjectPtr<class UMapExecutionWidget> ExecutionMonitor;
     UPROPERTY() TObjectPtr<class UMapPlanMoveWidget> MovePanel;
     bool bWasMoving=false;
+    FPlanRouteVisualSet SavedRouteVisuals;
+    void RefreshSavedRoutes(bool Moving);
     bool bRefreshing = false;
     UFUNCTION() void ActionRequested(FName Action, int32 ItemId);
     UFUNCTION() void AircraftSelected(FString Item, ESelectInfo::Type Type);

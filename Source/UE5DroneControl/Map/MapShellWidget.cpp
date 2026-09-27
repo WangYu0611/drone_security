@@ -1,4 +1,6 @@
 #include "Map/MapShellWidget.h"
+#include "Shared/PlanWidgetSupport.h"
+#include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "PathEditor/DronePathActor.h"
 #include "EngineUtils.h"
 #include "Map/MapExecutionWidget.h"
@@ -108,7 +110,12 @@ void UMapShellWidget::Refresh()
     if(MovePanel)MovePanel->Refresh();const bool Moving=MovePanel && MovePanel->IsMoving();
     if(PlanPanel && !Moving){if(bWasMoving)PlanPanel->ReloadGeometry();PlanPanel->Refresh();}
     if(Moving && PlanPanel)PlanPanel->SetVisibility(ESlateVisibility::Collapsed);bWasMoving=Moving;
-    if(ExecutionMonitor){ExecutionMonitor->Refresh();if(Moving || (PlanPanel && PlanPanel->IsEditorEnabled()))ExecutionMonitor->SetVisibility(ESlateVisibility::Collapsed);}
+    if(ExecutionMonitor){
+        ExecutionMonitor->SetRouteSuppression(Moving?MovePanel->GetVisualPlanId():PlanPanel && PlanPanel->OwnsRouteVisual()?PlanPanel->GetVisualPlanId():FString(),
+            PlanPanel && PlanPanel->OwnsRouteVisual()?PlanPanel->GetVisualMissionId():FString(),Moving);
+        ExecutionMonitor->Refresh();if(Moving || (PlanPanel && PlanPanel->IsEditorEnabled()))ExecutionMonitor->SetVisibility(ESlateVisibility::Collapsed);
+    }
+    RefreshSavedRoutes(Moving);
     if(RouteLegend){
         ADronePathActor* SelectedRoute=nullptr;
         for(TActorIterator<ADronePathActor> It(GetWorld());It;++It)if(!It->IsHidden() && !It->GetSegmentVisuals().IsEmpty()){
@@ -231,4 +238,31 @@ void UMapShellWidget::NativeTick(const FGeometry& Geometry, float DeltaSeconds)
         && Position.X>=24 && Position.X<=Size.X-24 && Position.Y>=130 && Position.Y<=Size.Y-24;
     MissionHighlight->SetVisibility(MissionOnMap?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
     if(MissionOnMap)CastChecked<UCanvasPanelSlot>(MissionHighlight->Slot)->SetPosition(Position);
+}
+
+void UMapShellWidget::RefreshSavedRoutes(bool Moving){
+    using namespace PlanUI;
+    auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());
+    const bool Editing=!Moving && PlanPanel && PlanPanel->OwnsRouteVisual();
+    if(PC)PC->SetMissionRouteVisualVisible(Editing);
+    if(Moving || !PlanPanel){SavedRouteVisuals.Reset();return;}
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    // Use the panel's accepted selection: a dirty draft can reject remote switching.
+    const FString PlanId=PlanPanel->GetVisualPlanId(),Selected=PlanPanel->GetVisualMissionId();
+    const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),PlanId);
+    auto* C=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();
+    TSet<FString> Live;const TArray<TSharedPtr<FJsonValue>>* Missions=nullptr;
+    if(Plan && Plan->TryGetArrayField(TEXT("mission_ids"),Missions))for(const auto& V:*Missions){
+        const FString Id=V->AsString();if((Editing && Id==Selected) || (ExecutionMonitor && ExecutionMonitor->OwnsMission(PlanId,Id)))continue;
+        const auto Mission=Find(Sync->GetPlans(),TEXT("missions"),Id);
+        const auto Route=Find(Sync->GetPlans(),TEXT("paths"),Field(Mission,TEXT("route_id")));if(!Route)continue;
+        const FString Key=PlanId+TEXT("/")+Id;Live.Add(Key);
+        SavedRouteVisuals.Put(GetWorld(),C,Key,Route,ERouteVisualState::Confirmed,Id==Selected);
+    }
+    SavedRouteVisuals.Retain(Live);SavedRouteVisuals.CheckConflicts(Editing && PC?PC->GetMissionRouteVisual():nullptr);
+}
+void UMapShellWidget::NativeDestruct(){
+    SavedRouteVisuals.Reset();
+    if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionRouteVisualVisible(false);
+    Super::NativeDestruct();
 }
