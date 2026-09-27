@@ -1,0 +1,82 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:/CodexPublish/drone_security/UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (source file added)
+UHT compiled-in object format Default
+UHT processed UE5DroneControlEditor in 9.6533235 seconds (2 generated files written)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: DroneOpsPlayerController.cpp, MapExecutionWidget.cpp, MapMissionRouteWidget.cpp, MapPlanMoveWidget.cpp, MapShellWidget.cpp, PlanRouteVisualSet.cpp, DronePathActor.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 44 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 17.77 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+UbaSessionServer - Killed process DroneListWidget.cpp (Compile [x64]) (5.6s) - Low on memory (39.3gb/40.3gb). Kill threshold is 38.3gb
+[1/44] Compile [x64] DefaultSegmentSpeedWidget.cpp [NoUba]
+[2/44] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[3/44] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/44] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[5/44] Compile [x64] CommandClientTest.cpp [NoUba]
+[6/44] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[7/44] Compile [x64] CommandShellWidget.cpp [NoUba]
+[8/44] Compile [x64] DroneListWidget.cpp [NoUba]
+[9/44] Compile [x64] DroneNetworkManager.cpp [NoUba]
+[10/44] Compile [x64] DronePathActor.cpp [NoUba]
+[11/44] Compile [x64] DronePathConflictLibrary.cpp [NoUba]
+[12/44] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\DroneOps\Control\DroneOpsPlayerController.cpp(5683,29): error C2248: ﾡﾰADronePathActor::WaypointHandleActorsﾡﾱ: ￎ￞ﾷﾨﾷￃￎￊ private ﾳ￉ￔﾱ(ￔￚﾡﾰADronePathActorﾡﾱ￀￠ￖ￐￉￹ￃ￷)
+        for(auto Handle:Path->WaypointHandleActors)if(Handle){Handle->SetActorHiddenInGame(!Visible);Handle->SetActorEnableCollision(Visible && bPathEditMode);}
+                            ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\PathEditor\DronePathActor.h(305,42): note: ﾲￎﾼ￻ﾡﾰADronePathActor::WaypointHandleActorsﾡﾱﾵￄ￉￹ￃ￷
+	TArray<TObjectPtr<ADroneWaypointActor>> WaypointHandleActors;
+	                                        ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\PathEditor\DronePathActor.h(41,27): note: ﾲￎﾼ￻ﾡﾰADronePathActorﾡﾱﾵￄ￉￹ￃ￷
+class UE5DRONECONTROL_API ADronePathActor : public AActor
+                          ^
+UbaSessionServer - Killed process DronePlaybackManager.cpp (Compile [x64]) (6.2s) - Low on memory (37.6gb/38.9gb). Kill threshold is 36.9gb
+[13/44] Compile [x64] DronePathSaveLibrary.cpp [NoUba]
+[14/44] Compile [x64] DronePathPlaybackWidget.cpp [NoUba]
+[15/44] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[16/44] Compile [x64] DroneTaskManager.cpp [NoUba]
+[17/44] Compile [x64] DroneRuntimeInteractionPlayerController.cpp [NoUba]
+[18/44] Compile [x64] DroneVideoWindowWidget.cpp [NoUba]
+[19/44] Compile [x64] DronePlaybackManager.cpp [NoUba]
+UbaSessionServer - Killed process GeographicTargetPanelWidget.cpp (Compile [x64]) (6.6s) - Low on memory (39.9gb/41.2gb). Kill threshold is 39.2gb
+[20/44] Compile [x64] DroneWaypointActor.cpp [NoUba]
+[21/44] Compile [x64] EnemyDroneListWidget.cpp [NoUba]
+[22/44] Compile [x64] HostileTargetManager.cpp [NoUba]
+[23/44] Compile [x64] GeographicTargetPanelWidget.cpp [NoUba]
+[24/44] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[25/44] Compile [x64] MapExtractionTest.cpp [NoUba]
+[26/44] Compile [x64] MapShellWidget.cpp [NoUba]
+[27/44] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+UbaSessionServer - Killed process Module.UE5DroneControl.gen.cpp (Compile [x64]) (21.7s) - Low on memory (39.4gb/40.5gb). Kill threshold is 38.5gb
+[28/44] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[29/44] Compile [x64] MultiDroneCharacter.cpp [NoUba]
+[30/44] Compile [x64] RouteVisualComponentsTest.cpp [NoUba]
+[31/44] Compile [x64] OperationalContextTest.cpp [NoUba]
+[32/44] Compile [x64] MultiDroneManager.cpp [NoUba]
+[33/44] Compile [x64] PlanRouteVisualSet.cpp [NoUba]
+UbaSessionServer - Killed process SecurityPlanPanel.cpp (Compile [x64]) (13.8s) - Low on memory (39.3gb/40.6gb). Kill threshold is 38.6gb
+[34/44] Compile [x64] RouteVisualQA.cpp [NoUba]
+[35/44] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[36/44] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[37/44] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[38/44] Compile [x64] SequenceDispatchPanelWidget.cpp [NoUba]
+[39/44] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+UbaSessionServer - Killed process VideoClientTest.cpp (Compile [x64]) (13.0s) - Low on memory (34.9gb/36.4gb). Kill threshold is 34.6gb
+[40/44] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+[41/44] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 103.22 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 115.56 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 19.7kb

@@ -1,0 +1,62 @@
+{
+  "status": "CONDITIONAL PASS",
+  "environment": "Existing offline Cesium georeference fixture, real Command/Map clients, isolated Mock Backend 20480/20481",
+  "plan_id": "plan-3",
+  "missions": [
+    "mission-4",
+    "mission-7",
+    "mission-10"
+  ],
+  "workflow": [
+    "Open saved three-Mission plan",
+    "Select Route A",
+    "Begin Route Edit",
+    "P02 Ellipsoid altitude 70 to 90 m",
+    "P03 incoming speed 12 to 14 m/s",
+    "Save Draft stays locked",
+    "Finish unlocks and preserves V2",
+    "Select B and C and save through Map",
+    "Restart/open persisted plan",
+    "Move all three routes, cancel",
+    "Move all three routes, confirm",
+    "Review/validate/deploy through Command",
+    "Start and complete Route C",
+    "Reopen plan, start and complete closed Route A",
+    "Reload final build and inspect Mission-selected legend and 3D completed route"
+  ],
+  "cancel_exact_json_unchanged": true,
+  "preview_backend_unchanged": true,
+  "confirmed_translation_cm": [
+    -6010.1979571980955,
+    5469.950387747045,
+    -1.192095169244567e-07
+  ],
+  "max_translation_disagreement_cm": 1.7881757230497897e-07,
+  "executions": [
+    {
+      "execution_id": "execution-22",
+      "mission_id": "mission-10",
+      "state": "COMPLETED",
+      "progress": 1.0,
+      "completion_reason": "ROUTE_FINISHED",
+      "closure_completed": false
+    },
+    {
+      "execution_id": "execution-24",
+      "mission_id": "mission-4",
+      "state": "COMPLETED",
+      "progress": 1.0,
+      "completion_reason": "ROUTE_FINISHED",
+      "closure_completed": true
+    }
+  ],
+  "retained_native_failure": "retained-move-invisible.png: PC early Move return skipped map-scaled line widths; repaired before accepted move/deploy/execution",
+  "selection_fix": "Final execution owner uses active Mission rather than unrelated primary UAV; final screenshot 19 shows altitude 30-100 and speed 6-14",
+  "boundaries": [
+    "Mock only, no real aircraft",
+    "Offline ground fixture; no authenticated Cesium terrain/satellite acceptance",
+    "Existing Lumen cached lighting exposure warning visible and retained",
+    "Native 2D editing, left drag, zoom and 3D mode transition observed; sustained native right/middle drag not revalidated",
+    "READY is the transient validate/review step inside the real Deploy workflow; no separate stable READY screenshot"
+  ]
+}

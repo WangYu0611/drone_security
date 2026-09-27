@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "D:\CodexPublish\drone_security\Scripts\P55Fix01\regression.py", line 21, in <module>
+    with (out/'security-plan-fixture.log').open('w',encoding='utf-8') as log:subprocess.run(['node',str(root/'Scripts/P55Fix01/fixture.mjs')],cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=60,check=True)
+                                                                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\wy331\AppData\Local\Programs\Python\Python313\Lib\subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['node', 'D:\\CodexPublish\\drone_security\\Scripts\\P55Fix01\\fixture.mjs']' returned non-zero exit status 1.

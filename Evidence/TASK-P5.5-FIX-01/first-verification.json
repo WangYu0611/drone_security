@@ -1,0 +1,35 @@
+[
+  {
+    "command": [
+      "C:\\Users\\wy331\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "Scripts/P55Fix01/unit.py"
+    ],
+    "exit": 0,
+    "stdout": "{\"exit\": 0, \"discovered\": 2, \"succeeded\": 2, \"warnings\": 0, \"failed\": 0, \"completed\": 2, \"evidence\": \"D:\\\\CodexPublish\\\\drone_security\\\\Evidence\\\\TASK-P5.5-FIX-01\\\\offline-1790484701887017100\", \"pass\": true}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "C:\\Users\\wy331\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "Scripts/P55Fix01/unit.py",
+      "DroneOps.P54.RouteEditCameraLock"
+    ],
+    "exit": 0,
+    "stdout": "{\"exit\": 0, \"discovered\": 2, \"succeeded\": 2, \"warnings\": 0, \"failed\": 0, \"completed\": 2, \"evidence\": \"D:\\\\CodexPublish\\\\drone_security\\\\Evidence\\\\TASK-P5.5-FIX-01\\\\offline-1790484725817218100\", \"pass\": true}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "C:\\Users\\wy331\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "Scripts/P55Fix01/regression.py",
+      "DroneOps.P55.SecurityPlanRouteVisual",
+      "Workflow.MapLiveDraftGuard",
+      "P54.CameraDampingAnd3DRoute",
+      "P52.MapExecutionMonitor",
+      "Localization.FTextAndDraftIsolation"
+    ],
+    "exit": 1,
+    "stdout": "{\"offline_visual_fixture\": true, \"test\": \"DroneOps.P55.SecurityPlanRouteVisual\", \"role\": \"Map\", \"pid\": 62904, \"exit\": 0, \"succeeded\": 0, \"warnings\": 0, \"failed\": 1, \"discovered\": 1, \"completed\": true, \"pass\": false}\n{\"offline_visual_fixture\": true, \"test\": \"Workflow.MapLiveDraftGuard\", \"role\": \"Map\", \"pid\": 81796, \"exit\": 0, \"succeeded\": 0, \"warnings\": 1, \"failed\": 0, \"discovered\": 1, \"completed\": true, \"pass\": true}\n{\"offline_visual_fixture\": true, \"test\": \"P54.CameraDampingAnd3DRoute\", \"role\": \"Map\", \"pid\": 63416, \"exit\": 0, \"succeeded\": 0, \"warnings\": 1, \"failed\": 0, \"discovered\": 1, \"completed\": true, \"pass\": true}\n{\"offline_visual_fixture\": true, \"test\": \"P52.MapExecutionMonitor\", \"role\": \"Map\", \"pid\": 61400, \"exit\": 0, \"succeeded\": 0, \"warnings\": 1, \"failed\": 0, \"discovered\": 1, \"completed\": true, \"pass\": true}\n{\"offline_visual_fixture\": true, \"test\": \"Localization.FTextAndDraftIsolation\", \"role\": \"Map\", \"pid\": 61560, \"exit\": 0, \"succeeded\": 0, \"warnings\": 1, \"failed\": 0, \"discovered\": 1, \"completed\": true, \"pass\": true}\nD:\\CodexPublish\\drone_security\\Evidence\\TASK-P5.5-FIX-01\\ue-1790484743563232600\n",
+    "stderr": ""
+  }
+]

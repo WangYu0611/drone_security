@@ -1,0 +1,76 @@
+{
+  "build": "PASS build-8.log",
+  "discovered": 9,
+  "completed": 9,
+  "succeeded": 4,
+  "succeededWithWarnings": 5,
+  "failed": 0,
+  "notRun": 0,
+  "tests": [
+    {
+      "name": "DroneOps.P55.RouteVisualComponents",
+      "state": "Success",
+      "warnings": 0,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/offline-1790486291463172700/index.json"
+    },
+    {
+      "name": "DroneOps.P55.RouteVisualEncoding",
+      "state": "Success",
+      "warnings": 0,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/offline-1790486291463172700/index.json"
+    },
+    {
+      "name": "DroneOps.P54.RouteEditCameraLock.2D",
+      "state": "Success",
+      "warnings": 0,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/offline-1790486311100864300/index.json"
+    },
+    {
+      "name": "DroneOps.P54.RouteEditCameraLock.3D",
+      "state": "Success",
+      "warnings": 0,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/offline-1790486311100864300/index.json"
+    },
+    {
+      "name": "DroneOps.P55.SecurityPlanRouteVisual",
+      "state": "Success",
+      "warnings": 12,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/ue-1790486329570213700/DroneOps.P55.SecurityPlanRouteVisual/index.json"
+    },
+    {
+      "name": "DroneOps.P4.Localization.FTextAndDraftIsolation",
+      "state": "Success",
+      "warnings": 12,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/ue-1790486329570213700/Localization.FTextAndDraftIsolation/index.json"
+    },
+    {
+      "name": "DroneOps.P4.P52.MapExecutionMonitor",
+      "state": "Success",
+      "warnings": 12,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/ue-1790486329570213700/P52.MapExecutionMonitor/index.json"
+    },
+    {
+      "name": "DroneOps.P4.P54.CameraDampingAnd3DRoute",
+      "state": "Success",
+      "warnings": 12,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/ue-1790486329570213700/P54.CameraDampingAnd3DRoute/index.json"
+    },
+    {
+      "name": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+      "state": "Success",
+      "warnings": 12,
+      "errors": 0,
+      "report": "Evidence/TASK-P5.5-FIX-01/ue-1790486329570213700/Workflow.MapLiveDraftGuard/index.json"
+    }
+  ],
+  "native": "CONDITIONAL PASS; see native/result.json",
+  "production_commit": "4375739"
+}

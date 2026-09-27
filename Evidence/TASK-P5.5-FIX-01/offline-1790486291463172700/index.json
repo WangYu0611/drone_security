@@ -1,0 +1,72 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "85DC49D64FEA5D13D25202A1F6A8B3DF",
+			"instanceName": "JXGM-86628",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.27-05.18.30",
+	"succeeded": 2,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 1.6021944284439087,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "RouteVisualComponents",
+			"fullTestPath": "DroneOps.P55.RouteVisualComponents",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"85DC49D64FEA5D13D25202A1F6A8B3DF"
+			],
+			"duration": 1.5907615423202515,
+			"dateTime": "2026.09.27-05.18.29",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "100-segment edit smoke: 200 mutations in 0.161 seconds",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-05.18.30"
+				}
+			],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteVisualEncoding",
+			"fullTestPath": "DroneOps.P55.RouteVisualEncoding",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"85DC49D64FEA5D13D25202A1F6A8B3DF"
+			],
+			"duration": 0.01143290102481842,
+			"dateTime": "2026.09.27-05.18.30",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}
