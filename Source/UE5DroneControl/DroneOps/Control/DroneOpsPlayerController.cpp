@@ -463,7 +463,12 @@ void ADroneOpsPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
     if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
         auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
-        if(Move && Move->IsMoving()){return;}
+        if(Move && Move->IsMoving()){
+            // Move owns pointer input, but Route V2 still needs camera-dependent
+            // screen width updates (and the existing bounds framing/damping).
+            CommandScreenManager->GetMapService()->TickView(DeltaTime);
+            return;
+        }
     }
 
 	// Video keyboard control intentionally owns all six movement keys. Returning

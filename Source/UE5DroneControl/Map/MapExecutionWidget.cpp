@@ -63,7 +63,10 @@ void UMapExecutionWidget::Refresh(){
             }
             const FString State=Field(E,TEXT("state"));
             const bool Running=ExecutionUI::Active(E) && State!=TEXT("CREATED") && State!=TEXT("SCHEDULED");
-            const bool Selected=Field(E,TEXT("uav_id"))==FString::Printf(TEXT("UAV-%02d"),Registry->GetPrimarySelectedDrone());
+            const FString SelectedMission=Field(Sync->GetContext(),TEXT("active_mission_id"));
+            const bool Selected=!SelectedMission.IsEmpty()
+                ? Field(E,TEXT("plan_id"))==SelectedPlan && Field(E,TEXT("mission_id"))==SelectedMission
+                : Field(E,TEXT("uav_id"))==FString::Printf(TEXT("UAV-%02d"),Registry->GetPrimarySelectedDrone());
             Path->SetRoutePresentation(State==TEXT("COMPLETED")?ERouteVisualState::Completed:Running?ERouteVisualState::Active:ERouteVisualState::Confirmed,Selected);
             Path->SetActorHiddenInGame(false);
         }
