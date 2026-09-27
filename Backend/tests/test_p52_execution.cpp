@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <atomic>
+#include <thread>
 #include "storage/security_plan_store.h"
 #include "conversion/mission_geodesy.h"
 using O=boost::json::object;using A=boost::json::array;
@@ -197,6 +199,71 @@ TEST_F(P54RealAdapter, ScheduledObservationLossFailsAtomically){
     SecurityPlanStore restored(file.string());restored.configureAdapter(cfg,adapter);
     EXPECT_NO_THROW(restored.tickExecutions(.1,uavs,[](const O&){}));
     EXPECT_EQ(restored.snapshot().at("executions").as_object().at(execution).as_object().at("state"),"FAILED");EXPECT_EQ(sent,0);EXPECT_EQ(held,0);std::filesystem::remove(file);
+}
+
+// FIX-02 exercises the public transaction boundary, including simultaneous callers.
+struct P55Reservation:P52Execution {
+    std::string otherPlan,otherMission;
+    void draft(bool deploy=false){
+        const auto a=p,b=m;
+        const auto copy=send({{"action","copy_plan"}});
+        p=otherPlan=SecurityPlanStore::str(copy,"plan_id");m=otherMission=SecurityPlanStore::str(copy,"mission_id");
+        if(deploy){send({{"action","validate"}});send({{"action","review"}});send({{"action","deploy"}});}
+        p=a;m=b;
+    }
+    O other(const char* action){return {{"action",action},{"plan_id",otherPlan},{"mission_id",otherMission}};}
+    void conflict(O request){const auto before=store.snapshot();try{send(request);FAIL()<<"reservation bypass";}catch(const PlanError& e){
+        EXPECT_EQ(e.code,"DRONE_ACTIVE_PLAN_CONFLICT");EXPECT_EQ(e.params.at("drone_id"),"UAV-01");
+        EXPECT_EQ(SecurityPlanStore::str(e.params,"active_plan_id"),p);EXPECT_EQ(SecurityPlanStore::str(e.params,"active_execution_id"),execution);
+    }EXPECT_EQ(store.snapshot(),before);}
+};
+TEST_F(P55Reservation, Reservation01AssignAndPendingStart){deployed();draft();start();
+    auto r=other("assign");r["assigned_uav_id"]="UAV-01";conflict(r);
+    tick();tick();tick();EXPECT_EQ(exec().at("state"),"EXECUTING");conflict(r);
+}
+TEST_F(P55Reservation, Reservation02OtherAircraftAndSamePlan){deployed();draft();start();
+    auto r=other("assign");r["assigned_uav_id"]="UAV-02";EXPECT_NO_THROW(send(r));
+    EXPECT_NO_THROW(SecurityPlanStore::checkReservation(store.snapshot(),p,"UAV-01"));
+}
+TEST_F(P55Reservation, Reservation03CompletionReleases){deployed();draft();start();
+    for(int i=0;i<400 && exec().at("state")!="COMPLETED";++i)tick(1);
+    ASSERT_EQ(exec().at("state"),"COMPLETED");auto r=other("assign");r["assigned_uav_id"]="UAV-01";EXPECT_NO_THROW(send(r));
+}
+TEST_F(P55Reservation, Reservation04AbortAndFailureRelease){deployed();draft();start();tick();tick();tick();control("execution_abort","abort");
+    auto r=other("assign");r["assigned_uav_id"]="UAV-01";EXPECT_NO_THROW(send(r));
+    start("restart");uavs.clear();tick();ASSERT_EQ(exec().at("state"),"FAILED");uavs.insert("UAV-01");EXPECT_NO_THROW(send(r));
+}
+TEST_F(P55Reservation, Reservation05PausedStillLocked){deployed();draft();start();tick();tick();tick();control("execution_pause","pause");
+    auto r=other("assign");r["assigned_uav_id"]="UAV-01";conflict(r);
+}
+TEST_F(P55Reservation, Reservation06ExistingDraftRace){deployed();draft();start();
+    for(const auto* a:{"validate","review","deploy","save_route"})conflict(other(a));
+}
+TEST_F(P55Reservation, Reservation07ConcurrentStarts){deployed();draft(true);
+    std::atomic<int> success{0},conflicts{0},unexpected{0};std::atomic<bool> go{false};
+    auto startPlan=[&](const std::string& plan,const std::string& mission,const char* request){
+        while(!go.load())std::this_thread::yield();
+        try{store.transact({{"action","execution_start"},{"plan_id",plan},{"mission_id",mission},{"request_id",request}},uavs,"QA",[](const O&){});++success;}
+        catch(const PlanError& e){if(e.code=="DRONE_ACTIVE_PLAN_CONFLICT")++conflicts;else ++unexpected;}
+        catch(...){++unexpected;}
+    };
+    std::thread a(startPlan,p,m,"parallel-a"),b(startPlan,otherPlan,otherMission,"parallel-b");go=true;a.join();b.join();
+    EXPECT_EQ(success,1);EXPECT_EQ(conflicts,1);EXPECT_EQ(unexpected,0);EXPECT_EQ(store.snapshot().at("executions").as_object().size(),1u);
+}
+TEST_F(P55Reservation, Reservation08RestartRebuild){deployed();draft();start();tick();tick();tick();
+    const auto file=std::filesystem::temp_directory_path()/("p55-reservation-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(store.snapshot());}SecurityPlanStore restored(file.string());
+    auto r=other("assign");r["assigned_uav_id"]="UAV-01";
+    try{restored.transact(r,uavs,"QA",[](const O&){});FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"DRONE_ACTIVE_PLAN_CONFLICT");EXPECT_EQ(SecurityPlanStore::str(e.params,"active_execution_id"),execution);}
+    std::filesystem::remove(file);
+}
+TEST_F(P55Reservation, ReadyDeployedScheduledAndCancelledDoNotReserve){deployed();draft();
+    auto r=other("assign");r["assigned_uav_id"]="UAV-01";EXPECT_NO_THROW(send(r));
+    for(const auto* state:{"READY","DEPLOYED","SCHEDULED","COMPLETED","CANCELLED","ABORTED","FAILED"})EXPECT_FALSE(SecurityPlanStore::reservesUav({{"state",state}}));
+    send({{"action","execution_start"},{"request_id","scheduled"},{"scheduled_start_at","2099-01-01T00:00:00Z"}});
+    EXPECT_NO_THROW(send(r));
+    auto snapshot=store.snapshot();execution=std::string(snapshot.at("executions").as_object().begin()->key());control("execution_cancel","cancel-schedule");
+    EXPECT_EQ(exec().at("state"),"CANCELLED");EXPECT_NO_THROW(send(r));
 }
 
 }

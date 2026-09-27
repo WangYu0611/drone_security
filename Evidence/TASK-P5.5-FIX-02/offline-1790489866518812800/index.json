@@ -1,0 +1,87 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "6B5117EB46B8EB5AC3E4BF8E399F791D",
+			"instanceName": "JXGM-76524",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.27-06.18.07",
+	"succeeded": 3,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 2.2850444316864014,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "RouteOwnership",
+			"fullTestPath": "DroneOps.P55.RouteOwnership",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"6B5117EB46B8EB5AC3E4BF8E399F791D"
+			],
+			"duration": 0.016692899167537689,
+			"dateTime": "2026.09.27-06.18.05",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteVisualComponents",
+			"fullTestPath": "DroneOps.P55.RouteVisualComponents",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"6B5117EB46B8EB5AC3E4BF8E399F791D"
+			],
+			"duration": 2.258554220199585,
+			"dateTime": "2026.09.27-06.18.05",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "100-segment edit smoke: 200 mutations in 0.210 seconds",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.18.07"
+				}
+			],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteVisualEncoding",
+			"fullTestPath": "DroneOps.P55.RouteVisualEncoding",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"6B5117EB46B8EB5AC3E4BF8E399F791D"
+			],
+			"duration": 0.0097974017262458801,
+			"dateTime": "2026.09.27-06.18.07",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

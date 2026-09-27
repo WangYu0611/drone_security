@@ -1,0 +1,609 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "A8AA72374880C072D56C3FB0BDA85406",
+			"instanceName": "JXGM-92264",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.27-06.06.42",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 8.5766563415527344,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CameraDampingAnd3DRoute",
+			"fullTestPath": "DroneOps.P4.P54.CameraDampingAnd3DRoute",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"A8AA72374880C072D56C3FB0BDA85406"
+			],
+			"duration": 8.5766563415527344,
+			"dateTime": "2026.09.27-06.06.33",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:20680  WebSocketUrl=ws://127.0.0.1:20681/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: === DroneOpsPlayerController::BeginPlay CALLED ===",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogConsoleManager: Console variable 'r.MotionVectorSimulation' used in the render thread. Rendering artifacts could happen. Use ECVF_RenderThreadSafe or don't use in render thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.34"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Camera precondition mode=0 planning=0 distance=15000.000 actual=15000.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=0 yaw=0.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=10241.605 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=-859.579 Z=0.000 ActualDelta=X=0.000 Y=-859.579 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=0 yaw=0.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=11960.762 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=859.579 Z=0.000 ActualDelta=X=0.000 Y=859.579 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=0 yaw=0.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60653.277 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-859.580 Y=-0.000 Z=0.000 ActualDelta=X=-859.580 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=0 yaw=0.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58934.117 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=859.580 Y=0.000 Z=0.000 ActualDelta=X=859.580 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=0 yaw=90.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58934.119 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=859.579 Y=-0.000 Z=0.000 ActualDelta=X=859.579 Y=-0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=0 yaw=90.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60653.276 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-859.579 Y=0.000 Z=0.000 ActualDelta=X=-859.579 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=0 yaw=90.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=10241.604 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-0.000 Y=-859.580 Z=0.000 ActualDelta=X=-0.000 Y=-859.580 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=0 yaw=90.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=11960.764 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=859.580 Z=0.000 ActualDelta=X=0.000 Y=859.580 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=0 yaw=179.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59778.695 Y=11960.631 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=15.002 Y=859.448 Z=0.000 ActualDelta=X=15.002 Y=859.448 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=0 yaw=179.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59808.699 Y=10241.736 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-15.002 Y=-859.448 Z=0.000 ActualDelta=X=-15.002 Y=-859.448 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=0 yaw=179.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58934.248 Y=11086.182 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=859.449 Y=-15.002 Z=0.000 ActualDelta=X=859.449 Y=-15.002 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=0 yaw=179.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60653.146 Y=11116.185 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-859.449 Y=15.002 Z=0.000 ActualDelta=X=-859.449 Y=15.002 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=0 yaw=-90.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60653.276 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-859.579 Y=-0.000 Z=0.000 ActualDelta=X=-859.579 Y=-0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=0 yaw=-90.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58934.119 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=859.579 Y=0.000 Z=0.000 ActualDelta=X=859.579 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=0 yaw=-90.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=11960.764 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-0.000 Y=859.580 Z=0.000 ActualDelta=X=-0.000 Y=859.580 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=0 yaw=-90.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=10241.604 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=-859.580 Z=0.000 ActualDelta=X=0.000 Y=-859.580 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=1 yaw=0.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=10241.605 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=-859.579 Z=0.000 ActualDelta=X=0.000 Y=-859.579 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=1 yaw=0.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=11960.762 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=859.579 Z=0.000 ActualDelta=X=0.000 Y=859.579 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=1 yaw=0.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60843.049 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-1049.352 Y=-0.000 Z=0.000 ActualDelta=X=-1049.352 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=1 yaw=0.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58744.345 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=1049.352 Y=0.000 Z=0.000 ActualDelta=X=1049.352 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=1 yaw=90.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58934.119 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=859.579 Y=-0.000 Z=0.000 ActualDelta=X=859.579 Y=-0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=1 yaw=90.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60653.276 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-859.579 Y=0.000 Z=0.000 ActualDelta=X=-859.579 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=1 yaw=90.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=10051.832 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-0.000 Y=-1049.352 Z=0.000 ActualDelta=X=-0.000 Y=-1049.352 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=1 yaw=90.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=12150.535 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=1049.352 Z=0.000 ActualDelta=X=0.000 Y=1049.352 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=1 yaw=179.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59778.695 Y=11960.631 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=15.002 Y=859.448 Z=0.000 ActualDelta=X=15.002 Y=859.448 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=1 yaw=179.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59808.699 Y=10241.736 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-15.002 Y=-859.448 Z=0.000 ActualDelta=X=-15.002 Y=-859.448 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=1 yaw=179.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58744.505 Y=11082.870 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=1049.192 Y=-18.314 Z=0.000 ActualDelta=X=1049.192 Y=-18.314 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=1 yaw=179.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60842.889 Y=11119.497 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-1049.192 Y=18.314 Z=0.000 ActualDelta=X=-1049.192 Y=18.314 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragRight mode=1 yaw=-90.0 Input=X=80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-60653.276 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-859.579 Y=-0.000 Z=0.000 ActualDelta=X=-859.579 Y=-0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragLeft mode=1 yaw=-90.0 Input=X=-80.000 Y=0.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-58934.119 Y=11101.184 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=859.579 Y=0.000 Z=0.000 ActualDelta=X=859.579 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragUp mode=1 yaw=-90.0 Input=X=0.000 Y=-80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=12150.535 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=-0.000 Y=1049.352 Z=0.000 ActualDelta=X=-0.000 Y=1049.352 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "DragDown mode=1 yaw=-90.0 Input=X=0.000 Y=80.000 Before=X=-59793.697 Y=11101.184 Z=1697.104 TargetAfter=X=-59793.697 Y=10051.832 Z=1697.104 ActualAfter=X=-59793.697 Y=11101.184 Z=1697.104 ExpectedDelta=X=0.000 Y=-1049.352 Z=0.000 ActualDelta=X=0.000 Y=-1049.352 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Wheel screen=X=1631.554 Y=690.152 ExpectedFocus=X=-59793.697 Y=11101.184 Z=1697.104 Target=X=-59793.697 Y=11101.184 Z=1697.104 Actual=X=-59793.697 Y=11101.184 Z=1697.104 Delta=X=0.000 Y=0.000 Z=0.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.27-06.06.42"
+				}
+			],
+			"warnings": 13,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

@@ -1,0 +1,27 @@
+Note: Google Test filter = P55Reservation.*
+[==========] Running 9 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 9 tests from P55Reservation
+[ RUN      ] P55Reservation.Reservation01AssignAndPendingStart
+[       OK ] P55Reservation.Reservation01AssignAndPendingStart (2 ms)
+[ RUN      ] P55Reservation.Reservation02OtherAircraftAndSamePlan
+[       OK ] P55Reservation.Reservation02OtherAircraftAndSamePlan (1 ms)
+[ RUN      ] P55Reservation.Reservation03CompletionReleases
+[       OK ] P55Reservation.Reservation03CompletionReleases (5 ms)
+[ RUN      ] P55Reservation.Reservation04AbortAndFailureRelease
+[       OK ] P55Reservation.Reservation04AbortAndFailureRelease (2 ms)
+[ RUN      ] P55Reservation.Reservation05PausedStillLocked
+[       OK ] P55Reservation.Reservation05PausedStillLocked (1 ms)
+[ RUN      ] P55Reservation.Reservation06ExistingDraftRace
+[       OK ] P55Reservation.Reservation06ExistingDraftRace (2 ms)
+[ RUN      ] P55Reservation.Reservation07ConcurrentStarts
+[       OK ] P55Reservation.Reservation07ConcurrentStarts (2 ms)
+[ RUN      ] P55Reservation.Reservation08RestartRebuild
+[       OK ] P55Reservation.Reservation08RestartRebuild (12 ms)
+[ RUN      ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve
+[       OK ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve (2 ms)
+[----------] 9 tests from P55Reservation (33 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 1 test suite ran. (33 ms total)
+[  PASSED  ] 9 tests.

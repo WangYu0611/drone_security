@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "D:\CodexPublish\drone_security\Scripts\P55Fix02\regression.py", line 22, in <module>
+    with (out/'p52_execution_integration.mjs.log').open('w',encoding='utf-8') as log:subprocess.run(['node',str(root/'Backend/tests/p52_execution_integration.mjs')],cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=180,check=True)
+                                                                                     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\wy331\AppData\Local\Programs\Python\Python313\Lib\subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['node', 'D:\\CodexPublish\\drone_security\\Backend\\tests\\p52_execution_integration.mjs']' returned non-zero exit status 1.

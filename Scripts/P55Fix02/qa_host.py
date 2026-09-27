@@ -1,0 +1,29 @@
+"""Task-owned QA host. Existing launcher owns every process and preserves user data."""
+import sys,json,time
+from pathlib import Path
+root=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(root/'Launcher'))
+from runtime import Runtime
+config=json.loads((root/'Launcher/config.json').read_text())
+config.update(backend_executable='Backend/build-p54/Release/DroneBackend.exe',ue_executable='C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe',http_endpoint='http://127.0.0.1:20580',ws_endpoint='ws://127.0.0.1:20581/ws',runtime_directory='Saved/P55Fix02-QA',max_fps=30,map='/Game/Tests/P55OfflineMap')
+runtime=Runtime(root,config)
+commands=runtime.directory/'command.json'
+last=''
+try:
+    runtime._backend()
+    print('P55_BACKEND_READY',flush=True)
+    while True:
+        if commands.exists():
+            text=commands.read_text()
+            if text!=last:
+                last=text;request=json.loads(text)
+                if request['action']=='stop':break
+                if request['action']=='start':runtime.start_role(request['role'])
+                if request['action']=='stop_role':runtime.stop_role(request['role'])
+                if request['action']=='restart_backend':runtime.stop_role('Backend');runtime._backend()
+                print('COMMAND_DONE '+text,flush=True)
+        time.sleep(.5)
+finally:
+    runtime.stop()
+    print('P55_OWNED_PROCESSES_STOPPED',flush=True)
+

@@ -1,0 +1,340 @@
+[==========] Running 131 tests from 19 test suites.
+[----------] Global test environment set-up.
+[----------] 3 tests from P1BackendContext
+[ RUN      ] P1BackendContext.SnapshotVersionAtomicUpdateAndNoop
+[       OK ] P1BackendContext.SnapshotVersionAtomicUpdateAndNoop (0 ms)
+[ RUN      ] P1BackendContext.ConcurrentWritersPublishMonotonically
+[       OK ] P1BackendContext.ConcurrentWritersPublishMonotonically (2 ms)
+[ RUN      ] P1BackendContext.RestartPreservesVersionAndAllFields
+[       OK ] P1BackendContext.RestartPreservesVersionAndAllFields (8 ms)
+[----------] 3 tests from P1BackendContext (10 ms total)
+
+[----------] 6 tests from PlanFixture
+[ RUN      ] PlanFixture.Create
+[       OK ] PlanFixture.Create (0 ms)
+[ RUN      ] PlanFixture.AssignmentAndDuplicateRejected
+[       OK ] PlanFixture.AssignmentAndDuplicateRejected (0 ms)
+[ RUN      ] PlanFixture.ValidationFailureAndAtomicDeploy
+[       OK ] PlanFixture.ValidationFailureAndAtomicDeploy (0 ms)
+[ RUN      ] PlanFixture.InvalidCoordinatesAndStaleVersion
+[       OK ] PlanFixture.InvalidCoordinatesAndStaleVersion (0 ms)
+[ RUN      ] PlanFixture.SelectionAndReadinessInvalidation
+[       OK ] PlanFixture.SelectionAndReadinessInvalidation (0 ms)
+[ RUN      ] PlanFixture.PersistenceRestart
+[       OK ] PlanFixture.PersistenceRestart (8 ms)
+[----------] 6 tests from PlanFixture (9 ms total)
+
+[----------] 10 tests from P4Workflow
+[ RUN      ] P4Workflow.RevisionValidationReviewInvalidation
+[       OK ] P4Workflow.RevisionValidationReviewInvalidation (0 ms)
+[ RUN      ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable
+[       OK ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable (1 ms)
+[ RUN      ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains
+[       OK ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains (1 ms)
+[ RUN      ] P4Workflow.OwnerRevisionAndDiscard
+[       OK ] P4Workflow.OwnerRevisionAndDiscard (0 ms)
+[ RUN      ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation
+[       OK ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation (0 ms)
+[ RUN      ] P4Workflow.PublisherFailureRetainsCompleteDeploymentState
+[       OK ] P4Workflow.PublisherFailureRetainsCompleteDeploymentState (0 ms)
+[ RUN      ] P4Workflow.WorkflowCreateHasAtomicDefaultTask
+[       OK ] P4Workflow.WorkflowCreateHasAtomicDefaultTask (0 ms)
+[ RUN      ] P4Workflow.WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute
+[       OK ] P4Workflow.WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute (0 ms)
+[ RUN      ] P4Workflow.WorkflowFinishOwnerAndInvalidSaveAreAtomic
+[       OK ] P4Workflow.WorkflowFinishOwnerAndInvalidSaveAreAtomic (0 ms)
+[ RUN      ] P4Workflow.WorkflowDraftCopyAndDeleteDoNotChangeOriginal
+[       OK ] P4Workflow.WorkflowDraftCopyAndDeleteDoNotChangeOriginal (0 ms)
+[----------] 10 tests from P4Workflow (6 ms total)
+
+[----------] 1 test from P4Atomicity
+[ RUN      ] P4Atomicity.PersistenceFailurePublishesNothing
+[       OK ] P4Atomicity.PersistenceFailurePublishesNothing (2 ms)
+[----------] 1 test from P4Atomicity (2 ms total)
+
+[----------] 13 tests from P52Execution
+[ RUN      ] P52Execution.CreateAndExplicitStartStateMachine
+[       OK ] P52Execution.CreateAndExplicitStartStateMachine (1 ms)
+[ RUN      ] P52Execution.PauseResumePreservesPosition
+[       OK ] P52Execution.PauseResumePreservesPosition (1 ms)
+[ RUN      ] P52Execution.Completion
+[       OK ] P52Execution.Completion (4 ms)
+[ RUN      ] P52Execution.AbortStops
+[       OK ] P52Execution.AbortStops (1 ms)
+[ RUN      ] P52Execution.ReturnToExplicitHome
+[       OK ] P52Execution.ReturnToExplicitHome (1 ms)
+[ RUN      ] P52Execution.DuplicateAndConflictingStarts
+[       OK ] P52Execution.DuplicateAndConflictingStarts (1 ms)
+[ RUN      ] P52Execution.ImmutableDeploymentRoute
+[       OK ] P52Execution.ImmutableDeploymentRoute (2 ms)
+[ RUN      ] P52Execution.MissingFixtureFailsWithReason
+[       OK ] P52Execution.MissingFixtureFailsWithReason (0 ms)
+[ RUN      ] P52Execution.StaleControlDoesNotMutate
+[       OK ] P52Execution.StaleControlDoesNotMutate (1 ms)
+[ RUN      ] P52Execution.ProgressDoesNotInvalidatePlanVersion
+[       OK ] P52Execution.ProgressDoesNotInvalidatePlanVersion (1 ms)
+[ RUN      ] P52Execution.ShutdownPausesAndResumesReturn
+[       OK ] P52Execution.ShutdownPausesAndResumesReturn (2 ms)
+[ RUN      ] P52Execution.DurableRestartRetainsPositionAndContinues
+[       OK ] P52Execution.DurableRestartRetainsPositionAndContinues (12 ms)
+[ RUN      ] P52Execution.PersistencePublisherFailureIsAtomic
+[       OK ] P52Execution.PersistencePublisherFailureIsAtomic (0 ms)
+[----------] 13 tests from P52Execution (33 ms total)
+
+[----------] 14 tests from P53Geometry
+[ RUN      ] P53Geometry.ClosedRoundTripAndOnceCompletion
+[       OK ] P53Geometry.ClosedRoundTripAndOnceCompletion (1 ms)
+[ RUN      ] P53Geometry.RejectShortClosedAndInvalidFlag
+[       OK ] P53Geometry.RejectShortClosedAndInvalidFlag (0 ms)
+[ RUN      ] P53Geometry.CancelPreservesAllGeometry
+[       OK ] P53Geometry.CancelPreservesAllGeometry (0 ms)
+[ RUN      ] P53Geometry.DeployedTranslationCreatesImmutableReplacement
+[       OK ] P53Geometry.DeployedTranslationCreatesImmutableReplacement (1 ms)
+[ RUN      ] P53Geometry.RejectNonRigidAndMissingRoutesAtomically
+[       OK ] P53Geometry.RejectNonRigidAndMissingRoutesAtomically (0 ms)
+[ RUN      ] P53Geometry.ActiveExecutionBlocksAllMoveStates
+[       OK ] P53Geometry.ActiveExecutionBlocksAllMoveStates (3 ms)
+[ RUN      ] P53Geometry.MoveLeaseBlocksExecutionAndRouteEditing
+[       OK ] P53Geometry.MoveLeaseBlocksExecutionAndRouteEditing (1 ms)
+[ RUN      ] P53Geometry.StaleMoveCannotOverwritePlan
+[       OK ] P53Geometry.StaleMoveCannotOverwritePlan (0 ms)
+[ RUN      ] P53Geometry.UnauthorizedMoveCannotCommit
+[       OK ] P53Geometry.UnauthorizedMoveCannotCommit (0 ms)
+[ RUN      ] P53Geometry.ReloadPreservesTranslatedDeployment
+[       OK ] P53Geometry.ReloadPreservesTranslatedDeployment (10 ms)
+[ RUN      ] P53Geometry.AllMissionRoutesUseOneDelta
+[       OK ] P53Geometry.AllMissionRoutesUseOneDelta (0 ms)
+[ RUN      ] P53Geometry.TranslationPublisherFailureRollsBack
+[       OK ] P53Geometry.TranslationPublisherFailureRollsBack (0 ms)
+[ RUN      ] P53Geometry.MoveLeaseCannotBeReusedForWaypointEdits
+[       OK ] P53Geometry.MoveLeaseCannotBeReusedForWaypointEdits (0 ms)
+[ RUN      ] P53Geometry.CanonicalClosedRouteAliasAndConflict
+[       OK ] P53Geometry.CanonicalClosedRouteAliasAndConflict (0 ms)
+[----------] 14 tests from P53Geometry (25 ms total)
+
+[----------] 20 tests from P54Mission
+[ RUN      ] P54Mission.MultiAssignmentCreatesSeparateImmutableTrajectories
+[       OK ] P54Mission.MultiAssignmentCreatesSeparateImmutableTrajectories (0 ms)
+[ RUN      ] P54Mission.MultiHoverAndCompletionStaySeparated
+[       OK ] P54Mission.MultiHoverAndCompletionStaySeparated (52 ms)
+[ RUN      ] P54Mission.GroupPauseIsAtomic
+[       OK ] P54Mission.GroupPauseIsAtomic (2 ms)
+[ RUN      ] P54Mission.DuplicateAndTooCloseAssignmentsRejectAtomically
+[       OK ] P54Mission.DuplicateAndTooCloseAssignmentsRejectAtomically (0 ms)
+[ RUN      ] P54Mission.IntersectingApproachesBlockStart
+[       OK ] P54Mission.IntersectingApproachesBlockStart (0 ms)
+[ RUN      ] P54Mission.MissingAltitudeDatumRejected
+[       OK ] P54Mission.MissingAltitudeDatumRejected (0 ms)
+[ RUN      ] P54Mission.AGLResolvesOnceInRuntimeSnapshot
+[       OK ] P54Mission.AGLResolvesOnceInRuntimeSnapshot (0 ms)
+[ RUN      ] P54Mission.SchedulePersistsAndCancelsWithoutMoving
+[       OK ] P54Mission.SchedulePersistsAndCancelsWithoutMoving (1 ms)
+[ RUN      ] P54Mission.ScheduleStartNowUsesSameStateMachine
+[       OK ] P54Mission.ScheduleStartNowUsesSameStateMachine (1 ms)
+[ RUN      ] P54Mission.InvalidScheduleDoesNotPartiallyCreateGroup
+[       OK ] P54Mission.InvalidScheduleDoesNotPartiallyCreateGroup (1 ms)
+[ RUN      ] P54Mission.ScheduleRestartAndReschedule
+[       OK ] P54Mission.ScheduleRestartAndReschedule (10 ms)
+[ RUN      ] P54Mission.GroupMovePreservesRelativePositions
+[       OK ] P54Mission.GroupMovePreservesRelativePositions (6 ms)
+[ RUN      ] P54Mission.InsufficientGroupSpaceRejectsAtomically
+[       OK ] P54Mission.InsufficientGroupSpaceRejectsAtomically (0 ms)
+[ RUN      ] P54Mission.SharedGroupSelectionIsDurableAndPrimaryIsMember
+[       OK ] P54Mission.SharedGroupSelectionIsDurableAndPrimaryIsMember (0 ms)
+[ RUN      ] P54Mission.ThreeAircraftCompleteDistinctSlots
+[       OK ] P54Mission.ThreeAircraftCompleteDistinctSlots (10 ms)
+[ RUN      ] P54Mission.MissingGroupTargetCoordinateRejectsAtomically
+[       OK ] P54Mission.MissingGroupTargetCoordinateRejectsAtomically (0 ms)
+[ RUN      ] P54Mission.ScheduledDeadlineSurvivesGracefulShutdown
+[       OK ] P54Mission.ScheduledDeadlineSurvivesGracefulShutdown (1 ms)
+[ RUN      ] P54Mission.RealGroupFailureHoldsRemainingMembers
+[       OK ] P54Mission.RealGroupFailureHoldsRemainingMembers (1 ms)
+[ RUN      ] P54Mission.RealMeasuredCrossingHoldsBothMembers
+[       OK ] P54Mission.RealMeasuredCrossingHoldsBothMembers (1 ms)
+[ RUN      ] P54Mission.RealFaultWhilePausedReleasesWholeGroup
+[       OK ] P54Mission.RealFaultWhilePausedReleasesWholeGroup (2 ms)
+[----------] 20 tests from P54Mission (98 ms total)
+
+[----------] 9 tests from P54RealAdapter
+[ RUN      ] P54RealAdapter.SameControllerUsesMeasuredArrivalAndHover
+[       OK ] P54RealAdapter.SameControllerUsesMeasuredArrivalAndHover (2 ms)
+[ RUN      ] P54RealAdapter.PauseHoldsAndResumeReissuesThroughSameController
+[       OK ] P54RealAdapter.PauseHoldsAndResumeReissuesThroughSameController (1 ms)
+[ RUN      ] P54RealAdapter.RejectedTransportCannotFabricateArrival
+[       OK ] P54RealAdapter.RejectedTransportCannotFabricateArrival (1 ms)
+[ RUN      ] P54RealAdapter.RejectedHoldIsReported
+[       OK ] P54RealAdapter.RejectedHoldIsReported (1 ms)
+[ RUN      ] P54RealAdapter.RestartPausesRealWithoutDispatch
+[       OK ] P54RealAdapter.RestartPausesRealWithoutDispatch (27 ms)
+[ RUN      ] P54RealAdapter.MockDocumentCannotBecomeRealFlight
+[       OK ] P54RealAdapter.MockDocumentCannotBecomeRealFlight (1 ms)
+[ RUN      ] P54RealAdapter.PublicationFailureKeepsDurableRealIntent
+[       OK ] P54RealAdapter.PublicationFailureKeepsDurableRealIntent (0 ms)
+[ RUN      ] P54RealAdapter.FailedPreflightDoesNotSendOrHold
+[       OK ] P54RealAdapter.FailedPreflightDoesNotSendOrHold (0 ms)
+[ RUN      ] P54RealAdapter.ScheduledObservationLossFailsAtomically
+[       OK ] P54RealAdapter.ScheduledObservationLossFailsAtomically (14 ms)
+[----------] 9 tests from P54RealAdapter (51 ms total)
+
+[----------] 2 tests from P54MissionGeodesy
+[ RUN      ] P54MissionGeodesy.CalibratedNonzeroNedRoundTrip
+[       OK ] P54MissionGeodesy.CalibratedNonzeroNedRoundTrip (0 ms)
+[ RUN      ] P54MissionGeodesy.NonfiniteAndDistantFramesReject
+[       OK ] P54MissionGeodesy.NonfiniteAndDistantFramesReject (0 ms)
+[----------] 2 tests from P54MissionGeodesy (0 ms total)
+
+[----------] 9 tests from P55Reservation
+[ RUN      ] P55Reservation.Reservation01AssignAndPendingStart
+[       OK ] P55Reservation.Reservation01AssignAndPendingStart (1 ms)
+[ RUN      ] P55Reservation.Reservation02OtherAircraftAndSamePlan
+[       OK ] P55Reservation.Reservation02OtherAircraftAndSamePlan (1 ms)
+[ RUN      ] P55Reservation.Reservation03CompletionReleases
+[       OK ] P55Reservation.Reservation03CompletionReleases (5 ms)
+[ RUN      ] P55Reservation.Reservation04AbortAndFailureRelease
+[       OK ] P55Reservation.Reservation04AbortAndFailureRelease (2 ms)
+[ RUN      ] P55Reservation.Reservation05PausedStillLocked
+[       OK ] P55Reservation.Reservation05PausedStillLocked (1 ms)
+[ RUN      ] P55Reservation.Reservation06ExistingDraftRace
+[       OK ] P55Reservation.Reservation06ExistingDraftRace (2 ms)
+[ RUN      ] P55Reservation.Reservation07ConcurrentStarts
+[       OK ] P55Reservation.Reservation07ConcurrentStarts (2 ms)
+[ RUN      ] P55Reservation.Reservation08RestartRebuild
+[       OK ] P55Reservation.Reservation08RestartRebuild (11 ms)
+[ RUN      ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve
+[       OK ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve (1 ms)
+[----------] 9 tests from P55Reservation (30 ms total)
+
+[----------] 3 tests from CoordinateConverterTest
+[ RUN      ] CoordinateConverterTest.NedToUeOffset
+[       OK ] CoordinateConverterTest.NedToUeOffset (0 ms)
+[ RUN      ] CoordinateConverterTest.UeOffsetToNed
+[       OK ] CoordinateConverterTest.UeOffsetToNed (0 ms)
+[ RUN      ] CoordinateConverterTest.RoundTrip
+[       OK ] CoordinateConverterTest.RoundTrip (0 ms)
+[----------] 3 tests from CoordinateConverterTest (0 ms total)
+
+[----------] 4 tests from QuaternionUtilsTest
+[ RUN      ] QuaternionUtilsTest.SpeedFromVelocity
+[       OK ] QuaternionUtilsTest.SpeedFromVelocity (0 ms)
+[ RUN      ] QuaternionUtilsTest.IdentityQuaternion
+[       OK ] QuaternionUtilsTest.IdentityQuaternion (0 ms)
+[ RUN      ] QuaternionUtilsTest.YawFlip
+[       OK ] QuaternionUtilsTest.YawFlip (0 ms)
+[ RUN      ] QuaternionUtilsTest.GetUeYaw
+[       OK ] QuaternionUtilsTest.GetUeYaw (0 ms)
+[----------] 4 tests from QuaternionUtilsTest (0 ms total)
+
+[----------] 5 tests from GpsAnchorManagerTest
+[ RUN      ] GpsAnchorManagerTest.SetAndGetAnchor
+[       OK ] GpsAnchorManagerTest.SetAndGetAnchor (0 ms)
+[ RUN      ] GpsAnchorManagerTest.UpdateAnchor
+[       OK ] GpsAnchorManagerTest.UpdateAnchor (0 ms)
+[ RUN      ] GpsAnchorManagerTest.ClearAnchor
+[       OK ] GpsAnchorManagerTest.ClearAnchor (0 ms)
+[ RUN      ] GpsAnchorManagerTest.MultipleDrones
+[       OK ] GpsAnchorManagerTest.MultipleDrones (0 ms)
+[ RUN      ] GpsAnchorManagerTest.GetNonExistent
+[       OK ] GpsAnchorManagerTest.GetNonExistent (0 ms)
+[----------] 5 tests from GpsAnchorManagerTest (0 ms total)
+
+[----------] 11 tests from CommandQueueTest
+[ RUN      ] CommandQueueTest.PushAndPop
+[       OK ] CommandQueueTest.PushAndPop (0 ms)
+[ RUN      ] CommandQueueTest.PopFromEmpty
+[       OK ] CommandQueueTest.PopFromEmpty (0 ms)
+[ RUN      ] CommandQueueTest.FifoOrder
+[       OK ] CommandQueueTest.FifoOrder (0 ms)
+[ RUN      ] CommandQueueTest.CoalescesPendingVerticalTargets
+[       OK ] CommandQueueTest.CoalescesPendingVerticalTargets (0 ms)
+[ RUN      ] CommandQueueTest.DoesNotCoalesceDifferentHorizontalTargets
+[       OK ] CommandQueueTest.DoesNotCoalesceDifferentHorizontalTargets (0 ms)
+[ RUN      ] CommandQueueTest.CoalescesPendingManualTargetsToLatest
+[       OK ] CommandQueueTest.CoalescesPendingManualTargetsToLatest (0 ms)
+[ RUN      ] CommandQueueTest.PreservesRequestedSpeedWhenReplacingManualTarget
+[       OK ] CommandQueueTest.PreservesRequestedSpeedWhenReplacingManualTarget (0 ms)
+[ RUN      ] CommandQueueTest.OverflowDropsOldest
+[       OK ] CommandQueueTest.OverflowDropsOldest (0 ms)
+[ RUN      ] CommandQueueTest.PauseBlocksPop
+[       OK ] CommandQueueTest.PauseBlocksPop (0 ms)
+[ RUN      ] CommandQueueTest.Clear
+[       OK ] CommandQueueTest.Clear (0 ms)
+[ RUN      ] CommandQueueTest.ThreadSafety
+[       OK ] CommandQueueTest.ThreadSafety (1 ms)
+[----------] 11 tests from CommandQueueTest (1 ms total)
+
+[----------] 9 tests from StateMachineTest
+[ RUN      ] StateMachineTest.InitialStateIsOffline
+[       OK ] StateMachineTest.InitialStateIsOffline (0 ms)
+[ RUN      ] StateMachineTest.TelemetryTransitionsToOnline
+[       OK ] StateMachineTest.TelemetryTransitionsToOnline (0 ms)
+[ RUN      ] StateMachineTest.TimeoutTransitionsToLost
+[       OK ] StateMachineTest.TimeoutTransitionsToLost (0 ms)
+[ RUN      ] StateMachineTest.TelemetryAfterTimeoutResetsToOnline
+[       OK ] StateMachineTest.TelemetryAfterTimeoutResetsToOnline (0 ms)
+[ RUN      ] StateMachineTest.ResetGoesToOffline
+[       OK ] StateMachineTest.ResetGoesToOffline (0 ms)
+[ RUN      ] StateMachineTest.PowerOnEvent
+[       OK ] StateMachineTest.PowerOnEvent (0 ms)
+[ RUN      ] StateMachineTest.LostConnectionEvent
+[       OK ] StateMachineTest.LostConnectionEvent (0 ms)
+[ RUN      ] StateMachineTest.ReconnectEvent
+[       OK ] StateMachineTest.ReconnectEvent (0 ms)
+[ RUN      ] StateMachineTest.NoTimeoutWhenNotOnline
+[       OK ] StateMachineTest.NoTimeoutWhenNotOnline (0 ms)
+[----------] 9 tests from StateMachineTest (0 ms total)
+
+[----------] 2 tests from AssignmentSolverTest
+[ RUN      ] AssignmentSolverTest.Hungarian3x3
+[       OK ] AssignmentSolverTest.Hungarian3x3 (0 ms)
+[ RUN      ] AssignmentSolverTest.HungarianDiagonal
+[       OK ] AssignmentSolverTest.HungarianDiagonal (0 ms)
+[----------] 2 tests from AssignmentSolverTest (0 ms total)
+
+[----------] 4 tests from SegmentDistanceTest
+[ RUN      ] SegmentDistanceTest.Parallel
+[       OK ] SegmentDistanceTest.Parallel (0 ms)
+[ RUN      ] SegmentDistanceTest.Crossing
+D:\CodexPublish\drone_security\Backend\tests\test_assembly_planner.cpp(66): error: The difference between d and 0.0 is 5, which exceeds 1e-4, where
+d evaluates to 5,
+0.0 evaluates to 0, and
+1e-4 evaluates to 0.0001.
+
+[  FAILED  ] SegmentDistanceTest.Crossing (0 ms)
+[ RUN      ] SegmentDistanceTest.EndpointClosest
+[       OK ] SegmentDistanceTest.EndpointClosest (0 ms)
+[ RUN      ] SegmentDistanceTest.VerticalSeparation
+[       OK ] SegmentDistanceTest.VerticalSeparation (0 ms)
+[----------] 4 tests from SegmentDistanceTest (0 ms total)
+
+[----------] 3 tests from AssemblyPlannerTest
+[ RUN      ] AssemblyPlannerTest.NoConflictSparse
+[       OK ] AssemblyPlannerTest.NoConflictSparse (0 ms)
+[ RUN      ] AssemblyPlannerTest.ConflictHeightSeparation
+D:\CodexPublish\drone_security\Backend\tests\test_assembly_planner.cpp(128): error: Expected: (conflicts.size()) >= (1u), actual: 0 vs 1
+
+D:\CodexPublish\drone_security\Backend\tests\test_assembly_planner.cpp(133): error: Value of: z_changed
+  Actual: false
+Expected: true
+
+[  FAILED  ] AssemblyPlannerTest.ConflictHeightSeparation (0 ms)
+[ RUN      ] AssemblyPlannerTest.PreservePreassignedTargets
+[       OK ] AssemblyPlannerTest.PreservePreassignedTargets (0 ms)
+[----------] 3 tests from AssemblyPlannerTest (0 ms total)
+
+[----------] 3 tests from VideoMetadataStoreTest
+[ RUN      ] VideoMetadataStoreTest.StoresJsonLinesAndDeduplicatesRetry
+[       OK ] VideoMetadataStoreTest.StoresJsonLinesAndDeduplicatesRetry (10 ms)
+[ RUN      ] VideoMetadataStoreTest.RejectsUnsafeMissionNameAndOversizedBatch
+[       OK ] VideoMetadataStoreTest.RejectsUnsafeMissionNameAndOversizedBatch (0 ms)
+[ RUN      ] VideoMetadataStoreTest.AcceptsEmptyFinalBatchAndWritesCompletionMarker
+[       OK ] VideoMetadataStoreTest.AcceptsEmptyFinalBatchAndWritesCompletionMarker (6 ms)
+[----------] 3 tests from VideoMetadataStoreTest (17 ms total)
+
+[----------] Global test environment tear-down
+[==========] 131 tests from 19 test suites ran. (287 ms total)
+[  PASSED  ] 129 tests.
+[  FAILED  ] 2 tests, listed below:
+[  FAILED  ] SegmentDistanceTest.Crossing
+[  FAILED  ] AssemblyPlannerTest.ConflictHeightSeparation
+
+ 2 FAILED TESTS

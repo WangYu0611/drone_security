@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="9" failures="0" disabled="0" errors="0" time="0.033" timestamp="2026-09-27T13:51:37.359" name="AllTests">
+  <testsuite name="P55Reservation" tests="9" failures="0" disabled="0" skipped="0" errors="0" time="0.033" timestamp="2026-09-27T13:51:37.359">
+    <testcase name="Reservation01AssignAndPendingStart" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="220" status="run" result="completed" time="0.002" timestamp="2026-09-27T13:51:37.359" classname="P55Reservation" />
+    <testcase name="Reservation02OtherAircraftAndSamePlan" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="224" status="run" result="completed" time="0.001" timestamp="2026-09-27T13:51:37.361" classname="P55Reservation" />
+    <testcase name="Reservation03CompletionReleases" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="228" status="run" result="completed" time="0.005" timestamp="2026-09-27T13:51:37.362" classname="P55Reservation" />
+    <testcase name="Reservation04AbortAndFailureRelease" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="232" status="run" result="completed" time="0.002" timestamp="2026-09-27T13:51:37.368" classname="P55Reservation" />
+    <testcase name="Reservation05PausedStillLocked" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="236" status="run" result="completed" time="0.001" timestamp="2026-09-27T13:51:37.370" classname="P55Reservation" />
+    <testcase name="Reservation06ExistingDraftRace" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="239" status="run" result="completed" time="0.002" timestamp="2026-09-27T13:51:37.372" classname="P55Reservation" />
+    <testcase name="Reservation07ConcurrentStarts" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="242" status="run" result="completed" time="0.002" timestamp="2026-09-27T13:51:37.374" classname="P55Reservation" />
+    <testcase name="Reservation08RestartRebuild" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="253" status="run" result="completed" time="0.012" timestamp="2026-09-27T13:51:37.377" classname="P55Reservation" />
+    <testcase name="ReadyDeployedScheduledAndCancelledDoNotReserve" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="260" status="run" result="completed" time="0.002" timestamp="2026-09-27T13:51:37.390" classname="P55Reservation" />
+  </testsuite>
+</testsuites>

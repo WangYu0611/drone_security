@@ -30,6 +30,13 @@ public:explicit FP55SecurityPlanVisual(FAutomationTestBase* T):Test(T){}
         auto* P=Shell->PlanPanel.Get();auto* M=Shell->MovePanel.Get();if(!P || !M || P->bPending || M->bPending)return false;
         auto* C=W->GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();if(!C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
         Shell->Refresh();
+        // Inspect every bound core/halo MID throughout the real widget lifecycle.
+        for(TActorIterator<ADronePathActor> It(W);It;++It)if(!It->IsHidden() && !It->GetSegmentVisuals().IsEmpty()){
+            Test->TestFalse(TEXT("no debug spline overlay"),It->PathSpline->bDrawDebug);
+            TArray<USplineMeshComponent*> Meshes;It->GetComponents(Meshes);
+            for(const auto* Mesh:Meshes){const auto* MID=Cast<UMaterialInstanceDynamic>(Mesh->GetMaterial(0));
+                Test->TestTrue(TEXT("each actual core and halo binds M_CommandPathV2"),MID && MID->Parent && MID->Parent->GetPathName()==TEXT("/Game/Command/Materials/M_CommandPathV2.M_CommandPathV2"));}
+        }
         auto Route=[&](){return Find(S->GetPlans(),TEXT("paths"),Field(Find(S->GetPlans(),TEXT("missions"),Mission),TEXT("route_id")));};
         auto Move=[&](){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("mode"),TEXT("MOVE"));R->SetStringField(TEXT("plan_id"),Plan);R->SetStringField(TEXT("mission_id"),Mission);M->Requested(R);};
         auto Visible=[&](){int Count=0;for(TActorIterator<ADronePathActor> I(W);I;++I)if(!I->IsHidden() && !I->GetSegmentVisuals().IsEmpty())++Count;return Count;};

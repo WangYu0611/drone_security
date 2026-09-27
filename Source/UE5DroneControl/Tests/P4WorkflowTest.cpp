@@ -267,6 +267,7 @@ public:FP52ExecutionWidgets(FAutomationTestBase* T,bool C):Test(T),Command(C){}
             const auto All=MakeShared<FJsonObject>(*PlanUI::Object(Fixture,TEXT("executions")));
             const auto Extra=MakeShared<FJsonObject>(*E);const int Other=DroneId==1?2:1;
             Extra->SetStringField(TEXT("execution_id"),TEXT("qa-second-group"));Extra->SetStringField(TEXT("group_id"),TEXT("qa-independent-group"));
+            Extra->SetStringField(TEXT("mission_id"),TEXT("qa-independent-mission"));
             Extra->SetStringField(TEXT("uav_id"),FString::Printf(TEXT("UAV-%02d"),Other));Extra->SetBoolField(TEXT("simulation"),false);
             Extra->SetNumberField(TEXT("created_at"),E->GetNumberField(TEXT("created_at"))+1);
             FDroneTelemetrySnapshot ActualBefore;Registry->GetTelemetry(Other,ActualBefore);

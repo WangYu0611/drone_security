@@ -1,0 +1,900 @@
+{
+  "status": 200,
+  "data": {
+    "state": {
+      "version": 113,
+      "next_id": 18,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "P55 FIX Route V2 Lifecycle",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 14,
+          "review": null,
+          "version": 14,
+          "created_at": 1790487866.491524,
+          "updated_at": 1790489186.7954953,
+          "mission_ids": [
+            "mission-2",
+            "mission-5",
+            "mission-8"
+          ],
+          "workflow_mission_id": "mission-8",
+          "workflow_step": "PreDeployReview",
+          "validation": {
+            "ready": false,
+            "issues": [],
+            "mission_count": 3,
+            "assigned_count": 3,
+            "routes_ready": 3,
+            "validated_content_revision": null
+          }
+        },
+        "plan-16": {
+          "id": "plan-16",
+          "name": "FIX02 Plan B",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1790489223.6686125,
+          "updated_at": 1790489223.6686127,
+          "mission_ids": [
+            "mission-17"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-17",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-17",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "Route A",
+          "assigned_uav_id": "UAV-01",
+          "route_id": "route-4",
+          "status": "READY",
+          "assigned_uav_ids": [
+            "UAV-01"
+          ],
+          "formation": "Line",
+          "spacing_m": 3
+        },
+        "mission-5": {
+          "id": "mission-5",
+          "plan_id": "plan-1",
+          "name": "Route B",
+          "assigned_uav_id": "UAV-02",
+          "route_id": "route-7",
+          "status": "READY",
+          "assigned_uav_ids": [
+            "UAV-02"
+          ],
+          "formation": "Line",
+          "spacing_m": 3
+        },
+        "mission-8": {
+          "id": "mission-8",
+          "plan_id": "plan-1",
+          "name": "Route C",
+          "assigned_uav_id": "UAV-03",
+          "route_id": "route-10",
+          "status": "READY",
+          "assigned_uav_ids": [
+            "UAV-03"
+          ],
+          "formation": "Line",
+          "spacing_m": 3
+        },
+        "mission-17": {
+          "id": "mission-17",
+          "plan_id": "plan-16",
+          "name": "Patrol B",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {
+        "route-4": {
+          "pathId": 1,
+          "bClosedLoop": true,
+          "waypoints": [
+            {
+              "sequence": 1,
+              "latitude": 39.98027423826669,
+              "longitude": 116.34669002852658,
+              "altitude": 30.00047859396938,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 0,
+              "waitTime": 0,
+              "location": {
+                "x": -2647.739901167712,
+                "y": 8058.475105804648,
+                "z": -1300.008846759796
+              }
+            },
+            {
+              "sequence": 2,
+              "latitude": 39.98027424404186,
+              "longitude": 116.34729002799642,
+              "altitude": 90.00024556796028,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 12,
+              "waitTime": 0,
+              "location": {
+                "x": 2477.408336924949,
+                "y": 8058.487689120021,
+                "z": 4699.9685344696045
+              }
+            },
+            {
+              "sequence": 3,
+              "latitude": 39.980774244747906,
+              "longitude": 116.34729002605074,
+              "altitude": 99.99983302340382,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 12,
+              "waitTime": 0,
+              "location": {
+                "x": 2477.377538787761,
+                "y": 2506.692355496134,
+                "z": 5699.973503470421
+              }
+            },
+            {
+              "sequence": 4,
+              "latitude": 39.980774240228584,
+              "longitude": 116.34689002587189,
+              "altitude": 49.99998837586677,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 8,
+              "waitTime": 0,
+              "location": {
+                "x": -939.382173759303,
+                "y": 2506.726173085417,
+                "z": 699.993152320385
+              }
+            },
+            {
+              "sequence": 5,
+              "latitude": 39.98052423895432,
+              "longitude": 116.3466900278199,
+              "altitude": 40.00027232208027,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 10,
+              "waitTime": 0,
+              "location": {
+                "x": -2647.7404338544225,
+                "y": 5282.606308263983,
+                "z": -300.0003061890602
+              }
+            }
+          ],
+          "closedRoute": true,
+          "route_id": "route-4",
+          "revision": 3
+        },
+        "route-7": {
+          "pathId": 2,
+          "bClosedLoop": false,
+          "waypoints": [
+            {
+              "sequence": 1,
+              "latitude": 39.981274239344195,
+              "longitude": 116.34669002436904,
+              "altitude": 44.999653504153166,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 0,
+              "waitTime": 0,
+              "location": {
+                "x": -2647.743034911713,
+                "y": -3045.0226777370317,
+                "z": 199.95264291763303
+              }
+            },
+            {
+              "sequence": 2,
+              "latitude": 39.98127424378092,
+              "longitude": 116.34729002277427,
+              "altitude": 84.99942048028299,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 6,
+              "waitTime": 0,
+              "location": {
+                "x": 2477.3256767565395,
+                "y": -3045.0904240186555,
+                "z": 4199.930024147034
+              }
+            },
+            {
+              "sequence": 3,
+              "latitude": 39.98177424582549,
+              "longitude": 116.34729002189307,
+              "altitude": 114.99900793293016,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 12,
+              "waitTime": 0,
+              "location": {
+                "x": 2477.311728345791,
+                "y": -8596.941650825296,
+                "z": 7199.838095366955
+              }
+            },
+            {
+              "sequence": 4,
+              "latitude": 39.98177424130612,
+              "longitude": 116.34689002171424,
+              "altitude": 64.99916328264845,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 8,
+              "waitTime": 0,
+              "location": {
+                "x": -939.4061995571464,
+                "y": -8596.82056661204,
+                "z": 2199.8577448129654
+              }
+            },
+            {
+              "sequence": 5,
+              "latitude": 39.98152424003183,
+              "longitude": 116.34669002366228,
+              "altitude": 54.9994472288358,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 10,
+              "waitTime": 0,
+              "location": {
+                "x": -2647.7435676878304,
+                "y": -5820.915953474794,
+                "z": 1199.9127349257467
+              }
+            }
+          ],
+          "closedRoute": false,
+          "route_id": "route-7",
+          "revision": 3
+        },
+        "route-10": {
+          "pathId": 3,
+          "bClosedLoop": false,
+          "waypoints": [
+            {
+              "sequence": 1,
+              "latitude": 39.98227424042178,
+              "longitude": 116.34669002021126,
+              "altitude": 59.99882841040838,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 0,
+              "waitTime": 0,
+              "location": {
+                "x": -2647.7461687749237,
+                "y": -14148.574739890848,
+                "z": 1699.7203389406204
+              }
+            },
+            {
+              "sequence": 2,
+              "latitude": 39.982274244858566,
+              "longitude": 116.34729001861648,
+              "altitude": 99.99859538957621,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 6,
+              "waitTime": 0,
+              "location": {
+                "x": 2477.259865599314,
+                "y": -14148.712299543176,
+                "z": 5699.697718858719
+              }
+            },
+            {
+              "sequence": 3,
+              "latitude": 39.98277424690316,
+              "longitude": 116.34729001773516,
+              "altitude": 129.99818284406308,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 12,
+              "waitTime": 0,
+              "location": {
+                "x": 2477.2459159070645,
+                "y": -19700.629934089935,
+                "z": 8699.508891046047
+              }
+            },
+            {
+              "sequence": 4,
+              "latitude": 39.982774242383805,
+              "longitude": 116.34689001755636,
+              "altitude": 79.998338188108,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 8,
+              "waitTime": 0,
+              "location": {
+                "x": -939.4302261000481,
+                "y": -19700.421584027565,
+                "z": 3699.5285428166394
+              }
+            },
+            {
+              "sequence": 5,
+              "latitude": 39.982524241109495,
+              "longitude": 116.34669001950446,
+              "altitude": 69.99862213888831,
+              "altitude_reference": "Ellipsoid",
+              "segmentSpeed": 10,
+              "waitTime": 0,
+              "location": {
+                "x": -2647.7467015212387,
+                "y": -16924.4924937065,
+                "z": 2699.6319823265076
+              }
+            }
+          ],
+          "closedRoute": false,
+          "route_id": "route-10",
+          "revision": 3
+        }
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1790487866.4915357,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P55 FIX Route V2 Lifecycle"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: P55 FIX Route V2 Lifecycle",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1790487866.5039728,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Mission created: Route A",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 3,
+          "timestamp": 1790487866.5175683,
+          "event_type": "UAV_ASSIGNED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "UAV assignment updated",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 4,
+          "timestamp": 1790487866.5328763,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route editing started",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 5,
+          "timestamp": 1790487866.541774,
+          "event_type": "ROUTE_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route saved: Route A",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 6,
+          "timestamp": 1790487866.5417802,
+          "event_type": "ROUTE_SAVED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route draft saved",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 7,
+          "timestamp": 1790487866.550712,
+          "event_type": "ROUTE_EDIT_COMPLETED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route editing completed",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 8,
+          "timestamp": 1790487866.5575666,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Mission created: Route B",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 9,
+          "timestamp": 1790487866.5689373,
+          "event_type": "UAV_ASSIGNED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "UAV assignment updated",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 10,
+          "timestamp": 1790487866.5815456,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route editing started",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 11,
+          "timestamp": 1790487866.5882113,
+          "event_type": "ROUTE_CREATED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route saved: Route B",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 12,
+          "timestamp": 1790487866.5882149,
+          "event_type": "ROUTE_SAVED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route draft saved",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 13,
+          "timestamp": 1790487866.5949392,
+          "event_type": "ROUTE_EDIT_COMPLETED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route editing completed",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 14,
+          "timestamp": 1790487866.6015368,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Mission created: Route C",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 15,
+          "timestamp": 1790487866.6108162,
+          "event_type": "UAV_ASSIGNED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "UAV assignment updated",
+          "source": "P55FIX-FIXTURE-Command"
+        },
+        {
+          "sequence": 16,
+          "timestamp": 1790487866.621669,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route editing started",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 17,
+          "timestamp": 1790487866.6290596,
+          "event_type": "ROUTE_CREATED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route saved: Route C",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 18,
+          "timestamp": 1790487866.6290646,
+          "event_type": "ROUTE_SAVED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route draft saved",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 19,
+          "timestamp": 1790487866.6350603,
+          "event_type": "ROUTE_EDIT_COMPLETED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route editing completed",
+          "source": "P55FIX-FIXTURE-Map"
+        },
+        {
+          "sequence": 20,
+          "timestamp": 1790488726.0179124,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route editing started",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 21,
+          "timestamp": 1790488869.4694576,
+          "event_type": "ROUTE_UPDATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route saved: Route A",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 22,
+          "timestamp": 1790488869.469463,
+          "event_type": "ROUTE_SAVED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route draft saved",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 23,
+          "timestamp": 1790488878.7059772,
+          "event_type": "ROUTE_EDIT_COMPLETED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Route A",
+            "uav_id": "UAV-01"
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Route editing completed",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 24,
+          "timestamp": 1790488956.9670248,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route editing started",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 25,
+          "timestamp": 1790488974.6950574,
+          "event_type": "ROUTE_UPDATED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route saved: Route B",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 26,
+          "timestamp": 1790488974.6950696,
+          "event_type": "ROUTE_SAVED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route draft saved",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 27,
+          "timestamp": 1790488983.195473,
+          "event_type": "ROUTE_EDIT_COMPLETED",
+          "params": {
+            "target_id": "mission-5",
+            "mission_name": "Route B",
+            "uav_id": "UAV-02"
+          },
+          "category": "MISSION",
+          "target_id": "mission-5",
+          "message": "Route editing completed",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 28,
+          "timestamp": 1790489064.7565272,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route editing started",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 29,
+          "timestamp": 1790489074.357666,
+          "event_type": "ROUTE_UPDATED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route saved: Route C",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 30,
+          "timestamp": 1790489074.3576748,
+          "event_type": "ROUTE_SAVED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route draft saved",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 31,
+          "timestamp": 1790489081.7907467,
+          "event_type": "ROUTE_EDIT_COMPLETED",
+          "params": {
+            "target_id": "mission-8",
+            "mission_name": "Route C",
+            "uav_id": "UAV-03"
+          },
+          "category": "MISSION",
+          "target_id": "mission-8",
+          "message": "Route editing completed",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 32,
+          "timestamp": 1790489186.7955017,
+          "event_type": "PLAN_TRANSLATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "P55 FIX Route V2 Lifecycle"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Plan position confirmed",
+          "source": "CLIENT-MAP-6be89e1a"
+        },
+        {
+          "sequence": 33,
+          "timestamp": 1790489223.6686168,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-16",
+            "plan_name": "FIX02 Plan B"
+          },
+          "category": "PLAN",
+          "target_id": "plan-16",
+          "message": "Security plan created: FIX02 Plan B",
+          "source": "FIX02-Supplementary-API"
+        },
+        {
+          "sequence": 34,
+          "timestamp": 1790489223.6686263,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-17",
+            "mission_name": "Patrol B",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-17",
+          "message": "Default task created",
+          "source": "FIX02-Supplementary-API"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {},
+      "executions": {},
+      "execution_version": 1,
+      "execution_requests": {
+        "b1796a2a-98f7-42d4-bbab-7c7fae948071": {
+          "request": {
+            "request_id": "b1796a2a-98f7-42d4-bbab-7c7fae948071",
+            "simulation": true,
+            "action": "execution_shutdown"
+          },
+          "execution_id": ""
+        }
+      },
+      "mock_execution": {
+        "simulation": true,
+        "default_speed_mps": 8,
+        "uavs": {
+          "UAV-01": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            }
+          },
+          "UAV-02": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34706,
+              "altitude": 30
+            }
+          },
+          "UAV-03": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34709,
+              "altitude": 30
+            }
+          },
+          "UAV-04": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34712,
+              "altitude": 30
+            }
+          }
+        },
+        "safety_separation_m": 1.5
+      },
+      "execution_adapter": "Mock"
+    },
+    "plan_id": "plan-16",
+    "mission_id": "mission-17",
+    "context": {
+      "context_version": 9,
+      "active_uav_id": "UAV-01",
+      "active_alert_id": null,
+      "active_mission_id": "mission-17",
+      "active_security_plan_id": "plan-16",
+      "active_area_id": null,
+      "operation_mode": "MONITOR",
+      "updated_at": 1790489223.6714704,
+      "updated_by": "FIX02-Supplementary-API",
+      "selected_uav_ids": [
+        "UAV-01"
+      ]
+    }
+  }
+}

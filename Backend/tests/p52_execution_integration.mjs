@@ -12,8 +12,8 @@ try{
  const snapshot=()=>api('/api/security-plans');let plan,mission,id;
  const send=async(c,action,extra={},ok=true)=>api('/api/security-plans',{instance_id:c.id,action,plan_id:plan,mission_id:mission,expected_version:(await snapshot()).version,...extra},ok);
  let r=await send(command,'create_plan',{name:'P5.2 protocol only',default_mission_name:'Task 01'});plan=r.plan_id;mission=r.mission_id;
- await send(command,'assign',{assigned_uav_id:'UAV-01'});r=await send(map,'begin_route_edit',{content_revision:(await snapshot()).plans[plan].content_revision,workflow:true});
- const path={pathId:1,bClosedLoop:false,waypoints:[0,1,2,3].map(i=>({sequence:i+1,latitude:39.9807+i*.0001,longitude:116.34703+i*.0001,altitude:30,segmentSpeed:8,waitTime:0}))};
+ await send(command,'assign',{assigned_uav_id:process.env.P52_UAV??'UAV-01'});r=await send(map,'begin_route_edit',{content_revision:(await snapshot()).plans[plan].content_revision,workflow:true});
+ const path={pathId:1,bClosedLoop:false,waypoints:[0,1,2,3].map(i=>({sequence:i+1,latitude:39.9807+i*.0001,longitude:Number(process.env.P52_LONGITUDE??116.34703)+i*.0001,altitude:30,segmentSpeed:8,waitTime:0}))};
  await send(map,'save_route',{edit_session_id:r.edit_session_id,path,keep_editing:true});await send(map,'finish_route_edit',{edit_session_id:r.edit_session_id});await send(command,'validate');await send(command,'review');r=await send(command,'deploy');
  assert.equal(r.state.plans[plan].status,'DEPLOYED');assert.equal(Object.keys(r.state.executions).length,0);pass('Deploy does not automatically start');
  const start=async()=>{const request_id=crypto.randomUUID();const x=await send(command,'execution_start',{request_id});id=x.execution_id;return request_id;};

@@ -1,3 +1,4 @@
+#include "Shared/ExecutionPresentation.h"
 #if WITH_DEV_AUTOMATION_TESTS
 #include "Misc/AutomationTest.h"
 #include "PathEditor/DronePathVisual.h"
@@ -22,5 +23,22 @@ bool FRouteVisualEncodingTest::RunTest(const FString&)
         TestTrue(TEXT("normal core independent of state"),C[0].StartColor==V[0].StartColor);
         TestEqual(TEXT("data not mutated"),S[0],0.f);TestEqual(TEXT("height not mutated"),H[3],140.);
     }return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRouteOwnershipTest,"DroneOps.P55.RouteOwnership",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FRouteOwnershipTest::RunTest(const FString&){
+    auto State=MakeShared<FJsonObject>(),Executions=MakeShared<FJsonObject>(),Plans=MakeShared<FJsonObject>();State->SetObjectField(TEXT("executions"),Executions);State->SetObjectField(TEXT("plans"),Plans);
+    auto Plan=MakeShared<FJsonObject>();Plan->SetStringField(TEXT("deployment_id"),TEXT("d1"));Plans->SetObjectField(TEXT("p1"),Plan);
+    auto Add=[&](const TCHAR* Id,const TCHAR* Mission,const TCHAR* Group,const TCHAR* Status,double Time){auto E=MakeShared<FJsonObject>();
+        E->SetStringField(TEXT("execution_id"),Id);E->SetStringField(TEXT("plan_id"),TEXT("p1"));E->SetStringField(TEXT("mission_id"),Mission);E->SetStringField(TEXT("group_id"),Group);
+        E->SetStringField(TEXT("deployment_id"),TEXT("d1"));E->SetStringField(TEXT("state"),Status);E->SetNumberField(TEXT("created_at"),Time);Executions->SetObjectField(Id,E);return E;};
+    Add(TEXT("old"),TEXT("m1"),TEXT(""),TEXT("COMPLETED"),1);
+    auto Current=Add(TEXT("current"),TEXT("m1"),TEXT(""),TEXT("COMPLETED"),2);
+    TestEqual(TEXT("legacy empty groups cannot duplicate a Mission"),ExecutionUI::RouteOwners(State,TEXT("p1")).Num(),1);
+    Add(TEXT("other"),TEXT("m2"),TEXT("g2"),TEXT("EXECUTING"),3);
+    auto Owners=ExecutionUI::RouteOwners(State,TEXT("p1"));TestEqual(TEXT("completed route retained alongside another executing mission"),Owners.Num(),2);TestTrue(TEXT("latest immutable completion retained"),Owners.Contains(Current));
+    Add(TEXT("restart"),TEXT("m1"),TEXT("g3"),TEXT("EXECUTING"),4);Owners=ExecutionUI::RouteOwners(State,TEXT("p1"));TestEqual(TEXT("restart replaces completed owner"),Owners.Num(),2);TestFalse(TEXT("old completion excluded"),Owners.Contains(Current));
+    Plan->SetStringField(TEXT("deployment_id"),TEXT("d2"));Executions->RemoveField(TEXT("restart"));TestEqual(TEXT("stale deployment completion excluded"),ExecutionUI::RouteOwners(State,TEXT("p1")).Num(),1);
+    return true;
 }
 #endif
