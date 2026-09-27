@@ -1,0 +1,26 @@
+{
+  "pass": true,
+  "pid": 130180,
+  "results": [
+    "Real adapter hydration; empty fleet; zero executions",
+    {
+      "path": "/api/arrays",
+      "status": 409,
+      "code": "MISSION_CONTROLLER_OWNS_CONTROL"
+    },
+    {
+      "path": "/api/debug/cmd/d1/move",
+      "status": 409,
+      "code": "MISSION_CONTROLLER_OWNS_CONTROL"
+    },
+    {
+      "path": "/api/mock-executions/pause-all",
+      "status": 409,
+      "code": "ADAPTER_MODE_MISMATCH"
+    },
+    {
+      "state_after": {},
+      "flight_io": "No UAV records and empty port_map; no transport activated"
+    }
+  ]
+}

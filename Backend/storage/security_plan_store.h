@@ -1,8 +1,13 @@
 #pragma once
 #include "storage/operational_context.h"
+#include "execution/security_mission_adapter.h"
 #include <set>
 #include <vector>
 #include <cmath>
+#include <limits>
+#include <iomanip>
+#include <sstream>
+#include <ctime>
 
 struct PlanError : std::runtime_error {
     std::string code;
@@ -12,7 +17,7 @@ struct PlanError : std::runtime_error {
 };
 
 // Backend authority. Paths use the existing DronePathSaveData JSON contract with
-// additive WGS84 metadata; there is no execution-engine call in this store.
+// additive WGS84 metadata. One mission controller drives interchangeable motion adapters.
 class SecurityPlanStore {
     using Object = boost::json::object;
     using Array = boost::json::array;
@@ -230,17 +235,24 @@ public:
                     mission["name"] = requiredName(request);
                     event(next,"MISSION_UPDATED","MISSION",missionId,"Mission renamed: " + str(mission,"name"),source);
                 } else if (action == "assign") {
-                    const auto uav = str(request,"assigned_uav_id");
-                    if (!uav.empty() && !uavs.count(uav)) throw PlanError("INVALID_UAV","Unknown UAV: " + uav);
-                    for (const auto& id : ids) {
-                        const auto& other = missions.at(id.as_string()).as_object();
-                        if (!uav.empty() && std::string(id.as_string()) != missionId && str(other,"assigned_uav_id") == uav)
-                            throw PlanError("UAV_ALREADY_ASSIGNED",uav + " already assigned to " + str(other,"name"));
+                    const auto assigned=assignment(request);
+                    std::set<std::string> unique;
+                    for(const auto& v:assigned){const std::string uav(v.as_string());
+                        if(!uavs.count(uav) || !unique.insert(uav).second)throw PlanError("INVALID_UAV","Unknown or duplicate UAV: "+uav);
+                        for(const auto& id:ids)if(std::string(id.as_string())!=missionId)
+                            for(const auto& other:assignment(missions.at(id.as_string()).as_object()))if(other==v)
+                                throw PlanError("UAV_ALREADY_ASSIGNED",uav+" already assigned");
                     }
-                    mission["assigned_uav_id"] = uav.empty() ? boost::json::value(nullptr) : boost::json::value(uav);
-                    event(next,uav.empty()?"UAV_UNASSIGNED":"UAV_ASSIGNED","MISSION",missionId,
-                        uav.empty()?"UAV unassigned":uav + " assigned to " + str(mission,"name"),source);
-                    if(!uav.empty())event(next,"MISSION_CONFIGURED","MISSION",missionId,"Task configured",source);
+                    mission["assigned_uav_ids"]=assigned;
+                    mission["assigned_uav_id"]=assigned.empty()?boost::json::value(nullptr):assigned.front();
+                    const auto formation=str(request,"formation");
+                    if(!formation.empty() && formation!="Line")throw PlanError("FORMATION_UNSUPPORTED","Only Line is enabled; Column, V, Grid and Custom are reserved");
+                    mission["formation"]="Line";
+                    const auto* spacing=request.if_contains("spacing_m");
+                    if(spacing && (!spacing->is_number() || !std::isfinite(spacing->to_number<double>()) || spacing->to_number<double>()<safetySeparation()))
+                        throw PlanError("INVALID_SEPARATION","Formation spacing is below safety separation");
+                    mission["spacing_m"]=spacing?*spacing:boost::json::value(safetySeparation()*2.);
+                    event(next,assigned.empty()?"UAV_UNASSIGNED":"UAV_ASSIGNED","MISSION",missionId,"UAV assignment updated",source);
                 } else if (action == "save_route") {
                     auto& session=ownedSession(next,request,planId,missionId);
                     if(str(session,"mode")=="MOVE")throw PlanError("EDIT_SESSION_CONFLICT","Finish plan movement first");
@@ -312,6 +324,7 @@ public:
     }
 private:
 #include "storage/plan_geometry.inl"
+#include "storage/mission_trajectory.inl"
     static bool expire(Object& state,double now) {
         auto& sessions=state.at("edit_sessions").as_object();std::vector<std::string> expired;
         for(const auto& e:sessions)if(e.value().as_object().at("lease_expires_at").to_number<double>()<=now)expired.emplace_back(e.key());
@@ -361,11 +374,21 @@ private:
             if (std::abs(p.at("latitude").to_number<double>())>90 || std::abs(p.at("longitude").to_number<double>())>180 ||
                 p.at("segmentSpeed").to_number<double>()<0 || p.at("waitTime").to_number<double>()<0)
                 throw PlanError("INVALID_WAYPOINT","Waypoint values out of range");
+            const auto reference=str(p,"altitude_reference");
+            if(!reference.empty() && reference!="Ellipsoid" && reference!="AGL" && reference!="MSL")
+                throw PlanError("INVALID_ALTITUDE_REFERENCE","Unknown altitude reference");
+            if(reference=="AGL" || reference=="MSL") {
+                const char* key=reference=="AGL"?"terrain_ellipsoid_m":"geoid_undulation_m";
+                const auto* offset=p.if_contains(key);
+                if(!offset || !offset->is_number() || !std::isfinite(offset->to_number<double>()))
+                    throw PlanError("ALTITUDE_DATUM_UNRESOLVED","Height conversion requires resolved terrain or geoid data");
+                if(reference=="AGL" && p.at("altitude").to_number<double>()<0)throw PlanError("INVALID_WAYPOINT","AGL altitude must be nonnegative");
+            }
             auto* seq=p.if_contains("sequence");
             if (!seq || !seq->is_number() || seq->to_number<double>() != ++index) throw PlanError("INVALID_WAYPOINT","Waypoint sequence must be contiguous from 1");
         }
     }
-    static Object validate(Object& s, const std::string& id, const std::set<std::string>& uavs) {
+    Object validate(Object& s, const std::string& id, const std::set<std::string>& uavs) {
         auto& plan=s.at("plans").as_object().at(id).as_object();
         Array issues; int assigned=0, routes=0; std::set<std::string> seen;
         const auto& ids=plan.at("mission_ids").as_array();
@@ -376,9 +399,12 @@ private:
             const auto before=issues.size();
             const auto u=str(m,"assigned_uav_id"), r=str(m,"route_id");
             const std::string key(mid.as_string());
-            if (u.empty()) issue(key,"NO_UAV_ASSIGNED");
-            else if (!uavs.count(u)) issue(key,"INVALID_UAV");
-            else { ++assigned; if (!seen.insert(u).second) issue(key,"UAV_ALREADY_ASSIGNED"); }
+            const auto members=assignment(m);
+            if(members.empty())issue(key,"NO_UAV_ASSIGNED");
+            for(const auto& member:members){const std::string uid(member.as_string());
+                if(!uavs.count(uid))issue(key,"INVALID_UAV");
+                else {++assigned;if(!seen.insert(uid).second)issue(key,"UAV_ALREADY_ASSIGNED");}
+            }
             auto* path=s.at("paths").as_object().if_contains(r);
             if (!path) issue(key,"ROUTE_MISSING");
             else {
@@ -387,6 +413,14 @@ private:
                 } catch (const PlanError&) { issue(key,"INVALID_WAYPOINT"); }
             }
             if (str(m,"status")!="DEPLOYED") m["status"] = issues.size()==before ? "READY" : "DRAFT";
+        }
+        // Readiness includes the actual generated multi-UAV trajectories. A failed
+        // check carries business-readable pair and distance parameters to clients.
+        for(const auto& mid:ids){const auto& m=s.at("missions").as_object().at(mid.as_string()).as_object();
+            if(assignment(m).size()<2)continue;
+            const auto* route=s.at("paths").as_object().if_contains(str(m,"route_id"));if(!route)continue;
+            try{checkTrajectories(s,formationRoutes(m,route->as_object()));}
+            catch(const PlanError& ex){issues.emplace_back(Object{{"mission_id",mid},{"code",ex.code},{"params",ex.params}});}
         }
         return {{"ready",issues.empty()},{"issues",issues},{"mission_count",ids.size()},{"assigned_count",assigned},{"routes_ready",routes}};
     }

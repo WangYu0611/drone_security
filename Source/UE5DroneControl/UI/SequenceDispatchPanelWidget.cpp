@@ -1315,6 +1315,8 @@ void USequenceDispatchPanelWidget::StartShadowDronePlayback()
 			if (PathActor->Waypoints.IsValidIndex(NewIdx))
 			{
 				PathActor->Waypoints[NewIdx].WaitTime = WpData.WaitTime;
+                PathActor->Waypoints[NewIdx].AltitudeReference = WpData.AltitudeReference;
+                PathActor->Waypoints[NewIdx].AltitudeOffsetMeters = WpData.AltitudeOffsetMeters;
 				PathActor->Waypoints[NewIdx].SegmentSpeed = EffectiveSpeed;
 			}
 		}

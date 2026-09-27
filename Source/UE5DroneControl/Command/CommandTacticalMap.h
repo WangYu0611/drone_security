@@ -10,6 +10,7 @@ class UE5DRONECONTROL_API UCommandTacticalMap : public UUserWidget
     GENERATED_BODY()
 public:
     void Refresh();
+    void ToggleFollow(){bFollow=!bFollow;}
     bool SelectUAV(int32 Id);
     bool HasConfiguredBasemap() const { return !Template.IsEmpty(); }
     static FVector2D Project(double Latitude, double Longitude, int32 Zoom);
@@ -26,7 +27,7 @@ private:
     TSet<FString> Pending;
     TMap<FString,double> RetryAfter;
     FVector2D Center = FVector2D(0.5,0.5);
-    bool bCentered = false, bDragging = false;
+    bool bCentered = false, bDragging = false, bFollow=false;
     int32 Zoom = 15;
     FString Template, Attribution, Error;
     void LoadTile(const FString& Key, int32 X, int32 Y);

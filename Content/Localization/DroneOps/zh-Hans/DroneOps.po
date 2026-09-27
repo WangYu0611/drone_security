@@ -1602,3 +1602,311 @@ msgstr "方案位置已确认"
 msgctxt "DroneOps,Events.ROUTE_CLOSURE_REACHED"
 msgid "Closed route completed once"
 msgstr "闭环航线单次执行完成"
+
+msgctxt "DroneOps,Mission3D.Altitude"
+msgid "Altitude (m)"
+msgstr "高度（米）"
+
+msgctxt "DroneOps,Mission3D.Hover"
+msgid "Hover time (seconds)"
+msgstr "悬停时间（秒）"
+
+msgctxt "DroneOps,Mission3D.AGL"
+msgid "AGL: above ground (unchecked: ellipsoid)"
+msgstr "AGL 相对地面高度（不勾选：椭球高）"
+
+msgctxt "DroneOps,Mission3D.Apply"
+msgid "APPLY WAYPOINT PARAMETERS"
+msgstr "应用航点参数"
+
+msgctxt "DroneOps,Mission3D.Selected"
+msgid "Selected Waypoint: P{0}"
+msgstr "当前选中航点：P{0}"
+
+msgctxt "DroneOps,Mission3D.SelectPoint"
+msgid "Select a waypoint to edit height and hover time"
+msgstr "选择航点以编辑高度和悬停时间"
+
+msgctxt "DroneOps,Formation.LineSpacing"
+msgid "Line formation spacing (m)"
+msgstr "横向编队间距（米）"
+
+msgctxt "DroneOps,Formation.SaveAssignment"
+msgid "SAVE ASSIGNED UAVS"
+msgstr "保存无人机分配"
+
+msgctxt "DroneOps,Schedule.Enable"
+msgid "Scheduled start (unchecked: start now)"
+msgstr "定时启动（不勾选：立即启动）"
+
+msgctxt "DroneOps,Schedule.LocalTime"
+msgid "Local start date/time: YYYY-MM-DDTHH:MM:SS"
+msgstr "本地启动日期时间：YYYY-MM-DDTHH:MM:SS"
+
+msgctxt "DroneOps,Schedule.StartNow"
+msgid "START NOW"
+msgstr "立即启动"
+
+msgctxt "DroneOps,Schedule.Reschedule"
+msgid "RESCHEDULE"
+msgstr "修改启动时间"
+
+msgctxt "DroneOps,Schedule.Cancel"
+msgid "CANCEL SCHEDULE"
+msgstr "取消定时任务"
+
+msgctxt "DroneOps,Schedule.Countdown"
+msgid "Scheduled mission starts in {0}"
+msgstr "定时任务将在 {0} 后启动"
+
+msgctxt "DroneOps,Execution.SCHEDULED"
+msgid "SCHEDULED"
+msgstr "等待定时启动"
+
+msgctxt "DroneOps,Execution.CANCELLED"
+msgid "CANCELLED"
+msgstr "已取消"
+
+msgctxt "DroneOps,Situation.Title"
+msgid "2D SITUATION MAP"
+msgstr "二维态势地图"
+
+msgctxt "DroneOps,Situation.Follow"
+msgid "TOGGLE FOLLOW SELECTED UAV"
+msgstr "切换跟随选中无人机"
+
+msgctxt "DroneOps,Errors.ALTITUDE_DATUM_UNRESOLVED"
+msgid "Cannot resolve height. Select a waypoint, enter valid values and ensure terrain is loaded."
+msgstr "无法解析高度。请选择航点、输入有效数值并确保地形已加载。"
+
+msgctxt "DroneOps,Errors.INVALID_ALTITUDE_REFERENCE"
+msgid "Unknown altitude reference"
+msgstr "未知高度基准"
+
+msgctxt "DroneOps,Errors.INVALID_SEPARATION"
+msgid "Spacing must meet the configured minimum separation."
+msgstr "间距必须满足配置的最小安全距离。"
+
+msgctxt "DroneOps,Errors.TRAJECTORY_CONFLICT"
+msgid "Trajectory conflict: aircraft cannot maintain the required separation."
+msgstr "航迹冲突：无人机无法保持所需安全间距。"
+
+msgctxt "DroneOps,Errors.INVALID_SCHEDULE"
+msgid "Enter a valid future local date and time."
+msgstr "请输入有效的未来本地日期与时间。"
+
+msgctxt "DroneOps,Errors.FORMATION_UNSUPPORTED"
+msgid "Only Line formation is currently available."
+msgstr "当前仅支持横向编队。"
+
+msgctxt "DroneOps,Errors.TRAJECTORY_DOMAIN_UNSUPPORTED"
+msgid "Formation requires a nonpolar area within 10 km."
+msgstr "编队需要处于 10 公里内的非极地区域。"
+
+msgctxt "DroneOps,Mission3D.Marker"
+msgid "P{0} | {1} m {2} | Hover {3} s"
+msgstr "P{0} | {1} 米 {2} | 悬停 {3} 秒"
+
+msgctxt "DroneOps,Group.Title"
+msgid "GROUP CONTROL"
+msgstr "无人机组控制"
+
+msgctxt "DroneOps,Group.Summary"
+msgid "Selected UAVs: {0} | Preserve relative offsets | Minimum separation: {1} m"
+msgstr "已选无人机：{0} | 保持相对队形 | 最小间距：{1} 米"
+
+msgctxt "DroneOps,Group.Latitude"
+msgid "Group anchor latitude (WGS84)"
+msgstr "编组目标纬度（WGS84）"
+
+msgctxt "DroneOps,Group.Longitude"
+msgid "Group anchor longitude (WGS84)"
+msgstr "编组目标经度（WGS84）"
+
+msgctxt "DroneOps,Group.Altitude"
+msgid "Group anchor ellipsoid altitude (m)"
+msgstr "编组目标椭球高（米）"
+
+msgctxt "DroneOps,Group.Area"
+msgid "Available target area radius (m)"
+msgstr "目标可用区域半径（米）"
+
+msgctxt "DroneOps,Group.Move"
+msgid "MOVE GROUP"
+msgstr "编组移动"
+
+msgctxt "DroneOps,Group.Accepted"
+msgid "Group command accepted by Backend"
+msgstr "后端已接受编组指令"
+
+msgctxt "DroneOps,Group.Conflict"
+msgid "{0} / {1}: predicted {2} m; required {3} m. Execution blocked."
+msgstr "{0} / {1}：预计间距 {2} 米，要求 {3} 米。已阻止执行。"
+
+msgctxt "DroneOps,Schedule.Overview"
+msgid "Scheduled: {0} | Starts in {1} | {2} UAV"
+msgstr "定时任务：{0} | 距启动 {1} | {2} 架无人机"
+
+msgctxt "DroneOps,Errors.TERRAIN_REQUIRED"
+msgid "Terrain height is unavailable or the waypoint is below ground. Load terrain and retry."
+msgstr "地面高度尚不可用，或航点位于地面以下。请等待地形加载后重试。"
+
+msgctxt "DroneOps,Events.SCHEDULE_STARTED"
+msgid "{uav_id}: scheduled mission started"
+msgstr "{uav_id}：定时任务已启动"
+
+msgctxt "DroneOps,Events.SCHEDULE_CHANGED"
+msgid "{uav_id}: start time updated"
+msgstr "{uav_id}：启动时间已更新"
+
+msgctxt "DroneOps,Events.SCHEDULE_DUE"
+msgid "{uav_id}: immediate start requested"
+msgstr "{uav_id}：已请求立即启动"
+
+msgctxt "DroneOps,Events.MISSION_CANCELLED"
+msgid "{uav_id}: scheduled mission cancelled"
+msgstr "{uav_id}：定时任务已取消"
+
+msgctxt "DroneOps,Events.SAFETY_CONFLICT"
+msgid "{uav_id}: motion paused by safety separation check"
+msgstr "{uav_id}：安全距离检查已暂停移动"
+
+msgctxt "DroneOps,Execution.Real"
+msgid "LIVE CONTROL · Real UAV"
+msgstr "真实控制 · 无人机"
+
+msgctxt "DroneOps,Execution.MonitorNeutral"
+msgid "Execution Monitor"
+msgstr "任务执行监控"
+
+msgctxt "DroneOps,Execution.RealAvailable"
+msgid "Real adapter configured; Backend checks live readiness"
+msgstr "已配置真实接口；后端检查实时就绪状态"
+
+msgctxt "DroneOps,Execution.RealCheck"
+msgid "Real control requires fresh measured telemetry, calibrated coordinates and Armed/Offboard before movement. Start does not arm or take off."
+msgstr "真实控制要求新鲜实测遥测、已标定坐标及 Armed/Offboard 状态。开始任务不会自动解锁或起飞。"
+
+msgctxt "DroneOps,Execution.Real.returnConfirm"
+msgid "Confirm Return Home? Remaining waypoints will be skipped and the real UAV will be commanded to its calibrated Home."
+msgstr "确认返航？后续航点将跳过，真实无人机将收到前往已标定返航点的指令。"
+
+msgctxt "DroneOps,Execution.Real.abortConfirm"
+msgid "Confirm abort? The mission cannot resume. Backend requests a hold at the measured position and reports any rejection."
+msgstr "确认终止？该任务无法恢复。后端请求在实测位置保持，并报告任何拒绝结果。"
+
+msgctxt "DroneOps,Errors.REAL_COMMAND_REJECTED"
+msgid "Real UAV rejected the command. Verify Armed/Offboard and telemetry."
+msgstr "真实无人机拒绝指令，请检查 Armed/Offboard 与遥测。"
+
+msgctxt "DroneOps,Errors.REAL_HOLD_REJECTED"
+msgid "Hold was not confirmed. Check the aircraft and control link immediately."
+msgstr "保持位置请求未确认，请立即检查无人机和控制链路。"
+
+msgctxt "DroneOps,Errors.REAL_TELEMETRY_UNAVAILABLE"
+msgid "Fresh valid aircraft telemetry is unavailable."
+msgstr "缺少新鲜有效的无人机遥测。"
+
+msgctxt "DroneOps,Errors.REAL_ANCHOR_CHANGED_RECALIBRATE"
+msgid "The live coordinate anchor changed. Recalibrate before control."
+msgstr "实时坐标锚点已变化，控制前须重新标定。"
+
+msgctxt "DroneOps,Errors.REAL_RESTART_REQUIRES_RESUME"
+msgid "Real mission restored paused; verify the aircraft before resuming."
+msgstr "真实任务已按暂停状态恢复，继续前请核实无人机状态。"
+
+msgctxt "DroneOps,Errors.ADAPTER_MODE_MISMATCH"
+msgid "Stored execution belongs to a different adapter. Create a new execution."
+msgstr "已保存执行属于另一种适配器，请创建新的执行。"
+
+msgctxt "DroneOps,Errors.REAL_HOVER_DRIFT"
+msgid "Measured UAV position left the hover tolerance."
+msgstr "实测无人机位置超出悬停容差。"
+
+msgctxt "DroneOps,Errors.GROUP_MEMBER_FAILED"
+msgid "A group member failed; the entire mission group has failed and active members were asked to hold."
+msgstr "组内成员失败，整组任务已失败，并已请求活动成员保持位置。"
+
+msgctxt "DroneOps,Errors.LEGACY_CONTROLLER_BUSY"
+msgid "Another controller owns the aircraft."
+msgstr "另一控制器正在使用无人机。"
+
+msgctxt "DroneOps,Errors.MISSION_CONTROLLER_OWNS_CONTROL"
+msgid "Use the security mission controls in Real mode."
+msgstr "真实任务模式下请使用安保任务控制。"
+
+msgctxt "DroneOps,Execution.RealEstimate"
+msgid "Real execution estimates are calculated from live position by Backend at start."
+msgstr "真实任务距离与预计耗时由后端在开始时根据实测位置计算。"
+
+msgctxt "DroneOps,Errors.REAL_UAV_UNAVAILABLE"
+msgid "Real UAV or its calibrated frame is unavailable."
+msgstr "真实无人机或其标定坐标框架不可用。"
+
+msgctxt "DroneOps,Errors.REAL_CONFIGURATION_INVALID"
+msgid "Real adapter configuration is incomplete or invalid."
+msgstr "真实适配器配置缺失或无效。"
+
+msgctxt "DroneOps,Errors.ADAPTER_POSITION_INVALID"
+msgid "Adapter position is not a valid WGS84 coordinate."
+msgstr "适配器位置不是有效的 WGS84 坐标。"
+
+msgctxt "DroneOps,Errors.ADAPTER_COMMAND_INVALID"
+msgid "The motion target or speed is invalid."
+msgstr "运动目标或速度无效。"
+
+msgctxt "DroneOps,Errors.REAL_FRAME_DOMAIN_UNSUPPORTED"
+msgid "The real mission is outside the supported local coordinate area."
+msgstr "真实任务超出支持的局部坐标范围。"
+
+msgctxt "DroneOps,Errors.REAL_NED_INVALID"
+msgid "Measured NED position is invalid."
+msgstr "实测 NED 位置无效。"
+
+msgctxt "DroneOps,Errors.REAL_ANCHOR_DATUM_UNRESOLVED"
+msgid "Declare the real anchor altitude datum before execution."
+msgstr "执行前须明确真实锚点的高度基准。"
+
+msgctxt "DroneOps,Errors.REAL_ANCHOR_INVALID"
+msgid "The real coordinate calibration is invalid."
+msgstr "真实坐标标定无效。"
+
+msgctxt "DroneOps,Inspector.Title"
+msgid "Waypoint Inspector"
+msgstr "航点属性"
+
+msgctxt "DroneOps,Inspector.Help"
+msgid "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."
+msgstr "点击航点选择；点击地图新增航点。输入后按回车或离开字段即可更新。"
+
+msgctxt "DroneOps,Inspector.Reference"
+msgid "Altitude reference"
+msgstr "高度基准"
+
+msgctxt "DroneOps,Inspector.Speed"
+msgid "Speed (m/s; 0 = default)"
+msgstr "速度 (m/s；0 为默认)"
+
+msgctxt "DroneOps,Inspector.Coordinates"
+msgid "Longitude: {0}\nLatitude: {1}"
+msgstr "经度：{0}\n纬度：{1}"
+
+msgctxt "DroneOps,Errors.WAYPOINT_PARAMETERS_INVALID"
+msgid "Enter finite values: hover >= 0; speed 0 to 15 m/s."
+msgstr "请输入有效数值：悬停时间 ≥ 0，速度 0 至 15 m/s。"
+
+msgctxt "DroneOps,Map.ViewLocked"
+msgid "ROUTE EDITING | MAP VIEW LOCKED"
+msgstr "航线编辑中 | 地图视角已锁定"
+
+msgctxt "DroneOps,Map.AdjustBeforeEdit"
+msgid "Adjust the map view before editing."
+msgstr "请先调整地图范围，再开始航线编辑"
+
+msgctxt "DroneOps,Map.FinishBeforeMode"
+msgid "Finish route editing before switching map mode."
+msgstr "请先完成航线编辑后切换地图模式"
+
+msgctxt "DroneOps,Map.InvalidPosition"
+msgid "No valid map position"
+msgstr "无法在该位置创建航点"

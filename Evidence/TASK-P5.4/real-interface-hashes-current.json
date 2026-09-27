@@ -1,0 +1,268 @@
+[
+  {
+    "path": "Backend/drone/command_queue.cpp",
+    "p53_sha256": "041a1de7cd59e4a769d2c0bf1eeb5266865073a19145ec12ed996a0678fce815",
+    "current_sha256": "041a1de7cd59e4a769d2c0bf1eeb5266865073a19145ec12ed996a0678fce815",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/drone/command_queue.h",
+    "p53_sha256": "18467ff002463b7c686ad88a7a8be7a3026fc8d2b53b0f4f0ba383768c5d34d9",
+    "current_sha256": "18467ff002463b7c686ad88a7a8be7a3026fc8d2b53b0f4f0ba383768c5d34d9",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/drone/drone_context.h",
+    "p53_sha256": "68dc0e71e8f84ee1c986de633b3773159444829c4cecc6c07fd069236066d44f",
+    "current_sha256": "68dc0e71e8f84ee1c986de633b3773159444829c4cecc6c07fd069236066d44f",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/drone/drone_manager.cpp",
+    "p53_sha256": "1767f44026b7caf168aaa31978d6241be6def05d6082e94de9fdb64cfdee415f",
+    "current_sha256": "a032c847c7bf883280fae007fd05b9a45caddedb50461a1f657f6a44827a2926",
+    "matches_p53": false,
+    "change": "Additive read-only TryGetFreshMissionTelemetry accessor; existing wire/command logic retained"
+  },
+  {
+    "path": "Backend/drone/drone_manager.h",
+    "p53_sha256": "2d1a742396dc83d066f1eb01d25cb376762ff1cd65fe5eb76a2220521850d713",
+    "current_sha256": "d2d48ee827a616a08d84b4c2c52143f6b5e54657f9c37144288e4943cf15d6f2",
+    "matches_p53": false,
+    "change": "Additive read-only TryGetFreshMissionTelemetry accessor; existing wire/command logic retained"
+  },
+  {
+    "path": "Backend/drone/heartbeat_manager.cpp",
+    "p53_sha256": "ad3476fe03b83e09f79f11d7e1b7c166809bda530466cb4bdaeda72df85c2528",
+    "current_sha256": "ad3476fe03b83e09f79f11d7e1b7c166809bda530466cb4bdaeda72df85c2528",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/drone/heartbeat_manager.h",
+    "p53_sha256": "a750c5e2c5f3e8dc3bdc5ff2b8aa94a8596a23161f8c3b32e35c7ca9e5c452df",
+    "current_sha256": "a750c5e2c5f3e8dc3bdc5ff2b8aa94a8596a23161f8c3b32e35c7ca9e5c452df",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/drone/state_machine.cpp",
+    "p53_sha256": "0110196cda7476d89f61798e48da0e10f0bd9d61c4ec403fb5227d64f4dba516",
+    "current_sha256": "0110196cda7476d89f61798e48da0e10f0bd9d61c4ec403fb5227d64f4dba516",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/drone/state_machine.h",
+    "p53_sha256": "97ea92991511d30e9d0ec4fd755084960aa734319050ab27a37c802daff61c91",
+    "current_sha256": "97ea92991511d30e9d0ec4fd755084960aa734319050ab27a37c802daff61c91",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/communication/latency_tester.h",
+    "p53_sha256": "d2664832adeb8d1fe839c6163923a8e33448e7efd9c0a791d68a0d2144ef72f9",
+    "current_sha256": "d2664832adeb8d1fe839c6163923a8e33448e7efd9c0a791d68a0d2144ef72f9",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/communication/udp_receiver.cpp",
+    "p53_sha256": "c7e865092b5800521e968381315860f3e50e40bceadf5269370da6f0030755ae",
+    "current_sha256": "c7e865092b5800521e968381315860f3e50e40bceadf5269370da6f0030755ae",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/communication/udp_receiver.h",
+    "p53_sha256": "55a6582e84c719840fc581603daa67d4425c98797f0c34ab1ee1e4b404fb6bfa",
+    "current_sha256": "55a6582e84c719840fc581603daa67d4425c98797f0c34ab1ee1e4b404fb6bfa",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/communication/udp_sender.cpp",
+    "p53_sha256": "e2b608c1372f7869d8be476da10f510a9a14a0da9b2e62e29a02f6fac3f8225c",
+    "current_sha256": "e2b608c1372f7869d8be476da10f510a9a14a0da9b2e62e29a02f6fac3f8225c",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/communication/udp_sender.h",
+    "p53_sha256": "a90500d6c36f7e8f5410cf600e6cc1fa784869d356c67e7cd39c0b69fe9c26e3",
+    "current_sha256": "a90500d6c36f7e8f5410cf600e6cc1fa784869d356c67e7cd39c0b69fe9c26e3",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/communication/ws_manager.h",
+    "p53_sha256": "b40c611ebcdd3594f6af016228d4c75bebb73af3ec53fb2ef5a7c153c0b4a791",
+    "current_sha256": "b40c611ebcdd3594f6af016228d4c75bebb73af3ec53fb2ef5a7c153c0b4a791",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/execution/assembly_controller.cpp",
+    "p53_sha256": "aa43cf25f2fa7f1792a62c12dc3e1a0a559948c7c6473d0b97716dc4d32bb5de",
+    "current_sha256": "aa43cf25f2fa7f1792a62c12dc3e1a0a559948c7c6473d0b97716dc4d32bb5de",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/execution/assembly_controller.h",
+    "p53_sha256": "d498309b41315f8ef90ec1db8350304dcc32dcc05674bbef73d19a1f6ceb158d",
+    "current_sha256": "d498309b41315f8ef90ec1db8350304dcc32dcc05674bbef73d19a1f6ceb158d",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/execution/assembly_planner.cpp",
+    "p53_sha256": "4de4bfd5313fd117af20c8c33e7587c100d618d9452030463950713d632f26db",
+    "current_sha256": "4de4bfd5313fd117af20c8c33e7587c100d618d9452030463950713d632f26db",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/execution/assembly_planner.h",
+    "p53_sha256": "84b6af9c0b28f183e1ebce583e986648d776eaa9f415477cf320520293ce30e2",
+    "current_sha256": "84b6af9c0b28f183e1ebce583e986648d776eaa9f415477cf320520293ce30e2",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/execution/execution_engine.cpp",
+    "p53_sha256": "09bb23720afe156b3655874d9690f4951f1d571fddca918468062f4f5b47b96f",
+    "current_sha256": "09bb23720afe156b3655874d9690f4951f1d571fddca918468062f4f5b47b96f",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/execution/execution_engine.h",
+    "p53_sha256": "8dca2989a994a38fbb398a40e2253df16410778615e63bd9b99e9190461b3e38",
+    "current_sha256": "8dca2989a994a38fbb398a40e2253df16410778615e63bd9b99e9190461b3e38",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/assignment_solver.cpp",
+    "p53_sha256": "56f74e06b04525a65ad929dfe7fb0330c83b9f90fcbd9ec960fd4d34539cf7ab",
+    "current_sha256": "56f74e06b04525a65ad929dfe7fb0330c83b9f90fcbd9ec960fd4d34539cf7ab",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/assignment_solver.h",
+    "p53_sha256": "fb70bc4bfd3cd28fe7638fd1a3619ad8e3b8369d7349532ed4cf938b8566653f",
+    "current_sha256": "fb70bc4bfd3cd28fe7638fd1a3619ad8e3b8369d7349532ed4cf938b8566653f",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/coordinate_converter.cpp",
+    "p53_sha256": "2f5ce393dc32a9d99fd6c1b0f88163b51d39703cc1d79924682cea131aaa9e2a",
+    "current_sha256": "2f5ce393dc32a9d99fd6c1b0f88163b51d39703cc1d79924682cea131aaa9e2a",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/coordinate_converter.h",
+    "p53_sha256": "e032251d854f563b631e711f3e76ebb1a7f749ad23e9c3dd497062ed4140b132",
+    "current_sha256": "e032251d854f563b631e711f3e76ebb1a7f749ad23e9c3dd497062ed4140b132",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/gps_anchor_manager.cpp",
+    "p53_sha256": "3b59cf2824a77b97b5feb749dc152755f9a13722b6b510a416f09e31872dbc1b",
+    "current_sha256": "3b59cf2824a77b97b5feb749dc152755f9a13722b6b510a416f09e31872dbc1b",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/gps_anchor_manager.h",
+    "p53_sha256": "77d0c47d7ad530dbb5889bf9d465086c3f8f7a25a8424b0959dd075bf6f96e98",
+    "current_sha256": "77d0c47d7ad530dbb5889bf9d465086c3f8f7a25a8424b0959dd075bf6f96e98",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/quaternion_utils.cpp",
+    "p53_sha256": "9da3fbde4a3770135ae7c3f5363eb8ed8212123fca1ab94572842267bc5f0ad0",
+    "current_sha256": "9da3fbde4a3770135ae7c3f5363eb8ed8212123fca1ab94572842267bc5f0ad0",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/conversion/quaternion_utils.h",
+    "p53_sha256": "b360e041fc39817e16a3b862db9c9e4c30a818fb0473f05d89c6cbc9806831f9",
+    "current_sha256": "b360e041fc39817e16a3b862db9c9e4c30a818fb0473f05d89c6cbc9806831f9",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/core/types.h",
+    "p53_sha256": "42fa15fbaca4ba2eca2f7e2e6ac600d612d7cf345ccf7328c3ef65a5bd7b8efb",
+    "current_sha256": "42fa15fbaca4ba2eca2f7e2e6ac600d612d7cf345ccf7328c3ef65a5bd7b8efb",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Backend/main.cpp",
+    "p53_sha256": "4c9fd052a2073660e847a734d36d655215990eb422249aa5656470c5969e4cfb",
+    "current_sha256": "4c9fd052a2073660e847a734d36d655215990eb422249aa5656470c5969e4cfb",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.cpp",
+    "p53_sha256": "7504347d57ff462f726e0d16c90edda999477eba688207b7ec86aac7b97a7428",
+    "current_sha256": "7504347d57ff462f726e0d16c90edda999477eba688207b7ec86aac7b97a7428",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/CesiumCoordinateService.h",
+    "p53_sha256": "17d9cba88f6231cf29009ff3ad01a91e84b763cfcce9eac8fbde780ee3026350",
+    "current_sha256": "17d9cba88f6231cf29009ff3ad01a91e84b763cfcce9eac8fbde780ee3026350",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/GeographicTypes.cpp",
+    "p53_sha256": "bf88e22751aba39b34adc49520053f4db0a629242e6fb5c43528c402cbd6e72d",
+    "current_sha256": "bf88e22751aba39b34adc49520053f4db0a629242e6fb5c43528c402cbd6e72d",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/GeographicTypes.h",
+    "p53_sha256": "39c63f610be7a59f2089d0004b81ff33b1a8fcf97d71d4734a13ad204b077a55",
+    "current_sha256": "39c63f610be7a59f2089d0004b81ff33b1a8fcf97d71d4734a13ad204b077a55",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/ICoordinateService.h",
+    "p53_sha256": "df41fdc1bc569ea5be58ba187e8761f61d115bd4d2c13aff1af2895de0e015ec",
+    "current_sha256": "df41fdc1bc569ea5be58ba187e8761f61d115bd4d2c13aff1af2895de0e015ec",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.cpp",
+    "p53_sha256": "81a02ae19133a1b45aeb10175c2b861954e641476daa66f31d7a98437429dca7",
+    "current_sha256": "81a02ae19133a1b45aeb10175c2b861954e641476daa66f31d7a98437429dca7",
+    "matches_p53": true,
+    "change": null
+  },
+  {
+    "path": "Source/UE5DroneControl/DroneOps/Core/SimpleCoordinateService.h",
+    "p53_sha256": "4e113cf69542cc6352a2cb7fda2416ec732703b3053cb6c860bd8feb38c45a9f",
+    "current_sha256": "4e113cf69542cc6352a2cb7fda2416ec732703b3053cb6c860bd8feb38c45a9f",
+    "matches_p53": true,
+    "change": null
+  }
+]

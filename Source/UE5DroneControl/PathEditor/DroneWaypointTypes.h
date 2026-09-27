@@ -26,6 +26,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float WaitTime = 0.0f;
 
+    // Legacy world positions resolve to ellipsoid height. AGL uses a sampled
+    // terrain ellipsoid offset, preserved with the waypoint across save/load.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint")
+    FString AltitudeReference = TEXT("Ellipsoid");
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint")
+    double AltitudeOffsetMeters = 0.;
+
+
 	// Speed in m/s from the previous waypoint to this waypoint. Index 0 is always forced to 0.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint", meta = (ClampMin = "0.0", ClampMax = "15.0", UIMin = "0.0", UIMax = "15.0"))
 	float SegmentSpeed = 0.0f;

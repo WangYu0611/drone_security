@@ -36,6 +36,7 @@ void UCommandTacticalMap::NativeOnInitialized()
     Super::NativeOnInitialized();
     Canvas = WidgetTree->ConstructWidget<UCanvasPanel>(); WidgetTree->RootWidget = Canvas;
     SetClipping(EWidgetClipping::ClipToBounds);
+    SetVisibility(ESlateVisibility::Visible);Canvas->SetVisibility(ESlateVisibility::Visible);
     // Use the same WGS84 XYZ configuration as the main Cesium raster when provided.
     GConfig->GetString(TEXT("CommandMap"),TEXT("BasemapUrl"),Template,GGameIni);
     GConfig->GetString(TEXT("CommandTacticalMap"),TEXT("BasemapUrl"),Template,GGameIni);
@@ -90,6 +91,7 @@ void UCommandTacticalMap::Refresh()
         if(Registry->GetTelemetry(D.DroneId,T) && T.bGpsFix && FMath::IsFinite(T.GpsLatitude) && FMath::IsFinite(T.GpsLongitude) && FMath::Abs(T.GpsLatitude)<=90 && FMath::Abs(T.GpsLongitude)<=180)
         {Center=Project(T.GpsLatitude,T.GpsLongitude,0)/256.0;bCentered=true;break;}
     }
+    if(bFollow){FDroneTelemetrySnapshot T;if(Registry->GetTelemetry(Registry->GetPrimarySelectedDrone(),T) && T.bGpsFix){Center=Project(T.GpsLatitude,T.GpsLongitude,0)/256.;bCentered=true;}}
     Canvas->ClearChildren();
     auto Label=[&](const FString& Text,FVector2D Position,int32 Font,FLinearColor Color)
     {
@@ -114,6 +116,8 @@ void UCommandTacticalMap::Refresh()
     if(auto Context=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetContext()) Context->TryGetStringField(TEXT("active_alert_id"),ActiveAlert);
     for(const auto& A:GetGameInstance()->GetSubsystem<UCommandAlertStore>()->GetAlerts())
         if(!A.bHandled || (!ActiveAlert.IsEmpty() && A.SharedId==ActiveAlert))AlertDrones.Add(A.DroneId);
+    for(const auto& Target:Registry->GetAllDroneDescriptors())if(Target.bIsEnemyTarget){FDroneTelemetrySnapshot T;if(Registry->GetTelemetry(Target.DroneId,T) && T.bGpsFix){
+        Label(Target.Name,Project(T.GpsLatitude,T.GpsLongitude,Zoom)-Origin,15,CommandTheme::Warning);}}
     int32 Missing=0;
     for(const auto& D:Drones)
     {
@@ -121,8 +125,9 @@ void UCommandTacticalMap::Refresh()
         if(!Registry->GetTelemetry(D.DroneId,T) || !T.bGpsFix || !FMath::IsFinite(T.GpsLatitude) || !FMath::IsFinite(T.GpsLongitude) || FMath::Abs(T.GpsLatitude)>90 || FMath::Abs(T.GpsLongitude)>180){++Missing;continue;}
         const FVector2D P=Project(T.GpsLatitude,T.GpsLongitude,Zoom)-Origin;
         auto* B=WidgetTree->ConstructWidget<UCommandActionButton>();B->Configure(TEXT("select"),D.DroneId);B->OnAction.AddDynamic(this,&UCommandTacticalMap::MarkerClicked);
-        bool Active=Registry->GetPrimarySelectedDrone()==D.DroneId;CommandTheme::Button(B,Active,true);
+        bool Active=Registry->GetMultiSelectedDrones().Contains(D.DroneId);CommandTheme::Button(B,Active,true);
         auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(FText::FromString(FString::Printf(TEXT("%s UAV-%02d%s"),Active?*ProductText::Get(TEXT("Tactical.Active")).ToString():TEXT("+"),D.DroneId,AlertDrones.Contains(D.DroneId)?*ProductText::Get(TEXT("Tactical.Alert")).ToString():TEXT(""))));
+        L->SetText(FText::Format(FText::AsCultureInvariant(TEXT("{0} · {1}")),L->GetText(),ProductText::Get(T.Availability==EDroneAvailability::Online?TEXT("Fleet.Online"):T.Availability==EDroneAvailability::Lost?TEXT("Fleet.Lost"):TEXT("Fleet.Offline"))));
         CommandTheme::Text(L,15,AlertDrones.Contains(D.DroneId)?CommandTheme::Warning:Active?CommandTheme::Cyan:CommandTheme::PrimaryText);B->SetContent(L);
         auto* S=Canvas->AddChildToCanvas(B);S->SetPosition(P);S->SetAutoSize(true);S->SetZOrder(2);
     }
@@ -137,10 +142,26 @@ FReply UCommandTacticalMap::NativeOnMouseButtonDown(const FGeometry&,const FPoin
 FReply UCommandTacticalMap::NativeOnMouseButtonUp(const FGeometry&,const FPointerEvent&)
 {bDragging=false;return FReply::Handled().ReleaseMouseCapture();}
 FReply UCommandTacticalMap::NativeOnMouseMove(const FGeometry& G,const FPointerEvent& E)
-{if(!bDragging)return FReply::Unhandled();Center-=(G.AbsoluteToLocal(E.GetScreenSpacePosition())-G.AbsoluteToLocal(E.GetLastScreenSpacePosition()))/(256.0*FMath::Pow(2.0,Zoom));bCentered=true;Refresh();return FReply::Handled();}
+{if(!bDragging)return FReply::Unhandled();bFollow=false;Center-=(G.AbsoluteToLocal(E.GetScreenSpacePosition())-G.AbsoluteToLocal(E.GetLastScreenSpacePosition()))/(256.0*FMath::Pow(2.0,Zoom));bCentered=true;Refresh();return FReply::Handled();}
 
 int32 UCommandTacticalMap::NativePaint(const FPaintArgs& A,const FGeometry& G,const FSlateRect& C,FSlateWindowElementList& Out,int32 L,const FWidgetStyle& S,bool E) const {
     const int Base=Super::NativePaint(A,G,C,Out,L,S,E);using namespace PlanUI;
+    auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    const auto Origin0=Center*(256.*FMath::Pow(2.,Zoom))-G.GetLocalSize()*.5;
+    for(const auto& D:Registry->GetFriendlyDroneDescriptors()){FDroneTelemetrySnapshot T;if(!Registry->GetTelemetry(D.DroneId,T)||!T.bGpsFix)continue;
+        const auto Pos=Project(T.GpsLatitude,T.GpsLongitude,Zoom)-Origin0;
+        const double Heading=FMath::DegreesToRadians(T.Attitude.Yaw);const FVector2D Dir(FMath::Sin(Heading),-FMath::Cos(Heading)),Side(-Dir.Y,Dir.X);
+        TArray<FVector2D> Arrow{Pos+Dir*24.+Side*7.,Pos+Dir*34.,Pos+Dir*24.-Side*7.};
+        FSlateDrawElement::MakeLines(Out,Base+2,G.ToPaintGeometry(),Arrow,ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+    }
+    const auto AllExecutions=Object(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("executions"));
+    if(AllExecutions)for(const auto& Item:AllExecutions->Values){const auto X=Item.Value->AsObject();if(Field(X,TEXT("state"))!=TEXT("EXECUTING") && Field(X,TEXT("state"))!=TEXT("PAUSED"))continue;
+        const auto Route=Object(X,TEXT("route_snapshot"));if(!Route)continue;TArray<FVector2D> Line;
+        for(const auto& P:Route->GetArrayField(TEXT("waypoints"))){const auto W=P->AsObject();Line.Add(Project(W->GetNumberField(TEXT("latitude")),W->GetNumberField(TEXT("longitude")),Zoom)-Origin0);}
+        bool Closed=false;Route->TryGetBoolField(TEXT("bClosedLoop"),Closed);if(Closed && Line.Num()>2)Line.Add(FVector2D(Line[0]));
+        if(Line.Num()>1)FSlateDrawElement::MakeLines(Out,Base+2,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,CommandTheme::Warning,true,2.f);
+    }
+
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Sync->GetContext(),TEXT("active_security_plan_id")));if(!Plan)return Base;
     const auto Origin=Center*(256.*FMath::Pow(2.,Zoom))-G.GetLocalSize()*.5;
     for(const auto& Id:Plan->GetArrayField(TEXT("mission_ids"))){const auto Mission=Find(Sync->GetPlans(),TEXT("missions"),Id->AsString());const auto Route=Find(Sync->GetPlans(),TEXT("paths"),Field(Mission,TEXT("route_id")));if(!Route)continue;

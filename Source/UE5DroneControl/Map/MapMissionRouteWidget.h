@@ -6,6 +6,7 @@
 UCLASS()
 class UE5DRONECONTROL_API UMapMissionRouteWidget:public UUserWidget {
     GENERATED_BODY()
+    bool bBeginning=false;
     friend class FP53GeometryUI;
     friend class FP4MapDraft;
 public:
@@ -18,13 +19,26 @@ public:
 protected:virtual void NativeOnInitialized() override;
 private:
     UPROPERTY() TObjectPtr<class UCheckBox> ClosedRoute;
+    UPROPERTY() TObjectPtr<class UComboBoxString> AltitudeReference;
+    UPROPERTY() TObjectPtr<class UVerticalBox> InspectorFields;
+    UPROPERTY() TObjectPtr<class UTextBlock> CoordinatesLabel;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> SpeedInput;
+    bool bLoadingParameters=false;
+    bool ApplyParameters();
+    UFUNCTION() void ParametersCommitted(const FText& Text,ETextCommit::Type Method);
+    UFUNCTION() void ReferenceChanged(FString Value,ESelectInfo::Type Method);
+    UPROPERTY() TObjectPtr<class UEditableTextBox> AltitudeInput;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> HoverInput;
+    UPROPERTY() TObjectPtr<class UTextBlock> SelectedPointLabel;
+    int32 LoadedWaypoint=INDEX_NONE;
+    FVector LoadedWaypointLocation=FVector::ZeroVector;
+
     UFUNCTION() void ClosedChanged(bool Checked);
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
     UPROPERTY() TObjectPtr<class UTextBlock> WaypointDetails;
     UPROPERTY() TObjectPtr<class UBorder> UnsavedDialog;
-    double NextResumeAttempt=0;
     bool bSaved=false;
     int SaveRetries=0;
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Actions;

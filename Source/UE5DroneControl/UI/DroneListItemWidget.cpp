@@ -1,4 +1,6 @@
 #include "DroneListItemWidget.h"
+#include "Shared/OperationalContextSubsystem.h"
+#include "GameFramework/PlayerController.h"
 #include "Shared/ProductText.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
@@ -243,8 +245,16 @@ void UDroneListItemWidget::OnSelectButtonClicked()
 
     if (bCommandSelection)
     {
-        Registry->SetPrimarySelectedDrone(DroneId);
-        Registry->SetMultiSelectedDrones({DroneId});
+        auto* PC=GetOwningPlayer();TArray<int32> Selected=Registry->GetMultiSelectedDrones();
+        const bool Ctrl=PC && (PC->IsInputKeyDown(EKeys::LeftControl)||PC->IsInputKeyDown(EKeys::RightControl));
+        const bool Shift=PC && (PC->IsInputKeyDown(EKeys::LeftShift)||PC->IsInputKeyDown(EKeys::RightShift));
+        if(Shift){const int32 Anchor=Registry->GetPrimarySelectedDrone();Selected.Empty();for(const auto& D:Registry->GetFriendlyDroneDescriptors())if(D.DroneId>=FMath::Min(Anchor,DroneId) && D.DroneId<=FMath::Max(Anchor,DroneId))Selected.Add(D.DroneId);}
+        else if(Ctrl){if(Selected.Contains(DroneId))Selected.Remove(DroneId);else Selected.Add(DroneId);}
+        else Selected={DroneId};
+        const int32 Primary=Selected.Contains(DroneId)?DroneId:Selected.IsEmpty()?0:Selected[0];
+        auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        if(Sync->IsEnabled())Sync->SetLocalSelection(Primary,Selected);
+        else {Registry->SetMultiSelectedDrones(Selected);Registry->SetPrimarySelectedDrone(Primary);}
         return;
     }
     if (Registry->IsDroneSelected(DroneId))

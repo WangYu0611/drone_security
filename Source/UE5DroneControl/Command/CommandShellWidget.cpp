@@ -1,4 +1,6 @@
 #include "Command/CommandShellWidget.h"
+#include "Command/CommandTacticalMap.h"
+#include "Command/GroupControlWidget.h"
 #include "Shared/ExecutionPresentation.h"
 #include "Components/WidgetSwitcher.h"
 #include "Shared/PlanWidgetSupport.h"
@@ -217,17 +219,22 @@ void UCommandShellWidget::NativeOnInitialized()
         WorkspaceSlot->SetAnchors(FAnchors(0,0,1,1));WorkspaceSlot->SetOffsets(FMargin(184,88,16,44));
         auto* Home=WidgetTree->ConstructWidget<UVerticalBox>();WorkspacePages->AddChild(Home);
         PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Nav.Overview")),26);
-        Overview->RemoveFromParent();Home->AddChildToVerticalBox(Overview)->SetPadding(FMargin(0,24));
+        Overview->RemoveFromParent();Home->AddChildToVerticalBox(Overview)->SetPadding(FMargin(0,4));
         CurrentExecutionSummary=PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Execution.None")),20);
         auto* OpenExecution=PlanUI::Button(WidgetTree,Home,TEXT("open_execution"),TEXT("Execution.Open"),1);OpenExecution->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
         CurrentPlanSummary=PlanUI::Label(WidgetTree,Home,FText::GetEmpty(),20);
         auto* Open=PlanUI::Button(WidgetTree,Home,TEXT("navigate"),TEXT("Workflow.OpenPlan"),1);Open->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
+        PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Situation.Title")),18);
+        SituationMap=CreateWidget<UCommandTacticalMap>(GetOwningPlayer());Fill(Home,SituationMap,2.f);
+        auto* Follow=PlanUI::Button(WidgetTree,Home,TEXT("follow_situation"),TEXT("Situation.Follow"));Follow->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
         PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Workflow.RecentEvents")),18);
         RecentEvents=PlanUI::Label(WidgetTree,Home,FText::GetEmpty(),14);
+        Cast<UVerticalBoxSlot>(RecentEvents->Slot)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
         CenterPanel=CreateWidget<UCommandCenterPanel>(GetOwningPlayer());WorkspacePages->AddChild(CenterPanel);
         auto* Fleet=WidgetTree->ConstructWidget<UVerticalBox>();WorkspacePages->AddChild(Fleet);
         PlanUI::Label(WidgetTree,Fleet,ProductText::Get(TEXT("Nav.Fleet")),26);
         DroneList->RemoveFromParent();Fill(Fleet,DroneList,1);
+        GroupControl=CreateWidget<UGroupControlWidget>(GetOwningPlayer());Fill(Fleet,GroupControl,1);
         MissionPanel->RemoveFromParent();Fleet->AddChild(MissionPanel);MissionPanel->SetVisibility(ESlateVisibility::Visible);
         MissionActions->SetVisibility(ESlateVisibility::Collapsed);
         AlarmPanel->RemoveFromParent();WorkspacePages->AddChild(AlarmPanel);
@@ -278,6 +285,8 @@ void UCommandShellWidget::NativeConstruct()
 }
 void UCommandShellWidget::Refresh()
 {
+    if(SituationMap)SituationMap->Refresh();
+    if(GroupControl)GroupControl->Refresh();
     if (CenterPanel) {
         CenterPanel->Refresh();
         if(auto* Label=Cast<UTextBlock>(Header->GetContent())) {Label->SetText(ProductText::Source(CenterPanel->GetHeaderText()));CommandTheme::Text(Label,15);}
@@ -307,7 +316,15 @@ void UCommandShellWidget::Refresh()
         Overview->SetText(ProductText::Source(Sync->GetStatusText() + TEXT("\n") + Overview->GetText().ToString()));
     if(CenterPanel) Overview->SetText(FText::Format(ProductText::Get(TEXT("Command.Count")),FText::AsNumber(Drones.Num()),FText::AsNumber(Online),FText::AsNumber(Store?Store->GetUnhandledCount():0)));
     if(WorkspacePages && !bRestoredWorkspace){auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();if(Sync->IsHydrated()){bRestoredWorkspace=true;if(!PlanUI::Field(Sync->GetContext(),TEXT("active_security_plan_id")).IsEmpty())Navigate(TEXT("navigate"),1);}}
-    if(CurrentExecutionSummary)CurrentExecutionSummary->SetText(ExecutionUI::Summary(ExecutionUI::Latest(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT(""),true)));
+    if(CurrentExecutionSummary){
+        const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();TArray<FText> Lines{ExecutionUI::Summary(ExecutionUI::Latest(State,TEXT(""),true))};
+        const auto All=PlanUI::Object(State,TEXT("executions"));TSet<FString> Groups;
+        if(All)for(const auto& Entry:All->Values){const auto E=Entry.Value->AsObject();const auto Group=PlanUI::Field(E,TEXT("group_id"));if(PlanUI::Field(E,TEXT("state"))!=TEXT("SCHEDULED") || Groups.Contains(Group))continue;Groups.Add(Group);int Count=0;
+            for(const auto& Member:All->Values)if(PlanUI::Field(Member.Value->AsObject(),TEXT("group_id"))==Group)++Count;
+            const auto Time=FTimespan::FromSeconds(FMath::Max(0.,E->GetNumberField(TEXT("scheduled_start_epoch"))-FDateTime::UtcNow().ToUnixTimestamp()));
+            Lines.Add(FText::Format(ProductText::Get(TEXT("Schedule.Overview")),PlanUI::User(PlanUI::Field(E,TEXT("plan_name"))),PlanUI::User(Time.ToString(TEXT("%h:%m:%s"))),FText::AsNumber(Count)));}
+        CurrentExecutionSummary->SetText(FText::Join(PlanUI::User(TEXT("\n")),Lines));
+    }
     if(CurrentPlanSummary){
         auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
         const auto Plan=PlanUI::Find(Sync->GetPlans(),TEXT("plans"),PlanUI::Field(Sync->GetContext(),TEXT("active_security_plan_id")));
@@ -447,6 +464,8 @@ void UCommandShellWidget::NativeDestruct()
 }
 
 void UCommandShellWidget::Navigate(FName Action,int32 Index){
+    if(Action==TEXT("follow_situation") && SituationMap){SituationMap->ToggleFollow();return;}
+
     if(Action==TEXT("open_execution")){auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto E=ExecutionUI::Latest(S->GetPlans(),TEXT(""),true);if(E){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanUI::Field(E,TEXT("plan_id")));R->SetStringField(TEXT("mission_id"),PlanUI::Field(E,TEXT("mission_id")));S->SubmitPlan(R,[](TSharedPtr<FJsonObject>){});}}
 
     if(Action==TEXT("en") || Action==TEXT("zh-Hans")){GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLanguage(Action.ToString());return;}

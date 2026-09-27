@@ -1,0 +1,112 @@
+{
+  "at": "2026-09-26T09:35:51.228055+00:00",
+  "branch": "feat/triple-screen-p5-4-3d-multi-uav",
+  "base_head": "9f5dac4d398d5544529aa8cb34948c313d0f0c27",
+  "code_head": "a14a6e8297d93433f0a14926f50b40f664ec4a3d",
+  "protected_main": "f6ed7f97fabc21c202333528b0cb030dd4b1b2fe",
+  "p53_status": "",
+  "backend_tests": {
+    "discovered": 122,
+    "passed": 120,
+    "inherited_failed": 2
+  },
+  "final_ue_tests": [
+    {
+      "test": "Workflow.CommandLiveCRUD",
+      "role": "Command",
+      "pid": 126900,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "Workflow.CommandReviewReadonlyCopyAndCombo",
+      "role": "Command",
+      "pid": 125316,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "P52.CommandExecutionControls",
+      "role": "Command",
+      "pid": 115128,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "Workflow.MapLiveDraftGuard",
+      "role": "Map",
+      "pid": 130180,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "Localization.FTextAndDraftIsolation",
+      "role": "Map",
+      "pid": 131032,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "P52.MapExecutionMonitor",
+      "role": "Map",
+      "pid": 130068,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "P53.GeometryUIAndCesiumRoundtrip",
+      "role": "Map",
+      "pid": 123636,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "VideoTarget.ExplicitSelectionAndBrowserIsolation",
+      "role": "Video",
+      "pid": 129612,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    },
+    {
+      "test": "P54.CameraDampingAnd3DRoute",
+      "role": "Map",
+      "pid": 129788,
+      "exit": 0,
+      "succeeded": 0,
+      "warnings": 1,
+      "failed": 0,
+      "pass": true
+    }
+  ],
+  "protocol_directory": "adapter-protocol-1790414953245135300",
+  "real_gate_directory": "real-adapter-gate-1790414963386493500",
+  "redacted_review_hashes_verified": 38,
+  "real_interface_files_unchanged": 36,
+  "real_interface_files_additive_change": 2,
+  "review_status": "CONDITIONAL PASS: validated software/Mock and Real adapter contract only; full native A-L and hardware acceptance incomplete",
+  "final_git_clean_verified_after_evidence_commit": "Reported in final delivery message after this file is committed"
+}

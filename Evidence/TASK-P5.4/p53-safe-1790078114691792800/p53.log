@@ -1,0 +1,10 @@
+PASS Open route persists with four logical waypoints
+PASS Closed route persists without duplicated first point
+PASS Add and delete preserve closed topology
+PASS Command routes Move Plan to independent Map through Backend
+PASS Cancel keeps authoritative coordinates unchanged
+PASS Active move lease blocks mission start
+PASS Confirmed translation preserves deployed state and aligns route with replacement snapshot
+PASS New geometry is broadcast over WebSocket
+PASS Execution uses moved geometry and blocks both move entry paths
+PASS Paused execution also blocks moving

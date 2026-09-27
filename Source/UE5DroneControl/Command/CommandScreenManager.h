@@ -14,6 +14,7 @@ UCLASS()
 class UE5DRONECONTROL_API UCommandScreenManager : public UObject
 {
     GENERATED_BODY()
+    friend class FP4MapDraft;
 public:
     static EDroneClientRole ResolveClientRole();
     static EDroneClientRole ResolveClientRoleFromSettings(const TCHAR* CommandLine, const FString& DefaultRole);
@@ -34,6 +35,7 @@ public:
     void ToggleGeographicPanel();
     void ShowDroneList(bool bVisible);
     bool IsCursorOverMap() const;
+    void StopCameraFollow() { bFollowSelection=false; bSelectionDirty=false; }
     void RequestOpenVideo();
     void TogglePathTools();
     void ToggleSpeedPanel();

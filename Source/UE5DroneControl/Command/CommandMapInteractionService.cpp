@@ -17,8 +17,96 @@
 #include "EngineUtils.h"
 #include "Misc/ConfigCacheIni.h"
 #include "InputCoreTypes.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Framework/Application/IInputProcessor.h"
 #include "Engine/World.h"
+#include "Engine/GameViewportClient.h"
+#include "Widgets/SViewport.h"
+#include "Layout/WidgetPath.h"
 #include "PathEditor/DronePathActor.h"
+
+// UMG retains ownership. A hit on an editable waypoint body owns its complete
+// native gesture, so deferred gameplay input cannot re-read its release as press.
+// All buttons use native screen coordinates; polling MouseY has opposite signs
+// and can lose an entire press/move/release sequence between game ticks.
+class FMapPointerInput final : public IInputProcessor
+{
+    TWeakObjectPtr<UCommandMapInteractionService> Service;
+    bool bWaypointDrag=false,bGroundClick=false;
+    bool WaypointPosition(const FVector2D& Screen,FVector2D& Local) const {
+        if(!Service.IsValid() || !Service->Controller.IsValid())return false;
+        auto* PC=Service->Controller.Get();auto* Viewport=PC->GetWorld()->GetGameViewport();
+        const auto Widget=Viewport?Viewport->GetGameViewportWidget():nullptr;
+        if(!Widget.IsValid())return false;
+        const auto& Geometry=Widget->GetCachedGeometry();const FVector2D Size=Geometry.GetLocalSize();
+        int W=0,H=0;PC->GetViewportSize(W,H);if(Size.X<=0 || Size.Y<=0 || W<=0 || H<=0)return false;
+        Local=Geometry.AbsoluteToLocal(Screen)*FVector2D(W/Size.X,H/Size.Y);return true;
+    }
+    void CancelWaypoint(){
+        if((bWaypointDrag || bGroundClick) && Service.IsValid() && Service->Controller.IsValid())Service->Controller->CancelMissionGesture();
+        bWaypointDrag=false;bGroundClick=false;
+    }
+public:
+    explicit FMapPointerInput(UCommandMapInteractionService* In):Service(In){}
+    void Tick(float,FSlateApplication& App,TSharedRef<ICursor>) override {
+        if((bWaypointDrag || bGroundClick) && (!App.IsActive() || !App.GetPressedMouseButtons().Contains(EKeys::LeftMouseButton)))CancelWaypoint();
+        if(Service.IsValid() && (!App.IsActive() ||
+            !App.GetPressedMouseButtons().Contains(Service->GestureButton)))Service->CancelPointer();
+    }
+    bool HandleMouseButtonDownEvent(FSlateApplication&,const FPointerEvent& E) override {
+        FVector2D Position;
+        if(Service.IsValid() && E.GetEffectingButton()==EKeys::LeftMouseButton
+            && Service->IsPlanning() && Service->CanUsePointer(E.GetScreenSpacePosition())
+            && WaypointPosition(E.GetScreenSpacePosition(),Position)
+            && Service->Controller->TryBeginMapWaypointBodyDrag(Position)){
+            bWaypointDrag=true;Service->Controller->bNativeMapWaypointDrag=true;return true;
+        }
+        if(Service.IsValid() && E.GetEffectingButton()==EKeys::LeftMouseButton
+            && Service->IsPlanning() && Service->CanUsePointer(E.GetScreenSpacePosition())
+            && WaypointPosition(E.GetScreenSpacePosition(),Position)
+            && Service->Controller->BeginMapGroundClick(Position)){bGroundClick=true;return true;}
+        if(Service.IsValid())Service->BeginPointer(E.GetEffectingButton(),E.GetScreenSpacePosition(),
+            Service->CanUsePointer(E.GetScreenSpacePosition()),E.IsShiftDown());
+        return false;
+    }
+    bool HandleMouseMoveEvent(FSlateApplication&,const FPointerEvent& E) override {
+        if(bGroundClick){
+            FVector2D Position;
+            const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position);
+            if(Service.IsValid() && Service->Controller.IsValid())Service->Controller->UpdateMapGroundClick(Position,Over);
+            return true;
+        }
+        if(bWaypointDrag){
+            FVector2D Position;
+            if(Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position))Service->Controller->UpdateMapWaypointBodyDrag(Position);
+            return true;
+        }
+        if(Service.IsValid() && Service->GestureButton.IsValid())Service->MovePointer(E.GetScreenSpacePosition(),Service->CanUsePointer(E.GetScreenSpacePosition()));
+        return false;
+    }
+    bool HandleMouseButtonUpEvent(FSlateApplication&,const FPointerEvent& E) override {
+        if(bGroundClick && E.GetEffectingButton()==EKeys::LeftMouseButton){
+            FVector2D Position;
+            const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position);
+            if(Service.IsValid() && Service->Controller.IsValid())Service->Controller->CompleteMapGroundClick(Position,Over);
+            bGroundClick=false;return true;
+        }
+        if(bWaypointDrag && E.GetEffectingButton()==EKeys::LeftMouseButton){
+            FVector2D Position;
+            if(Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position)){
+                Service->Controller->UpdateMapWaypointBodyDrag(Position);Service->Controller->HandleEditModeReleased();bWaypointDrag=false;
+            }else if(Service.IsValid() && Service->Controller.IsValid()){Service->Controller->HandleEditModeReleased();bWaypointDrag=false;}
+            return true;
+        }
+        if(Service.IsValid())Service->EndPointer(E.GetEffectingButton(),E.GetScreenSpacePosition(),
+            Service->CanUsePointer(E.GetScreenSpacePosition()));
+        return false;
+    }
+    bool HandleMouseWheelOrGestureEvent(FSlateApplication&,const FPointerEvent& E,const FPointerEvent*) override {
+        if(Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()))Service->ZoomAtScreen(E.GetWheelDelta(),E.GetScreenSpacePosition());
+        return false;
+    }
+};
 
 UCommandMapInteractionService* UCommandMapInteractionService::GetOrCreateForWorld(UWorld* World)
 {
@@ -52,18 +140,41 @@ void UCommandMapInteractionService::Initialize(ADroneOpsPlayerController* InCont
             Input.SetHideCursorDuringCapture(false);
             Input.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
             InController->SetInputMode(Input);
+            if(FSlateApplication::IsInitialized() && !PointerInput.IsValid()){
+                PointerInput=MakeShared<FMapPointerInput>(this);
+                FSlateApplication::Get().RegisterInputPreProcessor(PointerInput);
+            }
         }
     }
 }
 
 void UCommandMapInteractionService::Unbind()
 {
+    if(PointerInput.IsValid() && FSlateApplication::IsInitialized())FSlateApplication::Get().UnregisterInputPreProcessor(PointerInput);
+    PointerInput.Reset();CancelPointer();
     if (MapWorld.IsValid() && OwnsCamera())
         for (TActorIterator<ADronePathActor> It(MapWorld.Get()); It; ++It) It->SetMapDisplayRadius(0.f);
     if (Controller.IsValid() && OwnsCamera()) Controller->HitResultTraceDistance = OriginalHitResultTraceDistance;
     if (MapCamera.IsValid()) MapCamera->Destroy();
     MapCamera.Reset();
     PathPanel.Reset(); Registry.Reset(); Controller.Reset();
+}
+
+void UCommandMapInteractionService::SetRouteEditCameraLocked(bool Locked)
+{
+    if(bRouteEditCameraLocked==Locked)return;
+    CancelPointer();
+    bZoomAnchored=false;
+    if(Locked){
+        // Freeze the currently displayed pose once; discard outstanding damping
+        // targets without teleporting or changing the browsing integrator.
+        ViewFocus=ActualFocus;ViewDistance=ActualDistance;
+        ViewYaw=ActualRotation.Yaw;
+        if(CurrentMapMode==ECommandMapMode::Map3D)View3DPitch=ActualRotation.Pitch;
+        if(Controller.IsValid() && Controller->GetCommandScreenManager())
+            Controller->GetCommandScreenManager()->StopCameraFollow();
+    }
+    bRouteEditCameraLocked=Locked;
 }
 
 void UCommandMapInteractionService::SetPathPanel(USequenceDispatchPanelWidget* Panel) { PathPanel = Panel; }
@@ -79,15 +190,17 @@ bool UCommandMapInteractionService::SelectDrone(int32 DroneId)
 
 bool UCommandMapInteractionService::FocusDrone(int32 DroneId)
 {
+    if(bRouteEditCameraLocked)return false;
     return Controller.IsValid() && Controller->FocusCommandDrone(DroneId);
 }
 
 bool UCommandMapInteractionService::FocusLocation(const FVector& WorldLocation)
 {
+    if(bRouteEditCameraLocked)return false;
     if (WorldLocation.ContainsNaN()) return false;
     if (OwnsCamera())
     {
-        ViewFocus = WorldLocation;
+        CancelPointer(); bZoomAnchored=false; ViewFocus = WorldLocation;
         UpdateCameraTransform();
         return true;
     }
@@ -96,14 +209,16 @@ bool UCommandMapInteractionService::FocusLocation(const FVector& WorldLocation)
 
 bool UCommandMapInteractionService::FocusExecutionBounds(const FBox& Bounds)
 {
+    if(bRouteEditCameraLocked)return false;
     if(!Bounds.IsValid || !OwnsCamera())return false;
     // Frame the immutable mission snapshot without changing coordinates or selection.
-    ViewDistance=FMath::Max(15000.,Bounds.GetExtent().Size()*5.);
+    ViewDistance=FMath::Clamp(FMath::Max(15000.,Bounds.GetExtent().Size()*5.),double(MinDistance),double(MaxDistance));
     return FocusLocation(Bounds.GetCenter());
 }
 
 bool UCommandMapInteractionService::FocusAlertOnMap(int32 AlertId)
 {
+    if(bRouteEditCameraLocked)return false;
     if (!Controller.IsValid()) return false;
     const UCommandAlertStore* Store = Controller->GetGameInstance()->GetSubsystem<UCommandAlertStore>();
     if (!Store) return false;
@@ -151,6 +266,23 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
     if (bWorldInitialized || !World) return;
     bWorldInitialized = true;
     MapWorld = World;
+    auto ConfigFloat=[&](const TCHAR* Key,float& Value,float Min,float Max) {
+        GConfig->GetFloat(TEXT("CommandMapCamera"),Key,Value,GGameIni);
+        Value=FMath::Clamp(FMath::IsFinite(Value)?Value:Min,Min,Max);
+    };
+    ConfigFloat(TEXT("PanDampingSeconds"),PanDamping,.01f,1.f);
+    ConfigFloat(TEXT("RotationDampingSeconds"),RotationDamping,.01f,1.f);
+    ConfigFloat(TEXT("ZoomDampingSeconds"),ZoomDamping,.01f,1.f);
+    ConfigFloat(TEXT("MinPitchDegrees"),MinPitch,1.f,80.f);
+    ConfigFloat(TEXT("MaxPitchDegrees"),MaxPitch,MinPitch,89.f);
+    ConfigFloat(TEXT("RotationSensitivity"),RotateSensitivity,.01f,2.f);
+    ConfigFloat(TEXT("DragThresholdPixels"),DragThreshold,2.f,20.f);
+    ConfigFloat(TEXT("MinDistance"),MinDistance,1.f,2000000.f);
+    ConfigFloat(TEXT("MaxDistance"),MaxDistance,MinDistance,100000000.f);
+    ConfigFloat(TEXT("PanSensitivity"),PanSensitivity,.1f,4.f);
+    ConfigFloat(TEXT("ZoomRatio"),ZoomRatio,.1f,.99f);
+    ViewDistance=FMath::Clamp(ViewDistance,double(MinDistance),double(MaxDistance));
+    View3DPitch=FMath::Clamp(View3DPitch,-MaxPitch,-MinPitch);
     FString Mode;
     GConfig->GetString(TEXT("CommandMap"), TEXT("DefaultMapMode"), Mode, GGameIni);
     if (!bModeRequested) CurrentMapMode = Mode.Equals(TEXT("3D"), ESearchCase::IgnoreCase) ? ECommandMapMode::Map3D : ECommandMapMode::Map2D;
@@ -235,9 +367,11 @@ void UCommandMapInteractionService::ApplyLayers()
 
 void UCommandMapInteractionService::SetMapMode(ECommandMapMode Mode)
 {
+    if(bRouteEditCameraLocked)return;
     if (Mode != ECommandMapMode::Map2D && Mode != ECommandMapMode::Map3D) return;
     bModeRequested = true;
     if (CurrentMapMode == Mode) { ApplyPendingMapMode(); return; }
+    CancelPointer(); bZoomAnchored=false;
     CurrentMapMode = Mode;
     ApplyPendingMapMode();
     OnMapModeChanged.Broadcast(CurrentMapMode);
@@ -250,53 +384,167 @@ void UCommandMapInteractionService::ApplyPendingMapMode()
 void UCommandMapInteractionService::UpdateCameraTransform()
 {
     if (!MapCamera.IsValid()) return;
-    const FRotator Rotation(CurrentMapMode == ECommandMapMode::Map2D ? -89.9f : View3DPitch, ViewYaw, 0.f);
-    MapCamera->SetActorLocationAndRotation(ViewFocus - Rotation.Vector() * ViewDistance, Rotation);
-    // The default 1 km cursor ray cannot reach the map at the supported GIS zoom distances.
-    if (Controller.IsValid()) Controller->HitResultTraceDistance = FMath::Max(OriginalHitResultTraceDistance, static_cast<float>(ViewDistance * 4.0));
+    if (!bCameraInitialized) {
+        ActualFocus=ViewFocus; ActualDistance=ViewDistance;
+        ActualRotation=FRotator(CurrentMapMode==ECommandMapMode::Map2D?-89.9f:View3DPitch,ViewYaw,0);
+        bCameraInitialized=true;
+        MapCamera->SetActorLocationAndRotation(ActualFocus-ActualRotation.Vector()*ActualDistance,ActualRotation);
+    }
+}
+bool UCommandMapInteractionService::CanUsePointer(const FVector2D& Cursor) const
+{
+    if(!Controller.IsValid() || !OwnsCamera() || !FSlateApplication::IsInitialized())return false;
+    auto* Viewport=Controller->GetWorld()->GetGameViewport();
+    const auto Widget=Viewport?Viewport->GetGameViewportWidget():nullptr;
+    if(!Widget.IsValid())return false;
+    auto& App=FSlateApplication::Get();
+    if(!App.IsActive())return false;
+    // Hit testing respects popup menus, other windows and UMG consumption,
+    // whereas testing only a panel rectangle cannot see a dropdown popup.
+    const auto Path=App.LocateWindowUnderMouse(Cursor,App.GetInteractiveTopLevelWindows());
+    if(!Path.IsValid() || Path.Widgets.Last().Widget!=Widget)return false;
+    const auto* Manager=Controller->GetCommandScreenManager();
+    return Manager && Manager->IsCursorOverMap();
+}
+void UCommandMapInteractionService::CancelPointer()
+{
+    GestureButton=FKey();bLeftGesture=false;bLeftDragging=false;
+    LeftStart=PointerLast=FVector2D::ZeroVector;
+}
+void UCommandMapInteractionService::BeginPointer(const FKey& Button,const FVector2D& Cursor,bool bOverMap,bool bShift)
+{
+    CancelPointer();
+    if(bRouteEditCameraLocked || !bOverMap || Cursor.ContainsNaN())return;
+    const bool Primary=Button==EKeys::LeftMouseButton;
+    if(Primary && (IsPlanning() || bShift || CurrentMapMode!=ECommandMapMode::Map2D))return;
+    if(!Primary && Button!=EKeys::MiddleMouseButton && Button!=EKeys::RightMouseButton)return;
+    GestureButton=Button;LeftStart=PointerLast=Cursor;bLeftGesture=Primary;
+}
+void UCommandMapInteractionService::MovePointer(const FVector2D& Cursor,bool bOverMap)
+{
+    if(!GestureButton.IsValid())return;
+    if(bRouteEditCameraLocked || !bOverMap || Cursor.ContainsNaN() || (bLeftGesture && IsPlanning())){CancelPointer();return;}
+    if(!bLeftDragging){
+        if(FVector2D::Distance(Cursor,LeftStart)<=DragThreshold)return;
+        bLeftDragging=true;
+    }
+    const FVector2D Delta=Cursor-PointerLast;PointerLast=Cursor;
+    if(GestureButton==EKeys::RightMouseButton && CurrentMapMode==ECommandMapMode::Map3D)RotateView(Delta);
+    else PanView(Delta);
+}
+void UCommandMapInteractionService::EndPointer(const FKey& Button,const FVector2D& Cursor,bool bOverMap)
+{
+    if(Button!=GestureButton)return;
+    MovePointer(Cursor,bOverMap);CancelPointer();
+}
+void UCommandMapInteractionService::BeginPrimaryGesture(const FVector2D& Cursor)
+{
+    BeginPointer(EKeys::LeftMouseButton,Cursor,CanUsePointer(Cursor),
+        FSlateApplication::IsInitialized() && FSlateApplication::Get().GetModifierKeys().IsShiftDown());
+}
+void UCommandMapInteractionService::EndPrimaryGesture(const FVector2D& Cursor)
+{
+    EndPointer(EKeys::LeftMouseButton,Cursor,CanUsePointer(Cursor));
 }
 void UCommandMapInteractionService::PanView(const FVector2D& Delta)
 {
-    if (!OwnsCamera() || Delta.ContainsNaN()) return;
-    const FRotationMatrix Rotation(FRotator(0.f, ViewYaw, 0.f));
-    ViewFocus += (Rotation.GetUnitAxis(EAxis::Y) * Delta.X + Rotation.GetUnitAxis(EAxis::X) * Delta.Y) * ViewDistance * 0.002;
-    UpdateCameraTransform();
+    if(bRouteEditCameraLocked)return;
+    if(!Controller.IsValid() || !OwnsCamera() || Delta.ContainsNaN())return;
+    int32 W=0,H=0;Controller->GetViewportSize(W,H);if(W<=0)return;
+    const double Scale=2.*ActualDistance*FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView*.5))/W;
+    const FRotationMatrix Basis(FRotator(0,ActualRotation.Yaw,0));
+    const double Down=FMath::Max(.01,-ActualRotation.Vector().Z);
+    // Screen X grows right, Y down. Moving the camera opposite the ray-plane
+    // displacement makes ground content follow the pointer at every yaw/pitch.
+    ViewFocus+=(-Basis.GetUnitAxis(EAxis::Y)*Delta.X+Basis.GetUnitAxis(EAxis::X)*(Delta.Y/Down))*Scale*PanSensitivity;
+    bZoomAnchored=false;
+}
+FVector UCommandMapInteractionService::PlaneOffset(double Distance,const FRotator& Rotation,const FVector2D& RaySlope) const
+{
+    const FRotationMatrix Basis(Rotation);
+    const FVector Forward=Basis.GetUnitAxis(EAxis::X);
+    const FVector Ray=Forward+Basis.GetUnitAxis(EAxis::Y)*RaySlope.X+Basis.GetUnitAxis(EAxis::Z)*RaySlope.Y;
+    if(Ray.Z>=-.001)return FVector::ZeroVector;
+    return -Forward*Distance+Ray*(Forward.Z*Distance/Ray.Z);
+}
+void UCommandMapInteractionService::ZoomAt(float Steps,const FVector2D* RaySlope)
+{
+    if(bRouteEditCameraLocked)return;
+    if(!FMath::IsFinite(Steps) || Steps==0)return;
+    const double Next=FMath::Clamp(ViewDistance*FMath::Pow(double(ZoomRatio),double(FMath::Clamp(Steps,-100.f,100.f))),double(MinDistance),double(MaxDistance));
+    if(Next==ViewDistance)return; // No hidden target movement at either limit.
+    if(CurrentMapMode==ECommandMapMode::Map2D && RaySlope && !RaySlope->ContainsNaN()){
+        if(!bZoomAnchored || !ZoomCursor.Equals(*RaySlope,1.e-6)){
+            ZoomCursor=*RaySlope;
+            ZoomAnchor=ActualFocus+PlaneOffset(ActualDistance,ActualRotation,ZoomCursor);
+        }
+        bZoomAnchored=true;
+        const FRotator Target(-89.9f,ViewYaw,0);
+        ViewFocus=ZoomAnchor-PlaneOffset(Next,Target,ZoomCursor);
+    }else bZoomAnchored=false; // 3D dolly retains its focus/orbit pivot.
+    ViewDistance=Next;
+}
+void UCommandMapInteractionService::ZoomAtScreen(float Steps,const FVector2D& ScreenPosition)
+{
+    if(!Controller.IsValid() || !OwnsCamera() || ScreenPosition.ContainsNaN())return;
+    auto* Viewport=Controller->GetWorld()->GetGameViewport();
+    const auto Widget=Viewport?Viewport->GetGameViewportWidget():nullptr;
+    if(!Widget.IsValid())return;
+    const auto& Geometry=Widget->GetCachedGeometry();
+    const FVector2D Size=Geometry.GetLocalSize(),Local=Geometry.AbsoluteToLocal(ScreenPosition);
+    if(Size.X<=0 || Size.Y<=0)return;
+    const double Tan=FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView*.5));
+    const FVector2D Slope((2.*Local.X/Size.X-1.)*Tan,(Size.Y-2.*Local.Y)/Size.X*Tan);
+    // PlayerController cursor polling can still hold the preceding mouse-move
+    // position while Slate dispatches this wheel event. Use its own position.
+    ZoomAt(Steps,&Slope);
 }
 void UCommandMapInteractionService::ZoomView(float Steps)
 {
-    if (!FMath::IsFinite(Steps)) return;
-    ViewDistance = FMath::Clamp(ViewDistance * FMath::Pow(0.85, Steps), 500.0, 2000000.0);
-    UpdateCameraTransform();
+    FVector2D Slope;
+    if(Controller.IsValid() && OwnsCamera()){
+        double X=0,Y=0;int32 W=0,H=0;Controller->GetViewportSize(W,H);
+        if(W>0 && H>0 && Controller->GetMousePosition(X,Y)){
+            const double Tan=FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView*.5));
+            Slope=FVector2D((2.*X/W-1.)*Tan,(H-2.*Y)/W*Tan);
+            ZoomAt(Steps,&Slope);return;
+        }
+    }
+    ZoomAt(Steps,nullptr);
 }
 void UCommandMapInteractionService::RotateView(const FVector2D& Delta)
 {
-    if (CurrentMapMode != ECommandMapMode::Map3D || Delta.ContainsNaN()) return;
-    ViewYaw = FMath::UnwindDegrees(ViewYaw + Delta.X * 0.25f);
-    View3DPitch = FMath::Clamp(View3DPitch - Delta.Y * 0.25f, -89.f, -10.f);
-    UpdateCameraTransform();
+    if(bRouteEditCameraLocked)return;
+    if(CurrentMapMode!=ECommandMapMode::Map3D || Delta.ContainsNaN())return;
+    bZoomAnchored=false;
+    ViewYaw=FMath::UnwindDegrees(ViewYaw+Delta.X*RotateSensitivity);
+    View3DPitch=FMath::Clamp(View3DPitch-Delta.Y*RotateSensitivity,-MaxPitch,-MinPitch);
+}
+void UCommandMapInteractionService::AdvanceCamera(float DeltaSeconds)
+{
+    if(bRouteEditCameraLocked || !OwnsCamera() || !FMath::IsFinite(DeltaSeconds) || DeltaSeconds<=0)return;
+    const double Dt=DeltaSeconds;
+    ActualFocus=FMath::Lerp(ActualFocus,ViewFocus,1.-FMath::Exp(-Dt/PanDamping));
+    ActualDistance=FMath::Lerp(ActualDistance,ViewDistance,1.-FMath::Exp(-Dt/ZoomDamping));
+    const FRotator Target(CurrentMapMode==ECommandMapMode::Map2D?-89.9f:View3DPitch,ViewYaw,0);
+    ActualRotation=FQuat::Slerp(ActualRotation.Quaternion(),Target.Quaternion(),1.-FMath::Exp(-Dt/RotationDamping)).Rotator();
+    if(bZoomAnchored)ActualFocus=ZoomAnchor-PlaneOffset(ActualDistance,ActualRotation,ZoomCursor);
+    // Sub-millimetre positional / sub-pixel angular tail ends exactly at target.
+    if(ActualFocus.Equals(ViewFocus,.01))ActualFocus=ViewFocus;
+    if(FMath::Abs(ActualDistance-ViewDistance)<.01)ActualDistance=ViewDistance;
+    if(ActualRotation.Equals(Target,.0001))ActualRotation=Target;
+    MapCamera->SetActorLocationAndRotation(ActualFocus-ActualRotation.Vector()*ActualDistance,ActualRotation);
 }
 void UCommandMapInteractionService::TickView(float DeltaSeconds)
 {
-    if (!Controller.IsValid() || !OwnsCamera()) return;
-    // Existing spline components only: no RefreshPath, waypoint mutation or playback restart.
-    int32 Width = 0, Height = 0;
-    Controller->GetViewportSize(Width, Height);
-    if (Width > 0)
-    {
-        const double UnitsPerPixel = 2.0 * ViewDistance * FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView * .5)) / Width;
-        for (TActorIterator<ADronePathActor> It(Controller->GetWorld()); It; ++It)
-            It->SetMapDisplayRadius(static_cast<float>(UnitsPerPixel * 1.5));
-    }
-    if (APawn* Pawn = Controller->GetPawn(); Pawn && Pawn->InputEnabled()) Pawn->DisableInput(Controller.Get());
-    if (Controller->GetViewTarget() != MapCamera.Get()) Controller->SetViewTarget(MapCamera.Get());
-    const auto* Manager = Controller->GetCommandScreenManager();
-    if (!Manager || !Manager->IsCursorOverMap()) return;
-    float X = 0, Y = 0;
-    Controller->GetInputMouseDelta(X, Y);
-    if (Controller->IsInputKeyDown(EKeys::MiddleMouseButton)) PanView(FVector2D(-X, Y));
-    else if (Controller->IsInputKeyDown(EKeys::RightMouseButton)) RotateView(FVector2D(X, Y));
-    if (Controller->WasInputKeyJustPressed(EKeys::MouseScrollUp)) ZoomView(1.f);
-    if (Controller->WasInputKeyJustPressed(EKeys::MouseScrollDown)) ZoomView(-1.f);
+    if(!Controller.IsValid() || !OwnsCamera())return;
+    if(APawn* Pawn=Controller->GetPawn();Pawn && Pawn->InputEnabled())Pawn->DisableInput(Controller.Get());
+    if(Controller->GetViewTarget()!=MapCamera.Get())Controller->SetViewTarget(MapCamera.Get());
+    AdvanceCamera(DeltaSeconds);
+    Controller->HitResultTraceDistance=FMath::Max(OriginalHitResultTraceDistance,static_cast<float>(ActualDistance*4.));
+    int32 Width=0,Height=0;Controller->GetViewportSize(Width,Height);
+    if(Width>0){const double Scale=2.*ActualDistance*FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView*.5))/Width;
+        for(TActorIterator<ADronePathActor> It(Controller->GetWorld());It;++It)It->SetMapDisplayRadius(static_cast<float>(Scale*1.5));}
 }
 bool UCommandMapInteractionService::FocusGeographicLocation(double Latitude, double Longitude, double EllipsoidHeightMeters)
 {
@@ -332,6 +580,8 @@ void UCommandMapInteractionService::TilesetFailed(const FCesium3DTilesetLoadFail
 }
 void UCommandMapInteractionService::BeginDestroy()
 {
+    if(PointerInput.IsValid() && FSlateApplication::IsInitialized())FSlateApplication::Get().UnregisterInputPreProcessor(PointerInput);
+    PointerInput.Reset();
     OnCesiumRasterOverlayLoadFailure.RemoveAll(this);
     OnCesium3DTilesetLoadFailure.RemoveAll(this);
     Super::BeginDestroy();

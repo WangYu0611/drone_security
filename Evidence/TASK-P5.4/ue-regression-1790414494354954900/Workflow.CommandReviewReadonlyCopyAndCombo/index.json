@@ -1,0 +1,117 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "F2065C1045931A613206E69F9A8CB10D",
+			"instanceName": "JXGM-125316",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.26-09.23.32",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 8.7615222930908203,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CommandReviewReadonlyCopyAndCombo",
+			"fullTestPath": "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"F2065C1045931A613206E69F9A8CB10D"
+			],
+			"duration": 8.7615222930908203,
+			"dateTime": "2026.09.26-09.23.23",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-09.23.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-09.23.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-09.23.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-09.23.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:20180  WebSocketUrl=ws://127.0.0.1:20181/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-09.23.23"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-09.23.23"
+				}
+			],
+			"warnings": 6,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

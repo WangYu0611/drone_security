@@ -207,9 +207,12 @@ void UOperationalContextSubsystem::ApplySelection() {
     if (Id.StartsWith(TEXT("UAV-"))) LexTryParseString(DroneId, *Id.Mid(4));
     auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     if (DroneId > 0 && !Registry->IsDroneRegistered(DroneId)) return;
-    if (Registry->GetPrimarySelectedDrone() == DroneId) return;
+    TArray<int32> Selected;const TArray<TSharedPtr<FJsonValue>>* Values=nullptr;
+    if(Context->TryGetArrayField(TEXT("selected_uav_ids"),Values))for(const auto& V:*Values){int32 N=0;const auto S=V->AsString();if(S.StartsWith(TEXT("UAV-")) && LexTryParseString(N,*S.Mid(4)) && Registry->IsDroneRegistered(N))Selected.Add(N);}
+    else if(DroneId>0)Selected.Add(DroneId);
+    if(Registry->GetPrimarySelectedDrone()==DroneId && Registry->GetMultiSelectedDrones()==Selected)return;
     TGuardValue<bool> Guard(bApplying, true);
-    if (DroneId == 0) Registry->ClearSelection(); else Registry->SetPrimarySelectedDrone(DroneId);
+    if (DroneId == 0) Registry->ClearSelection(); else {Registry->SetMultiSelectedDrones(Selected);Registry->SetPrimarySelectedDrone(DroneId);}
 }
 bool UOperationalContextSubsystem::UpdateContext(const TSharedRef<FJsonObject>& Patch) {
     if (!IsReady()) return false;
@@ -233,11 +236,13 @@ bool UOperationalContextSubsystem::SetLocalSelection(int32 Id, const TArray<int3
     auto Patch = MakeShared<FJsonObject>();
     if (Id > 0) Patch->SetStringField(TEXT("active_uav_id"), FString::Printf(TEXT("UAV-%02d"), Id));
     else Patch->SetField(TEXT("active_uav_id"), MakeShared<FJsonValueNull>());
+    TArray<TSharedPtr<FJsonValue>> Selected;for(int32 N:Multi)Selected.Add(MakeShared<FJsonValueString>(FString::Printf(TEXT("UAV-%02d"),N)));
+    Patch->SetArrayField(TEXT("selected_uav_ids"),Selected);
     auto Body = MakeShared<FJsonObject>(); Body->SetStringField(TEXT("instance_id"), InstanceId); Body->SetObjectField(TEXT("patch"), Patch);
     Request(TEXT("PATCH"), TEXT("/api/context"), Body, [this, Serial, Id, Multi](TSharedPtr<FJsonObject> Reply) {
         if (!Reply) { Offline(); return; }
         ApplyContext(Reply);
-        // Multi-selection is process-local. Commit the requesting user's set only after
+        // Commit the shared selection only after
         // the matching primary ACK, and never let an older ACK undo a later local action.
         double AckVersion = -1; Reply->TryGetNumberField(TEXT("context_version"), AckVersion);
         auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
@@ -279,8 +284,13 @@ void UOperationalContextSubsystem::ApplyPlans(const TSharedPtr<FJsonObject>& Inc
         for(const auto& Entry:All->Values){const auto Item=Entry.Value->AsObject();const auto UAV=PlanUI::Field(Item,TEXT("uav_id"));const auto Old=Latest.FindRef(UAV);
             if(!Old || Item->GetNumberField(TEXT("created_at"))>Old->GetNumberField(TEXT("created_at")))Latest.Add(UAV,Item);}
         auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();auto* C=Registry->GetCoordinateService().GetObject();
-        for(const auto& Entry:Latest){const auto Item=Entry.Value,P=PlanUI::Object(Item,TEXT("position"));int32 Id=0;LexTryParseString(Id,*Entry.Key.Mid(4));if(!P || Id<=0)continue;
+        for(const auto& Entry:Latest){const auto Item=Entry.Value,P=PlanUI::Object(Item,TEXT("position"));int32 Id=0;LexTryParseString(Id,*Entry.Key.Mid(4));if(!P || Id<=0 || !Item->GetBoolField(TEXT("simulation")))continue;
             FDroneTelemetrySnapshot T;T.DroneId=Id;T.GpsLatitude=P->GetNumberField(TEXT("latitude"));T.GpsLongitude=P->GetNumberField(TEXT("longitude"));T.GpsAltitude=P->GetNumberField(TEXT("altitude"));
+            const auto Route=PlanUI::Object(Item,TEXT("route_snapshot"));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
+            if(Route && Route->TryGetArrayField(TEXT("waypoints"),Points) && !Points->IsEmpty()){
+                const int Target=FMath::Clamp(int(Item->GetNumberField(TEXT("completed_waypoints"))),0,Points->Num()-1);const auto To=(*Points)[Target]->AsObject();
+                const double North=To->GetNumberField(TEXT("latitude"))-T.GpsLatitude,East=(To->GetNumberField(TEXT("longitude"))-T.GpsLongitude)*FMath::Cos(FMath::DegreesToRadians(T.GpsLatitude));
+                if(FMath::Abs(North)+FMath::Abs(East)>1e-10)T.Attitude.Yaw=FMath::RadiansToDegrees(FMath::Atan2(East,North));}
             T.GeographicLocation=FVector(T.GpsLatitude,T.GpsLongitude,T.GpsAltitude);T.Altitude=T.GpsAltitude;T.bGpsFix=true;T.Availability=EDroneAvailability::Online;T.LastUpdateTime=FPlatformTime::Seconds();
             if(C && ICoordinateService::Execute_IsCoordinateSystemReady(C)){
                 T.WorldLocation=ICoordinateService::Execute_GeographicToWorld(C,T.GpsLatitude,T.GpsLongitude,T.GpsAltitude);

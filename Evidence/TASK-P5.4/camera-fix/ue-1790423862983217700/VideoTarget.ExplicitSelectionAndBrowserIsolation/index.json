@@ -1,0 +1,1245 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "380768B140758F864B012FBB98ADBF7E",
+			"instanceName": "JXGM-35468",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.26-12.04.21",
+	"succeeded": 0,
+	"succeededWithWarnings": 0,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 40.124465942382812,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "ExplicitSelectionAndBrowserIsolation",
+			"fullTestPath": "DroneOps.P4.VideoTarget.ExplicitSelectionAndBrowserIsolation",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"380768B140758F864B012FBB98ADBF7E"
+			],
+			"duration": 40.124465942382812,
+			"dateTime": "2026.09.26-12.03.41",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device unregistered from world 'CesiumWorld'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.41"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 0 (Hostname assets.ion.cesium.com was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 1 (  Trying [2001:2::a1]:443...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 2 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 3 (TLSv1.3 (OUT), TLS handshake, Client hello (1):)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 4 (TLS connect error: error:00000000:lib(0):func(0):reason(0))",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 5 (OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to assets.ion.cesium.com:443 )",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000: libcurl info message cache 6 (closing connection #22)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9037000 GET https://assets.ion.cesium.com/proxy/2/t0/132?access_token=[REDACTED_JWT]&n=z completed with reason 'ConnectionError' after 21.18s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "LogCesium: [2026-09-26 20:03:51.603] [error] [ErrorList.h:89] Errors while loading image for tile:\n- Exception while creating asset: Request failed: ConnectionError\r\n",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogStreaming: FlushAsyncLoading(379): 1 QueuedPackages, 0 AsyncPackages",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device (ID: 1) registered with world 'CesiumWorld'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogEditorAutomationTests: CesiumWorld took 10.615 to load.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:20180  WebSocketUrl=ws://127.0.0.1:20181/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Creating Audio Device:                 Id: 2, Scope: Unique, Realtime: True",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: bUseRenderScheduler set to true.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Audio Mixer Platform Settings:",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tSample Rate:\t\t\t\t\t\t  48000",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tCallback Buffer Frame Size Requested: 1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tCallback Buffer Frame Size To Use:\t  1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tNumber of buffers to queue:\t\t\t  1",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tMax Channels (voices):\t\t\t\t  32",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tNumber of Async Source Workers:\t\t  4",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: AudioDevice MaxSources: 32",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Spatialization Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Reverb Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Occlusion Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: Refreshing FWindowsMMDeviceCache",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Console', Device='扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Console', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Multimedia', Device='扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Multimedia', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Communications', Device='扬声器 (ToDesk Virtual Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Communications', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher started.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Initializing audio mixer using platform API: 'WASAPIMixer'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher initial state: Audiosrv=RUNNING, AudioEndpointBuilder=RUNNING",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FAudioMixerWasapiRenderStream::InitializeHardware audio mixer requested num channels: 2, Wasapi render stream hardware supports num channels: 2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FAudioMixerWasapiRenderStream::InitializeHardware succeeded with sample rate: 48000, buffer period: 1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: FAudioMixerWasapi initialized: SampleRate=48000 NumChannels=2 NumDirectOutChannels=0 bIsAggregateDevice=0 StreamParams.Num()=1",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Using Audio Hardware Device 扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Initializing Sound Submixes...",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Creating Master Submix 'MasterSubmixDefault'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Creating Master Submix 'MasterReverbSubmixDefault'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device (ID: 2) registered with world 'CesiumWorld'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogViewport: Viewport MouseLockMode Changed, LockOnCapture -> LockInFullscreen",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogViewport: Viewport MouseCaptureMode Changed, CapturePermanently_IncludingInitialMouseDown -> NoCapture",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../Content/Slate/Fonts/Roboto-Bold.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face 'F:\\Perforce\\Releases\\4.24\\Engine\\Content\\Slate\\Fonts\\DroidSansFallback.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogRenderer: [VSM] Non-Nanite Marking Job Queue overflow. Performance may be affected. This occurs when many non-nanite meshes cover a large area of the shadow map.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.03.52"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogPlayLevel: Shutting down PIE online subsystems",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.01"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: FAudioMixerWasapi::StopAudioStream() InstanceID=2, StreamState=4",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.01"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher stopped.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.01"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 0 (Hostname assets.ion.cesium.com was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 1 (  Trying [2001:2::a1]:443...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 2 (SSL reusing session with ALPN 'http/1.1')",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 3 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 4 (TLSv1.3 (OUT), TLS handshake, Client hello (1):)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 5 (TLS connect error: error:00000000:lib(0):func(0):reason(0))",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 6 (OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to assets.ion.cesium.com:443 )",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00: libcurl info message cache 7 (closing connection #389)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F9039A00 GET https://assets.ion.cesium.com/proxy/2/t3/132100121131?access_token=[REDACTED_JWT]&n=z completed with reason 'ConnectionError' after 19.56s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "LogCesium: [2026-09-26 20:04:15.282] [error] [ErrorList.h:89] Errors while loading image for tile:\n- Exception while creating asset: Request failed: ConnectionError\r\n",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.15"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 0 (Hostname assets.ion.cesium.com was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 1 (  Trying [2001:2::a1]:443...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 2 (SSL reusing session with ALPN 'http/1.1')",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 3 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 4 (TLSv1.3 (OUT), TLS handshake, Client hello (1):)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 5 (TLS connect error: error:00000000:lib(0):func(0):reason(0))",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 6 (OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to assets.ion.cesium.com:443 )",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00: libcurl info message cache 7 (closing connection #545)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F97D8C00 GET https://assets.ion.cesium.com/proxy/2/t0/13210010323133221023?access_token=[REDACTED_JWT]&n=z completed with reason 'ConnectionError' after 22.27s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "LogCesium: [2026-09-26 20:04:20.146] [error] [ErrorList.h:89] Errors while loading image for tile:\n- Exception while creating asset: Request failed: ConnectionError\r\n",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "LogCesium: [2026-09-26 20:04:20.146] [error] [ErrorList.h:89] Errors while loading image for tile:\n- Exception while creating asset: Request failed: ConnectionError\r\n",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 0 (Hostname assets.ion.cesium.com was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 1 (  Trying [2001:2::a1]:443...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 2 (SSL reusing session with ALPN 'http/1.1')",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 3 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 4 (TLSv1.3 (OUT), TLS handshake, Client hello (1):)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 5 (TLS connect error: error:00000000:lib(0):func(0):reason(0))",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 6 (OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to assets.ion.cesium.com:443 )",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200: libcurl info message cache 7 (closing connection #592)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000230F903D200 GET https://assets.ion.cesium.com/proxy/2/t0/13210010323133031?access_token=[REDACTED_JWT]&n=z completed with reason 'ConnectionError' after 22.61s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "LogCesium: [2026-09-26 20:04:21.197] [error] [ErrorList.h:89] Errors while loading image for tile:\n- Exception while creating asset: Request failed: ConnectionError\r\n",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Flushing composite font cache on Game thread. Clearing 2 entries in composite font map and 8 entries in font face map.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.04.21"
+				}
+			],
+			"warnings": 50,
+			"errors": 5,
+			"artifacts": []
+		}
+	]
+}

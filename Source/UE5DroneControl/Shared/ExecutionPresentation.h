@@ -3,7 +3,7 @@
 namespace ExecutionUI {
 inline bool Active(const TSharedPtr<FJsonObject>& E) {
     const auto S=PlanUI::Field(E,TEXT("state"));
-    return E && S!=TEXT("COMPLETED") && S!=TEXT("ABORTED") && S!=TEXT("FAILED");
+    return E && S!=TEXT("COMPLETED") && S!=TEXT("ABORTED") && S!=TEXT("FAILED") && S!=TEXT("CANCELLED");
 }
 inline TSharedPtr<FJsonObject> Latest(const TSharedPtr<FJsonObject>& State,const FString& Plan=TEXT(""),bool OnlyActive=false) {
     const auto All=PlanUI::Object(State,TEXT("executions"));TSharedPtr<FJsonObject> Result;double Time=-1;

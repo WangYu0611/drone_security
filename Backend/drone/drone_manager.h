@@ -52,6 +52,7 @@ public:
 
     DroneConnectionState GetConnectionState(int drone_id) const;
     TelemetryData GetLatestTelemetry(int drone_id) const;
+    bool TryGetFreshMissionTelemetry(int drone_id, TelemetryData& out) const;
     GpsAnchor GetAnchor(int drone_id) const;
 
     void CheckTimeouts(int timeout_sec);

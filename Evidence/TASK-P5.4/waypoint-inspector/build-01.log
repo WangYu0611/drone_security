@@ -1,0 +1,60 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development C:/Users/wy331/Documents/UE5DroneControl-p5-4/UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\wy331\Documents\UE5DroneControl-p5-4).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+C:\Users\wy331\Documents\UE5DroneControl-p5-4\Source\UE5DroneControl\DroneOps\Control\DroneOpsPlayerController.cpp(1): error: Expected DroneOpsPlayerController.h to be first header included.
+C:\Users\wy331\Documents\UE5DroneControl-p5-4\Source\UE5DroneControl\PathEditor\DroneWaypointActor.cpp(1): error: Expected DroneWaypointActor.h to be first header included.
+UHT processed UE5DroneControlEditor in 10.3307795 seconds (3 generated files written)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: DroneOpsPlayerController.cpp, MapMissionRouteWidget.cpp, ProductText.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 30 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 17.04 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/30] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[2/30] Compile [x64] CommandClientTest.cpp [NoUba]
+[3/30] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[4/30] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[5/30] Compile [x64] DefaultSegmentSpeedWidget.cpp [NoUba]
+[6/30] Compile [x64] DroneListWidget.cpp [NoUba]
+[7/30] Compile [x64] CommandScreenManager.cpp [NoUba]
+[8/30] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[9/30] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[10/30] Compile [x64] DroneVideoWindowWidget.cpp [NoUba]
+[11/30] Compile [x64] DronePathActor.cpp [NoUba]
+[12/30] Compile [x64] DroneWaypointActor.cpp [NoUba]
+[13/30] Compile [x64] GeographicTargetPanelWidget.cpp [NoUba]
+[14/30] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[15/30] Compile [x64] MapExtractionTest.cpp [NoUba]
+[16/30] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+[17/30] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[18/30] Compile [x64] MapShellWidget.cpp [NoUba]
+[19/30] Compile [x64] OperationalContextTest.cpp [NoUba]
+[20/30] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[21/30] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[22/30] Compile [x64] ProductText.cpp [NoUba]
+[23/30] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[24/30] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+[25/30] Compile [x64] SequenceDispatchPanelWidget.cpp [NoUba]
+[26/30] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[27/30] Compile [x64] VideoClientTest.cpp [NoUba]
+[28/30] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ C:/Users/wy331/Documents/UE5DroneControl-p5-4/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ C:/Users/wy331/Documents/UE5DroneControl-p5-4/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[29/30] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[30/30] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 157.94 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 171.44 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 19.3kb

@@ -107,6 +107,8 @@ void ADronePlaybackManager::PlayFromData(const FDronePathsSaveData& Data)
 			if (PathActor->Waypoints.IsValidIndex(NewWaypointIndex))
 			{
 				PathActor->Waypoints[NewWaypointIndex].WaitTime = WaypointData.WaitTime;
+                PathActor->Waypoints[NewWaypointIndex].AltitudeReference = WaypointData.AltitudeReference;
+                PathActor->Waypoints[NewWaypointIndex].AltitudeOffsetMeters = WaypointData.AltitudeOffsetMeters;
 				PathActor->Waypoints[NewWaypointIndex].SegmentSpeed = EffectiveSpeed;
 			}
 		}

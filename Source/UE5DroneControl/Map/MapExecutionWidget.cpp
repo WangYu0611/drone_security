@@ -16,25 +16,33 @@ void UMapExecutionWidget::NativeOnInitialized(){
     Super::NativeOnInitialized();auto* Root=WidgetTree->ConstructWidget<UCanvasPanel>();WidgetTree->RootWidget=Root;
     auto* Panel=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(Panel);Panel->SetPadding(FMargin(12));
     auto* Box=WidgetTree->ConstructWidget<UVerticalBox>();Panel->SetContent(Box);
-    Label(WidgetTree,Box,T(TEXT("Execution.Monitor")),24);Summary=Label(WidgetTree,Box,FText::GetEmpty(),22);
+    Label(WidgetTree,Box,T(TEXT("Execution.MonitorNeutral")),24);Summary=Label(WidgetTree,Box,FText::GetEmpty(),22);
     auto* PanelSlot=Root->AddChildToCanvas(Panel);PanelSlot->SetPosition(FVector2D(12,190));PanelSlot->SetSize(FVector2D(520,270));
     SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 void UMapExecutionWidget::Refresh(){
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    Execution=ExecutionUI::Latest(Sync->GetPlans(),TEXT(""),true);
-    if(!Execution)Execution=ExecutionUI::Latest(Sync->GetPlans());
+    const auto SelectedPlan=Field(Sync->GetContext(),TEXT("active_security_plan_id"));
+    Execution=ExecutionUI::Latest(Sync->GetPlans(),SelectedPlan,true);
+    if(!Execution)Execution=ExecutionUI::Latest(Sync->GetPlans(),TEXT(""),true);
+    if(!Execution)Execution=ExecutionUI::Latest(Sync->GetPlans(),SelectedPlan);
     if(Execution && !ExecutionUI::Active(Execution)){const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Execution,TEXT("plan_id")));if(Plan && Field(Plan,TEXT("deployment_id"))!=Field(Execution,TEXT("deployment_id")))Execution.Reset();}
     SetVisibility(Execution?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
-    if(!Execution)return;
-    Summary->SetText(FText::Format(User(TEXT("{0}\n{1}\n{2}")),ExecutionUI::Summary(Execution),T(TEXT("Execution.ReadOnly")),T(Sync->IsReady()?TEXT("Execution.Simulation"):TEXT("Stage1.RECONNECTING"))));
+    RenderedExecutions.Empty();if(!Execution)return;
+    const auto All=Object(Sync->GetPlans(),TEXT("executions"));
+    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(ExecutionUI::Active(E) || (!ExecutionUI::Active(Execution) && Field(E,TEXT("group_id"))==Field(Execution,TEXT("group_id"))))RenderedExecutions.Add(E);}
+    if(RenderedExecutions.IsEmpty())RenderedExecutions.Add(Execution);
+    Summary->SetText(FText::Format(User(TEXT("{0}\n{1}\n{2}")),ExecutionUI::Summary(Execution),T(TEXT("Execution.ReadOnly")),T(Sync->IsReady()?(Execution->GetBoolField(TEXT("simulation"))?TEXT("Execution.Simulation"):TEXT("Execution.Real")):TEXT("Stage1.RECONNECTING"))));
     auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     auto* Coordinates=Registry->GetCoordinateService().GetObject();
     if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){
-        int32 Drone=0;LexTryParseString(Drone,*Field(Execution,TEXT("uav_id")).Mid(4));
-        if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Drone))){const auto P=Object(Execution,TEXT("position"));Mirror->ApplySimulationPosition(ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude"))));}
+        for(const auto& E:RenderedExecutions){if(!E->GetBoolField(TEXT("simulation")))continue;int32 Drone=0;LexTryParseString(Drone,*Field(E,TEXT("uav_id")).Mid(4));
+        if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Drone))){const auto P=Object(E,TEXT("position"));Mirror->ApplySimulationPosition(ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude"))));}}
     }
     const auto Id=Field(Execution,TEXT("execution_id"));
+    // Consume automatic framing while editing; do not defer it until unlock.
+    // Telemetry and execution presentation above keep refreshing normally.
+    if(PC && PC->GetCommandScreenManager() && PC->GetCommandScreenManager()->GetMapService()->IsRouteEditCameraLocked())FocusedExecution=Id;
     if(Id!=FocusedExecution && PC && Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates) && PC->GetCommandScreenManager()) {
         FBox Bounds(ForceInit);const auto R=Object(Execution,TEXT("route_snapshot"));
         for(const auto& V:R->GetArrayField(TEXT("waypoints"))){const auto P=V->AsObject();Bounds+=ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude")));}
@@ -54,9 +62,10 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
         // not be applied a second time (especially with side-by-side windows).
         Screen=View;return true;
     };
-    const auto Route=Object(Execution,TEXT("route_snapshot"));if(!Route)return Base;
+    for(const auto& Current:RenderedExecutions){
+    const auto Route=Object(Current,TEXT("route_snapshot"));if(!Route)continue;
     const auto& Points=Route->GetArrayField(TEXT("waypoints"));TArray<FVector2D> Line;
-    const int Completed=Execution->GetNumberField(TEXT("completed_waypoints"));
+    const int Completed=Current->GetNumberField(TEXT("completed_waypoints"));
     for(int I=0;I<Points.Num();++I){FVector2D P;if(!Project(Points[I]->AsObject(),P))continue;Line.Add(P);
         const FLinearColor Color=I<Completed?FLinearColor(.2f,1,.55f):I==Completed?FLinearColor(1,.75f,.1f):FLinearColor(.5f,.7f,1);
         FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(12,12),FSlateLayoutTransform(P-FVector2D(6,6))),FCoreStyle::Get().GetBrush("WhiteBrush"),ESlateDrawEffect::None,Color);
@@ -65,10 +74,11 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
     }
     bool Closed=false;Route->TryGetBoolField(TEXT("bClosedLoop"),Closed);if(Closed && Line.Num()>2)Line.Add(FVector2D(Line[0]));
     if(Line.Num()>1)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,FLinearColor(.1f,.8f,1),true,3);
-    FVector2D UAV;if(Project(Object(Execution,TEXT("position")),UAV)){
+    FVector2D UAV;if(Project(Object(Current,TEXT("position")),UAV)){
         const TArray<FVector2D> Diamond{UAV+FVector2D(0,-13),UAV+FVector2D(13,0),UAV+FVector2D(0,13),UAV+FVector2D(-13,0),UAV+FVector2D(0,-13)};
         FSlateDrawElement::MakeLines(Out,Base+4,G.ToPaintGeometry(),Diamond,ESlateDrawEffect::None,FLinearColor::Yellow,true,4);
-        FSlateDrawElement::MakeText(Out,Base+4,G.ToPaintGeometry(FVector2D(140,24),FSlateLayoutTransform(UAV+FVector2D(16,12))),Field(Execution,TEXT("uav_id")),FCoreStyle::GetDefaultFontStyle("Bold",16),ESlateDrawEffect::None,FLinearColor::Yellow);
+        FSlateDrawElement::MakeText(Out,Base+4,G.ToPaintGeometry(FVector2D(140,24),FSlateLayoutTransform(UAV+FVector2D(16,12))),Field(Current,TEXT("uav_id")),FCoreStyle::GetDefaultFontStyle("Bold",16),ESlateDrawEffect::None,FLinearColor::Yellow);
+    }
     }
     return Base+4;
 }

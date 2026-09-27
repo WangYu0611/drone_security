@@ -1,0 +1,50 @@
+{
+  "build": "build-07.log",
+  "source_manifest": "final-build.json",
+  "start": "2026-09-26T12:52:00.675Z",
+  "end": "2026-09-26T13:12:38.050Z",
+  "native_screenshots": 61,
+  "pan_counts": {
+    "left": 5,
+    "right": 5,
+    "up": 5,
+    "down": 5
+  },
+  "click_count": 10,
+  "pan_series_seconds": 385.156,
+  "microdrag_px": [
+    2,
+    1
+  ],
+  "verified": [
+    "2D directions and release convergence",
+    "stationary clicks and subthreshold drag",
+    "2D cursor-position zoom roundtrip",
+    "3D pivot zoom",
+    "waypoint double-click focus",
+    "2D/3D/2D selected waypoint preservation",
+    "Inspector altitude 40 to 45 to 40",
+    "Inspector dropdown and scroll input isolation",
+    "waypoint body drag 50x40 pixels without point addition or camera movement",
+    "Save Draft remains editing; Finish exits; reopen saved four-point route"
+  ],
+  "persisted_heights_m": [
+    40.0,
+    80.0,
+    120.0,
+    60.0
+  ],
+  "limitations": [
+    "NOT NATIVE VERIFIED: sustained right-button orbit and middle-button pan; API drag is left-only",
+    "Controlled fast/slow drag durations unavailable; 20 native drags are tool-timed",
+    "3D orbit/pan stress is component-only, not native",
+    "Inspector text-area drag did not move map, successful text selection was not established",
+    "Command and Map launched; Video not launched; no full-client health claim"
+  ],
+  "retained_failures": [
+    "b06-p01-dragged.png: unintended P05, undone via existing Undo before build07 fix",
+    "build04 final-zoom-roundtrip-settled.png: stale first wheel cursor, fixed via event screen coordinates",
+    "latest Camera aggregate FAIL; Map guard network failure then crash; see UE reports"
+  ],
+  "cleanup_owned_processes": []
+}

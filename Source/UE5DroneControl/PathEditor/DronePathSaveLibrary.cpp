@@ -1,4 +1,4 @@
-﻿#include "DronePathSaveLibrary.h"
+#include "DronePathSaveLibrary.h"
 
 #include "DronePathActor.h"
 #include "Dom/JsonObject.h"
@@ -151,6 +151,7 @@ bool UDronePathSaveLibrary::SavePathsToJson(const TMap<int32, ADronePathActor*>&
 			WaypointSaveData.Location = PathActor->GetWaypointWorldLocation(WaypointIndex);
 			WaypointSaveData.SegmentSpeed = Waypoint.SegmentSpeed;
 			WaypointSaveData.WaitTime = Waypoint.WaitTime;
+            WaypointSaveData.AltitudeReference=Waypoint.AltitudeReference;WaypointSaveData.AltitudeOffsetMeters=Waypoint.AltitudeOffsetMeters;
 		}
 	}
 

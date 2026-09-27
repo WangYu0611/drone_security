@@ -1,4 +1,8 @@
 #include "DroneWaypointActor.h"
+#include "DroneOps/Core/DroneRegistrySubsystem.h"
+#include "DroneOps/Core/ICoordinateService.h"
+#include "Shared/ProductText.h"
+#include "Engine/GameInstance.h"
 
 #include "Components/ArrowComponent.h"
 #include "Components/BillboardComponent.h"
@@ -147,6 +151,11 @@ void ADroneWaypointActor::UpdateDisplayText(int32 PathId, float SegmentSpeed)
 
 	if (IsValid(TextRenderComponent))
 	{
+        if(bCommandMapVisualsApplied && IsValid(PathActor) && PathActor->Waypoints.IsValidIndex(WaypointIndex) && GetGameInstance()){
+            auto* C=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();
+            if(C && ICoordinateService::Execute_IsCoordinateSystemReady(C)){const auto& W=PathActor->Waypoints[WaypointIndex];const auto Geo=ICoordinateService::Execute_WorldToGeographic(C,GetActorLocation());
+                TextRenderComponent->SetText(FText::Format(ProductText::Get(TEXT("Mission3D.Marker")),FText::AsNumber(WaypointIndex+1),FText::AsNumber(Geo.Z-W.AltitudeOffsetMeters),FText::AsCultureInvariant(W.AltitudeReference),FText::AsNumber(W.WaitTime)));return;}
+        }
 		TextRenderComponent->SetText(FText::FromString(bCommandMapVisualsApplied
             ? FString::Printf(TEXT("%02d | D%d | %s m/s"), WaypointIndex + 1, DisplayPathNumber, *SpeedText)
             : FString::Printf(TEXT("D%d|S:%s"), DisplayPathNumber, *SpeedText)));

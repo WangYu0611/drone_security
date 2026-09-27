@@ -401,6 +401,83 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Errors.INVALID_TRANSLATION"),NSLOCTEXT("DroneOps","Errors.INVALID_TRANSLATION","The route changed. Cancel and retry moving the plan.")},
 {TEXT("Events.PLAN_TRANSLATED"),NSLOCTEXT("DroneOps","Events.PLAN_TRANSLATED","Plan position confirmed")},
 {TEXT("Events.ROUTE_CLOSURE_REACHED"),NSLOCTEXT("DroneOps","Events.ROUTE_CLOSURE_REACHED","Closed route completed once")},
+{TEXT("Mission3D.Altitude"),NSLOCTEXT("DroneOps","Mission3D.Altitude","Altitude (m)")},
+{TEXT("Mission3D.Hover"),NSLOCTEXT("DroneOps","Mission3D.Hover","Hover time (seconds)")},
+{TEXT("Mission3D.AGL"),NSLOCTEXT("DroneOps","Mission3D.AGL","AGL: above ground (unchecked: ellipsoid)")},
+{TEXT("Mission3D.Apply"),NSLOCTEXT("DroneOps","Mission3D.Apply","APPLY WAYPOINT PARAMETERS")},
+{TEXT("Mission3D.Selected"),NSLOCTEXT("DroneOps","Mission3D.Selected","Selected Waypoint: P{0}")},
+{TEXT("Mission3D.SelectPoint"),NSLOCTEXT("DroneOps","Mission3D.SelectPoint","Select a waypoint to edit height and hover time")},
+{TEXT("Formation.LineSpacing"),NSLOCTEXT("DroneOps","Formation.LineSpacing","Line formation spacing (m)")},
+{TEXT("Formation.SaveAssignment"),NSLOCTEXT("DroneOps","Formation.SaveAssignment","SAVE ASSIGNED UAVS")},
+{TEXT("Schedule.Enable"),NSLOCTEXT("DroneOps","Schedule.Enable","Scheduled start (unchecked: start now)")},
+{TEXT("Schedule.LocalTime"),NSLOCTEXT("DroneOps","Schedule.LocalTime","Local start date/time: YYYY-MM-DDTHH:MM:SS")},
+{TEXT("Schedule.StartNow"),NSLOCTEXT("DroneOps","Schedule.StartNow","START NOW")},
+{TEXT("Schedule.Reschedule"),NSLOCTEXT("DroneOps","Schedule.Reschedule","RESCHEDULE")},
+{TEXT("Schedule.Cancel"),NSLOCTEXT("DroneOps","Schedule.Cancel","CANCEL SCHEDULE")},
+{TEXT("Schedule.Countdown"),NSLOCTEXT("DroneOps","Schedule.Countdown","Scheduled mission starts in {0}")},
+{TEXT("Execution.SCHEDULED"),NSLOCTEXT("DroneOps","Execution.SCHEDULED","SCHEDULED")},
+{TEXT("Execution.CANCELLED"),NSLOCTEXT("DroneOps","Execution.CANCELLED","CANCELLED")},
+{TEXT("Situation.Title"),NSLOCTEXT("DroneOps","Situation.Title","2D SITUATION MAP")},
+{TEXT("Situation.Follow"),NSLOCTEXT("DroneOps","Situation.Follow","TOGGLE FOLLOW SELECTED UAV")},
+{TEXT("Errors.ALTITUDE_DATUM_UNRESOLVED"),NSLOCTEXT("DroneOps","Errors.ALTITUDE_DATUM_UNRESOLVED","Cannot resolve height. Select a waypoint, enter valid values and ensure terrain is loaded.")},
+{TEXT("Errors.INVALID_ALTITUDE_REFERENCE"),NSLOCTEXT("DroneOps","Errors.INVALID_ALTITUDE_REFERENCE","Unknown altitude reference")},
+{TEXT("Errors.INVALID_SEPARATION"),NSLOCTEXT("DroneOps","Errors.INVALID_SEPARATION","Spacing must meet the configured minimum separation.")},
+{TEXT("Errors.TRAJECTORY_CONFLICT"),NSLOCTEXT("DroneOps","Errors.TRAJECTORY_CONFLICT","Trajectory conflict: aircraft cannot maintain the required separation.")},
+{TEXT("Errors.INVALID_SCHEDULE"),NSLOCTEXT("DroneOps","Errors.INVALID_SCHEDULE","Enter a valid future local date and time.")},
+{TEXT("Errors.FORMATION_UNSUPPORTED"),NSLOCTEXT("DroneOps","Errors.FORMATION_UNSUPPORTED","Only Line formation is currently available.")},
+{TEXT("Errors.TRAJECTORY_DOMAIN_UNSUPPORTED"),NSLOCTEXT("DroneOps","Errors.TRAJECTORY_DOMAIN_UNSUPPORTED","Formation requires a nonpolar area within 10 km.")},
+{TEXT("Mission3D.Marker"),NSLOCTEXT("DroneOps","Mission3D.Marker","P{0} | {1} m {2} | Hover {3} s")},
+{TEXT("Group.Title"),NSLOCTEXT("DroneOps","Group.Title","GROUP CONTROL")},
+{TEXT("Group.Summary"),NSLOCTEXT("DroneOps","Group.Summary","Selected UAVs: {0} | Preserve relative offsets | Minimum separation: {1} m")},
+{TEXT("Group.Latitude"),NSLOCTEXT("DroneOps","Group.Latitude","Group anchor latitude (WGS84)")},
+{TEXT("Group.Longitude"),NSLOCTEXT("DroneOps","Group.Longitude","Group anchor longitude (WGS84)")},
+{TEXT("Group.Altitude"),NSLOCTEXT("DroneOps","Group.Altitude","Group anchor ellipsoid altitude (m)")},
+{TEXT("Group.Area"),NSLOCTEXT("DroneOps","Group.Area","Available target area radius (m)")},
+{TEXT("Group.Move"),NSLOCTEXT("DroneOps","Group.Move","MOVE GROUP")},
+{TEXT("Group.Accepted"),NSLOCTEXT("DroneOps","Group.Accepted","Group command accepted by Backend")},
+{TEXT("Group.Conflict"),NSLOCTEXT("DroneOps","Group.Conflict","{0} / {1}: predicted {2} m; required {3} m. Execution blocked.")},
+{TEXT("Schedule.Overview"),NSLOCTEXT("DroneOps","Schedule.Overview","Scheduled: {0} | Starts in {1} | {2} UAV")},
+{TEXT("Errors.TERRAIN_REQUIRED"),NSLOCTEXT("DroneOps","Errors.TERRAIN_REQUIRED","Terrain height is unavailable or the waypoint is below ground. Load terrain and retry.")},
+{TEXT("Events.SCHEDULE_STARTED"),NSLOCTEXT("DroneOps","Events.SCHEDULE_STARTED","{uav_id}: scheduled mission started")},
+{TEXT("Events.SCHEDULE_CHANGED"),NSLOCTEXT("DroneOps","Events.SCHEDULE_CHANGED","{uav_id}: start time updated")},
+{TEXT("Events.SCHEDULE_DUE"),NSLOCTEXT("DroneOps","Events.SCHEDULE_DUE","{uav_id}: immediate start requested")},
+{TEXT("Events.MISSION_CANCELLED"),NSLOCTEXT("DroneOps","Events.MISSION_CANCELLED","{uav_id}: scheduled mission cancelled")},
+{TEXT("Events.SAFETY_CONFLICT"),NSLOCTEXT("DroneOps","Events.SAFETY_CONFLICT","{uav_id}: motion paused by safety separation check")},
+{TEXT("Execution.Real"),NSLOCTEXT("DroneOps","Execution.Real","LIVE CONTROL · Real UAV")},
+{TEXT("Execution.MonitorNeutral"),NSLOCTEXT("DroneOps","Execution.MonitorNeutral","Execution Monitor")},
+{TEXT("Execution.RealAvailable"),NSLOCTEXT("DroneOps","Execution.RealAvailable","Real adapter configured; Backend checks live readiness")},
+{TEXT("Execution.RealCheck"),NSLOCTEXT("DroneOps","Execution.RealCheck","Real control requires fresh measured telemetry, calibrated coordinates and Armed/Offboard before movement. Start does not arm or take off.")},
+{TEXT("Execution.Real.returnConfirm"),NSLOCTEXT("DroneOps","Execution.Real.returnConfirm","Confirm Return Home? Remaining waypoints will be skipped and the real UAV will be commanded to its calibrated Home.")},
+{TEXT("Execution.Real.abortConfirm"),NSLOCTEXT("DroneOps","Execution.Real.abortConfirm","Confirm abort? The mission cannot resume. Backend requests a hold at the measured position and reports any rejection.")},
+{TEXT("Errors.REAL_COMMAND_REJECTED"),NSLOCTEXT("DroneOps","Errors.REAL_COMMAND_REJECTED","Real UAV rejected the command. Verify Armed/Offboard and telemetry.")},
+{TEXT("Errors.REAL_HOLD_REJECTED"),NSLOCTEXT("DroneOps","Errors.REAL_HOLD_REJECTED","Hold was not confirmed. Check the aircraft and control link immediately.")},
+{TEXT("Errors.REAL_TELEMETRY_UNAVAILABLE"),NSLOCTEXT("DroneOps","Errors.REAL_TELEMETRY_UNAVAILABLE","Fresh valid aircraft telemetry is unavailable.")},
+{TEXT("Errors.REAL_ANCHOR_CHANGED_RECALIBRATE"),NSLOCTEXT("DroneOps","Errors.REAL_ANCHOR_CHANGED_RECALIBRATE","The live coordinate anchor changed. Recalibrate before control.")},
+{TEXT("Errors.REAL_RESTART_REQUIRES_RESUME"),NSLOCTEXT("DroneOps","Errors.REAL_RESTART_REQUIRES_RESUME","Real mission restored paused; verify the aircraft before resuming.")},
+{TEXT("Errors.ADAPTER_MODE_MISMATCH"),NSLOCTEXT("DroneOps","Errors.ADAPTER_MODE_MISMATCH","Stored execution belongs to a different adapter. Create a new execution.")},
+{TEXT("Errors.REAL_HOVER_DRIFT"),NSLOCTEXT("DroneOps","Errors.REAL_HOVER_DRIFT","Measured UAV position left the hover tolerance.")},
+{TEXT("Errors.GROUP_MEMBER_FAILED"),NSLOCTEXT("DroneOps","Errors.GROUP_MEMBER_FAILED","A group member failed; the entire mission group has failed and active members were asked to hold.")},
+{TEXT("Errors.LEGACY_CONTROLLER_BUSY"),NSLOCTEXT("DroneOps","Errors.LEGACY_CONTROLLER_BUSY","Another controller owns the aircraft.")},
+{TEXT("Errors.MISSION_CONTROLLER_OWNS_CONTROL"),NSLOCTEXT("DroneOps","Errors.MISSION_CONTROLLER_OWNS_CONTROL","Use the security mission controls in Real mode.")},
+{TEXT("Execution.RealEstimate"),NSLOCTEXT("DroneOps","Execution.RealEstimate","Real execution estimates are calculated from live position by Backend at start.")},
+{TEXT("Errors.REAL_UAV_UNAVAILABLE"),NSLOCTEXT("DroneOps","Errors.REAL_UAV_UNAVAILABLE","Real UAV or its calibrated frame is unavailable.")},
+{TEXT("Errors.REAL_CONFIGURATION_INVALID"),NSLOCTEXT("DroneOps","Errors.REAL_CONFIGURATION_INVALID","Real adapter configuration is incomplete or invalid.")},
+{TEXT("Errors.ADAPTER_POSITION_INVALID"),NSLOCTEXT("DroneOps","Errors.ADAPTER_POSITION_INVALID","Adapter position is not a valid WGS84 coordinate.")},
+{TEXT("Errors.ADAPTER_COMMAND_INVALID"),NSLOCTEXT("DroneOps","Errors.ADAPTER_COMMAND_INVALID","The motion target or speed is invalid.")},
+{TEXT("Errors.REAL_FRAME_DOMAIN_UNSUPPORTED"),NSLOCTEXT("DroneOps","Errors.REAL_FRAME_DOMAIN_UNSUPPORTED","The real mission is outside the supported local coordinate area.")},
+{TEXT("Errors.REAL_NED_INVALID"),NSLOCTEXT("DroneOps","Errors.REAL_NED_INVALID","Measured NED position is invalid.")},
+{TEXT("Errors.REAL_ANCHOR_DATUM_UNRESOLVED"),NSLOCTEXT("DroneOps","Errors.REAL_ANCHOR_DATUM_UNRESOLVED","Declare the real anchor altitude datum before execution.")},
+{TEXT("Errors.REAL_ANCHOR_INVALID"),NSLOCTEXT("DroneOps","Errors.REAL_ANCHOR_INVALID","The real coordinate calibration is invalid.")},
+{TEXT("Inspector.Title"),NSLOCTEXT("DroneOps","Inspector.Title","Waypoint Inspector")},
+{TEXT("Inspector.Help"),NSLOCTEXT("DroneOps","Inspector.Help","Click a waypoint to select it. Click the map to add one. Enter or leave a field to update.")},
+{TEXT("Inspector.Reference"),NSLOCTEXT("DroneOps","Inspector.Reference","Altitude reference")},
+{TEXT("Inspector.Speed"),NSLOCTEXT("DroneOps","Inspector.Speed","Speed (m/s; 0 = default)")},
+{TEXT("Inspector.Coordinates"),NSLOCTEXT("DroneOps","Inspector.Coordinates","Longitude: {0}\nLatitude: {1}")},
+{TEXT("Errors.WAYPOINT_PARAMETERS_INVALID"),NSLOCTEXT("DroneOps","Errors.WAYPOINT_PARAMETERS_INVALID","Enter finite values: hover >= 0; speed 0 to 15 m/s.")},
+{TEXT("Map.ViewLocked"),NSLOCTEXT("DroneOps","Map.ViewLocked","ROUTE EDITING | MAP VIEW LOCKED")},
+{TEXT("Map.AdjustBeforeEdit"),NSLOCTEXT("DroneOps","Map.AdjustBeforeEdit","Adjust the map view before editing.")},
+{TEXT("Map.FinishBeforeMode"),NSLOCTEXT("DroneOps","Map.FinishBeforeMode","Finish route editing before switching map mode.")},
+{TEXT("Map.InvalidPosition"),NSLOCTEXT("DroneOps","Map.InvalidPosition","No valid map position")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -805,6 +882,83 @@ if(Source==TEXT("Cannot move the plan while the mission is running."))return Get
 if(Source==TEXT("The route changed. Cancel and retry moving the plan."))return Get(TEXT("Errors.INVALID_TRANSLATION"));
 if(Source==TEXT("Plan position confirmed"))return Get(TEXT("Events.PLAN_TRANSLATED"));
 if(Source==TEXT("Closed route completed once"))return Get(TEXT("Events.ROUTE_CLOSURE_REACHED"));
+if(Source==TEXT("Altitude (m)"))return Get(TEXT("Mission3D.Altitude"));
+if(Source==TEXT("Hover time (seconds)"))return Get(TEXT("Mission3D.Hover"));
+if(Source==TEXT("AGL: above ground (unchecked: ellipsoid)"))return Get(TEXT("Mission3D.AGL"));
+if(Source==TEXT("APPLY WAYPOINT PARAMETERS"))return Get(TEXT("Mission3D.Apply"));
+if(Source==TEXT("Selected Waypoint: P{0}"))return Get(TEXT("Mission3D.Selected"));
+if(Source==TEXT("Select a waypoint to edit height and hover time"))return Get(TEXT("Mission3D.SelectPoint"));
+if(Source==TEXT("Line formation spacing (m)"))return Get(TEXT("Formation.LineSpacing"));
+if(Source==TEXT("SAVE ASSIGNED UAVS"))return Get(TEXT("Formation.SaveAssignment"));
+if(Source==TEXT("Scheduled start (unchecked: start now)"))return Get(TEXT("Schedule.Enable"));
+if(Source==TEXT("Local start date/time: YYYY-MM-DDTHH:MM:SS"))return Get(TEXT("Schedule.LocalTime"));
+if(Source==TEXT("START NOW"))return Get(TEXT("Schedule.StartNow"));
+if(Source==TEXT("RESCHEDULE"))return Get(TEXT("Schedule.Reschedule"));
+if(Source==TEXT("CANCEL SCHEDULE"))return Get(TEXT("Schedule.Cancel"));
+if(Source==TEXT("Scheduled mission starts in {0}"))return Get(TEXT("Schedule.Countdown"));
+if(Source==TEXT("SCHEDULED"))return Get(TEXT("Execution.SCHEDULED"));
+if(Source==TEXT("CANCELLED"))return Get(TEXT("Execution.CANCELLED"));
+if(Source==TEXT("2D SITUATION MAP"))return Get(TEXT("Situation.Title"));
+if(Source==TEXT("TOGGLE FOLLOW SELECTED UAV"))return Get(TEXT("Situation.Follow"));
+if(Source==TEXT("Cannot resolve height. Select a waypoint, enter valid values and ensure terrain is loaded."))return Get(TEXT("Errors.ALTITUDE_DATUM_UNRESOLVED"));
+if(Source==TEXT("Unknown altitude reference"))return Get(TEXT("Errors.INVALID_ALTITUDE_REFERENCE"));
+if(Source==TEXT("Spacing must meet the configured minimum separation."))return Get(TEXT("Errors.INVALID_SEPARATION"));
+if(Source==TEXT("Trajectory conflict: aircraft cannot maintain the required separation."))return Get(TEXT("Errors.TRAJECTORY_CONFLICT"));
+if(Source==TEXT("Enter a valid future local date and time."))return Get(TEXT("Errors.INVALID_SCHEDULE"));
+if(Source==TEXT("Only Line formation is currently available."))return Get(TEXT("Errors.FORMATION_UNSUPPORTED"));
+if(Source==TEXT("Formation requires a nonpolar area within 10 km."))return Get(TEXT("Errors.TRAJECTORY_DOMAIN_UNSUPPORTED"));
+if(Source==TEXT("P{0} | {1} m {2} | Hover {3} s"))return Get(TEXT("Mission3D.Marker"));
+if(Source==TEXT("GROUP CONTROL"))return Get(TEXT("Group.Title"));
+if(Source==TEXT("Selected UAVs: {0} | Preserve relative offsets | Minimum separation: {1} m"))return Get(TEXT("Group.Summary"));
+if(Source==TEXT("Group anchor latitude (WGS84)"))return Get(TEXT("Group.Latitude"));
+if(Source==TEXT("Group anchor longitude (WGS84)"))return Get(TEXT("Group.Longitude"));
+if(Source==TEXT("Group anchor ellipsoid altitude (m)"))return Get(TEXT("Group.Altitude"));
+if(Source==TEXT("Available target area radius (m)"))return Get(TEXT("Group.Area"));
+if(Source==TEXT("MOVE GROUP"))return Get(TEXT("Group.Move"));
+if(Source==TEXT("Group command accepted by Backend"))return Get(TEXT("Group.Accepted"));
+if(Source==TEXT("{0} / {1}: predicted {2} m; required {3} m. Execution blocked."))return Get(TEXT("Group.Conflict"));
+if(Source==TEXT("Scheduled: {0} | Starts in {1} | {2} UAV"))return Get(TEXT("Schedule.Overview"));
+if(Source==TEXT("Terrain height is unavailable or the waypoint is below ground. Load terrain and retry."))return Get(TEXT("Errors.TERRAIN_REQUIRED"));
+if(Source==TEXT("{uav_id}: scheduled mission started"))return Get(TEXT("Events.SCHEDULE_STARTED"));
+if(Source==TEXT("{uav_id}: start time updated"))return Get(TEXT("Events.SCHEDULE_CHANGED"));
+if(Source==TEXT("{uav_id}: immediate start requested"))return Get(TEXT("Events.SCHEDULE_DUE"));
+if(Source==TEXT("{uav_id}: scheduled mission cancelled"))return Get(TEXT("Events.MISSION_CANCELLED"));
+if(Source==TEXT("{uav_id}: motion paused by safety separation check"))return Get(TEXT("Events.SAFETY_CONFLICT"));
+if(Source==TEXT("LIVE CONTROL · Real UAV"))return Get(TEXT("Execution.Real"));
+if(Source==TEXT("Execution Monitor"))return Get(TEXT("Execution.MonitorNeutral"));
+if(Source==TEXT("Real adapter configured; Backend checks live readiness"))return Get(TEXT("Execution.RealAvailable"));
+if(Source==TEXT("Real control requires fresh measured telemetry, calibrated coordinates and Armed/Offboard before movement. Start does not arm or take off."))return Get(TEXT("Execution.RealCheck"));
+if(Source==TEXT("Confirm Return Home? Remaining waypoints will be skipped and the real UAV will be commanded to its calibrated Home."))return Get(TEXT("Execution.Real.returnConfirm"));
+if(Source==TEXT("Confirm abort? The mission cannot resume. Backend requests a hold at the measured position and reports any rejection."))return Get(TEXT("Execution.Real.abortConfirm"));
+if(Source==TEXT("Real UAV rejected the command. Verify Armed/Offboard and telemetry."))return Get(TEXT("Errors.REAL_COMMAND_REJECTED"));
+if(Source==TEXT("Hold was not confirmed. Check the aircraft and control link immediately."))return Get(TEXT("Errors.REAL_HOLD_REJECTED"));
+if(Source==TEXT("Fresh valid aircraft telemetry is unavailable."))return Get(TEXT("Errors.REAL_TELEMETRY_UNAVAILABLE"));
+if(Source==TEXT("The live coordinate anchor changed. Recalibrate before control."))return Get(TEXT("Errors.REAL_ANCHOR_CHANGED_RECALIBRATE"));
+if(Source==TEXT("Real mission restored paused; verify the aircraft before resuming."))return Get(TEXT("Errors.REAL_RESTART_REQUIRES_RESUME"));
+if(Source==TEXT("Stored execution belongs to a different adapter. Create a new execution."))return Get(TEXT("Errors.ADAPTER_MODE_MISMATCH"));
+if(Source==TEXT("Measured UAV position left the hover tolerance."))return Get(TEXT("Errors.REAL_HOVER_DRIFT"));
+if(Source==TEXT("A group member failed; the entire mission group has failed and active members were asked to hold."))return Get(TEXT("Errors.GROUP_MEMBER_FAILED"));
+if(Source==TEXT("Another controller owns the aircraft."))return Get(TEXT("Errors.LEGACY_CONTROLLER_BUSY"));
+if(Source==TEXT("Use the security mission controls in Real mode."))return Get(TEXT("Errors.MISSION_CONTROLLER_OWNS_CONTROL"));
+if(Source==TEXT("Real execution estimates are calculated from live position by Backend at start."))return Get(TEXT("Execution.RealEstimate"));
+if(Source==TEXT("Real UAV or its calibrated frame is unavailable."))return Get(TEXT("Errors.REAL_UAV_UNAVAILABLE"));
+if(Source==TEXT("Real adapter configuration is incomplete or invalid."))return Get(TEXT("Errors.REAL_CONFIGURATION_INVALID"));
+if(Source==TEXT("Adapter position is not a valid WGS84 coordinate."))return Get(TEXT("Errors.ADAPTER_POSITION_INVALID"));
+if(Source==TEXT("The motion target or speed is invalid."))return Get(TEXT("Errors.ADAPTER_COMMAND_INVALID"));
+if(Source==TEXT("The real mission is outside the supported local coordinate area."))return Get(TEXT("Errors.REAL_FRAME_DOMAIN_UNSUPPORTED"));
+if(Source==TEXT("Measured NED position is invalid."))return Get(TEXT("Errors.REAL_NED_INVALID"));
+if(Source==TEXT("Declare the real anchor altitude datum before execution."))return Get(TEXT("Errors.REAL_ANCHOR_DATUM_UNRESOLVED"));
+if(Source==TEXT("The real coordinate calibration is invalid."))return Get(TEXT("Errors.REAL_ANCHOR_INVALID"));
+if(Source==TEXT("Waypoint Inspector"))return Get(TEXT("Inspector.Title"));
+if(Source==TEXT("Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."))return Get(TEXT("Inspector.Help"));
+if(Source==TEXT("Altitude reference"))return Get(TEXT("Inspector.Reference"));
+if(Source==TEXT("Speed (m/s; 0 = default)"))return Get(TEXT("Inspector.Speed"));
+if(Source==TEXT("Longitude: {0}\nLatitude: {1}"))return Get(TEXT("Inspector.Coordinates"));
+if(Source==TEXT("Enter finite values: hover >= 0; speed 0 to 15 m/s."))return Get(TEXT("Errors.WAYPOINT_PARAMETERS_INVALID"));
+if(Source==TEXT("ROUTE EDITING | MAP VIEW LOCKED"))return Get(TEXT("Map.ViewLocked"));
+if(Source==TEXT("Adjust the map view before editing."))return Get(TEXT("Map.AdjustBeforeEdit"));
+if(Source==TEXT("Finish route editing before switching map mode."))return Get(TEXT("Map.FinishBeforeMode"));
+if(Source==TEXT("No valid map position"))return Get(TEXT("Map.InvalidPosition"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

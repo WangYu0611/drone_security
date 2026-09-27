@@ -1,0 +1,21 @@
+PASS Command creates plan revision 1
+PASS Map business mutations forbidden
+PASS Command route mutations forbidden
+PASS Video all plan actions forbidden
+PASS Mission CRUD assignment unassignment duplicate rejection
+PASS Video domain validation and same-value no-op
+PASS Active UAV and mission selection do not change video target
+PASS Explicit feed selection changes video only
+PASS Explicit Map edit request delivered
+PASS Dirty session blocks review and deployment
+PASS Save failure retains dirty session and authoritative route
+PASS Save ACK increments content revision and closes session
+PASS Validation and review separate and revision bound
+PASS Three-client language convergence no-op and business isolation
+PASS Content change invalidates review
+PASS Offline Map edit request rejected
+PASS Finite lease automatically expires without owner heartbeat
+PASS Deployment atomic snapshot and repeated deployment rejection
+PASS Copy uses new identities and preserves deployed snapshot
+PASS New client hydrates latest independent views
+PASS Protocol arrays requests zero

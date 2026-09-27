@@ -1,8 +1,8 @@
+#include "DroneOpsPlayerController.h"
 #include "Map/MapShellWidget.h"
 #include "Map/MapPlanMoveWidget.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "DroneOpsPlayerController.h"
 #include "Engine/GameViewportClient.h"
 #include "InputCoreTypes.h"
 #include "Camera/CameraActor.h"
@@ -422,6 +422,8 @@ void ADroneOpsPlayerController::SetupInputComponent()
 
 	if (InputComponent)
 	{
+        InputComponent->BindKey(EKeys::LeftMouseButton,IE_DoubleClick,this,&ADroneOpsPlayerController::FocusMapDoubleClick);
+        InputComponent->BindKey(EKeys::Escape,IE_Pressed,this,&ADroneOpsPlayerController::CancelMissionGesture);
 		InputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this, &ADroneOpsPlayerController::OnPrimaryClick);
 		InputComponent->BindKey(EKeys::LeftMouseButton, IE_Released, this, &ADroneOpsPlayerController::OnPrimaryReleased);
 		InputComponent->BindKey(EKeys::MiddleMouseButton, IE_Pressed, this, &ADroneOpsPlayerController::OnShowInfo);
@@ -1066,6 +1068,7 @@ void ADroneOpsPlayerController::OnPrimaryClick()
 		return;
 	}
 
+    if (IsCommandMapViewActive()) return; // Group Move requires an explicit confirmed action.
 	HandleMapClick(WorldLocation);
 }
 
@@ -3432,6 +3435,8 @@ TMap<int32, FDronePathSaveData> ADroneOpsPlayerController::BuildEditingPathsData
 			if (PathActor->Waypoints.IsValidIndex(WpIndex))
 			{
 				WpData.WaitTime = PathActor->Waypoints[WpIndex].WaitTime;
+                WpData.AltitudeReference=PathActor->Waypoints[WpIndex].AltitudeReference;
+                WpData.AltitudeOffsetMeters=PathActor->Waypoints[WpIndex].AltitudeOffsetMeters;
 			}
 			PathData.Waypoints.Add(WpData);
 		}
@@ -3555,6 +3560,7 @@ bool ADroneOpsPlayerController::TryBuildBackendRelativePathData(
 
 void ADroneOpsPlayerController::ClearEditingPaths()
 {
+    SetMissionPathEditing(false);
     bMissionPathMode = false;
 	SetEditSelectedWaypoint(nullptr);
 	EditActiveAxis = EGizmoAxis::None;
@@ -3653,12 +3659,51 @@ void ADroneOpsPlayerController::SelectEditWaypointFromProximity(ADroneWaypointAc
 	SetEditActiveAxis(EGizmoAxis::None);
 }
 
+bool ADroneOpsPlayerController::TryBeginMapWaypointBodyDrag(const FVector2D& Mouse)
+{
+    if(!bMissionPathMode || !IsCommandMapViewActive() || IsAdditiveSelectionModifierDown())return false;
+    const double Radius=CommandScreenManager->GetMapService()->GetDragThreshold()*2.;
+    ADroneWaypointActor* Body=nullptr;double Best=Radius*Radius;
+    for(const auto& Path:EditingPaths)if(IsValid(Path))for(const auto& Handle:Path->GetWaypointHandleActors()){
+        FVector2D Screen;
+        if(!CanInteractWithEditWaypoint(Handle) || !ProjectWorldLocationToScreen(Handle->GetActorLocation(),Screen))continue;
+        const double Distance=FVector2D::DistSquared(Mouse,Screen);
+        if(Distance<=Best){Body=Handle;Best=Distance;}
+    }
+    if(!Body)return false;
+    FVector Origin,Direction;
+    if(!DeprojectScreenPositionToWorld(Mouse.X,Mouse.Y,Origin,Direction) || FMath::Abs(Direction.Z)<.001)return false;
+    // The body shares the origin of both gizmo axes. Resolve it first so an
+    // ordinary point drag is not silently locked to the first (X) axis tested.
+    SetEditSelectedWaypoint(Body);SetEditActiveAxis(EGizmoAxis::None);
+    PlanarHeight=Body->GetActorLocation().Z;
+    PlanarCursor=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);
+    bPlanarWaypointDrag=true;bEditDraggingWaypoint=true;
+    SetIgnoreLookInput(true);SetIgnoreMoveInput(true);
+    CaptureMoveUndoStart();BeginDeferredUpdateForSelection();
+    return true;
+}
+
+void ADroneOpsPlayerController::UpdateMapWaypointBodyDrag(const FVector2D& Mouse)
+{
+    if(!bPlanarWaypointDrag || !CanInteractWithEditWaypoint(EditSelectedWaypoint))return;
+    FVector Origin,Direction;
+    if(DeprojectScreenPositionToWorld(Mouse.X,Mouse.Y,Origin,Direction) && FMath::Abs(Direction.Z)>.001){
+        const FVector Position=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);
+        const FVector Delta=Position-PlanarCursor;PlanarCursor=Position;
+        MoveSelectionAlongAxis(EGizmoAxis::X,Delta.X);MoveSelectionAlongAxis(EGizmoAxis::Y,Delta.Y);
+    }
+}
+
 void ADroneOpsPlayerController::HandleEditModePressed()
 {
+    if(bMissionPathMode && IsCommandMapViewActive() && !CommandScreenManager->IsCursorOverMap())return;
 	if (bEditDraggingWaypoint)
 	{
 		return;
 	}
+    FVector2D BodyMouse;
+    if(GetMousePosition(BodyMouse.X,BodyMouse.Y) && TryBeginMapWaypointBodyDrag(BodyMouse))return;
 	// Mission 2D handles are editor affordances: the basemap surface must not
 	// intercept their hit test. Keep legacy and 3D geometry picking unchanged.
 	if (bMissionPathMode && CommandScreenManager && CommandScreenManager->GetMapService()
@@ -3701,6 +3746,7 @@ void ADroneOpsPlayerController::HandleEditModePressed()
 			return;
 		}
 		SetEditSelectedWaypoint(nullptr);
+        if(bMissionPathMode && IsCommandMapViewActive())CommandScreenManager->GetMapService()->ReportInvalidMapPosition();
 		return;
 	}
 
@@ -3733,11 +3779,11 @@ void ADroneOpsPlayerController::HandleEditModePressed()
 		const EGizmoAxis HitAxis = HitWaypoint->GetGizmoAxisFromComponent(HitResult.GetComponent());
 		SetEditActiveAxis(HitAxis);
 
-		if (EditActiveAxis == EGizmoAxis::None)
-		{
-			// 只是选中航点，未命中拖拽轴
-			return;
-		}
+        if(EditActiveAxis==EGizmoAxis::None){
+            if(!bMissionPathMode)return;
+            FVector Origin,Direction;if(!DeprojectMousePositionToWorld(Origin,Direction) || FMath::Abs(Direction.Z)<.001)return;
+            PlanarHeight=HitWaypoint->GetActorLocation().Z;PlanarCursor=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);bPlanarWaypointDrag=true;
+        }
 
 		bEditDraggingWaypoint = true;
 		SetIgnoreLookInput(true);
@@ -3787,12 +3833,56 @@ void ADroneOpsPlayerController::HandleEditModePressed()
 		return;
 	}
 
-	SetEditSelectedWaypoint(nullptr);
-	AddWaypointToAllEditingPaths(HitResult.Location);
+    SetEditSelectedWaypoint(nullptr);
+    if(bMissionPathMode){
+        if(IsInputKeyDown(EKeys::MiddleMouseButton)||IsInputKeyDown(EKeys::RightMouseButton))return;
+        if(!HitResult.bBlockingHit || !HitResult.GetComponent() || HitResult.GetComponent()->GetCollisionObjectType()!=ECC_WorldStatic || HitResult.Location.ContainsNaN()){
+            if(IsCommandMapViewActive())CommandScreenManager->GetMapService()->ReportInvalidMapPosition();return;
+        }
+        bPendingWaypointAdd=true;PendingWaypointLocation=HitResult.Location;GetMousePosition(PendingWaypointScreen.X,PendingWaypointScreen.Y);
+    }else AddWaypointToAllEditingPaths(HitResult.Location);
+}
+
+bool ADroneOpsPlayerController::BeginMapGroundClick(const FVector2D& Mouse)
+{
+    if(!bPathEditMode || !bMissionPathMode || !IsCommandMapViewActive())return false;
+    FHitResult Hit;
+    const bool Found=GetHitResultAtScreenPosition(Mouse,ECC_Visibility,false,Hit);
+    // The existing gizmo path retains ownership; waypoint bodies were handled first.
+    if(Found && Cast<ADroneWaypointActor>(Hit.GetActor()))return false;
+    bPendingWaypointAdd=false;
+    SetEditSelectedWaypoint(nullptr);
+    if(!Found || !Hit.bBlockingHit || !Hit.GetComponent() || Hit.GetComponent()->GetCollisionObjectType()!=ECC_WorldStatic || Hit.Location.ContainsNaN()){
+        CommandScreenManager->GetMapService()->ReportInvalidMapPosition();return true;
+    }
+    PendingWaypointScreen=Mouse;PendingWaypointLocation=Hit.Location;bPendingWaypointAdd=true;
+    return true;
+}
+void ADroneOpsPlayerController::UpdateMapGroundClick(const FVector2D& Mouse,bool OverMap)
+{
+    if(!OverMap || Mouse.ContainsNaN() || FVector2D::Distance(Mouse,PendingWaypointScreen)>CommandScreenManager->GetMapService()->GetDragThreshold())bPendingWaypointAdd=false;
+}
+void ADroneOpsPlayerController::CompleteMapGroundClick(const FVector2D& Cursor,bool OverMap)
+{
+    if(bPendingWaypointAdd){bPendingWaypointAdd=false;
+        if(OverMap && FVector2D::Distance(Cursor,PendingWaypointScreen)<=(CommandScreenManager && CommandScreenManager->GetMapService()?CommandScreenManager->GetMapService()->GetDragThreshold():5.f) && !IsInputKeyDown(EKeys::MiddleMouseButton) && !IsInputKeyDown(EKeys::RightMouseButton)){
+            auto* C=DroneRegistry?DroneRegistry->GetCoordinateService().GetObject():nullptr;
+            double Ground=0;FVector Position=PendingWaypointLocation;
+            if(C && ICoordinateService::Execute_IsCoordinateSystemReady(C)){
+                const FVector Geo=ICoordinateService::Execute_WorldToGeographic(C,Position);Ground=Geo.Z;
+                float Height=80.f;GConfig->GetFloat(TEXT("MissionRoute"),TEXT("DefaultAGLAltitudeMeters"),Height,GGameIni);
+                Position=ICoordinateService::Execute_GeographicToWorld(C,Geo.Y,Geo.X,Ground+FMath::Max(0.f,Height));
+            }
+            AddWaypointToAllEditingPaths(Position);
+            if(C && ICoordinateService::Execute_IsCoordinateSystemReady(C))for(const auto& Path:EditingPaths)if(IsValid(Path) && !Path->Waypoints.IsEmpty()){Path->Waypoints.Last().AltitudeReference=TEXT("AGL");Path->Waypoints.Last().AltitudeOffsetMeters=Ground;Path->RefreshPath();}
+        }}
 }
 
 void ADroneOpsPlayerController::HandleEditModeReleased()
 {
+    bNativeMapWaypointDrag=false;
+    if(bPendingWaypointAdd){FVector2D Cursor;GetMousePosition(Cursor.X,Cursor.Y);CompleteMapGroundClick(Cursor,true);}
+    bPlanarWaypointDrag=false;
 	const bool bWasDragging = bEditDraggingWaypoint;
 	if (bEditDraggingWaypoint)
 	{
@@ -3817,6 +3907,11 @@ void ADroneOpsPlayerController::HandleEditModeReleased()
 
 void ADroneOpsPlayerController::UpdateDraggedEditWaypoint()
 {
+    if(bMissionPathMode && IsCommandMapViewActive() && !CommandScreenManager->IsCursorOverMap())return;
+    if(bNativeMapWaypointDrag)return; // Native pointer events already consumed these positions.
+    if(bPlanarWaypointDrag && CanInteractWithEditWaypoint(EditSelectedWaypoint)){
+        FVector2D Mouse;if(GetMousePosition(Mouse.X,Mouse.Y))UpdateMapWaypointBodyDrag(Mouse);return;
+    }
 	if (!bPathEditMode || EditActiveAxis == EGizmoAxis::None)
 	{
 		HandleEditModeReleased();
@@ -4225,7 +4320,8 @@ void ADroneOpsPlayerController::AddWaypointToAllEditingPaths(const FVector& Worl
 
 		// 编队平移：每条路径以自身首航点为基准，叠加相同偏移
 		const FVector NewWaypointLocation = EditingPathOrigins[i] + Offset;
-		PathActor->AddWaypoint(NewWaypointLocation, EditDefaultSegmentSpeed);
+		const int32 NewIndex=PathActor->AddWaypoint(NewWaypointLocation, EditDefaultSegmentSpeed);
+        if(bMissionPathMode && PathActor->GetWaypointHandleActors().IsValidIndex(NewIndex))SetEditSelectedWaypoint(PathActor->GetWaypointHandleActors()[NewIndex]);
 		AffectedPaths.Add(PathActor);
 	}
 
@@ -5557,6 +5653,13 @@ FGeographicDispatchResult ADroneOpsPlayerController::DispatchPerDroneGeographicT
 	return Result;
 }
 
+void ADroneOpsPlayerController::SetMissionPathEditing(bool Enabled, bool KeepCameraLocked) {
+    const bool Editing=Enabled && bMissionPathMode;
+    if(bPathEditMode!=Editing)CancelMissionGesture();
+    bPathEditMode=Editing;
+    if(IsCommandMapViewActive())CommandScreenManager->GetMapService()->SetRouteEditCameraLocked(Editing || KeepCameraLocked);
+}
+
 void ADroneOpsPlayerController::LoadMissionPath(const FDronePathSaveData& Data,bool Editable) {
     ClearEditingPaths();
     auto* Path=GetWorld()->SpawnActor<ADronePathActor>();if(!Path)return;
@@ -5564,11 +5667,84 @@ void ADroneOpsPlayerController::LoadMissionPath(const FDronePathSaveData& Data,b
     Path->bParticipatesInConflictChecks=false;
     for(const auto& Point:Data.Waypoints) {
         const int32 Index=Path->AddWaypoint(Point.Location,Point.SegmentSpeed);
-        if(Path->Waypoints.IsValidIndex(Index))Path->Waypoints[Index].WaitTime=Point.WaitTime;
+        if(Path->Waypoints.IsValidIndex(Index)){Path->Waypoints[Index].WaitTime=Point.WaitTime;
+            Path->Waypoints[Index].AltitudeReference=Point.AltitudeReference;Path->Waypoints[Index].AltitudeOffsetMeters=Point.AltitudeOffsetMeters;}
     }
     EditingPaths.Add(Path);EditingDroneIds.Add(Data.PathId);EditingPathActive.Add(true);
     const FVector Origin=Data.Waypoints.IsEmpty()?FVector::ZeroVector:Data.Waypoints[0].Location;
     EditingPathOrigins.Add(Origin);EditFormationRefOrigin=Origin;
-    bMissionPathMode=true;bPathEditMode=Editable;
+    bMissionPathMode=true;SetMissionPathEditing(Editable);
     Path->RefreshPath();
+}
+
+bool ADroneOpsPlayerController::GetSelectedMissionWaypoint(FDroneWaypointSaveData& Out,int32& Index) const {
+    if(!bMissionPathMode || !IsValid(EditSelectedWaypoint) || !IsValid(EditSelectedWaypoint->PathActor))return false;
+    auto* Path=EditSelectedWaypoint->PathActor.Get();Index=EditSelectedWaypoint->WaypointIndex;
+    if(!Path->Waypoints.IsValidIndex(Index))return false;
+    const auto& W=Path->Waypoints[Index];Out.Location=Path->GetWaypointWorldLocation(Index);Out.WaitTime=W.WaitTime;Out.SegmentSpeed=W.SegmentSpeed;
+    Out.AltitudeReference=W.AltitudeReference;Out.AltitudeOffsetMeters=W.AltitudeOffsetMeters;return true;
+}
+bool ADroneOpsPlayerController::SetSelectedMissionWaypointParameters(double Altitude,double HoverSeconds,bool AGL,double SegmentSpeed) {
+    FDroneWaypointSaveData W;int32 Index;
+    if(!bPathEditMode || !GetSelectedMissionWaypoint(W,Index) || !FMath::IsFinite(Altitude) || !FMath::IsFinite(HoverSeconds) || HoverSeconds<0 || (AGL && Altitude<0))return false;
+    auto* C=DroneRegistry?DroneRegistry->GetCoordinateService().GetObject():nullptr;
+    if(!C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
+    const FVector Geo=ICoordinateService::Execute_WorldToGeographic(C,W.Location);
+    double Offset=0;
+    // Editing a value must not silently change its datum when 2D/3D surfaces differ.
+    if(AGL){
+        if(W.AltitudeReference==TEXT("AGL"))Offset=W.AltitudeOffsetMeters;
+        else if(!TryGetMissionTerrainHeight(Geo.Y,Geo.X,Offset))return false;
+    }
+    if(!FMath::IsFinite(SegmentSpeed) || (SegmentSpeed!=-1 && (SegmentSpeed<0 || SegmentSpeed>15)))return false;
+    auto* Path=EditSelectedWaypoint->PathActor.Get();auto& Point=Path->Waypoints[Index];
+    if(SegmentSpeed>=0)Point.SegmentSpeed=SegmentSpeed;
+    Point.WaitTime=HoverSeconds;Point.AltitudeReference=AGL?TEXT("AGL"):TEXT("Ellipsoid");Point.AltitudeOffsetMeters=Offset;
+    return Path->UpdateWaypoint(Index,ICoordinateService::Execute_GeographicToWorld(C,Geo.Y,Geo.X,Altitude+Offset));
+}
+
+void ADroneOpsPlayerController::CancelMissionGesture(){
+    if(!bMissionPathMode)return;
+    bNativeMapWaypointDrag=false;
+    bPendingWaypointAdd=false;bPlanarWaypointDrag=false;
+    if(bEditDraggingWaypoint){EndDeferredUpdateForSelection(false);bEditDraggingWaypoint=false;
+        const auto Undo=PendingMoveUndoItems;PendingMoveUndoItems.Reset();
+        for(const auto& Item:Undo)if(Item.Path.IsValid())Item.Path->UpdateWaypoint(Item.Index,Item.OldWorldLocation);
+        SetIgnoreLookInput(false);SetIgnoreMoveInput(false);SetEditActiveAxis(EGizmoAxis::None);}
+}
+
+void ADroneOpsPlayerController::FocusMapDoubleClick(){
+    if(!IsCommandMapViewActive() || !CommandScreenManager->IsCursorOverMap())return;
+    if(bPathEditMode){
+        if(auto* Waypoint=FindEditWaypointNearCursor())SetEditSelectedWaypoint(Waypoint);
+        return;
+    }
+    FVector Target;if(GetSelectableDroneUnderCursor(&Target) || GetWorldLocationUnderCursor(Target))CommandScreenManager->GetMapService()->FocusLocation(Target);
+}
+
+bool ADroneOpsPlayerController::TryGetMissionTerrainHeight(double Latitude,double Longitude,double& Height) const {
+    auto* C=DroneRegistry?DroneRegistry->GetCoordinateService().GetObject():nullptr;
+    if(!C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
+    const FVector Above=ICoordinateService::Execute_GeographicToWorld(C,Latitude,Longitude,10000.);
+    const FVector Below=ICoordinateService::Execute_GeographicToWorld(C,Latitude,Longitude,-1000.);
+    FCollisionQueryParams Params(SCENE_QUERY_STAT(MissionTerrain),true);
+    for(TActorIterator<ADroneWaypointActor> It(GetWorld());It;++It)Params.AddIgnoredActor(*It);
+    for(TActorIterator<ADronePathActor> It(GetWorld());It;++It)Params.AddIgnoredActor(*It);
+    FHitResult Hit;if(!GetWorld()->LineTraceSingleByChannel(Hit,Above,Below,ECC_WorldStatic,Params))return false;
+    Height=ICoordinateService::Execute_WorldToGeographic(C,Hit.ImpactPoint).Z;return FMath::IsFinite(Height);
+}
+bool ADroneOpsPlayerController::RefreshMissionTerrainMetadata() {
+    auto* C=DroneRegistry?DroneRegistry->GetCoordinateService().GetObject():nullptr;
+    if(!C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
+    struct FGroundUpdate { ADronePathActor* Path; int32 Index; double Ground; FVector Location; };
+    TArray<FGroundUpdate> Updates;
+    for(const auto& Path:EditingPaths)if(IsValid(Path))for(int I=0;I<Path->Waypoints.Num();++I){const auto& P=Path->Waypoints[I];if(P.AltitudeReference!=TEXT("AGL"))continue;
+        const auto G=ICoordinateService::Execute_WorldToGeographic(C,Path->GetWaypointWorldLocation(I));double Ground;
+        const double Altitude=G.Z-P.AltitudeOffsetMeters;
+        if(!FMath::IsFinite(Altitude) || Altitude<-.001 || !TryGetMissionTerrainHeight(G.Y,G.X,Ground))return false;
+        Updates.Add({Path.Get(),I,Ground,ICoordinateService::Execute_GeographicToWorld(C,G.Y,G.X,Ground+FMath::Max(0.,Altitude))});}
+    // Resolve all surfaces first. Preserve the entered AGL altitude, then update metadata
+    // and the same rendered waypoint together; never reinterpret altitude on Save.
+    for(const auto& Update:Updates){Update.Path->Waypoints[Update.Index].AltitudeOffsetMeters=Update.Ground;Update.Path->UpdateWaypoint(Update.Index,Update.Location);}
+    return true;
 }

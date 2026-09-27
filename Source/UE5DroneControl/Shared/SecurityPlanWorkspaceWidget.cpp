@@ -2,6 +2,7 @@
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/ExecutionPresentation.h"
 #include "Components/ProgressBar.h"
+#include "Components/CheckBox.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Components/SizeBox.h"
 #include "Components/Overlay.h"
@@ -30,7 +31,7 @@ void UPlanMissionListWidget::Refresh(const TSharedPtr<FJsonObject>& State,const 
     const TArray<TSharedPtr<FJsonValue>>* Ids;if(!Plan || !Plan->TryGetArrayField(TEXT("mission_ids"),Ids) || Ids->IsEmpty()){Label(WidgetTree,Content,T(TEXT("Plan.NoMissions")));return;}
     for(const auto& V:*Ids){const auto M=Find(State,TEXT("missions"),V->AsString());const auto R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points;
         const int Count=R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
-        const int Index=MissionIds.Add(V->AsString());const auto UAV=Field(M,TEXT("assigned_uav_id"));
+        const int Index=MissionIds.Add(V->AsString());const auto UAV=AssignedUAVs(M);
         Label(WidgetTree,Content,FText::Format(T(TEXT("Plan.MissionSummary")),User(Field(M,TEXT("name"))),UAV.IsEmpty()?T(TEXT("Common.None")):User(UAV),FText::AsNumber(Count)));
         auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();Content->AddChild(Row);
         auto Add=[&](const TCHAR* A,const TCHAR* K){Button(WidgetTree,Row,A,K,Index)->OnAction.AddDynamic(this,&UPlanMissionListWidget::Action);};
@@ -47,7 +48,7 @@ void UPlanReviewWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TShar
     const TArray<TSharedPtr<FJsonValue>>* Ids;if(Plan->TryGetArrayField(TEXT("mission_ids"),Ids))for(const auto& V:*Ids){
         const auto M=Find(State,TEXT("missions"),V->AsString());const auto R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points;int Count=0;double Speed=0,Wait=0,Distance=0;bool Loop=false;
         if(R){R->TryGetBoolField(TEXT("bClosedLoop"),Loop);if(R->TryGetArrayField(TEXT("waypoints"),Points)){Count=Points->Num();for(const auto& P:*Points){Speed=FMath::Max(Speed,P->AsObject()->GetNumberField(TEXT("segmentSpeed")));Wait+=P->AsObject()->GetNumberField(TEXT("waitTime"));}}}
-        Lines.Add(FText::Format(T(TEXT("Plan.MissionSummary")),User(Field(M,TEXT("name"))),User(Field(M,TEXT("assigned_uav_id"))),FText::AsNumber(Count)));
+        Lines.Add(FText::Format(T(TEXT("Plan.MissionSummary")),User(Field(M,TEXT("name"))),User(AssignedUAVs(M)),FText::AsNumber(Count)));
         if(R && R->TryGetArrayField(TEXT("waypoints"),Points))for(int I=1;I<Points->Num()+(Loop && Points->Num()>2?1:0);++I){const auto A=(*Points)[I-1]->AsObject(),B=(*Points)[I%Points->Num()]->AsObject();const double Lat=FMath::DegreesToRadians((A->GetNumberField(TEXT("latitude"))+B->GetNumberField(TEXT("latitude")))*.5);const double Y=FMath::DegreesToRadians(A->GetNumberField(TEXT("latitude"))-B->GetNumberField(TEXT("latitude")))*6371000.,X=FMath::DegreesToRadians(A->GetNumberField(TEXT("longitude"))-B->GetNumberField(TEXT("longitude")))*6371000.*FMath::Cos(Lat);Distance+=FMath::Sqrt(X*X+Y*Y);}
         Lines.Add(FText::Format(T(TEXT("Workflow.ReviewDistance")),FText::AsNumber(Distance)));
         Lines.Add(ProductText::Get(TEXT("Plan.")+Field(M,TEXT("status"))));
@@ -55,7 +56,9 @@ void UPlanReviewWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TShar
     }
     Lines.Add(T(TEXT("Workflow.CheckInformation")));
     Lines.Add(T(TEXT("Plan.Blocking")));const auto Validation=Object(Plan,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues;
-    if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();Lines.Add(FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(Field(Find(State,TEXT("missions"),Field(I,TEXT("mission_id"))),TEXT("name"))),ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code")))));}
+    if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();const auto Params=Object(I,TEXT("params"));
+        if(Params && Params->HasField(TEXT("minimum_separation_m")))Lines.Add(FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m")))));
+        Lines.Add(FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(Field(Find(State,TEXT("missions"),Field(I,TEXT("mission_id"))),TEXT("name"))),ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code")))));}
     Lines.Add(T(TEXT("Plan.Warnings")));Lines.Add(T(TEXT("Plan.ReviewNotice")));if(Field(Plan,TEXT("status"))==TEXT("DEPLOYED") && !ExecutionUI::Latest(State,Field(Plan,TEXT("id"))))Lines.Add(T(TEXT("Workflow.DeploymentNotice")));
     const auto Deployment=Find(State,TEXT("deployments"),Field(Plan,TEXT("deployment_id")));
     if(Deployment){Lines.Add(T(TEXT("Plan.Deployment")));Lines.Add(User(Field(Deployment,TEXT("id"))));Lines.Add(FText::AsDateTime(FDateTime::FromUnixTimestamp(Deployment->GetNumberField(TEXT("deployed_at")))));}
@@ -91,6 +94,10 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     UAVs=WidgetTree->ConstructWidget<UComboBoxString>();UAVs->OnGenerateWidgetEvent.BindDynamic(this,&USecurityPlanWorkspaceWidget::UAVOption);UAVs->OnSelectionChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::UAVSelected);
     auto* UAVHeight=WidgetTree->ConstructWidget<USizeBox>();UAVHeight->SetMinDesiredHeight(40);UAVHeight->SetContent(UAVs);TaskPage->AddChild(UAVHeight);
     auto ComboStyle=UAVs->GetWidgetStyle();auto ComboButton=ComboStyle.ComboButtonStyle;FButtonStyle ButtonStyle;ButtonStyle.SetNormal(FSlateRoundedBoxBrush(CommandTheme::Elevated,5));ButtonStyle.SetHovered(FSlateRoundedBoxBrush(CommandTheme::Hover,5));ButtonStyle.SetPressed(FSlateRoundedBoxBrush(CommandTheme::Selected,5));ComboButton.SetButtonStyle(ButtonStyle);ComboStyle.SetComboButtonStyle(ComboButton);UAVs->SetWidgetStyle(ComboStyle);
+    UAVHeight->SetVisibility(ESlateVisibility::Collapsed);
+    AssignmentList=WidgetTree->ConstructWidget<UVerticalBox>();TaskPage->AddChild(AssignmentList);
+    SpacingInput=Input(TaskPage,TEXT("Formation.LineSpacing"));SpacingInput->SetText(User(TEXT("3.0")));
+    Add(TaskPage,TEXT("assign_group"),TEXT("Formation.SaveAssignment"));
     Label(WidgetTree,TaskPage,T(TEXT("Workflow.Patrol")),14);
     auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();TaskPage->AddChild(Row);
     Add(Row,TEXT("assign"),TEXT("Plan.Assign"));Add(Row,TEXT("rename_mission"),TEXT("Plan.Rename"));Add(Row,TEXT("add_mission"),TEXT("Plan.AddMission"));
@@ -106,8 +113,11 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     Add(ReviewPage,TEXT("task_step"),TEXT("Workflow.BackEdit"));
     Add(ReviewPage,TEXT("copy_plan"),TEXT("Workflow.NewVersion"));
     ExecutionHistory=Label(WidgetTree,ReviewPage,FText::GetEmpty(),14);
-    ExecutionPage=Page();Label(WidgetTree,ExecutionPage,T(TEXT("Execution.Simulation")),18);
+    ExecutionPage=Page();ExecutionMode=Label(WidgetTree,ExecutionPage,T(TEXT("Execution.Simulation")),18);
     ExecutionSummary=Label(WidgetTree,ExecutionPage,FText::GetEmpty(),22);
+    ScheduleEnabled=WidgetTree->ConstructWidget<UCheckBox>();ExecutionPage->AddChild(ScheduleEnabled);Label(WidgetTree,ScheduleEnabled,T(TEXT("Schedule.Enable")),16);
+    ScheduleInput=Input(ExecutionPage,TEXT("Schedule.LocalTime"));ScheduleInput->SetText(User((FDateTime::Now()+FTimespan::FromMinutes(2)).ToString(TEXT("%Y-%m-%dT%H:%M:%S"))));
+    Add(ExecutionPage,TEXT("execution_start_now"),TEXT("Schedule.StartNow"));Add(ExecutionPage,TEXT("execution_reschedule"),TEXT("Schedule.Reschedule"));Add(ExecutionPage,TEXT("execution_cancel_schedule"),TEXT("Schedule.Cancel"));
     ExecutionProgress=WidgetTree->ConstructWidget<UProgressBar>();ExecutionPage->AddChild(ExecutionProgress);
     ExecutionPrompt=Label(WidgetTree,ExecutionPage,FText::GetEmpty(),16);
     for(const auto& Item:TArray<TPair<FString,FString>>{{TEXT("confirm"),TEXT("Confirm")},{TEXT("pause"),TEXT("Pause")},{TEXT("resume"),TEXT("Resume")},{TEXT("return_prompt"),TEXT("Return")},{TEXT("abort_prompt"),TEXT("Abort")},{TEXT("cancel"),TEXT("Cancel")},{TEXT("details"),TEXT("History")},{TEXT("video"),TEXT("Video")}})
@@ -136,13 +146,21 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     const int Index=PlanIds.IndexOfByKey(PlanId);if(Index>=0)Plans->SetSelectedOption(PlanLabels[Index]);
     Ids.Empty();for(const auto& D:GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetFriendlyDroneDescriptors())Ids.Add(FString::Printf(TEXT("UAV-%02d"),D.DroneId));
     if(Ids!=UavIds){const auto Selected=UAVs->GetSelectedOption();UAVs->ClearOptions();for(const auto& ID:Ids)UAVs->AddOption(ID);UavIds=Ids;UAVs->SetSelectedOption(Selected);}
+    const FString AssignmentKey=PlanId+TEXT("/")+MissionId+FString::Join(Ids,TEXT(","))+AssignedUAVs(M)+(M && M->HasField(TEXT("spacing_m"))?FString::SanitizeFloat(M->GetNumberField(TEXT("spacing_m"))):TEXT(""));
+    if(AssignmentSelection!=AssignmentKey){AssignmentSelection=AssignmentKey;AssignmentList->ClearChildren();AssignmentChecks.Empty();
+        const TArray<TSharedPtr<FJsonValue>>* Members=nullptr;if(M)M->TryGetArrayField(TEXT("assigned_uav_ids"),Members);
+        for(const auto& ID:Ids){auto* Check=WidgetTree->ConstructWidget<UCheckBox>();AssignmentList->AddChild(Check);Label(WidgetTree,Check,User(ID),16);bool Assigned=Field(M,TEXT("assigned_uav_id"))==ID;
+            if(Members)for(const auto& V:*Members)Assigned|=V->AsString()==ID;Check->SetIsChecked(Assigned);AssignmentChecks.Add(ID,Check);}
+        double Spacing=3.;if(M)M->TryGetNumberField(TEXT("spacing_m"),Spacing);SpacingInput->SetText(User(FString::SanitizeFloat(Spacing)));
+    }
     bRefreshing=false;const FString Selection=PlanId+TEXT("/")+MissionId;
     if(Selection!=LoadedSelection && (PlanId.IsEmpty() || P)){LoadedSelection=Selection;bReview=false;bConfirm=false;PlanName->SetText(User(Field(P,TEXT("name"))));Description->SetText(User(Field(P,TEXT("description"))));MissionName->SetText(User(Field(M,TEXT("name"))));if(Field(M,TEXT("assigned_uav_id")).IsEmpty())UAVs->ClearSelection();else UAVs->SetSelectedOption(Field(M,TEXT("assigned_uav_id")));}
     const auto Status=Field(P,TEXT("status"));const bool Deployed=Status==TEXT("DEPLOYED"),Ready=Status==TEXT("READY"),Reviewed=PlanUI::Reviewed(P);
     if(P && ConfirmRevision!=P->GetNumberField(TEXT("content_revision")))bConfirm=false;
+    AssignmentList->SetIsEnabled(!Deployed && !bPending);SpacingInput->SetIsReadOnly(Deployed);
     PlanName->SetIsReadOnly(Deployed && !bCreating);Description->SetIsReadOnly(Deployed && !bCreating);MissionName->SetIsReadOnly(Deployed);UAVs->SetIsEnabled(!Deployed);
     for(const auto& A:Actions)A.Value->SetIsEnabled(!bPending && Sync->IsReady());
-    for(const TCHAR* A:{TEXT("update_plan"),TEXT("add_mission"),TEXT("rename_mission"),TEXT("delete_mission"),TEXT("assign"),TEXT("unassign"),TEXT("request_map_route_edit")})Actions[A]->SetIsEnabled(!bPending && Sync->IsReady() && P && !Deployed);
+    for(const TCHAR* A:{TEXT("update_plan"),TEXT("add_mission"),TEXT("rename_mission"),TEXT("delete_mission"),TEXT("assign"),TEXT("assign_group"),TEXT("unassign"),TEXT("request_map_route_edit")})Actions[A]->SetIsEnabled(!bPending && Sync->IsReady() && P && !Deployed);
     const bool MovingBlocked=ExecutionUI::Latest(State,PlanId,true).IsValid();
     Actions[TEXT("request_map_plan_move")]->SetIsEnabled(!bPending && Sync->IsReady() && P && M && !MovingBlocked);
     GeometryStatus->SetText(MovingBlocked?T(TEXT("Errors.PLAN_EXECUTING")):FText::GetEmpty());GeometryStatus->SetVisibility(MovingBlocked?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
@@ -173,7 +191,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     Show(TEXT("confirm_deployment"),!Deployed);Actions[TEXT("confirm_deployment")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Complete);
     const auto Route=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
     const int Count=Route && Route->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
-    RouteStatus->SetText(FText::Format(T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Workflow.MapEditingStatus"):TEXT("Workflow.MapOfflineStatus")),User(Field(P,TEXT("name"))),User(Field(M,TEXT("name"))),User(Field(M,TEXT("assigned_uav_id"))),FText::AsNumber(Count)));
+    RouteStatus->SetText(FText::Format(T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Workflow.MapEditingStatus"):TEXT("Workflow.MapOfflineStatus")),User(Field(P,TEXT("name"))),User(Field(M,TEXT("name"))),User(AssignedUAVs(M)),FText::AsNumber(Count)));
     const int64 Version=State?State->GetNumberField(TEXT("version")):-1;
     if(Version!=CardsVersion){CardsVersion=Version;PlanCards->ClearChildren();
         for(int I=0;I<PlanIds.Num();++I){const auto Card=Find(State,TEXT("plans"),PlanIds[I]);
@@ -193,10 +211,10 @@ void USecurityPlanWorkspaceWidget::Refresh(){
         for(const TCHAR* A:{TEXT("review_page"),TEXT("review"),TEXT("deploy_page"),TEXT("deploy"),TEXT("confirm_deployment")})Actions[A]->SetIsEnabled(false);
         Result->SetText(FText::Format(T(TEXT("Plan.EditingBlock")),User(EditingMission)));return;
     }
-    Result->SetText(bPending?T(TEXT("Common.Waiting")):ErrorCode.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+ErrorCode));
+    Result->SetText(bPending?T(TEXT("Common.Waiting")):ErrorCode.IsEmpty()?FText::GetEmpty():!ExecutionErrorDetails.IsEmpty()?ExecutionErrorDetails:ProductText::Get(TEXT("Errors.")+ErrorCode));
 }
 void USecurityPlanWorkspaceWidget::Submit(const TSharedRef<FJsonObject>& R){
-    if(bPending)return;bPending=true;ErrorCode.Empty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
+    if(bPending)return;bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
     if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);if(Weak->ErrorCode.IsEmpty()){Weak->bCreating=false;Weak->bList=Field(Weak->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetContext(),TEXT("active_security_plan_id")).IsEmpty();}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
 }
 void USecurityPlanWorkspaceWidget::PlanSelected(FString Item,ESelectInfo::Type){if(bRefreshing)return;const int I=PlanLabels.IndexOfByKey(Item);if(I<0)return;auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanIds[I]);const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanIds[I]);if(P && !P->GetArrayField(TEXT("mission_ids")).IsEmpty())R->SetStringField(TEXT("mission_id"),P->GetArrayField(TEXT("mission_ids"))[0]->AsString());Submit(R);}
@@ -229,11 +247,16 @@ void USecurityPlanWorkspaceWidget::Action(FName Name,int32 Index){
     if(Name==TEXT("active_video")){Sync->OpenVideo(Field(Sync->GetContext(),TEXT("active_uav_id")));return;}
     if(Name==TEXT("cancel")){bReview=false;bConfirm=false;return;}if(Name==TEXT("review_page")){bReview=true;return;}
     if(Name==TEXT("deploy_page")){const auto P=Find(Sync->GetPlans(),TEXT("plans"),PlanId);if(P && Reviewed(P)){ConfirmRevision=P->GetNumberField(TEXT("content_revision"));bConfirm=true;}return;}
-    auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name==TEXT("unassign")?TEXT("assign"):Name.ToString());R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),MissionId);
+    auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),(Name==TEXT("unassign") || Name==TEXT("assign_group"))?TEXT("assign"):Name.ToString());R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),MissionId);
     if(Name==TEXT("copy_plan"))R->SetStringField(TEXT("name"),FText::Format(T(TEXT("Workflow.VersionName")),User(Field(Find(Sync->GetPlans(),TEXT("plans"),PlanId),TEXT("name")))).ToString());
     if(Name==TEXT("create_plan"))R->SetStringField(TEXT("default_mission_name"),T(TEXT("Workflow.DefaultTask")).ToString());
     if(Name==TEXT("create_plan") || Name==TEXT("update_plan")){R->SetStringField(TEXT("name"),PlanName->GetText().ToString());R->SetStringField(TEXT("description"),Description->GetText().ToString());}
     if(Name==TEXT("add_mission") || Name==TEXT("rename_mission"))R->SetStringField(TEXT("name"),MissionName->GetText().ToString());
+    if(Name==TEXT("assign_group")){
+        TArray<TSharedPtr<FJsonValue>> Members;for(const auto& ID:UavIds)if(AssignmentChecks.Contains(ID) && AssignmentChecks[ID]->IsChecked())Members.Add(MakeShared<FJsonValueString>(ID));
+        double Spacing=0;if(!LexTryParseString(Spacing,*SpacingInput->GetText().ToString())){ErrorCode=TEXT("INVALID_SEPARATION");return;}
+        R->SetArrayField(TEXT("assigned_uav_ids"),Members);R->SetStringField(TEXT("formation"),TEXT("Line"));R->SetNumberField(TEXT("spacing_m"),Spacing);
+    }
     if(Name==TEXT("assign"))R->SetStringField(TEXT("assigned_uav_id"),UAVs->GetSelectedOption());
     if(Name==TEXT("deploy")){if(!bConfirm)return;bConfirm=false;}Submit(R);
 }
@@ -242,7 +265,7 @@ void USecurityPlanWorkspaceWidget::Action(FName Name,int32 Index){
 
 void USecurityPlanWorkspaceWidget::ConfirmDeployment(){
     if(bPending)return;
-    bPending=true;ErrorCode.Empty();
+    bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
     auto Check=MakeShared<FJsonObject>();Check->SetStringField(TEXT("action"),TEXT("validate"));Check->SetStringField(TEXT("plan_id"),PlanId);
@@ -275,7 +298,13 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     const bool Visible=Deployed && bExecutionView && !bList && !bCreating;
     ExecutionPage->SetVisibility(Visible?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     if(Visible)ReviewPage->SetVisibility(ESlateVisibility::Collapsed);
+    const bool Real=Field(State,TEXT("execution_adapter"))==TEXT("Real");
+    ExecutionMode->SetText(T(Real?TEXT("Execution.Real"):TEXT("Execution.Simulation")));
     const auto StateName=Field(E,TEXT("state"));
+    const bool Scheduled=StateName==TEXT("SCHEDULED");
+    Show(TEXT("execution_start_now"),Scheduled);Show(TEXT("execution_reschedule"),Scheduled);Show(TEXT("execution_cancel_schedule"),Scheduled);
+    ScheduleEnabled->SetVisibility(ExecutionIntent==TEXT("start")?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    ScheduleInput->SetVisibility((ExecutionIntent==TEXT("start") && ScheduleEnabled->IsChecked()) || Scheduled?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     ExecutionSummary->SetText(ExecutionIntent==TEXT("start")?T(TEXT("Execution.StartConfirm")):ExecutionUI::Summary(E));ExecutionProgress->SetVisibility(ExecutionIntent.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);ExecutionProgress->SetPercent(E?E->GetNumberField(TEXT("progress")):0);
     const bool Prompt=!ExecutionIntent.IsEmpty();
     Show(TEXT("execution_pause"),!Prompt && StateName==TEXT("EXECUTING"));Show(TEXT("execution_resume"),!Prompt && StateName==TEXT("PAUSED"));
@@ -286,7 +315,7 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     if(ExecutionIntent==TEXT("start")){
         const auto M=Find(State,TEXT("missions"),MissionId),R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));
         const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;const int Count=R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
-        Lines.Add(T(TEXT("Execution.StartConfirm")));Lines.Add(User(Field(P,TEXT("name"))));Lines.Add(User(Field(M,TEXT("name"))));Lines.Add(User(Field(M,TEXT("assigned_uav_id"))));
+        Lines.Add(T(TEXT("Execution.StartConfirm")));Lines.Add(User(Field(P,TEXT("name"))));Lines.Add(User(Field(M,TEXT("name"))));Lines.Add(User(AssignedUAVs(M)));
         Lines.Add(FText::Format(T(TEXT("Map.Count")),FText::AsNumber(Count)));
         const auto Config=Object(State,TEXT("mock_execution"));const auto Fixture=Find(Config,TEXT("uavs"),Field(M,TEXT("assigned_uav_id")));
         auto From=Object(Fixture,TEXT("home_position"));const auto AllExecutions=Object(State,TEXT("executions"));double Latest=-1;
@@ -294,15 +323,17 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         double Distance=0,Seconds=0;if(From && Points && Config)for(const auto& V:*Points){const auto Point=V->AsObject();const double Y=(Point->GetNumberField(TEXT("latitude"))-From->GetNumberField(TEXT("latitude")))*PI/180.*6371000.;const double X=(Point->GetNumberField(TEXT("longitude"))-From->GetNumberField(TEXT("longitude")))*PI/180.*6371000.*FMath::Cos((Point->GetNumberField(TEXT("latitude"))+From->GetNumberField(TEXT("latitude")))*.5*PI/180.);const double Z=Point->GetNumberField(TEXT("altitude"))-From->GetNumberField(TEXT("altitude"));const double D=FMath::Sqrt(X*X+Y*Y+Z*Z),Speed=Point->GetNumberField(TEXT("segmentSpeed"));Distance+=D;Seconds+=D/(Speed>0?Speed:Config->GetNumberField(TEXT("default_speed_mps")))+Point->GetNumberField(TEXT("waitTime"));From=Point;}
         bool Closed=false;if(R)R->TryGetBoolField(TEXT("bClosedLoop"),Closed);
         if(Closed && From && Points && Points->Num()>2 && Config){const auto Point=(*Points)[0]->AsObject();const double Y=(Point->GetNumberField(TEXT("latitude"))-From->GetNumberField(TEXT("latitude")))*PI/180.*6371000.,X=(Point->GetNumberField(TEXT("longitude"))-From->GetNumberField(TEXT("longitude")))*PI/180.*6371000.*FMath::Cos((Point->GetNumberField(TEXT("latitude"))+From->GetNumberField(TEXT("latitude")))*.5*PI/180.),Z=Point->GetNumberField(TEXT("altitude"))-From->GetNumberField(TEXT("altitude"));const double D=FMath::Sqrt(X*X+Y*Y+Z*Z),Speed=From->GetNumberField(TEXT("segmentSpeed"));Distance+=D;Seconds+=D/(Speed>0?Speed:Config->GetNumberField(TEXT("default_speed_mps")));}
-        Lines.Add(FText::Format(T(TEXT("Execution.Estimate")),FText::AsNumber(FMath::RoundToInt(Distance)),FText::AsNumber(FMath::RoundToInt(Seconds))));
-        Lines.Add(T(Fixture?TEXT("Execution.MockAvailable"):TEXT("Errors.MOCK_UAV_UNAVAILABLE")));Lines.Add(T(TEXT("Execution.MockCheck")));
+        Lines.Add(Real?T(TEXT("Execution.RealEstimate")):FText::Format(T(TEXT("Execution.Estimate")),FText::AsNumber(FMath::RoundToInt(Distance)),FText::AsNumber(FMath::RoundToInt(Seconds))));
+        Lines.Add(T(Fixture?(Real?TEXT("Execution.RealAvailable"):TEXT("Execution.MockAvailable")):(Real?TEXT("Errors.REAL_UAV_UNAVAILABLE"):TEXT("Errors.MOCK_UAV_UNAVAILABLE"))));Lines.Add(T(Real?TEXT("Execution.RealCheck"):TEXT("Execution.MockCheck")));
         bool Conflict=false;const auto All=Object(State,TEXT("executions"));if(All)for(const auto& It:All->Values)if(ExecutionUI::Active(It.Value->AsObject()) && Field(It.Value->AsObject(),TEXT("uav_id"))==Field(M,TEXT("assigned_uav_id")))Conflict=true;
         Lines.Add(T(Conflict?TEXT("Errors.EXECUTION_CONFLICT"):TEXT("Execution.NoConflict")));
         Lines.Add(T(TEXT("Execution.DeploymentValid")));
         Actions[TEXT("execution_confirm")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Count>=2 && Fixture.IsValid() && UavIds.Contains(Field(M,TEXT("assigned_uav_id"))) && !Conflict);
         Lines.Add(FText::Format(T(TEXT("Workflow.Readiness")),T(Sync->IsReady()?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
-    }else if(Prompt)Lines.Add(ProductText::Get(TEXT("Execution.")+ExecutionIntent+TEXT("Confirm")));
+    }else if(Prompt)Lines.Add(ProductText::Get((Real?TEXT("Execution.Real."):TEXT("Execution."))+ExecutionIntent+TEXT("Confirm")));
     else if(E){
+        if(StateName==TEXT("SCHEDULED")){const double Seconds=FMath::Max(0.,E->GetNumberField(TEXT("scheduled_start_epoch"))-FDateTime::UtcNow().ToUnixTimestamp());
+            Lines.Add(FText::Format(T(TEXT("Schedule.Countdown")),User(FTimespan::FromSeconds(Seconds).ToString(TEXT("%h:%m:%s")))));}
         Lines.Add(FText::Format(T(TEXT("Execution.Duration")),FText::AsNumber(FMath::RoundToInt(E->GetNumberField(TEXT("elapsed_seconds"))))));
         if(!Field(E,TEXT("completion_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Execution.")+Field(E,TEXT("completion_reason"))));
         if(!Field(E,TEXT("failure_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Errors.")+Field(E,TEXT("failure_reason"))));
@@ -321,10 +352,25 @@ void USecurityPlanWorkspaceWidget::ExecutionAction(FName Name){
     if(Name==TEXT("execution_cancel")){ExecutionIntent.Empty();bExecutionView=ExecutionUI::Active(E);Refresh();return;}
     if(Name==TEXT("execution_video")){if(E)Sync->OpenVideo(Field(E,TEXT("uav_id")));return;}
     if(Name==TEXT("execution_return_prompt") || Name==TEXT("execution_abort_prompt")){ExecutionIntent=Name==TEXT("execution_return_prompt")?TEXT("return"):TEXT("abort");Refresh();return;}
-    FString Action=Name.ToString();if(Name==TEXT("execution_confirm")){if(ExecutionIntent.IsEmpty())return;Action=TEXT("execution_")+ExecutionIntent;}
+    FString Action=Name==TEXT("execution_cancel_schedule")?TEXT("execution_cancel"):Name.ToString();if(Name==TEXT("execution_confirm")){if(ExecutionIntent.IsEmpty())return;Action=TEXT("execution_")+ExecutionIntent;}
     auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Action);R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),MissionId);
     R->SetStringField(TEXT("request_id"),Action==TEXT("execution_start")?StartRequestId:FGuid::NewGuid().ToString());
     if(E){R->SetStringField(TEXT("execution_id"),Field(E,TEXT("execution_id")));R->SetNumberField(TEXT("control_version"),E->GetNumberField(TEXT("control_version")));}
-    bPending=true;ErrorCode.Empty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
-    if(!Sync->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);if(Weak->ErrorCode.IsEmpty()){Weak->ExecutionIntent.Empty();Weak->bExecutionView=true;}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}Refresh();
+    if((Action==TEXT("execution_start") && ScheduleEnabled->IsChecked()) || Action==TEXT("execution_reschedule")){
+        FDateTime Local;if(!FDateTime::ParseIso8601(*(ScheduleInput->GetText().ToString()+TEXT("Z")),Local)){ErrorCode=TEXT("INVALID_SCHEDULE");return;}
+        // Windows converts the selected civil date using that date's timezone/DST rules.
+        FDateTime UTC=Local;
+#if PLATFORM_WINDOWS
+        SYSTEMTIME Civil{};Civil.wYear=Local.GetYear();Civil.wMonth=Local.GetMonth();Civil.wDay=Local.GetDay();Civil.wHour=Local.GetHour();Civil.wMinute=Local.GetMinute();Civil.wSecond=Local.GetSecond();SYSTEMTIME Universal{};
+        if(!::TzSpecificLocalTimeToSystemTime(nullptr,&Civil,&Universal)){ErrorCode=TEXT("INVALID_SCHEDULE");return;}
+        UTC=FDateTime(Universal.wYear,Universal.wMonth,Universal.wDay,Universal.wHour,Universal.wMinute,Universal.wSecond);
+#else
+        UTC=Local-(FDateTime::Now()-FDateTime::UtcNow());
+#endif
+        R->SetStringField(TEXT("scheduled_start_at"),UTC.ToString(TEXT("%Y-%m-%dT%H:%M:%SZ")));
+    }
+    bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
+    if(!Sync->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=FText::GetEmpty();const auto Params=Object(Reply,TEXT("params"));
+        if(Params && Params->HasField(TEXT("minimum_separation_m")))Weak->ExecutionErrorDetails=FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m"))));
+        if(Weak->ErrorCode.IsEmpty()){Weak->ExecutionIntent.Empty();Weak->bExecutionView=true;}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}Refresh();
 }

@@ -1,0 +1,32 @@
+{
+  "build": "build-04.log",
+  "screenshots": 57,
+  "final_build_screenshots": "10 through 57",
+  "camera_pan_browse_2d": "PASS native",
+  "camera_zoom_browse_2d_3d": "PASS native",
+  "route_lock_2d_empty_drag": "PASS native; build-02 failure retained as screenshot 08",
+  "route_lock_wheel_2d_3d": "PASS native",
+  "mode_disabled": "PASS native",
+  "waypoint_add_select_drag_delete": "PASS native, including 3D drag and microdrag add",
+  "double_click_no_focus": "PASS native 2D and 3D",
+  "inspector": "PASS native altitude, AGL/Ellipsoid, hover, speed, scroll",
+  "save_draft": "PASS native; saved remains editing and locked",
+  "finish": "PASS native; no jump; pan/zoom/mode restored",
+  "discard_exit": "PASS native; prompt remains locked; after ACK unlock and saved geometry restored",
+  "follow": "component and source audit only",
+  "right_middle_drag": "NOT NATIVE VERIFIED: sky DragInput has no mouse_button or duration",
+  "invalid_ground_hit": "implemented static blocking-hit guard and localized feedback; NOT NATIVE VERIFIED",
+  "runtime": "Backend and Map; Command only briefly started for setup, stopped due same-title capture ambiguity; Video not launched",
+  "persisted_heights_m": [
+    40,
+    80,
+    120,
+    60
+  ],
+  "persisted_p03": {
+    "reference": "AGL",
+    "hover_seconds": 10,
+    "speed_mps": 8
+  },
+  "known_ui": "When no waypoint is selected, existing disabled inspector fields can retain the last displayed value; persisted geometry checked independently."
+}

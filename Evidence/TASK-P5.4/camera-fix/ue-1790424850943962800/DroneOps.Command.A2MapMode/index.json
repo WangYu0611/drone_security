@@ -1,0 +1,417 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "D8CFD2C546976EBED9D02C8C96106C14",
+			"instanceName": "JXGM-42296",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.26-12.15.28",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 14.477981567382812,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "A2MapMode",
+			"fullTestPath": "DroneOps.Command.A2MapMode",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"D8CFD2C546976EBED9D02C8C96106C14"
+			],
+			"duration": 14.477981567382812,
+			"dateTime": "2026.09.26-12.15.13",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:20180  WebSocketUrl=ws://127.0.0.1:20181/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: === DroneOpsPlayerController::BeginPlay CALLED ===",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.14"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] ===== Strict Local Preview Isolation ENABLED =====",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "A2 fixture lon=116.347187 lat=39.981000 height=46.000",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "A2 3d capture 1920x1082; original Command.CesiumWorld retains exact 1080 height assertion",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.26"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogCesium: \"Enable World Bounds Checks\" in the world settings is currently enabled. Please consider disabling it to avoid potential issues.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.27"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "A2 2d capture 1920x1082; original Command.CesiumWorld retains exact 1080 height assertion",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.27"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] ===== Strict Local Preview Isolation DISABLED =====",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.27"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "A2 regression finished; toolbar events are automation, physical mouse is separately verified.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.09.26-12.15.27"
+				}
+			],
+			"warnings": 27,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

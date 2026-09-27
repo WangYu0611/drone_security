@@ -1602,3 +1602,311 @@ msgstr "Plan position confirmed"
 msgctxt "DroneOps,Events.ROUTE_CLOSURE_REACHED"
 msgid "Closed route completed once"
 msgstr "Closed route completed once"
+
+msgctxt "DroneOps,Mission3D.Altitude"
+msgid "Altitude (m)"
+msgstr "Altitude (m)"
+
+msgctxt "DroneOps,Mission3D.Hover"
+msgid "Hover time (seconds)"
+msgstr "Hover time (seconds)"
+
+msgctxt "DroneOps,Mission3D.AGL"
+msgid "AGL: above ground (unchecked: ellipsoid)"
+msgstr "AGL: above ground (unchecked: ellipsoid)"
+
+msgctxt "DroneOps,Mission3D.Apply"
+msgid "APPLY WAYPOINT PARAMETERS"
+msgstr "APPLY WAYPOINT PARAMETERS"
+
+msgctxt "DroneOps,Mission3D.Selected"
+msgid "Selected Waypoint: P{0}"
+msgstr "Selected Waypoint: P{0}"
+
+msgctxt "DroneOps,Mission3D.SelectPoint"
+msgid "Select a waypoint to edit height and hover time"
+msgstr "Select a waypoint to edit height and hover time"
+
+msgctxt "DroneOps,Formation.LineSpacing"
+msgid "Line formation spacing (m)"
+msgstr "Line formation spacing (m)"
+
+msgctxt "DroneOps,Formation.SaveAssignment"
+msgid "SAVE ASSIGNED UAVS"
+msgstr "SAVE ASSIGNED UAVS"
+
+msgctxt "DroneOps,Schedule.Enable"
+msgid "Scheduled start (unchecked: start now)"
+msgstr "Scheduled start (unchecked: start now)"
+
+msgctxt "DroneOps,Schedule.LocalTime"
+msgid "Local start date/time: YYYY-MM-DDTHH:MM:SS"
+msgstr "Local start date/time: YYYY-MM-DDTHH:MM:SS"
+
+msgctxt "DroneOps,Schedule.StartNow"
+msgid "START NOW"
+msgstr "START NOW"
+
+msgctxt "DroneOps,Schedule.Reschedule"
+msgid "RESCHEDULE"
+msgstr "RESCHEDULE"
+
+msgctxt "DroneOps,Schedule.Cancel"
+msgid "CANCEL SCHEDULE"
+msgstr "CANCEL SCHEDULE"
+
+msgctxt "DroneOps,Schedule.Countdown"
+msgid "Scheduled mission starts in {0}"
+msgstr "Scheduled mission starts in {0}"
+
+msgctxt "DroneOps,Execution.SCHEDULED"
+msgid "SCHEDULED"
+msgstr "SCHEDULED"
+
+msgctxt "DroneOps,Execution.CANCELLED"
+msgid "CANCELLED"
+msgstr "CANCELLED"
+
+msgctxt "DroneOps,Situation.Title"
+msgid "2D SITUATION MAP"
+msgstr "2D SITUATION MAP"
+
+msgctxt "DroneOps,Situation.Follow"
+msgid "TOGGLE FOLLOW SELECTED UAV"
+msgstr "TOGGLE FOLLOW SELECTED UAV"
+
+msgctxt "DroneOps,Errors.ALTITUDE_DATUM_UNRESOLVED"
+msgid "Cannot resolve height. Select a waypoint, enter valid values and ensure terrain is loaded."
+msgstr "Cannot resolve height. Select a waypoint, enter valid values and ensure terrain is loaded."
+
+msgctxt "DroneOps,Errors.INVALID_ALTITUDE_REFERENCE"
+msgid "Unknown altitude reference"
+msgstr "Unknown altitude reference"
+
+msgctxt "DroneOps,Errors.INVALID_SEPARATION"
+msgid "Spacing must meet the configured minimum separation."
+msgstr "Spacing must meet the configured minimum separation."
+
+msgctxt "DroneOps,Errors.TRAJECTORY_CONFLICT"
+msgid "Trajectory conflict: aircraft cannot maintain the required separation."
+msgstr "Trajectory conflict: aircraft cannot maintain the required separation."
+
+msgctxt "DroneOps,Errors.INVALID_SCHEDULE"
+msgid "Enter a valid future local date and time."
+msgstr "Enter a valid future local date and time."
+
+msgctxt "DroneOps,Errors.FORMATION_UNSUPPORTED"
+msgid "Only Line formation is currently available."
+msgstr "Only Line formation is currently available."
+
+msgctxt "DroneOps,Errors.TRAJECTORY_DOMAIN_UNSUPPORTED"
+msgid "Formation requires a nonpolar area within 10 km."
+msgstr "Formation requires a nonpolar area within 10 km."
+
+msgctxt "DroneOps,Mission3D.Marker"
+msgid "P{0} | {1} m {2} | Hover {3} s"
+msgstr "P{0} | {1} m {2} | Hover {3} s"
+
+msgctxt "DroneOps,Group.Title"
+msgid "GROUP CONTROL"
+msgstr "GROUP CONTROL"
+
+msgctxt "DroneOps,Group.Summary"
+msgid "Selected UAVs: {0} | Preserve relative offsets | Minimum separation: {1} m"
+msgstr "Selected UAVs: {0} | Preserve relative offsets | Minimum separation: {1} m"
+
+msgctxt "DroneOps,Group.Latitude"
+msgid "Group anchor latitude (WGS84)"
+msgstr "Group anchor latitude (WGS84)"
+
+msgctxt "DroneOps,Group.Longitude"
+msgid "Group anchor longitude (WGS84)"
+msgstr "Group anchor longitude (WGS84)"
+
+msgctxt "DroneOps,Group.Altitude"
+msgid "Group anchor ellipsoid altitude (m)"
+msgstr "Group anchor ellipsoid altitude (m)"
+
+msgctxt "DroneOps,Group.Area"
+msgid "Available target area radius (m)"
+msgstr "Available target area radius (m)"
+
+msgctxt "DroneOps,Group.Move"
+msgid "MOVE GROUP"
+msgstr "MOVE GROUP"
+
+msgctxt "DroneOps,Group.Accepted"
+msgid "Group command accepted by Backend"
+msgstr "Group command accepted by Backend"
+
+msgctxt "DroneOps,Group.Conflict"
+msgid "{0} / {1}: predicted {2} m; required {3} m. Execution blocked."
+msgstr "{0} / {1}: predicted {2} m; required {3} m. Execution blocked."
+
+msgctxt "DroneOps,Schedule.Overview"
+msgid "Scheduled: {0} | Starts in {1} | {2} UAV"
+msgstr "Scheduled: {0} | Starts in {1} | {2} UAV"
+
+msgctxt "DroneOps,Errors.TERRAIN_REQUIRED"
+msgid "Terrain height is unavailable or the waypoint is below ground. Load terrain and retry."
+msgstr "Terrain height is unavailable or the waypoint is below ground. Load terrain and retry."
+
+msgctxt "DroneOps,Events.SCHEDULE_STARTED"
+msgid "{uav_id}: scheduled mission started"
+msgstr "{uav_id}: scheduled mission started"
+
+msgctxt "DroneOps,Events.SCHEDULE_CHANGED"
+msgid "{uav_id}: start time updated"
+msgstr "{uav_id}: start time updated"
+
+msgctxt "DroneOps,Events.SCHEDULE_DUE"
+msgid "{uav_id}: immediate start requested"
+msgstr "{uav_id}: immediate start requested"
+
+msgctxt "DroneOps,Events.MISSION_CANCELLED"
+msgid "{uav_id}: scheduled mission cancelled"
+msgstr "{uav_id}: scheduled mission cancelled"
+
+msgctxt "DroneOps,Events.SAFETY_CONFLICT"
+msgid "{uav_id}: motion paused by safety separation check"
+msgstr "{uav_id}: motion paused by safety separation check"
+
+msgctxt "DroneOps,Execution.Real"
+msgid "LIVE CONTROL · Real UAV"
+msgstr "LIVE CONTROL · Real UAV"
+
+msgctxt "DroneOps,Execution.MonitorNeutral"
+msgid "Execution Monitor"
+msgstr "Execution Monitor"
+
+msgctxt "DroneOps,Execution.RealAvailable"
+msgid "Real adapter configured; Backend checks live readiness"
+msgstr "Real adapter configured; Backend checks live readiness"
+
+msgctxt "DroneOps,Execution.RealCheck"
+msgid "Real control requires fresh measured telemetry, calibrated coordinates and Armed/Offboard before movement. Start does not arm or take off."
+msgstr "Real control requires fresh measured telemetry, calibrated coordinates and Armed/Offboard before movement. Start does not arm or take off."
+
+msgctxt "DroneOps,Execution.Real.returnConfirm"
+msgid "Confirm Return Home? Remaining waypoints will be skipped and the real UAV will be commanded to its calibrated Home."
+msgstr "Confirm Return Home? Remaining waypoints will be skipped and the real UAV will be commanded to its calibrated Home."
+
+msgctxt "DroneOps,Execution.Real.abortConfirm"
+msgid "Confirm abort? The mission cannot resume. Backend requests a hold at the measured position and reports any rejection."
+msgstr "Confirm abort? The mission cannot resume. Backend requests a hold at the measured position and reports any rejection."
+
+msgctxt "DroneOps,Errors.REAL_COMMAND_REJECTED"
+msgid "Real UAV rejected the command. Verify Armed/Offboard and telemetry."
+msgstr "Real UAV rejected the command. Verify Armed/Offboard and telemetry."
+
+msgctxt "DroneOps,Errors.REAL_HOLD_REJECTED"
+msgid "Hold was not confirmed. Check the aircraft and control link immediately."
+msgstr "Hold was not confirmed. Check the aircraft and control link immediately."
+
+msgctxt "DroneOps,Errors.REAL_TELEMETRY_UNAVAILABLE"
+msgid "Fresh valid aircraft telemetry is unavailable."
+msgstr "Fresh valid aircraft telemetry is unavailable."
+
+msgctxt "DroneOps,Errors.REAL_ANCHOR_CHANGED_RECALIBRATE"
+msgid "The live coordinate anchor changed. Recalibrate before control."
+msgstr "The live coordinate anchor changed. Recalibrate before control."
+
+msgctxt "DroneOps,Errors.REAL_RESTART_REQUIRES_RESUME"
+msgid "Real mission restored paused; verify the aircraft before resuming."
+msgstr "Real mission restored paused; verify the aircraft before resuming."
+
+msgctxt "DroneOps,Errors.ADAPTER_MODE_MISMATCH"
+msgid "Stored execution belongs to a different adapter. Create a new execution."
+msgstr "Stored execution belongs to a different adapter. Create a new execution."
+
+msgctxt "DroneOps,Errors.REAL_HOVER_DRIFT"
+msgid "Measured UAV position left the hover tolerance."
+msgstr "Measured UAV position left the hover tolerance."
+
+msgctxt "DroneOps,Errors.GROUP_MEMBER_FAILED"
+msgid "A group member failed; the entire mission group has failed and active members were asked to hold."
+msgstr "A group member failed; the entire mission group has failed and active members were asked to hold."
+
+msgctxt "DroneOps,Errors.LEGACY_CONTROLLER_BUSY"
+msgid "Another controller owns the aircraft."
+msgstr "Another controller owns the aircraft."
+
+msgctxt "DroneOps,Errors.MISSION_CONTROLLER_OWNS_CONTROL"
+msgid "Use the security mission controls in Real mode."
+msgstr "Use the security mission controls in Real mode."
+
+msgctxt "DroneOps,Execution.RealEstimate"
+msgid "Real execution estimates are calculated from live position by Backend at start."
+msgstr "Real execution estimates are calculated from live position by Backend at start."
+
+msgctxt "DroneOps,Errors.REAL_UAV_UNAVAILABLE"
+msgid "Real UAV or its calibrated frame is unavailable."
+msgstr "Real UAV or its calibrated frame is unavailable."
+
+msgctxt "DroneOps,Errors.REAL_CONFIGURATION_INVALID"
+msgid "Real adapter configuration is incomplete or invalid."
+msgstr "Real adapter configuration is incomplete or invalid."
+
+msgctxt "DroneOps,Errors.ADAPTER_POSITION_INVALID"
+msgid "Adapter position is not a valid WGS84 coordinate."
+msgstr "Adapter position is not a valid WGS84 coordinate."
+
+msgctxt "DroneOps,Errors.ADAPTER_COMMAND_INVALID"
+msgid "The motion target or speed is invalid."
+msgstr "The motion target or speed is invalid."
+
+msgctxt "DroneOps,Errors.REAL_FRAME_DOMAIN_UNSUPPORTED"
+msgid "The real mission is outside the supported local coordinate area."
+msgstr "The real mission is outside the supported local coordinate area."
+
+msgctxt "DroneOps,Errors.REAL_NED_INVALID"
+msgid "Measured NED position is invalid."
+msgstr "Measured NED position is invalid."
+
+msgctxt "DroneOps,Errors.REAL_ANCHOR_DATUM_UNRESOLVED"
+msgid "Declare the real anchor altitude datum before execution."
+msgstr "Declare the real anchor altitude datum before execution."
+
+msgctxt "DroneOps,Errors.REAL_ANCHOR_INVALID"
+msgid "The real coordinate calibration is invalid."
+msgstr "The real coordinate calibration is invalid."
+
+msgctxt "DroneOps,Inspector.Title"
+msgid "Waypoint Inspector"
+msgstr "Waypoint Inspector"
+
+msgctxt "DroneOps,Inspector.Help"
+msgid "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."
+msgstr "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."
+
+msgctxt "DroneOps,Inspector.Reference"
+msgid "Altitude reference"
+msgstr "Altitude reference"
+
+msgctxt "DroneOps,Inspector.Speed"
+msgid "Speed (m/s; 0 = default)"
+msgstr "Speed (m/s; 0 = default)"
+
+msgctxt "DroneOps,Inspector.Coordinates"
+msgid "Longitude: {0}\nLatitude: {1}"
+msgstr "Longitude: {0}\nLatitude: {1}"
+
+msgctxt "DroneOps,Errors.WAYPOINT_PARAMETERS_INVALID"
+msgid "Enter finite values: hover >= 0; speed 0 to 15 m/s."
+msgstr "Enter finite values: hover >= 0; speed 0 to 15 m/s."
+
+msgctxt "DroneOps,Map.ViewLocked"
+msgid "ROUTE EDITING | MAP VIEW LOCKED"
+msgstr "ROUTE EDITING | MAP VIEW LOCKED"
+
+msgctxt "DroneOps,Map.AdjustBeforeEdit"
+msgid "Adjust the map view before editing."
+msgstr "Adjust the map view before editing."
+
+msgctxt "DroneOps,Map.FinishBeforeMode"
+msgid "Finish route editing before switching map mode."
+msgstr "Finish route editing before switching map mode."
+
+msgctxt "DroneOps,Map.InvalidPosition"
+msgid "No valid map position"
+msgstr "No valid map position"

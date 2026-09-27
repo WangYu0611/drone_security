@@ -13,6 +13,8 @@ namespace PlanUI {
 inline FString Field(const TSharedPtr<FJsonObject>& O,const TCHAR* K){FString S;if(O)O->TryGetStringField(K,S);return S;}
 inline TSharedPtr<FJsonObject> Object(const TSharedPtr<FJsonObject>& O,const TCHAR* K){const TSharedPtr<FJsonObject>* P;return O && O->TryGetObjectField(K,P)?*P:nullptr;}
 inline TSharedPtr<FJsonObject> Find(const TSharedPtr<FJsonObject>& O,const TCHAR* Group,const FString& ID){const auto G=Object(O,Group);const TSharedPtr<FJsonObject>* P;return G && G->TryGetObjectField(ID,P)?*P:nullptr;}
+inline FString AssignedUAVs(const TSharedPtr<FJsonObject>& M){const TArray<TSharedPtr<FJsonValue>>* Values=nullptr;if(M && M->TryGetArrayField(TEXT("assigned_uav_ids"),Values)){TArray<FString> IDs;for(const auto& V:*Values)IDs.Add(V->AsString());return FString::Join(IDs,TEXT(", "));}return Field(M,TEXT("assigned_uav_id"));}
+inline double EllipsoidAltitude(const TSharedPtr<FJsonObject>& P){double Offset=0;const auto Ref=Field(P,TEXT("altitude_reference"));if(Ref==TEXT("AGL"))P->TryGetNumberField(TEXT("terrain_ellipsoid_m"),Offset);if(Ref==TEXT("MSL"))P->TryGetNumberField(TEXT("geoid_undulation_m"),Offset);return P->GetNumberField(TEXT("altitude"))+Offset;}
 inline FText T(const TCHAR* K){return ProductText::Get(K);}
 inline FText User(const FString& S){return FText::AsCultureInvariant(S);}
 inline UTextBlock* Label(UWidgetTree* Tree,UPanelWidget* Parent,const FText& Text,int Size=13){auto* W=Tree->ConstructWidget<UTextBlock>();CommandTheme::Text(W,Size);W->SetAutoWrapText(true);W->SetText(Text);Parent->AddChild(W);return W;}

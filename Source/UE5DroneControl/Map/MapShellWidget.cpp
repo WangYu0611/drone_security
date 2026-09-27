@@ -120,6 +120,11 @@ void UMapShellWidget::Refresh()
     else if (Aircraft->GetSelectedOption() != Selected) Aircraft->SetSelectedOption(Selected);
     bRefreshing = false;
     const bool b2D = !Map || Map->GetMapMode() == ECommandMapMode::Map2D;
+    const bool Locked=Map && Map->IsRouteEditCameraLocked();
+    Map2DButton->SetIsEnabled(!Locked);Map3DButton->SetIsEnabled(!Locked);
+    const FText ModeHint=Locked?ProductText::Get(TEXT("Map.FinishBeforeMode")):FText::GetEmpty();
+    Map2DButton->SetToolTipText(ModeHint);Map3DButton->SetToolTipText(ModeHint);
+    ActionStatus->SetText(ProductText::Get(Map && Map->HasInvalidMapPosition()?TEXT("Map.InvalidPosition"):Locked?TEXT("Map.ViewLocked"):TEXT("Map.AdjustBeforeEdit")));
     CommandTheme::Button(Map2DButton, b2D); CommandTheme::Button(Map3DButton, !b2D);
     Status->SetText(ProductText::Source(FString::Printf(TEXT("UAV %02d  |  %s  |  %s"), Registry->GetPrimarySelectedDrone(),
         b2D ? TEXT("2D") : TEXT("3D"), Map && Map->OwnsCamera() ? TEXT("Camera ready") : TEXT("Initializing"))));

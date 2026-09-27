@@ -1,0 +1,451 @@
+{
+  "version": 521,
+  "next_id": 10,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "P54 Camera Fix Native",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 5,
+      "review": null,
+      "version": 5,
+      "created_at": 1790423095.3133132,
+      "updated_at": 1790437055.853876,
+      "mission_ids": [
+        "mission-2"
+      ],
+      "workflow_step": "TaskConfig",
+      "workflow_mission_id": "mission-2",
+      "validation": {
+        "ready": false,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": null
+      }
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Task 01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-4",
+      "status": "READY",
+      "assigned_uav_ids": [
+        "UAV-01"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    }
+  },
+  "paths": {
+    "route-4": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98068367864752,
+          "longitude": 116.3464804222906,
+          "altitude": 39.999999998092065,
+          "altitude_reference": "AGL",
+          "terrain_ellipsoid_m": 1.0999742273927116,
+          "segmentSpeed": 0,
+          "waitTime": 0,
+          "location": {
+            "x": -4438.15296164155,
+            "y": 3512.260626256466,
+            "z": -190.0277708768845
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.98046125050753,
+          "longitude": 116.34658640450934,
+          "altitude": 79.99999999227235,
+          "altitude_reference": "AGL",
+          "terrain_ellipsoid_m": 1.0999753772243754,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -3532.902713626623,
+            "y": 5982.033395588398,
+            "z": 3809.9595081806183
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.98052144441415,
+          "longitude": 116.34681716052886,
+          "altitude": 119.99999999931052,
+          "altitude_reference": "AGL",
+          "terrain_ellipsoid_m": 1.0999861828888997,
+          "segmentSpeed": 8,
+          "waitTime": 10,
+          "location": {
+            "x": -1561.809925198555,
+            "y": 5313.706392288208,
+            "z": 7809.974398970603
+          }
+        },
+        {
+          "sequence": 4,
+          "latitude": 39.98071960441063,
+          "longitude": 116.34694699635396,
+          "altitude": 59.99999999999515,
+          "altitude_reference": "AGL",
+          "terrain_ellipsoid_m": 1.0999958444849485,
+          "segmentSpeed": 1,
+          "waitTime": 0,
+          "location": {
+            "x": -452.75018104910856,
+            "y": 3113.3816182613373,
+            "z": 1809.9917362332344
+          }
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-4",
+      "revision": 3
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1790423095.313324,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P54 Camera Fix Native"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P54 Camera Fix Native",
+      "source": "CLIENT-COMMAND-7942e2f8"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1790423095.3133335,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Default task created",
+      "source": "CLIENT-COMMAND-7942e2f8"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1790423117.963246,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV assignment updated",
+      "source": "CLIENT-COMMAND-7942e2f8"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1790423126.0326135,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-0372034d"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1790423365.1846151,
+      "event_type": "ROUTE_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Task 01",
+      "source": "CLIENT-MAP-0372034d"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1790423365.1846209,
+      "event_type": "ROUTE_SAVED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route draft saved",
+      "source": "CLIENT-MAP-0372034d"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1790423375.582021,
+      "event_type": "ROUTE_EDIT_COMPLETED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing completed",
+      "source": "CLIENT-MAP-0372034d"
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1790426245.716834,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-c717b37e"
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1790427075.4217873,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-bd2cc503"
+    },
+    {
+      "sequence": 10,
+      "timestamp": 1790427549.7457716,
+      "event_type": "ROUTE_UPDATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Task 01",
+      "source": "CLIENT-MAP-bd2cc503"
+    },
+    {
+      "sequence": 11,
+      "timestamp": 1790427549.7457747,
+      "event_type": "ROUTE_SAVED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route draft saved",
+      "source": "CLIENT-MAP-bd2cc503"
+    },
+    {
+      "sequence": 12,
+      "timestamp": 1790427567.4935722,
+      "event_type": "ROUTE_EDIT_COMPLETED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing completed",
+      "source": "CLIENT-MAP-bd2cc503"
+    },
+    {
+      "sequence": 13,
+      "timestamp": 1790435991.2637272,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-7ad54746"
+    },
+    {
+      "sequence": 14,
+      "timestamp": 1790436669.8498888,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-e492035f"
+    },
+    {
+      "sequence": 15,
+      "timestamp": 1790437055.8538694,
+      "event_type": "ROUTE_UPDATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Task 01",
+      "source": "CLIENT-MAP-e492035f"
+    },
+    {
+      "sequence": 16,
+      "timestamp": 1790437055.853873,
+      "event_type": "ROUTE_SAVED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route draft saved",
+      "source": "CLIENT-MAP-e492035f"
+    },
+    {
+      "sequence": 17,
+      "timestamp": 1790437078.1179154,
+      "event_type": "ROUTE_EDIT_COMPLETED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing completed",
+      "source": "CLIENT-MAP-e492035f"
+    },
+    {
+      "sequence": 18,
+      "timestamp": 1790437167.7181628,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-e492035f"
+    }
+  ],
+  "deployments": {},
+  "edit_sessions": {},
+  "executions": {},
+  "execution_version": 5,
+  "execution_requests": {
+    "cae4f8e7-9e20-42cf-a966-7cee7273de1c": {
+      "request": {
+        "request_id": "cae4f8e7-9e20-42cf-a966-7cee7273de1c",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "b00ce701-d2b3-40e2-b3d8-bfc2c2db3154": {
+      "request": {
+        "request_id": "b00ce701-d2b3-40e2-b3d8-bfc2c2db3154",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "aa957bd1-77de-4c54-8fc4-8116387ae6da": {
+      "request": {
+        "request_id": "aa957bd1-77de-4c54-8fc4-8116387ae6da",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "c084b048-3ff8-4aff-844a-044f21f62fd2": {
+      "request": {
+        "request_id": "c084b048-3ff8-4aff-844a-044f21f62fd2",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "82f7bd1d-4a02-4207-8ec7-82f145bd968c": {
+      "request": {
+        "request_id": "82f7bd1d-4a02-4207-8ec7-82f145bd968c",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    }
+  },
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8.0,
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30.0
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34706,
+          "altitude": 30.0
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34709,
+          "altitude": 30.0
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34712,
+          "altitude": 30.0
+        }
+      }
+    },
+    "safety_separation_m": 1.5
+  },
+  "execution_adapter": "Mock"
+}

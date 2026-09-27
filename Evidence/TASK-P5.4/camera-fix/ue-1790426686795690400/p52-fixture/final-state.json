@@ -1,0 +1,2489 @@
+{
+  "version": 30,
+  "next_id": 27,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "Revised 原名",
+      "description": "Changed after review",
+      "status": "DEPLOYED",
+      "content_revision": 10,
+      "review": {
+        "content_revision": 10,
+        "reviewed_at": 1790426688.5786335,
+        "reviewed_by": "P4-QA-Command"
+      },
+      "version": 15,
+      "created_at": 1790426688.2682045,
+      "updated_at": 1790426710.919165,
+      "mission_ids": [
+        "mission-2"
+      ],
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": 10
+      },
+      "deployment_id": "deployment-7"
+    },
+    "plan-8": {
+      "id": "plan-8",
+      "name": "Independent copy",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 2,
+      "review": null,
+      "version": 2,
+      "created_at": 1790426710.929384,
+      "updated_at": 1790426710.9369676,
+      "mission_ids": [
+        "mission-9"
+      ],
+      "source_plan_id": "plan-1",
+      "source_deployment_id": "deployment-7",
+      "deployment": null,
+      "workflow_step": "TaskConfig",
+      "validation": {
+        "ready": false,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": null
+      }
+    },
+    "plan-11": {
+      "id": "plan-11",
+      "name": "P5.2 protocol only",
+      "description": "",
+      "status": "DEPLOYED",
+      "content_revision": 3,
+      "review": {
+        "content_revision": 3,
+        "reviewed_at": 1790426711.3646274,
+        "reviewed_by": "P52-QA-Command"
+      },
+      "version": 6,
+      "created_at": 1790426711.3234599,
+      "updated_at": 1790426711.3713653,
+      "mission_ids": [
+        "mission-12"
+      ],
+      "workflow_step": "PreDeployReview",
+      "workflow_mission_id": "mission-12",
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": 3
+      },
+      "deployment_id": "deployment-15"
+    },
+    "plan-18": {
+      "id": "plan-18",
+      "name": "P5.2 protocol only",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 1,
+      "review": null,
+      "version": 1,
+      "created_at": 1790426713.4130828,
+      "updated_at": 1790426713.4130828,
+      "mission_ids": [
+        "mission-19"
+      ],
+      "workflow_step": "TaskConfig",
+      "deployment": null,
+      "source_plan_id": "plan-11",
+      "source_deployment_id": "deployment-15",
+      "validation": {
+        "ready": false,
+        "issues": [],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 1,
+        "validated_content_revision": null
+      }
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Retained original input",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-5",
+      "status": "DEPLOYED",
+      "assigned_uav_ids": [
+        "UAV-01"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    },
+    "mission-9": {
+      "id": "mission-9",
+      "plan_id": "plan-8",
+      "name": "Retained original input",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-10",
+      "status": "READY",
+      "assigned_uav_ids": [
+        "UAV-01"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    },
+    "mission-12": {
+      "id": "mission-12",
+      "plan_id": "plan-11",
+      "name": "Task 01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-14",
+      "status": "DEPLOYED",
+      "assigned_uav_ids": [
+        "UAV-01"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    },
+    "mission-19": {
+      "id": "mission-19",
+      "plan_id": "plan-18",
+      "name": "Task 01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-20",
+      "status": "READY",
+      "assigned_uav_ids": [
+        "UAV-01"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    }
+  },
+  "paths": {
+    "route-5": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "segmentSpeed": 0,
+          "waitTime": 2,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 60
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "segmentSpeed": 5,
+          "waitTime": 2,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 60
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "segmentSpeed": 5,
+          "waitTime": 2,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 60
+          }
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-5",
+      "revision": 1
+    },
+    "route-10": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.98,
+          "longitude": 116.34,
+          "altitude": 60,
+          "segmentSpeed": 0,
+          "waitTime": 2,
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 60
+          }
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.980999999999995,
+          "longitude": 116.341,
+          "altitude": 60,
+          "segmentSpeed": 5,
+          "waitTime": 2,
+          "location": {
+            "x": 100,
+            "y": 0,
+            "z": 60
+          }
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.982,
+          "longitude": 116.342,
+          "altitude": 60,
+          "segmentSpeed": 5,
+          "waitTime": 2,
+          "location": {
+            "x": 200,
+            "y": 0,
+            "z": 60
+          }
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-10",
+      "revision": 1
+    },
+    "route-14": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.9808,
+          "longitude": 116.34713,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.9809,
+          "longitude": 116.34723,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        },
+        {
+          "sequence": 4,
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-14",
+      "revision": 1
+    },
+    "route-20": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.9808,
+          "longitude": 116.34713,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        },
+        {
+          "sequence": 3,
+          "latitude": 39.9809,
+          "longitude": 116.34723,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        },
+        {
+          "sequence": 4,
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30,
+          "segmentSpeed": 8,
+          "waitTime": 0
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-20",
+      "revision": 1
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1790426688.2682185,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P4 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: P4 原名",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1790426688.387488,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "East Perimeter",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Mission created: East Perimeter",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1790426688.3962555,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Temporary",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Mission created: Temporary",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1790426688.4056904,
+      "event_type": "MISSION_UPDATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Mission renamed: Retained original input",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1790426688.413309,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV assignment updated",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1790426688.4233973,
+      "event_type": "UAV_UNASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV assignment updated",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1790426688.431146,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV assignment updated",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1790426688.4397967,
+      "event_type": "MISSION_DELETED",
+      "params": {
+        "target_id": "mission-3"
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Mission deleted",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1790426688.4884756,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "P4-QA-Map"
+    },
+    {
+      "sequence": 10,
+      "timestamp": 1790426688.518781,
+      "event_type": "ROUTE_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Retained original input",
+      "source": "P4-QA-Map"
+    },
+    {
+      "sequence": 11,
+      "timestamp": 1790426688.5256524,
+      "event_type": "PLAN_VALIDATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P4 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Configuration checked",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 12,
+      "timestamp": 1790426688.5256548,
+      "event_type": "PLAN_REVIEW_READY",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P4 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Pre-deployment check ready",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 13,
+      "timestamp": 1790426688.537155,
+      "event_type": "PLAN_REVIEWED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "P4 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Current configuration reviewed",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 14,
+      "timestamp": 1790426688.5628312,
+      "event_type": "PLAN_UPDATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan updated: Revised 原名",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 15,
+      "timestamp": 1790426688.5728097,
+      "event_type": "PLAN_VALIDATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Configuration checked",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 16,
+      "timestamp": 1790426688.5728128,
+      "event_type": "PLAN_REVIEW_READY",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Pre-deployment check ready",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 17,
+      "timestamp": 1790426688.5786364,
+      "event_type": "PLAN_REVIEWED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Current configuration reviewed",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 18,
+      "timestamp": 1790426688.585794,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Retained original input",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "P4-QA-Map"
+    },
+    {
+      "sequence": 19,
+      "timestamp": 1790426710.9191577,
+      "event_type": "DEPLOYMENT_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Deployment snapshot created",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 20,
+      "timestamp": 1790426710.9191608,
+      "event_type": "PLAN_DEPLOYED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Deployed. Execution has not started.",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 21,
+      "timestamp": 1790426710.9293978,
+      "event_type": "PLAN_COPIED",
+      "params": {
+        "target_id": "plan-8",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-8",
+      "message": "Plan copied as draft",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 22,
+      "timestamp": 1790426710.9294007,
+      "event_type": "PLAN_VERSION_CREATED",
+      "params": {
+        "target_id": "plan-8",
+        "plan_name": "Revised 原名"
+      },
+      "category": "PLAN",
+      "target_id": "plan-8",
+      "message": "New plan version created",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 23,
+      "timestamp": 1790426710.9369636,
+      "event_type": "PLAN_UPDATED",
+      "params": {
+        "target_id": "plan-8",
+        "plan_name": "Independent copy"
+      },
+      "category": "PLAN",
+      "target_id": "plan-8",
+      "message": "Security plan updated: Independent copy",
+      "source": "P4-QA-Command"
+    },
+    {
+      "sequence": 24,
+      "timestamp": 1790426711.3234646,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-11",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Security plan created: P5.2 protocol only",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 25,
+      "timestamp": 1790426711.3234713,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-12",
+        "mission_name": "Task 01",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Default task created",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 26,
+      "timestamp": 1790426711.33272,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-12",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "UAV assignment updated",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 27,
+      "timestamp": 1790426711.3407702,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-12",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Route editing started",
+      "source": "P52-QA-Map"
+    },
+    {
+      "sequence": 28,
+      "timestamp": 1790426711.346981,
+      "event_type": "ROUTE_CREATED",
+      "params": {
+        "target_id": "mission-12",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Route saved: Task 01",
+      "source": "P52-QA-Map"
+    },
+    {
+      "sequence": 29,
+      "timestamp": 1790426711.3469849,
+      "event_type": "ROUTE_SAVED",
+      "params": {
+        "target_id": "mission-12",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Route draft saved",
+      "source": "P52-QA-Map"
+    },
+    {
+      "sequence": 30,
+      "timestamp": 1790426711.3528934,
+      "event_type": "ROUTE_EDIT_COMPLETED",
+      "params": {
+        "target_id": "mission-12",
+        "mission_name": "Task 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-12",
+      "message": "Route editing completed",
+      "source": "P52-QA-Map"
+    },
+    {
+      "sequence": 31,
+      "timestamp": 1790426711.3586524,
+      "event_type": "PLAN_VALIDATED",
+      "params": {
+        "target_id": "plan-11",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Configuration checked",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 32,
+      "timestamp": 1790426711.3586571,
+      "event_type": "PLAN_REVIEW_READY",
+      "params": {
+        "target_id": "plan-11",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Pre-deployment check ready",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 33,
+      "timestamp": 1790426711.36463,
+      "event_type": "PLAN_REVIEWED",
+      "params": {
+        "target_id": "plan-11",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Current configuration reviewed",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 34,
+      "timestamp": 1790426711.3713584,
+      "event_type": "DEPLOYMENT_CREATED",
+      "params": {
+        "target_id": "plan-11",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Deployment snapshot created",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 35,
+      "timestamp": 1790426711.371362,
+      "event_type": "PLAN_DEPLOYED",
+      "params": {
+        "target_id": "plan-11",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-11",
+      "message": "Deployed. Execution has not started.",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 36,
+      "timestamp": 1790426711.3788023,
+      "event_type": "EXECUTION_CREATED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "EXECUTION_CREATED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "CREATED",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 37,
+      "timestamp": 1790426711.3980317,
+      "event_type": "PREFLIGHT_STARTED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "PREFLIGHT_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 38,
+      "timestamp": 1790426711.5071447,
+      "event_type": "PREFLIGHT_PASSED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "PREFLIGHT_PASSED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 39,
+      "timestamp": 1790426711.5071528,
+      "event_type": "MISSION_STARTING",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "MISSION_STARTING",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "STARTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 40,
+      "timestamp": 1790426711.6161306,
+      "event_type": "MISSION_STARTED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "MISSION_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 41,
+      "timestamp": 1790426711.7257109,
+      "event_type": "WAYPOINT_REACHED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "WAYPOINT_REACHED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 42,
+      "timestamp": 1790426712.263013,
+      "event_type": "MISSION_PAUSED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "MISSION_PAUSED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PAUSED",
+        "position": {
+          "latitude": 39.98073119025988,
+          "longitude": 116.3470611902599,
+          "altitude": 30
+        },
+        "progress": 0.10396760860566646,
+        "current_waypoint": 2
+      }
+    },
+    {
+      "sequence": 43,
+      "timestamp": 1790426712.979524,
+      "event_type": "MISSION_RESUMED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "MISSION_RESUMED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.98073119025988,
+          "longitude": 116.3470611902599,
+          "altitude": 30
+        },
+        "progress": 0.10396760860566646,
+        "current_waypoint": 2
+      }
+    },
+    {
+      "sequence": 44,
+      "timestamp": 1790426713.4130964,
+      "event_type": "PLAN_COPIED",
+      "params": {
+        "target_id": "plan-18",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-18",
+      "message": "Plan copied as draft",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 45,
+      "timestamp": 1790426713.4131017,
+      "event_type": "PLAN_VERSION_CREATED",
+      "params": {
+        "target_id": "plan-18",
+        "plan_name": "P5.2 protocol only"
+      },
+      "category": "PLAN",
+      "target_id": "plan-18",
+      "message": "New plan version created",
+      "source": "P52-QA-Command"
+    },
+    {
+      "sequence": 46,
+      "timestamp": 1790426713.4817212,
+      "event_type": "MISSION_RETURNING",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "MISSION_RETURNING",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "RETURNING",
+        "position": {
+          "latitude": 39.980762393360244,
+          "longitude": 116.34709239336024,
+          "altitude": 30
+        },
+        "progress": 0.20797800125083415,
+        "current_waypoint": 2
+      }
+    },
+    {
+      "sequence": 47,
+      "timestamp": 1790426714.6685195,
+      "event_type": "MISSION_COMPLETED",
+      "params": {
+        "target_id": "execution-17",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-17",
+      "message": "MISSION_COMPLETED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "COMPLETED",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0.20797800125083415,
+        "current_waypoint": 2
+      }
+    },
+    {
+      "sequence": 48,
+      "timestamp": 1790426714.6825514,
+      "event_type": "EXECUTION_CREATED",
+      "params": {
+        "target_id": "execution-22",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-22",
+      "message": "EXECUTION_CREATED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "CREATED",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 49,
+      "timestamp": 1790426714.7768931,
+      "event_type": "PREFLIGHT_STARTED",
+      "params": {
+        "target_id": "execution-22",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-22",
+      "message": "PREFLIGHT_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 50,
+      "timestamp": 1790426714.8846812,
+      "event_type": "PREFLIGHT_PASSED",
+      "params": {
+        "target_id": "execution-22",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-22",
+      "message": "PREFLIGHT_PASSED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 51,
+      "timestamp": 1790426714.884689,
+      "event_type": "MISSION_STARTING",
+      "params": {
+        "target_id": "execution-22",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-22",
+      "message": "MISSION_STARTING",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "STARTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 52,
+      "timestamp": 1790426714.9935224,
+      "event_type": "MISSION_STARTED",
+      "params": {
+        "target_id": "execution-22",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-22",
+      "message": "MISSION_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 53,
+      "timestamp": 1790426715.0043936,
+      "event_type": "MISSION_ABORTED",
+      "params": {
+        "target_id": "execution-22",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-22",
+      "message": "MISSION_ABORTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "ABORTED",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 54,
+      "timestamp": 1790426715.3247037,
+      "event_type": "EXECUTION_CREATED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "EXECUTION_CREATED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "CREATED",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 55,
+      "timestamp": 1790426715.429622,
+      "event_type": "PREFLIGHT_STARTED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "PREFLIGHT_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 56,
+      "timestamp": 1790426715.5396707,
+      "event_type": "PREFLIGHT_PASSED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "PREFLIGHT_PASSED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 57,
+      "timestamp": 1790426715.539678,
+      "event_type": "MISSION_STARTING",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "MISSION_STARTING",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "STARTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 58,
+      "timestamp": 1790426715.6494398,
+      "event_type": "MISSION_STARTED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "MISSION_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 59,
+      "timestamp": 1790426715.7600598,
+      "event_type": "WAYPOINT_REACHED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "WAYPOINT_REACHED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 60,
+      "timestamp": 1790426717.506215,
+      "event_type": "WAYPOINT_REACHED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "WAYPOINT_REACHED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9808,
+          "longitude": 116.34713,
+          "altitude": 30
+        },
+        "progress": 0.3333335138151082,
+        "current_waypoint": 2
+      }
+    },
+    {
+      "sequence": 61,
+      "timestamp": 1790426719.245564,
+      "event_type": "WAYPOINT_REACHED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "WAYPOINT_REACHED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.9809,
+          "longitude": 116.34723,
+          "altitude": 30
+        },
+        "progress": 0.6666668471268712,
+        "current_waypoint": 3
+      }
+    },
+    {
+      "sequence": 62,
+      "timestamp": 1790426720.9971275,
+      "event_type": "WAYPOINT_REACHED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "WAYPOINT_REACHED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0.999999,
+        "current_waypoint": 4
+      }
+    },
+    {
+      "sequence": 63,
+      "timestamp": 1790426720.9971368,
+      "event_type": "MISSION_COMPLETED",
+      "params": {
+        "target_id": "execution-24",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-24",
+      "message": "MISSION_COMPLETED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "COMPLETED",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 1,
+        "current_waypoint": 4
+      }
+    },
+    {
+      "sequence": 64,
+      "timestamp": 1790426721.0115,
+      "event_type": "EXECUTION_CREATED",
+      "params": {
+        "target_id": "execution-26",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-26",
+      "message": "EXECUTION_CREATED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "CREATED",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 65,
+      "timestamp": 1790426721.1064403,
+      "event_type": "PREFLIGHT_STARTED",
+      "params": {
+        "target_id": "execution-26",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-26",
+      "message": "PREFLIGHT_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 66,
+      "timestamp": 1790426721.2146769,
+      "event_type": "PREFLIGHT_PASSED",
+      "params": {
+        "target_id": "execution-26",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-26",
+      "message": "PREFLIGHT_PASSED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PREFLIGHT",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 67,
+      "timestamp": 1790426721.214686,
+      "event_type": "MISSION_STARTING",
+      "params": {
+        "target_id": "execution-26",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-26",
+      "message": "MISSION_STARTING",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "STARTING",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 68,
+      "timestamp": 1790426721.3236697,
+      "event_type": "MISSION_STARTED",
+      "params": {
+        "target_id": "execution-26",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-26",
+      "message": "MISSION_STARTED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "EXECUTING",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    },
+    {
+      "sequence": 69,
+      "timestamp": 1790426721.3310523,
+      "event_type": "MISSION_PAUSED",
+      "params": {
+        "target_id": "execution-26",
+        "uav_id": "UAV-01",
+        "reason": ""
+      },
+      "category": "MISSION",
+      "target_id": "execution-26",
+      "message": "MISSION_PAUSED",
+      "source": "Mission Controller",
+      "execution_snapshot": {
+        "state": "PAUSED",
+        "position": {
+          "latitude": 39.981,
+          "longitude": 116.34733,
+          "altitude": 30
+        },
+        "progress": 0,
+        "current_waypoint": 1
+      }
+    }
+  ],
+  "deployments": {
+    "deployment-7": {
+      "id": "deployment-7",
+      "plan_id": "plan-1",
+      "content_revision": 10,
+      "deployed_at": 1790426710.9191484,
+      "deployed_by": "P4-QA-Command",
+      "reviewed_by": "P4-QA-Command",
+      "reviewed_at": 1790426688.5786335,
+      "snapshot": {
+        "plan": {
+          "id": "plan-1",
+          "name": "Revised 原名",
+          "description": "Changed after review",
+          "status": "DEPLOYED",
+          "content_revision": 10,
+          "review": {
+            "content_revision": 10,
+            "reviewed_at": 1790426688.5786335,
+            "reviewed_by": "P4-QA-Command"
+          },
+          "version": 14,
+          "created_at": 1790426688.2682045,
+          "updated_at": 1790426688.5786414,
+          "mission_ids": [
+            "mission-2"
+          ],
+          "validation": {
+            "ready": true,
+            "issues": [],
+            "mission_count": 1,
+            "assigned_count": 1,
+            "routes_ready": 1,
+            "validated_content_revision": 10
+          },
+          "deployment_id": "deployment-7"
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Retained original input",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-5",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-01"
+            ],
+            "formation": "Line",
+            "spacing_m": 3
+          }
+        },
+        "paths": {
+          "route-5": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.98,
+                "longitude": 116.34,
+                "altitude": 60,
+                "segmentSpeed": 0,
+                "waitTime": 2,
+                "location": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 60
+                }
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.980999999999995,
+                "longitude": 116.341,
+                "altitude": 60,
+                "segmentSpeed": 5,
+                "waitTime": 2,
+                "location": {
+                  "x": 100,
+                  "y": 0,
+                  "z": 60
+                }
+              },
+              {
+                "sequence": 3,
+                "latitude": 39.982,
+                "longitude": 116.342,
+                "altitude": 60,
+                "segmentSpeed": 5,
+                "waitTime": 2,
+                "location": {
+                  "x": 200,
+                  "y": 0,
+                  "z": 60
+                }
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-5",
+            "revision": 1
+          }
+        }
+      }
+    },
+    "deployment-15": {
+      "id": "deployment-15",
+      "plan_id": "plan-11",
+      "content_revision": 3,
+      "deployed_at": 1790426711.3713467,
+      "deployed_by": "P52-QA-Command",
+      "reviewed_by": "P52-QA-Command",
+      "reviewed_at": 1790426711.3646274,
+      "snapshot": {
+        "plan": {
+          "id": "plan-11",
+          "name": "P5.2 protocol only",
+          "description": "",
+          "status": "DEPLOYED",
+          "content_revision": 3,
+          "review": {
+            "content_revision": 3,
+            "reviewed_at": 1790426711.3646274,
+            "reviewed_by": "P52-QA-Command"
+          },
+          "version": 5,
+          "created_at": 1790426711.3234599,
+          "updated_at": 1790426711.364637,
+          "mission_ids": [
+            "mission-12"
+          ],
+          "workflow_step": "PreDeployReview",
+          "workflow_mission_id": "mission-12",
+          "validation": {
+            "ready": true,
+            "issues": [],
+            "mission_count": 1,
+            "assigned_count": 1,
+            "routes_ready": 1,
+            "validated_content_revision": 3
+          },
+          "deployment_id": "deployment-15"
+        },
+        "missions": {
+          "mission-12": {
+            "id": "mission-12",
+            "plan_id": "plan-11",
+            "name": "Task 01",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-14",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-01"
+            ],
+            "formation": "Line",
+            "spacing_m": 3
+          }
+        },
+        "paths": {
+          "route-14": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30,
+                "segmentSpeed": 8,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9808,
+                "longitude": 116.34713,
+                "altitude": 30,
+                "segmentSpeed": 8,
+                "waitTime": 0
+              },
+              {
+                "sequence": 3,
+                "latitude": 39.9809,
+                "longitude": 116.34723,
+                "altitude": 30,
+                "segmentSpeed": 8,
+                "waitTime": 0
+              },
+              {
+                "sequence": 4,
+                "latitude": 39.981,
+                "longitude": 116.34733,
+                "altitude": 30,
+                "segmentSpeed": 8,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-14",
+            "revision": 1
+          }
+        }
+      }
+    }
+  },
+  "edit_sessions": {},
+  "executions": {
+    "execution-17": {
+      "execution_id": "execution-17",
+      "deployment_id": "deployment-15",
+      "plan_id": "plan-11",
+      "mission_id": "mission-12",
+      "route_id": "route-14",
+      "route_revision": 1,
+      "route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "plan_name": "P5.2 protocol only",
+      "mission_name": "Task 01",
+      "uav_id": "UAV-01",
+      "state": "COMPLETED",
+      "control_version": 7,
+      "current_waypoint": 2,
+      "completed_waypoints": 1,
+      "total_waypoints": 4,
+      "segment_progress": 0.6239336659265446,
+      "overall_progress": 0.20797800125083415,
+      "progress": 0.20797800125083415,
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "segment_start": {
+        "latitude": 39.980762393360244,
+        "longitude": 116.34709239336024,
+        "altitude": 30
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "default_speed_mps": 8,
+      "distance_m": 42.02576763894461,
+      "estimated_seconds": 5.253220954868076,
+      "distance_travelled_m": 8.740435154579687,
+      "wait_remaining": 0,
+      "elapsed_seconds": 2.2891165,
+      "created_at": 1790426711.3787887,
+      "started_at": 1790426711.6161268,
+      "updated_at": 1790426714.6685176,
+      "completed_at": 1790426714.668517,
+      "completion_reason": "RETURNED_HOME",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-16",
+      "plan_route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "formation": "Line",
+      "safety_separation_m": 1.5,
+      "phase": "RETURNING"
+    },
+    "execution-22": {
+      "execution_id": "execution-22",
+      "deployment_id": "deployment-15",
+      "plan_id": "plan-11",
+      "mission_id": "mission-12",
+      "route_id": "route-14",
+      "route_revision": 1,
+      "route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "plan_name": "P5.2 protocol only",
+      "mission_name": "Task 01",
+      "uav_id": "UAV-01",
+      "state": "ABORTED",
+      "control_version": 4,
+      "current_waypoint": 1,
+      "completed_waypoints": 0,
+      "total_waypoints": 4,
+      "segment_progress": 0,
+      "overall_progress": 0,
+      "progress": 0,
+      "position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "segment_start": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "default_speed_mps": 8,
+      "distance_m": 42.02576763894461,
+      "estimated_seconds": 5.253220954868076,
+      "distance_travelled_m": 0,
+      "wait_remaining": 0,
+      "elapsed_seconds": 0,
+      "created_at": 1790426714.6825383,
+      "started_at": 1790426714.993518,
+      "updated_at": 1790426715.004392,
+      "completed_at": 1790426715.0043912,
+      "completion_reason": "",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-21",
+      "plan_route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "formation": "Line",
+      "safety_separation_m": 1.5
+    },
+    "execution-24": {
+      "execution_id": "execution-24",
+      "deployment_id": "deployment-15",
+      "plan_id": "plan-11",
+      "mission_id": "mission-12",
+      "route_id": "route-14",
+      "route_revision": 1,
+      "route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "plan_name": "P5.2 protocol only",
+      "mission_name": "Task 01",
+      "uav_id": "UAV-01",
+      "state": "COMPLETED",
+      "control_version": 4,
+      "current_waypoint": 4,
+      "completed_waypoints": 4,
+      "total_waypoints": 4,
+      "segment_progress": 1,
+      "overall_progress": 1,
+      "progress": 1,
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34733,
+        "altitude": 30
+      },
+      "segment_start": {
+        "latitude": 39.981,
+        "longitude": 116.34733,
+        "altitude": 30
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "default_speed_mps": 8,
+      "distance_m": 42.02576763894461,
+      "estimated_seconds": 5.253220954868076,
+      "distance_travelled_m": 42.0257676389435,
+      "wait_remaining": 0,
+      "elapsed_seconds": 5.3476700999999975,
+      "created_at": 1790426715.3246906,
+      "started_at": 1790426715.649436,
+      "updated_at": 1790426720.997136,
+      "completed_at": 1790426720.9971356,
+      "completion_reason": "ROUTE_FINISHED",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-23",
+      "plan_route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "formation": "Line",
+      "safety_separation_m": 1.5,
+      "phase": "TRAVEL"
+    },
+    "execution-26": {
+      "execution_id": "execution-26",
+      "deployment_id": "deployment-15",
+      "plan_id": "plan-11",
+      "mission_id": "mission-12",
+      "route_id": "route-14",
+      "route_revision": 1,
+      "route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "plan_name": "P5.2 protocol only",
+      "mission_name": "Task 01",
+      "uav_id": "UAV-01",
+      "state": "PAUSED",
+      "control_version": 4,
+      "current_waypoint": 1,
+      "completed_waypoints": 0,
+      "total_waypoints": 4,
+      "segment_progress": 0,
+      "overall_progress": 0,
+      "progress": 0,
+      "position": {
+        "latitude": 39.981,
+        "longitude": 116.34733,
+        "altitude": 30
+      },
+      "segment_start": {
+        "latitude": 39.981,
+        "longitude": 116.34733,
+        "altitude": 30
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30
+      },
+      "default_speed_mps": 8,
+      "distance_m": 84.051535277898,
+      "estimated_seconds": 10.50644190973725,
+      "distance_travelled_m": 0,
+      "wait_remaining": 0,
+      "elapsed_seconds": 0,
+      "created_at": 1790426721.0114872,
+      "started_at": 1790426721.323666,
+      "updated_at": 1790426721.3310506,
+      "completed_at": null,
+      "completion_reason": "",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-25",
+      "plan_route_snapshot": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9808,
+            "longitude": 116.34713,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 3,
+            "latitude": 39.9809,
+            "longitude": 116.34723,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          },
+          {
+            "sequence": 4,
+            "latitude": 39.981,
+            "longitude": 116.34733,
+            "altitude": 30,
+            "segmentSpeed": 8,
+            "waitTime": 0
+          }
+        ],
+        "closedRoute": false,
+        "route_id": "route-14",
+        "revision": 1
+      },
+      "formation": "Line",
+      "safety_separation_m": 1.5,
+      "resume_state": "EXECUTING"
+    }
+  },
+  "execution_version": 91,
+  "execution_requests": {
+    "7f4ef35b-3a2b-4324-9140-dd8d3afd9741": {
+      "request": {
+        "request_id": "7f4ef35b-3a2b-4324-9140-dd8d3afd9741",
+        "action": "execution_start",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12"
+      },
+      "execution_id": "execution-17"
+    },
+    "8a70f097-4b44-4dbf-8bef-e1d74aed4e10": {
+      "request": {
+        "execution_id": "execution-17",
+        "action": "execution_pause",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12",
+        "control_version": 3,
+        "request_id": "8a70f097-4b44-4dbf-8bef-e1d74aed4e10"
+      },
+      "execution_id": "execution-17"
+    },
+    "6b34baf5-7bb2-4a02-8257-4aef14b66878": {
+      "request": {
+        "execution_id": "execution-17",
+        "action": "execution_resume",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12",
+        "control_version": 4,
+        "request_id": "6b34baf5-7bb2-4a02-8257-4aef14b66878"
+      },
+      "execution_id": "execution-17"
+    },
+    "abfb9618-b6a5-4866-a1ea-9a8d0e4165ab": {
+      "request": {
+        "execution_id": "execution-17",
+        "action": "execution_return",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12",
+        "control_version": 5,
+        "request_id": "abfb9618-b6a5-4866-a1ea-9a8d0e4165ab"
+      },
+      "execution_id": "execution-17"
+    },
+    "7cd87bea-462b-4f19-b3ae-a3dc7557d789": {
+      "request": {
+        "request_id": "7cd87bea-462b-4f19-b3ae-a3dc7557d789",
+        "action": "execution_start",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12"
+      },
+      "execution_id": "execution-22"
+    },
+    "834cd2ce-2673-493c-aa75-e7b2686856f9": {
+      "request": {
+        "execution_id": "execution-22",
+        "action": "execution_abort",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12",
+        "control_version": 3,
+        "request_id": "834cd2ce-2673-493c-aa75-e7b2686856f9"
+      },
+      "execution_id": "execution-22"
+    },
+    "316734c2-873e-42fb-ba30-c0b8eb5be549": {
+      "request": {
+        "request_id": "316734c2-873e-42fb-ba30-c0b8eb5be549",
+        "action": "execution_start",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12"
+      },
+      "execution_id": "execution-24"
+    },
+    "ffc9b102-0916-455c-a39b-1776f48b32ea": {
+      "request": {
+        "request_id": "ffc9b102-0916-455c-a39b-1776f48b32ea",
+        "action": "execution_start",
+        "plan_id": "plan-11",
+        "mission_id": "mission-12"
+      },
+      "execution_id": "execution-26"
+    },
+    "18079689-8382-4ef3-a4cc-96e2bd8556e3": {
+      "request": {
+        "request_id": "18079689-8382-4ef3-a4cc-96e2bd8556e3",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    }
+  },
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8,
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34706,
+          "altitude": 30
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34709,
+          "altitude": 30
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34712,
+          "altitude": 30
+        }
+      }
+    },
+    "safety_separation_m": 1.5
+  },
+  "execution_adapter": "Mock"
+}

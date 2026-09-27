@@ -64,6 +64,7 @@ private:
     void ConfirmDeployment();
     UPROPERTY() TObjectPtr<class UVerticalBox> ExecutionPage;
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionSummary;
+    UPROPERTY() TObjectPtr<class UTextBlock> ExecutionMode;
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionPrompt;
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionHistory;
     UPROPERTY() TObjectPtr<class UProgressBar> ExecutionProgress;
@@ -76,6 +77,13 @@ private:
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
     UPROPERTY() TObjectPtr<UComboBoxString> Plans;
     UPROPERTY() TObjectPtr<UComboBoxString> UAVs;
+    UPROPERTY() TObjectPtr<class UVerticalBox> AssignmentList;
+    UPROPERTY() TMap<FString,TObjectPtr<class UCheckBox>> AssignmentChecks;
+    UPROPERTY() TObjectPtr<class UCheckBox> ScheduleEnabled;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> ScheduleInput;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> SpacingInput;
+    FString AssignmentSelection;
+
     UPROPERTY() TObjectPtr<class UEditableTextBox> PlanName;
     UPROPERTY() TObjectPtr<class UEditableTextBox> Description;
     UPROPERTY() TObjectPtr<class UEditableTextBox> MissionName;
@@ -86,6 +94,7 @@ private:
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Actions;
     TArray<FString> PlanIds,PlanLabels,UavIds;
     FString PlanId,MissionId,LoadedSelection,ErrorCode;
+    FText ExecutionErrorDetails;
     bool bRefreshing=false,bPending=false,bReview=false,bConfirm=false;
     double ConfirmRevision=-1;
     UFUNCTION() void PlanSelected(FString Item,ESelectInfo::Type Type);

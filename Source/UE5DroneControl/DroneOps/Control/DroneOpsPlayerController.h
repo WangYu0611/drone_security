@@ -48,6 +48,8 @@ class UE5DRONECONTROL_API ADroneOpsPlayerController : public APlayerController
 {
 	GENERATED_BODY()
     friend class FP4MapDraft;
+    friend class FMapPointerInput;
+    bool bNativeMapWaypointDrag = false;
 
 public:
     void UndoMissionRouteEdit() { UndoLastEditWaypoint(); }
@@ -147,8 +149,13 @@ TArray<int32> GetSelectedDroneIdsForDispatch() const;
 
 	/** 把当前临时路径打包成 DroneId -> FDronePathSaveData（世界坐标）。 */
 	TMap<int32, FDronePathSaveData> BuildEditingPathsData() const;
+    bool GetSelectedMissionWaypoint(FDroneWaypointSaveData& Out, int32& Index) const;
+    bool SetSelectedMissionWaypointParameters(double Altitude, double HoverSeconds, bool AGL, double SegmentSpeed = -1);
+    bool TryGetMissionTerrainHeight(double Latitude,double Longitude,double& Height) const;
+    bool RefreshMissionTerrainMetadata();
+
     void LoadMissionPath(const FDronePathSaveData& Data, bool Editable);
-    void SetMissionPathEditing(bool Enabled) { bPathEditMode = Enabled && bMissionPathMode; }
+    void SetMissionPathEditing(bool Enabled, bool KeepCameraLocked=false);
     bool IsMissionPathMode() const { return bMissionPathMode; }
     bool bMissionPathMode = false;
 
@@ -498,6 +505,11 @@ bool ValidateDispatchDrone(int32 DroneId, FString& OutError) const;
 
 	// ---- 路径编辑模式内部实现（移植自 ADroneRuntimeInteractionPlayerController）----
 	void HandleEditModePressed();
+    bool TryBeginMapWaypointBodyDrag(const FVector2D& Mouse);
+    bool BeginMapGroundClick(const FVector2D& Mouse);
+    void UpdateMapGroundClick(const FVector2D& Mouse, bool OverMap);
+    void CompleteMapGroundClick(const FVector2D& Mouse, bool OverMap);
+    void UpdateMapWaypointBodyDrag(const FVector2D& Mouse);
 	void HandleEditModeReleased();
 	void UpdateDraggedEditWaypoint();
 	float ResolveEditAxisDragDelta();
@@ -669,6 +681,12 @@ bool ValidateDispatchDrone(int32 DroneId, FString& OutError) const;
 	TArray<TObjectPtr<ADroneWaypointActor>> EditSelectedWaypoints;
 
 	EGizmoAxis EditActiveAxis = EGizmoAxis::None;
+    bool bPendingWaypointAdd=false, bPlanarWaypointDrag=false;
+    FVector PendingWaypointLocation=FVector::ZeroVector, PlanarCursor=FVector::ZeroVector;
+    FVector2D PendingWaypointScreen=FVector2D::ZeroVector;
+    double PlanarHeight=0;
+    void CancelMissionGesture();
+    void FocusMapDoubleClick();
 	bool bEditDraggingWaypoint = false;
 	FVector2D EditLastMouseScreenPos = FVector2D::ZeroVector;
 

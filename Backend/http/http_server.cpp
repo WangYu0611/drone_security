@@ -2,6 +2,7 @@
 #include "conversion/assignment_solver.h"
 #include "conversion/coordinate_converter.h"
 #include "conversion/quaternion_utils.h"
+#include "execution/drone_manager_mission_adapter.h"
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -118,6 +119,15 @@ HttpServer::HttpServer(const AppConfig& config,
     if(std::filesystem::exists(mockPath)) {
         std::ifstream input(mockPath);std::string text((std::istreambuf_iterator<char>(input)),{});
         security_plans_.configureMock(boost::json::parse(text).as_object());
+    }
+    const auto realPath=std::filesystem::path(config.storage_path).parent_path()/"real_execution.json";
+    if(std::filesystem::exists(realPath)){
+        std::ifstream input(realPath);std::string text((std::istreambuf_iterator<char>(input)),{});
+        const auto real=boost::json::parse(text).as_object();
+        if(real.contains("enabled") && real.at("enabled").as_bool()){
+            if(std::filesystem::exists(mockPath))throw std::runtime_error("Choose exactly one execution adapter: remove the Mock configuration before enabling Real");
+            security_plans_.configureAdapter(real,security_mission::makeDroneManagerAdapter(drone_mgr_,real,[this]{return exec_engine_.IsRunning() || assembly_ctrl_.GetState()!=AssemblyState::Idle;}));
+        }
     }
     // 注册 DroneManager 回调 -> WS 推送
     drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel) {
@@ -329,6 +339,11 @@ void HttpServer::Run() {
 
 void HttpServer::Stop() {
     running_ = false;
+    if(security_plans_.usesRealAdapter()){
+        std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+        try{security_plans_.transact(boost::json::object{{"action","execution_shutdown"},{"request_id","real-shutdown-"+std::to_string(current_unix_seconds())}}, {}, "Backend Shutdown",[](const boost::json::object&){});}
+        catch(const std::exception& e){spdlog::error("Real mission shutdown hold failed: {}",e.what());}
+    }
     // 等待连接处理线程退出（HTTP 单次请求很快退出，WS 会话在 running_=false 后关闭）
     std::vector<std::thread> threads;
     {
@@ -424,6 +439,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
             }
         }
         if(method=="POST" && path=="/api/mock-executions/pause-all") {
+            if(security_plans_.usesRealAdapter())throw PlanError("ADAPTER_MODE_MISMATCH","Mock shutdown endpoint cannot control real aircraft");
             auto r=require_object(body,"body");if(!r.contains("simulation") || r.at("simulation")!=true)throw ApiError(400,"Simulation confirmation required");
             r["action"]="execution_shutdown";std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
             return MakeResponse(req,200,json_stringify(security_plans_.transact(r,{},"Launcher",[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));})));
@@ -513,6 +529,8 @@ http::response<http::string_body> HttpServer::HandleHttp(
             return MakeResponse(req, 200, json_stringify(DebugArrayState(id)));
 
         throw ApiError(404, "not found");
+    } catch (const PlanError& e) {
+        return MakeResponse(req,409,json_stringify(boost::json::object{{"code",e.code},{"params",e.params},{"message",e.what()}}));
     } catch (const ApiError& e) {
         return MakeResponse(req, e.status_code, json_error(e.what()));
     } catch (const std::exception& e) {
@@ -686,6 +704,7 @@ boost::json::value HttpServer::ApiRegisterDrone(const boost::json::object& body)
 }
 
 boost::json::value HttpServer::ApiUpdateDrone(const std::string& id, const boost::json::object& body) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Real adapter requires a stable calibrated aircraft registry");
     std::lock_guard<std::mutex> lock(records_mutex_);
     const int numeric_id = drone_id_from_string(id);
     const std::string canonical_id = drone_id_string(numeric_id);
@@ -703,6 +722,7 @@ boost::json::value HttpServer::ApiUpdateDrone(const std::string& id, const boost
 }
 
 boost::json::value HttpServer::ApiDeleteDrone(const std::string& id) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Real adapter requires a stable calibrated aircraft registry");
     std::lock_guard<std::mutex> lock(records_mutex_);
     const int numeric_id = drone_id_from_string(id);
     const std::string canonical_id = drone_id_string(numeric_id);
@@ -733,6 +753,7 @@ boost::json::value HttpServer::ApiGetAnchor(const std::string& id) {
 }
 
 boost::json::value HttpServer::ApiCreateArray(const boost::json::object& body) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     AssemblyConfig cfg;
     cfg.array_id = body.contains("array_id") ? std::string(body.at("array_id").as_string()) : "a1";
     cfg.mode     = normalize_command_mode(get_string(body, "mode", "scout"), "scout");
@@ -879,6 +900,7 @@ void HttpServer::AutoAssignDrones(AssemblyConfig& cfg) {
 }
 
 boost::json::value HttpServer::ApiStopArray(const std::string& id) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     const AssemblyConfig config = assembly_ctrl_.GetConfig();
     exec_engine_.StopAll();
     assembly_ctrl_.Stop();
@@ -1009,6 +1031,7 @@ boost::json::value HttpServer::DebugHeartbeat(const std::string& id) {
 }
 
 boost::json::value HttpServer::DebugInjectTelemetry(const std::string& id, const boost::json::object& body) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
     if (!drone_mgr_.HasDrone(drone_id)) throw ApiError(404, "drone not found: " + id);
     TelemetryData tel{};
@@ -1062,6 +1085,7 @@ boost::json::value HttpServer::DebugInjectTelemetry(const std::string& id, const
 }
 
 boost::json::value HttpServer::DebugMove(const std::string& id, const boost::json::object& body) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
     double x = get_number(body, "x", 0.0);
     double y = get_number(body, "y", 0.0);
@@ -1073,6 +1097,7 @@ boost::json::value HttpServer::DebugMove(const std::string& id, const boost::jso
 }
 
 boost::json::value HttpServer::DebugPause(const std::string& id, bool pause) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
     bool ok = pause ? drone_mgr_.ProcessPauseCommand(drone_id)
                     : drone_mgr_.ProcessResumeCommand(drone_id);
@@ -1085,6 +1110,7 @@ boost::json::value HttpServer::DebugSingleArray(const std::string& id, const boo
 }
 
 boost::json::value HttpServer::DebugTarget(const std::string& id, const boost::json::object& body) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
     if (!drone_mgr_.HasDrone(drone_id)) throw ApiError(404, "drone not found: " + id);
     double x = get_number(body, "x", 0.0);
@@ -1095,6 +1121,7 @@ boost::json::value HttpServer::DebugTarget(const std::string& id, const boost::j
 }
 
 boost::json::value HttpServer::DebugBatchArray(const boost::json::array& body) {
+    if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     AssemblyConfig cfg;
     cfg.array_id = "debug_batch";
     cfg.mode = "scout";
@@ -1176,6 +1203,9 @@ void HttpServer::HandleWsCommand(const boost::json::object& msg,
                                   const std::shared_ptr<WsSession>& session)
 {
     if (HandleContextMessage(msg, session)) return;
+    if(security_plans_.usesRealAdapter()){
+        ws_manager_.send(session,json_stringify(boost::json::object{{"type","error"},{"code","MISSION_CONTROLLER_OWNS_CONTROL"},{"message","Use Security Plan execution controls while Real mission adapter is enabled"}}));return;
+    }
     if (msg.contains("mode")) {
         const std::string mode = normalize_command_mode(value_to_string(msg.at("mode")), "move");
         if (!is_target_command_mode(mode)) {
@@ -1571,7 +1601,7 @@ boost::json::value HttpServer::UpdateContext(const boost::json::object& body) {
     if (!item || !item->is_object()) throw ApiError(400, "patch must be object");
     const auto& patch = item->as_object();
     if (role != "Command") for (const auto& field : patch)
-        if (field.key() != "active_uav_id") throw ApiError(403, "only Command may update this field");
+        if (field.key() != "active_uav_id" && field.key() != "selected_uav_ids") throw ApiError(403, "only Command may update this field");
     try {
         return operational_context_.update(patch, source, [this](const boost::json::object& event) {
             spdlog::debug("[P1][Backend] Context v{}", event.at("version").to_number<int64_t>());
@@ -1649,7 +1679,7 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     }
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
-    const std::set<std::string> commandActions{"execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
+    const std::set<std::string> commandActions{"execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
     const std::set<std::string> mapActions{"begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     auto select=[&](const std::string& plan,const std::string& mission) {

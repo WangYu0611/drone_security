@@ -634,3 +634,12 @@ void DroneManager::SetDroneTaskState(int drone_id, const std::string& state,
         task_state_cb_(drone_id, state, detail, current_wp, total_wp);
     }
 }
+
+bool DroneManager::TryGetFreshMissionTelemetry(int drone_id, TelemetryData& out) const
+{
+    std::lock_guard<std::mutex> lock(drones_mutex_);
+    const auto* context=GetContextUnsafe(drone_id);
+    if(!context || !has_fresh_valid_local_position(*context))return false;
+    out=context->latest_telemetry;
+    return true;
+}

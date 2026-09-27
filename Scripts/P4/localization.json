@@ -1598,5 +1598,313 @@
   "Events.ROUTE_CLOSURE_REACHED": [
     "Closed route completed once",
     "闭环航线单次执行完成"
+  ],
+  "Mission3D.Altitude": [
+    "Altitude (m)",
+    "高度（米）"
+  ],
+  "Mission3D.Hover": [
+    "Hover time (seconds)",
+    "悬停时间（秒）"
+  ],
+  "Mission3D.AGL": [
+    "AGL: above ground (unchecked: ellipsoid)",
+    "AGL 相对地面高度（不勾选：椭球高）"
+  ],
+  "Mission3D.Apply": [
+    "APPLY WAYPOINT PARAMETERS",
+    "应用航点参数"
+  ],
+  "Mission3D.Selected": [
+    "Selected Waypoint: P{0}",
+    "当前选中航点：P{0}"
+  ],
+  "Mission3D.SelectPoint": [
+    "Select a waypoint to edit height and hover time",
+    "选择航点以编辑高度和悬停时间"
+  ],
+  "Formation.LineSpacing": [
+    "Line formation spacing (m)",
+    "横向编队间距（米）"
+  ],
+  "Formation.SaveAssignment": [
+    "SAVE ASSIGNED UAVS",
+    "保存无人机分配"
+  ],
+  "Schedule.Enable": [
+    "Scheduled start (unchecked: start now)",
+    "定时启动（不勾选：立即启动）"
+  ],
+  "Schedule.LocalTime": [
+    "Local start date/time: YYYY-MM-DDTHH:MM:SS",
+    "本地启动日期时间：YYYY-MM-DDTHH:MM:SS"
+  ],
+  "Schedule.StartNow": [
+    "START NOW",
+    "立即启动"
+  ],
+  "Schedule.Reschedule": [
+    "RESCHEDULE",
+    "修改启动时间"
+  ],
+  "Schedule.Cancel": [
+    "CANCEL SCHEDULE",
+    "取消定时任务"
+  ],
+  "Schedule.Countdown": [
+    "Scheduled mission starts in {0}",
+    "定时任务将在 {0} 后启动"
+  ],
+  "Execution.SCHEDULED": [
+    "SCHEDULED",
+    "等待定时启动"
+  ],
+  "Execution.CANCELLED": [
+    "CANCELLED",
+    "已取消"
+  ],
+  "Situation.Title": [
+    "2D SITUATION MAP",
+    "二维态势地图"
+  ],
+  "Situation.Follow": [
+    "TOGGLE FOLLOW SELECTED UAV",
+    "切换跟随选中无人机"
+  ],
+  "Errors.ALTITUDE_DATUM_UNRESOLVED": [
+    "Cannot resolve height. Select a waypoint, enter valid values and ensure terrain is loaded.",
+    "无法解析高度。请选择航点、输入有效数值并确保地形已加载。"
+  ],
+  "Errors.INVALID_ALTITUDE_REFERENCE": [
+    "Unknown altitude reference",
+    "未知高度基准"
+  ],
+  "Errors.INVALID_SEPARATION": [
+    "Spacing must meet the configured minimum separation.",
+    "间距必须满足配置的最小安全距离。"
+  ],
+  "Errors.TRAJECTORY_CONFLICT": [
+    "Trajectory conflict: aircraft cannot maintain the required separation.",
+    "航迹冲突：无人机无法保持所需安全间距。"
+  ],
+  "Errors.INVALID_SCHEDULE": [
+    "Enter a valid future local date and time.",
+    "请输入有效的未来本地日期与时间。"
+  ],
+  "Errors.FORMATION_UNSUPPORTED": [
+    "Only Line formation is currently available.",
+    "当前仅支持横向编队。"
+  ],
+  "Errors.TRAJECTORY_DOMAIN_UNSUPPORTED": [
+    "Formation requires a nonpolar area within 10 km.",
+    "编队需要处于 10 公里内的非极地区域。"
+  ],
+  "Mission3D.Marker": [
+    "P{0} | {1} m {2} | Hover {3} s",
+    "P{0} | {1} 米 {2} | 悬停 {3} 秒"
+  ],
+  "Group.Title": [
+    "GROUP CONTROL",
+    "无人机组控制"
+  ],
+  "Group.Summary": [
+    "Selected UAVs: {0} | Preserve relative offsets | Minimum separation: {1} m",
+    "已选无人机：{0} | 保持相对队形 | 最小间距：{1} 米"
+  ],
+  "Group.Latitude": [
+    "Group anchor latitude (WGS84)",
+    "编组目标纬度（WGS84）"
+  ],
+  "Group.Longitude": [
+    "Group anchor longitude (WGS84)",
+    "编组目标经度（WGS84）"
+  ],
+  "Group.Altitude": [
+    "Group anchor ellipsoid altitude (m)",
+    "编组目标椭球高（米）"
+  ],
+  "Group.Area": [
+    "Available target area radius (m)",
+    "目标可用区域半径（米）"
+  ],
+  "Group.Move": [
+    "MOVE GROUP",
+    "编组移动"
+  ],
+  "Group.Accepted": [
+    "Group command accepted by Backend",
+    "后端已接受编组指令"
+  ],
+  "Group.Conflict": [
+    "{0} / {1}: predicted {2} m; required {3} m. Execution blocked.",
+    "{0} / {1}：预计间距 {2} 米，要求 {3} 米。已阻止执行。"
+  ],
+  "Schedule.Overview": [
+    "Scheduled: {0} | Starts in {1} | {2} UAV",
+    "定时任务：{0} | 距启动 {1} | {2} 架无人机"
+  ],
+  "Errors.TERRAIN_REQUIRED": [
+    "Terrain height is unavailable or the waypoint is below ground. Load terrain and retry.",
+    "地面高度尚不可用，或航点位于地面以下。请等待地形加载后重试。"
+  ],
+  "Events.SCHEDULE_STARTED": [
+    "{uav_id}: scheduled mission started",
+    "{uav_id}：定时任务已启动"
+  ],
+  "Events.SCHEDULE_CHANGED": [
+    "{uav_id}: start time updated",
+    "{uav_id}：启动时间已更新"
+  ],
+  "Events.SCHEDULE_DUE": [
+    "{uav_id}: immediate start requested",
+    "{uav_id}：已请求立即启动"
+  ],
+  "Events.MISSION_CANCELLED": [
+    "{uav_id}: scheduled mission cancelled",
+    "{uav_id}：定时任务已取消"
+  ],
+  "Events.SAFETY_CONFLICT": [
+    "{uav_id}: motion paused by safety separation check",
+    "{uav_id}：安全距离检查已暂停移动"
+  ],
+  "Execution.Real": [
+    "LIVE CONTROL · Real UAV",
+    "真实控制 · 无人机"
+  ],
+  "Execution.MonitorNeutral": [
+    "Execution Monitor",
+    "任务执行监控"
+  ],
+  "Execution.RealAvailable": [
+    "Real adapter configured; Backend checks live readiness",
+    "已配置真实接口；后端检查实时就绪状态"
+  ],
+  "Execution.RealCheck": [
+    "Real control requires fresh measured telemetry, calibrated coordinates and Armed/Offboard before movement. Start does not arm or take off.",
+    "真实控制要求新鲜实测遥测、已标定坐标及 Armed/Offboard 状态。开始任务不会自动解锁或起飞。"
+  ],
+  "Execution.Real.returnConfirm": [
+    "Confirm Return Home? Remaining waypoints will be skipped and the real UAV will be commanded to its calibrated Home.",
+    "确认返航？后续航点将跳过，真实无人机将收到前往已标定返航点的指令。"
+  ],
+  "Execution.Real.abortConfirm": [
+    "Confirm abort? The mission cannot resume. Backend requests a hold at the measured position and reports any rejection.",
+    "确认终止？该任务无法恢复。后端请求在实测位置保持，并报告任何拒绝结果。"
+  ],
+  "Errors.REAL_COMMAND_REJECTED": [
+    "Real UAV rejected the command. Verify Armed/Offboard and telemetry.",
+    "真实无人机拒绝指令，请检查 Armed/Offboard 与遥测。"
+  ],
+  "Errors.REAL_HOLD_REJECTED": [
+    "Hold was not confirmed. Check the aircraft and control link immediately.",
+    "保持位置请求未确认，请立即检查无人机和控制链路。"
+  ],
+  "Errors.REAL_TELEMETRY_UNAVAILABLE": [
+    "Fresh valid aircraft telemetry is unavailable.",
+    "缺少新鲜有效的无人机遥测。"
+  ],
+  "Errors.REAL_ANCHOR_CHANGED_RECALIBRATE": [
+    "The live coordinate anchor changed. Recalibrate before control.",
+    "实时坐标锚点已变化，控制前须重新标定。"
+  ],
+  "Errors.REAL_RESTART_REQUIRES_RESUME": [
+    "Real mission restored paused; verify the aircraft before resuming.",
+    "真实任务已按暂停状态恢复，继续前请核实无人机状态。"
+  ],
+  "Errors.ADAPTER_MODE_MISMATCH": [
+    "Stored execution belongs to a different adapter. Create a new execution.",
+    "已保存执行属于另一种适配器，请创建新的执行。"
+  ],
+  "Errors.REAL_HOVER_DRIFT": [
+    "Measured UAV position left the hover tolerance.",
+    "实测无人机位置超出悬停容差。"
+  ],
+  "Errors.GROUP_MEMBER_FAILED": [
+    "A group member failed; the entire mission group has failed and active members were asked to hold.",
+    "组内成员失败，整组任务已失败，并已请求活动成员保持位置。"
+  ],
+  "Errors.LEGACY_CONTROLLER_BUSY": [
+    "Another controller owns the aircraft.",
+    "另一控制器正在使用无人机。"
+  ],
+  "Errors.MISSION_CONTROLLER_OWNS_CONTROL": [
+    "Use the security mission controls in Real mode.",
+    "真实任务模式下请使用安保任务控制。"
+  ],
+  "Execution.RealEstimate": [
+    "Real execution estimates are calculated from live position by Backend at start.",
+    "真实任务距离与预计耗时由后端在开始时根据实测位置计算。"
+  ],
+  "Errors.REAL_UAV_UNAVAILABLE": [
+    "Real UAV or its calibrated frame is unavailable.",
+    "真实无人机或其标定坐标框架不可用。"
+  ],
+  "Errors.REAL_CONFIGURATION_INVALID": [
+    "Real adapter configuration is incomplete or invalid.",
+    "真实适配器配置缺失或无效。"
+  ],
+  "Errors.ADAPTER_POSITION_INVALID": [
+    "Adapter position is not a valid WGS84 coordinate.",
+    "适配器位置不是有效的 WGS84 坐标。"
+  ],
+  "Errors.ADAPTER_COMMAND_INVALID": [
+    "The motion target or speed is invalid.",
+    "运动目标或速度无效。"
+  ],
+  "Errors.REAL_FRAME_DOMAIN_UNSUPPORTED": [
+    "The real mission is outside the supported local coordinate area.",
+    "真实任务超出支持的局部坐标范围。"
+  ],
+  "Errors.REAL_NED_INVALID": [
+    "Measured NED position is invalid.",
+    "实测 NED 位置无效。"
+  ],
+  "Errors.REAL_ANCHOR_DATUM_UNRESOLVED": [
+    "Declare the real anchor altitude datum before execution.",
+    "执行前须明确真实锚点的高度基准。"
+  ],
+  "Errors.REAL_ANCHOR_INVALID": [
+    "The real coordinate calibration is invalid.",
+    "真实坐标标定无效。"
+  ],
+  "Inspector.Title": [
+    "Waypoint Inspector",
+    "航点属性"
+  ],
+  "Inspector.Help": [
+    "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update.",
+    "点击航点选择；点击地图新增航点。输入后按回车或离开字段即可更新。"
+  ],
+  "Inspector.Reference": [
+    "Altitude reference",
+    "高度基准"
+  ],
+  "Inspector.Speed": [
+    "Speed (m/s; 0 = default)",
+    "速度 (m/s；0 为默认)"
+  ],
+  "Inspector.Coordinates": [
+    "Longitude: {0}\nLatitude: {1}",
+    "经度：{0}\n纬度：{1}"
+  ],
+  "Errors.WAYPOINT_PARAMETERS_INVALID": [
+    "Enter finite values: hover >= 0; speed 0 to 15 m/s.",
+    "请输入有效数值：悬停时间 ≥ 0，速度 0 至 15 m/s。"
+  ],
+  "Map.ViewLocked": [
+    "ROUTE EDITING | MAP VIEW LOCKED",
+    "航线编辑中 | 地图视角已锁定"
+  ],
+  "Map.AdjustBeforeEdit": [
+    "Adjust the map view before editing.",
+    "请先调整地图范围，再开始航线编辑"
+  ],
+  "Map.FinishBeforeMode": [
+    "Finish route editing before switching map mode.",
+    "请先完成航线编辑后切换地图模式"
+  ],
+  "Map.InvalidPosition": [
+    "No valid map position",
+    "无法在该位置创建航点"
   ]
 }

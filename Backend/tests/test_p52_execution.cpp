@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "storage/security_plan_store.h"
+#include "conversion/mission_geodesy.h"
 using O=boost::json::object;using A=boost::json::array;
 namespace {
 struct P52Execution:testing::Test {
@@ -70,5 +71,132 @@ TEST_F(P53Geometry, TranslationPublisherFailureRollsBack){readyGeometry();const 
 TEST_F(P53Geometry, MoveLeaseCannotBeReusedForWaypointEdits){readyGeometry();const auto session=move();error({{"action","begin_route_edit"},{"content_revision",plan().at("content_revision")}},"EDIT_SESSION_CONFLICT");error({{"action","save_route"},{"edit_session_id",session},{"path",geometryRoute()}},"EDIT_SESSION_CONFLICT");error({{"action","mark_route_dirty"},{"edit_session_id",session}},"EDIT_SESSION_CONFLICT");}
 
 TEST_F(P53Geometry, CanonicalClosedRouteAliasAndConflict){begin();auto r=geometryRoute();r.erase("bClosedLoop");r["closedRoute"]=true;send({{"action","save_route"},{"edit_session_id",sid},{"path",r},{"keep_editing",true}});auto saved=store.snapshot().at("paths").as_object().begin()->value().as_object();EXPECT_TRUE(saved.at("closedRoute").as_bool());EXPECT_TRUE(saved.at("bClosedLoop").as_bool());r["bClosedLoop"]=false;error({{"action","save_route"},{"edit_session_id",sid},{"path",r}},"INVALID_ROUTE");}
+
+struct P54Mission:P52Execution {
+    O executions(){return store.snapshot().at("executions").as_object();}
+    void multi(){
+        store.configureMock({{"default_speed_mps",5.},{"safety_separation_m",1.5},{"uavs",O{
+            {"UAV-01",O{{"home_position",O{{"latitude",39.},{"longitude",115.9999},{"altitude",60.}}}}},
+            {"UAV-02",O{{"home_position",O{{"latitude",39.},{"longitude",116.0001},{"altitude",60.}}}}}}}});
+        send({{"action","assign"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"spacing_m",4.}});
+        begin();auto r=route();r.at("waypoints").as_array()[1].as_object()["longitude"]=116.;
+        send({{"action","save_route"},{"edit_session_id",sid},{"path",r}});
+        send({{"action","validate"}});ASSERT_EQ(plan().at("status"),"READY");send({{"action","review"}});send({{"action","deploy"}});
+    }
+};
+TEST_F(P54Mission, MultiAssignmentCreatesSeparateImmutableTrajectories){multi();const auto original=store.snapshot().at("paths");start();auto all=store.snapshot().at("executions").as_object();ASSERT_EQ(all.size(),2u);auto a=all.begin()->value().as_object(),b=std::next(all.begin())->value().as_object();EXPECT_NE(a.at("route_snapshot"),b.at("route_snapshot"));EXPECT_EQ(a.at("plan_route_snapshot"),b.at("plan_route_snapshot"));EXPECT_EQ(store.snapshot().at("paths"),original);}
+TEST_F(P54Mission, MultiHoverAndCompletionStaySeparated){multi();start();for(int i=0;i<400;++i){tick(1);auto all=store.snapshot().at("executions").as_object();auto a=all.begin()->value().as_object(),b=std::next(all.begin())->value().as_object();const auto pa=a.at("position").as_object(),pb=b.at("position").as_object();const double dx=(pa.at("longitude").to_number<double>()-pb.at("longitude").to_number<double>())*111194.9*std::cos(39.*3.141592653589793/180.);EXPECT_GE(std::abs(dx),1.499);EXPECT_NE(a.at("state"),"FAILED");}for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"COMPLETED");}
+TEST_F(P54Mission, GroupPauseIsAtomic){multi();start();tick();tick();tick();control("execution_pause","pause-group");for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"PAUSED");auto before=store.snapshot();tick();EXPECT_EQ(store.snapshot(),before);control("execution_resume","resume-group");for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"EXECUTING");}
+TEST_F(P54Mission, DuplicateAndTooCloseAssignmentsRejectAtomically){error({{"action","assign"},{"assigned_uav_ids",A{"UAV-01","UAV-01"}}},"INVALID_UAV");error({{"action","assign"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"spacing_m",.5}},"INVALID_SEPARATION");error({{"action","assign"},{"assigned_uav_ids",A{"UAV-01"}},{"formation","V"}},"FORMATION_UNSUPPORTED");}
+TEST_F(P54Mission, IntersectingApproachesBlockStart){multi();store.configureMock({{"default_speed_mps",5.},{"uavs",O{
+    {"UAV-01",O{{"home_position",O{{"latitude",39.},{"longitude",116.0001},{"altitude",60.}}}}},
+    {"UAV-02",O{{"home_position",O{{"latitude",39.},{"longitude",115.9999},{"altitude",60.}}}}}}}});error({{"action","execution_start"},{"request_id","cross"}},"TRAJECTORY_CONFLICT");}
+TEST_F(P54Mission, MissingAltitudeDatumRejected){begin();auto r=route();r.at("waypoints").as_array()[0].as_object()["altitude_reference"]="AGL";error({{"action","save_route"},{"edit_session_id",sid},{"path",r}},"ALTITUDE_DATUM_UNRESOLVED");}
+TEST_F(P54Mission, AGLResolvesOnceInRuntimeSnapshot){send({{"action","assign"},{"assigned_uav_id","UAV-01"}});begin();auto r=route();for(auto& v:r.at("waypoints").as_array()){v.as_object()["altitude_reference"]="AGL";v.as_object()["terrain_ellipsoid_m"]=20.;}send({{"action","save_route"},{"edit_session_id",sid},{"path",r}});send({{"action","validate"}});send({{"action","review"}});send({{"action","deploy"}});start();EXPECT_EQ(exec().at("route_snapshot").as_object().at("waypoints").as_array()[0].as_object().at("altitude"),80.);EXPECT_EQ(exec().at("plan_route_snapshot").as_object().at("waypoints").as_array()[0].as_object().at("altitude"),60.);}
+TEST_F(P54Mission, SchedulePersistsAndCancelsWithoutMoving){multi();auto reply=send({{"action","execution_start"},{"request_id","scheduled"},{"scheduled_start_at","2099-09-22T13:30:00Z"}});execution=SecurityPlanStore::str(reply,"execution_id");EXPECT_EQ(exec().at("state"),"SCHEDULED");const auto before=store.snapshot();tick(1);EXPECT_EQ(store.snapshot(),before);control("execution_cancel","cancel");for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"CANCELLED");}
+TEST_F(P54Mission, ScheduleStartNowUsesSameStateMachine){multi();execution=SecurityPlanStore::str(send({{"action","execution_start"},{"request_id","scheduled"},{"scheduled_start_at","2099-09-22T13:30:00Z"}}),"execution_id");control("execution_start_now","now");tick();EXPECT_EQ(exec().at("state"),"PREFLIGHT");tick();tick();EXPECT_EQ(exec().at("state"),"EXECUTING");}
+TEST_F(P54Mission, InvalidScheduleDoesNotPartiallyCreateGroup){multi();for(const auto* time:{"2026-02-30T12:00:00Z","2099-09-22T13:30:00+08:00","2000-01-01T00:00:00Z"})error({{"action","execution_start"},{"request_id",time},{"scheduled_start_at",time}},"INVALID_SCHEDULE");}
+TEST_F(P54Mission, ScheduleRestartAndReschedule){multi();execution=SecurityPlanStore::str(send({{"action","execution_start"},{"request_id","scheduled"},{"scheduled_start_at","2099-09-22T13:30:00Z"}}),"execution_id");const auto file=std::filesystem::temp_directory_path()/("p54-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");{std::ofstream out(file);out<<boost::json::serialize(store.snapshot());}SecurityPlanStore restored(file.string());EXPECT_EQ(restored.snapshot(),store.snapshot());restored.configureMock(store.snapshot().at("mock_execution").as_object());restored.tickExecutions(1,uavs,[](const O&){});EXPECT_EQ(restored.snapshot().at("executions"),store.snapshot().at("executions"));std::filesystem::remove(file);send({{"action","execution_reschedule"},{"execution_id",execution},{"request_id","reschedule"},{"control_version",exec().at("control_version")},{"scheduled_start_at","2099-09-23T13:30:00Z"}});EXPECT_EQ(exec().at("scheduled_start_at"),"2099-09-23T13:30:00Z");}
+
+TEST_F(P54Mission, GroupMovePreservesRelativePositions){multi();auto response=send({{"action","execution_group_move"},{"request_id","group-move"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"target",O{{"latitude",39.0001},{"longitude",115.9999},{"altitude",80.}}},{"target_area_radius_m",100.}});auto all=executions();ASSERT_EQ(all.size(),2u);const auto a=all.begin()->value().as_object(),b=std::next(all.begin())->value().as_object();const auto pa=a.at("route_snapshot").as_object().at("waypoints").as_array()[1].as_object(),pb=b.at("route_snapshot").as_object().at("waypoints").as_array()[1].as_object();EXPECT_NEAR(std::abs(pa.at("longitude").to_number<double>()-pb.at("longitude").to_number<double>()),.0002,1e-10);for(int i=0;i<100;++i)tick(1);for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"COMPLETED");}
+TEST_F(P54Mission, InsufficientGroupSpaceRejectsAtomically){multi();error({{"action","execution_group_move"},{"request_id","narrow"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"target",O{{"latitude",39.0001},{"longitude",116.},{"altitude",60.}}},{"target_area_radius_m",.1}},"TRAJECTORY_CONFLICT");}
+TEST_F(P54Mission, SharedGroupSelectionIsDurableAndPrimaryIsMember){OperationalContext context("");auto snapshot=context.update({{"active_uav_id","UAV-01"},{"selected_uav_ids",A{"UAV-01","UAV-02"}}},"Command",[](const O&){});EXPECT_EQ(snapshot.at("selected_uav_ids").as_array().size(),2u);EXPECT_THROW(context.update({{"active_uav_id","UAV-03"},{"selected_uav_ids",A{"UAV-01","UAV-02"}}},"Map",[](const O&){}),std::invalid_argument);EXPECT_EQ(context.snapshot(),snapshot);auto single=context.update({{"active_uav_id","UAV-02"}},"Map",[](const O&){});EXPECT_EQ(single.at("selected_uav_ids"),A{"UAV-02"});}
+
+TEST_F(P54Mission, ThreeAircraftCompleteDistinctSlots){
+    uavs.insert("UAV-03");O aircraft;
+    for(int i=0;i<3;++i)aircraft["UAV-0"+std::to_string(i+1)]=O{{"home_position",O{{"latitude",39.},{"longitude",116.+(i-1)*.0001},{"altitude",60.}}}};
+    store.configureMock({{"default_speed_mps",10.},{"uavs",aircraft}});
+    send({{"action","assign"},{"assigned_uav_ids",A{"UAV-01","UAV-02","UAV-03"}},{"spacing_m",4.}});begin();auto path=route();path.at("waypoints").as_array()[1].as_object()["longitude"]=116.;
+    send({{"action","save_route"},{"edit_session_id",sid},{"path",path}});send({{"action","validate"}});ASSERT_EQ(plan().at("status"),"READY");send({{"action","review"}});send({{"action","deploy"}});start();ASSERT_EQ(executions().size(),3u);
+    for(int i=0;i<100;++i)tick(1);std::set<double> longitudes;for(const auto& e:executions()){EXPECT_EQ(e.value().as_object().at("state"),"COMPLETED");longitudes.insert(e.value().as_object().at("position").as_object().at("longitude").to_number<double>());}EXPECT_EQ(longitudes.size(),3u);
+}
+TEST_F(P54Mission, MissingGroupTargetCoordinateRejectsAtomically){multi();error({{"action","execution_group_move"},{"request_id","missing-target"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"target",O{{"latitude",39.},{"longitude",116.}}}},"INVALID_WAYPOINT");}
+
+
+struct P54RealAdapter:P52Execution {
+    security_mission::Position measured{39.,116.,60.};
+    int sent=0,held=0;bool accepts=true,holds=true;
+    std::shared_ptr<security_mission::RealAdapter> real(){return std::make_shared<security_mission::RealAdapter>(
+        [this](const std::string&){return measured;},[](const std::string&){return security_mission::Position{39.,116.,60.};},
+        [this](const security_mission::Command& c){++sent;EXPECT_GT(c.speed_mps,0);return accepts;},[this](const std::string&){++held;return holds;});}
+    void live(){deployed();store.configureAdapter(store.snapshot().at("mock_execution").as_object(),real());start();tick();tick();tick();}
+};
+TEST_F(P54RealAdapter, SameControllerUsesMeasuredArrivalAndHover){
+    live();EXPECT_FALSE(exec().at("simulation").as_bool());EXPECT_EQ(exec().at("adapter"),"Real");
+    tick(1);EXPECT_EQ(exec().at("completed_waypoints"),1);tick(1);const auto stationary=exec().at("position");
+    for(int i=0;i<5;++i)tick(1);EXPECT_EQ(exec().at("position"),stationary);EXPECT_EQ(exec().at("completed_waypoints"),1);EXPECT_EQ(sent,2);
+    measured={39.001,116.001,60.};tick(1);EXPECT_EQ(exec().at("phase"),"HOVER");EXPECT_EQ(exec().at("wait_remaining"),2.);
+    tick(1);EXPECT_EQ(exec().at("wait_remaining"),1.);tick(1);tick(1);EXPECT_EQ(exec().at("state"),"COMPLETED");EXPECT_EQ(held,1);
+}
+TEST_F(P54RealAdapter, PauseHoldsAndResumeReissuesThroughSameController){
+    live();tick(1);tick(1);const int before=sent;control("execution_pause","real-pause");EXPECT_EQ(held,1);tick(1);EXPECT_EQ(sent,before);
+    control("execution_resume","real-resume");tick(1);EXPECT_EQ(sent,before+1);control("execution_abort","real-abort");EXPECT_EQ(exec().at("state"),"ABORTED");EXPECT_EQ(held,2);
+}
+TEST_F(P54RealAdapter, RejectedTransportCannotFabricateArrival){live();accepts=false;tick(1);EXPECT_EQ(exec().at("state"),"FAILED");EXPECT_EQ(exec().at("failure_reason"),"REAL_COMMAND_REJECTED");EXPECT_EQ(exec().at("completed_waypoints"),0);EXPECT_EQ(held,1);}
+TEST_F(P54RealAdapter, RejectedHoldIsReported){live();holds=false;control("execution_abort","real-abort");EXPECT_EQ(exec().at("state"),"FAILED");EXPECT_EQ(exec().at("failure_reason"),"REAL_HOLD_REJECTED");}
+TEST_F(P54RealAdapter, RestartPausesRealWithoutDispatch){
+    live();tick(1);const auto file=std::filesystem::temp_directory_path()/("p54-real-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(store.snapshot());}
+    const int before=sent;SecurityPlanStore restored(file.string());restored.configureAdapter(store.snapshot().at("mock_execution").as_object(),real());
+    EXPECT_EQ(restored.snapshot().at("executions").as_object().at(execution).as_object().at("state"),"PAUSED");EXPECT_EQ(sent,before);
+    SecurityPlanStore second(file.string());EXPECT_EQ(second.snapshot().at("executions").as_object().at(execution).as_object().at("state"),"PAUSED");std::filesystem::remove(file);
+}
+TEST_F(P54RealAdapter, MockDocumentCannotBecomeRealFlight){
+    running();store.configureAdapter(store.snapshot().at("mock_execution").as_object(),real());tick(1);EXPECT_EQ(exec().at("state"),"FAILED");EXPECT_EQ(exec().at("failure_reason"),"ADAPTER_MODE_MISMATCH");EXPECT_EQ(sent,0);EXPECT_EQ(held,0);
+}
+TEST_F(P54RealAdapter, PublicationFailureKeepsDurableRealIntent){
+    deployed();store.configureAdapter(store.snapshot().at("mock_execution").as_object(),real());
+    O r{{"action","execution_start"},{"request_id","real-publish-fail"},{"plan_id",p},{"mission_id",m}};
+    EXPECT_NO_THROW(store.transact(r,uavs,"QA",[](const O&){throw std::runtime_error("WS disconnected");}));
+    EXPECT_EQ(store.snapshot().at("executions").as_object().size(),1u);EXPECT_EQ(sent,0);
+}
+TEST(P54MissionGeodesy, CalibratedNonzeroNedRoundTrip){
+    const security_mission::NedFrame frame{{39.98,116.34,60.},{123.,-45.,-12.}};
+    const auto atAnchor=frame.toNed(frame.anchor);EXPECT_NEAR(atAnchor[0],123.,1e-7);EXPECT_NEAR(atAnchor[1],-45.,1e-7);EXPECT_NEAR(atAnchor[2],-12.,1e-7);
+    for(double height:{40.,80.,120.,60.}){security_mission::Position target{39.981,116.341,height};const auto result=frame.fromNed(frame.toNed(target));EXPECT_NEAR(result.latitude,target.latitude,1e-9);EXPECT_NEAR(result.longitude,target.longitude,1e-9);EXPECT_NEAR(result.altitude,height,1e-5);}
+    auto higher=frame.anchor;higher.altitude+=10.;EXPECT_NEAR(frame.toNed(higher)[2],-22.,1e-6);
+}
+TEST(P54MissionGeodesy, NonfiniteAndDistantFramesReject){const security_mission::NedFrame frame{{39.,116.,60.},{0,0,0}};EXPECT_THROW(frame.toNed({40.,116.,60.}),std::runtime_error);
+EXPECT_THROW(frame.fromNed({NAN,0,0}),std::runtime_error);}
+
+TEST_F(P54Mission, ScheduledDeadlineSurvivesGracefulShutdown){multi();execution=SecurityPlanStore::str(send({{"action","execution_start"},{"request_id","scheduled-shutdown"},{"scheduled_start_at","2099-09-22T13:30:00Z"}}),"execution_id");send({{"action","execution_shutdown"},{"request_id","stop-host"}});for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"SCHEDULED");}
+TEST_F(P54Mission, RealGroupFailureHoldsRemainingMembers){
+    multi();const auto cfg=store.snapshot().at("mock_execution").as_object();std::set<std::string> held;
+    auto observe=[cfg](const std::string& id){const auto& p=cfg.at("uavs").as_object().at(id).as_object().at("home_position").as_object();return security_mission::Position{p.at("latitude").to_number<double>(),p.at("longitude").to_number<double>(),p.at("altitude").to_number<double>()};};
+    auto adapter=std::make_shared<security_mission::RealAdapter>(observe,observe,[](const security_mission::Command& c){return c.uav_id!="UAV-01";},[&held](const std::string& id){held.insert(id);return true;});
+    store.configureAdapter(cfg,adapter);start();tick();tick();tick();tick(1);
+    for(const auto& e:executions()){const auto& x=e.value().as_object();EXPECT_EQ(x.at("state"),"FAILED");}EXPECT_EQ(held.size(),2u);
+}
+TEST_F(P54Mission, RealMeasuredCrossingHoldsBothMembers){
+    multi();const auto cfg=store.snapshot().at("mock_execution").as_object();std::map<std::string,security_mission::Position> measured;std::set<std::string> held;
+    for(const auto& u:cfg.at("uavs").as_object()){const auto& p=u.value().as_object().at("home_position").as_object();measured[std::string(u.key())]={p.at("latitude").to_number<double>(),p.at("longitude").to_number<double>(),p.at("altitude").to_number<double>()};}
+    auto observe=[&](const std::string& id){return measured.at(id);};auto homes=measured;
+    auto adapter=std::make_shared<security_mission::RealAdapter>(observe,[homes](const std::string& id){return homes.at(id);},[](const security_mission::Command&){return true;},[&held](const std::string& id){held.insert(id);return true;});
+    store.configureAdapter(cfg,adapter);start();tick();tick();tick();std::swap(measured["UAV-01"],measured["UAV-02"]);tick(1);
+    for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"PAUSED");EXPECT_EQ(held.size(),2u);
+}
+
+TEST_F(P54Mission, RealFaultWhilePausedReleasesWholeGroup){
+    multi();const auto cfg=store.snapshot().at("mock_execution").as_object();bool unavailable=false;
+    auto position=[cfg](const std::string& id){const auto& p=cfg.at("uavs").as_object().at(id).as_object().at("home_position").as_object();return security_mission::Position{p.at("latitude").to_number<double>(),p.at("longitude").to_number<double>(),p.at("altitude").to_number<double>()};};
+    auto observe=[&](const std::string& id){if(unavailable && id=="UAV-01")throw std::runtime_error("REAL_TELEMETRY_UNAVAILABLE");return position(id);};
+    store.configureAdapter(cfg,std::make_shared<security_mission::RealAdapter>(observe,position,[](const security_mission::Command&){return true;},[](const std::string&){return true;}));
+    start();tick();tick();tick();control("execution_pause","pause-before-fault");unavailable=true;tick(1);
+    for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"FAILED");
+    unavailable=false;EXPECT_NO_THROW(start("new-after-failure"));EXPECT_EQ(exec().at("state"),"CREATED");
+}
+TEST_F(P54RealAdapter, FailedPreflightDoesNotSendOrHold){deployed();store.configureAdapter(store.snapshot().at("mock_execution").as_object(),real());start();measured.latitude=NAN;tick();EXPECT_EQ(exec().at("state"),"FAILED");EXPECT_EQ(sent,0);EXPECT_EQ(held,0);}
+
+TEST_F(P54RealAdapter, ScheduledObservationLossFailsAtomically){
+    deployed();const auto cfg=store.snapshot().at("mock_execution").as_object();store.configureAdapter(cfg,real());
+    execution=SecurityPlanStore::str(send({{"action","execution_start"},{"request_id","schedule-observation-loss"},{"scheduled_start_at","2099-09-22T13:30:00Z"}}),"execution_id");
+    auto state=store.snapshot();state.at("executions").as_object().at(execution).as_object()["scheduled_start_epoch"]=0.;
+    const auto file=std::filesystem::temp_directory_path()/("p54-schedule-observation-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(state);}
+    int observations=0;auto adapter=std::make_shared<security_mission::RealAdapter>([&](const std::string&){if(++observations==2)throw std::runtime_error("REAL_TELEMETRY_UNAVAILABLE");return measured;},[&](const std::string&){return measured;},[&](const security_mission::Command&){++sent;return true;},[&](const std::string&){++held;return true;});
+    SecurityPlanStore restored(file.string());restored.configureAdapter(cfg,adapter);
+    EXPECT_NO_THROW(restored.tickExecutions(.1,uavs,[](const O&){}));
+    EXPECT_EQ(restored.snapshot().at("executions").as_object().at(execution).as_object().at("state"),"FAILED");EXPECT_EQ(sent,0);EXPECT_EQ(held,0);std::filesystem::remove(file);
+}
 
 }

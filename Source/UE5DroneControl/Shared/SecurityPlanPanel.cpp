@@ -135,7 +135,10 @@ void USecurityPlanPanel::LoadRoute(bool Force) {
     FDronePathSaveData Data;int32 Drone=0;FString Uav=Field(Mission,TEXT("assigned_uav_id"));LexTryParseString(Drone,*Uav.Mid(4));Data.PathId=Drone>0?Drone:1;
     const TArray<TSharedPtr<FJsonValue>>* Points;
     if(Path && Path->TryGetArrayField(TEXT("waypoints"),Points)){Path->TryGetBoolField(TEXT("bClosedLoop"),Data.bClosedLoop);for(const auto& P:*Points){auto O=P->AsObject();FDroneWaypointSaveData W;
-        W.Location=ICoordinateService::Execute_GeographicToWorld(Coordinate,O->GetNumberField(TEXT("latitude")),O->GetNumberField(TEXT("longitude")),O->GetNumberField(TEXT("altitude")));
+        O->TryGetStringField(TEXT("altitude_reference"),W.AltitudeReference);
+        if(W.AltitudeReference==TEXT("AGL"))O->TryGetNumberField(TEXT("terrain_ellipsoid_m"),W.AltitudeOffsetMeters);
+        if(W.AltitudeReference==TEXT("MSL"))O->TryGetNumberField(TEXT("geoid_undulation_m"),W.AltitudeOffsetMeters);
+        W.Location=ICoordinateService::Execute_GeographicToWorld(Coordinate,O->GetNumberField(TEXT("latitude")),O->GetNumberField(TEXT("longitude")),O->GetNumberField(TEXT("altitude"))+W.AltitudeOffsetMeters);
         W.SegmentSpeed=O->GetNumberField(TEXT("segmentSpeed"));W.WaitTime=O->GetNumberField(TEXT("waitTime"));Data.Waypoints.Add(W);}}
     PC->LoadMissionPath(Data,false);
     if(!Data.Waypoints.IsEmpty() && PC->GetCommandScreenManager())PC->GetCommandScreenManager()->GetMapService()->FocusLocation(Data.Waypoints[0].Location);
@@ -161,7 +164,9 @@ void USecurityPlanPanel::Action(FName Name,int32) {
         auto* Coordinate=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();if(!Coordinate)return;
         auto Path=MakeShared<FJsonObject>();const auto& Route=Data.CreateConstIterator().Value();Path->SetNumberField(TEXT("pathId"),Route.PathId);Path->SetBoolField(TEXT("bClosedLoop"),Route.bClosedLoop);
         TArray<TSharedPtr<FJsonValue>> Points;for(const auto& W:Route.Waypoints){const FVector Geo=ICoordinateService::Execute_WorldToGeographic(Coordinate,W.Location);auto P=MakeShared<FJsonObject>();
-            P->SetNumberField(TEXT("sequence"),Points.Num()+1);P->SetNumberField(TEXT("latitude"),Geo.Y);P->SetNumberField(TEXT("longitude"),Geo.X);P->SetNumberField(TEXT("altitude"),Geo.Z);P->SetNumberField(TEXT("segmentSpeed"),W.SegmentSpeed);P->SetNumberField(TEXT("waitTime"),W.WaitTime);
+            P->SetNumberField(TEXT("sequence"),Points.Num()+1);P->SetNumberField(TEXT("latitude"),Geo.Y);P->SetNumberField(TEXT("longitude"),Geo.X);P->SetNumberField(TEXT("altitude"),Geo.Z-W.AltitudeOffsetMeters);P->SetStringField(TEXT("altitude_reference"),W.AltitudeReference);
+            if(W.AltitudeReference==TEXT("AGL"))P->SetNumberField(TEXT("terrain_ellipsoid_m"),W.AltitudeOffsetMeters);
+            if(W.AltitudeReference==TEXT("MSL"))P->SetNumberField(TEXT("geoid_undulation_m"),W.AltitudeOffsetMeters);P->SetNumberField(TEXT("segmentSpeed"),W.SegmentSpeed);P->SetNumberField(TEXT("waitTime"),W.WaitTime);
             auto L=MakeShared<FJsonObject>();L->SetNumberField(TEXT("x"),W.Location.X);L->SetNumberField(TEXT("y"),W.Location.Y);L->SetNumberField(TEXT("z"),W.Location.Z);P->SetObjectField(TEXT("location"),L);Points.Add(MakeShared<FJsonValueObject>(P));}
         Path->SetArrayField(TEXT("waypoints"),Points);R->SetObjectField(TEXT("path"),Path);PC->SetMissionPathEditing(false);
     }

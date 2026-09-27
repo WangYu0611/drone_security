@@ -1,0 +1,22 @@
+{
+  "enabled": false,
+  "default_speed_mps": 5.0,
+  "safety_separation_m": 1.5,
+  "safety_margin_m": 0.2,
+  "arrival_threshold_m": 0.25,
+  "uavs": {
+    "UAV-01": {
+      "drone_id": 1,
+      "radius_m": 0.5,
+      "frame_anchor": {
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "altitude": 0.0,
+        "altitude_reference": "Ellipsoid",
+        "ned_n": 0.0,
+        "ned_e": 0.0,
+        "ned_d": 0.0
+      }
+    }
+  }
+}

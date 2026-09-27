@@ -40,6 +40,18 @@ public:
         boost::json::array changes;
         for (const auto& item : patch) {
             const std::string key(item.key());
+            if(key=="selected_uav_ids") {
+                if(!item.value().is_array() || item.value().as_array().size()>64)throw std::invalid_argument("invalid selected UAV list");
+                boost::json::array canonical;
+                for(const auto& v:item.value().as_array()) {
+                    if(!v.is_string())throw std::invalid_argument("UAV ID must be string");
+                    const std::string id(v.as_string());
+                    if(id.rfind("UAV-",0)!=0 || id.size()<=4 || !std::all_of(id.begin()+4,id.end(),[](unsigned char c){return std::isdigit(c);}))throw std::invalid_argument("invalid selected UAV");
+                    const auto n=std::stoll(id.substr(4));if(n<=0 || n>std::numeric_limits<int>::max() || id!="UAV-"+std::string(n<10?"0":"")+std::to_string(n))throw std::invalid_argument("noncanonical UAV");
+                    if(std::find(canonical.begin(),canonical.end(),v)!=canonical.end())throw std::invalid_argument("duplicate selected UAV");canonical.push_back(v);
+                }
+                if(!next.contains(key) || next.at(key)!=canonical){next[key]=canonical;changes.emplace_back("selected_uavs_changed");}continue;
+            }
             if (key != "active_uav_id" && key != "active_alert_id" && key != "active_mission_id" &&
                 key != "active_security_plan_id" && key != "active_area_id" && key != "operation_mode")
                 throw std::invalid_argument("unknown context field");
@@ -64,6 +76,14 @@ public:
                 next[key] = item.value();
                 changes.emplace_back(key == "operation_mode" ? "operation_mode_changed" : key.substr(0, key.size()-3) + "_changed");
             }
+        }
+        if(patch.contains("active_uav_id") && !patch.contains("selected_uav_ids")) {
+            boost::json::array selected;if(!next.at("active_uav_id").is_null())selected.push_back(next.at("active_uav_id"));
+            if(!next.contains("selected_uav_ids") || next.at("selected_uav_ids")!=selected){next["selected_uav_ids"]=selected;if(std::find(changes.begin(),changes.end(),boost::json::value("active_uav_changed"))==changes.end())changes.emplace_back("selected_uavs_changed");}
+        }
+        if(next.contains("selected_uav_ids")) {
+            const auto& selected=next.at("selected_uav_ids").as_array();
+            if((selected.empty() && !next.at("active_uav_id").is_null()) || (!selected.empty() && std::find(selected.begin(),selected.end(),next.at("active_uav_id"))==selected.end()))throw std::invalid_argument("primary UAV must belong to selection");
         }
         if (changes.empty()) return state_;
         next["context_version"] = state_.at("context_version").to_number<int64_t>() + 1;

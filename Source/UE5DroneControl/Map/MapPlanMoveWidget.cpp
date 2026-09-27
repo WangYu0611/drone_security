@@ -41,7 +41,7 @@ void UMapPlanMoveWidget::Requested(const TSharedPtr<FJsonObject>& Request) {
         const auto Mission=Find(Sync->GetPlans(),TEXT("missions"),Mid->AsString());const auto Rid=Field(Mission,TEXT("route_id"));
         const auto Route=Find(Sync->GetPlans(),TEXT("paths"),Rid);if(!Route)continue;
         FRoutePreview Item;Item.Id=Rid;Item.Saved=Route;Route->TryGetBoolField(TEXT("bClosedLoop"),Item.Closed);
-        for(const auto& V:Route->GetArrayField(TEXT("waypoints"))) {const auto P=V->AsObject();const auto W=ICoordinateService::Execute_GeographicToWorld(C,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude")));Item.Original.Add(W);Bounds+=W;}
+        for(const auto& V:Route->GetArrayField(TEXT("waypoints"))) {const auto P=V->AsObject();const auto W=ICoordinateService::Execute_GeographicToWorld(C,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),EllipsoidAltitude(P));Item.Original.Add(W);Bounds+=W;}
         Routes.Add(Item);
     }
     if(!Bounds.IsValid){ErrorCode=TEXT("ROUTE_TOO_SHORT");Refresh();return;}
@@ -71,7 +71,8 @@ void UMapPlanMoveWidget::Action(FName Name,int32) {
             const auto& Saved=Route.Saved->GetArrayField(TEXT("waypoints"));
             for(int I=0;I<Route.Original.Num();++I){auto P=MakeShared<FJsonObject>();P->Values=Saved[I]->AsObject()->Values;
                 const FVector W=Route.Original[I]+Delta,G=ICoordinateService::Execute_WorldToGeographic(C,W);
-                P->SetNumberField(TEXT("longitude"),G.X);P->SetNumberField(TEXT("latitude"),G.Y);P->SetNumberField(TEXT("altitude"),G.Z);
+                if(Field(P,TEXT("altitude_reference"))==TEXT("AGL")){double Ground;auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());if(!PC || !PC->TryGetMissionTerrainHeight(G.Y,G.X,Ground) || G.Z<Ground){ErrorCode=TEXT("TERRAIN_REQUIRED");Refresh();return;}P->SetNumberField(TEXT("terrain_ellipsoid_m"),Ground);}
+                P->SetNumberField(TEXT("longitude"),G.X);P->SetNumberField(TEXT("latitude"),G.Y);P->SetNumberField(TEXT("altitude"),G.Z-(EllipsoidAltitude(P)-P->GetNumberField(TEXT("altitude"))));
                 auto L=MakeShared<FJsonObject>();L->SetNumberField(TEXT("x"),W.X);L->SetNumberField(TEXT("y"),W.Y);L->SetNumberField(TEXT("z"),W.Z);P->SetObjectField(TEXT("location"),L);Points.Add(MakeShared<FJsonValueObject>(P));}
             New->SetArrayField(TEXT("waypoints"),Points);Paths->SetObjectField(Route.Id,New);
         }R->SetObjectField(TEXT("paths"),Paths);

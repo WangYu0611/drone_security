@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-26",
+  "code_head": "a14a6e8297d93433f0a14926f50b40f664ec4a3d",
+  "scope": "Task-owned Mock Map only; Command/Video intentionally offline during this camera check",
+  "actions": [
+    "left drag +70,+40",
+    "wheel -120",
+    "left drag -55,-35",
+    "wheel +120",
+    "3D toggle",
+    "2D toggle"
+  ],
+  "observed": "Four-step camera sequence completed; correct ground landmark movement; retained same area and UAV04 in 3D; stale unrelated aborted monitor absent",
+  "limits": [
+    "Final 2D toggle screenshot precedes damping settlement; use earlier separate 2D/3D evidence for full roundtrip",
+    "Physical right/middle/modifier drags not supported by driver",
+    "Fixture was established by API, not native creation",
+    "Lumen cached-lighting exposure clipping warning appeared in 3D; retained in screenshot and log"
+  ],
+  "cleanup": "QA host reported P54_OWNED_PROCESSES_STOPPED; only newly created helpers stopped after PID/name/creation identity checks"
+}

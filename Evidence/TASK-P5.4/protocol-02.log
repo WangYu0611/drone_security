@@ -1,0 +1,8 @@
+PASS Four-UAV selection synchronizes over WebSocket without switching Video
+PASS Unresolved AGL fails visibly without a fabricated terrain datum
+PASS Four-UAV plan validates and deploys with a separate central route
+PASS Runtime creates four distinct immutable trajectories
+PASS Four aircraft complete 3D route with hover and at least 1.5 m separation
+PASS Insufficient target space blocks group movement
+PASS Group movement and controls use one atomic execution group
+PASS Scheduled execution persists a UTC plus two minutes deadline

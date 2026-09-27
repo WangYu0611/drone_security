@@ -20,6 +20,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drone Path|Save")
 	float WaitTime = 0.0f;
+
+    // Legacy world positions resolve to ellipsoid height. AGL uses a sampled
+    // terrain ellipsoid offset, preserved with the waypoint across save/load.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint")
+    FString AltitudeReference = TEXT("Ellipsoid");
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Waypoint")
+    double AltitudeOffsetMeters = 0.;
+
 };
 
 USTRUCT(BlueprintType)

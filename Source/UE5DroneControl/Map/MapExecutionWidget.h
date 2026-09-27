@@ -6,6 +6,7 @@
 UCLASS()
 class UE5DRONECONTROL_API UMapExecutionWidget:public UUserWidget {
     GENERATED_BODY()
+    friend class FP52ExecutionWidgets;
 public:void Refresh();
 protected:
     virtual void NativeOnInitialized() override;
@@ -13,5 +14,6 @@ protected:
 private:
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     TSharedPtr<FJsonObject> Execution;
+    TArray<TSharedPtr<FJsonObject>> RenderedExecutions;
     FString FocusedExecution;
 };

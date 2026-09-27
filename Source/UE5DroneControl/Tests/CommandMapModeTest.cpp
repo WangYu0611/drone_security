@@ -85,15 +85,19 @@ public:
             Map->SelectDrone(9011);
             Map->FocusDrone(9011);
             Map->ZoomView(-20.f);
+            for(int I=0;I<240;++I)Map->TickView(1.f/60); // Damped presentation settles before transform assertions.
             Test->TestTrue(TEXT("zoomed-out cursor ray reaches beyond map focus"), PC->HitResultTraceDistance
                 > FVector::Distance(Map->GetMapCamera()->GetActorLocation(), Registry->GetSenderPawn(9011)->GetActorLocation()) * 2.0);
             Map->ZoomView(20.f);
+            for(int I=0;I<240;++I)Map->TickView(1.f/60); // Damped presentation settles before transform assertions.
             Test->TestTrue(TEXT("near vertical 2D camera"), Map->GetMapCamera() && Map->GetMapCamera()->GetActorRotation().Pitch < -89.f);
             const FVector BeforePan = Map->GetMapCamera()->GetActorLocation();
             Map->PanView(FVector2D(15, 10));
+            for(int I=0;I<240;++I)Map->TickView(1.f/60); // Damped presentation settles before transform assertions.
             Test->TestFalse(TEXT("pan moves camera"), Map->GetMapCamera()->GetActorLocation().Equals(BeforePan));
             const FVector BeforeZoom = Map->GetMapCamera()->GetActorLocation();
             Map->ZoomView(1.f);
+            for(int I=0;I<240;++I)Map->TickView(1.f/60); // Damped presentation settles before transform assertions.
             Test->TestFalse(TEXT("zoom moves camera"), Map->GetMapCamera()->GetActorLocation().Equals(BeforeZoom));
             const FRotator BeforeRotate = Map->GetMapCamera()->GetActorRotation();
             Map->RotateView(FVector2D(30, 30));
@@ -125,8 +129,9 @@ public:
             Count = Registry->GetAllDroneDescriptors().Num();
             FDroneTaskStateSnapshot Mission; Mission.ArrayId = TEXT("A2-REGRESSION-MISSION");
             Registry->UpdateTaskState(9011, Mission);
-            Network->OnDroneWsAlert.Broadcast(9011, TEXT("low_battery"), 19);
-            AlertId = Store->GetAlerts().Last().Id;
+            // This is a camera-focus fixture, not a Backend alert transport test.
+            // Shared Context intentionally ignores the legacy raw WS delegate.
+            AlertId = Store->AddAlert(9011, TEXT("low_battery"), TEXT("A2 camera focus fixture"));
             Test->TestTrue(TEXT("alert selects and focuses"), Map->FocusAlertOnMap(AlertId));
             ClickMode(TEXT("map3d"));
             Stage = 1; NextTime = FPlatformTime::Seconds() + .5; return false;
@@ -138,6 +143,7 @@ public:
             Test->TestTrue(TEXT("3D camera pitch"), Map->GetMapCamera()->GetActorRotation().Pitch > -89.f);
             const FRotator Before = Map->GetMapCamera()->GetActorRotation();
             Map->RotateView(FVector2D(20, 10));
+            for(int I=0;I<240;++I)Map->TickView(1.f/60); // Damped presentation settles before transform assertions.
             Test->TestFalse(TEXT("3D orbit enabled"), Map->GetMapCamera()->GetActorRotation().Equals(Before));
             Capture(TEXT("3d"));
             Manager->ShowGeographicPanel(true);

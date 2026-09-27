@@ -1,0 +1,52 @@
+Note: Google Test filter = PlanFixture.*:P53Geometry.*
+[==========] Running 20 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 6 tests from PlanFixture
+[ RUN      ] PlanFixture.Create
+[       OK ] PlanFixture.Create (0 ms)
+[ RUN      ] PlanFixture.AssignmentAndDuplicateRejected
+[       OK ] PlanFixture.AssignmentAndDuplicateRejected (0 ms)
+[ RUN      ] PlanFixture.ValidationFailureAndAtomicDeploy
+[       OK ] PlanFixture.ValidationFailureAndAtomicDeploy (0 ms)
+[ RUN      ] PlanFixture.InvalidCoordinatesAndStaleVersion
+[       OK ] PlanFixture.InvalidCoordinatesAndStaleVersion (0 ms)
+[ RUN      ] PlanFixture.SelectionAndReadinessInvalidation
+[       OK ] PlanFixture.SelectionAndReadinessInvalidation (0 ms)
+[ RUN      ] PlanFixture.PersistenceRestart
+[       OK ] PlanFixture.PersistenceRestart (12 ms)
+[----------] 6 tests from PlanFixture (14 ms total)
+
+[----------] 14 tests from P53Geometry
+[ RUN      ] P53Geometry.ClosedRoundTripAndOnceCompletion
+[       OK ] P53Geometry.ClosedRoundTripAndOnceCompletion (2 ms)
+[ RUN      ] P53Geometry.RejectShortClosedAndInvalidFlag
+[       OK ] P53Geometry.RejectShortClosedAndInvalidFlag (0 ms)
+[ RUN      ] P53Geometry.CancelPreservesAllGeometry
+[       OK ] P53Geometry.CancelPreservesAllGeometry (0 ms)
+[ RUN      ] P53Geometry.DeployedTranslationCreatesImmutableReplacement
+[       OK ] P53Geometry.DeployedTranslationCreatesImmutableReplacement (1 ms)
+[ RUN      ] P53Geometry.RejectNonRigidAndMissingRoutesAtomically
+[       OK ] P53Geometry.RejectNonRigidAndMissingRoutesAtomically (0 ms)
+[ RUN      ] P53Geometry.ActiveExecutionBlocksAllMoveStates
+[       OK ] P53Geometry.ActiveExecutionBlocksAllMoveStates (3 ms)
+[ RUN      ] P53Geometry.MoveLeaseBlocksExecutionAndRouteEditing
+[       OK ] P53Geometry.MoveLeaseBlocksExecutionAndRouteEditing (2 ms)
+[ RUN      ] P53Geometry.StaleMoveCannotOverwritePlan
+[       OK ] P53Geometry.StaleMoveCannotOverwritePlan (0 ms)
+[ RUN      ] P53Geometry.UnauthorizedMoveCannotCommit
+[       OK ] P53Geometry.UnauthorizedMoveCannotCommit (0 ms)
+[ RUN      ] P53Geometry.ReloadPreservesTranslatedDeployment
+[       OK ] P53Geometry.ReloadPreservesTranslatedDeployment (13 ms)
+[ RUN      ] P53Geometry.AllMissionRoutesUseOneDelta
+[       OK ] P53Geometry.AllMissionRoutesUseOneDelta (1 ms)
+[ RUN      ] P53Geometry.TranslationPublisherFailureRollsBack
+[       OK ] P53Geometry.TranslationPublisherFailureRollsBack (0 ms)
+[ RUN      ] P53Geometry.MoveLeaseCannotBeReusedForWaypointEdits
+[       OK ] P53Geometry.MoveLeaseCannotBeReusedForWaypointEdits (0 ms)
+[ RUN      ] P53Geometry.CanonicalClosedRouteAliasAndConflict
+[       OK ] P53Geometry.CanonicalClosedRouteAliasAndConflict (0 ms)
+[----------] 14 tests from P53Geometry (29 ms total)
+
+[----------] Global test environment tear-down
+[==========] 20 tests from 2 test suites ran. (44 ms total)
+[  PASSED  ] 20 tests.

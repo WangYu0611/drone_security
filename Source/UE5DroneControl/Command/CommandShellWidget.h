@@ -20,6 +20,8 @@ protected:
     virtual void NativeConstruct() override;
     virtual void NativeDestruct() override;
 private:
+    UPROPERTY() TObjectPtr<class UCommandTacticalMap> SituationMap;
+    UPROPERTY() TObjectPtr<class UGroupControlWidget> GroupControl;
     UPROPERTY() TObjectPtr<class UTextBlock> CurrentExecutionSummary;
     bool bRestoredWorkspace=false;
     UPROPERTY() TObjectPtr<class UWidgetSwitcher> WorkspacePages;
