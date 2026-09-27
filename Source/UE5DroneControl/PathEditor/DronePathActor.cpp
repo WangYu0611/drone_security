@@ -73,7 +73,7 @@ ADronePathActor::ADronePathActor()
 
 	PathSpline = CreateDefaultSubobject<USplineComponent>(TEXT("PathSpline"));
 	PathSpline->SetupAttachment(SceneRoot);
-	PathSpline->bDrawDebug = true;
+	PathSpline->bDrawDebug = false;
 	PathSpline->SetClosedLoop(false);
 
 	PathMarkerMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PathMarkerMeshComponent"));
@@ -956,7 +956,8 @@ void ADronePathActor::ApplyPathVisualState()
     SegmentVisuals=RouteVisual::Build(Heights,Speeds,bClosedLoop,GetDefaultSegmentSpeedMps(),VisualState,ConflictedSegmentStartIndices);
     for(auto& V:SegmentVisuals)if(V.bConflict)V.StartColor=V.EndColor=V.HaloColor=PathConflictColor;
     auto Set=[&](UMeshComponent* Mesh,TObjectPtr<UMaterialInstanceDynamic>& MID,const FDronePathSegmentVisualState& V,bool Halo,bool Joint){
-        if(!MID){MID=UMaterialInstanceDynamic::Create(RouteV2Material?RouteV2Material:CommandMapMaterial,Mesh);Mesh->SetMaterial(0,MID);}
+        if(!ensureMsgf(RouteV2Material,TEXT("Route V2 material is required: /Game/Command/Materials/M_CommandPathV2"))){Mesh->SetVisibility(false);return;}
+        if(!MID || MID->Parent!=RouteV2Material){MID=UMaterialInstanceDynamic::Create(RouteV2Material,Mesh);Mesh->SetMaterial(0,MID);}
         if(!MID)return;
         MID->SetVectorParameterValue(TEXT("StartColor"),V.StartColor);MID->SetVectorParameterValue(TEXT("EndColor"),V.EndColor);
         MID->SetVectorParameterValue(TEXT("HaloColor"),V.HaloColor);MID->SetScalarParameterValue(TEXT("IsHalo"),Halo?1:0);

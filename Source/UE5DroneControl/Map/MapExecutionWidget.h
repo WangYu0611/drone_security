@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Dom/JsonObject.h"
+#include "Map/PlanRouteVisualSet.h"
 #include "MapExecutionWidget.generated.h"
 UCLASS()
 class UE5DRONECONTROL_API UMapExecutionWidget:public UUserWidget {
@@ -22,6 +23,5 @@ private:
     FString SuppressedPlan,SuppressedMission;
     bool bPlanMoving=false;
     bool IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const;
-    UPROPERTY(Transient) TMap<FString,TObjectPtr<class ADronePathActor>> VisualRoutes;
-    TMap<FString,FString> VisualSnapshots;
+    FPlanRouteVisualSet VisualRoutes;
 };

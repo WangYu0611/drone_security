@@ -30,10 +30,9 @@ void UMapExecutionWidget::Refresh(){
     if(!Execution)Execution=ExecutionUI::Latest(Sync->GetPlans(),SelectedPlan);
     if(Execution && !ExecutionUI::Active(Execution)){const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Execution,TEXT("plan_id")));if(Plan && Field(Plan,TEXT("deployment_id"))!=Field(Execution,TEXT("deployment_id")))Execution.Reset();}
     SetVisibility(Execution?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
-    RenderedExecutions.Empty();if(!Execution){for(auto& Item:VisualRoutes)if(Item.Value)Item.Value->Destroy();VisualRoutes.Empty();VisualSnapshots.Empty();return;}
-    const auto All=Object(Sync->GetPlans(),TEXT("executions"));
-    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(ExecutionUI::Active(E) || (!ExecutionUI::Active(Execution) && Field(E,TEXT("group_id"))==Field(Execution,TEXT("group_id"))))RenderedExecutions.Add(E);}
-    if(RenderedExecutions.IsEmpty())RenderedExecutions.Add(Execution);
+    RenderedExecutions=ExecutionUI::RouteOwners(Sync->GetPlans(),SelectedPlan);
+    if(!Execution && !RenderedExecutions.IsEmpty())Execution=RenderedExecutions[0];
+    if(!Execution){VisualRoutes.Reset();return;}
     Summary->SetText(FText::Format(User(TEXT("{0}\n{1}\n{2}")),ExecutionUI::Summary(Execution),T(TEXT("Execution.ReadOnly")),T(Sync->IsReady()?(Execution->GetBoolField(TEXT("simulation"))?TEXT("Execution.Simulation"):TEXT("Execution.Real")):TEXT("Stage1.RECONNECTING"))));
     auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     auto* Coordinates=Registry->GetCoordinateService().GetObject();
@@ -47,30 +46,16 @@ void UMapExecutionWidget::Refresh(){
         TSet<FString> Live;
         for(const auto& E:RenderedExecutions){if(IsRouteSuppressed(E))continue;const FString Key=Field(E,TEXT("execution_id"));Live.Add(Key);
             const auto R=Object(E,TEXT("route_snapshot"));if(!R)continue;
-            FString Snapshot;FJsonSerializer::Serialize(R.ToSharedRef(),TJsonWriterFactory<>::Create(&Snapshot));
-            auto& Path=VisualRoutes.FindOrAdd(Key);
-            if(!IsValid(Path)){
-                Path=GetWorld()->SpawnActor<ADronePathActor>();Path->bParticipatesInConflictChecks=false;
-                Path->bSpawnWaypointHandlesAtRuntime=false;Path->bSpawnWaypointHandlesInEditor=false;
-            }
-            if(VisualSnapshots.FindRef(Key)!=Snapshot){
-                const auto Data=FPlanRouteVisualSet::Decode(R,Coordinates);
-                Path->Waypoints.Empty();Path->bClosedLoop=Data.bClosedLoop;
-                for(const auto& Point:Data.Waypoints){FDroneWaypoint W;
-                    W.Location=Point.Location;W.SegmentSpeed=Point.SegmentSpeed;W.WaitTime=Point.WaitTime;
-                    W.AltitudeReference=Point.AltitudeReference;W.AltitudeOffsetMeters=Point.AltitudeOffsetMeters;Path->Waypoints.Add(W);
-                }Path->RefreshPath();VisualSnapshots.Add(Key,Snapshot);
-            }
             const FString State=Field(E,TEXT("state"));
             const bool Running=ExecutionUI::Active(E) && State!=TEXT("CREATED") && State!=TEXT("SCHEDULED");
             const FString SelectedMission=Field(Sync->GetContext(),TEXT("active_mission_id"));
             const bool Selected=!SelectedMission.IsEmpty()
                 ? Field(E,TEXT("plan_id"))==SelectedPlan && Field(E,TEXT("mission_id"))==SelectedMission
                 : Field(E,TEXT("uav_id"))==FString::Printf(TEXT("UAV-%02d"),Registry->GetPrimarySelectedDrone());
-            Path->SetRoutePresentation(State==TEXT("COMPLETED")?ERouteVisualState::Completed:Running?ERouteVisualState::Active:ERouteVisualState::Confirmed,Selected);
-            Path->SetActorHiddenInGame(false);
+            auto* Path=VisualRoutes.Put(GetWorld(),Coordinates,Key,R,State==TEXT("COMPLETED")?ERouteVisualState::Completed:Running?ERouteVisualState::Active:ERouteVisualState::Confirmed,Selected);
+            if(Path)Path->SetActorHiddenInGame(false);
         }
-        for(auto It=VisualRoutes.CreateIterator();It;++It)if(!Live.Contains(It.Key())){if(It.Value())It.Value()->Destroy();VisualSnapshots.Remove(It.Key());It.RemoveCurrent();}
+        VisualRoutes.Retain(Live);
     }
     const auto Id=Field(Execution,TEXT("execution_id"));
     // Consume automatic framing while editing; do not defer it until unlock.
@@ -98,15 +83,14 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
     for(const auto& Current:RenderedExecutions){
     if(IsRouteSuppressed(Current))continue;
     const auto Route=Object(Current,TEXT("route_snapshot"));if(!Route)continue;
-    const auto& Points=Route->GetArrayField(TEXT("waypoints"));TArray<FVector2D> Line;
+    const auto& Points=Route->GetArrayField(TEXT("waypoints"));
     const int Completed=Current->GetNumberField(TEXT("completed_waypoints"));
-    for(int I=0;I<Points.Num();++I){FVector2D P;if(!Project(Points[I]->AsObject(),P))continue;Line.Add(P);
+    for(int I=0;I<Points.Num();++I){FVector2D P;if(!Project(Points[I]->AsObject(),P))continue;
         const FLinearColor Color=I<Completed?FLinearColor(.2f,1,.55f):I==Completed?FLinearColor(1,.75f,.1f):FLinearColor(.5f,.7f,1);
         FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(12,12),FSlateLayoutTransform(P-FVector2D(6,6))),FCoreStyle::Get().GetBrush("WhiteBrush"),ESlateDrawEffect::None,Color);
         const FString Caption=FString::Printf(TEXT("WP%d %s"),I+1,I<Completed?TEXT("✓"):I==Completed?TEXT("●"):TEXT("○"));
         FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(FVector2D(130,24),FSlateLayoutTransform(P+FVector2D(10,-12))),Caption,FCoreStyle::GetDefaultFontStyle("Bold",14),ESlateDrawEffect::None,Color);
     }
-    bool Closed=false;Route->TryGetBoolField(TEXT("bClosedLoop"),Closed);if(Closed && Line.Num()>2)Line.Add(FVector2D(Line[0]));
     // Route geometry is rendered by depth-tested Route V2 actors, not Slate lines.
     FVector2D UAV;if(Project(Object(Current,TEXT("position")),UAV)){
         const TArray<FVector2D> Diamond{UAV+FVector2D(0,-13),UAV+FVector2D(13,0),UAV+FVector2D(0,13),UAV+FVector2D(-13,0),UAV+FVector2D(0,-13)};
@@ -118,7 +102,7 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
 }
 
 void UMapExecutionWidget::NativeDestruct(){
-    for(auto& Item:VisualRoutes)if(IsValid(Item.Value))Item.Value->Destroy();VisualRoutes.Empty();VisualSnapshots.Empty();
+    VisualRoutes.Reset();
     Super::NativeDestruct();
 }
 
@@ -129,6 +113,6 @@ bool UMapExecutionWidget::IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) co
 bool UMapExecutionWidget::OwnsMission(const FString& Plan,const FString& Mission) const {
     for(const auto& E:RenderedExecutions)if(Field(E,TEXT("plan_id"))==Plan && Field(E,TEXT("mission_id"))==Mission){
         const auto* P=VisualRoutes.Find(Field(E,TEXT("execution_id")));
-        if(P && IsValid(P->Get()) && !(*P)->IsHidden())return true;
+        if(IsValid(P) && !P->IsHidden())return true;
     }return false;
 }
