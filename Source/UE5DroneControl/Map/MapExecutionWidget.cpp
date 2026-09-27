@@ -1,4 +1,5 @@
 #include "Map/MapExecutionWidget.h"
+#include "PathEditor/DronePathActor.h"
 #include "Shared/ExecutionPresentation.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "DroneOps/Core/ICoordinateService.h"
@@ -28,7 +29,7 @@ void UMapExecutionWidget::Refresh(){
     if(!Execution)Execution=ExecutionUI::Latest(Sync->GetPlans(),SelectedPlan);
     if(Execution && !ExecutionUI::Active(Execution)){const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Execution,TEXT("plan_id")));if(Plan && Field(Plan,TEXT("deployment_id"))!=Field(Execution,TEXT("deployment_id")))Execution.Reset();}
     SetVisibility(Execution?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
-    RenderedExecutions.Empty();if(!Execution)return;
+    RenderedExecutions.Empty();if(!Execution){for(auto& Item:VisualRoutes)if(Item.Value)Item.Value->Destroy();VisualRoutes.Empty();VisualSnapshots.Empty();return;}
     const auto All=Object(Sync->GetPlans(),TEXT("executions"));
     if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(ExecutionUI::Active(E) || (!ExecutionUI::Active(Execution) && Field(E,TEXT("group_id"))==Field(Execution,TEXT("group_id"))))RenderedExecutions.Add(E);}
     if(RenderedExecutions.IsEmpty())RenderedExecutions.Add(Execution);
@@ -38,6 +39,30 @@ void UMapExecutionWidget::Refresh(){
     if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){
         for(const auto& E:RenderedExecutions){if(!E->GetBoolField(TEXT("simulation")))continue;int32 Drone=0;LexTryParseString(Drone,*Field(E,TEXT("uav_id")).Mid(4));
         if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Drone))){const auto P=Object(E,TEXT("position"));Mirror->ApplySimulationPosition(ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude"))));}}
+    }
+    // Immutable acknowledged snapshots become depth-tested world route visuals.
+    // No invented progress and no geometry updates from the presentation clock.
+    if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){
+        TSet<FString> Live;
+        for(const auto& E:RenderedExecutions){const FString Key=Field(E,TEXT("execution_id"));Live.Add(Key);
+            const auto R=Object(E,TEXT("route_snapshot"));if(!R)continue;
+            FString Snapshot;FJsonSerializer::Serialize(R.ToSharedRef(),TJsonWriterFactory<>::Create(&Snapshot));
+            auto& Path=VisualRoutes.FindOrAdd(Key);
+            if(!IsValid(Path)){
+                Path=GetWorld()->SpawnActor<ADronePathActor>();Path->bParticipatesInConflictChecks=false;
+                Path->bSpawnWaypointHandlesAtRuntime=false;Path->bSpawnWaypointHandlesInEditor=false;
+            }
+            if(VisualSnapshots.FindRef(Key)!=Snapshot){
+                Path->Waypoints.Empty();R->TryGetBoolField(TEXT("bClosedLoop"),Path->bClosedLoop);
+                for(const auto& Point:R->GetArrayField(TEXT("waypoints"))){const auto P=Point->AsObject();FDroneWaypoint W;
+                    W.Location=ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude")));
+                    double Speed=0;P->TryGetNumberField(TEXT("segmentSpeed"),Speed);W.SegmentSpeed=Speed;Path->Waypoints.Add(W);
+                }Path->RefreshPath();VisualSnapshots.Add(Key,Snapshot);
+            }
+            Path->SetRoutePresentation(Field(E,TEXT("state"))==TEXT("COMPLETED")?ERouteVisualState::Completed:ExecutionUI::Active(E)?ERouteVisualState::Active:ERouteVisualState::Confirmed,E==Execution);
+            Path->SetActorHiddenInGame(PC && PC->IsPathEditMode());
+        }
+        for(auto It=VisualRoutes.CreateIterator();It;++It)if(!Live.Contains(It.Key())){if(It.Value())It.Value()->Destroy();VisualSnapshots.Remove(It.Key());It.RemoveCurrent();}
     }
     const auto Id=Field(Execution,TEXT("execution_id"));
     // Consume automatic framing while editing; do not defer it until unlock.
@@ -73,7 +98,7 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
         FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(FVector2D(130,24),FSlateLayoutTransform(P+FVector2D(10,-12))),Caption,FCoreStyle::GetDefaultFontStyle("Bold",14),ESlateDrawEffect::None,Color);
     }
     bool Closed=false;Route->TryGetBoolField(TEXT("bClosedLoop"),Closed);if(Closed && Line.Num()>2)Line.Add(FVector2D(Line[0]));
-    if(Line.Num()>1)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,FLinearColor(.1f,.8f,1),true,3);
+    // Route geometry is rendered by depth-tested Route V2 actors, not Slate lines.
     FVector2D UAV;if(Project(Object(Current,TEXT("position")),UAV)){
         const TArray<FVector2D> Diamond{UAV+FVector2D(0,-13),UAV+FVector2D(13,0),UAV+FVector2D(0,13),UAV+FVector2D(-13,0),UAV+FVector2D(0,-13)};
         FSlateDrawElement::MakeLines(Out,Base+4,G.ToPaintGeometry(),Diamond,ESlateDrawEffect::None,FLinearColor::Yellow,true,4);
@@ -81,4 +106,9 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
     }
     }
     return Base+4;
+}
+
+void UMapExecutionWidget::NativeDestruct(){
+    for(auto& Item:VisualRoutes)if(IsValid(Item.Value))Item.Value->Destroy();VisualRoutes.Empty();VisualSnapshots.Empty();
+    Super::NativeDestruct();
 }

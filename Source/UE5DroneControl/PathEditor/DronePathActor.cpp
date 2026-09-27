@@ -3,6 +3,8 @@
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 
 #include "MultiDroneCharacter.h"
+#include "DroneOps/Core/DroneRegistrySubsystem.h"
+#include "DroneOps/Core/ICoordinateService.h"
 #include "DronePathConflictLibrary.h"
 #include "Components/SceneComponent.h"
 #include "Components/SplineMeshComponent.h"
@@ -62,6 +64,7 @@ ADronePathActor::ADronePathActor()
 {
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> CommandMaterial(TEXT("/Game/Command/Materials/M_CommandPath.M_CommandPath"));
 	CommandMapMaterial = CommandMaterial.Object;
+    RouteV2Material=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Command/Materials/M_CommandPathV2.M_CommandPathV2"));
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
@@ -707,89 +710,75 @@ void ADronePathActor::RebuildSplineFromWaypoints()
 	PathSpline->UpdateSpline();
 }
 
+void ADronePathActor::SetRoutePresentation(ERouteVisualState State,bool Selected)
+{
+    bExternalPresentation=true;
+    if(VisualState==State && bVisualSelected==Selected)return;
+    VisualState=State;bVisualSelected=Selected;ApplyPathVisualState();
+}
 void ADronePathActor::SetMapDisplayRadius(float RadiusCm)
 {
-	RadiusCm = FMath::Max(0.f, RadiusCm);
-	const auto* Controller = GetWorld() ? Cast<ADroneOpsPlayerController>(GetWorld()->GetFirstPlayerController()) : nullptr;
-	const int32 DisplayState = RadiusCm <= 0 ? -1
-        : (ExecutionState == EDronePathExecutionState::Completed ? 3
-        : (ExecutionState == EDronePathExecutionState::Running ? 2
-        : (Controller && Controller->IsPathEditMode() ? 0 : 1)));
-	if (MapDisplayState != DisplayState)
-	{
-		MapDisplayState = DisplayState;
-		ApplyPathVisualState();
-	}
-	if (FMath::IsNearlyEqual(MapDisplayRadius, RadiusCm, 0.01f)) return;
-	MapDisplayRadius = RadiusCm;
-	const float Scale = FMath::Max3(PathSplineThickness, MapDisplayRadius, 0.05f) / DronePathVisual::BasicShapeCylinderRadiusCm;
-	for (USplineMeshComponent* Segment : SplineMeshComponents)
-	{
-		if (!IsValid(Segment)) continue;
-		Segment->SetStartScale(FVector2D(Scale), false);
-		Segment->SetEndScale(FVector2D(Scale), true);
-	}
+    RadiusCm=FMath::Max(0.f,RadiusCm);
+    if(!bExternalPresentation){
+        const auto* PC=GetWorld()?Cast<ADroneOpsPlayerController>(GetWorld()->GetFirstPlayerController()):nullptr;
+        const bool Editing=PC && PC->IsPathEditMode() && PC->IsEditingRoute(this);
+        const auto* Registry=GetWorld() && GetWorld()->GetGameInstance()?GetWorld()->GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>():nullptr;
+        const bool Selected=Editing || (Registry && Registry->GetPrimarySelectedDrone()==PathNumericId);
+        const auto State=ExecutionState==EDronePathExecutionState::Completed?ERouteVisualState::Completed:
+            ExecutionState==EDronePathExecutionState::Running?ERouteVisualState::Active:Editing?ERouteVisualState::Planning:ERouteVisualState::Confirmed;
+        if(State!=VisualState || Selected!=bVisualSelected){VisualState=State;bVisualSelected=Selected;ApplyPathVisualState();}
+    }
+    if(FMath::IsNearlyEqual(MapDisplayRadius,RadiusCm,.01f))return;
+    MapDisplayRadius=RadiusCm;MapDisplayState=RadiusCm>0?int32(VisualState):-1;
+    UpdateVisualGeometry();
 }
-
 void ADronePathActor::RebuildSplineMeshes()
 {
-	DestroySplineMeshes();
-
-	if (!IsValid(SplineSegmentStaticMesh) || !IsValid(PathSpline) || GetSplineSegmentCount() <= 0)
-	{
-		ApplyPathVisualState();
-		return;
-	}
-
-	const float UniformScale = FMath::Max3(PathSplineThickness, MapDisplayRadius, 0.05f) / DronePathVisual::BasicShapeCylinderRadiusCm;
-
-	auto CreateSplineMeshSegment = [&](const int32 StartIndex, const int32 EndIndex)
-	{
-		if (!IsValidWaypointIndex(StartIndex) || !IsValidWaypointIndex(EndIndex))
-		{
-			return;
-		}
-
-		USplineMeshComponent* SplineMeshComponent = NewObject<USplineMeshComponent>(this);
-		if (!IsValid(SplineMeshComponent))
-		{
-			return;
-		}
-
-		SplineMeshComponent->CreationMethod = EComponentCreationMethod::UserConstructionScript;
-		SplineMeshComponent->SetMobility(EComponentMobility::Movable);
-		SplineMeshComponent->SetupAttachment(PathSpline);
-		SplineMeshComponent->SetStaticMesh(SplineSegmentStaticMesh);
-		SplineMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SplineMeshComponent->SetGenerateOverlapEvents(false);
-		SplineMeshComponent->SetForwardAxis(ESplineMeshAxis::Z, false);
-		SplineMeshComponent->ComponentTags.AddUnique(DronePathVisual::RuntimeSplineSegmentTag);
-
-		const FVector StartLocation = PathSpline->GetLocationAtSplinePoint(StartIndex, ESplineCoordinateSpace::Local);
-		const FVector EndLocation = PathSpline->GetLocationAtSplinePoint(EndIndex, ESplineCoordinateSpace::Local);
-		SplineMeshComponent->SetStartAndEnd(StartLocation, FVector::ZeroVector, EndLocation, FVector::ZeroVector, false);
-		SplineMeshComponent->SetStartScale(FVector2D(UniformScale, UniformScale), false);
-		SplineMeshComponent->SetEndScale(FVector2D(UniformScale, UniformScale), false);
-		SplineMeshComponent->RegisterComponent();
-		AddInstanceComponent(SplineMeshComponent);
-		SplineMeshComponents.Add(SplineMeshComponent);
-		SplineVisualizationMIDs.Add(nullptr);
-		SplineConflictMIDs.Add(nullptr);
-		SplineVisualizationMaterialSources.Add(nullptr);
-		SplineConflictMaterialSources.Add(nullptr);
-	};
-
-	for (int32 WaypointIndex = 0; WaypointIndex < Waypoints.Num() - 1; ++WaypointIndex)
-	{
-		CreateSplineMeshSegment(WaypointIndex, WaypointIndex + 1);
-	}
-
-	if (bClosedLoop && Waypoints.Num() > 2)
-	{
-		CreateSplineMeshSegment(Waypoints.Num() - 1, 0);
-	}
-
-	ApplyPathVisualState();
+    const int32 Count=GetSplineSegmentCount();
+    if(!IsValid(SplineSegmentStaticMesh) || !PathSpline || Count<=0){DestroySplineMeshes();return;}
+    // Preserve components and MIDs throughout same-topology edits.
+    if(SplineMeshComponents.Num()!=Count || HaloComponents.Num()!=Count || JointComponents.Num()!=Waypoints.Num()){
+        DestroySplineMeshes();
+        auto NewSegment=[&](){
+            auto* M=NewObject<USplineMeshComponent>(this);
+            M->CreationMethod=EComponentCreationMethod::UserConstructionScript;M->SetMobility(EComponentMobility::Movable);
+            M->SetupAttachment(PathSpline);M->SetStaticMesh(SplineSegmentStaticMesh);
+            M->SetCollisionEnabled(ECollisionEnabled::NoCollision);M->SetGenerateOverlapEvents(false);M->SetCastShadow(false);
+            M->SetForwardAxis(ESplineMeshAxis::Z,false);M->ComponentTags.AddUnique(DronePathVisual::RuntimeSplineSegmentTag);
+            M->RegisterComponent();AddInstanceComponent(M);return M;
+        };
+        for(int32 I=0;I<Count;++I){
+            SplineMeshComponents.Add(NewSegment());HaloComponents.Add(NewSegment());
+            SplineVisualizationMIDs.Add(nullptr);SplineConflictMIDs.Add(nullptr);
+            SplineVisualizationMaterialSources.Add(nullptr);SplineConflictMaterialSources.Add(nullptr);HaloMIDs.Add(nullptr);
+        }
+        auto* Sphere=LoadObject<UStaticMesh>(nullptr,TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+        for(int32 I=0;I<Waypoints.Num();++I){
+            auto* M=NewObject<UStaticMeshComponent>(this);M->SetMobility(EComponentMobility::Movable);M->SetupAttachment(PathSpline);
+            M->SetStaticMesh(Sphere);M->SetCollisionEnabled(ECollisionEnabled::NoCollision);M->SetGenerateOverlapEvents(false);M->SetCastShadow(false);
+            M->RegisterComponent();AddInstanceComponent(M);JointComponents.Add(M);JointMIDs.Add(nullptr);
+        }
+    }
+    UpdateVisualGeometry();ApplyPathVisualState();
+}
+void ADronePathActor::UpdateVisualGeometry()
+{
+    const float Radius=FMath::Max3(PathSplineThickness,MapDisplayRadius,.05f);
+    for(int32 I=0;I<SplineMeshComponents.Num();++I){
+        const int32 J=(I+1)%Waypoints.Num();const FVector A=Waypoints[I].Location,B=Waypoints[J].Location;
+        const FVector Delta=B-A;const double Length=Delta.Size();const FVector Dir=Delta.GetSafeNormal();
+        const double Overlap=FMath::Min(double(Radius)*.6,Length*.2);
+        // Nonzero linear tangents eliminate the old cylinder pinching at joins.
+        const FVector Start=A-Dir*Overlap,End=B+Dir*Overlap,Tangent=End-Start;
+        const FVector Up=FMath::Abs(Dir.Z)>.95?FVector::ForwardVector:FVector::UpVector;
+        for(int Layer=0;Layer<2;++Layer){auto* M=Layer?HaloComponents[I].Get():SplineMeshComponents[I].Get();
+            M->SetVisibility(Length>.01);M->SetSplineUpDir(Up,false);
+            M->SetStartAndEnd(Start,Tangent,End,Tangent,false);
+            const FVector2D Scale(Radius*(Layer?1.65f:1.f)/50.f);
+            M->SetStartScale(Scale,false);M->SetEndScale(Scale,true);
+        }
+    }
+    for(int32 I=0;I<JointComponents.Num();++I){JointComponents[I]->SetRelativeLocation(Waypoints[I].Location);JointComponents[I]->SetRelativeScale3D(FVector(Radius*1.02f/50.f));}
 }
 
 void ADronePathActor::DestroySplineMeshes()
@@ -809,7 +798,9 @@ void ADronePathActor::DestroySplineMeshes()
 		SplineMeshComponent->DestroyComponent();
 	}
 
-	SplineMeshComponents.Reset();
+	for(auto M:JointComponents){if(M){RemoveInstanceComponent(M);M->DestroyComponent();}}
+    HaloComponents.Reset();HaloMIDs.Reset();JointComponents.Reset();JointMIDs.Reset();SegmentVisuals.Reset();
+    SplineMeshComponents.Reset();
 	SplineVisualizationMIDs.Reset();
 	SplineConflictMIDs.Reset();
 	SplineVisualizationMaterialSources.Reset();
@@ -932,46 +923,38 @@ void ADronePathActor::BroadcastExecutionStateChanged()
 
 void ADronePathActor::ApplyPathVisualState()
 {
-	const bool bHasConflict = !ConflictedSegmentStartIndices.IsEmpty();
-	const FLinearColor DisplayColor = MapDisplayState == 0 ? CommandTheme::Warning
-        : (MapDisplayState == 1 ? CommandTheme::Cyan
-        : (MapDisplayState == 2 ? CommandTheme::Online
-        : (MapDisplayState == 3 ? CommandTheme::SecondaryText : PathDefaultColor)));
-	const FLinearColor MarkerColor = bHasConflict ? PathConflictColor : DisplayColor;
-
-	if (IsValid(PathMarkerMeshComponent))
-	{
-		UMaterialInstanceDynamic* PathMarkerMID = nullptr;
-		if (bHasConflict)
-		{
-			PathMarkerMID = ResolveMaterialInstance(PathMarkerMeshComponent, PathConflictMaterial, PathMarkerConflictMID, PathMarkerConflictMaterialSource);
-		}
-		else
-		{
-			PathMarkerMID = ResolveMaterialInstance(PathMarkerMeshComponent, PathVisualizationMaterial, PathMarkerVisualizationMID, PathMarkerVisualizationMaterialSource);
-		}
-
-		ApplyColorToMaterial(PathMarkerMID, MarkerColor);
-	}
-
-	for (int32 SegmentIndex = 0; SegmentIndex < SplineMeshComponents.Num(); ++SegmentIndex)
-	{
-		if (USplineMeshComponent* SplineMeshComponent = SplineMeshComponents[SegmentIndex])
-		{
-			const bool bSegmentInConflict = ConflictedSegmentStartIndices.Contains(SegmentIndex);
-			UMaterialInstanceDynamic* SegmentMID = nullptr;
-			if (bSegmentInConflict)
-			{
-				SegmentMID = ResolveMaterialInstance(SplineMeshComponent, PathConflictMaterial, SplineConflictMIDs[SegmentIndex], SplineConflictMaterialSources[SegmentIndex]);
-			}
-			else
-			{
-				SegmentMID = ResolveMaterialInstance(SplineMeshComponent, PathVisualizationMaterial, SplineVisualizationMIDs[SegmentIndex], SplineVisualizationMaterialSources[SegmentIndex]);
-			}
-
-			ApplyColorToMaterial(SegmentMID, bSegmentInConflict ? PathConflictColor : DisplayColor);
-		}
-	}
+    TArray<double> Heights;TArray<float> Speeds;
+    auto* Registry=GetWorld() && GetWorld()->GetGameInstance()?GetWorld()->GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>():nullptr;
+    auto* Coordinates=Registry?Registry->GetCoordinateService().GetObject():nullptr;
+    bVisualGeographicAltitude=Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates);
+    for(int32 I=0;I<Waypoints.Num();++I){
+        const FVector World=GetWaypointWorldLocation(I);
+        Heights.Add(bVisualGeographicAltitude?ICoordinateService::Execute_WorldToGeographic(Coordinates,World).Z:World.Z/100.);
+        Speeds.Add(Waypoints[I].SegmentSpeed);
+    }
+    SegmentVisuals=RouteVisual::Build(Heights,Speeds,bClosedLoop,GetDefaultSegmentSpeedMps(),VisualState,ConflictedSegmentStartIndices);
+    for(auto& V:SegmentVisuals)if(V.bConflict)V.StartColor=V.EndColor=V.HaloColor=PathConflictColor;
+    auto Set=[&](UMeshComponent* Mesh,TObjectPtr<UMaterialInstanceDynamic>& MID,const FDronePathSegmentVisualState& V,bool Halo,bool Joint){
+        if(!MID){MID=UMaterialInstanceDynamic::Create(RouteV2Material?RouteV2Material:CommandMapMaterial,Mesh);Mesh->SetMaterial(0,MID);}
+        if(!MID)return;
+        MID->SetVectorParameterValue(TEXT("StartColor"),V.StartColor);MID->SetVectorParameterValue(TEXT("EndColor"),V.EndColor);
+        MID->SetVectorParameterValue(TEXT("HaloColor"),V.HaloColor);MID->SetScalarParameterValue(TEXT("IsHalo"),Halo?1:0);
+        MID->SetScalarParameterValue(TEXT("FlowRate"),V.FlowRate);MID->SetScalarParameterValue(TEXT("FlowStrength"),Joint?0:1);
+        MID->SetScalarParameterValue(TEXT("FlowDensity"),6);MID->SetScalarParameterValue(TEXT("ConflictStrength"),V.bConflict?1:0);
+        MID->SetScalarParameterValue(TEXT("SelectionStrength"),bVisualSelected?1:0);
+        MID->SetScalarParameterValue(TEXT("Completed"),VisualState==ERouteVisualState::Completed?1:0);
+    };
+    for(int32 I=0;I<SegmentVisuals.Num() && I<SplineMeshComponents.Num();++I){
+        Set(SplineMeshComponents[I],SplineVisualizationMIDs[I],SegmentVisuals[I],false,false);
+        Set(HaloComponents[I],HaloMIDs[I],SegmentVisuals[I],true,false);
+        const FVector A=GetWaypointWorldLocation(I),B=GetWaypointWorldLocation(SegmentVisuals[I].EndWaypointIndex);
+        for(auto* MID:{SplineVisualizationMIDs[I].Get(),HaloMIDs[I].Get()})if(MID){MID->SetVectorParameterValue(TEXT("StartWorld"),FLinearColor(A));MID->SetVectorParameterValue(TEXT("EndWorld"),FLinearColor(B));}
+    }
+    double Min=Heights.IsEmpty()?0:Heights[0],Max=Min;for(double H:Heights){Min=FMath::Min(Min,H);Max=FMath::Max(Max,H);}
+    for(int32 I=0;I<JointComponents.Num();++I){FDronePathSegmentVisualState V;
+        V.bConflict=ConflictedWaypointIndices.Contains(I);V.StartColor=V.EndColor=V.bConflict?FLinearColor::Red:RouteVisual::AltitudeColor(Heights[I],Min,Max);
+        V.HaloColor=V.StartColor;Set(JointComponents[I],JointMIDs[I],V,false,true);
+    }
 }
 
 bool ADronePathActor::ShouldSpawnWaypointHandles() const

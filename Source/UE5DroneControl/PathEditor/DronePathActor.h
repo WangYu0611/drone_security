@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SplineComponent.h"
 #include "DroneWaypointTypes.h"
+#include "DronePathVisual.h"
 #include "DronePathActor.generated.h"
 
 class ADroneWaypointActor;
@@ -179,6 +180,12 @@ public:
 
 	// Transient map presentation; never rebuilds waypoint or playback state. Zero restores authored width.
 	void SetMapDisplayRadius(float RadiusCm);
+    // Presentation only. Execution monitors may supply acknowledged state.
+    void SetRoutePresentation(ERouteVisualState State, bool Selected);
+    const TArray<FDronePathSegmentVisualState>& GetSegmentVisuals() const { return SegmentVisuals; }
+    bool IsVisualSelected() const { return bVisualSelected; }
+    bool HasResolvedGeographicAltitude() const { return bVisualGeographicAltitude; }
+    int32 GetVisualComponentCount() const { return SplineMeshComponents.Num()+HaloComponents.Num()+JointComponents.Num(); }
 
 	UFUNCTION(BlueprintCallable, Category = "Drone Path|Extensibility")
 	void SetPathNumericId(int32 NewPathNumericId);
@@ -277,6 +284,16 @@ protected:
 #endif
 
 private:
+    friend class FRouteVisualComponentsTest;
+    TArray<FDronePathSegmentVisualState> SegmentVisuals;
+    ERouteVisualState VisualState=ERouteVisualState::Confirmed;
+    bool bVisualSelected=false,bVisualGeographicAltitude=false,bExternalPresentation=false;
+    UPROPERTY() TObjectPtr<UMaterialInterface> RouteV2Material;
+    UPROPERTY(Transient) TArray<TObjectPtr<USplineMeshComponent>> HaloComponents;
+    UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> JointComponents;
+    UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> HaloMIDs;
+    UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> JointMIDs;
+    void UpdateVisualGeometry();
 	float MapDisplayRadius = 0.f;
 	int32 MapDisplayState = -1; // Presentation only: planning, confirmed, active, completed.
 	UPROPERTY()
