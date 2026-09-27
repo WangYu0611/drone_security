@@ -1,4 +1,6 @@
 #include "Map/MapShellWidget.h"
+#include "PathEditor/DronePathActor.h"
+#include "EngineUtils.h"
 #include "Map/MapExecutionWidget.h"
 #include "Shared/Stage1HeaderWidget.h"
 #include "Shared/ProductText.h"
@@ -85,6 +87,15 @@ void UMapShellWidget::NativeOnInitialized()
     Button(TEXT("zh-Hans"), TEXT("中文"));Button(TEXT("en"),TEXT("English"));
     ActionStatus = Text(TEXT("Select a UAV here or on the map."), 12);
     Rows->AddChild(ActionStatus);
+    RouteLegend=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(RouteLegend);RouteLegend->SetPadding(FMargin(10));
+    RouteLegend->SetVisibility(ESlateVisibility::HitTestInvisible);
+    auto* LegendSlot=Root->AddChildToCanvas(RouteLegend);LegendSlot->SetAnchors(FAnchors(1,1));LegendSlot->SetAlignment(FVector2D(1,1));LegendSlot->SetPosition(FVector2D(-12,-12));LegendSlot->SetSize(FVector2D(300,124));LegendSlot->SetZOrder(4);
+    auto* LegendBox=WidgetTree->ConstructWidget<UVerticalBox>();RouteLegend->SetContent(LegendBox);
+    auto* Colors=WidgetTree->ConstructWidget<UHorizontalBox>();LegendBox->AddChild(Colors);
+    for(int I=0;I<5;++I){auto* Swatch=WidgetTree->ConstructWidget<UBorder>();
+        // Fixed legend scale spans the complete route-local palette.
+        Swatch->SetBrushColor(RouteVisual::AltitudeColor(I*30.,0,120));Swatch->SetPadding(FMargin(26,3));Colors->AddChild(Swatch);}
+    RouteLegendText=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(RouteLegendText,12);LegendBox->AddChild(RouteLegendText);
     PlanPanel=CreateWidget<UMapMissionRouteWidget>(GetOwningPlayer(),UMapMissionRouteWidget::StaticClass());
     auto* PlanSlot=Root->AddChildToCanvas(PlanPanel);PlanSlot->SetAnchors(FAnchors(0,0,0,1));PlanSlot->SetOffsets(FMargin(8,184,600,8));PlanSlot->SetZOrder(3);
     PlanPanel->SetEditorEnabled(false);
@@ -98,6 +109,19 @@ void UMapShellWidget::Refresh()
     if(PlanPanel && !Moving){if(bWasMoving)PlanPanel->ReloadGeometry();PlanPanel->Refresh();}
     if(Moving && PlanPanel)PlanPanel->SetVisibility(ESlateVisibility::Collapsed);bWasMoving=Moving;
     if(ExecutionMonitor){ExecutionMonitor->Refresh();if(Moving || (PlanPanel && PlanPanel->IsEditorEnabled()))ExecutionMonitor->SetVisibility(ESlateVisibility::Collapsed);}
+    if(RouteLegend){
+        ADronePathActor* SelectedRoute=nullptr;
+        for(TActorIterator<ADronePathActor> It(GetWorld());It;++It)if(!It->IsHidden() && !It->GetSegmentVisuals().IsEmpty()){
+            if(!SelectedRoute || It->IsVisualSelected())SelectedRoute=*It;if(It->IsVisualSelected())break;
+        }
+        RouteLegend->SetVisibility(SelectedRoute?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
+        if(SelectedRoute){double Min=DBL_MAX,Max=-DBL_MAX;float Slow=FLT_MAX,Fast=0;
+            for(const auto& V:SelectedRoute->GetSegmentVisuals()){Min=FMath::Min3(Min,V.StartAltitude,V.EndAltitude);Max=FMath::Max3(Max,V.StartAltitude,V.EndAltitude);Slow=FMath::Min(Slow,V.EffectiveSpeed);Fast=FMath::Max(Fast,V.EffectiveSpeed);}
+            RouteLegendText->SetText(FText::Format(ProductText::Get(TEXT("RouteVisual.Legend")),
+                FText::AsNumber(FMath::RoundToInt(Min)),FText::AsNumber(FMath::RoundToInt(Max)),FText::AsNumber(Slow),FText::AsNumber(Fast),
+                ProductText::Get(SelectedRoute->HasResolvedGeographicAltitude()?TEXT("RouteVisual.Ellipsoid"):TEXT("RouteVisual.WorldHeight"))));
+        }
+    }
     if (!Manager.IsValid() || !Manager->GetRegistry() || !Status) return;
     auto* Registry = Manager->GetRegistry(); auto* Map = Manager->GetMapService();
     TArray<FString> Options; AircraftIds.Reset();

@@ -49,10 +49,13 @@ ADroneWaypointActor::ADroneWaypointActor()
 	MeshComponent->SetRelativeScale3D(FVector(0.15f));
 	MeshComponent->SetMobility(EComponentMobility::Movable);
 
+    VisualRing=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RouteVisualRing"));VisualRing->SetupAttachment(MeshComponent);
+    VisualRing->SetCollisionEnabled(ECollisionEnabled::NoCollision);VisualRing->SetGenerateOverlapEvents(false);VisualRing->SetCastShadow(false);
+    VisualRing->SetRelativeScale3D(FVector(1.6f));VisualRing->SetVisibility(false);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	if (SphereMesh.Succeeded())
 	{
-		MeshComponent->SetStaticMesh(SphereMesh.Object);
+		MeshComponent->SetStaticMesh(SphereMesh.Object);VisualRing->SetStaticMesh(SphereMesh.Object);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
@@ -589,6 +592,15 @@ void ADroneWaypointActor::ApplyVisualState()
 		MeshComponent->SetRelativeScale3D(FVector(DroneWaypointVisual::BaseWaypointMeshScale * VisualScale * ActiveMapScaleMultiplier * CommandMapScaleMultiplier));
 	}
 
+    if(VisualRing){
+        VisualRing->SetVisibility(bSelected || bConflictHighlighted);
+        if(!VisualRingMID){if(auto* M=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Command/Materials/M_CommandPathV2.M_CommandPathV2"))){VisualRingMID=UMaterialInstanceDynamic::Create(M,VisualRing);VisualRing->SetMaterial(0,VisualRingMID);}}
+        if(VisualRingMID){const FLinearColor RingColor=bConflictHighlighted?FLinearColor::Red:SelectedTextColor;
+            VisualRingMID->SetVectorParameterValue(TEXT("StartColor"),RingColor);VisualRingMID->SetVectorParameterValue(TEXT("EndColor"),RingColor);
+            VisualRingMID->SetScalarParameterValue(TEXT("FlowStrength"),0);VisualRingMID->SetScalarParameterValue(TEXT("IsRing"),1);
+            VisualRingMID->SetScalarParameterValue(TEXT("ConflictStrength"),bConflictHighlighted?1:0);
+        }
+    }
 	ApplyColorToMesh(DisplayColor);
 
 	// 仅"选中 且 允许交互"（主操作航点）才显示 Gizmo 轴；其余选中航点只保留高亮。

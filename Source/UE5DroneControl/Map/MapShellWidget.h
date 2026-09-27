@@ -25,6 +25,8 @@ private:
     UPROPERTY() TObjectPtr<class UBorder> MissionHighlight;
     UPROPERTY() TObjectPtr<class UTextBlock> Status;
     UPROPERTY() TObjectPtr<class UTextBlock> ActionStatus;
+    UPROPERTY() TObjectPtr<class UBorder> RouteLegend;
+    UPROPERTY() TObjectPtr<class UTextBlock> RouteLegendText;
     UPROPERTY() TObjectPtr<class UMapMissionRouteWidget> PlanPanel;
     UPROPERTY() TObjectPtr<class UComboBoxString> Aircraft;
     UPROPERTY() TObjectPtr<class UCommandActionButton> Map2DButton;

@@ -38,6 +38,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
+    UPROPERTY(VisibleAnywhere, Category="Components") TObjectPtr<UStaticMeshComponent> VisualRing;
+    UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> VisualRingMID;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UBillboardComponent> BillboardComponent;

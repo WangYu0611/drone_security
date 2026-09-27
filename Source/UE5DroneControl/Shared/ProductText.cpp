@@ -478,6 +478,9 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Map.AdjustBeforeEdit"),NSLOCTEXT("DroneOps","Map.AdjustBeforeEdit","Adjust the map view before editing.")},
 {TEXT("Map.FinishBeforeMode"),NSLOCTEXT("DroneOps","Map.FinishBeforeMode","Finish route editing before switching map mode.")},
 {TEXT("Map.InvalidPosition"),NSLOCTEXT("DroneOps","Map.InvalidPosition","No valid map position")},
+{TEXT("RouteVisual.Legend"),NSLOCTEXT("DroneOps","RouteVisual.Legend","ROUTE VISUAL  |  Low → High\nAltitude {0}–{1} m ({4})\nSpeed {2}–{3} m/s · Slow ▶  Fast ▶▶▶\nDirection →  |  Conflict: red pulse")},
+{TEXT("RouteVisual.Ellipsoid"),NSLOCTEXT("DroneOps","RouteVisual.Ellipsoid","Ellipsoid")},
+{TEXT("RouteVisual.WorldHeight"),NSLOCTEXT("DroneOps","RouteVisual.WorldHeight","World height")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -959,6 +962,9 @@ if(Source==TEXT("ROUTE EDITING | MAP VIEW LOCKED"))return Get(TEXT("Map.ViewLock
 if(Source==TEXT("Adjust the map view before editing."))return Get(TEXT("Map.AdjustBeforeEdit"));
 if(Source==TEXT("Finish route editing before switching map mode."))return Get(TEXT("Map.FinishBeforeMode"));
 if(Source==TEXT("No valid map position"))return Get(TEXT("Map.InvalidPosition"));
+if(Source==TEXT("ROUTE VISUAL  |  Low → High\nAltitude {0}–{1} m ({4})\nSpeed {2}–{3} m/s · Slow ▶  Fast ▶▶▶\nDirection →  |  Conflict: red pulse"))return Get(TEXT("RouteVisual.Legend"));
+if(Source==TEXT("Ellipsoid"))return Get(TEXT("RouteVisual.Ellipsoid"));
+if(Source==TEXT("World height"))return Get(TEXT("RouteVisual.WorldHeight"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));
