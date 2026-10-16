@@ -1,0 +1,74 @@
+{
+  "version": 0,
+  "next_id": 1,
+  "plans": {},
+  "missions": {},
+  "paths": {},
+  "events": [],
+  "deployments": {},
+  "edit_sessions": {},
+  "executions": {},
+  "execution_version": 3,
+  "execution_requests": {
+    "2a4c9bcf-8eef-4d60-aa41-9cd34cbe4caf": {
+      "request": {
+        "request_id": "2a4c9bcf-8eef-4d60-aa41-9cd34cbe4caf",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "dfe7ddef-ae7e-4a14-ae62-f2fee1ae8769": {
+      "request": {
+        "request_id": "dfe7ddef-ae7e-4a14-ae62-f2fee1ae8769",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    },
+    "513e3bf1-dd04-4e86-8738-b6ad15226a42": {
+      "request": {
+        "request_id": "513e3bf1-dd04-4e86-8738-b6ad15226a42",
+        "simulation": true,
+        "action": "execution_shutdown"
+      },
+      "execution_id": ""
+    }
+  },
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8.0,
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30.0
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34706,
+          "altitude": 30.0
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34709,
+          "altitude": 30.0
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34712,
+          "altitude": 30.0
+        }
+      }
+    },
+    "safety_separation_m": 1.5
+  },
+  "execution_adapter": "Mock"
+}

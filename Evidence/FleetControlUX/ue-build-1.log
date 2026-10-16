@@ -1,0 +1,80 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:\CodexPublish\drone_security\UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: MapExecutionWidget.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, ProductText.cpp, FleetControlTest.cpp, RouteVisualTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 23 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 19.07 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/23] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[2/23] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[3/23] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/23] Compile [x64] CommandShellWidget.cpp [NoUba]
+[5/23] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[6/23] Compile [x64] FleetControlTest.cpp [NoUba]
+[7/23] Compile [x64] GroupControlWidget.cpp [NoUba]
+[8/23] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[9/23] Compile [x64] MapExtractionTest.cpp [NoUba]
+[10/23] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(41,15): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+        auto* Slot=StepRow->AddChildToHorizontalBox(Card);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(I?4:0,0,0,0));
+              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(60,65): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+        auto* B=MakeButton(HeightButtons,*P.Key,*P.Value);auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(2,4));
+                                                                ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(68,196): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+    for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("fit_preview"),TEXT("FleetUX.Fit")},{TEXT("details"),TEXT("FleetUX.Coordinates")}}){auto* B=MakeButton(DetailRow,*P.Key,*P.Value);auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(2,4));}
+                                                                                                                                                                                                   ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(79,88): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+        auto* B=MakeButton(Secondary,*P.Key,*P.Value,false,P.Key==TEXT("abort"));auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(2,4));
+                                                                                       ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(83,262): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+    for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("abort_cancel"),TEXT("FleetUX.Keep")},{TEXT("abort_confirm"),TEXT("FleetUX.AbortConfirm")}}){auto* B=MakeButton(AbortRow,*P.Key,*P.Value,P.Key==TEXT("abort_confirm"),P.Key==TEXT("abort_confirm"));auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(2));}
+                                                                                                                                                                                                                                                                     ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(364,15): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+        auto* Slot=CastChecked<UCanvasPanelSlot>(Panel->Slot);if(!Slot->GetSize().Equals(Size,.5))Slot->SetSize(Size);}
+              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+[11/23] Compile [x64] MapShellWidget.cpp [NoUba]
+[12/23] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[13/23] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[14/23] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[15/23] Compile [x64] ReservationWidgetTest.cpp [NoUba]
+[16/23] Compile [x64] RouteVisualTest.cpp [NoUba]
+[17/23] Compile [x64] ProductText.cpp [NoUba]
+[18/23] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[19/23] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[20/23] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 134.55 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 140.58 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 20.8kb
