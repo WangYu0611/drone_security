@@ -16,7 +16,7 @@
 using namespace PlanUI;
 void UMapExecutionWidget::NativeOnInitialized(){
     Super::NativeOnInitialized();auto* Root=WidgetTree->ConstructWidget<UCanvasPanel>();WidgetTree->RootWidget=Root;
-    auto* Panel=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(Panel);Panel->SetPadding(FMargin(12));
+    auto* Panel=WidgetTree->ConstructWidget<UBorder>();SummaryPanel=Panel;CommandTheme::Panel(Panel);Panel->SetPadding(FMargin(12));
     auto* Box=WidgetTree->ConstructWidget<UVerticalBox>();Panel->SetContent(Box);
     Label(WidgetTree,Box,T(TEXT("Execution.MonitorNeutral")),24);Summary=Label(WidgetTree,Box,FText::GetEmpty(),22);
     auto* PanelSlot=Root->AddChildToCanvas(Panel);PanelSlot->SetPosition(FVector2D(12,190));PanelSlot->SetSize(FVector2D(520,270));
@@ -86,6 +86,9 @@ int32 UMapExecutionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G
     };
     for(const auto& Current:RenderedExecutions){
     if(IsRouteSuppressed(Current))continue;
+    // The fleet card and its decluttered UAV markers own this group's HUD.
+    // Immutable Route V2 bodies above remain visible and authoritative.
+    if(!ManagedFleetGroup.IsEmpty() && Field(Current,TEXT("group_id"))==ManagedFleetGroup)continue;
     const auto Route=Object(Current,TEXT("route_snapshot"));if(!Route)continue;
     const auto& Points=Route->GetArrayField(TEXT("waypoints"));
     const int Completed=Current->GetNumberField(TEXT("completed_waypoints"));
@@ -109,8 +112,14 @@ void UMapExecutionWidget::NativeDestruct(){
     VisualRoutes.Reset();
     Super::NativeDestruct();
 }
+void UMapExecutionWidget::SetManagedFleetGroup(const FString& Group,const TArray<int32>& PreviewMembers){
+    FleetPreviewUavs.Reset();for(int Id:PreviewMembers)FleetPreviewUavs.Add(FString::Printf(TEXT("UAV-%02d"),Id));
+    ManagedFleetGroup=Group;if(SummaryPanel)SummaryPanel->SetVisibility(Execution && !Group.IsEmpty() && Field(Execution,TEXT("group_id"))==Group?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+    for(const auto& E:RenderedExecutions)if(auto* Path=VisualRoutes.Find(Field(E,TEXT("execution_id"))))Path->SetActorHiddenInGame(IsRouteSuppressed(E));
+}
 
 bool UMapExecutionWidget::IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const {
+    if(Field(E,TEXT("control_kind"))==TEXT("GROUP_MOVE") && !ExecutionUI::Active(E) && FleetPreviewUavs.Contains(Field(E,TEXT("uav_id"))))return true;
     return !SuppressedPlan.IsEmpty() && Field(E,TEXT("plan_id"))==SuppressedPlan
         && (bPlanMoving || Field(E,TEXT("mission_id"))==SuppressedMission);
 }

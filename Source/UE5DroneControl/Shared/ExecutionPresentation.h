@@ -24,7 +24,11 @@ inline TSharedPtr<FJsonObject> Latest(const TSharedPtr<FJsonObject>& State,const
 inline TArray<TSharedPtr<FJsonObject>> RouteOwners(const TSharedPtr<FJsonObject>& State,const FString& SelectedPlan){
     TArray<TSharedPtr<FJsonObject>> Result;const auto All=PlanUI::Object(State,TEXT("executions"));if(!All)return Result;
     TMap<FString,TSharedPtr<FJsonObject>> LatestByMission;
-    auto Key=[](const TSharedPtr<FJsonObject>& E){const FString P=PlanUI::Field(E,TEXT("plan_id")),M=PlanUI::Field(E,TEXT("mission_id"));return P.IsEmpty() || M.IsEmpty()?PlanUI::Field(E,TEXT("execution_id")):P+TEXT("/")+M;};
+    auto Key=[](const TSharedPtr<FJsonObject>& E){const FString P=PlanUI::Field(E,TEXT("plan_id")),M=PlanUI::Field(E,TEXT("mission_id"));
+        // Free fleet moves have no Mission. Show each UAV's latest acknowledged
+        // move instead of accumulating every historic route on the map.
+        if(P.IsEmpty() && PlanUI::Field(E,TEXT("control_kind"))==TEXT("GROUP_MOVE"))return TEXT("fleet/")+PlanUI::Field(E,TEXT("uav_id"));
+        return P.IsEmpty() || M.IsEmpty()?PlanUI::Field(E,TEXT("execution_id")):P+TEXT("/")+M;};
     for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(!E)continue;
         const FString P=PlanUI::Field(E,TEXT("plan_id"));if(!Active(E) && P!=SelectedPlan)continue;
         const auto Plan=PlanUI::Find(State,TEXT("plans"),P);

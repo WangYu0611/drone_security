@@ -33,6 +33,23 @@
 #include "Components/ScrollBox.h"
 #include "Components/EditableTextBox.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Rendering/DrawElements.h"
+
+static void RefreshMapLegend(UWorld* World,UBorder* RouteLegend,UTextBlock* RouteLegendText) {
+    if(RouteLegend){
+        ADronePathActor* SelectedRoute=nullptr;
+        for(TActorIterator<ADronePathActor> It(World);It;++It)if(!It->IsHidden() && !It->GetSegmentVisuals().IsEmpty()){
+            if(!SelectedRoute || It->IsVisualSelected())SelectedRoute=*It;if(It->IsVisualSelected())break;
+        }
+        RouteLegend->SetVisibility(SelectedRoute?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
+        if(SelectedRoute){double Min=DBL_MAX,Max=-DBL_MAX;float Slow=FLT_MAX,Fast=0;
+            for(const auto& V:SelectedRoute->GetSegmentVisuals()){Min=FMath::Min3(Min,V.StartAltitude,V.EndAltitude);Max=FMath::Max3(Max,V.StartAltitude,V.EndAltitude);Slow=FMath::Min(Slow,V.EffectiveSpeed);Fast=FMath::Max(Fast,V.EffectiveSpeed);}
+            RouteLegendText->SetText(FText::Format(ProductText::Get(TEXT("RouteVisual.Legend")),
+                FText::AsNumber(FMath::RoundToInt(Min)),FText::AsNumber(FMath::RoundToInt(Max)),FText::AsNumber(Slow),FText::AsNumber(Fast),
+                ProductText::Get(SelectedRoute->HasResolvedGeographicAltitude()?TEXT("RouteVisual.Ellipsoid"):TEXT("RouteVisual.WorldHeight"))));
+        }
+    }
+}
 
 void UMapShellWidget::InitializeManager(UCommandScreenManager* InManager) { Manager = InManager; Refresh(); }
 void UMapShellWidget::NativeOnInitialized()
@@ -59,10 +76,10 @@ void UMapShellWidget::NativeOnInitialized()
     auto* MissionSlot=Root->AddChildToCanvas(MissionHighlight);MissionSlot->SetSize(FVector2D(64,64));MissionSlot->SetAlignment(FVector2D(.5f,.5f));MissionSlot->SetZOrder(0);
     Toolbar = WidgetTree->ConstructWidget<UBorder>();
     CommandTheme::Panel(Toolbar, CommandTheme::Background);
-    Toolbar->SetPadding(FMargin(12, 6));
+    Toolbar->SetPadding(FMargin(12, 4));
     auto* TopSlot = Root->AddChildToCanvas(Toolbar);
     TopSlot->SetZOrder(2);
-    TopSlot->SetAnchors(FAnchors(0, 0, 1, 0)); TopSlot->SetOffsets(FMargin(0, 72, 0, 104));
+    TopSlot->SetAnchors(FAnchors(0, 0, 1, 0)); TopSlot->SetOffsets(FMargin(12, 80, 12, 104));
     auto* Rows = WidgetTree->ConstructWidget<UVerticalBox>(); Toolbar->SetContent(Rows);
     auto Text = [this](const FString& Value, int32 Size)
     {
@@ -80,7 +97,7 @@ void UMapShellWidget::NativeOnInitialized()
     {
         auto* W = WidgetTree->ConstructWidget<UCommandActionButton>(UCommandActionButton::StaticClass(), FName(Name));
         W->Configure(FName(Name)); W->OnAction.AddDynamic(this, &UMapShellWidget::ActionRequested);
-        W->SetContent(Text(Label, 13)); Tools->AddChildToHorizontalBox(W)->SetPadding(FMargin(3, 5));
+        W->SetContent(Text(Label, 15)); Tools->AddChildToHorizontalBox(W)->SetPadding(FMargin(3, 3));
         return W;
     };
     Map2DButton = Button(TEXT("map2d"), TEXT("2D")); Map3DButton = Button(TEXT("map3d"), TEXT("3D"));
@@ -94,13 +111,13 @@ void UMapShellWidget::NativeOnInitialized()
     Rows->AddChild(ActionStatus);
     RouteLegend=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(RouteLegend);RouteLegend->SetPadding(FMargin(10));
     RouteLegend->SetVisibility(ESlateVisibility::HitTestInvisible);
-    auto* LegendSlot=Root->AddChildToCanvas(RouteLegend);LegendSlot->SetAnchors(FAnchors(1,1));LegendSlot->SetAlignment(FVector2D(1,1));LegendSlot->SetPosition(FVector2D(-12,-12));LegendSlot->SetSize(FVector2D(300,124));LegendSlot->SetZOrder(4);
+    auto* LegendSlot=Root->AddChildToCanvas(RouteLegend);LegendSlot->SetAnchors(FAnchors(0,1));LegendSlot->SetAlignment(FVector2D(0,1));LegendSlot->SetPosition(FVector2D(18,-18));LegendSlot->SetSize(FVector2D(340,124));LegendSlot->SetZOrder(4);
     auto* LegendBox=WidgetTree->ConstructWidget<UVerticalBox>();RouteLegend->SetContent(LegendBox);
     auto* Colors=WidgetTree->ConstructWidget<UHorizontalBox>();LegendBox->AddChild(Colors);
     for(int I=0;I<5;++I){auto* Swatch=WidgetTree->ConstructWidget<UBorder>();
         // Fixed legend scale spans the complete route-local palette.
         Swatch->SetBrushColor(RouteVisual::AltitudeColor(I*30.,0,120));Swatch->SetPadding(FMargin(26,3));Colors->AddChild(Swatch);}
-    RouteLegendText=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(RouteLegendText,12);LegendBox->AddChild(RouteLegendText);
+    RouteLegendText=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(RouteLegendText,14);LegendBox->AddChild(RouteLegendText);
     PlanPanel=CreateWidget<UMapMissionRouteWidget>(GetOwningPlayer(),UMapMissionRouteWidget::StaticClass());
     auto* PlanSlot=Root->AddChildToCanvas(PlanPanel);PlanSlot->SetAnchors(FAnchors(0,0,0,1));PlanSlot->SetOffsets(FMargin(8,184,600,8));PlanSlot->SetZOrder(3);
     PlanPanel->SetEditorEnabled(false);
@@ -123,23 +140,12 @@ void UMapShellWidget::Refresh()
     RefreshSavedRoutes(Moving);
     if(FleetInteraction) {
         FleetInteraction->Refresh();const bool Available=FleetInteraction->IsAvailable();
+        if(ExecutionMonitor)ExecutionMonitor->SetManagedFleetGroup(FleetInteraction->GetManagedGroup(),FleetInteraction->GetPreviewMembers());
         BoxSelectButton->SetIsEnabled(Available);GroupMoveButton->SetIsEnabled(Available);
         CommandTheme::Button(BoxSelectButton,FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
         CommandTheme::Button(GroupMoveButton,FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
     }
-    if(RouteLegend){
-        ADronePathActor* SelectedRoute=nullptr;
-        for(TActorIterator<ADronePathActor> It(GetWorld());It;++It)if(!It->IsHidden() && !It->GetSegmentVisuals().IsEmpty()){
-            if(!SelectedRoute || It->IsVisualSelected())SelectedRoute=*It;if(It->IsVisualSelected())break;
-        }
-        RouteLegend->SetVisibility(SelectedRoute?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
-        if(SelectedRoute){double Min=DBL_MAX,Max=-DBL_MAX;float Slow=FLT_MAX,Fast=0;
-            for(const auto& V:SelectedRoute->GetSegmentVisuals()){Min=FMath::Min3(Min,V.StartAltitude,V.EndAltitude);Max=FMath::Max3(Max,V.StartAltitude,V.EndAltitude);Slow=FMath::Min(Slow,V.EffectiveSpeed);Fast=FMath::Max(Fast,V.EffectiveSpeed);}
-            RouteLegendText->SetText(FText::Format(ProductText::Get(TEXT("RouteVisual.Legend")),
-                FText::AsNumber(FMath::RoundToInt(Min)),FText::AsNumber(FMath::RoundToInt(Max)),FText::AsNumber(Slow),FText::AsNumber(Fast),
-                ProductText::Get(SelectedRoute->HasResolvedGeographicAltitude()?TEXT("RouteVisual.Ellipsoid"):TEXT("RouteVisual.WorldHeight"))));
-        }
-    }
+    RefreshMapLegend(GetWorld(),RouteLegend,RouteLegendText);
     if (!Manager.IsValid() || !Manager->GetRegistry() || !Status) return;
     auto* Registry = Manager->GetRegistry(); auto* Map = Manager->GetMapService();
     TArray<FString> Options; AircraftIds.Reset();
@@ -170,8 +176,10 @@ void UMapShellWidget::Refresh()
     CommandTheme::Button(Map2DButton, b2D); CommandTheme::Button(Map3DButton, !b2D);
     Status->SetText(ProductText::Source(FString::Printf(TEXT("UAV %02d  |  %s  |  %s"), Registry->GetPrimarySelectedDrone(),
         b2D ? TEXT("2D") : TEXT("3D"), Map && Map->OwnsCamera() ? TEXT("Camera ready") : TEXT("Initializing"))));
-    if (auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(); Sync && Sync->IsEnabled())
-        Status->SetText(ProductText::Source(Sync->GetStatusText()));
+    if (auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(); Sync && Sync->IsEnabled()){
+        Status->SetText(ProductText::Get(!Sync->IsReady()?TEXT("FleetUX.SyncWaiting"):PlanUI::Field(Sync->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock")?TEXT("FleetUX.SyncMock"):TEXT("FleetUX.SyncReady")));
+        Status->SetColorAndOpacity(Sync->IsReady()?CommandTheme::Online:CommandTheme::Warning);
+    }
 }
 void UMapShellWidget::AircraftSelected(FString Item, ESelectInfo::Type Type)
 {
@@ -238,6 +246,8 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
 void UMapShellWidget::NativeTick(const FGeometry& Geometry, float DeltaSeconds)
 {
     Super::NativeTick(Geometry, DeltaSeconds);
+    if(ExecutionMonitor && FleetInteraction)ExecutionMonitor->SetManagedFleetGroup(FleetInteraction->GetManagedGroup(),FleetInteraction->GetPreviewMembers());
+    RefreshMapLegend(GetWorld(),RouteLegend,RouteLegendText);
     if (!SelectionHighlight) return;
     auto* Registry = Manager.IsValid() ? Manager->GetRegistry() : nullptr;
     const APawn* Pawn = Registry ? Registry->GetSenderPawn(Registry->GetPrimarySelectedDrone()) : nullptr;
@@ -281,4 +291,10 @@ void UMapShellWidget::NativeDestruct(){
     SavedRouteVisuals.Reset();
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionRouteVisualVisible(false);
     Super::NativeDestruct();
+}
+int32 UMapShellWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G,const FSlateRect& Clip,FSlateWindowElementList& Out,int32 Layer,const FWidgetStyle& Style,bool Enabled) const {
+    // A light navy veil improves route/marker contrast without replacing imagery
+    // or adding fabricated terrain. Widgets render above this map-only tint.
+    FSlateDrawElement::MakeBox(Out,Layer,G.ToPaintGeometry(),FCoreStyle::Get().GetBrush("WhiteBrush"),ESlateDrawEffect::None,FLinearColor(.018f,.038f,.065f,.16f));
+    return Super::NativePaint(Args,G,Clip,Out,Layer+1,Style,Enabled);
 }

@@ -21,6 +21,7 @@ protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeDestruct() override;
     virtual void NativeTick(const FGeometry& Geometry, float DeltaSeconds) override;
+    virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
     TWeakObjectPtr<class UCommandScreenManager> Manager;
     UPROPERTY() TObjectPtr<class UOverlay> CenterHost;

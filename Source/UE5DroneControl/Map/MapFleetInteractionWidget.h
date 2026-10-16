@@ -26,8 +26,11 @@ public:
     bool IsDragging() const { return bDragging; }
     bool IsOverControls(const FVector2D& Screen) const;
     bool IsAvailable() const;
+    FString GetManagedGroup() const { return ManagedGroup; }
+    TArray<int32> GetPreviewMembers() const { return bHasTarget?TargetMembers:TArray<int32>(); }
 protected:
     virtual void NativeOnInitialized() override;
+    virtual void NativeTick(const FGeometry&,float) override;
     virtual void NativeDestruct() override;
     virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
@@ -35,6 +38,17 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     UPROPERTY() TObjectPtr<class UTextBlock> TargetText;
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
+    UPROPERTY() TObjectPtr<class UTextBlock> SelectionText;
+    UPROPERTY() TObjectPtr<class UTextBlock> HeightDeltaText;
+    UPROPERTY() TObjectPtr<class UTextBlock> TravelText;
+    UPROPERTY() TObjectPtr<class UTextBlock> StateText;
+    UPROPERTY() TObjectPtr<class UBorder> TargetCard;
+    UPROPERTY() TObjectPtr<class UVerticalBox> ProgressBox;
+    UPROPERTY() TObjectPtr<class UVerticalBox> AbortPrompt;
+    UPROPERTY() TObjectPtr<class UProgressBar> Progress;
+    UPROPERTY() TObjectPtr<class USlider> HeightSlider;
+    UPROPERTY() TArray<TObjectPtr<class UBorder>> Steps;
+    UPROPERTY() TArray<TObjectPtr<class UTextBlock>> StepLabels;
     UPROPERTY() TObjectPtr<class UVerticalBox> HeightControls;
     UPROPERTY() TObjectPtr<class UEditableTextBox> TargetHeightInput;
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Buttons;
@@ -43,6 +57,7 @@ private:
     bool bDragging=false,bPointerValid=false,bPending=false,bHasTarget=false;
     bool bSelectionPending=false;
     bool bUpdatingHeight=false,bHadMapMode=false,bWas3D=false;
+    bool bAbortConfirm=false,bShowCoordinates=false;
     int32 HeightPrimary=0;
     TArray<int32> RequestedSelection;
     int32 RequestedPrimary=0;
@@ -50,7 +65,8 @@ private:
     FVector TargetGeographic=FVector::ZeroVector; // longitude, latitude, ellipsoid altitude
     TArray<int32> TargetMembers;
     int32 TargetPrimary=0;
-    FString ExecutionId,MessageKey;
+    FString ExecutionId,MessageKey,ManagedGroup,DismissedExecution,AbortGroup;
+    TMap<TWeakObjectPtr<class UWidgetComponent>,bool> SuppressedLabels;
     FText ErrorDetails;
     FPlanRouteVisualSet PreviewRoutes;
     bool Project(int32 Id,FVector2D& Point) const;
@@ -66,4 +82,5 @@ private:
     TArray<int32> OrderedSelection() const;
     UFUNCTION() void Action(FName Name,int32 Id);
     UFUNCTION() void TargetHeightChanged(const FText& Text);
+    UFUNCTION() void HeightSliderChanged(float Value);
 };

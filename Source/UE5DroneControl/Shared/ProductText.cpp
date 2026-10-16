@@ -511,6 +511,49 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Fleet3D.InvalidHeight"),NSLOCTEXT("DroneOps","Fleet3D.InvalidHeight","Enter a numeric height within 10,000 m of the current anchor height. No movement has been sent.")},
 {TEXT("Fleet3D.ViewChanged"),NSLOCTEXT("DroneOps","Fleet3D.ViewChanged","View changed. Choose a new target before confirming movement.")},
 {TEXT("Fleet3D.Marker"),NSLOCTEXT("DroneOps","Fleet3D.Marker","Target anchor: {0} m")},
+{TEXT("FleetUX.Title"),NSLOCTEXT("DroneOps","FleetUX.Title","Fleet control")},
+{TEXT("FleetUX.Step1"),NSLOCTEXT("DroneOps","FleetUX.Step1","1  Select")},
+{TEXT("FleetUX.Step2"),NSLOCTEXT("DroneOps","FleetUX.Step2","2  Target")},
+{TEXT("FleetUX.Step3"),NSLOCTEXT("DroneOps","FleetUX.Step3","3  Review")},
+{TEXT("FleetUX.Height"),NSLOCTEXT("DroneOps","FleetUX.Height","Target height · m")},
+{TEXT("FleetUX.Next"),NSLOCTEXT("DroneOps","FleetUX.Next","Next · choose destination")},
+{TEXT("FleetUX.Again"),NSLOCTEXT("DroneOps","FleetUX.Again","Move again")},
+{TEXT("FleetUX.Confirm"),NSLOCTEXT("DroneOps","FleetUX.Confirm","Move {0} aircraft")},
+{TEXT("FleetUX.NeedTarget"),NSLOCTEXT("DroneOps","FleetUX.NeedTarget","Click a destination on the map")},
+{TEXT("FleetUX.Reselect"),NSLOCTEXT("DroneOps","FleetUX.Reselect","Choose again")},
+{TEXT("FleetUX.Exit"),NSLOCTEXT("DroneOps","FleetUX.Exit","Cancel / Esc")},
+{TEXT("FleetUX.Hide"),NSLOCTEXT("DroneOps","FleetUX.Hide","Collapse")},
+{TEXT("FleetUX.Coordinates"),NSLOCTEXT("DroneOps","FleetUX.Coordinates","Coordinates")},
+{TEXT("FleetUX.HideCoordinates"),NSLOCTEXT("DroneOps","FleetUX.HideCoordinates","Hide details")},
+{TEXT("FleetUX.Fit"),NSLOCTEXT("DroneOps","FleetUX.Fit","Fit view")},
+{TEXT("FleetUX.Preview"),NSLOCTEXT("DroneOps","FleetUX.Preview","DESTINATION PREVIEW")},
+{TEXT("FleetUX.Formation"),NSLOCTEXT("DroneOps","FleetUX.Formation","Keep formation and height offsets.")},
+{TEXT("FleetUX.HeightHint"),NSLOCTEXT("DroneOps","FleetUX.HeightHint","Drag to adjust, or enter exact ellipsoid height.")},
+{TEXT("FleetUX.SliderHint"),NSLOCTEXT("DroneOps","FleetUX.SliderHint","Fine adjustment: ±100 m from the current anchor height.")},
+{TEXT("FleetUX.Rise"),NSLOCTEXT("DroneOps","FleetUX.Rise","Current {0} m · rise {1} m")},
+{TEXT("FleetUX.Descend"),NSLOCTEXT("DroneOps","FleetUX.Descend","Current {0} m · descend {1} m")},
+{TEXT("FleetUX.Level"),NSLOCTEXT("DroneOps","FleetUX.Level","Current {0} m · keep height")},
+{TEXT("FleetUX.Selected"),NSLOCTEXT("DroneOps","FleetUX.Selected","{0} aircraft · anchor {1}")},
+{TEXT("FleetUX.EmptySelection"),NSLOCTEXT("DroneOps","FleetUX.EmptySelection","No aircraft selected")},
+{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Drag a box around at least two aircraft.")},
+{TEXT("FleetUX.SelectionReady"),NSLOCTEXT("DroneOps","FleetUX.SelectionReady","Selection ready. Choose a destination next.")},
+{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Click the map to choose a destination.")},
+{TEXT("FleetUX.ReviewHint"),NSLOCTEXT("DroneOps","FleetUX.ReviewHint","Review height and formation.")},
+{TEXT("FleetUX.RunningHint"),NSLOCTEXT("DroneOps","FleetUX.RunningHint","The group moves together. Control it here.")},
+{TEXT("FleetUX.FinishedHint"),NSLOCTEXT("DroneOps","FleetUX.FinishedHint","Movement ended. You can choose a new target.")},
+{TEXT("FleetUX.State"),NSLOCTEXT("DroneOps","FleetUX.State","{0} · {1}")},
+{TEXT("FleetUX.Travel"),NSLOCTEXT("DroneOps","FleetUX.Travel","≈ {0} m  ·  ≈ {1} s")},
+{TEXT("FleetUX.Distance"),NSLOCTEXT("DroneOps","FleetUX.Distance","≈ {0} m")},
+{TEXT("FleetUX.TargetCoordinates"),NSLOCTEXT("DroneOps","FleetUX.TargetCoordinates","Latitude {0}\nLongitude {1}\nEllipsoid height {2} m")},
+{TEXT("FleetUX.Marker"),NSLOCTEXT("DroneOps","FleetUX.Marker","UAV-{0}  ·  {1} m")},
+{TEXT("FleetUX.AbortHint"),NSLOCTEXT("DroneOps","FleetUX.AbortHint","Stop the whole group? This movement cannot be resumed.")},
+{TEXT("FleetUX.Keep"),NSLOCTEXT("DroneOps","FleetUX.Keep","Keep task")},
+{TEXT("FleetUX.AbortConfirm"),NSLOCTEXT("DroneOps","FleetUX.AbortConfirm","Stop group")},
+{TEXT("FleetUX.Accepted"),NSLOCTEXT("DroneOps","FleetUX.Accepted","Action confirmed.")},
+{TEXT("FleetUX.SyncMock"),NSLOCTEXT("DroneOps","FleetUX.SyncMock","Synced · Simulation")},
+{TEXT("FleetUX.SyncReady"),NSLOCTEXT("DroneOps","FleetUX.SyncReady","Synced · Connected")},
+{TEXT("FleetUX.SyncWaiting"),NSLOCTEXT("DroneOps","FleetUX.SyncWaiting","Connecting to control service…")},
+{TEXT("FleetUX.PreviewOnly"),NSLOCTEXT("DroneOps","FleetUX.PreviewOnly","Preview only · not moving")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1025,6 +1068,49 @@ if(Source==TEXT("3D fleet move: choose a position and height, review the preview
 if(Source==TEXT("Enter a numeric height within 10,000 m of the current anchor height. No movement has been sent."))return Get(TEXT("Fleet3D.InvalidHeight"));
 if(Source==TEXT("View changed. Choose a new target before confirming movement."))return Get(TEXT("Fleet3D.ViewChanged"));
 if(Source==TEXT("Target anchor: {0} m"))return Get(TEXT("Fleet3D.Marker"));
+if(Source==TEXT("Fleet control"))return Get(TEXT("FleetUX.Title"));
+if(Source==TEXT("1  Select"))return Get(TEXT("FleetUX.Step1"));
+if(Source==TEXT("2  Target"))return Get(TEXT("FleetUX.Step2"));
+if(Source==TEXT("3  Review"))return Get(TEXT("FleetUX.Step3"));
+if(Source==TEXT("Target height · m"))return Get(TEXT("FleetUX.Height"));
+if(Source==TEXT("Next · choose destination"))return Get(TEXT("FleetUX.Next"));
+if(Source==TEXT("Move again"))return Get(TEXT("FleetUX.Again"));
+if(Source==TEXT("Move {0} aircraft"))return Get(TEXT("FleetUX.Confirm"));
+if(Source==TEXT("Click a destination on the map"))return Get(TEXT("FleetUX.NeedTarget"));
+if(Source==TEXT("Choose again"))return Get(TEXT("FleetUX.Reselect"));
+if(Source==TEXT("Cancel / Esc"))return Get(TEXT("FleetUX.Exit"));
+if(Source==TEXT("Collapse"))return Get(TEXT("FleetUX.Hide"));
+if(Source==TEXT("Coordinates"))return Get(TEXT("FleetUX.Coordinates"));
+if(Source==TEXT("Hide details"))return Get(TEXT("FleetUX.HideCoordinates"));
+if(Source==TEXT("Fit view"))return Get(TEXT("FleetUX.Fit"));
+if(Source==TEXT("DESTINATION PREVIEW"))return Get(TEXT("FleetUX.Preview"));
+if(Source==TEXT("Keep formation and height offsets."))return Get(TEXT("FleetUX.Formation"));
+if(Source==TEXT("Drag to adjust, or enter exact ellipsoid height."))return Get(TEXT("FleetUX.HeightHint"));
+if(Source==TEXT("Fine adjustment: ±100 m from the current anchor height."))return Get(TEXT("FleetUX.SliderHint"));
+if(Source==TEXT("Current {0} m · rise {1} m"))return Get(TEXT("FleetUX.Rise"));
+if(Source==TEXT("Current {0} m · descend {1} m"))return Get(TEXT("FleetUX.Descend"));
+if(Source==TEXT("Current {0} m · keep height"))return Get(TEXT("FleetUX.Level"));
+if(Source==TEXT("{0} aircraft · anchor {1}"))return Get(TEXT("FleetUX.Selected"));
+if(Source==TEXT("No aircraft selected"))return Get(TEXT("FleetUX.EmptySelection"));
+if(Source==TEXT("Drag a box around at least two aircraft."))return Get(TEXT("FleetUX.SelectHint"));
+if(Source==TEXT("Selection ready. Choose a destination next."))return Get(TEXT("FleetUX.SelectionReady"));
+if(Source==TEXT("Click the map to choose a destination."))return Get(TEXT("FleetUX.PickHint"));
+if(Source==TEXT("Review height and formation."))return Get(TEXT("FleetUX.ReviewHint"));
+if(Source==TEXT("The group moves together. Control it here."))return Get(TEXT("FleetUX.RunningHint"));
+if(Source==TEXT("Movement ended. You can choose a new target."))return Get(TEXT("FleetUX.FinishedHint"));
+if(Source==TEXT("{0} · {1}"))return Get(TEXT("FleetUX.State"));
+if(Source==TEXT("≈ {0} m  ·  ≈ {1} s"))return Get(TEXT("FleetUX.Travel"));
+if(Source==TEXT("≈ {0} m"))return Get(TEXT("FleetUX.Distance"));
+if(Source==TEXT("Latitude {0}\nLongitude {1}\nEllipsoid height {2} m"))return Get(TEXT("FleetUX.TargetCoordinates"));
+if(Source==TEXT("UAV-{0}  ·  {1} m"))return Get(TEXT("FleetUX.Marker"));
+if(Source==TEXT("Stop the whole group? This movement cannot be resumed."))return Get(TEXT("FleetUX.AbortHint"));
+if(Source==TEXT("Keep task"))return Get(TEXT("FleetUX.Keep"));
+if(Source==TEXT("Stop group"))return Get(TEXT("FleetUX.AbortConfirm"));
+if(Source==TEXT("Action confirmed."))return Get(TEXT("FleetUX.Accepted"));
+if(Source==TEXT("Synced · Simulation"))return Get(TEXT("FleetUX.SyncMock"));
+if(Source==TEXT("Synced · Connected"))return Get(TEXT("FleetUX.SyncReady"));
+if(Source==TEXT("Connecting to control service…"))return Get(TEXT("FleetUX.SyncWaiting"));
+if(Source==TEXT("Preview only · not moving"))return Get(TEXT("FleetUX.PreviewOnly"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

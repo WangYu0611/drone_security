@@ -13,6 +13,7 @@
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Shared/ExecutionPresentation.h"
+#include "Components/Slider.h"
 using namespace PlanUI;
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFleetSelectionTest,"DroneOps.Fleet.Selection",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
@@ -41,6 +42,24 @@ bool FFleetTargetingTest::RunTest(const FString&) {
     for(const auto* Bad:{TEXT(""),TEXT("nan"),TEXT("inf"),TEXT("1e309"),TEXT("90oops")})TestFalse(TEXT("invalid height rejected"),FleetTargeting::ParseHeight(Bad,Height));
     TestEqual(TEXT("invalid text cannot replace accepted height"),Height,90.5);return true;
 }
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFleetPresentationTest,"DroneOps.Fleet.Presentation",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FFleetPresentationTest::RunTest(const FString&) {
+    auto State=MakeShared<FJsonObject>();auto All=MakeShared<FJsonObject>();State->SetObjectField(TEXT("executions"),All);
+    auto Add=[&](const FString& Id,const FString& Group,int Uav,double Time,const FString& Plan=TEXT(""),const FString& Status=TEXT("COMPLETED")){
+        auto E=MakeShared<FJsonObject>();E->SetStringField(TEXT("execution_id"),Id);E->SetStringField(TEXT("group_id"),Group);E->SetStringField(TEXT("uav_id"),FString::Printf(TEXT("UAV-%02d"),Uav));
+        E->SetStringField(TEXT("state"),Status);E->SetNumberField(TEXT("created_at"),Time);E->SetStringField(TEXT("control_kind"),Plan.IsEmpty()?TEXT("GROUP_MOVE"):TEXT("MISSION"));
+        E->SetStringField(TEXT("plan_id"),Plan);E->SetStringField(TEXT("mission_id"),Plan.IsEmpty()?TEXT(""):TEXT("mission"));All->SetObjectField(Id,E);
+    };
+    for(int Id=1;Id<=4;++Id){Add(FString::Printf(TEXT("old%d"),Id),TEXT("old"),Id,1);Add(FString::Printf(TEXT("new%d"),Id),TEXT("new"),Id,2);}
+    auto Owners=ExecutionUI::RouteOwners(State,TEXT(""));TestEqual(TEXT("repeated fleet moves retain four routes, not eight"),Owners.Num(),4);
+    for(const auto& E:Owners)TestEqual(TEXT("latest group owns all four fleet routes"),Field(E,TEXT("group_id")),FString(TEXT("new")));
+    Add(TEXT("subset1"),TEXT("subset"),1,3);Add(TEXT("subset2"),TEXT("subset"),2,3);Owners=ExecutionUI::RouteOwners(State,TEXT(""));
+    TestEqual(TEXT("partial new selection retains one route per UAV"),Owners.Num(),4);
+    for(const auto& E:Owners)TestEqual(TEXT("unmoved members keep their latest snapshot"),Field(E,TEXT("group_id")),Field(E,TEXT("uav_id"))==TEXT("UAV-01") || Field(E,TEXT("uav_id"))==TEXT("UAV-02")?FString(TEXT("subset")):FString(TEXT("new")));
+    for(int Id=3;Id<=4;++Id){Add(FString::Printf(TEXT("plan-old%d"),Id),TEXT("plan-old"),Id,1,TEXT("plan"));Add(FString::Printf(TEXT("plan-live%d"),Id),TEXT("plan-live"),Id,2,TEXT("plan"),TEXT("EXECUTING"));}
+    Owners=ExecutionUI::RouteOwners(State,TEXT("plan"));TestEqual(TEXT("Security Plan Mission still has one complete execution group"),Owners.Num(),2);
+    for(const auto& E:Owners)TestEqual(TEXT("Security Plan keeps latest active owner"),Field(E,TEXT("group_id")),FString(TEXT("plan-live")));return true;
+}
 class FFleetMapWorkflow:public IAutomationLatentCommand {
     FAutomationTestBase* Test;double Began=FPlatformTime::Seconds();int Step=0;
     FString VideoBefore,Group;FVector2D TargetLocal;int BeforeExecutions=0;
@@ -67,14 +86,15 @@ public:
             CameraBefore=Manager->GetMapService()->GetMapCamera()->GetActorLocation();
             F->SetMode(EMapFleetMode::BoxSelect);
             const auto& G=F->GetCachedGeometry();Test->TestTrue(TEXT("native event entry accepts box gesture"),F->BeginPointer(G.LocalToAbsolute(Max+FVector2D(10,10)),false,false));
-            F->EndPointer(G.LocalToAbsolute(Min-FVector2D(10,10)),true);TargetLocal=(Min+Max)*.5+FVector2D(100,120);
+            F->EndPointer(G.LocalToAbsolute(Min-FVector2D(10,10)),true);TargetLocal=(Min+Max)*.5+FVector2D(-240,140);
             ++Step;return false;
         }
         if(Step==1) {
             if(R->GetMultiSelectedDrones().Num()!=4 || F->bSelectionPending)return false;
             Test->TestTrue(TEXT("box selection leaves map camera unchanged"),Manager->GetMapService()->GetMapCamera()->GetActorLocation().Equals(CameraBefore,.01));
             FString Video;FJsonSerializer::Serialize(S->GetVideoView().ToSharedRef(),TJsonWriterFactory<>::Create(&Video));Test->TestEqual(TEXT("selection never retargets Video"),Video,VideoBefore);
-            BeforeExecutions=All->Values.Num();F->SetMode(EMapFleetMode::GroupMove);const auto Screen=F->GetCachedGeometry().LocalToAbsolute(TargetLocal);
+            BeforeExecutions=All->Values.Num();Test->TestTrue(TEXT("selection ACK enables guided next step"),F->Buttons[TEXT("next")]->GetIsEnabled());F->Action(TEXT("next"),0);
+            Test->TestEqual(TEXT("guided next step arms destination picking"),F->GetMode(),EMapFleetMode::GroupMove);const auto Screen=F->GetCachedGeometry().LocalToAbsolute(TargetLocal);
             F->BeginPointer(Screen,false,false);F->EndPointer(Screen,true);
             if(View3D){const FVector Horizontal=F->TargetGeographic;const double StartHeight=Horizontal.Z;
                 for(const auto& Bad:TArray<FString>{TEXT("nan"),TEXT("1e308"),FString::SanitizeFloat(StartHeight+10001.)}){
@@ -82,11 +102,21 @@ public:
                     Test->TestFalse(TEXT("invalid 3D height disables execution confirmation"),F->Buttons[TEXT("confirm")]->GetIsEnabled());Test->TestFalse(TEXT("invalid height never submits Backend execution"),F->bPending);
                     Test->TestEqual(TEXT("invalid height retains last valid target"),F->TargetGeographic.Z,StartHeight);
                 }
+                Test->TestTrue(TEXT("slider remains available to recover invalid text"),F->HeightSlider->GetIsEnabled());F->HeightSliderChanged(0.f);
+                Test->TestTrue(TEXT("valid slider gesture restores confirmation"),F->Buttons[TEXT("confirm")]->GetIsEnabled());
                 ExpectedHeight=StartHeight+50.;F->TargetHeightInput->SetText(User(FString::SanitizeFloat(ExpectedHeight)));F->TargetHeightInput->OnTextChanged.Broadcast(F->TargetHeightInput->GetText());
                 Test->TestEqual(TEXT("3D height edits preserve longitude"),F->TargetGeographic.X,Horizontal.X);Test->TestEqual(TEXT("3D height edits preserve latitude"),F->TargetGeographic.Y,Horizontal.Y);
                 Test->TestEqual(TEXT("3D target takes the requested ellipsoid height"),F->TargetGeographic.Z,ExpectedHeight);
                 F->Action(TEXT("height_up"),0);Test->TestEqual(TEXT("raise by ten metres"),F->TargetGeographic.Z,ExpectedHeight+10.);
                 F->Action(TEXT("height_down"),0);Test->TestEqual(TEXT("lower by ten metres"),F->TargetGeographic.Z,ExpectedHeight);
+                F->HeightSliderChanged(25.f);Test->TestEqual(TEXT("relative height slider uses current anchor altitude"),F->TargetGeographic.Z,StartHeight+25.);
+                Test->TestEqual(TEXT("slider leaves horizontal target unchanged"),F->TargetGeographic.X,Horizontal.X);
+                F->Action(TEXT("reselect"),0);Test->TestFalse(TEXT("choose again clears only the target"),F->bHasTarget);double Retained=0;F->TargetHeight(Retained);
+                Test->TestEqual(TEXT("choose again keeps height preference"),Retained,StartHeight+25.);Test->TestEqual(TEXT("choose again retires old preview actors"),F->PreviewRoutes.Num(),0);
+                F->BeginPointer(Screen,false,false);F->EndPointer(Screen,true);F->Action(TEXT("height_current"),0);Test->TestEqual(TEXT("current height resets the preview"),F->TargetGeographic.Z,StartHeight);
+                F->HeightSliderChanged(50.f);const auto BeforeFrame=F->TargetGeographic;F->Action(TEXT("fit_preview"),0);
+                Test->TestTrue(TEXT("explicit preview framing preserves geographic destination"),F->TargetGeographic.Equals(BeforeFrame,.000001));
+                Test->TestEqual(TEXT("slider/reselect/framing never create execution"),All->Values.Num(),BeforeExecutions);
                 Manager->GetMapService()->Enter2DMode();F->Refresh();Test->TestFalse(TEXT("switching map mode invalidates pending 3D target"),F->bHasTarget);
                 Manager->GetMapService()->Enter3DMode();F->Refresh();Test->TestFalse(TEXT("switching back never resurrects old target"),F->bHasTarget);
                 // Camera settles before the next projection; verify height and
@@ -107,17 +137,23 @@ public:
             Group=Field(Latest,TEXT("group_id"));if(Field(Latest,TEXT("state"))!=TEXT("EXECUTING"))return false;
             int Count=0;for(const auto& Item:All->Values)if(Field(Item.Value->AsObject(),TEXT("group_id"))==Group)++Count;
             Test->TestEqual(TEXT("Map role creates a complete four-UAV group"),Count,4);Test->TestFalse(TEXT("ACK retires preview ownership"),F->bHasTarget);
+            Test->TestEqual(TEXT("ACK switches card from editing to execution controls"),F->GetMode(),EMapFleetMode::Browse);
             if(View3D)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(Field(E,TEXT("group_id"))==Group){const auto Route=Object(E,TEXT("route_snapshot"));
                 const auto End=Route->GetArrayField(TEXT("waypoints")).Last()->AsObject();Test->TestEqual(TEXT("Backend immutable trajectory receives requested 3D height"),End->GetNumberField(TEXT("altitude")),ExpectedHeight);}}
             F->Action(TEXT("pause"),0);++Step;return false;
         }
         if(Step==3) {
             for(const auto& Item:All->Values)if(Field(Item.Value->AsObject(),TEXT("group_id"))==Group && Field(Item.Value->AsObject(),TEXT("state"))!=TEXT("PAUSED"))return false;
-            Test->TestFalse(TEXT("occupied UAVs cannot be moved again"),F->UnavailableReason().IsEmpty());F->Action(TEXT("abort"),0);++Step;return false;
+            Test->TestFalse(TEXT("occupied UAVs cannot be moved again"),F->UnavailableReason().IsEmpty());F->Action(TEXT("abort"),0);
+            Test->TestTrue(TEXT("stop group first opens inline confirmation"),F->bAbortConfirm);Test->TestFalse(TEXT("opening stop confirmation never submits"),F->bPending);
+            F->Action(TEXT("abort_cancel"),0);Test->TestFalse(TEXT("keep task dismisses stop confirmation"),F->bAbortConfirm);Test->TestFalse(TEXT("keeping task never submits"),F->bPending);
+            F->Action(TEXT("abort"),0);F->Action(TEXT("abort_confirm"),0);++Step;return false;
         }
         if(Step==4) {
             for(const auto& Item:All->Values)if(Field(Item.Value->AsObject(),TEXT("group_id"))==Group && Field(Item.Value->AsObject(),TEXT("state"))!=TEXT("ABORTED"))return false;
-            Test->TestTrue(TEXT("abort releases entire selection"),F->UnavailableReason().IsEmpty());F->SetMode(EMapFleetMode::Browse);
+            Test->TestTrue(TEXT("abort releases entire selection"),F->UnavailableReason().IsEmpty());F->Action(TEXT("again"),0);
+            FVector Accepted;double Default=0;F->Telemetry(R->GetPrimarySelectedDrone(),Accepted);F->TargetHeight(Default);
+            Test->TestEqual(TEXT("move again starts at last acknowledged height"),Default,Accepted.Z);Test->TestFalse(TEXT("move again requires a fresh destination"),F->bHasTarget);F->SetMode(EMapFleetMode::Browse);
             auto* Map=Manager->GetMapService();Map->SetRouteEditCameraLocked(true);F->SetMode(EMapFleetMode::BoxSelect);
             Test->TestEqual(TEXT("route edit camera lock blocks fleet mode"),F->GetMode(),EMapFleetMode::Browse);Map->SetRouteEditCameraLocked(false);return true;
         }
