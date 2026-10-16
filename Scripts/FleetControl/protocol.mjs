@@ -34,7 +34,9 @@ try {
  for(const action of ['validate','review','deploy'])await send(command,action,{plan_id:plan,mission_id:mission});
  const draft=await send(command,'copy_plan',{plan_id:plan});
  r=await send(command,'execution_start',{plan_id:plan,mission_id:mission,request_id:crypto.randomUUID()});const planExecution=r.execution_id;
- const target={...home,latitude:home.latitude+.0001,longitude:home.longitude+.00003};
+ const verticalDelta=Number(process.env.FLEET_ALTITUDE_DELTA??0);
+ assert(Number.isFinite(verticalDelta));
+ const target={...home,latitude:home.latitude+.0001,longitude:home.longitude+.00003,altitude:home.altitude+verticalDelta};
  r=await send(map,'execution_group_move',{request_id:crypto.randomUUID(),assigned_uav_ids:members,target},409);
  assert.equal(r.code,'DRONE_ACTIVE_PLAN_CONFLICT');assert.equal(r.params.active_plan_id,plan);pass('Map fleet move cannot steal an active Security Plan UAV');
  for(let i=0;i<100;i++){r=await state();if(r.executions[planExecution].state==='EXECUTING')break;await sleep(50);}assert.equal(r.executions[planExecution].state,'EXECUTING');
@@ -45,7 +47,8 @@ try {
  const groupItems=s=>Object.values(s.executions).filter(e=>e.group_id===group);
  let groupState=groupItems(r.state);assert.equal(groupState.length,4);assert(groupState.every(e=>e.formation==='RelativeOffset'));
  const anchor=groupState.find(e=>e.uav_id==='UAV-02').route_snapshot.waypoints;
- for(const e of groupState){const p=e.route_snapshot.waypoints;assert(Math.abs((p[1].longitude-p[0].longitude)-(anchor[1].longitude-anchor[0].longitude))<1e-9);assert(Math.abs((p[1].latitude-p[0].latitude)-(anchor[1].latitude-anchor[0].latitude))<1e-9);assert.equal(p[1].altitude,p[0].altitude);}
+ for(const axis of ['latitude','longitude','altitude'])assert(Math.abs(anchor[1][axis]-target[axis])<1e-8);
+ for(const e of groupState){const p=e.route_snapshot.waypoints;assert(Math.abs((p[1].longitude-p[0].longitude)-(anchor[1].longitude-anchor[0].longitude))<1e-9);assert(Math.abs((p[1].latitude-p[0].latitude)-(anchor[1].latitude-anchor[0].latitude))<1e-9);assert(Math.abs((p[1].altitude-p[0].altitude)-(anchor[1].altitude-anchor[0].altitude))<1e-8);}
  await send(map,'execution_group_move',move);assert.equal(groupItems(await state()).length,4);pass('Map creates one idempotent four-UAV group preserving the chosen primary anchor and formation');
  for(let i=0;i<100;i++){r=await state();if(r.executions[execution].state==='EXECUTING')break;await sleep(50);}assert.equal(r.executions[execution].state,'EXECUTING');
  await send(map,'execution_pause',{request_id:crypto.randomUUID(),execution_id:execution,control_version:r.executions[execution].control_version});
@@ -57,7 +60,9 @@ try {
   for(let a=0;a<group.length;a++)for(let b=a+1;b<group.length;b++){const p=group[a].position,q=group[b].position;const d=Math.hypot((p.latitude-q.latitude)*Math.PI/180*6371000,(p.longitude-q.longitude)*Math.PI/180*6371000*Math.cos(p.latitude*Math.PI/180),p.altitude-q.altitude);assert(d>=1.4999);}
   if(group.every(e=>e.state==='COMPLETED')){completed=true;break;}await sleep(100);
  }
- assert(completed);assert(groupItems(r).every(e=>!e.failure_reason));fs.writeFileSync(out+'/movement-samples.json',JSON.stringify(samples,null,2));
+ assert(completed);assert(groupItems(r).every(e=>!e.failure_reason));
+ for(const e of groupItems(r))for(const axis of ['latitude','longitude','altitude'])assert(Math.abs(e.position[axis]-e.route_snapshot.waypoints.at(-1)[axis])<1e-8);
+ fs.writeFileSync(out+'/movement-samples.json',JSON.stringify(samples,null,2));
  await send(command,'assign',{plan_id:draft.plan_id,mission_id:draft.mission_id,assigned_uav_id:'UAV-01'});pass('Map pause/resume controls the entire group, all four complete safely, and occupancy releases');
 } catch(e){failure=String(e.stack??e);console.error(failure);process.exitCode=1;}
 finally {for(const c of clients){clearInterval(c.timer);c.socket.close();}fs.writeFileSync(out+'/result.json',JSON.stringify({synthetic:true,passed,failure,traffic},null,2));}

@@ -1,0 +1,961 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "C925EF6E495E88CB7C4049935711FD1B",
+			"instanceName": "JXGM-43852",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.16-05.53.23",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 19.30657958984375,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "Workflow",
+			"fullTestPath": "DroneOps.Fleet.Workflow",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"C925EF6E495E88CB7C4049935711FD1B"
+			],
+			"duration": 9.0946674346923828,
+			"dateTime": "2026.10.16-05.53.03",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:21380  WebSocketUrl=ws://127.0.0.1:21381/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: === DroneOpsPlayerController::BeginPlay CALLED ===",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.04"
+				}
+			],
+			"warnings": 12,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "Workflow3D",
+			"fullTestPath": "DroneOps.Fleet.Workflow3D",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"C925EF6E495E88CB7C4049935711FD1B"
+			],
+			"duration": 10.211911201477051,
+			"dateTime": "2026.10.16-05.53.12",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device unregistered from world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogStreaming: FlushAsyncLoading(389): 1 QueuedPackages, 0 AsyncPackages",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device (ID: 1) registered with world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogEditorAutomationTests: P55OfflineMap took 0.267 to load.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:21380  WebSocketUrl=ws://127.0.0.1:21381/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Creating Audio Device:                 Id: 3, Scope: Unique, Realtime: True",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: bUseRenderScheduler set to true.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Audio Mixer Platform Settings:",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tSample Rate:\t\t\t\t\t\t  48000",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tCallback Buffer Frame Size Requested: 1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tCallback Buffer Frame Size To Use:\t  1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tNumber of buffers to queue:\t\t\t  1",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tMax Channels (voices):\t\t\t\t  32",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tNumber of Async Source Workers:\t\t  4",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: AudioDevice MaxSources: 32",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Spatialization Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Reverb Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Occlusion Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: Refreshing FWindowsMMDeviceCache",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Console', Device='扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Console', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Multimedia', Device='扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Multimedia', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Communications', Device='扬声器 (ToDesk Virtual Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Communications', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher started.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Initializing audio mixer using platform API: 'WASAPIMixer'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher initial state: Audiosrv=RUNNING, AudioEndpointBuilder=RUNNING",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FAudioMixerWasapiRenderStream::InitializeHardware audio mixer requested num channels: 2, Wasapi render stream hardware supports num channels: 2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FAudioMixerWasapiRenderStream::InitializeHardware succeeded with sample rate: 48000, buffer period: 1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: FAudioMixerWasapi initialized: SampleRate=48000 NumChannels=2 NumDirectOutChannels=0 bIsAggregateDevice=0 StreamParams.Num()=1",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Using Audio Hardware Device 扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Initializing Sound Submixes...",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Creating Master Submix 'MasterSubmixDefault'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Creating Master Submix 'MasterReverbSubmixDefault'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=3",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=3",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device (ID: 3) registered with world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: === DroneOpsPlayerController::BeginPlay CALLED ===",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogViewport: Viewport MouseLockMode Changed, LockOnCapture -> DoNotLock",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogViewport: Viewport MouseCaptureMode Changed, CapturePermanently_IncludingInitialMouseDown -> CaptureDuringMouseDown",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.13"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'box selection leaves map camera unchanged' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 75,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '3D target takes the requested ellipsoid height' to be 80.000000, but it was 30.000000 and outside tolerance 0.000100.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 85,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'raise by ten metres' to be 90.000000, but it was 30.000000 and outside tolerance 0.000100.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 86,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'lower by ten metres' to be 80.000000, but it was 30.000000 and outside tolerance 0.000100.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 87,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '3D preview rises from each actual aircraft' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 125,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '3D preview rises from each actual aircraft' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 125,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '3D preview rises from each actual aircraft' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 125,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '3D preview rises from each actual aircraft' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 125,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogPlayLevel: Shutting down PIE online subsystems",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.22"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device unregistered from world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.23"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: FAudioMixerWasapi::StopAudioStream() InstanceID=3, StreamState=4",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.23"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher stopped.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.16-05.53.23"
+				}
+			],
+			"warnings": 12,
+			"errors": 8,
+			"artifacts": []
+		}
+	]
+}

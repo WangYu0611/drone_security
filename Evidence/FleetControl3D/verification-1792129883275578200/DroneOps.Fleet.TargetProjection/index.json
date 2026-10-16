@@ -1,0 +1,69 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "8E0AA91A4A3386DA9A0C4898FFF2F753",
+			"instanceName": "JXGM-47520",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.16-05.51.49",
+	"succeeded": 0,
+	"succeededWithWarnings": 0,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.10813470184803009,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "TargetProjection",
+			"fullTestPath": "DroneOps.Fleet.TargetProjection",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"8E0AA91A4A3386DA9A0C4898FFF2F753"
+			],
+			"duration": 0.10813470184803009,
+			"dateTime": "2026.10.16-05.51.49",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'invalid height rejected' to be false.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 41,
+					"timestamp": "2026.10.16-05.51.49"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected 'invalid text cannot replace accepted height' to be 90.500000, but it was 90.000000 and outside tolerance 0.000100.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "D:\\CodexPublish\\drone_security\\Source\\UE5DroneControl\\Tests\\FleetControlTest.cpp",
+					"lineNumber": 42,
+					"timestamp": "2026.10.16-05.51.49"
+				}
+			],
+			"warnings": 0,
+			"errors": 2,
+			"artifacts": []
+		}
+	]
+}

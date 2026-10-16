@@ -1,0 +1,59 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "E832A2FC422023C61A170B8A5431727C",
+			"instanceName": "JXGM-45556",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.16-05.53.58",
+	"succeeded": 2,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.49233430624008179,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "2D",
+			"fullTestPath": "DroneOps.P54.RouteEditCameraLock.2D",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"E832A2FC422023C61A170B8A5431727C"
+			],
+			"duration": 0.28715431690216064,
+			"dateTime": "2026.10.16-05.53.57",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "3D",
+			"fullTestPath": "DroneOps.P54.RouteEditCameraLock.3D",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"E832A2FC422023C61A170B8A5431727C"
+			],
+			"duration": 0.20518000423908234,
+			"dateTime": "2026.10.16-05.53.57",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

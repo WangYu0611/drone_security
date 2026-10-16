@@ -2,6 +2,8 @@
 
 基于 `9951ad20177a71c743b0be89dbb7be7acf6bc7fa`，在 `D:/CodexPublish/drone_security` 的 main 实现。
 
+3D 目标高度、立体预览与后续验证见 [MAP 3D 集群移动](MAP-Fleet-Control-3D.md)。
+
 ## 操作
 
 1. 在 MAP 工具栏点击“框选无人机”，按住左键拖出矩形。普通框选替换选择，Shift 追加，Ctrl 切换；空白处短点击清空。主选无人机为黄色标记，其他选中无人机为青色标记。

@@ -146,6 +146,26 @@ TEST_F(FleetMove, ConcurrentPlanAndFleetStartAreAtomic){multi();std::atomic<int>
     auto run=[&](O r){while(!go.load())std::this_thread::yield();try{store.transact(r,uavs,"QA",[](const O&){});++accepted;}catch(const PlanError& e){if(e.code=="DRONE_ACTIVE_PLAN_CONFLICT")++rejected;else ++unexpected;}catch(...){++unexpected;}};
     std::thread a(run,planRequest),b(run,groupRequest);go=true;a.join();b.join();EXPECT_EQ(accepted,1);EXPECT_EQ(rejected,1);EXPECT_EQ(unexpected,0);EXPECT_EQ(executions().size(),2u);
 }
+TEST_F(FleetMove, ThreeDimensionalTranslationPreservesLayeredFormation){multi();
+    auto config=store.snapshot().at("mock_execution").as_object();config.at("uavs").as_object().at("UAV-02").as_object().at("home_position").as_object()["altitude"]=80.;store.configureMock(config);
+    const auto r=send({{"action","execution_group_move"},{"request_id","layered-3d"},{"assigned_uav_ids",A{"UAV-02","UAV-01"}},
+        {"target",O{{"latitude",39.0001},{"longitude",116.0002},{"altitude",110.}}}});
+    for(const auto& Item:executions()){const auto e=Item.value().as_object();const auto points=e.at("route_snapshot").as_object().at("waypoints").as_array();
+        const auto a=points[0].as_object(),b=points[1].as_object();EXPECT_NEAR(b.at("altitude").to_number<double>()-a.at("altitude").to_number<double>(),30.,1e-8);
+        EXPECT_NEAR(b.at("longitude").to_number<double>()-a.at("longitude").to_number<double>(),.0001,1e-9);EXPECT_NEAR(b.at("latitude").to_number<double>()-a.at("latitude").to_number<double>(),.0001,1e-9);
+    }
+    for(int i=0;i<100;++i)tick(1.);
+    O final;for(const auto& Item:executions()){const auto e=Item.value().as_object();EXPECT_EQ(e.at("state"),"COMPLETED");final[SecurityPlanStore::str(e,"uav_id")]=e.at("position");}
+    EXPECT_NEAR(final.at("UAV-01").as_object().at("altitude").to_number<double>(),90.,1e-8);EXPECT_NEAR(final.at("UAV-02").as_object().at("altitude").to_number<double>(),110.,1e-8);
+}
+TEST_F(FleetMove, PureVerticalFleetMovementKeepsHorizontalCoordinates){multi();
+    send({{"action","execution_group_move"},{"request_id","vertical-only"},{"assigned_uav_ids",A{"UAV-02","UAV-01"}},
+        {"target",O{{"latitude",39.},{"longitude",116.0001},{"altitude",100.}}}});
+    for(const auto& Item:executions()){const auto points=Item.value().as_object().at("route_snapshot").as_object().at("waypoints").as_array();
+        for(const auto* Axis:{"latitude","longitude"})EXPECT_NEAR(points[0].as_object().at(Axis).to_number<double>(),points[1].as_object().at(Axis).to_number<double>(),1e-10);
+        EXPECT_EQ(points[1].as_object().at("altitude"),100.);}
+    for(int i=0;i<100;++i)tick(1.);for(const auto& Item:executions())EXPECT_EQ(Item.value().as_object().at("state"),"COMPLETED");
+}
 
 
 struct P54RealAdapter:P52Execution {

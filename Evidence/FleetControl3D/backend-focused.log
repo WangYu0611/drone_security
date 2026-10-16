@@ -1,0 +1,85 @@
+Note: Google Test filter = FleetMove.*:P55Reservation.*:P54Mission.*
+[==========] Running 35 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 20 tests from P54Mission
+[ RUN      ] P54Mission.MultiAssignmentCreatesSeparateImmutableTrajectories
+[       OK ] P54Mission.MultiAssignmentCreatesSeparateImmutableTrajectories (1 ms)
+[ RUN      ] P54Mission.MultiHoverAndCompletionStaySeparated
+[       OK ] P54Mission.MultiHoverAndCompletionStaySeparated (54 ms)
+[ RUN      ] P54Mission.GroupPauseIsAtomic
+[       OK ] P54Mission.GroupPauseIsAtomic (2 ms)
+[ RUN      ] P54Mission.DuplicateAndTooCloseAssignmentsRejectAtomically
+[       OK ] P54Mission.DuplicateAndTooCloseAssignmentsRejectAtomically (0 ms)
+[ RUN      ] P54Mission.IntersectingApproachesBlockStart
+[       OK ] P54Mission.IntersectingApproachesBlockStart (0 ms)
+[ RUN      ] P54Mission.MissingAltitudeDatumRejected
+[       OK ] P54Mission.MissingAltitudeDatumRejected (0 ms)
+[ RUN      ] P54Mission.AGLResolvesOnceInRuntimeSnapshot
+[       OK ] P54Mission.AGLResolvesOnceInRuntimeSnapshot (0 ms)
+[ RUN      ] P54Mission.SchedulePersistsAndCancelsWithoutMoving
+[       OK ] P54Mission.SchedulePersistsAndCancelsWithoutMoving (1 ms)
+[ RUN      ] P54Mission.ScheduleStartNowUsesSameStateMachine
+[       OK ] P54Mission.ScheduleStartNowUsesSameStateMachine (2 ms)
+[ RUN      ] P54Mission.InvalidScheduleDoesNotPartiallyCreateGroup
+[       OK ] P54Mission.InvalidScheduleDoesNotPartiallyCreateGroup (1 ms)
+[ RUN      ] P54Mission.ScheduleRestartAndReschedule
+[       OK ] P54Mission.ScheduleRestartAndReschedule (11 ms)
+[ RUN      ] P54Mission.GroupMovePreservesRelativePositions
+[       OK ] P54Mission.GroupMovePreservesRelativePositions (7 ms)
+[ RUN      ] P54Mission.InsufficientGroupSpaceRejectsAtomically
+[       OK ] P54Mission.InsufficientGroupSpaceRejectsAtomically (0 ms)
+[ RUN      ] P54Mission.SharedGroupSelectionIsDurableAndPrimaryIsMember
+[       OK ] P54Mission.SharedGroupSelectionIsDurableAndPrimaryIsMember (0 ms)
+[ RUN      ] P54Mission.ThreeAircraftCompleteDistinctSlots
+[       OK ] P54Mission.ThreeAircraftCompleteDistinctSlots (11 ms)
+[ RUN      ] P54Mission.MissingGroupTargetCoordinateRejectsAtomically
+[       OK ] P54Mission.MissingGroupTargetCoordinateRejectsAtomically (0 ms)
+[ RUN      ] P54Mission.ScheduledDeadlineSurvivesGracefulShutdown
+[       OK ] P54Mission.ScheduledDeadlineSurvivesGracefulShutdown (1 ms)
+[ RUN      ] P54Mission.RealGroupFailureHoldsRemainingMembers
+[       OK ] P54Mission.RealGroupFailureHoldsRemainingMembers (1 ms)
+[ RUN      ] P54Mission.RealMeasuredCrossingHoldsBothMembers
+[       OK ] P54Mission.RealMeasuredCrossingHoldsBothMembers (1 ms)
+[ RUN      ] P54Mission.RealFaultWhilePausedReleasesWholeGroup
+[       OK ] P54Mission.RealFaultWhilePausedReleasesWholeGroup (2 ms)
+[----------] 20 tests from P54Mission (106 ms total)
+
+[----------] 6 tests from FleetMove
+[ RUN      ] FleetMove.ActivePlanCannotBeStolenByFleet
+[       OK ] FleetMove.ActivePlanCannotBeStolenByFleet (1 ms)
+[ RUN      ] FleetMove.FleetOccupancyBlocksPlanAssignmentUntilAbort
+[       OK ] FleetMove.FleetOccupancyBlocksPlanAssignmentUntilAbort (2 ms)
+[ RUN      ] FleetMove.PrimaryAnchorAndRelativeHeightsArePreserved
+[       OK ] FleetMove.PrimaryAnchorAndRelativeHeightsArePreserved (1 ms)
+[ RUN      ] FleetMove.ConcurrentPlanAndFleetStartAreAtomic
+[       OK ] FleetMove.ConcurrentPlanAndFleetStartAreAtomic (2 ms)
+[ RUN      ] FleetMove.ThreeDimensionalTranslationPreservesLayeredFormation
+[       OK ] FleetMove.ThreeDimensionalTranslationPreservesLayeredFormation (6 ms)
+[ RUN      ] FleetMove.PureVerticalFleetMovementKeepsHorizontalCoordinates
+[       OK ] FleetMove.PureVerticalFleetMovementKeepsHorizontalCoordinates (6 ms)
+[----------] 6 tests from FleetMove (21 ms total)
+
+[----------] 9 tests from P55Reservation
+[ RUN      ] P55Reservation.Reservation01AssignAndPendingStart
+[       OK ] P55Reservation.Reservation01AssignAndPendingStart (1 ms)
+[ RUN      ] P55Reservation.Reservation02OtherAircraftAndSamePlan
+[       OK ] P55Reservation.Reservation02OtherAircraftAndSamePlan (0 ms)
+[ RUN      ] P55Reservation.Reservation03CompletionReleases
+[       OK ] P55Reservation.Reservation03CompletionReleases (5 ms)
+[ RUN      ] P55Reservation.Reservation04AbortAndFailureRelease
+[       OK ] P55Reservation.Reservation04AbortAndFailureRelease (2 ms)
+[ RUN      ] P55Reservation.Reservation05PausedStillLocked
+[       OK ] P55Reservation.Reservation05PausedStillLocked (1 ms)
+[ RUN      ] P55Reservation.Reservation06ExistingDraftRace
+[       OK ] P55Reservation.Reservation06ExistingDraftRace (1 ms)
+[ RUN      ] P55Reservation.Reservation07ConcurrentStarts
+[       OK ] P55Reservation.Reservation07ConcurrentStarts (1 ms)
+[ RUN      ] P55Reservation.Reservation08RestartRebuild
+[       OK ] P55Reservation.Reservation08RestartRebuild (10 ms)
+[ RUN      ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve
+[       OK ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve (1 ms)
+[----------] 9 tests from P55Reservation (26 ms total)
+
+[----------] Global test environment tear-down
+[==========] 35 tests from 3 test suites ran. (154 ms total)
+[  PASSED  ] 35 tests.
