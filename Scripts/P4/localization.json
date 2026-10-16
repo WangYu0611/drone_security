@@ -2002,5 +2002,41 @@
   "Fleet.SelectionReady": [
     "Selection synchronized.",
     "选择已同步。"
+  ],
+  "Fleet3D.Height": [
+    "Anchor target height (ellipsoid m)",
+    "锚点目标高度（椭球高 / 米）"
+  ],
+  "Fleet3D.Up": [
+    "+10 m",
+    "升高 10 米"
+  ],
+  "Fleet3D.Down": [
+    "-10 m",
+    "降低 10 米"
+  ],
+  "Fleet3D.Current": [
+    "Current",
+    "当前高度"
+  ],
+  "Fleet3D.HeightHint": [
+    "Pick horizontal position on the current flight plane, then set height. Relative formation offsets are preserved.",
+    "在当前飞行高度平面选择水平位置，再调节目标高度。保留各机的相对队形与高度差。"
+  ],
+  "Fleet3D.MoveHint": [
+    "3D fleet move: choose a position and height, review the preview, then confirm.",
+    "3D 集群移动：选择位置和高度，检查立体预览后确认。"
+  ],
+  "Fleet3D.InvalidHeight": [
+    "Enter a numeric height within 10,000 m of the current anchor height. No movement has been sent.",
+    "请输入数字高度，与锚点当前高度相差不超过 10,000 米。当前未提交移动。"
+  ],
+  "Fleet3D.ViewChanged": [
+    "View changed. Choose a new target before confirming movement.",
+    "视图已切换，请重新选择目标后确认移动。"
+  ],
+  "Fleet3D.Marker": [
+    "Target anchor: {0} m",
+    "目标锚点：{0} 米"
   ]
 }

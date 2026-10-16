@@ -502,6 +502,15 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Fleet.TelemetryRequired"),NSLOCTEXT("DroneOps","Fleet.TelemetryRequired","{0} has no available position. Refresh the connection and retry.")},
 {TEXT("Group.Owner"),NSLOCTEXT("DroneOps","Group.Owner","Group Move")},
 {TEXT("Fleet.SelectionReady"),NSLOCTEXT("DroneOps","Fleet.SelectionReady","Selection synchronized.")},
+{TEXT("Fleet3D.Height"),NSLOCTEXT("DroneOps","Fleet3D.Height","Anchor target height (ellipsoid m)")},
+{TEXT("Fleet3D.Up"),NSLOCTEXT("DroneOps","Fleet3D.Up","+10 m")},
+{TEXT("Fleet3D.Down"),NSLOCTEXT("DroneOps","Fleet3D.Down","-10 m")},
+{TEXT("Fleet3D.Current"),NSLOCTEXT("DroneOps","Fleet3D.Current","Current")},
+{TEXT("Fleet3D.HeightHint"),NSLOCTEXT("DroneOps","Fleet3D.HeightHint","Pick horizontal position on the current flight plane, then set height. Relative formation offsets are preserved.")},
+{TEXT("Fleet3D.MoveHint"),NSLOCTEXT("DroneOps","Fleet3D.MoveHint","3D fleet move: choose a position and height, review the preview, then confirm.")},
+{TEXT("Fleet3D.InvalidHeight"),NSLOCTEXT("DroneOps","Fleet3D.InvalidHeight","Enter a numeric height within 10,000 m of the current anchor height. No movement has been sent.")},
+{TEXT("Fleet3D.ViewChanged"),NSLOCTEXT("DroneOps","Fleet3D.ViewChanged","View changed. Choose a new target before confirming movement.")},
+{TEXT("Fleet3D.Marker"),NSLOCTEXT("DroneOps","Fleet3D.Marker","Target anchor: {0} m")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1007,6 +1016,15 @@ if(Source==TEXT("{0} is in use by {1}. Finish or abort that task before moving."
 if(Source==TEXT("{0} has no available position. Refresh the connection and retry."))return Get(TEXT("Fleet.TelemetryRequired"));
 if(Source==TEXT("Group Move"))return Get(TEXT("Group.Owner"));
 if(Source==TEXT("Selection synchronized."))return Get(TEXT("Fleet.SelectionReady"));
+if(Source==TEXT("Anchor target height (ellipsoid m)"))return Get(TEXT("Fleet3D.Height"));
+if(Source==TEXT("+10 m"))return Get(TEXT("Fleet3D.Up"));
+if(Source==TEXT("-10 m"))return Get(TEXT("Fleet3D.Down"));
+if(Source==TEXT("Current"))return Get(TEXT("Fleet3D.Current"));
+if(Source==TEXT("Pick horizontal position on the current flight plane, then set height. Relative formation offsets are preserved."))return Get(TEXT("Fleet3D.HeightHint"));
+if(Source==TEXT("3D fleet move: choose a position and height, review the preview, then confirm."))return Get(TEXT("Fleet3D.MoveHint"));
+if(Source==TEXT("Enter a numeric height within 10,000 m of the current anchor height. No movement has been sent."))return Get(TEXT("Fleet3D.InvalidHeight"));
+if(Source==TEXT("View changed. Choose a new target before confirming movement."))return Get(TEXT("Fleet3D.ViewChanged"));
+if(Source==TEXT("Target anchor: {0} m"))return Get(TEXT("Fleet3D.Marker"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

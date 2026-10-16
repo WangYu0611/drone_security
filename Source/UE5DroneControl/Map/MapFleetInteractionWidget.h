@@ -35,11 +35,15 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     UPROPERTY() TObjectPtr<class UTextBlock> TargetText;
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
+    UPROPERTY() TObjectPtr<class UVerticalBox> HeightControls;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> TargetHeightInput;
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Buttons;
     EMapFleetMode Mode=EMapFleetMode::Browse;
     FleetSelection::EOperation SelectionOperation=FleetSelection::EOperation::Replace;
     bool bDragging=false,bPointerValid=false,bPending=false,bHasTarget=false;
     bool bSelectionPending=false;
+    bool bUpdatingHeight=false,bHadMapMode=false,bWas3D=false;
+    int32 HeightPrimary=0;
     TArray<int32> RequestedSelection;
     int32 RequestedPrimary=0;
     FVector2D Start=FVector2D::ZeroVector,Current=FVector2D::ZeroVector;
@@ -51,6 +55,9 @@ private:
     FPlanRouteVisualSet PreviewRoutes;
     bool Project(int32 Id,FVector2D& Point) const;
     bool Telemetry(int32 Id,FVector& Geographic) const;
+    bool Is3DView() const;
+    bool TargetHeight(double& Height) const;
+    void ResetHeight();
     void SelectInRectangle(bool Click);
     bool PickTarget(const FVector2D& Local);
     void ClearTarget();
@@ -58,4 +65,5 @@ private:
     FText UnavailableReason() const;
     TArray<int32> OrderedSelection() const;
     UFUNCTION() void Action(FName Name,int32 Id);
+    UFUNCTION() void TargetHeightChanged(const FText& Text);
 };
