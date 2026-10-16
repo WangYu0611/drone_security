@@ -780,8 +780,8 @@
     "告警"
   ],
   "Fleet.Summary": [
-    "UAV {0} | BAT {1}\nMISSION {2}",
-    "无人机 {0} | 电量 {1}\n任务 {2}"
+    "Selected: {0} UAVs\n{1}",
+    "已选 {0} 架无人机\n{1}"
   ],
   "Fleet.Local": [
     "Local rehearsal: backend refresh disabled",
@@ -1934,5 +1934,73 @@
   "Reservation.ClearUnavailable": [
     "Clear unavailable selections (save to apply)",
     "取消不可用无人机的勾选（保存后生效）"
+  ],
+  "Fleet.BoxButton": [
+    "Box select UAVs",
+    "框选无人机"
+  ],
+  "Fleet.MoveButton": [
+    "Fleet move",
+    "集群移动"
+  ],
+  "Fleet.Confirm": [
+    "Confirm fleet move",
+    "确认集群移动"
+  ],
+  "Fleet.Browse": [
+    "Return to browse / Esc",
+    "返回浏览 / Esc"
+  ],
+  "Fleet.BoxHint": [
+    "Drag a box. Shift adds, Ctrl toggles. Click empty space to clear.",
+    "拖动鼠标框选。Shift 追加，Ctrl 切换。点击空白处清空。"
+  ],
+  "Fleet.MoveHint": [
+    "Click a target, review the routes, then confirm. The primary UAV is the formation anchor.",
+    "点击目标，检查预览航线后确认。主选无人机作为队形锚点。"
+  ],
+  "Fleet.BrowseHint": [
+    "Browse the map. Shift + drag also adds UAVs to the selection.",
+    "浏览地图。也可按住 Shift 拖动追加框选。"
+  ],
+  "Fleet.Target": [
+    "Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved.",
+    "目标：{0}，{1}\n锚点椭球高：{2} 米。保持相对位置与高度。"
+  ],
+  "Fleet.Execution": [
+    "Fleet execution: {0}",
+    "集群任务：{0}"
+  ],
+  "Fleet.SelectTwo": [
+    "Box select at least two UAVs first.",
+    "请先框选至少两架无人机。"
+  ],
+  "Fleet.SelectionPending": [
+    "Selection submitted; waiting for synchronization.",
+    "已提交选择，等待同步。"
+  ],
+  "Fleet.SelectionChanged": [
+    "Selection changed. Click a new target to review before moving.",
+    "选中无人机已变化，请重新点击目标并检查预览。"
+  ],
+  "Fleet.PreviewOnly": [
+    "Preview only. Confirm to request Backend execution; Esc cancels.",
+    "当前仅预览。确认后提交执行，Esc 取消。"
+  ],
+  "Fleet.Occupied": [
+    "{0} is in use by {1}. Finish or abort that task before moving.",
+    "{0} 正被“{1}”占用，请先完成或终止该任务。"
+  ],
+  "Fleet.TelemetryRequired": [
+    "{0} has no available position. Refresh the connection and retry.",
+    "{0} 暂无可用位置，请恢复连接后重试。"
+  ],
+  "Group.Owner": [
+    "Group Move",
+    "集群移动"
+  ],
+  "Fleet.SelectionReady": [
+    "Selection synchronized.",
+    "选择已同步。"
   ]
 }

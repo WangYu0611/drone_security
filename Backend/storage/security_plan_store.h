@@ -60,7 +60,7 @@ public:
     static void checkReservation(const Object& state,const std::string& plan,const std::string& drone) {
         for(const auto& entry:state.at("executions").as_object()) {
             const auto& e=entry.value().as_object();const auto owner=str(e,"plan_id");
-            if(owner.empty() || owner==plan || str(e,"uav_id")!=drone || !reservesUav(e))continue;
+            if((!owner.empty() && owner==plan) || str(e,"uav_id")!=drone || !reservesUav(e))continue;
             throw PlanError("DRONE_ACTIVE_PLAN_CONFLICT",drone+" is in use by "+str(e,"plan_name"),
                 {{"drone_id",drone},{"active_plan_id",owner},{"active_plan_name",str(e,"plan_name")},
                  {"active_execution_id",str(e,"execution_id")}});

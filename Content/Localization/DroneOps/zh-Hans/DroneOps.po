@@ -784,8 +784,8 @@ msgid "ALERT"
 msgstr "告警"
 
 msgctxt "DroneOps,Fleet.Summary"
-msgid "UAV {0} | BAT {1}\nMISSION {2}"
-msgstr "无人机 {0} | 电量 {1}\n任务 {2}"
+msgid "Selected: {0} UAVs\n{1}"
+msgstr "已选 {0} 架无人机\n{1}"
 
 msgctxt "DroneOps,Fleet.Local"
 msgid "Local rehearsal: backend refresh disabled"
@@ -1938,3 +1938,71 @@ msgstr "该无人机正在执行其他安保方案，请刷新分配并选择可
 msgctxt "DroneOps,Reservation.ClearUnavailable"
 msgid "Clear unavailable selections (save to apply)"
 msgstr "取消不可用无人机的勾选（保存后生效）"
+
+msgctxt "DroneOps,Fleet.BoxButton"
+msgid "Box select UAVs"
+msgstr "框选无人机"
+
+msgctxt "DroneOps,Fleet.MoveButton"
+msgid "Fleet move"
+msgstr "集群移动"
+
+msgctxt "DroneOps,Fleet.Confirm"
+msgid "Confirm fleet move"
+msgstr "确认集群移动"
+
+msgctxt "DroneOps,Fleet.Browse"
+msgid "Return to browse / Esc"
+msgstr "返回浏览 / Esc"
+
+msgctxt "DroneOps,Fleet.BoxHint"
+msgid "Drag a box. Shift adds, Ctrl toggles. Click empty space to clear."
+msgstr "拖动鼠标框选。Shift 追加，Ctrl 切换。点击空白处清空。"
+
+msgctxt "DroneOps,Fleet.MoveHint"
+msgid "Click a target, review the routes, then confirm. The primary UAV is the formation anchor."
+msgstr "点击目标，检查预览航线后确认。主选无人机作为队形锚点。"
+
+msgctxt "DroneOps,Fleet.BrowseHint"
+msgid "Browse the map. Shift + drag also adds UAVs to the selection."
+msgstr "浏览地图。也可按住 Shift 拖动追加框选。"
+
+msgctxt "DroneOps,Fleet.Target"
+msgid "Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved."
+msgstr "目标：{0}，{1}\n锚点椭球高：{2} 米。保持相对位置与高度。"
+
+msgctxt "DroneOps,Fleet.Execution"
+msgid "Fleet execution: {0}"
+msgstr "集群任务：{0}"
+
+msgctxt "DroneOps,Fleet.SelectTwo"
+msgid "Box select at least two UAVs first."
+msgstr "请先框选至少两架无人机。"
+
+msgctxt "DroneOps,Fleet.SelectionPending"
+msgid "Selection submitted; waiting for synchronization."
+msgstr "已提交选择，等待同步。"
+
+msgctxt "DroneOps,Fleet.SelectionChanged"
+msgid "Selection changed. Click a new target to review before moving."
+msgstr "选中无人机已变化，请重新点击目标并检查预览。"
+
+msgctxt "DroneOps,Fleet.PreviewOnly"
+msgid "Preview only. Confirm to request Backend execution; Esc cancels."
+msgstr "当前仅预览。确认后提交执行，Esc 取消。"
+
+msgctxt "DroneOps,Fleet.Occupied"
+msgid "{0} is in use by {1}. Finish or abort that task before moving."
+msgstr "{0} 正被“{1}”占用，请先完成或终止该任务。"
+
+msgctxt "DroneOps,Fleet.TelemetryRequired"
+msgid "{0} has no available position. Refresh the connection and retry."
+msgstr "{0} 暂无可用位置，请恢复连接后重试。"
+
+msgctxt "DroneOps,Group.Owner"
+msgid "Group Move"
+msgstr "集群移动"
+
+msgctxt "DroneOps,Fleet.SelectionReady"
+msgid "Selection synchronized."
+msgstr "选择已同步。"

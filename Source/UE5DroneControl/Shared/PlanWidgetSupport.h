@@ -24,13 +24,13 @@ inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT
 inline TSharedPtr<FJsonObject> UAVReservation(const TSharedPtr<FJsonObject>& State,const FString& Plan,const FString& UAV){
     const auto All=Object(State,TEXT("executions"));if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();
         const FString S=Field(E,TEXT("state")),Owner=Field(E,TEXT("plan_id"));
-        if(Owner.IsEmpty() || Owner==Plan || Field(E,TEXT("uav_id"))!=UAV)continue;
+        if((!Owner.IsEmpty() && Owner==Plan) || Field(E,TEXT("uav_id"))!=UAV)continue;
         if(S==TEXT("CREATED") || S==TEXT("PREFLIGHT") || S==TEXT("STARTING") || S==TEXT("START_REQUESTED") || S==TEXT("WAITING_ACK") || S==TEXT("EXECUTING") || S==TEXT("PAUSED") || S==TEXT("RETURNING"))return E;
     }return nullptr;
 }
 inline FText ReservationError(const TSharedPtr<FJsonObject>& Reply){
     if(Error(Reply)!=TEXT("DRONE_ACTIVE_PLAN_CONFLICT"))return FText::GetEmpty();
-    const auto P=Object(Reply,TEXT("params"));return FText::Format(T(TEXT("Reservation.Conflict")),User(Field(P,TEXT("drone_id"))),User(Field(P,TEXT("active_plan_name"))));
+    const auto P=Object(Reply,TEXT("params"));return FText::Format(T(TEXT("Reservation.Conflict")),User(Field(P,TEXT("drone_id"))),ProductText::Source(Field(P,TEXT("active_plan_name"))));
 }
 inline bool Reviewed(const TSharedPtr<FJsonObject>& P){const auto R=Object(P,TEXT("review"));return R && P && R->GetNumberField(TEXT("content_revision"))==P->GetNumberField(TEXT("content_revision"));}
 }

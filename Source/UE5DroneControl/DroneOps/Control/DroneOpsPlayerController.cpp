@@ -8,6 +8,7 @@
 #include "Camera/CameraActor.h"
 #include "Components/ArrowComponent.h"
 #include "Command/CommandMapInteractionService.h"
+#include "Map/MapFleetInteractionWidget.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Command/CommandScreenManager.h"
 #include "DroneOps/Core/ICoordinateService.h"
@@ -972,6 +973,8 @@ void ADroneOpsPlayerController::SendVideoKeyboardTarget()
 void ADroneOpsPlayerController::OnPrimaryClick()
 {
     if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
+        const auto* Fleet=CommandScreenManager->GetMapShell()->GetFleetInteraction();
+        if(Fleet && Fleet->OwnsPrimaryInput())return;
         auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
         if(Move && Move->IsMoving()){return;}
     }

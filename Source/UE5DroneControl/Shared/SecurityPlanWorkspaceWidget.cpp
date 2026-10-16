@@ -159,7 +159,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     for(const auto& Item:AssignmentChecks){const auto E=UAVReservation(State,PlanId,Item.Key);
         HasUnavailableSelection|=E.IsValid() && Item.Value->IsChecked();
         Item.Value->SetIsEnabled(!E);if(auto* Caption=Cast<UTextBlock>(Item.Value->GetContent()))
-            Caption->SetText(E?FText::Format(T(TEXT("Reservation.InUse")),User(Item.Key),User(Field(E,TEXT("plan_name")))):User(Item.Key));
+            Caption->SetText(E?FText::Format(T(TEXT("Reservation.InUse")),User(Item.Key),ProductText::Source(Field(E,TEXT("plan_name")))):User(Item.Key));
     }
     Actions[TEXT("clear_unavailable")]->SetVisibility(HasUnavailableSelection?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     bRefreshing=false;const FString Selection=PlanId+TEXT("/")+MissionId;

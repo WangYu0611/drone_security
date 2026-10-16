@@ -16,6 +16,7 @@ public:
     void AttachCenterWidget(UUserWidget* Widget);
     bool IsCursorOverMap() const;
     class UMapPlanMoveWidget* GetMovePanel() const { return MovePanel; }
+    class UMapFleetInteractionWidget* GetFleetInteraction() const { return FleetInteraction; }
 protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeDestruct() override;
@@ -34,6 +35,9 @@ private:
     UPROPERTY() TObjectPtr<class UComboBoxString> Aircraft;
     UPROPERTY() TObjectPtr<class UCommandActionButton> Map2DButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> Map3DButton;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> BoxSelectButton;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> GroupMoveButton;
+    UPROPERTY() TObjectPtr<class UMapFleetInteractionWidget> FleetInteraction;
     TMap<FString, int32> AircraftIds;
     TArray<FString> AircraftOptions;
     UPROPERTY() TObjectPtr<class UMapExecutionWidget> ExecutionMonitor;

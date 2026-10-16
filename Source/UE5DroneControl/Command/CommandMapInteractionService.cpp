@@ -24,6 +24,8 @@
 #include "Widgets/SViewport.h"
 #include "Layout/WidgetPath.h"
 #include "PathEditor/DronePathActor.h"
+#include "Map/MapFleetInteractionWidget.h"
+#include "Map/MapShellWidget.h"
 
 // UMG retains ownership. A hit on an editable waypoint body owns its complete
 // native gesture, so deferred gameplay input cannot re-read its release as press.
@@ -33,6 +35,12 @@ class FMapPointerInput final : public IInputProcessor
 {
     TWeakObjectPtr<UCommandMapInteractionService> Service;
     bool bWaypointDrag=false,bGroundClick=false;
+    bool bFleetGesture=false;
+    UMapFleetInteractionWidget* Fleet() const {
+        if(!Service.IsValid() || !Service->Controller.IsValid())return nullptr;
+        auto* Manager=Service->Controller->GetCommandScreenManager();
+        return Manager && Manager->GetMapShell()?Manager->GetMapShell()->GetFleetInteraction():nullptr;
+    }
     bool WaypointPosition(const FVector2D& Screen,FVector2D& Local) const {
         if(!Service.IsValid() || !Service->Controller.IsValid())return false;
         auto* PC=Service->Controller.Get();auto* Viewport=PC->GetWorld()->GetGameViewport();
@@ -49,12 +57,18 @@ class FMapPointerInput final : public IInputProcessor
 public:
     explicit FMapPointerInput(UCommandMapInteractionService* In):Service(In){}
     void Tick(float,FSlateApplication& App,TSharedRef<ICursor>) override {
+        if(bFleetGesture && (!App.IsActive() || !App.GetPressedMouseButtons().Contains(EKeys::LeftMouseButton))) {
+            if(auto* F=Fleet())F->CancelGesture();bFleetGesture=false;
+        }
         if((bWaypointDrag || bGroundClick) && (!App.IsActive() || !App.GetPressedMouseButtons().Contains(EKeys::LeftMouseButton)))CancelWaypoint();
         if(Service.IsValid() && (!App.IsActive() ||
             !App.GetPressedMouseButtons().Contains(Service->GestureButton)))Service->CancelPointer();
     }
     bool HandleMouseButtonDownEvent(FSlateApplication&,const FPointerEvent& E) override {
         FVector2D Position;
+        if(E.GetEffectingButton()==EKeys::LeftMouseButton && Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()))
+            if(auto* F=Fleet();F && F->BeginPointer(E.GetScreenSpacePosition(),E.IsShiftDown(),E.IsControlDown())){Service->CancelPointer();bFleetGesture=true;return true;}
+        if(bFleetGesture){if(auto* F=Fleet())F->CancelGesture();bFleetGesture=false;}
         if(Service.IsValid() && E.GetEffectingButton()==EKeys::LeftMouseButton
             && Service->IsPlanning() && Service->CanUsePointer(E.GetScreenSpacePosition())
             && WaypointPosition(E.GetScreenSpacePosition(),Position)
@@ -70,6 +84,7 @@ public:
         return false;
     }
     bool HandleMouseMoveEvent(FSlateApplication&,const FPointerEvent& E) override {
+        if(bFleetGesture){if(auto* F=Fleet())F->MovePointer(E.GetScreenSpacePosition(),Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()));return true;}
         if(bGroundClick){
             FVector2D Position;
             const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position);
@@ -85,6 +100,7 @@ public:
         return false;
     }
     bool HandleMouseButtonUpEvent(FSlateApplication&,const FPointerEvent& E) override {
+        if(bFleetGesture && E.GetEffectingButton()==EKeys::LeftMouseButton){if(auto* F=Fleet())F->EndPointer(E.GetScreenSpacePosition(),Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()));bFleetGesture=false;return true;}
         if(bGroundClick && E.GetEffectingButton()==EKeys::LeftMouseButton){
             FVector2D Position;
             const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position);
@@ -105,6 +121,10 @@ public:
     bool HandleMouseWheelOrGestureEvent(FSlateApplication&,const FPointerEvent& E,const FPointerEvent*) override {
         if(Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()))Service->ZoomAtScreen(E.GetWheelDelta(),E.GetScreenSpacePosition());
         return false;
+    }
+    bool HandleKeyDownEvent(FSlateApplication&,const FKeyEvent& E) override {
+        if(E.GetKey()!=EKeys::Escape)return false;
+        if(auto* F=Fleet();F && F->CancelMode()){bFleetGesture=false;return true;}return false;
     }
 };
 

@@ -196,7 +196,7 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Tactical.Header"),NSLOCTEXT("DroneOps","Tactical.Header","2D TACTICAL MAP | Z{0} | {1} UAV without GPS")},
 {TEXT("Tactical.Active"),NSLOCTEXT("DroneOps","Tactical.Active","ACTIVE")},
 {TEXT("Tactical.Alert"),NSLOCTEXT("DroneOps","Tactical.Alert","ALERT")},
-{TEXT("Fleet.Summary"),NSLOCTEXT("DroneOps","Fleet.Summary","UAV {0} | BAT {1}\nMISSION {2}")},
+{TEXT("Fleet.Summary"),NSLOCTEXT("DroneOps","Fleet.Summary","Selected: {0} UAVs\n{1}")},
 {TEXT("Fleet.Local"),NSLOCTEXT("DroneOps","Fleet.Local","Local rehearsal: backend refresh disabled")},
 {TEXT("Fleet.Online"),NSLOCTEXT("DroneOps","Fleet.Online","Online")},
 {TEXT("Fleet.Offline"),NSLOCTEXT("DroneOps","Fleet.Offline","Offline")},
@@ -485,6 +485,23 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Reservation.Conflict"),NSLOCTEXT("DroneOps","Reservation.Conflict","{0} is currently executing Security Plan {1} and cannot be assigned to another plan.")},
 {TEXT("Errors.DRONE_ACTIVE_PLAN_CONFLICT"),NSLOCTEXT("DroneOps","Errors.DRONE_ACTIVE_PLAN_CONFLICT","This UAV is executing another security plan. Refresh the assignment and choose an available UAV.")},
 {TEXT("Reservation.ClearUnavailable"),NSLOCTEXT("DroneOps","Reservation.ClearUnavailable","Clear unavailable selections (save to apply)")},
+{TEXT("Fleet.BoxButton"),NSLOCTEXT("DroneOps","Fleet.BoxButton","Box select UAVs")},
+{TEXT("Fleet.MoveButton"),NSLOCTEXT("DroneOps","Fleet.MoveButton","Fleet move")},
+{TEXT("Fleet.Confirm"),NSLOCTEXT("DroneOps","Fleet.Confirm","Confirm fleet move")},
+{TEXT("Fleet.Browse"),NSLOCTEXT("DroneOps","Fleet.Browse","Return to browse / Esc")},
+{TEXT("Fleet.BoxHint"),NSLOCTEXT("DroneOps","Fleet.BoxHint","Drag a box. Shift adds, Ctrl toggles. Click empty space to clear.")},
+{TEXT("Fleet.MoveHint"),NSLOCTEXT("DroneOps","Fleet.MoveHint","Click a target, review the routes, then confirm. The primary UAV is the formation anchor.")},
+{TEXT("Fleet.BrowseHint"),NSLOCTEXT("DroneOps","Fleet.BrowseHint","Browse the map. Shift + drag also adds UAVs to the selection.")},
+{TEXT("Fleet.Target"),NSLOCTEXT("DroneOps","Fleet.Target","Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved.")},
+{TEXT("Fleet.Execution"),NSLOCTEXT("DroneOps","Fleet.Execution","Fleet execution: {0}")},
+{TEXT("Fleet.SelectTwo"),NSLOCTEXT("DroneOps","Fleet.SelectTwo","Box select at least two UAVs first.")},
+{TEXT("Fleet.SelectionPending"),NSLOCTEXT("DroneOps","Fleet.SelectionPending","Selection submitted; waiting for synchronization.")},
+{TEXT("Fleet.SelectionChanged"),NSLOCTEXT("DroneOps","Fleet.SelectionChanged","Selection changed. Click a new target to review before moving.")},
+{TEXT("Fleet.PreviewOnly"),NSLOCTEXT("DroneOps","Fleet.PreviewOnly","Preview only. Confirm to request Backend execution; Esc cancels.")},
+{TEXT("Fleet.Occupied"),NSLOCTEXT("DroneOps","Fleet.Occupied","{0} is in use by {1}. Finish or abort that task before moving.")},
+{TEXT("Fleet.TelemetryRequired"),NSLOCTEXT("DroneOps","Fleet.TelemetryRequired","{0} has no available position. Refresh the connection and retry.")},
+{TEXT("Group.Owner"),NSLOCTEXT("DroneOps","Group.Owner","Group Move")},
+{TEXT("Fleet.SelectionReady"),NSLOCTEXT("DroneOps","Fleet.SelectionReady","Selection synchronized.")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -684,7 +701,7 @@ if(Source==TEXT("RECONNECTING"))return Get(TEXT("Common.Reconnecting"));
 if(Source==TEXT("2D TACTICAL MAP | Z{0} | {1} UAV without GPS"))return Get(TEXT("Tactical.Header"));
 if(Source==TEXT("ACTIVE"))return Get(TEXT("Tactical.Active"));
 if(Source==TEXT("ALERT"))return Get(TEXT("Tactical.Alert"));
-if(Source==TEXT("UAV {0} | BAT {1}\nMISSION {2}"))return Get(TEXT("Fleet.Summary"));
+if(Source==TEXT("Selected: {0} UAVs\n{1}"))return Get(TEXT("Fleet.Summary"));
 if(Source==TEXT("Local rehearsal: backend refresh disabled"))return Get(TEXT("Fleet.Local"));
 if(Source==TEXT("Online"))return Get(TEXT("Fleet.Online"));
 if(Source==TEXT("Offline"))return Get(TEXT("Fleet.Offline"));
@@ -973,6 +990,23 @@ if(Source==TEXT("{0} · In Use · {1}"))return Get(TEXT("Reservation.InUse"));
 if(Source==TEXT("{0} is currently executing Security Plan {1} and cannot be assigned to another plan."))return Get(TEXT("Reservation.Conflict"));
 if(Source==TEXT("This UAV is executing another security plan. Refresh the assignment and choose an available UAV."))return Get(TEXT("Errors.DRONE_ACTIVE_PLAN_CONFLICT"));
 if(Source==TEXT("Clear unavailable selections (save to apply)"))return Get(TEXT("Reservation.ClearUnavailable"));
+if(Source==TEXT("Box select UAVs"))return Get(TEXT("Fleet.BoxButton"));
+if(Source==TEXT("Fleet move"))return Get(TEXT("Fleet.MoveButton"));
+if(Source==TEXT("Confirm fleet move"))return Get(TEXT("Fleet.Confirm"));
+if(Source==TEXT("Return to browse / Esc"))return Get(TEXT("Fleet.Browse"));
+if(Source==TEXT("Drag a box. Shift adds, Ctrl toggles. Click empty space to clear."))return Get(TEXT("Fleet.BoxHint"));
+if(Source==TEXT("Click a target, review the routes, then confirm. The primary UAV is the formation anchor."))return Get(TEXT("Fleet.MoveHint"));
+if(Source==TEXT("Browse the map. Shift + drag also adds UAVs to the selection."))return Get(TEXT("Fleet.BrowseHint"));
+if(Source==TEXT("Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved."))return Get(TEXT("Fleet.Target"));
+if(Source==TEXT("Fleet execution: {0}"))return Get(TEXT("Fleet.Execution"));
+if(Source==TEXT("Box select at least two UAVs first."))return Get(TEXT("Fleet.SelectTwo"));
+if(Source==TEXT("Selection submitted; waiting for synchronization."))return Get(TEXT("Fleet.SelectionPending"));
+if(Source==TEXT("Selection changed. Click a new target to review before moving."))return Get(TEXT("Fleet.SelectionChanged"));
+if(Source==TEXT("Preview only. Confirm to request Backend execution; Esc cancels."))return Get(TEXT("Fleet.PreviewOnly"));
+if(Source==TEXT("{0} is in use by {1}. Finish or abort that task before moving."))return Get(TEXT("Fleet.Occupied"));
+if(Source==TEXT("{0} has no available position. Refresh the connection and retry."))return Get(TEXT("Fleet.TelemetryRequired"));
+if(Source==TEXT("Group Move"))return Get(TEXT("Group.Owner"));
+if(Source==TEXT("Selection synchronized."))return Get(TEXT("Fleet.SelectionReady"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

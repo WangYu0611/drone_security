@@ -24,6 +24,15 @@ void UMapExecutionWidget::NativeOnInitialized(){
 }
 void UMapExecutionWidget::Refresh(){
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    auto* Coordinates=Registry->GetCoordinateService().GetObject();
+    // Hydrate initial and terminal Mock positions even when no execution panel is
+    // visible. Aircraft, selection and previews must use the same accepted source.
+    if(Field(Sync->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock") && Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)) {
+        const auto Uavs=Object(Object(Sync->GetPlans(),TEXT("mock_execution")),TEXT("uavs"));
+        if(Uavs)for(const auto& Item:Uavs->Values){const FString Uav(Item.Key.ToView());int32 Drone=0;LexTryParseString(Drone,*Uav.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Uav);
+            if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Drone));Mirror && P)Mirror->ApplySimulationPosition(ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude"))));}
+    }
     const auto SelectedPlan=Field(Sync->GetContext(),TEXT("active_security_plan_id"));
     Execution=ExecutionUI::Latest(Sync->GetPlans(),SelectedPlan,true);
     if(!Execution)Execution=ExecutionUI::Latest(Sync->GetPlans(),TEXT(""),true);
@@ -34,12 +43,7 @@ void UMapExecutionWidget::Refresh(){
     if(!Execution && !RenderedExecutions.IsEmpty())Execution=RenderedExecutions[0];
     if(!Execution){VisualRoutes.Reset();return;}
     Summary->SetText(FText::Format(User(TEXT("{0}\n{1}\n{2}")),ExecutionUI::Summary(Execution),T(TEXT("Execution.ReadOnly")),T(Sync->IsReady()?(Execution->GetBoolField(TEXT("simulation"))?TEXT("Execution.Simulation"):TEXT("Execution.Real")):TEXT("Stage1.RECONNECTING"))));
-    auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
-    auto* Coordinates=Registry->GetCoordinateService().GetObject();
-    if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){
-        for(const auto& E:RenderedExecutions){if(!E->GetBoolField(TEXT("simulation")))continue;int32 Drone=0;LexTryParseString(Drone,*Field(E,TEXT("uav_id")).Mid(4));
-        if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Drone))){const auto P=Object(E,TEXT("position"));Mirror->ApplySimulationPosition(ICoordinateService::Execute_GeographicToWorld(Coordinates,P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),P->GetNumberField(TEXT("altitude"))));}}
-    }
+    auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());
     // Immutable acknowledged snapshots become depth-tested world route visuals.
     // No invented progress and no geometry updates from the presentation clock.
     if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){

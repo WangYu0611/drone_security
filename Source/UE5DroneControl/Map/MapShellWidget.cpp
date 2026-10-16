@@ -8,6 +8,7 @@
 #include "Shared/ProductText.h"
 #include "Map/MapMissionRouteWidget.h"
 #include "Map/MapPlanMoveWidget.h"
+#include "Map/MapFleetInteractionWidget.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Engine/GameInstance.h"
 #include "Command/CommandScreenManager.h"
@@ -84,6 +85,8 @@ void UMapShellWidget::NativeOnInitialized()
     };
     Map2DButton = Button(TEXT("map2d"), TEXT("2D")); Map3DButton = Button(TEXT("map3d"), TEXT("3D"));
     Button(TEXT("focus"), TEXT("Locate"));
+    BoxSelectButton=Button(TEXT("box_select"),TEXT("Box select UAVs"));
+    GroupMoveButton=Button(TEXT("group_move"),TEXT("Fleet move"));
     Button(TEXT("security_plan"), TEXT("MISSION ROUTE"));
     Button(TEXT("open_video"), TEXT("OPEN VIDEO"));
     Button(TEXT("zh-Hans"), TEXT("中文"));Button(TEXT("en"),TEXT("English"));
@@ -104,6 +107,8 @@ void UMapShellWidget::NativeOnInitialized()
     MovePanel=CreateWidget<UMapPlanMoveWidget>(GetOwningPlayer());auto* MoveSlot=Root->AddChildToCanvas(MovePanel);MoveSlot->SetAnchors(FAnchors(0,0,1,1));MoveSlot->SetOffsets(FMargin(0));MoveSlot->SetZOrder(10);
     ExecutionMonitor=CreateWidget<UMapExecutionWidget>(GetOwningPlayer());
     auto* ExecSlot=Root->AddChildToCanvas(ExecutionMonitor);ExecSlot->SetAnchors(FAnchors(0,0,1,1));ExecSlot->SetOffsets(FMargin(0));ExecSlot->SetZOrder(2);
+    FleetInteraction=CreateWidget<UMapFleetInteractionWidget>(GetOwningPlayer());
+    auto* FleetSlot=Root->AddChildToCanvas(FleetInteraction);FleetSlot->SetAnchors(FAnchors(0,0,1,1));FleetSlot->SetOffsets(FMargin(0));FleetSlot->SetZOrder(6);
 }
 void UMapShellWidget::Refresh()
 {
@@ -116,6 +121,12 @@ void UMapShellWidget::Refresh()
         ExecutionMonitor->Refresh();if(Moving || (PlanPanel && PlanPanel->IsEditorEnabled()))ExecutionMonitor->SetVisibility(ESlateVisibility::Collapsed);
     }
     RefreshSavedRoutes(Moving);
+    if(FleetInteraction) {
+        FleetInteraction->Refresh();const bool Available=FleetInteraction->IsAvailable();
+        BoxSelectButton->SetIsEnabled(Available);GroupMoveButton->SetIsEnabled(Available);
+        CommandTheme::Button(BoxSelectButton,FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
+        CommandTheme::Button(GroupMoveButton,FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
+    }
     if(RouteLegend){
         ADronePathActor* SelectedRoute=nullptr;
         for(TActorIterator<ADronePathActor> It(GetWorld());It;++It)if(!It->IsHidden() && !It->GetSegmentVisuals().IsEmpty()){
@@ -177,6 +188,7 @@ bool UMapShellWidget::IsCursorOverMap() const
 {
     if (!IsVisible() || !CenterHost || !FSlateApplication::IsInitialized()) return false;
     const FVector2D CursorPosition = FSlateApplication::Get().GetCursorPos();
+    if(FleetInteraction && FleetInteraction->IsOverControls(CursorPosition))return false;
     if(PlanPanel && PlanPanel->IsVisible() && PlanPanel->GetCachedGeometry().IsUnderLocation(CursorPosition))return false;
     if (!CenterHost->GetCachedGeometry().IsUnderLocation(CursorPosition) || Toolbar->GetCachedGeometry().IsUnderLocation(CursorPosition)) return false;
     bool bBlocked = false;
@@ -195,6 +207,10 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
 {
     if(Action==TEXT("en") || Action==TEXT("zh-Hans")){GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLanguage(Action.ToString());return;}
     if(Action==TEXT("open_video")){const int Id=Manager->GetRegistry()->GetPrimarySelectedDrone();if(Id>0)GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->OpenVideo(FString::Printf(TEXT("UAV-%02d"),Id));return;}
+    if(Action==TEXT("box_select") || Action==TEXT("group_move")){
+        const auto Mode=Action==TEXT("box_select")?EMapFleetMode::BoxSelect:EMapFleetMode::GroupMove;
+        FleetInteraction->SetMode(FleetInteraction->GetMode()==Mode?EMapFleetMode::Browse:Mode);Refresh();return;
+    }
     if(Action==TEXT("security_plan")){PlanPanel->SetEditorEnabled(!PlanPanel->IsEditorEnabled());return;}
     if (!Manager.IsValid()) return;
     auto* Map = Manager->GetMapService(); if (!Map) return;

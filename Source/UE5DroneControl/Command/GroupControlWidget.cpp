@@ -32,5 +32,6 @@ void UGroupControlWidget::Action(FName Name,int32){
     bPending=true;Result->SetText(T(TEXT("Common.Waiting")));const auto Weak=TWeakObjectPtr<UGroupControlWidget>(this);
     if(!Sync->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;const auto Code=PlanUI::Error(Reply);FText Text=Code.IsEmpty()?T(TEXT("Group.Accepted")):ProductText::Get(TEXT("Errors.")+Code);
         const auto Params=Object(Reply,TEXT("params"));if(Params && Params->HasField(TEXT("minimum_separation_m")))Text=FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m"))));
+        const auto Reservation=ReservationError(Reply);if(!Reservation.IsEmpty())Text=Reservation;
         Weak->Result->SetText(Text);Weak->Refresh();})){bPending=false;Result->SetText(T(TEXT("Errors.SYNC_OFFLINE")));}
 }

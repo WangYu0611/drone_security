@@ -189,6 +189,7 @@ private:
             const auto members=assignment(r);if(members.size()<2)throw PlanError("INVALID_UAV","Select at least two UAVs");
             std::set<std::string> unique;
             for(const auto& v:members){const std::string uid(v.as_string());if(!unique.insert(uid).second || !uavs.count(uid) || !mock_.at("uavs").as_object().contains(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Selected UAV is unavailable");
+                checkReservation(next,"",uid);
                 for(const auto& old:all)if(str(old.value().as_object(),"uav_id")==uid && executionActive(old.value().as_object()))throw PlanError("EXECUTION_CONFLICT","Selected UAV already has a mission");}
             const auto* t=r.if_contains("target");if(!t || !t->is_object())throw PlanError("INVALID_WAYPOINT","Group anchor required");
             for(const auto* k:{"latitude","longitude","altitude"}){const auto* v=t->as_object().if_contains(k);if(!v || !v->is_number() || !std::isfinite(v->to_number<double>()))throw PlanError("INVALID_WAYPOINT","Group target requires finite latitude, longitude and altitude");}

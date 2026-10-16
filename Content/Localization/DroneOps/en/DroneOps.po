@@ -784,8 +784,8 @@ msgid "ALERT"
 msgstr "ALERT"
 
 msgctxt "DroneOps,Fleet.Summary"
-msgid "UAV {0} | BAT {1}\nMISSION {2}"
-msgstr "UAV {0} | BAT {1}\nMISSION {2}"
+msgid "Selected: {0} UAVs\n{1}"
+msgstr "Selected: {0} UAVs\n{1}"
 
 msgctxt "DroneOps,Fleet.Local"
 msgid "Local rehearsal: backend refresh disabled"
@@ -1938,3 +1938,71 @@ msgstr "This UAV is executing another security plan. Refresh the assignment and 
 msgctxt "DroneOps,Reservation.ClearUnavailable"
 msgid "Clear unavailable selections (save to apply)"
 msgstr "Clear unavailable selections (save to apply)"
+
+msgctxt "DroneOps,Fleet.BoxButton"
+msgid "Box select UAVs"
+msgstr "Box select UAVs"
+
+msgctxt "DroneOps,Fleet.MoveButton"
+msgid "Fleet move"
+msgstr "Fleet move"
+
+msgctxt "DroneOps,Fleet.Confirm"
+msgid "Confirm fleet move"
+msgstr "Confirm fleet move"
+
+msgctxt "DroneOps,Fleet.Browse"
+msgid "Return to browse / Esc"
+msgstr "Return to browse / Esc"
+
+msgctxt "DroneOps,Fleet.BoxHint"
+msgid "Drag a box. Shift adds, Ctrl toggles. Click empty space to clear."
+msgstr "Drag a box. Shift adds, Ctrl toggles. Click empty space to clear."
+
+msgctxt "DroneOps,Fleet.MoveHint"
+msgid "Click a target, review the routes, then confirm. The primary UAV is the formation anchor."
+msgstr "Click a target, review the routes, then confirm. The primary UAV is the formation anchor."
+
+msgctxt "DroneOps,Fleet.BrowseHint"
+msgid "Browse the map. Shift + drag also adds UAVs to the selection."
+msgstr "Browse the map. Shift + drag also adds UAVs to the selection."
+
+msgctxt "DroneOps,Fleet.Target"
+msgid "Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved."
+msgstr "Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved."
+
+msgctxt "DroneOps,Fleet.Execution"
+msgid "Fleet execution: {0}"
+msgstr "Fleet execution: {0}"
+
+msgctxt "DroneOps,Fleet.SelectTwo"
+msgid "Box select at least two UAVs first."
+msgstr "Box select at least two UAVs first."
+
+msgctxt "DroneOps,Fleet.SelectionPending"
+msgid "Selection submitted; waiting for synchronization."
+msgstr "Selection submitted; waiting for synchronization."
+
+msgctxt "DroneOps,Fleet.SelectionChanged"
+msgid "Selection changed. Click a new target to review before moving."
+msgstr "Selection changed. Click a new target to review before moving."
+
+msgctxt "DroneOps,Fleet.PreviewOnly"
+msgid "Preview only. Confirm to request Backend execution; Esc cancels."
+msgstr "Preview only. Confirm to request Backend execution; Esc cancels."
+
+msgctxt "DroneOps,Fleet.Occupied"
+msgid "{0} is in use by {1}. Finish or abort that task before moving."
+msgstr "{0} is in use by {1}. Finish or abort that task before moving."
+
+msgctxt "DroneOps,Fleet.TelemetryRequired"
+msgid "{0} has no available position. Refresh the connection and retry."
+msgstr "{0} has no available position. Refresh the connection and retry."
+
+msgctxt "DroneOps,Group.Owner"
+msgid "Group Move"
+msgstr "Group Move"
+
+msgctxt "DroneOps,Fleet.SelectionReady"
+msgid "Selection synchronized."
+msgstr "Selection synchronized."

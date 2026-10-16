@@ -1680,8 +1680,12 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
     const std::set<std::string> commandActions{"execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
-    const std::set<std::string> mapActions{"begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
+    const std::set<std::string> mapActions{"execution_group_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
+    if(role=="Map" && (action=="execution_pause" || action=="execution_resume" || action=="execution_abort")) {
+        const auto state=security_plans_.snapshot();const auto* execution=state.at("executions").as_object().if_contains(get_string(body,"execution_id"));
+        if(!execution || SecurityPlanStore::str(execution->as_object(),"control_kind")!="GROUP_MOVE")throw ApiError(403,"Map can control only fleet movement executions");
+    }
     auto select=[&](const std::string& plan,const std::string& mission) {
         security_plans_.checkSelection(plan,mission);
         return operational_context_.update({{"active_security_plan_id",plan.empty()?boost::json::value(nullptr):boost::json::value(plan)},

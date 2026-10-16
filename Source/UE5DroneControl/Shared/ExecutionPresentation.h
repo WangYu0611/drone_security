@@ -1,6 +1,14 @@
 #pragma once
 #include "Shared/PlanWidgetSupport.h"
 namespace ExecutionUI {
+// Same position source as SecurityPlanStore::currentPosition for Mock clients.
+inline TSharedPtr<FJsonObject> MockPosition(const TSharedPtr<FJsonObject>& State,const FString& Uav) {
+    auto Position=PlanUI::Object(PlanUI::Find(PlanUI::Object(State,TEXT("mock_execution")),TEXT("uavs"),Uav),TEXT("home_position"));
+    double Latest=-1;const auto All=PlanUI::Object(State,TEXT("executions"));
+    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();double Updated=-1;E->TryGetNumberField(TEXT("updated_at"),Updated);
+        if(PlanUI::Field(E,TEXT("uav_id"))==Uav && PlanUI::Field(E,TEXT("state"))!=TEXT("SCHEDULED") && Updated>=Latest){Position=PlanUI::Object(E,TEXT("position"));Latest=Updated;}}
+    return Position;
+}
 inline bool Active(const TSharedPtr<FJsonObject>& E) {
     const auto S=PlanUI::Field(E,TEXT("state"));
     return E && S!=TEXT("COMPLETED") && S!=TEXT("ABORTED") && S!=TEXT("FAILED") && S!=TEXT("CANCELLED");
