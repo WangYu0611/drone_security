@@ -1,0 +1,87 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:\CodexPublish\drone_security\UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandMapInteractionService.cpp, GroupControlWidget.cpp, DroneOpsPlayerController.cpp, MapExecutionWidget.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, ProductText.cpp, SecurityPlanWorkspaceWidget.cpp, FleetControlTest.cpp, RouteVisualTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 14 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 19.08 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/14] Compile [x64] FleetControlTest.cpp [NoUba]
+[2/14] Compile [x64] CommandShellWidget.cpp [NoUba]
+[3/14] Compile [x64] GroupControlWidget.cpp [NoUba]
+[4/14] Compile [x64] MapExecutionWidget.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,100): error C2039: "Mid": ﾲﾻￊￇ "UE::TSharedString<TCHAR>" ﾵￄﾳ￉ￔﾱ
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                                                   ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Containers\SharedString.h(30,7): note: ﾲￎﾼ￻ﾡﾰUE::TSharedString<TCHAR>ﾡﾱﾵￄ￉￹ￃ￷
+class TSharedString
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,66): error C2661: ﾡﾰLexTryParseStringﾡﾱ: ￃﾻￓ￐ￖ￘ￔ￘ﾺﾯￊ�ﾽￓￊￜ 1 ﾸ￶ﾲￎￊ�
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                 ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Containers\UnrealString.h.inl(2210,6): note: ﾿￉ￄￜￊￇﾡﾰbool LexTryParseString(T &,const ANSICHAR *)ﾡﾱ
+bool LexTryParseString(T& OutValue, const UE_STRING_CHARTYPE* Buffer)
+     ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,66): note: ﾡﾰbool LexTryParseString(T &,const ANSICHAR *)ﾡﾱ: ￓﾦￊ￤￈￫ 2 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 1 ﾸ￶
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                 ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Containers\UnrealString.h.inl(2210,6): note: ﾻ￲    ﾡﾰbool LexTryParseString(T &,const UTF8CHAR *)ﾡﾱ
+bool LexTryParseString(T& OutValue, const UE_STRING_CHARTYPE* Buffer)
+     ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,66): note: ﾡﾰbool LexTryParseString(T &,const UTF8CHAR *)ﾡﾱ: ￓﾦￊ￤￈￫ 2 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 1 ﾸ￶
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                 ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Containers\UnrealString.h.inl(2210,6): note: ﾻ￲    ﾡﾰbool LexTryParseString(T &,const TCHAR *)ﾡﾱ
+bool LexTryParseString(T& OutValue, const UE_STRING_CHARTYPE* Buffer)
+     ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,66): note: ﾡﾰbool LexTryParseString(T &,const TCHAR *)ﾡﾱ: ￓﾦￊ￤￈￫ 2 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 1 ﾸ￶
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                 ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,66): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(int32)ﾡﾱￊﾱ
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,134): error C2664: ﾡﾰTSharedPtr<FJsonObject,ESPMode::ThreadSafe> ExecutionUI::MockPosition(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &,const FString &)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 2 ﾴￓﾡﾰconst Tﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst FString &ﾡﾱ
+        with
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                                                                                     ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,168): note: ￔﾭￒ￲￈￧ￏￂ: ￎ￞ﾷﾨﾴￓﾡﾰconst Tﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst FStringﾡﾱ
+        with
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                                                                                                                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,168): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,32): note: ﾲￎﾼ￻ﾡﾰExecutionUI::MockPositionﾡﾱﾵￄ￉￹ￃ￷
+inline TSharedPtr<FJsonObject> MockPosition(const TSharedPtr<FJsonObject>& State,const FString& Uav) {
+                               ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapExecutionWidget.cpp(33,134): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(TSharedPtr<FJsonObject,ESPMode::ThreadSafe>, const T)ﾡﾱￊﾱ
+        with
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        if(Uavs)for(const auto& Item:Uavs->Values){int32 Drone=0;LexTryParseString(Drone,*Item.Key.Mid(4));const auto P=ExecutionUI::MockPosition(Sync->GetPlans(),Item.Key);
+                                                                                                                                     ^
+[5/14] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[6/14] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[7/14] Compile [x64] ReservationWidgetTest.cpp [NoUba]
+[8/14] Compile [x64] RouteVisualTest.cpp [NoUba]
+[9/14] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[10/14] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[11/14] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 58.42 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 61.66 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 15.2kb

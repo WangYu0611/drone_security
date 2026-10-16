@@ -114,6 +114,39 @@ TEST_F(P54Mission, ThreeAircraftCompleteDistinctSlots){
 }
 TEST_F(P54Mission, MissingGroupTargetCoordinateRejectsAtomically){multi();error({{"action","execution_group_move"},{"request_id","missing-target"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"target",O{{"latitude",39.},{"longitude",116.}}}},"INVALID_WAYPOINT");}
 
+struct FleetMove:P54Mission {
+    O move(const char* key="fleet-start") {return send({{"action","execution_group_move"},{"request_id",key},{"assigned_uav_ids",A{"UAV-02","UAV-01"}},
+        {"target",O{{"latitude",39.0001},{"longitude",116.0002},{"altitude",60.}}},{"target_area_radius_m",10000.}});}
+};
+TEST_F(FleetMove, ActivePlanCannotBeStolenByFleet){multi();start();
+    const auto before=store.snapshot();try{move();FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"DRONE_ACTIVE_PLAN_CONFLICT");EXPECT_EQ(SecurityPlanStore::str(e.params,"active_plan_id"),p);}
+    EXPECT_EQ(store.snapshot(),before);
+}
+TEST_F(FleetMove, FleetOccupancyBlocksPlanAssignmentUntilAbort){multi();const auto draft=send({{"action","copy_plan"}});const auto pid=SecurityPlanStore::str(draft,"plan_id"),mid=SecurityPlanStore::str(draft,"mission_id");
+    execution=SecurityPlanStore::str(move(),"execution_id");
+    const O assign{{"action","assign"},{"plan_id",pid},{"mission_id",mid},{"assigned_uav_id","UAV-01"}};
+    error(assign,"DRONE_ACTIVE_PLAN_CONFLICT");
+    tick();tick();tick();control("execution_pause","fleet-pause");
+    error({{"action","validate"},{"plan_id",pid}},"DRONE_ACTIVE_PLAN_CONFLICT");
+    control("execution_abort","fleet-abort");EXPECT_NO_THROW(send(assign));
+}
+TEST_F(FleetMove, PrimaryAnchorAndRelativeHeightsArePreserved){multi();const auto response=move();
+    for(const auto& Item:executions()){const auto e=Item.value().as_object();const auto& points=e.at("route_snapshot").as_object().at("waypoints").as_array();
+        const auto startPoint=points[0].as_object(),end=points[1].as_object();
+        EXPECT_NEAR(end.at("longitude").to_number<double>()-startPoint.at("longitude").to_number<double>(),.0001,1e-9);
+        EXPECT_NEAR(end.at("latitude").to_number<double>()-startPoint.at("latitude").to_number<double>(),.0001,1e-9);
+        EXPECT_EQ(end.at("altitude"),startPoint.at("altitude"));EXPECT_EQ(e.at("formation"),"RelativeOffset");
+        for(const auto* axis:{"latitude","longitude","altitude"})EXPECT_EQ(e.at("position").as_object().at(axis),startPoint.at(axis));
+    }
+    move();EXPECT_EQ(executions().size(),2u); // idempotent replay cannot create another fleet.
+}
+TEST_F(FleetMove, ConcurrentPlanAndFleetStartAreAtomic){multi();std::atomic<int> accepted{0},rejected{0},unexpected{0};std::atomic<bool> go{false};
+    auto planRequest=O{{"action","execution_start"},{"plan_id",p},{"mission_id",m},{"request_id","concurrent-plan"}};
+    auto groupRequest=O{{"action","execution_group_move"},{"request_id","concurrent-fleet"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"target",O{{"latitude",39.0001},{"longitude",116.},{"altitude",60.}}}};
+    auto run=[&](O r){while(!go.load())std::this_thread::yield();try{store.transact(r,uavs,"QA",[](const O&){});++accepted;}catch(const PlanError& e){if(e.code=="DRONE_ACTIVE_PLAN_CONFLICT")++rejected;else ++unexpected;}catch(...){++unexpected;}};
+    std::thread a(run,planRequest),b(run,groupRequest);go=true;a.join();b.join();EXPECT_EQ(accepted,1);EXPECT_EQ(rejected,1);EXPECT_EQ(unexpected,0);EXPECT_EQ(executions().size(),2u);
+}
+
 
 struct P54RealAdapter:P52Execution {
     security_mission::Position measured{39.,116.,60.};

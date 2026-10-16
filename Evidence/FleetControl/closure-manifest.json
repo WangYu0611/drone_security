@@ -1,0 +1,731 @@
+{
+  "base": "9951ad20177a71c743b0be89dbb7be7acf6bc7fa",
+  "scope": "Offline Mock; native and automation recorded separately",
+  "ue_build": "ue-build-preview-final.log",
+  "backend_focused": {
+    "discovered": 33,
+    "passed": 33,
+    "failed": 0
+  },
+  "backend_full": {
+    "discovered": 135,
+    "passed": 133,
+    "historical_failed": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ]
+  },
+  "automation": {
+    "unique_discovered": 10,
+    "unique_completed": 10,
+    "unique_passed": 10,
+    "with_warnings": 7,
+    "final_preview_followup_passed": 1
+  },
+  "protocol_scenarios_passed": 7,
+  "native": {
+    "box_selected": 4,
+    "paused": 4,
+    "completed_at_targets": 4,
+    "second_group_aborted": 4,
+    "preview_cancel_created_executions": 0
+  },
+  "credential_pattern_matches": [],
+  "binaries": {
+    "Binaries/Win64/UnrealEditor-UE5DroneControl.dll": {
+      "sha256": "ec25ddc0690b31844c0f44206d2ebc4b418acd35f652632ff2b8a28c8be4d6b6",
+      "bytes": 5393920
+    },
+    "Backend/build-p54/Release/DroneBackend.exe": {
+      "sha256": "8c48d0aef48f0ba2691252b01d2e7a0b9b409e7ff2300342ba6bca8591ffd4d8",
+      "bytes": 1352192
+    }
+  },
+  "files": [
+    {
+      "path": "backend-build-1.log",
+      "bytes": 434,
+      "sha256": "9e8a0972b6c50ffddb180b0c5933b9de131c83a21985d11b748c44eea007ce90"
+    },
+    {
+      "path": "backend-build-2.log",
+      "bytes": 276,
+      "sha256": "5f9d9ca2a0653f14d00a44db91b9318c55dcfeff9e9ceac58b38f9328350c38e"
+    },
+    {
+      "path": "backend-build-final.log",
+      "bytes": 302,
+      "sha256": "0fee24df9cac279d2a7f4952cc6e5010ca893ff5c1ba85abfd59f8af0be945a3"
+    },
+    {
+      "path": "backend-build-http-final.log",
+      "bytes": 295,
+      "sha256": "61be806fd96b46118d3e2c4214f05028fcbc1c2f386bd6267325329a9f4bca01"
+    },
+    {
+      "path": "backend-focused-final.log",
+      "bytes": 4987,
+      "sha256": "1b6e97565e19f2b503aca983076e79198970db20c20d88c8fa16f2d1590fe12c"
+    },
+    {
+      "path": "backend-focused-final.xml",
+      "bytes": 8977,
+      "sha256": "d6bc6b2c743bfb75e4dddc05a9f7a3033947822464c7639f7b17f0d0069b6664"
+    },
+    {
+      "path": "backend-focused.log",
+      "bytes": 5790,
+      "sha256": "d593f063316e7bf825c90d87c2a84ec19fd743069423d33b5e14b58c12005a96"
+    },
+    {
+      "path": "backend-focused.xml",
+      "bytes": 10622,
+      "sha256": "26930e3dbd2bb07537af42a557fefe30b6e7051a5b26b250103276a7958a0b5c"
+    },
+    {
+      "path": "backend-full.log",
+      "bytes": 19883,
+      "sha256": "927dd4f67c546f16951dd565a52b4b18da12f8ead8417648cd67fbcfff78de81"
+    },
+    {
+      "path": "backend-full.xml",
+      "bytes": 38029,
+      "sha256": "32a3151386660f69609e473b400bc4dadc2170de50984b0b60c3aa9a499b0b67"
+    },
+    {
+      "path": "localization-stdio.log",
+      "bytes": 40509,
+      "sha256": "99428da0e948a19e7860ea833f27a6bbff8015586bf6fea5d8ea35a32fca095a"
+    },
+    {
+      "path": "localization.log",
+      "bytes": 274893,
+      "sha256": "d91cd6092b50162d8e5709bf36697b3780ee3d34cc1eb063fc0007cb08e480bb"
+    },
+    {
+      "path": "native/00-baseline.png",
+      "bytes": 37598,
+      "sha256": "e0859b27594833dd8618c91207213f84a0fa0461ea19d2dcc15ed9e9c69d774d"
+    },
+    {
+      "path": "native/01-box-selected-four-en.png",
+      "bytes": 44249,
+      "sha256": "224ca7e09b0ccad4731f3206476d0600cbc767427f9e512bf56158a8de048ab4"
+    },
+    {
+      "path": "native/02-preview-first-position-mismatch.png",
+      "bytes": 54755,
+      "sha256": "11721d21dcbed1ed63278620a64edf2ce1340289076a2fa0ee1a5ff4629df55c"
+    },
+    {
+      "path": "native/03-final-box-selected-four.png",
+      "bytes": 43341,
+      "sha256": "ee1ad54832ace3e0e067c7a67a259432906f30958a5bab57239d78da01db74a2"
+    },
+    {
+      "path": "native/04-aligned-preview-eight-mps.png",
+      "bytes": 58280,
+      "sha256": "99d3b568f3b9a5f5fe19d6a543350de2399af97f1f2576cee643743376e55160"
+    },
+    {
+      "path": "native/05-escape-cancelled.png",
+      "bytes": 39758,
+      "sha256": "22b24196f6c82693c971ff68e292a30ae9c0a3a1163e84f4829be66257b41e53"
+    },
+    {
+      "path": "native/06-preview-zh.png",
+      "bytes": 52653,
+      "sha256": "8e01ac8d794b687398af9c7d08095a06809def946c21d38cc5e19a3983f8f5f2"
+    },
+    {
+      "path": "native/07-native-executing.png",
+      "bytes": 57799,
+      "sha256": "642763cbc26e8da351e44a29b34a26643672f2a56f08a27443db7ad925fd0279"
+    },
+    {
+      "path": "native/08-native-paused.png",
+      "bytes": 57823,
+      "sha256": "b640bb327122e51607fd07b722d2c991a80b3340877739c66aedb570696224fc"
+    },
+    {
+      "path": "native/09-native-completed.png",
+      "bytes": 56749,
+      "sha256": "2fa5de28fba32588085827478b3c3b15211ceb63fed9e4fc50fa33123aefc143"
+    },
+    {
+      "path": "native/10-native-aborted.png",
+      "bytes": 58133,
+      "sha256": "7d468be1a771d48661760a1bf64de22ebc1b1dcd6274daf80484c2c667e7b3e6"
+    },
+    {
+      "path": "native/aborted-state.json",
+      "bytes": 9274,
+      "sha256": "bca0a77e737f771a37864a88fd3d31ea2288a62a878f52691482d37d49f89fb6"
+    },
+    {
+      "path": "native/completed-state.json",
+      "bytes": 9163,
+      "sha256": "282a7561f40e05ea30585491bfb96d438e0e74e891cff7a651f2cf58c9baad58"
+    },
+    {
+      "path": "native/paused-state.json",
+      "bytes": 9128,
+      "sha256": "9b9fd3d34f62184740475a66417ac73e3741db27699dbbe2dc803401f3609e07"
+    },
+    {
+      "path": "native/preview-cancel-no-execution.json",
+      "bytes": 85,
+      "sha256": "06079b3d07b8e4fc2cefc4bab9fced948592644d332d0c756d6fb404284ca6ec"
+    },
+    {
+      "path": "native-accepted-host.log",
+      "bytes": 93,
+      "sha256": "11275951dfc59cf2017120f6345275ed40ecc4b78862450c51b2dc8629d5c0e2"
+    },
+    {
+      "path": "native-baseline-host.log",
+      "bytes": 93,
+      "sha256": "11275951dfc59cf2017120f6345275ed40ecc4b78862450c51b2dc8629d5c0e2"
+    },
+    {
+      "path": "native-final-host-1.log",
+      "bytes": 93,
+      "sha256": "11275951dfc59cf2017120f6345275ed40ecc4b78862450c51b2dc8629d5c0e2"
+    },
+    {
+      "path": "native-final-host-2.log",
+      "bytes": 93,
+      "sha256": "11275951dfc59cf2017120f6345275ed40ecc4b78862450c51b2dc8629d5c0e2"
+    },
+    {
+      "path": "native-final-host-3.log",
+      "bytes": 93,
+      "sha256": "11275951dfc59cf2017120f6345275ed40ecc4b78862450c51b2dc8629d5c0e2"
+    },
+    {
+      "path": "preview-followup-final.log",
+      "bytes": 223,
+      "sha256": "f21deecedf0e47c286b01e67a4c61b1a8cb1d632463f1f3ccfe834c40d988d41"
+    },
+    {
+      "path": "regression-final.log",
+      "bytes": 1339,
+      "sha256": "a51ddc12f8607d313c6d6e023e7659d14edfe11112dc583fda2d853d2d19e79c"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.ReservationWidgets/editor.log",
+      "bytes": 339413,
+      "sha256": "3d6eee439f92bc1c15298b615a5383d4b1c316391f906c14394a526990ccd1a4"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.ReservationWidgets/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.ReservationWidgets/index.json",
+      "bytes": 1858,
+      "sha256": "13c78cec236069fd49cd092e7d4e8b21ba82cb30e4403ff9e380919bc4ca277c"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.ReservationWidgets/stdio.log",
+      "bytes": 134,
+      "sha256": "6eea60bdcc1566d7206203f0c17dcb82744278a0586fd68df48c11e6685366bb"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.SecurityPlanRouteVisual/editor.log",
+      "bytes": 354765,
+      "sha256": "b4040c3dff962d5e6a86c942af9a12e2786f23da28f10b8cebb5a7ee7b463333"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.SecurityPlanRouteVisual/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.SecurityPlanRouteVisual/index.json",
+      "bytes": 5791,
+      "sha256": "29a7bde62918d1a57ac20d73d9d06cc3faa1c91a0ca75f5183a604436b9df1ff"
+    },
+    {
+      "path": "ue-1792117548148502300/DroneOps.P55.SecurityPlanRouteVisual/stdio.log",
+      "bytes": 134,
+      "sha256": "8686b027814ae24281ead8cf9cad7b1abaa1aa73fe6e2a230bcee4af6c32b860"
+    },
+    {
+      "path": "ue-1792117548148502300/Localization.FTextAndDraftIsolation/editor.log",
+      "bytes": 363620,
+      "sha256": "306caaf90b806c75d5a295b405194d104eef5b02dcfea28d89ffb57136dea079"
+    },
+    {
+      "path": "ue-1792117548148502300/Localization.FTextAndDraftIsolation/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "ue-1792117548148502300/Localization.FTextAndDraftIsolation/index.json",
+      "bytes": 5201,
+      "sha256": "3c3fdef44c9eb6830e41317d30d3fd25eed0962832c221bba15c0e7985ad7c0b"
+    },
+    {
+      "path": "ue-1792117548148502300/Localization.FTextAndDraftIsolation/stdio.log",
+      "bytes": 134,
+      "sha256": "68618533525e5d348fc4c26bef515a57614a5e6eea2e6baf6d0be4f05b3f3f94"
+    },
+    {
+      "path": "ue-1792117548148502300/p4-fixture/p4-http.json",
+      "bytes": 729621,
+      "sha256": "b6ab0bab7a2dcdb771b67f7b32e7e59ae44e300187e57ec700a4168b7daa3332"
+    },
+    {
+      "path": "ue-1792117548148502300/p4-fixture/p4-results.json",
+      "bytes": 1225,
+      "sha256": "6632658074dba718b912a272afbf177dea1f72452e578beda4272e331490e13c"
+    },
+    {
+      "path": "ue-1792117548148502300/p4-fixture/p4-ws.json",
+      "bytes": 563140,
+      "sha256": "9b0a86153479a411a100a30d5246e3f1e1ffbbea63370be66fdff8b18d1b9ceb"
+    },
+    {
+      "path": "ue-1792117548148502300/p4-fixture/restart-before.json",
+      "bytes": 18195,
+      "sha256": "97ce7de1756f260fa6e456beaf720b57e7cbd9777c47472ed347e8360803cde2"
+    },
+    {
+      "path": "ue-1792117548148502300/p4_ue_route_fixture.mjs.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ue-1792117548148502300/p4_workflow_integration.mjs.log",
+      "bytes": 1069,
+      "sha256": "b143800a6185a7b8437439d1ea55fb16b2d598d07eda867d13e731649c3c1ba1"
+    },
+    {
+      "path": "ue-1792117548148502300/p52-fixture/final-state.json",
+      "bytes": 80307,
+      "sha256": "679615dbf9a8184d474fbf7d098e87f22a23cd8c23896554cfa58e1625016597"
+    },
+    {
+      "path": "ue-1792117548148502300/p52-fixture/result.json",
+      "bytes": 708,
+      "sha256": "6573fcf0c669e2981015da9907fc212467abb15d41f60cf1c38df9e2f6ee8831"
+    },
+    {
+      "path": "ue-1792117548148502300/p52-fixture/timeline.json",
+      "bytes": 216218,
+      "sha256": "8b25ee24fad870aa7c394b7663e1fa63c3bfd5d531252b54f96f2ee2b6fa0283"
+    },
+    {
+      "path": "ue-1792117548148502300/P52.MapExecutionMonitor/editor.log",
+      "bytes": 350958,
+      "sha256": "4911e991a57b48bb2adb31fc3fd28266a310a3a9ff6393c5fe0e6b53e86580f1"
+    },
+    {
+      "path": "ue-1792117548148502300/P52.MapExecutionMonitor/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "ue-1792117548148502300/P52.MapExecutionMonitor/index.json",
+      "bytes": 5186,
+      "sha256": "983a5f572773cfdeabf759c9db8007afd478c144881418639126467d5759cc78"
+    },
+    {
+      "path": "ue-1792117548148502300/P52.MapExecutionMonitor/stdio.log",
+      "bytes": 134,
+      "sha256": "969358eb416e244fc8b09b055bfc262bdc36414afb50bc3ed9d0ff22b582f174"
+    },
+    {
+      "path": "ue-1792117548148502300/p52_execution_integration.mjs.log",
+      "bytes": 551,
+      "sha256": "06fbc2eecf0a967a97fd8a0ff30787965b2225d86e9641b59e638901a3aac21f"
+    },
+    {
+      "path": "ue-1792117548148502300/P54.CameraDampingAnd3DRoute/editor.log",
+      "bytes": 362627,
+      "sha256": "843e449bcfaa92b44e563a3b9ade40ebc87a9e2270db78e484ee64046288b0f5"
+    },
+    {
+      "path": "ue-1792117548148502300/P54.CameraDampingAnd3DRoute/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "ue-1792117548148502300/P54.CameraDampingAnd3DRoute/index.json",
+      "bytes": 22690,
+      "sha256": "0e07bf226c430975db465265160415ee2097126771c7ab82cb72e33e462689e3"
+    },
+    {
+      "path": "ue-1792117548148502300/P54.CameraDampingAnd3DRoute/stdio.log",
+      "bytes": 134,
+      "sha256": "bfac548ec714dbf221c748da25318f0eb96c099615c7ca06ba7e6af4b245abf5"
+    },
+    {
+      "path": "ue-1792117548148502300/route-fixture.json",
+      "bytes": 56,
+      "sha256": "b19d38ce0bfd1691dafcb49337dca8085ffb73e12d4c9231ac911a16c0400bf3"
+    },
+    {
+      "path": "ue-1792117548148502300/security-plan-fixture.log",
+      "bytes": 48,
+      "sha256": "413ca341bde491045994b1b4180d4342bca9f27ae381928fbf1dfc0036ddc480"
+    },
+    {
+      "path": "ue-1792117548148502300/summary.json",
+      "bytes": 1643,
+      "sha256": "4e48614aad5de9ec8442a48de4942187a7578bf924d34883abcfdffa0fd9a51f"
+    },
+    {
+      "path": "ue-1792117548148502300/Workflow.MapLiveDraftGuard/editor.log",
+      "bytes": 352533,
+      "sha256": "6b4f394d34a6552a2d5209b94cb64a74400660146ebf50566de27d42024045e5"
+    },
+    {
+      "path": "ue-1792117548148502300/Workflow.MapLiveDraftGuard/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "ue-1792117548148502300/Workflow.MapLiveDraftGuard/index.json",
+      "bytes": 5579,
+      "sha256": "42f5ee28a8b3f02af951a6a4520d1b829f9535d5aaa220b62d8144f38601435d"
+    },
+    {
+      "path": "ue-1792117548148502300/Workflow.MapLiveDraftGuard/stdio.log",
+      "bytes": 134,
+      "sha256": "d8e3099a8cd479603f4f3973ecceb2bc66db57c382ddf94af9554e09320fa0cf"
+    },
+    {
+      "path": "ue-build-1.log",
+      "bytes": 3862,
+      "sha256": "c3b6541ac289fe0873c204e4712acd744c86b051ea033671412d6c600b34b4f9"
+    },
+    {
+      "path": "ue-build-2.log",
+      "bytes": 3307,
+      "sha256": "371d86af876d9215f3b88e685d2dc2acf54010d428322f5039d306c178d2ab1e"
+    },
+    {
+      "path": "ue-build-3.log",
+      "bytes": 2503,
+      "sha256": "377fde168a5d2ff468963ea7a296fca8a3aefa7adba9a1046e0efb3f2597b00b"
+    },
+    {
+      "path": "ue-build-4.log",
+      "bytes": 8792,
+      "sha256": "0ce2ab0f7f175ab3f0b17b4cd175b84c1337c0dc6714e972d9c5b7dc50d4bc90"
+    },
+    {
+      "path": "ue-build-5.log",
+      "bytes": 2541,
+      "sha256": "e5c2d38e4d9c92b6cd11cedf193a7796253369814575ccccd3b1b448af51b08a"
+    },
+    {
+      "path": "ue-build-final.log",
+      "bytes": 2548,
+      "sha256": "0c86c166dc8b811d94d8e1b03c59e536da9723f5a1fdf9a87c9350ceaa80f3e2"
+    },
+    {
+      "path": "ue-build-preview-final.log",
+      "bytes": 2598,
+      "sha256": "c50a3749cce7df74e4919bd19c570149219fa6b052afc6c383decf839fa2c8e4"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Selection/editor.log",
+      "bytes": 310168,
+      "sha256": "231f7bdbc30500ec0e38b31048ac84aa163a30c309234067ffdc72d90e20b5b2"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Selection/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Selection/index.json",
+      "bytes": 1084,
+      "sha256": "d88bc6a1697fab2b2fc39f72fcb06895a59008427468b195aecd52319ad11ac4"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Selection/stdio.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Workflow/editor.log",
+      "bytes": 370766,
+      "sha256": "edfee6810f0cfe6a5e1cf015cfee7e94066090efd9379c02d17ef5bebe9d8815"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Workflow/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Workflow/index.json",
+      "bytes": 24413,
+      "sha256": "090d7ce9485606fd82b07d7f4856374fb03a59deb4eafedf67ef950ca97c29c6"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.Fleet.Workflow/stdio.log",
+      "bytes": 134,
+      "sha256": "923e2e601f8d74cdd4da2cdc2021f6bd51a00d5290bf2bdeea8cf74e031dadbc"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.P54.RouteEditCameraLock/editor.log",
+      "bytes": 311552,
+      "sha256": "2ba935ba18ea6c36f11de6155840775d6ae62443ce6df48cb2b1807e88f93792"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.P54.RouteEditCameraLock/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.P54.RouteEditCameraLock/index.json",
+      "bytes": 1448,
+      "sha256": "fb5f3be36aca49b55aeee5c9c5ca1d60dcfa83971acaf46c4163362eae91568b"
+    },
+    {
+      "path": "verification-1792116879986287300/DroneOps.P54.RouteEditCameraLock/stdio.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification-1792116879986287300/protocol/result.json",
+      "bytes": 171259,
+      "sha256": "baa5e38da07ccc049a6fdba09675ee3ab6e1cda1bec45f402635f2997f7b208d"
+    },
+    {
+      "path": "verification-1792116879986287300/protocol.log",
+      "bytes": 541,
+      "sha256": "583751cbf393c7dc16b77a5fbd88eed8fc825f884ba5e56591c3e5c23d8b53e2"
+    },
+    {
+      "path": "verification-1792116879986287300/summary.json",
+      "bytes": 621,
+      "sha256": "5d44b20f3532646a7086c318503ef1cbadfb1bee2a97f96597f9cc9065a603a4"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Selection/editor.log",
+      "bytes": 309365,
+      "sha256": "f18cefde2d2f16c072e4fdae904dc06457a4883b52007e535c4cafcfae89f9d0"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Selection/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Selection/index.json",
+      "bytes": 1084,
+      "sha256": "23339735f36c123ff1a7a030aeaf71df799fc25adec7d0ffbcd3cc2d871bb157"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Selection/stdio.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Workflow/editor.log",
+      "bytes": 352488,
+      "sha256": "540f44d82da533397d991deb61df5cab9a74b7242bc1442d75ca44791a530962"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Workflow/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Workflow/index.json",
+      "bytes": 5163,
+      "sha256": "91dca1c68dd98ca11005256e2586fbe424d4cff43a7680bedf95a48c18ee96d6"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.Fleet.Workflow/stdio.log",
+      "bytes": 134,
+      "sha256": "afe698c12fd0eb2763b83bb6ef0eaa1a01c3858dd57aaf0b88415ae3a4895ab2"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.P54.RouteEditCameraLock/editor.log",
+      "bytes": 311091,
+      "sha256": "3db06c6470e254771442718d8f6f82cdf2ac2db3deaca31fa1796688fbf247c2"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.P54.RouteEditCameraLock/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.P54.RouteEditCameraLock/index.json",
+      "bytes": 1447,
+      "sha256": "d14fb74e6ff595664f036372ddf3a2ce870266be1dd9d076260238b54e173f50"
+    },
+    {
+      "path": "verification-1792117140276581700/DroneOps.P54.RouteEditCameraLock/stdio.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification-1792117140276581700/protocol/movement-samples.json",
+      "bytes": 10474,
+      "sha256": "0ccfebb46c41526c0c67fcc5819428c661c10c8dfbd134dc23944a4e46188b76"
+    },
+    {
+      "path": "verification-1792117140276581700/protocol/result.json",
+      "bytes": 2134236,
+      "sha256": "6f8d674f19a3f8477b7c505a4d11f84ad1f4fa21b177c5dfb1111967e4b7f9ad"
+    },
+    {
+      "path": "verification-1792117140276581700/protocol.log",
+      "bytes": 506,
+      "sha256": "de6f535f11544280a4e9397b7e3dec6f3ae3a7db049224e6847952c3fa8f8d43"
+    },
+    {
+      "path": "verification-1792117140276581700/summary.json",
+      "bytes": 619,
+      "sha256": "6829a7387100a78aea16d46dc8d9a9f254c3bcbe705c84dc2de9d941d7146cf7"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Selection/editor.log",
+      "bytes": 309336,
+      "sha256": "faa2f8155362fd561131a66f3614fe1bf470818b763679cd6b5acd8b274a85f4"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Selection/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Selection/index.json",
+      "bytes": 1084,
+      "sha256": "89ae956270299799bcff0fe770be38e020fd45f1c059aeac67d45b838707d9f2"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Selection/stdio.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Workflow/editor.log",
+      "bytes": 353285,
+      "sha256": "db2d9ed02469357c8d31b8e789463d3b0abc21a2040e4b0fb65cb6b5c32a3f7b"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Workflow/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Workflow/index.json",
+      "bytes": 5163,
+      "sha256": "0e5006ee0b3721a223b97ac74489289b5782654135c801af05f341ad3e5fde41"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.Fleet.Workflow/stdio.log",
+      "bytes": 134,
+      "sha256": "88339c47c165c755702c22448c4eb9f9c6850754fc23be20f18482ba2e91b6ef"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.P54.RouteEditCameraLock/editor.log",
+      "bytes": 310974,
+      "sha256": "a80e4bea3bfd612b4cfbde7b8e36673e9adfdbb633986021b029c4c9ade17ddc"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.P54.RouteEditCameraLock/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.P54.RouteEditCameraLock/index.json",
+      "bytes": 1447,
+      "sha256": "65a0dd142b5c585d02cea7f2df2df024320bddeecd4412a14491e64c0ccb57e6"
+    },
+    {
+      "path": "verification-1792117548148931200/DroneOps.P54.RouteEditCameraLock/stdio.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification-1792117548148931200/protocol/movement-samples.json",
+      "bytes": 10458,
+      "sha256": "337b2669411471d83fcea5e5647e79e2bef8819a53794c54b5d64c2e0dd7b661"
+    },
+    {
+      "path": "verification-1792117548148931200/protocol/result.json",
+      "bytes": 2116377,
+      "sha256": "b7e0e03298a19b3101a776a620f0a4e0f11dc5b23162348c5675fcd86395cfac"
+    },
+    {
+      "path": "verification-1792117548148931200/protocol.log",
+      "bytes": 506,
+      "sha256": "de6f535f11544280a4e9397b7e3dec6f3ae3a7db049224e6847952c3fa8f8d43"
+    },
+    {
+      "path": "verification-1792117548148931200/summary.json",
+      "bytes": 619,
+      "sha256": "6829a7387100a78aea16d46dc8d9a9f254c3bcbe705c84dc2de9d941d7146cf7"
+    },
+    {
+      "path": "verification-1792117896834800100/DroneOps.Fleet.Workflow/editor.log",
+      "bytes": 352748,
+      "sha256": "9f5f6cf258beb6529fc14915d33b108159819f908e8f813bd248d61393fed888"
+    },
+    {
+      "path": "verification-1792117896834800100/DroneOps.Fleet.Workflow/index.html",
+      "bytes": 23356,
+      "sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6"
+    },
+    {
+      "path": "verification-1792117896834800100/DroneOps.Fleet.Workflow/index.json",
+      "bytes": 5159,
+      "sha256": "014179416b2d0c72fbd51e6702232a5583185572cae06b59de40da687499edee"
+    },
+    {
+      "path": "verification-1792117896834800100/DroneOps.Fleet.Workflow/stdio.log",
+      "bytes": 134,
+      "sha256": "a80a63e008bb8ffdef67dd347c438159a4c5ca978217825d752acc32bac1206f"
+    },
+    {
+      "path": "verification-1792117896834800100/protocol/movement-samples.json",
+      "bytes": 10462,
+      "sha256": "86b608e87a0c6e746f9e71e9b61f310074234c1461027518a9651362cb399143"
+    },
+    {
+      "path": "verification-1792117896834800100/protocol/result.json",
+      "bytes": 2117605,
+      "sha256": "dbd96e1a32c8ef87527c8305435b7ba408e21b594b94126591b9d44c6bc78c7b"
+    },
+    {
+      "path": "verification-1792117896834800100/protocol.log",
+      "bytes": 506,
+      "sha256": "de6f535f11544280a4e9397b7e3dec6f3ae3a7db049224e6847952c3fa8f8d43"
+    },
+    {
+      "path": "verification-1792117896834800100/summary.json",
+      "bytes": 241,
+      "sha256": "767460266d47df643fb610dddd14a0e32eb70ec61559ea957a2a822505c5152b"
+    },
+    {
+      "path": "verification-final.log",
+      "bytes": 505,
+      "sha256": "72e7b4c57d085e6d38fee3d3b81b0b9eb4fd3152b9509126f93f916c859c556c"
+    },
+    {
+      "path": "verification-run-1.log",
+      "bytes": 280,
+      "sha256": "db8d154849d719ef1e9890968e3797d5c681a3f1d8e28fe002fed497b6cc625d"
+    },
+    {
+      "path": "verification-run-2.log",
+      "bytes": 506,
+      "sha256": "b4a8e2d3622a5a62e697b2e8904fa19b550d792e30f46b173d9e27b43827745c"
+    },
+    {
+      "path": "verification-run-3.log",
+      "bytes": 505,
+      "sha256": "78107b87eb7e014dd7099865bea6c0006fe648ff53cfd599acfe5650edaf02a3"
+    }
+  ]
+}

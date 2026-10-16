@@ -1,0 +1,9 @@
+PASS Map multi-selection is authoritative and leaves Video target unchanged
+PASS Map plan creation/start and Video execution remain forbidden
+AssertionError [ERR_ASSERTION]: {"code":"ROLE_FORBIDDEN","params":{},"message":"Role cannot perform this plan action"}
+
+403 !== 409
+
+    at api (file:///D:/CodexPublish/drone_security/Scripts/FleetControl/protocol.mjs:10:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///D:/CodexPublish/drone_security/Scripts/FleetControl/protocol.mjs:38:4

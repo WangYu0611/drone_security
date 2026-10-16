@@ -1,0 +1,54 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:\CodexPublish\drone_security\UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (UHT files changed)
+UHT compiled-in object format Default
+UHT processed UE5DroneControlEditor in 11.7964937 seconds (4 generated files written)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandMapInteractionService.cpp, DroneOpsPlayerController.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, ProductText.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 26 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 18.87 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/26] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[2/26] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[3/26] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/26] Compile [x64] CommandShellWidget.cpp [NoUba]
+[5/26] Compile [x64] CommandTacticalMap.cpp [NoUba]
+[6/26] Compile [x64] GroupControlWidget.cpp [NoUba]
+[7/26] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[8/26] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[9/26] Compile [x64] MapExtractionTest.cpp [NoUba]
+[10/26] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(22,11): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+    auto* Slot=Canvas->AddChildToCanvas(Panel);Slot->SetAnchors(FAnchors(1,0));Slot->SetAlignment(FVector2D(1,0));Slot->SetPosition(FVector2D(-12,184));Slot->SetAutoSize(true);
+          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+[11/26] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+[12/26] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[13/26] Compile [x64] MapShellWidget.cpp [NoUba]
+[14/26] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[15/26] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[16/26] Compile [x64] PlanRouteVisualSet.cpp [NoUba]
+[17/26] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[18/26] Compile [x64] ReservationWidgetTest.cpp [NoUba]
+[19/26] Compile [x64] ProductText.cpp [NoUba]
+[20/26] Compile [x64] RouteVisualTest.cpp [NoUba]
+[21/26] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[22/26] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[23/26] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 178.71 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 195.49 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 23.3kb

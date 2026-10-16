@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="33" failures="1" disabled="0" errors="0" time="0.158" timestamp="2026-10-16T10:10:42.537" name="AllTests">
+  <testsuite name="P54Mission" tests="20" failures="0" disabled="0" skipped="0" errors="0" time="0.109" timestamp="2026-10-16T10:10:42.537">
+    <testcase name="MultiAssignmentCreatesSeparateImmutableTrajectories" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="89" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.537" classname="P54Mission" />
+    <testcase name="MultiHoverAndCompletionStaySeparated" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="90" status="run" result="completed" time="0.052" timestamp="2026-10-16T10:10:42.538" classname="P54Mission" />
+    <testcase name="GroupPauseIsAtomic" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="91" status="run" result="completed" time="0.002" timestamp="2026-10-16T10:10:42.591" classname="P54Mission" />
+    <testcase name="DuplicateAndTooCloseAssignmentsRejectAtomically" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="92" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.594" classname="P54Mission" />
+    <testcase name="IntersectingApproachesBlockStart" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="93" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.594" classname="P54Mission" />
+    <testcase name="MissingAltitudeDatumRejected" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="96" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.595" classname="P54Mission" />
+    <testcase name="AGLResolvesOnceInRuntimeSnapshot" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="97" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.595" classname="P54Mission" />
+    <testcase name="SchedulePersistsAndCancelsWithoutMoving" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="98" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.596" classname="P54Mission" />
+    <testcase name="ScheduleStartNowUsesSameStateMachine" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="99" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.598" classname="P54Mission" />
+    <testcase name="InvalidScheduleDoesNotPartiallyCreateGroup" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="100" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.600" classname="P54Mission" />
+    <testcase name="ScheduleRestartAndReschedule" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="101" status="run" result="completed" time="0.012" timestamp="2026-10-16T10:10:42.601" classname="P54Mission" />
+    <testcase name="GroupMovePreservesRelativePositions" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="103" status="run" result="completed" time="0.007" timestamp="2026-10-16T10:10:42.614" classname="P54Mission" />
+    <testcase name="InsufficientGroupSpaceRejectsAtomically" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="104" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.622" classname="P54Mission" />
+    <testcase name="SharedGroupSelectionIsDurableAndPrimaryIsMember" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="105" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.623" classname="P54Mission" />
+    <testcase name="ThreeAircraftCompleteDistinctSlots" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="107" status="run" result="completed" time="0.011" timestamp="2026-10-16T10:10:42.623" classname="P54Mission" />
+    <testcase name="MissingGroupTargetCoordinateRejectsAtomically" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="115" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.635" classname="P54Mission" />
+    <testcase name="ScheduledDeadlineSurvivesGracefulShutdown" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="195" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.636" classname="P54Mission" />
+    <testcase name="RealGroupFailureHoldsRemainingMembers" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="196" status="run" result="completed" time="0.002" timestamp="2026-10-16T10:10:42.638" classname="P54Mission" />
+    <testcase name="RealMeasuredCrossingHoldsBothMembers" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="203" status="run" result="completed" time="0.002" timestamp="2026-10-16T10:10:42.640" classname="P54Mission" />
+    <testcase name="RealFaultWhilePausedReleasesWholeGroup" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="212" status="run" result="completed" time="0.003" timestamp="2026-10-16T10:10:42.643" classname="P54Mission" />
+  </testsuite>
+  <testsuite name="FleetMove" tests="4" failures="1" disabled="0" skipped="0" errors="0" time="0.007" timestamp="2026-10-16T10:10:42.647">
+    <testcase name="ActivePlanCannotBeStolenByFleet" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="121" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.647" classname="FleetMove" />
+    <testcase name="FleetOccupancyBlocksPlanAssignmentUntilAbort" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="125" status="run" result="completed" time="0.003" timestamp="2026-10-16T10:10:42.648" classname="FleetMove">
+      <failure message="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp:24&#x0A;Expected equality of these values:&#x0A;  e.code&#x0A;    Which is: &quot;PLAN_DEPLOYED&quot;&#x0A;  code&#x0A;    Which is: &quot;DRONE_ACTIVE_PLAN_CONFLICT&quot;&#x0A;" type=""><![CDATA[D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp:24
+Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  code
+    Which is: "DRONE_ACTIVE_PLAN_CONFLICT"
+]]></failure>
+      <failure message="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp:24&#x0A;Expected equality of these values:&#x0A;  e.code&#x0A;    Which is: &quot;PLAN_DEPLOYED&quot;&#x0A;  code&#x0A;    Which is: &quot;DRONE_ACTIVE_PLAN_CONFLICT&quot;&#x0A;" type=""><![CDATA[D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp:24
+Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  code
+    Which is: "DRONE_ACTIVE_PLAN_CONFLICT"
+]]></failure>
+      <failure message="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp:129&#x0A;Expected: send({{&quot;action&quot;,&quot;assign&quot;},{&quot;assigned_uav_id&quot;,&quot;UAV-01&quot;}}) doesn&apos;t throw an exception.&#x0A;  Actual: it throws PlanError with description &quot;Deployed plan is read-only&quot;.&#x0A;" type=""><![CDATA[D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp:129
+Expected: send({{"action","assign"},{"assigned_uav_id","UAV-01"}}) doesn't throw an exception.
+  Actual: it throws PlanError with description "Deployed plan is read-only".
+]]></failure>
+    </testcase>
+    <testcase name="PrimaryAnchorAndRelativeHeightsArePreserved" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="131" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.651" classname="FleetMove" />
+    <testcase name="ConcurrentPlanAndFleetStartAreAtomic" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="141" status="run" result="completed" time="0.002" timestamp="2026-10-16T10:10:42.652" classname="FleetMove" />
+  </testsuite>
+  <testsuite name="P55Reservation" tests="9" failures="0" disabled="0" skipped="0" errors="0" time="0.04" timestamp="2026-10-16T10:10:42.655">
+    <testcase name="Reservation01AssignAndPendingStart" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="251" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.655" classname="P55Reservation" />
+    <testcase name="Reservation02OtherAircraftAndSamePlan" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="255" status="run" result="completed" time="0." timestamp="2026-10-16T10:10:42.657" classname="P55Reservation" />
+    <testcase name="Reservation03CompletionReleases" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="259" status="run" result="completed" time="0.005" timestamp="2026-10-16T10:10:42.657" classname="P55Reservation" />
+    <testcase name="Reservation04AbortAndFailureRelease" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="263" status="run" result="completed" time="0.002" timestamp="2026-10-16T10:10:42.663" classname="P55Reservation" />
+    <testcase name="Reservation05PausedStillLocked" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="267" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.665" classname="P55Reservation" />
+    <testcase name="Reservation06ExistingDraftRace" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="270" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.666" classname="P55Reservation" />
+    <testcase name="Reservation07ConcurrentStarts" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="273" status="run" result="completed" time="0.001" timestamp="2026-10-16T10:10:42.668" classname="P55Reservation" />
+    <testcase name="Reservation08RestartRebuild" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="284" status="run" result="completed" time="0.022" timestamp="2026-10-16T10:10:42.670" classname="P55Reservation" />
+    <testcase name="ReadyDeployedScheduledAndCancelledDoNotReserve" file="D:\CodexPublish\drone_security\Backend\tests\test_p52_execution.cpp" line="291" status="run" result="completed" time="0.002" timestamp="2026-10-16T10:10:42.692" classname="P55Reservation" />
+  </testsuite>
+</testsuites>

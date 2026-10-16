@@ -1,0 +1,14 @@
+PASS Deploy does not automatically start
+PASS Create/preflight/start is backend authoritative
+PASS Repeated start idempotency
+PASS Concurrent execution rejected
+PASS Position and waypoint WS broadcast
+PASS Pause freezes position and progress
+PASS Resume continues same execution
+PASS Language and video target isolation
+PASS New draft preserves immutable route revision
+PASS New client hydrates current execution
+PASS Return reaches explicit home
+PASS Abort is terminal and stationary
+PASS Normal route completion
+PASS Unified shutdown pauses durably

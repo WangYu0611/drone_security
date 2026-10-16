@@ -1,0 +1,309 @@
+{
+  "source": "read-only HTTP after native Pause",
+  "executions": {
+    "execution-2": {
+      "execution_id": "execution-2",
+      "deployment_id": "",
+      "plan_id": "",
+      "mission_id": "",
+      "route_id": "",
+      "route_revision": 1,
+      "route_snapshot": {
+        "waypoints": [
+          {
+            "latitude": 39.9807,
+            "longitude": 116.34703,
+            "altitude": 30.0,
+            "sequence": 1,
+            "segmentSpeed": 0.0,
+            "waitTime": 0.0
+          },
+          {
+            "latitude": 39.98136131106236,
+            "longitude": 116.34658673455226,
+            "altitude": 30.0,
+            "sequence": 2,
+            "segmentSpeed": 8.0,
+            "waitTime": 0.0
+          }
+        ],
+        "bClosedLoop": false
+      },
+      "plan_name": "Group Move",
+      "mission_name": "Group Move",
+      "uav_id": "UAV-01",
+      "state": "PAUSED",
+      "control_version": 4.0,
+      "current_waypoint": 2,
+      "completed_waypoints": 1,
+      "total_waypoints": 2,
+      "segment_progress": 0.6620585859087003,
+      "overall_progress": 0.6620585859082062,
+      "progress": 0.6620585859082062,
+      "position": {
+        "latitude": 39.98113782651734,
+        "longitude": 116.34673653240468,
+        "altitude": 30.0
+      },
+      "segment_start": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34703,
+        "altitude": 30.0
+      },
+      "default_speed_mps": 8.0,
+      "distance_m": 82.66638550496475,
+      "estimated_seconds": 10.333298188120594,
+      "distance_travelled_m": 54.729990289559595,
+      "wait_remaining": 0.0,
+      "elapsed_seconds": 6.841244200000001,
+      "created_at": 1792118044.1591904,
+      "started_at": 1792118044.4756536,
+      "updated_at": 1792118051.3261824,
+      "completed_at": null,
+      "completion_reason": "",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-1",
+      "control_kind": "GROUP_MOVE",
+      "formation": "RelativeOffset",
+      "safety_separation_m": 1.5,
+      "phase": "TRAVEL"
+    },
+    "execution-3": {
+      "execution_id": "execution-3",
+      "deployment_id": "",
+      "plan_id": "",
+      "mission_id": "",
+      "route_id": "",
+      "route_revision": 1,
+      "route_snapshot": {
+        "waypoints": [
+          {
+            "latitude": 39.9807,
+            "longitude": 116.34706,
+            "altitude": 30.0,
+            "sequence": 1,
+            "segmentSpeed": 0.0,
+            "waitTime": 0.0
+          },
+          {
+            "latitude": 39.98136131106236,
+            "longitude": 116.34661673455226,
+            "altitude": 30.0,
+            "sequence": 2,
+            "segmentSpeed": 8.0,
+            "waitTime": 0.0
+          }
+        ],
+        "bClosedLoop": false
+      },
+      "plan_name": "Group Move",
+      "mission_name": "Group Move",
+      "uav_id": "UAV-02",
+      "state": "PAUSED",
+      "control_version": 4.0,
+      "current_waypoint": 2,
+      "completed_waypoints": 1,
+      "total_waypoints": 2,
+      "segment_progress": 0.6620585859087003,
+      "overall_progress": 0.6620585859082062,
+      "progress": 0.6620585859082062,
+      "position": {
+        "latitude": 39.98113782651734,
+        "longitude": 116.34676653240467,
+        "altitude": 30.0
+      },
+      "segment_start": {
+        "latitude": 39.9807,
+        "longitude": 116.34706,
+        "altitude": 30.0
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34706,
+        "altitude": 30.0
+      },
+      "default_speed_mps": 8.0,
+      "distance_m": 82.66638550496475,
+      "estimated_seconds": 10.333298188120594,
+      "distance_travelled_m": 54.729990289559595,
+      "wait_remaining": 0.0,
+      "elapsed_seconds": 6.841244200000001,
+      "created_at": 1792118044.1592164,
+      "started_at": 1792118044.4756663,
+      "updated_at": 1792118051.3261917,
+      "completed_at": null,
+      "completion_reason": "",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-1",
+      "control_kind": "GROUP_MOVE",
+      "formation": "RelativeOffset",
+      "safety_separation_m": 1.5,
+      "phase": "TRAVEL"
+    },
+    "execution-4": {
+      "execution_id": "execution-4",
+      "deployment_id": "",
+      "plan_id": "",
+      "mission_id": "",
+      "route_id": "",
+      "route_revision": 1,
+      "route_snapshot": {
+        "waypoints": [
+          {
+            "latitude": 39.9807,
+            "longitude": 116.34709,
+            "altitude": 30.0,
+            "sequence": 1,
+            "segmentSpeed": 0.0,
+            "waitTime": 0.0
+          },
+          {
+            "latitude": 39.98136131106236,
+            "longitude": 116.34664673455225,
+            "altitude": 30.0,
+            "sequence": 2,
+            "segmentSpeed": 8.0,
+            "waitTime": 0.0
+          }
+        ],
+        "bClosedLoop": false
+      },
+      "plan_name": "Group Move",
+      "mission_name": "Group Move",
+      "uav_id": "UAV-03",
+      "state": "PAUSED",
+      "control_version": 4.0,
+      "current_waypoint": 2,
+      "completed_waypoints": 1,
+      "total_waypoints": 2,
+      "segment_progress": 0.6620585859087003,
+      "overall_progress": 0.6620585859082062,
+      "progress": 0.6620585859082062,
+      "position": {
+        "latitude": 39.98113782651734,
+        "longitude": 116.34679653240467,
+        "altitude": 30.0
+      },
+      "segment_start": {
+        "latitude": 39.9807,
+        "longitude": 116.34709,
+        "altitude": 30.0
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34709,
+        "altitude": 30.0
+      },
+      "default_speed_mps": 8.0,
+      "distance_m": 82.66638550496475,
+      "estimated_seconds": 10.333298188120594,
+      "distance_travelled_m": 54.729990289559595,
+      "wait_remaining": 0.0,
+      "elapsed_seconds": 6.841244200000001,
+      "created_at": 1792118044.1592357,
+      "started_at": 1792118044.4756715,
+      "updated_at": 1792118051.326196,
+      "completed_at": null,
+      "completion_reason": "",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-1",
+      "control_kind": "GROUP_MOVE",
+      "formation": "RelativeOffset",
+      "safety_separation_m": 1.5,
+      "phase": "TRAVEL"
+    },
+    "execution-5": {
+      "execution_id": "execution-5",
+      "deployment_id": "",
+      "plan_id": "",
+      "mission_id": "",
+      "route_id": "",
+      "route_revision": 1,
+      "route_snapshot": {
+        "waypoints": [
+          {
+            "latitude": 39.9807,
+            "longitude": 116.34712,
+            "altitude": 30.0,
+            "sequence": 1,
+            "segmentSpeed": 0.0,
+            "waitTime": 0.0
+          },
+          {
+            "latitude": 39.98136131106236,
+            "longitude": 116.34667673455226,
+            "altitude": 30.0,
+            "sequence": 2,
+            "segmentSpeed": 8.0,
+            "waitTime": 0.0
+          }
+        ],
+        "bClosedLoop": false
+      },
+      "plan_name": "Group Move",
+      "mission_name": "Group Move",
+      "uav_id": "UAV-04",
+      "state": "PAUSED",
+      "control_version": 4.0,
+      "current_waypoint": 2,
+      "completed_waypoints": 1,
+      "total_waypoints": 2,
+      "segment_progress": 0.6620585859087003,
+      "overall_progress": 0.6620585859082062,
+      "progress": 0.6620585859082062,
+      "position": {
+        "latitude": 39.98113782651734,
+        "longitude": 116.34682653240468,
+        "altitude": 30.0
+      },
+      "segment_start": {
+        "latitude": 39.9807,
+        "longitude": 116.34712,
+        "altitude": 30.0
+      },
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34712,
+        "altitude": 30.0
+      },
+      "default_speed_mps": 8.0,
+      "distance_m": 82.66638550496475,
+      "estimated_seconds": 10.333298188120594,
+      "distance_travelled_m": 54.729990289559595,
+      "wait_remaining": 0.0,
+      "elapsed_seconds": 6.841244200000001,
+      "created_at": 1792118044.1592517,
+      "started_at": 1792118044.475676,
+      "updated_at": 1792118051.3262,
+      "completed_at": null,
+      "completion_reason": "",
+      "failure_reason": "",
+      "simulation": true,
+      "adapter": "Mock",
+      "loopMode": "Once",
+      "closure_completed": false,
+      "group_id": "group-1",
+      "control_kind": "GROUP_MOVE",
+      "formation": "RelativeOffset",
+      "safety_separation_m": 1.5,
+      "phase": "TRAVEL"
+    }
+  }
+}

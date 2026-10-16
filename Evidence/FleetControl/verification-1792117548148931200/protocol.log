@@ -1,0 +1,7 @@
+PASS Map multi-selection is authoritative and leaves Video target unchanged
+PASS Map plan creation/start and Video execution remain forbidden
+PASS Map fleet move cannot steal an active Security Plan UAV
+PASS Map controls cannot abort a Security Plan execution
+PASS Map creates one idempotent four-UAV group preserving the chosen primary anchor and formation
+PASS Paused fleet blocks Security Plan assignment
+PASS Map pause/resume controls the entire group, all four complete safely, and occupancy releases
