@@ -12,6 +12,8 @@ The launcher never clears persisted data. A fresh P5.2 installation seeds four e
 
 P5.3 uses local endpoints 19880/19881 and `Backend/build/Release/DroneBackend.exe` (existing `build-p53` installations are recognized as a fallback). Unified shutdown warns about active executions and requires durable pause acknowledgement before stopping owned processes. Individual Backend restart resumes persisted simulation state; unified shutdown restores PAUSED and requires Resume.
 
+3D fleet movement requires Backend capabilities `fleet_move_3d` and `map_fleet_controls`, advertised by `GET /`. Readiness checks both newly started and reused Backends before starting any client. An older executable can have valid plan/context snapshots while still rejecting Map fleet movement with `ROLE_FORBIDDEN`; it is now rejected with a rebuild instruction instead. Rebuild `Backend/build/Release/DroneBackend.exe` through `SetupDroneSecurity.cmd` after source updates, stop the old running Backend, and relaunch. `Scripts/FleetBackendCompatibility/verify.py` tests the resolved normal Launcher configuration with isolated Mock data and ports; it does not substitute a phase-specific backend build.
+
 Checks: `python Launcher/test_runtime.py`. `record_acceptance.py` is a read-only native acceptance oracle; it does not drive UI or simulate client recovery.
 
 P5.3: Route editing exposes Closed Route (at least three waypoints). Move Plan is available in the Command plan workspace for idle plans, including deployed plans. In Map, drag the orange center handle, then Confirm Position or Cancel. Closed routes execute once in Stage 1 Mock mode. Running/paused/returning missions block moving.

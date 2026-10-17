@@ -481,6 +481,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 {"http_port", config_.http_port},
                 {"ws_port",   config_.ws_port},
                 {"debug",     config_.debug},
+                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls"}},
             }));
 
         if (method == "GET"  && path == "/api/drones")

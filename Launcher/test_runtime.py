@@ -7,7 +7,8 @@ import threading
 import unittest
 from unittest.mock import patch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from runtime import Runtime, OwnedProcess, compatible_snapshot, role_arguments, SingleInstance
+from runtime import (Runtime, OwnedProcess, compatible_snapshot, role_arguments, SingleInstance,
+                     BackendCompatibilityError, REQUIRED_CAPABILITIES)
 from windows import rectangles
 
 class LauncherTests(unittest.TestCase):
@@ -24,12 +25,60 @@ class LauncherTests(unittest.TestCase):
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *a): pass
             def do_GET(self):
-                self.send_response(200); self.end_headers(); self.wfile.write(b'{}')
+                self.send_response(200); self.end_headers()
+                self.wfile.write(json.dumps({'capabilities': sorted(REQUIRED_CAPABILITIES)}
+                                            if self.path == '/' else {}).encode())
         server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
         worker = threading.Thread(target=server.serve_forever, daemon=True); worker.start()
         try:
             with self.assertRaises(ValueError): compatible_snapshot(f'http://127.0.0.1:{server.server_port}')
         finally: server.shutdown(); server.server_close()
+    def test_FleetCompatibilityRejectsHealthyLegacyBackendWithoutTakingOwnership(self):
+        requests = []
+        payloads = {
+            '/': {'status': 'ok'},
+            '/api/context': {'context_version': 1, 'active_uav_id': None},
+            '/api/context/clients': [],
+            '/api/ui-preferences': {'language': 'en'},
+            '/api/video-view': {'video_view_version': 1},
+            '/api/security-plans': {'version': 1, 'plans': {}, 'executions': {}},
+        }
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *a): pass
+            def do_GET(self):
+                requests.append(('GET', self.path))
+                self.send_response(200); self.end_headers()
+                self.wfile.write(json.dumps(payloads[self.path]).encode())
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        base = f'http://127.0.0.1:{server.server_port}'
+        try:
+            with tempfile.TemporaryDirectory() as folder:
+                runtime = Runtime(folder, {'http_endpoint': base, 'runtime_directory': 'Saved/test'})
+                for capabilities in (None, [], ['fleet_move_3d'], 'fleet_move_3d', {'map_fleet_controls': True}):
+                    with self.subTest(capabilities=capabilities):
+                        payloads['/']['capabilities'] = capabilities
+                        with self.assertRaisesRegex(BackendCompatibilityError, 'SetupDroneSecurity.cmd'):
+                            runtime.start()
+                        self.assertEqual(runtime.state, 'FAILED')
+                        self.assertEqual(runtime.owned, {})
+                        self.assertFalse((runtime.directory / 'data').exists())
+                payloads['/']['capabilities'] = sorted(REQUIRED_CAPABILITIES)
+                runtime._backend()
+                self.assertTrue(runtime.existing_backend)
+                self.assertEqual(runtime.owned, {})
+                self.assertEqual(runtime.snapshot['plans'], payloads['/api/security-plans'])
+                runtime.state = 'READY'
+                runtime.components = {role: 'ONLINE' for role in runtime.components}
+                payloads['/']['capabilities'] = []
+                with self.assertRaises(BackendCompatibilityError):
+                    runtime.poll()
+                self.assertEqual(runtime.state, 'DEGRADED')
+                self.assertEqual(runtime.components['Backend'], 'OFFLINE')
+                self.assertEqual(runtime.owned, {})
+                self.assertTrue(all(method == 'GET' for method, _ in requests))
+        finally:
+            server.shutdown(); server.server_close()
     def test_RoleArguments(self):
         root = Path(__file__).resolve().parents[1]
         cfg = json.loads((root/'Launcher/config.json').read_text(encoding='utf-8-sig'))

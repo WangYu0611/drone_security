@@ -4,9 +4,12 @@ import json
 from pathlib import Path
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 
 root = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(root / 'Launcher'))
+from environment import load_config
 out = root / 'Evidence/FleetControl3D'
 runtime = root / 'Saved/FleetControl3D-QA'
 manifest = out / 'manifest.json'
@@ -36,7 +39,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 binaries = [root / 'Binaries/Win64/UnrealEditor-UE5DroneControl.dll',
-            root / 'Backend/build-p54/Release/DroneBackend.exe']
+            root / load_config(root)['backend_executable']]
 data = {
     'sealed_at_utc': datetime.now(timezone.utc).isoformat(),
     'baseline': '1e31715ceb7d3f35f1819c9fe6dfdc503d15c2cf',

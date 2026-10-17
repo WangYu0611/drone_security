@@ -9,12 +9,12 @@ import time
 root=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(root/'Launcher'))
 from runtime import Runtime
+from environment import load_config
 run=str(time.time_ns())
 out=root/'Evidence/FleetControlUX'/('verification-'+run)
 out.mkdir(parents=True)
-config=json.loads((root/'Launcher/config.json').read_text())
-config.update(backend_executable='Backend/build-p54/Release/DroneBackend.exe',
-              http_endpoint='http://127.0.0.1:21780',ws_endpoint='ws://127.0.0.1:21781/ws',
+config=load_config(root)
+config.update(http_endpoint='http://127.0.0.1:21780',ws_endpoint='ws://127.0.0.1:21781/ws',
               runtime_directory='Saved/FleetControlUX-verify-'+run)
 runtime=Runtime(root,config)
 results=[]

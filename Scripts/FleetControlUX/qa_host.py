@@ -7,10 +7,10 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(root / 'Launcher'))
 from runtime import Runtime
+from environment import load_config
 
-config = json.loads((root / 'Launcher/config.json').read_text())
-config.update(backend_executable='Backend/build-p54/Release/DroneBackend.exe',
-              ue_executable='C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe',
+config = load_config(root)
+config.update(ue_executable='C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe',
               http_endpoint='http://127.0.0.1:21580', ws_endpoint='ws://127.0.0.1:21581/ws',
               runtime_directory='Saved/FleetControlUX-QA', max_fps=30,
               map='/Game/Tests/P55OfflineMap')

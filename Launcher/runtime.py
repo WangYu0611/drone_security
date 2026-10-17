@@ -15,12 +15,25 @@ import urllib.parse
 import uuid
 
 ROLES = ('Command', 'Map', 'Video')
+REQUIRED_CAPABILITIES = frozenset(('fleet_move_3d', 'map_fleet_controls'))
+
+
+class BackendCompatibilityError(RuntimeError):
+    pass
 
 def api(base, path):
     with urllib.request.urlopen(base.rstrip('/') + path, timeout=2) as response:
         return json.load(response)
 
 def compatible_snapshot(base):
+    backend = api(base, '/')
+    capabilities = backend.get('capabilities') if isinstance(backend, dict) else None
+    if not (isinstance(capabilities, list) and all(isinstance(c, str) for c in capabilities)
+            and REQUIRED_CAPABILITIES.issubset(capabilities)):
+        raise BackendCompatibilityError(
+            'Backend is outdated for 3D fleet movement. Stop the old Backend, run '
+            'SetupDroneSecurity.cmd, then relaunch. / 后端版本过旧，不支持当前 3D 集群移动。'
+            '请停止旧后端，运行 SetupDroneSecurity.cmd 重新编译后再启动。')
     context = api(base, '/api/context')
     clients = api(base, '/api/context/clients')
     prefs = api(base, '/api/ui-preferences')
@@ -31,7 +44,7 @@ def compatible_snapshot(base):
             and prefs.get('language') in ('en', 'zh-Hans')
             and 'video_view_version' in video and 'plans' in plans):
         raise ValueError('Incompatible Backend snapshot')
-    return {'context': context, 'clients': clients, 'preferences': prefs,
+    return {'backend': backend, 'context': context, 'clients': clients, 'preferences': prefs,
             'video': video, 'plans': plans}
 
 def port_open(endpoint):
@@ -236,6 +249,7 @@ log:
         with self.lock:
             if self.state in ('STOPPED', 'STOPPING', 'FAILED'): return
             old = dict(self.components)
+            compatibility_error = None
             try:
                 snap = compatible_snapshot(self.config['http_endpoint'])
                 self.snapshot = snap; self.components['Backend'] = 'ONLINE'
@@ -246,16 +260,20 @@ log:
                         and client.get('state') == 'ONLINE' and client.get('hydrated') is True
                         and time.time() - client.get('last_seen', 0) < 12 else
                         'STARTING' if process and process.process.poll() is None and time.monotonic() < self.deadline else 'OFFLINE')
-            except Exception:
+            except Exception as exc:
                 self.components['Backend'] = 'OFFLINE'
                 for role in ROLES:
                     p = self.owned.get(role)
                     self.components[role] = 'RECONNECTING' if p and p.process.poll() is None else 'OFFLINE'
+                if isinstance(exc, BackendCompatibilityError):
+                    compatibility_error = exc
             ready = all(s == 'ONLINE' for s in self.components.values())
             self.transition('READY' if ready else 'STARTING' if self.state == 'STARTING' and time.monotonic() < self.deadline else 'DEGRADED')
             for role, value in self.components.items():
                 if value != old[role]: self.log('component', role=role, previous=old[role], state=value)
             self._persist_ownership()
+            if compatibility_error:
+                raise compatibility_error
     def stop_role(self, role):
         with self.lock:
             p = self.owned.pop(role, None)

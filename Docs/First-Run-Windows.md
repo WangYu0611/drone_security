@@ -24,6 +24,7 @@ git lfs pull
 ```
 
 已有克隆可执行 `git pull --ff-only` 和 `git lfs pull`。如有本地修改，先保留自己的修改再更新。
+源码更新后仍需关闭正在运行的 Backend 和客户端，再运行 `SetupDroneSecurity.cmd`；拉取代码不会自动更新本机 EXE/DLL。启动器会检查后端是否支持当前 3D 集群移动，防止旧程序被当成可用服务复用。
 已确认当前 GitHub Download ZIP 包含 LFS 占位文件，不能直接运行；请使用以上 Git + Git LFS 克隆方式。ZIP 解压目录没有 .git，不能直接在其中运行 git lfs pull。空的 `px4_msgs` 历史子模块不参与 Stage 1 构建，不需要递归初始化。
 
 ## 3. 首次编译
@@ -65,6 +66,7 @@ git lfs pull
 | 找不到 CesiumForUnreal / CesiumRuntime | 将 Cesium 安装到 UE 5.8，再首次编译 |
 | 缺少模块 / 由不同引擎版本构建 | 用本机 UE 5.8 重新运行 SetupDroneSecurity.cmd |
 | 缺少 DroneBackend.exe | 先运行 SetupDroneSecurity.cmd，检查 VS C++ / vcpkg |
+| 后端版本过旧；集群移动提示此客户端无权执行 | 关闭旧 Backend 和客户端，运行 SetupDroneSecurity.cmd，再从 DroneSecurityLauncher.cmd 启动。正常路径是 Backend/build/Release/DroneBackend.exe |
 | 提示 Python 或 tkinter 缺失 | 修改 Python 安装，启用 Tcl/Tk 和 Launcher |
 | 地图文件极小或 LFS 占位 | `git lfs pull` |
 | 地图黑屏、401/403 | 检查自己的 Cesium ion Token、资产权限及网络 |
