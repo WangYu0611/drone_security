@@ -1,0 +1,133 @@
+[
+  {
+    "path": "/api/context/clients",
+    "status": 200,
+    "data": {
+      "client_id": "Fleet-backend-compatibility-Map",
+      "client_role": "Map",
+      "instance_id": "9c756d11-0da7-4908-b697-5869caf2674c",
+      "hostname": "ISOLATED-MOCK",
+      "app_version": "FleetBackendCompatibility",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 1
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "status": 200,
+    "data": {
+      "version": 0,
+      "next_id": 1,
+      "plans": {},
+      "missions": {},
+      "paths": {},
+      "events": [],
+      "deployments": {},
+      "edit_sessions": {},
+      "executions": {},
+      "execution_version": 0,
+      "execution_requests": {},
+      "mock_execution": {
+        "simulation": true,
+        "default_speed_mps": 8,
+        "uavs": {
+          "UAV-01": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            }
+          },
+          "UAV-02": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34706,
+              "altitude": 30
+            }
+          },
+          "UAV-03": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34709,
+              "altitude": 30
+            }
+          },
+          "UAV-04": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34712,
+              "altitude": 30
+            }
+          }
+        },
+        "safety_separation_m": 1.5
+      },
+      "execution_adapter": "Mock"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "path": "/api/security-plans",
+    "status": 200,
+    "data": {
+      "version": 0,
+      "next_id": 1,
+      "plans": {},
+      "missions": {},
+      "paths": {},
+      "events": [],
+      "deployments": {},
+      "edit_sessions": {},
+      "executions": {},
+      "execution_version": 0,
+      "execution_requests": {},
+      "mock_execution": {
+        "simulation": true,
+        "default_speed_mps": 8,
+        "uavs": {
+          "UAV-01": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            }
+          },
+          "UAV-02": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34706,
+              "altitude": 30
+            }
+          },
+          "UAV-03": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34709,
+              "altitude": 30
+            }
+          },
+          "UAV-04": {
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34712,
+              "altitude": 30
+            }
+          }
+        },
+        "safety_separation_m": 1.5
+      },
+      "execution_adapter": "Mock"
+    }
+  }
+]

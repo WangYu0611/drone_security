@@ -1,0 +1,37 @@
+{
+  "root": {
+    "status": "ok",
+    "http_port": 19880,
+    "ws_port": 19881,
+    "debug": false,
+    "capabilities": [
+      "fleet_move_3d",
+      "map_fleet_controls"
+    ]
+  },
+  "context": {
+    "context_version": 3,
+    "active_uav_id": "UAV-01",
+    "active_alert_id": null,
+    "active_mission_id": "mission-6",
+    "active_security_plan_id": "plan-5",
+    "active_area_id": null,
+    "operation_mode": "MONITOR",
+    "updated_at": 1792204453.657331,
+    "updated_by": "CLIENT-MAP-6c57e164",
+    "selected_uav_ids": [
+      "UAV-01",
+      "UAV-02",
+      "UAV-03",
+      "UAV-04"
+    ]
+  },
+  "execution_adapter": "Mock",
+  "executions": {},
+  "video": {
+    "video_target_uav_id": null,
+    "video_view_version": 0,
+    "updated_at": 0,
+    "updated_by": "Backend"
+  }
+}

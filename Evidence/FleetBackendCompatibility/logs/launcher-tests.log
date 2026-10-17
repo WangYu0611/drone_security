@@ -1,0 +1,29 @@
+Build: cmake.exe -S "C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\Backend" -B "C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\Backend\build" -G "Visual Studio 17 2022" -A x64 "-DCMAKE_TOOLCHAIN_FILE=C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows
+build output
+Build: cmake.exe --build "C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\Backend\build" --config Release --target DroneBackend
+build output
+Build: "C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\UE\Engine\Build\BatchFiles\Build.bat" UE5DroneControlEditor Win64 Development "-Project=C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\UE5DroneControl.uproject" -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA
+build output
+Build: cmake.exe -S "C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\Backend" -B "C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\Backend\build" -G "Visual Studio 17 2022" -A x64 "-DCMAKE_TOOLCHAIN_FILE=C:\Users\wy331\AppData\Local\Temp\drone ���� build ggr0b4js\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows
+build output
+test_build_steps_use_current_project_and_fail_fast (test_bootstrap.BuildTests.test_build_steps_use_current_project_and_fail_fast) ... ok
+test_custom_engine_path_and_generated_plugin_folder (test_environment.EnvironmentTests.test_custom_engine_path_and_generated_plugin_folder) ... ok
+test_existing_p53_compatibility (test_environment.EnvironmentTests.test_existing_p53_compatibility) ... ok
+test_explicit_override_is_not_silently_replaced (test_environment.EnvironmentTests.test_explicit_override_is_not_silently_replaced) ... ok
+test_lfs_placeholder_blocks_launch (test_environment.EnvironmentTests.test_lfs_placeholder_blocks_launch) ... ok
+test_missing_cesium_is_actionable (test_environment.EnvironmentTests.test_missing_cesium_is_actionable) ... ok
+test_source_download_can_build_but_not_launch (test_environment.EnvironmentTests.test_source_download_can_build_but_not_launch) ... ok
+test_wrong_engine_version (test_environment.EnvironmentTests.test_wrong_engine_version) ... ok
+test_ActiveExecutionShutdownWarningPredicate (test_runtime.LauncherTests.test_ActiveExecutionShutdownWarningPredicate) ... ok
+test_BackendReadiness (test_runtime.LauncherTests.test_BackendReadiness) ... ok
+test_FleetCompatibilityRejectsHealthyLegacyBackendWithoutTakingOwnership (test_runtime.LauncherTests.test_FleetCompatibilityRejectsHealthyLegacyBackendWithoutTakingOwnership) ... ok
+test_ProcessOwnershipAndSafeShutdown (test_runtime.LauncherTests.test_ProcessOwnershipAndSafeShutdown) ... ok
+test_RoleArguments (test_runtime.LauncherTests.test_RoleArguments) ... ok
+test_ShutdownRequiresBackendPersistenceAck (test_runtime.LauncherTests.test_ShutdownRequiresBackendPersistenceAck) ... ok
+test_SingleInstance (test_runtime.LauncherTests.test_SingleInstance) ... ok
+test_SingleScreenMultiWindowLayout (test_runtime.LauncherTests.test_SingleScreenMultiWindowLayout) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 9.450s
+
+OK

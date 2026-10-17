@@ -1,0 +1,75 @@
+{
+  "sealed_at_utc": "2026-10-17T02:50:05.044138+00:00",
+  "baseline": "77a515932157785368fdf8b881d0e9b4cb12c4eb",
+  "scope": "Mock only; real native current Launcher Map movement; isolated HTTP/WS diagnostics",
+  "isolated_processes_stopped": true,
+  "user_launcher_kept_running": true,
+  "current_clients": [
+    {
+      "client_role": "Map",
+      "state": "ONLINE",
+      "hydrated": true
+    },
+    {
+      "client_role": "Command",
+      "state": "ONLINE",
+      "hydrated": true
+    },
+    {
+      "client_role": "Video",
+      "state": "ONLINE",
+      "hydrated": true
+    }
+  ],
+  "current_root": {
+    "status": "ok",
+    "http_port": 19880,
+    "ws_port": 19881,
+    "debug": false,
+    "capabilities": [
+      "fleet_move_3d",
+      "map_fleet_controls"
+    ]
+  },
+  "unit_tests": {
+    "total": 137,
+    "passed": 135,
+    "existing_failures": [
+      "AssemblyPlannerTest.ConflictHeightSeparation",
+      "SegmentDistanceTest.Crossing"
+    ]
+  },
+  "credential_pattern_scan_flagged_files": [],
+  "binaries": {
+    "Backend/build/Release/DroneBackend.exe": "016cc9ced56d56c63cac05e1b17cb1e47db883cfd4062a382dfbdd3a5b01d744",
+    "Binaries/Win64/UnrealEditor-UE5DroneControl.dll": "0e78a3fb3758023d20598c3aa595c95963d36b0b3febb8b73c0bd97cb5e28a7d",
+    "Backend/build/Release/DroneBackend_tests.exe": "c60cb61fb37beb8a27e6f17376d27459ed1de5eccc53d49c61773ac205bf0684",
+    "Backend/build-p54/Release/DroneBackend_tests.exe": "cd855bf4d0c049841e309a826373404f96cd3ec0c4c3a367245a4266308c42d2"
+  },
+  "files": {
+    "after-1792205055801049000/probe/traffic.json": "a1c09078cdef8ca2cae0dd8f08a82af2cc390dc824e101a49c89255c23ee9632",
+    "after-1792205055801049000/probe.log": "69771337e4f46d7a06abd04328833a8be9fc71c48f11c3ff6a8cb3dc3bb0c856",
+    "after-1792205055801049000/protocol/movement-samples.json": "57db7b49c0d5b1c3892a68da5fe9f78f65f98c96e4a365feb6a077315f35106d",
+    "after-1792205055801049000/protocol/result.json": "3f8dfa938c518c7430fd5e33863fb9eecc15c68e89efd07333632901fa6c086f",
+    "after-1792205055801049000/protocol.log": "de6f535f11544280a4e9397b7e3dec6f3ae3a7db049224e6847952c3fa8f8d43",
+    "after-1792205055801049000/result.json": "592fbfcdeaf5ae6560de2527aee87d410d6e041eaf913b0295b80161d1b7dc7e",
+    "backend-tests.xml": "d5fe24fffec94b08dc97181ed77f36e59f954becd12cbc0bca311b2f8ac6d384",
+    "baseline-existing-failures.xml": "7c3ffd5b6f80ec5ba56815b49cde4b1077707b8601ad00291995ed7c2eaa7f1e",
+    "before-1792204865562067400/probe/traffic.json": "c654c1747d96a503b59fe96e8eaa6686bced020759c6ca35c6ce97597f33da04",
+    "before-1792204865562067400/probe.log": "0ba950a08fbe4cb27281b1677a022b1e77d8e52709c77fccfa5c451811ca8d11",
+    "before-1792204865562067400/result.json": "42ba6a39b21ddfafb5e20acc6c0ae196989601794c907a8e57145a6f5a864a73",
+    "legacy-guard-1792205305426035500/probe/traffic.json": "633d29c2e2bd903b4f17a7772c1a32a4d83895387adf184065f11f96554dc9ae",
+    "legacy-guard-1792205305426035500/probe.log": "0ba950a08fbe4cb27281b1677a022b1e77d8e52709c77fccfa5c451811ca8d11",
+    "legacy-guard-1792205305426035500/result.json": "2b1ae9b971a418e7797ed02b0a40c46576762497bf0f700b9bcb39478638772c",
+    "logs/backend-tests.log": "fffe96dd52cda62b633b89b7d1948174841f313440ee43be2e6a5b1a8626c401",
+    "logs/canonical-build.log": "9bd838d9d5d347bdd4b930241f48152b6dd681ed7c301cbfcc2c00124a4b0dc9",
+    "logs/launcher-tests.log": "434454adabba93e0854807960ac13a992c60fa4d261c9b683232790774cb61bf",
+    "native/01-original-permission-error.png": "c922a75320c79b70468bb8347f5be4694c0553ee05352bf955a6072862d2a0a6",
+    "native/02-3d-preview.png": "e5f447912a7013e926966e0e05ff2827b0f26ab0186a629131ee30f29162a3c9",
+    "native/03-native-ack-executing.png": "881e4806feeb92d121cfe7d5e4989ec333fab962e27900b5ce3bd5fd4977bbae",
+    "native/04-native-completed.png": "b53bd15f94d901c3a8595b433f0e77f9bc7872c0908d7510e8058785dbe1f0da",
+    "native/after-move.json": "6547fbbdca01d342f636c00aaa3107b02deb31ea385b679f940f9028f54edf7e",
+    "native/before-move.json": "a6121e16e1034f851ecee96f042b1aaada28f6d4912befeb5f89cc37fcdd0811",
+    "running-legacy-check.json": "0ae35d4aab396f2f857aebb32a863dd6121c1873800e0eedbe279ef62465dcc0"
+  }
+}
