@@ -554,6 +554,18 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("FleetUX.SyncReady"),NSLOCTEXT("DroneOps","FleetUX.SyncReady","Synced · Connected")},
 {TEXT("FleetUX.SyncWaiting"),NSLOCTEXT("DroneOps","FleetUX.SyncWaiting","Connecting to control service…")},
 {TEXT("FleetUX.PreviewOnly"),NSLOCTEXT("DroneOps","FleetUX.PreviewOnly","Preview only · not moving")},
+{TEXT("FleetTerrain.AGL"),NSLOCTEXT("DroneOps","FleetTerrain.AGL","Target height above surface (m)")},
+{TEXT("FleetTerrain.UseAbsolute"),NSLOCTEXT("DroneOps","FleetTerrain.UseAbsolute","Advanced: ellipsoid height")},
+{TEXT("FleetTerrain.UseAGL"),NSLOCTEXT("DroneOps","FleetTerrain.UseAGL","Use height above surface")},
+{TEXT("FleetTerrain.HeightHint"),NSLOCTEXT("DroneOps","FleetTerrain.HeightHint","Height above surface uses the loaded map surface as its reference; ellipsoid height is absolute. Load the surface before confirming.")},
+{TEXT("FleetTerrain.Datum"),NSLOCTEXT("DroneOps","FleetTerrain.Datum","Surface {0} m ellipsoid · current {1} m above surface\nTarget {2} m ellipsoid")},
+{TEXT("FleetTerrain.SourceBelow"),NSLOCTEXT("DroneOps","FleetTerrain.SourceBelow","Selected aircraft are below the loaded surface or have less than 1 m clearance. Check the altitude datum; Mock aircraft can be raised before moving.")},
+{TEXT("FleetTerrain.TooLow"),NSLOCTEXT("DroneOps","FleetTerrain.TooLow","The selected formation intersects the loaded surface. Increase the height or choose another destination.")},
+{TEXT("FleetTerrain.Recover"),NSLOCTEXT("DroneOps","FleetTerrain.Recover","Raise Mock fleet above surface")},
+{TEXT("FleetTerrain.RecoveryPreview"),NSLOCTEXT("DroneOps","FleetTerrain.RecoveryPreview","Vertical Mock recovery preview only. Confirm to raise the group to at least 30 m above the surface.")},
+{TEXT("FleetTerrain.InvalidHeight"),NSLOCTEXT("DroneOps","FleetTerrain.InvalidHeight","Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m.")},
+{TEXT("FleetTerrain.MarkerAGL"),NSLOCTEXT("DroneOps","FleetTerrain.MarkerAGL","UAV-{0} · {1} m AGL")},
+{TEXT("FleetTerrain.TargetAGL"),NSLOCTEXT("DroneOps","FleetTerrain.TargetAGL","Target · {0} m AGL")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1111,6 +1123,18 @@ if(Source==TEXT("Synced · Simulation"))return Get(TEXT("FleetUX.SyncMock"));
 if(Source==TEXT("Synced · Connected"))return Get(TEXT("FleetUX.SyncReady"));
 if(Source==TEXT("Connecting to control service…"))return Get(TEXT("FleetUX.SyncWaiting"));
 if(Source==TEXT("Preview only · not moving"))return Get(TEXT("FleetUX.PreviewOnly"));
+if(Source==TEXT("Target height above surface (m)"))return Get(TEXT("FleetTerrain.AGL"));
+if(Source==TEXT("Advanced: ellipsoid height"))return Get(TEXT("FleetTerrain.UseAbsolute"));
+if(Source==TEXT("Use height above surface"))return Get(TEXT("FleetTerrain.UseAGL"));
+if(Source==TEXT("Height above surface uses the loaded map surface as its reference; ellipsoid height is absolute. Load the surface before confirming."))return Get(TEXT("FleetTerrain.HeightHint"));
+if(Source==TEXT("Surface {0} m ellipsoid · current {1} m above surface\nTarget {2} m ellipsoid"))return Get(TEXT("FleetTerrain.Datum"));
+if(Source==TEXT("Selected aircraft are below the loaded surface or have less than 1 m clearance. Check the altitude datum; Mock aircraft can be raised before moving."))return Get(TEXT("FleetTerrain.SourceBelow"));
+if(Source==TEXT("The selected formation intersects the loaded surface. Increase the height or choose another destination."))return Get(TEXT("FleetTerrain.TooLow"));
+if(Source==TEXT("Raise Mock fleet above surface"))return Get(TEXT("FleetTerrain.Recover"));
+if(Source==TEXT("Vertical Mock recovery preview only. Confirm to raise the group to at least 30 m above the surface."))return Get(TEXT("FleetTerrain.RecoveryPreview"));
+if(Source==TEXT("Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m."))return Get(TEXT("FleetTerrain.InvalidHeight"));
+if(Source==TEXT("UAV-{0} · {1} m AGL"))return Get(TEXT("FleetTerrain.MarkerAGL"));
+if(Source==TEXT("Target · {0} m AGL"))return Get(TEXT("FleetTerrain.TargetAGL"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

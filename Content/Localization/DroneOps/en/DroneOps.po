@@ -2214,3 +2214,51 @@ msgstr "Connecting to control service…"
 msgctxt "DroneOps,FleetUX.PreviewOnly"
 msgid "Preview only · not moving"
 msgstr "Preview only · not moving"
+
+msgctxt "DroneOps,FleetTerrain.AGL"
+msgid "Target height above surface (m)"
+msgstr "Target height above surface (m)"
+
+msgctxt "DroneOps,FleetTerrain.UseAbsolute"
+msgid "Advanced: ellipsoid height"
+msgstr "Advanced: ellipsoid height"
+
+msgctxt "DroneOps,FleetTerrain.UseAGL"
+msgid "Use height above surface"
+msgstr "Use height above surface"
+
+msgctxt "DroneOps,FleetTerrain.HeightHint"
+msgid "Height above surface uses the loaded map surface as its reference; ellipsoid height is absolute. Load the surface before confirming."
+msgstr "Height above surface uses the loaded map surface as its reference; ellipsoid height is absolute. Load the surface before confirming."
+
+msgctxt "DroneOps,FleetTerrain.Datum"
+msgid "Surface {0} m ellipsoid · current {1} m above surface\nTarget {2} m ellipsoid"
+msgstr "Surface {0} m ellipsoid · current {1} m above surface\nTarget {2} m ellipsoid"
+
+msgctxt "DroneOps,FleetTerrain.SourceBelow"
+msgid "Selected aircraft are below the loaded surface or have less than 1 m clearance. Check the altitude datum; Mock aircraft can be raised before moving."
+msgstr "Selected aircraft are below the loaded surface or have less than 1 m clearance. Check the altitude datum; Mock aircraft can be raised before moving."
+
+msgctxt "DroneOps,FleetTerrain.TooLow"
+msgid "The selected formation intersects the loaded surface. Increase the height or choose another destination."
+msgstr "The selected formation intersects the loaded surface. Increase the height or choose another destination."
+
+msgctxt "DroneOps,FleetTerrain.Recover"
+msgid "Raise Mock fleet above surface"
+msgstr "Raise Mock fleet above surface"
+
+msgctxt "DroneOps,FleetTerrain.RecoveryPreview"
+msgid "Vertical Mock recovery preview only. Confirm to raise the group to at least 30 m above the surface."
+msgstr "Vertical Mock recovery preview only. Confirm to raise the group to at least 30 m above the surface."
+
+msgctxt "DroneOps,FleetTerrain.InvalidHeight"
+msgid "Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m."
+msgstr "Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m."
+
+msgctxt "DroneOps,FleetTerrain.MarkerAGL"
+msgid "UAV-{0} · {1} m AGL"
+msgstr "UAV-{0} · {1} m AGL"
+
+msgctxt "DroneOps,FleetTerrain.TargetAGL"
+msgid "Target · {0} m AGL"
+msgstr "Target · {0} m AGL"

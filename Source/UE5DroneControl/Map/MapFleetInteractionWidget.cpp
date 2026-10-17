@@ -22,6 +22,8 @@
 #include "Components/WidgetComponent.h"
 #include "Map/FleetPanelStyle.h"
 #include "RealTimeDroneReceiver.h"
+#include "Map/MapSurfaceHeight.h"
+#include <limits>
 using namespace PlanUI;
 
 void UMapFleetInteractionWidget::NativeOnInitialized() {
@@ -46,12 +48,14 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     Summary=Text(Body,FText::GetEmpty(),18);Space(Body,12);
     SelectionText=Text(Body,FText::GetEmpty(),17,CommandTheme::Cyan);Space(Body,18);
     HeightControls=WidgetTree->ConstructWidget<UVerticalBox>();Body->AddChild(HeightControls);
-    Text(HeightControls,T(TEXT("Fleet3D.Height")),16,CommandTheme::SecondaryText);Space(HeightControls,6);
+    HeightLabel=Text(HeightControls,T(TEXT("FleetTerrain.AGL")),16,CommandTheme::SecondaryText);
+    MakeButton(HeightControls,TEXT("height_mode"),TEXT("FleetTerrain.UseAbsolute"));Space(HeightControls,6);
     TargetHeightInput=WidgetTree->ConstructWidget<UEditableTextBox>();CommandTheme::Input(TargetHeightInput);HeightControls->AddChild(TargetHeightInput);
     auto InputStyle=TargetHeightInput->GetWidgetStyle();InputStyle.TextStyle.SetFont(FCoreStyle::GetDefaultFontStyle("Bold",26));InputStyle.SetPadding(FMargin(12,8));
     TargetHeightInput->WidgetStyle=InputStyle;TargetHeightInput->SetWidgetStyle(TargetHeightInput->WidgetStyle);
     TargetHeightInput->OnTextChanged.AddDynamic(this,&UMapFleetInteractionWidget::TargetHeightChanged);
     Space(HeightControls,8);HeightDeltaText=Text(HeightControls,FText::GetEmpty(),16,CommandTheme::Cyan);
+    TerrainInfo=Text(HeightControls,FText::GetEmpty(),14,CommandTheme::SecondaryText);
     Space(HeightControls,6);auto* SliderHeight=WidgetTree->ConstructWidget<USizeBox>();SliderHeight->SetHeightOverride(36);HeightControls->AddChild(SliderHeight);
     HeightSlider=WidgetTree->ConstructWidget<USlider>();HeightSlider->SetMinValue(-100);HeightSlider->SetMaxValue(100);HeightSlider->SetStepSize(1);HeightSlider->SetSliderBarColor(CommandTheme::Border);HeightSlider->SetSliderHandleColor(CommandTheme::Cyan);
     auto SliderStyle=HeightSlider->GetWidgetStyle();SliderStyle.SetBarThickness(4.f);
@@ -61,7 +65,10 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("height_down"),TEXT("Fleet3D.Down")},{TEXT("height_up"),TEXT("Fleet3D.Up")},{TEXT("height_current"),TEXT("Fleet3D.Current")}}){
         auto* B=MakeButton(HeightButtons,*P.Key,*P.Value);auto* LayoutSlot=CastChecked<UHorizontalBoxSlot>(B->Slot);LayoutSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));LayoutSlot->SetPadding(FMargin(2,4));
     }
-    TargetHeightInput->SetToolTipText(T(TEXT("FleetUX.HeightHint")));Space(HeightControls,12);
+    auto* HeightTip=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(HeightTip);HeightTip->SetPadding(FMargin(12));
+    auto* TipWidth=WidgetTree->ConstructWidget<USizeBox>();TipWidth->SetWidthOverride(360);HeightTip->SetContent(TipWidth);
+    auto* TipText=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(TipText,14);TipText->SetAutoWrapText(true);TipText->SetText(T(TEXT("FleetTerrain.HeightHint")));TipWidth->SetContent(TipText);
+    TargetHeightInput->SetToolTip(HeightTip);Space(HeightControls,12);
     TargetCard=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(TargetCard,CommandTheme::Background);TargetCard->SetPadding(FMargin(12));Body->AddChild(TargetCard);
     auto* TargetBody=WidgetTree->ConstructWidget<UVerticalBox>();TargetCard->SetContent(TargetBody);
     Text(TargetBody,T(TEXT("FleetUX.Preview")),15,CommandTheme::Cyan);Space(TargetBody,8);TravelText=Text(TargetBody,FText::GetEmpty(),20);
@@ -72,7 +79,7 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     Space(ProgressBox,10);auto* ProgressHeight=WidgetTree->ConstructWidget<USizeBox>();ProgressHeight->SetHeightOverride(8);ProgressBox->AddChild(ProgressHeight);
     Progress=WidgetTree->ConstructWidget<UProgressBar>();Progress->SetFillColorAndOpacity(CommandTheme::Cyan);ProgressHeight->SetContent(Progress);Space(ProgressBox,14);
     Space(Content,10);Result=Text(Content,FText::GetEmpty(),15,CommandTheme::SecondaryText);Space(Content,10);
-    for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("next"),TEXT("FleetUX.Next")},{TEXT("again"),TEXT("FleetUX.Again")},{TEXT("confirm"),TEXT("Fleet.Confirm")},{TEXT("pause"),TEXT("Execution.Pause")},{TEXT("resume"),TEXT("Execution.Resume")}}){
+    for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("recover"),TEXT("FleetTerrain.Recover")},{TEXT("next"),TEXT("FleetUX.Next")},{TEXT("again"),TEXT("FleetUX.Again")},{TEXT("confirm"),TEXT("Fleet.Confirm")},{TEXT("pause"),TEXT("Execution.Pause")},{TEXT("resume"),TEXT("Execution.Resume")}}){
         auto* B=MakeButton(Content,*P.Key,*P.Value,true);CastChecked<UVerticalBoxSlot>(B->Slot)->SetPadding(FMargin(0,0,0,6));
     }
     auto* Secondary=WidgetTree->ConstructWidget<UHorizontalBox>();Content->AddChild(Secondary);
@@ -141,16 +148,51 @@ bool UMapFleetInteractionWidget::TargetHeight(double& Height) const {
         double Parsed=0;
         // Bound coordinates before building world/spline previews, using the
         // existing Backend 10 km local-frame domain rather than accepting overflow.
-        if(!TargetHeightInput || !FleetTargeting::ParseHeight(TargetHeightInput->GetText().ToString(),Parsed) || FMath::Abs(Parsed-Anchor.Z)>10000.)return false;
-        Height=Parsed;return true;
+        if(!TargetHeightInput || !FleetTargeting::ParseHeight(TargetHeightInput->GetText().ToString(),Parsed))return false;
+        double Ground=0;if(bHeightAGL && (Parsed<1. || !SurfaceHeight(bHasTarget?TargetGeographic:Anchor,Ground)))return false;
+        Height=Parsed+Ground;return FMath::Abs(Height-Anchor.Z)<=10000.;
     }
     Height=Anchor.Z;return true;
 }
 void UMapFleetInteractionWidget::ResetHeight() {
     const auto Members=OrderedSelection();FVector Anchor;
     if(Members.IsEmpty() || !Telemetry(Members[0],Anchor))return;
+    double Ground=0;if(bHeightAGL && !SurfaceHeight(Anchor,Ground))return;
     HeightPrimary=Members[0];TGuardValue<bool> Guard(bUpdatingHeight,true);
-    TargetHeightInput->SetText(User(FString::SanitizeFloat(Anchor.Z)));
+    const double AGL=Anchor.Z-Ground;
+    TargetHeightInput->SetText(User(FString::SanitizeFloat(bHeightAGL?(AGL>=1.?AGL:30.):Anchor.Z)));
+}
+bool UMapFleetInteractionWidget::SurfaceHeight(const FVector& Geographic,double& Height) const {
+    return MapSurface::Height(GetWorld(),GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject(),Geographic,Height);
+}
+double UMapFleetInteractionWidget::InputHeight(double Absolute,const FVector& Geographic) const {
+    double Ground=0;if(bHeightAGL && !SurfaceHeight(Geographic,Ground))return std::numeric_limits<double>::quiet_NaN();return Absolute-Ground;
+}
+bool UMapFleetInteractionWidget::RecoveryHeight(double& Height) const {
+    if(!Is3DView())return false;const auto Members=OrderedSelection();FVector Anchor;
+    if(Members.Num()<2 || !Telemetry(Members[0],Anchor))return false;
+    Height=Anchor.Z;bool Below=false;
+    for(int Id:Members){FVector P;double Ground=0;if(!Telemetry(Id,P) || !SurfaceHeight(P,Ground))return false;
+        Below|=P.Z<Ground+1.;Height=FMath::Max(Height,Anchor.Z+Ground+30.-P.Z);}
+    return Below;
+}
+FText UMapFleetInteractionWidget::TerrainError(bool Force) const {
+    if(!Is3DView() || !bHasTarget)return FText::GetEmpty();
+    const double Now=FPlatformTime::Seconds();if(!Force && Now<NextTerrainCheck)return CachedTerrainError;
+    auto Evaluate=[&]()->FText {FVector Anchor;
+    if(TargetMembers.IsEmpty() || !Telemetry(TargetMembers[0],Anchor))return T(TEXT("Errors.COORDINATES_NOT_READY"));
+    const bool Recovery=bRecoveryPreview && Field(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock")
+        && FVector2D(TargetGeographic.X-Anchor.X,TargetGeographic.Y-Anchor.Y).Size()<1.e-8 && TargetGeographic.Z>Anchor.Z;
+    for(int Id:TargetMembers){FVector From;if(!Telemetry(Id,From))return T(TEXT("Errors.COORDINATES_NOT_READY"));
+        const FVector To(TargetGeographic.X+FMath::UnwindDegrees(From.X-Anchor.X),TargetGeographic.Y+From.Y-Anchor.Y,TargetGeographic.Z+From.Z-Anchor.Z);
+        const double North=FMath::DegreesToRadians(To.Y-From.Y)*6371000.;
+        const double East=FMath::DegreesToRadians(FMath::UnwindDegrees(To.X-From.X))*6371000.*FMath::Cos(FMath::DegreesToRadians((To.Y+From.Y)*.5));
+        const int Count=FMath::Clamp(FMath::CeilToInt(FMath::Sqrt(North*North+East*East)/10.),1,1024);
+        for(int I=0;I<=Count;++I){const FVector P=FMath::Lerp(From,To,double(I)/Count);double Ground=0;
+            if(!SurfaceHeight(P,Ground))return T(TEXT("Errors.TERRAIN_REQUIRED"));
+            if(P.Z<Ground+(Recovery?30.:1.)-.01 && !(Recovery && I<Count))return T(Recovery?TEXT("FleetTerrain.TooLow"):I==0?TEXT("FleetTerrain.SourceBelow"):TEXT("FleetTerrain.TooLow"));}
+    }return FText::GetEmpty();};
+    CachedTerrainError=Evaluate();NextTerrainCheck=Now+.5;return CachedTerrainError;
 }
 void UMapFleetInteractionWidget::TargetHeightChanged(const FText&) {
     if(bUpdatingHeight || bPending || Mode!=EMapFleetMode::GroupMove || !Is3DView())return;
@@ -161,7 +203,9 @@ void UMapFleetInteractionWidget::TargetHeightChanged(const FText&) {
 void UMapFleetInteractionWidget::HeightSliderChanged(float Value) {
     if(bUpdatingHeight || bPending || Mode!=EMapFleetMode::GroupMove || !Is3DView() || !FMath::IsFinite(Value))return;
     const auto Members=OrderedSelection();FVector Anchor;if(Members.IsEmpty() || !Telemetry(Members[0],Anchor))return;
-    {TGuardValue<bool> Guard(bUpdatingHeight,true);TargetHeightInput->SetText(User(FString::SanitizeFloat(Anchor.Z+FMath::RoundToInt(FMath::Clamp(Value,-100.f,100.f)))));}
+    const double Input=InputHeight(Anchor.Z+FMath::RoundToInt(FMath::Clamp(Value,-100.f,100.f)),bHasTarget?TargetGeographic:Anchor);
+    if(!FMath::IsFinite(Input))return;
+    {TGuardValue<bool> Guard(bUpdatingHeight,true);TargetHeightInput->SetText(User(FString::SanitizeFloat(Input)));}
     TargetHeightChanged(TargetHeightInput->GetText());
 }
 bool UMapFleetInteractionWidget::BeginPointer(const FVector2D& Screen,bool Shift,bool Control) {
@@ -198,7 +242,7 @@ void UMapFleetInteractionWidget::SelectInRectangle(bool Click) {
     bSelectionPending=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLocalSelection(Primary,Selected);
     if(!bSelectionPending)MessageKey=TEXT("Errors.SYNC_OFFLINE");
 }
-void UMapFleetInteractionWidget::ClearTarget() { bHasTarget=false;TargetMembers.Empty();TargetPrimary=0;PreviewRoutes.Reset(); }
+void UMapFleetInteractionWidget::ClearTarget() { bHasTarget=false;bRecoveryPreview=false;NextTerrainCheck=0;TargetMembers.Empty();TargetPrimary=0;PreviewRoutes.Reset(); }
 bool UMapFleetInteractionWidget::PickTarget(const FVector2D& Local) {
     ClearTarget();ErrorDetails=UnavailableReason();if(!ErrorDetails.IsEmpty())return false;
     const auto Members=OrderedSelection();FVector Anchor;if(Members.Num()<2 || !Telemetry(Members[0],Anchor))return false;
@@ -207,13 +251,16 @@ bool UMapFleetInteractionWidget::PickTarget(const FVector2D& Local) {
     if(!Coordinates || !ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)){MessageKey=TEXT("Errors.COORDINATES_NOT_READY");return false;}
     const FVector AnchorWorld=ICoordinateService::Execute_GeographicToWorld(Coordinates,Anchor.Y,Anchor.X,Anchor.Z);
     const FVector2D Pixel=Local*UWidgetLayoutLibrary::GetViewportScale(this);FVector Origin,Direction;
-    FVector Point;if(!GetOwningPlayer()->DeprojectScreenPositionToWorld(Pixel.X,Pixel.Y,Origin,Direction) || !FleetTargeting::IntersectFlightPlane(Origin,Direction,AnchorWorld,Point)){MessageKey=TEXT("Map.InvalidPosition");return false;}
+    FVector Point;if(!GetOwningPlayer()->DeprojectScreenPositionToWorld(Pixel.X,Pixel.Y,Origin,Direction)
+        || !(Is3DView()?MapSurface::Raycast(GetWorld(),Origin,Origin+Direction*1000000.,Point):FleetTargeting::IntersectFlightPlane(Origin,Direction,AnchorWorld,Point))){MessageKey=Is3DView()?TEXT("Errors.TERRAIN_REQUIRED"):TEXT("Map.InvalidPosition");return false;}
     const FVector Geo=ICoordinateService::Execute_WorldToGeographic(Coordinates,Point);
     if(Geo.ContainsNaN()){MessageKey=TEXT("Map.InvalidPosition");return false;}
     TargetGeographic=FVector(Geo.X,Geo.Y,Height);TargetMembers=Members;TargetPrimary=Members[0];bHasTarget=true;
+    if(!TargetHeight(Height)){ClearTarget();MessageKey=TEXT("Errors.TERRAIN_REQUIRED");return false;}TargetGeographic.Z=Height;
     MessageKey=TEXT("FleetUX.PreviewOnly");BuildPreview();return true;
 }
 void UMapFleetInteractionWidget::BuildPreview() {
+    NextTerrainCheck=0;
     auto* Coordinates=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();FVector Anchor;
     if(!Coordinates || TargetMembers.IsEmpty() || !Telemetry(TargetMembers[0],Anchor))return;
     double Speed=0;const auto Config=Object(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("mock_execution"));
@@ -262,22 +309,32 @@ void UMapFleetInteractionWidget::Refresh() {
         if(Field(E,TEXT("control_kind"))==TEXT("GROUP_MOVE") && Members && Sorted==*Members && E->GetNumberField(TEXT("created_at"))>Time){Latest=E;Time=E->GetNumberField(TEXT("created_at"));}}
     ExecutionId=Field(Latest,TEXT("execution_id"));ManagedGroup=Field(Latest,TEXT("group_id"));const FString State=Field(Latest,TEXT("state"));
     const bool Active=Latest && ExecutionUI::Active(Latest);if(!Active || (bAbortConfirm && ManagedGroup!=AbortGroup))bAbortConfirm=false;
-    const bool Show=Mode!=EMapFleetMode::Browse || (Latest && ExecutionId!=DismissedExecution) || !MessageKey.IsEmpty() || !ErrorDetails.IsEmpty();
+    double RecoveryAltitude=0;const bool BelowSurface=!Active && RecoveryHeight(RecoveryAltitude);
+    const bool Mock=Field(S->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock");
+    const bool Show=BelowSurface || Mode!=EMapFleetMode::Browse || (Latest && ExecutionId!=DismissedExecution) || !MessageKey.IsEmpty() || !ErrorDetails.IsEmpty();
     Panel->SetVisibility(Show?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     const int Step=Mode==EMapFleetMode::BoxSelect || Selected.Num()<2?0:bHasTarget?2:1;
     Steps[0]->GetParent()->SetVisibility(Active || Mode==EMapFleetMode::Browse?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
     for(int I=0;I<Steps.Num();++I){CommandTheme::Panel(Steps[I],I==Step?CommandTheme::Selected:CommandTheme::Background,I<=Step?CommandTheme::Cyan:CommandTheme::Border);
         StepLabels[I]->SetText(T(*FString::Printf(TEXT("FleetUX.Step%d"),I+1)));StepLabels[I]->SetColorAndOpacity(I<=Step?CommandTheme::Cyan:CommandTheme::SecondaryText);}
-    Summary->SetText(T(Active?TEXT("FleetUX.RunningHint"):Mode==EMapFleetMode::BoxSelect?(Selected.Num()>=2?TEXT("FleetUX.SelectionReady"):TEXT("FleetUX.SelectHint")):
+    Summary->SetText(T(Active?TEXT("FleetUX.RunningHint"):BelowSurface?TEXT("FleetTerrain.SourceBelow"):Mode==EMapFleetMode::BoxSelect?(Selected.Num()>=2?TEXT("FleetUX.SelectionReady"):TEXT("FleetUX.SelectHint")):
         Mode==EMapFleetMode::GroupMove?(bHasTarget?TEXT("FleetUX.ReviewHint"):TEXT("FleetUX.PickHint")):TEXT("FleetUX.FinishedHint")));
     SelectionText->SetText(Selected.IsEmpty()?T(TEXT("FleetUX.EmptySelection")):FText::Format(T(TEXT("FleetUX.Selected")),FText::AsNumber(Selected.Num()),User(FString::Printf(TEXT("UAV-%02d"),Selected[0]))));
     SelectionText->SetVisibility(Mode!=EMapFleetMode::Browse || Active?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     TArray<FString> Ids;for(int Id:Selected)Ids.Add(FString::Printf(TEXT("UAV-%02d"),Id));SelectionText->SetToolTipText(User(FString::Join(Ids,TEXT(", "))));
     const FText Unavailable=UnavailableReason();if(bHasTarget && !Unavailable.IsEmpty())ClearTarget();
     double Height=0;const bool HeightValid=Active || !View3D || Mode!=EMapFleetMode::GroupMove || Selected.Num()<2 || TargetHeight(Height);
+    if(bHasTarget && View3D && HeightValid && FMath::Abs(TargetGeographic.Z-Height)>.01){TargetGeographic.Z=Height;BuildPreview();}
+    const FText SurfaceError=TerrainError();
     HeightControls->SetVisibility(Mode==EMapFleetMode::GroupMove && View3D && Selected.Num()>=2 && !Active?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     FVector Anchor=FVector::ZeroVector;const bool HasAnchor=!Selected.IsEmpty() && Telemetry(Selected[0],Anchor);
     TargetHeightInput->SetIsEnabled(!bPending && !Active && HasAnchor);HeightSlider->SetIsEnabled(!bPending && !Active && Selected.Num()>=2 && HasAnchor);
+    HeightLabel->SetText(T(bHeightAGL?TEXT("FleetTerrain.AGL"):TEXT("Fleet3D.Height")));
+    CastChecked<UTextBlock>(Buttons[TEXT("height_mode")]->GetContent())->SetText(T(bHeightAGL?TEXT("FleetTerrain.UseAbsolute"):TEXT("FleetTerrain.UseAGL")));
+    Buttons[TEXT("height_mode")]->SetIsEnabled(!bPending && !Active);
+    double SourceGround=0;const bool GroundReady=HasAnchor && SurfaceHeight(Anchor,SourceGround);
+    TerrainInfo->SetText(GroundReady?FText::Format(T(TEXT("FleetTerrain.Datum")),FText::AsNumber(SourceGround),FText::AsNumber(Anchor.Z-SourceGround),FText::AsNumber(Height)):T(TEXT("Errors.TERRAIN_REQUIRED")));
+    TerrainInfo->SetColorAndOpacity(BelowSurface?CommandTheme::Warning:CommandTheme::SecondaryText);
     if(HasAnchor && HeightValid){const double Change=Height-Anchor.Z;FNumberFormattingOptions Format;Format.SetMaximumFractionalDigits(1);
         HeightDeltaText->SetText(FText::Format(T(Change>.01?TEXT("FleetUX.Rise"):Change<-.01?TEXT("FleetUX.Descend"):TEXT("FleetUX.Level")),FText::AsNumber(Anchor.Z,&Format),FText::AsNumber(FMath::Abs(Change),&Format)));
         {TGuardValue<bool> Guard(bUpdatingHeight,true);HeightSlider->SetValue(FMath::Clamp(float(Change),-100.f,100.f));}}
@@ -300,7 +357,8 @@ void UMapFleetInteractionWidget::Refresh() {
     auto ShowButton=[&](const TCHAR* Name,bool Visible,bool Enabled=true){Buttons[Name]->SetVisibility(Visible?ESlateVisibility::Visible:ESlateVisibility::Collapsed);Buttons[Name]->SetIsEnabled(Enabled && !bPending);};
     ShowButton(TEXT("next"),Mode==EMapFleetMode::BoxSelect,Selected.Num()>=2 && Unavailable.IsEmpty());
     ShowButton(TEXT("again"),Mode==EMapFleetMode::Browse && Latest && !Active,Unavailable.IsEmpty() && IsAvailable());
-    ShowButton(TEXT("confirm"),Mode==EMapFleetMode::GroupMove && !Active,bHasTarget && HeightValid && Unavailable.IsEmpty() && IsAvailable());
+    ShowButton(TEXT("recover"),BelowSurface && Mock && (!bRecoveryPreview || !SurfaceError.IsEmpty()),Unavailable.IsEmpty() && IsAvailable());
+    ShowButton(TEXT("confirm"),Mode==EMapFleetMode::GroupMove && !Active,bHasTarget && HeightValid && SurfaceError.IsEmpty() && Unavailable.IsEmpty() && IsAvailable());
     ShowButton(TEXT("pause"),State==TEXT("EXECUTING") && !bAbortConfirm,S->IsReady());ShowButton(TEXT("resume"),State==TEXT("PAUSED") && !bAbortConfirm,S->IsReady());
     ShowButton(TEXT("abort"),Active && !bAbortConfirm,S->IsReady());ShowButton(TEXT("reselect"),Mode==EMapFleetMode::GroupMove && bHasTarget && !Active);
     ShowButton(TEXT("fit_preview"),Mode==EMapFleetMode::GroupMove && bHasTarget && !Active,IsAvailable());
@@ -313,14 +371,29 @@ void UMapFleetInteractionWidget::Refresh() {
     Caption(TEXT("confirm"),bHasTarget?FText::Format(T(TEXT("FleetUX.Confirm")),FText::AsNumber(Selected.Num())):T(TEXT("FleetUX.NeedTarget")));
     Caption(TEXT("cancel"),T(Mode==EMapFleetMode::Browse?TEXT("FleetUX.Hide"):TEXT("FleetUX.Exit")));
     Caption(TEXT("details"),T(bShowCoordinates?TEXT("FleetUX.HideCoordinates"):TEXT("FleetUX.Coordinates")));
-    const bool Blocked=!HeightValid || !ErrorDetails.IsEmpty() || (!Unavailable.IsEmpty() && (Mode!=EMapFleetMode::Browse || Latest) && !Active);
+    const bool Blocked=!HeightValid || !SurfaceError.IsEmpty() || !ErrorDetails.IsEmpty() || (!Unavailable.IsEmpty() && (Mode!=EMapFleetMode::Browse || Latest) && !Active);
     Result->SetColorAndOpacity(Blocked?CommandTheme::Warning:CommandTheme::SecondaryText);
     Result->SetText(bPending?T(TEXT("Common.Waiting")):!ErrorDetails.IsEmpty()?ErrorDetails:
-        (Mode!=EMapFleetMode::Browse || Latest) && !Active && !Unavailable.IsEmpty()?Unavailable:!HeightValid?T(TEXT("Fleet3D.InvalidHeight")):MessageKey.IsEmpty()?FText::GetEmpty():T(*MessageKey));
+        (Mode!=EMapFleetMode::Browse || Latest) && !Active && !Unavailable.IsEmpty()?Unavailable:!HeightValid?T(View3D && bHeightAGL && !GroundReady?TEXT("Errors.TERRAIN_REQUIRED"):TEXT("FleetTerrain.InvalidHeight")):!SurfaceError.IsEmpty()?SurfaceError:MessageKey.IsEmpty()?FText::GetEmpty():T(*MessageKey));
     InvalidateLayoutAndVolatility();
 }
 void UMapFleetInteractionWidget::Action(FName Name,int32) {
     if(bPending)return;
+    if(Name==TEXT("height_mode")){
+        double Absolute=0;const bool Valid=TargetHeight(Absolute);bHeightAGL=!bHeightAGL;
+        if(Valid){FVector Anchor;const auto Members=OrderedSelection();if(!Members.IsEmpty() && Telemetry(Members[0],Anchor)){
+            const double Value=InputHeight(Absolute,bHasTarget?TargetGeographic:Anchor);
+            if(FMath::IsFinite(Value)){TGuardValue<bool> Guard(bUpdatingHeight,true);TargetHeightInput->SetText(User(FString::SanitizeFloat(Value)));}}}
+        else ResetHeight();TargetHeightChanged(TargetHeightInput->GetText());return;
+    }
+    if(Name==TEXT("recover")){
+        double Safe=0;if(!RecoveryHeight(Safe) || !UnavailableReason().IsEmpty() || !IsAvailable()
+            || Field(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("execution_adapter"))!=TEXT("Mock"))return;
+        SetMode(EMapFleetMode::GroupMove);TargetMembers=OrderedSelection();TargetPrimary=TargetMembers[0];
+        FVector Anchor;Telemetry(TargetPrimary,Anchor);TargetGeographic=Anchor;TargetGeographic.Z=Safe;bHasTarget=true;bRecoveryPreview=true;
+        {TGuardValue<bool> Guard(bUpdatingHeight,true);TargetHeightInput->SetText(User(FString::SanitizeFloat(InputHeight(Safe,Anchor))));}
+        MessageKey=TEXT("FleetTerrain.RecoveryPreview");BuildPreview();Refresh();Action(TEXT("fit_preview"),0);return;
+    }
     if(Name==TEXT("next") || Name==TEXT("again")){if(UnavailableReason().IsEmpty())SetMode(EMapFleetMode::GroupMove);return;}
     if(Name==TEXT("reselect")){ClearTarget();ErrorDetails=FText::GetEmpty();MessageKey.Empty();Refresh();return;}
     if(Name==TEXT("details")){bShowCoordinates=!bShowCoordinates;Refresh();return;}
@@ -336,7 +409,7 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
     if(Name==TEXT("height_up") || Name==TEXT("height_down") || Name==TEXT("height_current")){
         if(bPending)return;
         if(Name==TEXT("height_current")){ResetHeight();TargetHeightChanged(TargetHeightInput->GetText());return;}
-        double Height=0;if(!TargetHeight(Height)){const auto Members=OrderedSelection();FVector Anchor;if(Members.IsEmpty() || !Telemetry(Members[0],Anchor))return;Height=Anchor.Z;}
+        double Height=0;if(!FleetTargeting::ParseHeight(TargetHeightInput->GetText().ToString(),Height)){ResetHeight();if(!FleetTargeting::ParseHeight(TargetHeightInput->GetText().ToString(),Height))return;}
         {
             {TGuardValue<bool> Guard(bUpdatingHeight,true);TargetHeightInput->SetText(User(FString::SanitizeFloat(Height+(Name==TEXT("height_up")?10.:-10.))));}
             TargetHeightChanged(TargetHeightInput->GetText());
@@ -348,6 +421,7 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
         ErrorDetails=UnavailableReason();if(!bHasTarget || !ErrorDetails.IsEmpty() || !IsAvailable()){Refresh();return;}
         double Height=0;if(!TargetHeight(Height)){MessageKey=TEXT("Fleet3D.InvalidHeight");Refresh();return;}
         TargetGeographic.Z=Height;
+        ErrorDetails=TerrainError(true);if(!ErrorDetails.IsEmpty()){Refresh();return;}
         if(OrderedSelection()!=TargetMembers){ClearTarget();MessageKey=TEXT("Fleet.SelectionChanged");Refresh();return;}
         R->SetStringField(TEXT("action"),TEXT("execution_group_move"));TArray<TSharedPtr<FJsonValue>> Members;
         for(int32 Id:TargetMembers)Members.Add(MakeShared<FJsonValueString>(FString::Printf(TEXT("UAV-%02d"),Id)));R->SetArrayField(TEXT("assigned_uav_ids"),Members);
@@ -368,7 +442,7 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
 void UMapFleetInteractionWidget::NativeTick(const FGeometry& G,float Delta) {
     Super::NativeTick(G,Delta);
     if(Panel){const float Available=FMath::Max(240.f,float(G.GetLocalSize().Y)-216.f);
-        const float Desired=Mode==EMapFleetMode::BoxSelect?460.f:Mode==EMapFleetMode::GroupMove?(bHasTarget?800.f:690.f):bAbortConfirm?510.f:400.f;
+        const float Desired=Mode==EMapFleetMode::BoxSelect?460.f:Mode==EMapFleetMode::GroupMove?(bHasTarget?900.f:790.f):bAbortConfirm?510.f:Buttons[TEXT("recover")]->GetVisibility()==ESlateVisibility::Visible?510.f:400.f;
         const FVector2D Size(FMath::Min(420.,G.GetLocalSize().X-32.),FMath::Min(Available,Desired));
         auto* LayoutSlot=CastChecked<UCanvasPanelSlot>(Panel->Slot);if(!LayoutSlot->GetSize().Equals(Size,.5))LayoutSlot->SetSize(Size);}
     const bool Markers=IsAvailable() && (Mode!=EMapFleetMode::Browse || !ManagedGroup.IsEmpty());
@@ -393,7 +467,7 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
             const auto Color=Primary?CommandTheme::Warning:Selected?CommandTheme::Cyan:CommandTheme::SecondaryText;
             const float Radius=Selected?14.f:9.f;FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(Radius*2),FSlateLayoutTransform(P-FVector2D(Radius))),&RingBrush,ESlateDrawEffect::None,Color);
             FSlateDrawElement::MakeBox(Out,Base+3,G.ToPaintGeometry(FVector2D(6),FSlateLayoutTransform(P-FVector2D(3))),&DotBrush,ESlateDrawEffect::None,Color);
-            const FVector2D LabelSize(166,34);FVector2D Label=P+FVector2D(28,-18);
+            const FVector2D LabelSize(220,34);FVector2D Label=P+FVector2D(28,-18);
             if(Label.X+LabelSize.X>G.GetLocalSize().X-450)Label.X=P.X-LabelSize.X-28;
             Label.X=FMath::Clamp(Label.X,16.,G.GetLocalSize().X-LabelSize.X-16);Label.Y=FMath::Clamp(Label.Y,196.,G.GetLocalSize().Y-150.);
             for(const auto& Old:Placed)if(FMath::Abs(Label.X-Old.X)<LabelSize.X+8 && FMath::Abs(Label.Y-Old.Y)<LabelSize.Y+6)Label.Y=Old.Y+LabelSize.Y+6;
@@ -401,7 +475,9 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
             const FVector2D Connection(Label.X>P.X?Label.X:Label.X+LabelSize.X,Label.Y+LabelSize.Y*.5);
             FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),{P,Connection},ESlateDrawEffect::None,Color.CopyWithNewOpacity(.65f),true,1.f);
             FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(LabelSize,FSlateLayoutTransform(Label)),&CardBrush,ESlateDrawEffect::None,CommandTheme::Surface);
-            FVector Geo;const FText Caption=Telemetry(Id,Geo)?FText::Format(T(TEXT("FleetUX.Marker")),User(FString::Printf(TEXT("%02d"),Id)),FText::AsNumber(FMath::RoundToInt(Geo.Z))):User(FString::Printf(TEXT("UAV-%02d"),Id));
+            FVector Geo;double Ground=0;const bool HasGeo=Telemetry(Id,Geo),AGL=HasGeo && Is3DView() && SurfaceHeight(Geo,Ground);
+            FNumberFormattingOptions MarkerFormat;MarkerFormat.SetMaximumFractionalDigits(1);
+            const FText Caption=HasGeo?FText::Format(T(AGL?TEXT("FleetTerrain.MarkerAGL"):TEXT("FleetUX.Marker")),User(FString::Printf(TEXT("%02d"),Id)),AGL?FText::AsNumber(Geo.Z-Ground,&MarkerFormat):FText::AsNumber(FMath::RoundToInt(Geo.Z))):User(FString::Printf(TEXT("UAV-%02d"),Id));
             FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(LabelSize,FSlateLayoutTransform(Label+FVector2D(9,6))),Caption,FCoreStyle::GetDefaultFontStyle("Bold",16),ESlateDrawEffect::None,Color);
         }
     }else for(int32 Id:R->GetMultiSelectedDrones()){FVector2D P;if(Project(Id,P))Rect(P-FVector2D(13),P+FVector2D(13),Id==R->GetPrimarySelectedDrone()?CommandTheme::Warning:CommandTheme::Cyan);}
@@ -414,9 +490,15 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
                 if(Is3DView()){const FVector Bottom=ICoordinateService::Execute_GeographicToWorld(Coordinates,TargetGeographic.Y,TargetGeographic.X,Anchor.Z);FVector2D A;
                     if(UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(),Bottom,A,true))FSlateDrawElement::MakeLines(Out,Base+2,G.ToPaintGeometry(),{A,B},ESlateDrawEffect::None,CommandTheme::Cyan.CopyWithNewOpacity(.7f),true,1.5f);}
                 FSlateDrawElement::MakeBox(Out,Base+3,G.ToPaintGeometry(FVector2D(28),FSlateLayoutTransform(B-FVector2D(14))),&RingBrush,ESlateDrawEffect::None,CommandTheme::Cyan);
-                const FVector2D L=B+FVector2D(20,-44);FSlateDrawElement::MakeBox(Out,Base+3,G.ToPaintGeometry(FVector2D(200,34),FSlateLayoutTransform(L)),&CardBrush,ESlateDrawEffect::None,CommandTheme::Surface);
-                const auto Caption=FText::Format(T(TEXT("Fleet3D.Marker")),FText::AsNumber(TargetGeographic.Z));
-                FSlateDrawElement::MakeText(Out,Base+4,G.ToPaintGeometry(FVector2D(200,34),FSlateLayoutTransform(L+FVector2D(9,6))),Caption,FCoreStyle::GetDefaultFontStyle("Bold",16),ESlateDrawEffect::None,CommandTheme::Cyan);
+                const FVector2D LabelSize(240,34);FVector2D L=B+FVector2D(20,-44);
+                L.X=FMath::Clamp(L.X,16.,G.GetLocalSize().X-LabelSize.X-16.);
+                if(IsOverControls(G.LocalToAbsolute(L+FVector2D(LabelSize.X,LabelSize.Y*.5))))L.X=FMath::Max(16.,B.X-LabelSize.X-20.);
+                L.Y=FMath::Clamp(L.Y,196.,G.GetLocalSize().Y-LabelSize.Y-16.);
+                FSlateDrawElement::MakeBox(Out,Base+3,G.ToPaintGeometry(LabelSize,FSlateLayoutTransform(L)),&CardBrush,ESlateDrawEffect::None,CommandTheme::Surface);
+                double Ground=0;const bool AGL=Is3DView() && SurfaceHeight(TargetGeographic,Ground);
+                FNumberFormattingOptions MarkerFormat;MarkerFormat.SetMaximumFractionalDigits(1);
+                const auto Caption=FText::Format(T(AGL?TEXT("FleetTerrain.TargetAGL"):TEXT("Fleet3D.Marker")),FText::AsNumber(TargetGeographic.Z-Ground,&MarkerFormat));
+                FSlateDrawElement::MakeText(Out,Base+4,G.ToPaintGeometry(LabelSize,FSlateLayoutTransform(L+FVector2D(9,6))),Caption,FCoreStyle::GetDefaultFontStyle("Bold",16),ESlateDrawEffect::None,CommandTheme::Cyan);
             }
         }
     }

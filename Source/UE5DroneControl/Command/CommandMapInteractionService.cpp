@@ -26,6 +26,7 @@
 #include "PathEditor/DronePathActor.h"
 #include "Map/MapFleetInteractionWidget.h"
 #include "Map/MapShellWidget.h"
+#include "Map/MapSurfaceHeight.h"
 
 // UMG retains ownership. A hit on an editable waypoint body owns its complete
 // native gesture, so deferred gameplay input cannot re-read its release as press.
@@ -553,7 +554,13 @@ void UCommandMapInteractionService::AdvanceCamera(float DeltaSeconds)
     if(ActualFocus.Equals(ViewFocus,.01))ActualFocus=ViewFocus;
     if(FMath::Abs(ActualDistance-ViewDistance)<.01)ActualDistance=ViewDistance;
     if(ActualRotation.Equals(Target,.0001))ActualRotation=Target;
-    MapCamera->SetActorLocationAndRotation(ActualFocus-ActualRotation.Vector()*ActualDistance,ActualRotation);
+    const FVector Desired=ActualFocus-ActualRotation.Vector()*ActualDistance;
+    FVector Safe=Desired;
+    if(CurrentMapMode==ECommandMapMode::Map3D && Registry.IsValid()){
+        auto* Coordinates=Registry->GetCoordinateService().GetObject();
+        if(MapSurface::ClampCamera(MapWorld.Get(),Coordinates,Desired,Safe))ActualFocus+=Safe-Desired;
+    }
+    MapCamera->SetActorLocationAndRotation(Safe,ActualRotation);
 }
 void UCommandMapInteractionService::TickView(float DeltaSeconds)
 {

@@ -95,6 +95,9 @@ public:
             FString Video;FJsonSerializer::Serialize(S->GetVideoView().ToSharedRef(),TJsonWriterFactory<>::Create(&Video));Test->TestEqual(TEXT("selection never retargets Video"),Video,VideoBefore);
             BeforeExecutions=All->Values.Num();Test->TestTrue(TEXT("selection ACK enables guided next step"),F->Buttons[TEXT("next")]->GetIsEnabled());F->Action(TEXT("next"),0);
             Test->TestEqual(TEXT("guided next step arms destination picking"),F->GetMode(),EMapFleetMode::GroupMove);const auto Screen=F->GetCachedGeometry().LocalToAbsolute(TargetLocal);
+            // This regression asserts exact ellipsoid heights. Select that user
+            // reference explicitly now that the normal 3D default is AGL.
+            if(View3D){F->Action(TEXT("height_mode"),0);Test->TestFalse(TEXT("advanced ellipsoid reference is selectable"),F->bHeightAGL);}
             F->BeginPointer(Screen,false,false);F->EndPointer(Screen,true);
             if(View3D){const FVector Horizontal=F->TargetGeographic;const double StartHeight=Horizontal.Z;
                 for(const auto& Bad:TArray<FString>{TEXT("nan"),TEXT("1e308"),FString::SanitizeFloat(StartHeight+10001.)}){

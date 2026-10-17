@@ -13,6 +13,7 @@ UCLASS()
 class UE5DRONECONTROL_API UMapFleetInteractionWidget : public UUserWidget {
     GENERATED_BODY()
     friend class FFleetMapWorkflow;
+    friend class FFleetTerrainWorkflow;
 public:
     void SetMode(EMapFleetMode Value);
     EMapFleetMode GetMode() const { return Mode; }
@@ -40,6 +41,8 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
     UPROPERTY() TObjectPtr<class UTextBlock> SelectionText;
     UPROPERTY() TObjectPtr<class UTextBlock> HeightDeltaText;
+    UPROPERTY() TObjectPtr<class UTextBlock> HeightLabel;
+    UPROPERTY() TObjectPtr<class UTextBlock> TerrainInfo;
     UPROPERTY() TObjectPtr<class UTextBlock> TravelText;
     UPROPERTY() TObjectPtr<class UTextBlock> StateText;
     UPROPERTY() TObjectPtr<class UBorder> TargetCard;
@@ -58,6 +61,7 @@ private:
     bool bSelectionPending=false;
     bool bUpdatingHeight=false,bHadMapMode=false,bWas3D=false;
     bool bAbortConfirm=false,bShowCoordinates=false;
+    bool bHeightAGL=true,bRecoveryPreview=false;
     int32 HeightPrimary=0;
     TArray<int32> RequestedSelection;
     int32 RequestedPrimary=0;
@@ -68,11 +72,17 @@ private:
     FString ExecutionId,MessageKey,ManagedGroup,DismissedExecution,AbortGroup;
     TMap<TWeakObjectPtr<class UWidgetComponent>,bool> SuppressedLabels;
     FText ErrorDetails;
+    mutable FText CachedTerrainError;
+    mutable double NextTerrainCheck=0;
     FPlanRouteVisualSet PreviewRoutes;
     bool Project(int32 Id,FVector2D& Point) const;
     bool Telemetry(int32 Id,FVector& Geographic) const;
     bool Is3DView() const;
     bool TargetHeight(double& Height) const;
+    bool SurfaceHeight(const FVector& Geographic,double& Height) const;
+    bool RecoveryHeight(double& Height) const;
+    FText TerrainError(bool Force=false) const;
+    double InputHeight(double EllipsoidHeight,const FVector& Geographic) const;
     void ResetHeight();
     void SelectInRectangle(bool Click);
     bool PickTarget(const FVector2D& Local);

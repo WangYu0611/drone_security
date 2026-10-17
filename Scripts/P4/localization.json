@@ -2210,5 +2210,53 @@
   "FleetUX.PreviewOnly": [
     "Preview only · not moving",
     "当前仅预览 · 尚未开始移动"
+  ],
+  "FleetTerrain.AGL": [
+    "Target height above surface (m)",
+    "目标离地高度（米）"
+  ],
+  "FleetTerrain.UseAbsolute": [
+    "Advanced: ellipsoid height",
+    "高级：改用椭球高"
+  ],
+  "FleetTerrain.UseAGL": [
+    "Use height above surface",
+    "改用离地高度"
+  ],
+  "FleetTerrain.HeightHint": [
+    "Height above surface uses the loaded map surface as its reference; ellipsoid height is absolute. Load the surface before confirming.",
+    "离地高度以已加载的地表为基准，椭球高为绝对高度；请等待地表加载后再确认。"
+  ],
+  "FleetTerrain.Datum": [
+    "Surface {0} m ellipsoid · current {1} m above surface\nTarget {2} m ellipsoid",
+    "地表椭球高 {0} 米 · 当前离地 {1} 米\n目标椭球高 {2} 米"
+  ],
+  "FleetTerrain.SourceBelow": [
+    "Selected aircraft are below the loaded surface or have less than 1 m clearance. Check the altitude datum; Mock aircraft can be raised before moving.",
+    "选中无人机低于地表或离地不足 1 米。请检查高度基准；模拟无人机可先抬升再移动。"
+  ],
+  "FleetTerrain.TooLow": [
+    "The selected formation intersects the loaded surface. Increase the height or choose another destination.",
+    "编队航线与已加载地表相交，请增加高度或重新选点。"
+  ],
+  "FleetTerrain.Recover": [
+    "Raise Mock fleet above surface",
+    "将模拟编队抬升至地上"
+  ],
+  "FleetTerrain.RecoveryPreview": [
+    "Vertical Mock recovery preview only. Confirm to raise the group to at least 30 m above the surface.",
+    "仅预览模拟编队的垂直抬升；确认后整组升至地表上方至少 30 米。"
+  ],
+  "FleetTerrain.InvalidHeight": [
+    "Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m.",
+    "请输入有效高度，与锚点高度差不超过 10 千米；离地高度须至少 1 米。"
+  ],
+  "FleetTerrain.MarkerAGL": [
+    "UAV-{0} · {1} m AGL",
+    "UAV-{0} · 离地 {1} 米"
+  ],
+  "FleetTerrain.TargetAGL": [
+    "Target · {0} m AGL",
+    "目标 · 离地 {0} 米"
   ]
 }
