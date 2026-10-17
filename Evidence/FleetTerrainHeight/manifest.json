@@ -1,0 +1,243 @@
+{
+  "sealed_at_utc": "2026-10-17T03:56:51.701652+00:00",
+  "baseline": "237ccfbddef9231b7aed967cd94af8a2ef3e010b",
+  "scope": "online CesiumWorld, Mock only; native mouse/keyboard separated from numerical probes and automation",
+  "final_tests": [
+    {
+      "test": "DroneOps.Fleet.SurfaceHeight",
+      "exit": 0,
+      "discovered": 1,
+      "completed": 1,
+      "failed": 0,
+      "passed": 1,
+      "pass": true,
+      "warnings": 1,
+      "report": "verification-1792206860799968400/DroneOps.Fleet.SurfaceHeight"
+    },
+    {
+      "test": "DroneOps.Fleet.TerrainWorkflow",
+      "exit": 0,
+      "discovered": 1,
+      "completed": 1,
+      "failed": 0,
+      "passed": 1,
+      "pass": true,
+      "warnings": 1,
+      "report": "verification-1792208187806351700/DroneOps.Fleet.TerrainWorkflow"
+    },
+    {
+      "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+      "exit": 0,
+      "discovered": 1,
+      "completed": 1,
+      "failed": 0,
+      "passed": 1,
+      "pass": true,
+      "warnings": 1,
+      "report": "verification-1792208187806351700/DroneOps.Fleet.ThreeDimensionalWorkflow"
+    },
+    {
+      "test": "DroneOps.Fleet.Workflow",
+      "exit": 0,
+      "discovered": 1,
+      "completed": 1,
+      "failed": 0,
+      "passed": 1,
+      "pass": true,
+      "warnings": 1,
+      "report": "verification-1792207133637541900/DroneOps.Fleet.Workflow"
+    },
+    {
+      "test": "DroneOps.P54.RouteEditCameraLock",
+      "exit": 0,
+      "discovered": 2,
+      "completed": 2,
+      "failed": 0,
+      "passed": 2,
+      "pass": true,
+      "warnings": 0,
+      "report": "verification-1792207133637541900/DroneOps.P54.RouteEditCameraLock"
+    },
+    {
+      "test": "DroneOps.P4.P54.CameraDampingAnd3DRoute",
+      "exit": 0,
+      "discovered": 1,
+      "completed": 1,
+      "failed": 0,
+      "passed": 1,
+      "pass": true,
+      "warnings": 1,
+      "report": "verification-1792208187806351700/DroneOps.P4.P54.CameraDampingAnd3DRoute"
+    },
+    {
+      "test": "DroneOps.P4.Localization.FTextAndDraftIsolation",
+      "exit": 0,
+      "discovered": 1,
+      "completed": 1,
+      "failed": 0,
+      "passed": 1,
+      "pass": true,
+      "warnings": 1,
+      "report": "verification-1792207133637541900/DroneOps.P4.Localization.FTextAndDraftIsolation"
+    }
+  ],
+  "unique_discovered": 8,
+  "unique_completed": 8,
+  "unique_passed": 8,
+  "tests_with_existing_environment_warnings": 6,
+  "failed_initial_runs_retained": true,
+  "localization_internal_exit": 0,
+  "localization_process_exit": 1,
+  "isolated_processes_stopped": true,
+  "user_normal_launcher_kept_running": true,
+  "current_clients": [
+    {
+      "client_role": "Map",
+      "state": "ONLINE",
+      "hydrated": true
+    },
+    {
+      "client_role": "Command",
+      "state": "ONLINE",
+      "hydrated": true
+    },
+    {
+      "client_role": "Video",
+      "state": "ONLINE",
+      "hydrated": true
+    }
+  ],
+  "credential_pattern_scan_flagged_files": [],
+  "binaries": {
+    "Binaries/Win64/UnrealEditor-UE5DroneControl.dll": "cbbae6f5e114e8b3f1cd1bcd431215cd7468a8388b2e9b14e38a9706d48896b4",
+    "Backend/build/Release/DroneBackend.exe": "016cc9ced56d56c63cac05e1b17cb1e47db883cfd4062a382dfbdd3a5b01d744"
+  },
+  "sources": {
+    "Source/UE5DroneControl/Map/MapSurfaceHeight.h": {
+      "sha256_raw": "85192c2374fcfb09694abd20586b1b39fd3773fdae04e828b217d57aca43c062",
+      "git_blob": "2207ec2a48ec318c34bb9a48effe0a433c33747c"
+    },
+    "Source/UE5DroneControl/Map/MapSurfaceHeight.cpp": {
+      "sha256_raw": "563621b394dd629941c5915972fd0eab9117bfb076a104c984cf4360972ab5cb",
+      "git_blob": "47afb87852bf7324bdb527142d4f2f5834ae6068"
+    },
+    "Source/UE5DroneControl/Command/CommandMapInteractionService.cpp": {
+      "sha256_raw": "e9cd894fc9da44a4711f219766af9dee16f72b40847ce543cb60e45c7b8d80cf",
+      "git_blob": "d3bded9098637bd75ef05469a0cc8982d304a1fd"
+    },
+    "Source/UE5DroneControl/Map/MapFleetInteractionWidget.h": {
+      "sha256_raw": "48eb667e79f015f39d18477fe2dc2ce955c67bfbde4c5ec345b7ac05dc8883f5",
+      "git_blob": "4567c640ef9894bde7894f308c8d774d50f652ec"
+    },
+    "Source/UE5DroneControl/Map/MapFleetInteractionWidget.cpp": {
+      "sha256_raw": "a17a677a837f8bf3b8a1a95d11694d00b534b8a779a6f5245dfb7e97baf1b549",
+      "git_blob": "d137d3dff58bfec110f272643835631c6cc28c8f"
+    },
+    "Source/UE5DroneControl/Tests/FleetTerrainTest.cpp": {
+      "sha256_raw": "f92059052c6f956cdc90fa77b7b58b4e5a0d961aff04fbf6319a57a9bd24ebd6",
+      "git_blob": "d0975f6cee2506331390d2e36d439675ed0f658d"
+    },
+    "Source/UE5DroneControl/Tests/FleetControlTest.cpp": {
+      "sha256_raw": "209225840d51f581e099e003a754a98cb0cf811a2a89c690c6d9276d75125296",
+      "git_blob": "fe0848e2d319ce66e5b8a281c78dd3da34be0d24"
+    },
+    "Source/UE5DroneControl/Shared/ProductText.cpp": {
+      "sha256_raw": "643e0f4a219c74bc0f9680fa7b0f9200a326b31d0eef81e02cd25ccfd57023eb",
+      "git_blob": "248b4fbd2d86d998d5fb5a6abccb756f484965ea"
+    },
+    "Scripts/P4/localization.json": {
+      "sha256_raw": "80c28d409cb383660685e85eabde384442f31c385e2ceb47c8aa071ec596a96c",
+      "git_blob": "0c38ff89e0fb974a1575da6cf8a4b6cb625b1b5b"
+    }
+  },
+  "files": {
+    "before-authoritative.json": "ed1c6d72c5fa7d7281f2fda2cb7beba56d2b81b2d1e047d3029f0ce59b43b555",
+    "build-4.json": "09d6e878db68cf48f4f5d1fff3c6ada07d61611d0612fb5989f0016123e4a970",
+    "logs/build-1.log": "0d3c3de7fe6f20ec2efa92d6268be5ee0f501ada7e13be28090431f3b05014d3",
+    "logs/build-2.log": "7be871141ace6ae1653eab848783badb0d7bd1f94837f4a6eb96290077a2c037",
+    "logs/build-3.log": "92baaa125f4f7e41fb59f1ab3361c3b55312b448ea71e83f6cd7edebec93fc42",
+    "logs/build-4.log": "0cb3aa9b37aac81aea93529120da0a84cde6ac707c3fe0928fe1489a27398571",
+    "logs/build-5.log": "77e8642187df06986ca10d7371855bbd9733d9f492e5ea8a0463c991c90f9a6f",
+    "logs/localization-diagnostics.txt": "cee17574ebd0fd325c94f0d1fde8a1f0f24ecaab5f64f95361482e2a3877227a",
+    "native/01-before-underground.png": "07bfa752c1d6f4d120ea08f69712f78293879f4f155e585f60e8fbe0830795b1",
+    "native/02-measured-below-surface-en.png": "75da905ff70c5d47b8e0a2a5bffc983da567dd8e214beb335143aa98ea2e6239",
+    "native/03-below-surface-zh.png": "be5282e3b8b566f73b4ce3eddb9823a2c0e022de0b529c0ac0a76e4b29e4a8d4",
+    "native/04-recovery-preview-zh.png": "da60a4d8ac9bc4ffc5447f93318fb4fc6e082ad860acc4bb5e93815644a0e980",
+    "native/05-recovery-ack.png": "0f1829f71ff26253510a2a4fdfed083278112a63e5e388e8b431f79c2345cb00",
+    "native/06-recovered-completed.png": "a6d7560d139bb9d7bca4381fcc6211bebb1bd231e69e173545637b382ef3b1b9",
+    "native/07-agl-40m-preview.png": "e796c31c3f965eed78f6ec18a750234db1ec42140cd67093f1e72ee0ec9c0f63",
+    "native/08-underground-target-blocked.png": "3da198caf16a33de4a317c32eea47bcf53b15be554a263d9197260ddc72976e5",
+    "native/09-agl-40m-completed.png": "47661c8a43034ef44f3ebe74c70e406f1d05156a93edfa3370aa0d37a773dd73",
+    "native/10-camera-near-surface.png": "df48a8cf47d3038d380c625774387aca58b0b68206f5403690c92bbefae4764d",
+    "native/11-final-user-below-surface.png": "65322d625e0a56af4fd946f4fbbb75b734c627d0a6a043b77280d7d5162ca1c7",
+    "native/12-final-user-recovery-preview.png": "53b283cf3c4549a64de9f096d9fd5038b93b4834c60f688c0151737269ab74ea",
+    "native/13-final-wrapped-height-help.png": "7d7b7a612068461651904cf8097308e4b8ef334b2893be57252de0c1fae9cb67",
+    "native/14-user-recovery-ack.png": "32f5220faff4ba22a40b4b6295b6d2f7c84f37b5d4db99f222b608a9ddb48f9b",
+    "native/15-user-recovered-completed.png": "7f9cf8826fd0fd4a8f699fbca8ababde6f0702efeb89a323745e7505434ba056",
+    "native/16-final-user-3d.png": "eb0821a6ed42fa60a6ee77d6b3e0e210ffffe1b767808efba30f94be6d3d8b35",
+    "native/agl-40m-completed-probe.json": "34afe24fdedcc28297d6197adc794decfe555c9cc3b3f6516cb1be0d0bfd78e4",
+    "native/agl-move-completed.json": "6042dfcf4927f702e066f966a33d4d6020b06a6cb8b73a63025e7e955113cd27",
+    "native/before-recovery.json": "30e11922affc3e647117f40a9b9e836f8979f190a03607929ecf1ed92609e7d5",
+    "native/camera-near-surface-probe.json": "2cc2ff7ec71541a26d97998cbff3fd0d292b7f595aa05a649d3d432875c13407",
+    "native/invalid-underground-no-execution.json": "af166f03ad5092729b62f0336f7013e615aa2824de83492423b2f11bda1453d4",
+    "native/measured-below-surface.json": "b68beaededfd9e48cd4b4aa6bc267cbd4da69dd18aba4fadc27ba5cc99c18a58",
+    "native/recovered-probe.json": "a96979df4bb5dc26760a8efc260b93c82e8dec551bf29a7a79a0ad551d4540bd",
+    "native/recovery-completed.json": "e9341a5bfb1e0d3dba9a646aa88a12b8bc0f17c661d472af77d11623bb5c6ef7",
+    "native/recovery-preview-no-execution.json": "ae73c7b791f3506268f58225048221d2ee81ba2c6c6e6b9e75783eee799e4529",
+    "native/user-after.json": "c5a97e2a0fcb3b07fc7465584d13dc2177b647550e21a269950589b7eed09748",
+    "native/user-before.json": "285968c34544155536deaaf44cd9459cd407ae79047fde707997353cb6563a3f",
+    "native/user-preview-no-execution.json": "afdf0a6f4a86436847cb7afcdd39eeeadabaa84bf0eed487a2751cc5b70ebcc0",
+    "preliminary-diagnostics.json": "6a14d5f15a8c98afa8aa2ff87153465f0e5eb42ed195893ce599980e7cb7e5aa",
+    "surface-input.json": "01ccc84f0b72366a2445f18a9190f7ce277d47c01d5a2f2f1a7da1cfca52b5fb",
+    "verification-1792206860799968400/binary.json": "72b67dd277fee8bbcc6edff6ff58f37a0fd15444e2e3a9d2ea00966fdb61594b",
+    "verification-1792206860799968400/DroneOps.Fleet.SurfaceHeight/editor.log": "3ba5d61c3980af969beb9e1a7af54579765fbb4d949e0acb108983b366d361a4",
+    "verification-1792206860799968400/DroneOps.Fleet.SurfaceHeight/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792206860799968400/DroneOps.Fleet.SurfaceHeight/index.json": "0fa72abc17ece47dde55bcc05a902471c78ebddd94c74061921c282e88ea7024",
+    "verification-1792206860799968400/DroneOps.Fleet.SurfaceHeight/stdio.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792206860799968400/DroneOps.Fleet.TerrainWorkflow/editor.log": "8ab0e4f352c2c91e85bd673f90951413575f73dca4e11e06a6be4dc0fe82147d",
+    "verification-1792206860799968400/DroneOps.Fleet.TerrainWorkflow/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792206860799968400/DroneOps.Fleet.TerrainWorkflow/index.json": "b5e0462f5cc0163a04f6f5ca09ff90362e5f58f594e1b16cc3b18b38c4e29da8",
+    "verification-1792206860799968400/DroneOps.Fleet.TerrainWorkflow/stdio.log": "149004103efc32b42375d4af4ac4afe464ad7de0f1f95428ad77c91ad3a0d1a7",
+    "verification-1792206860799968400/summary.json": "c28cd1329facccac78f132484208b870a56b0da5797fcdab934c75a57ab97352",
+    "verification-1792207133637541900/binary.json": "6a7a3e69610e7cd4e0b87bc81210a2a3b096158b13aa999dcc3963f514638ac7",
+    "verification-1792207133637541900/DroneOps.Fleet.TerrainWorkflow/editor.log": "ca30f69e4ccc0a43a79c831fde24f441118d280dd79961d09950d4f3393c6052",
+    "verification-1792207133637541900/DroneOps.Fleet.TerrainWorkflow/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792207133637541900/DroneOps.Fleet.TerrainWorkflow/index.json": "772a0ba4b93aebc1d24a4f7340ec034511ef2d040a1a672575cac1fb0bdbe743",
+    "verification-1792207133637541900/DroneOps.Fleet.TerrainWorkflow/stdio.log": "3f92470937b1e53d5dbd03287aa5c5bdff7db0a126ada7d2aaa532df7596433e",
+    "verification-1792207133637541900/DroneOps.Fleet.ThreeDimensionalWorkflow/editor.log": "0df3d6460a062c4dee1102a0c7ba02724aa60779ae5f3d429a6485879f7474c3",
+    "verification-1792207133637541900/DroneOps.Fleet.ThreeDimensionalWorkflow/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792207133637541900/DroneOps.Fleet.ThreeDimensionalWorkflow/index.json": "abe78bfd8cc7ca11e33ce436ef7c051f1b0ac5dba403f12c62df60c922211f96",
+    "verification-1792207133637541900/DroneOps.Fleet.ThreeDimensionalWorkflow/stdio.log": "d8be9ebc2db744cf47c507975d32acd744629db7421e2e6c99ad58def1117b72",
+    "verification-1792207133637541900/DroneOps.Fleet.Workflow/editor.log": "9a8b086ec7c79325c86c036aa245907a1a3a8fbf254f714d014393ba798e6cff",
+    "verification-1792207133637541900/DroneOps.Fleet.Workflow/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792207133637541900/DroneOps.Fleet.Workflow/index.json": "594d9dda657d44011f3ad1310ecb6e8b3663d3ebea3a312c75e25bcf456007a3",
+    "verification-1792207133637541900/DroneOps.Fleet.Workflow/stdio.log": "85b6896871b1a5304811a9ad8bcd0b8810e21a74cba2ed33e4f7347c31b680c1",
+    "verification-1792207133637541900/DroneOps.P4.Localization.FTextAndDraftIsolation/editor.log": "7fb6a0da6cb244b2209e0346e3fbb45cf81fdd6996a0d8f958fd25503925e556",
+    "verification-1792207133637541900/DroneOps.P4.Localization.FTextAndDraftIsolation/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792207133637541900/DroneOps.P4.Localization.FTextAndDraftIsolation/index.json": "97259c8935d88e824a766d37bba7c1f2e3b15c3abd0196025d6741f609a64fed",
+    "verification-1792207133637541900/DroneOps.P4.Localization.FTextAndDraftIsolation/stdio.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792207133637541900/DroneOps.P4.P54.CameraDampingAnd3DRoute/editor.log": "ca9b7ee41ff76360ff9f69edc18d4553e696904cf9e563c0ad9f04fce4b9955f",
+    "verification-1792207133637541900/DroneOps.P4.P54.CameraDampingAnd3DRoute/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792207133637541900/DroneOps.P4.P54.CameraDampingAnd3DRoute/index.json": "96cee4cb65db5a40e5d9c26b68155461e3c620d762c9abfb8939ab3a376cfb31",
+    "verification-1792207133637541900/DroneOps.P4.P54.CameraDampingAnd3DRoute/stdio.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792207133637541900/DroneOps.P54.RouteEditCameraLock/editor.log": "61d50545c29e6155fa641bf0822170e2f086f24aff9ae9929389615fe483ca08",
+    "verification-1792207133637541900/DroneOps.P54.RouteEditCameraLock/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792207133637541900/DroneOps.P54.RouteEditCameraLock/index.json": "ac310ba8f6547f620c82380b4126342b10bb9a8a04abab1ebaea70246ec874a4",
+    "verification-1792207133637541900/DroneOps.P54.RouteEditCameraLock/stdio.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792207133637541900/summary.json": "87eade23613f4d994f170a03a38e30430af1d3f04b6fb142a4c58210fcfc1697",
+    "verification-1792208187806351700/binary.json": "faecfd3455df15a2966b73578017a6cf917778616e684445920f8259a3260d6a",
+    "verification-1792208187806351700/DroneOps.Fleet.TerrainWorkflow/editor.log": "fa76f108dece079b1c7a501b0e6214f5053428f7c6ab6e5d0b4943b504c7c9f2",
+    "verification-1792208187806351700/DroneOps.Fleet.TerrainWorkflow/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792208187806351700/DroneOps.Fleet.TerrainWorkflow/index.json": "b65fa604765bbfde3dbbfc56d1ce47302eb9714b97a3b6d6576e53b202c244d3",
+    "verification-1792208187806351700/DroneOps.Fleet.TerrainWorkflow/stdio.log": "c4844b82f436661e8aba53e35987c332d3887cd5fa65722a98dfa11237b988b2",
+    "verification-1792208187806351700/DroneOps.Fleet.ThreeDimensionalWorkflow/editor.log": "1e84a58bf83fda0ed262d42c73b4a7907b22627c8465e243d0e28fcb9c0e9f49",
+    "verification-1792208187806351700/DroneOps.Fleet.ThreeDimensionalWorkflow/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792208187806351700/DroneOps.Fleet.ThreeDimensionalWorkflow/index.json": "3db681dc5b4dd258678dc3da77d871da2cfe6f77c482a66123e99a65a4f2975c",
+    "verification-1792208187806351700/DroneOps.Fleet.ThreeDimensionalWorkflow/stdio.log": "20a645731283a80d8f4ef63299516d4a1f09b5adef13574b0a0d40a7cfe5dd47",
+    "verification-1792208187806351700/DroneOps.P4.P54.CameraDampingAnd3DRoute/editor.log": "d96c85dba245056a379ec8b7a714d25f20d1103786259afd3597f9a669c804ce",
+    "verification-1792208187806351700/DroneOps.P4.P54.CameraDampingAnd3DRoute/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792208187806351700/DroneOps.P4.P54.CameraDampingAnd3DRoute/index.json": "1fd70d0e225b87d114e6bca0411a15f8657b27bb7d43fbb872bba521ae7c8842",
+    "verification-1792208187806351700/DroneOps.P4.P54.CameraDampingAnd3DRoute/stdio.log": "276de190d9f07913acf7addc3fe960c54c65dad30adec0ca021a57326a7e2e61",
+    "verification-1792208187806351700/summary.json": "9d54930fe3f363918c6c947426c9258063eeec07bc9c323f220d8bcc331dbc45"
+  }
+}

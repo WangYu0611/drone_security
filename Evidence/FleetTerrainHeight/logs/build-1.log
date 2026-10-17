@@ -1,0 +1,73 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:\CodexPublish\drone_security\UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: C:\Users\wy331\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+UHT processed UE5DroneControlEditor in 12.5009985 seconds (2 generated files written)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandMapInteractionService.cpp, MapFleetInteractionWidget.cpp, MapSurfaceHeight.cpp, ProductText.cpp, FleetTerrainTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 12 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 21.02 GB/33.93 GB committed
+  UBA Storage capacity 40 GB
+[1/12] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[2/12] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[3/12] Compile [x64] FleetTerrainTest.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\FleetTerrainTest.cpp(61,57): error C2039: "ToSharedRef": ﾲﾻￊￇ "TSharedRef<FJsonObject,ESPMode::ThreadSafe>" ﾵￄﾳ￉ￔﾱ
+            FString Json;FJsonSerializer::Serialize(Doc.ToSharedRef(),TJsonWriterFactory<>::Create(&Json));
+                                                        ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Templates\SharedPointer.h(153,7): note: ﾲￎﾼ￻ﾡﾰTSharedRef<FJsonObject,ESPMode::ThreadSafe>ﾡﾱﾵￄ￉￹ￃ￷
+class TSharedRef
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\FleetTerrainTest.cpp(61,43): error C2672: ﾡﾰTJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serializeﾡﾱ: ￎﾴￕￒﾵﾽￆﾥￅ￤ﾵￄￖ￘ￔ￘ﾺﾯￊ�
+            FString Json;FJsonSerializer::Serialize(Doc.ToSharedRef(),TJsonWriterFactory<>::Create(&Json));
+                                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(620,14): note: ﾿￉ￄￜￊￇﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const TSharedRef<FJsonSerializerPolicy_JsonObject::FElement,ESPMode::ThreadSafe> &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const TSharedRef<typename Policy::FElement>& StartingElement, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter)
+	            ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\FleetTerrainTest.cpp(61,43): note: ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const TSharedRef<FJsonSerializerPolicy_JsonObject::FElement,ESPMode::ThreadSafe> &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ: ￓﾦￊ￤￈￫ 3 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 2 ﾸ￶
+            FString Json;FJsonSerializer::Serialize(Doc.ToSharedRef(),TJsonWriterFactory<>::Create(&Json));
+                                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(487,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FMapOfValues &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FMapOfValues& Object, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter = true)
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(467,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FMapOfValues &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FMapOfValues& Object, const TSharedRef<TJsonWriter<CharType, PrintPolicy>>& Writer, bool bCloseWriter = true )
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(446,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FArrayOfValues &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FArrayOfValues& Array, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter = true )
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(426,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FArrayOfValues &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FArrayOfValues& Array, const TSharedRef<TJsonWriter<CharType, PrintPolicy>>& Writer, bool bCloseWriter = true)
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(405,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FValue& Value, const FString& Identifier, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter = true)
+	            ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\FleetTerrainTest.cpp(61,43): note: ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ: ￓﾦￊ￤￈￫ 4 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 2 ﾸ￶
+            FString Json;FJsonSerializer::Serialize(Doc.ToSharedRef(),TJsonWriterFactory<>::Create(&Json));
+                                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(377,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FValue& Value, const FString& Identifier, const TSharedRef<TJsonWriter<CharType, PrintPolicy>>& Writer, bool bCloseWriter = true)
+	            ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\FleetTerrainTest.cpp(61,43): note: ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ: ￓﾦￊ￤￈￫ 4 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 2 ﾸ￶
+            FString Json;FJsonSerializer::Serialize(Doc.ToSharedRef(),TJsonWriterFactory<>::Create(&Json));
+                                          ^
+[4/12] Compile [x64] FleetControlTest.cpp [NoUba]
+[5/12] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[6/12] Compile [x64] MapShellWidget.cpp [NoUba]
+[7/12] Compile [x64] MapSurfaceHeight.cpp [NoUba]
+[8/12] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[9/12] Compile [x64] ProductText.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 78.45 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 94.93 seconds
+Trace written to file C:\Users\wy331\AppData\Local\UnrealBuildTool\Trace.uba with size 18.1kb

@@ -1,0 +1,57 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "JXGM",
+			"instance": "D80C34834C23CEE4B9740E97F4F6FBC5",
+			"instanceName": "JXGM-124104",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.17-03.14.51",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.32443919777870178,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "SurfaceHeight",
+			"fullTestPath": "DroneOps.Fleet.SurfaceHeight",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"D80C34834C23CEE4B9740E97F4F6FBC5"
+			],
+			"duration": 0.32443919777870178,
+			"dateTime": "2026.10.17-03.14.51",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.17-03.14.51"
+				}
+			],
+			"warnings": 1,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}
