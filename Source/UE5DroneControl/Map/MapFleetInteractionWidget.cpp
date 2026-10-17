@@ -2,6 +2,8 @@
 #include "Map/MapShellWidget.h"
 #include "Map/MapPlanMoveWidget.h"
 #include "Shared/ExecutionPresentation.h"
+#include "Shared/PlanConfiguration.h"
+#include "Shared/ActiveExecutionControlsWidget.h"
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "DroneOps/Core/ICoordinateService.h"
@@ -98,7 +100,8 @@ bool UMapFleetInteractionWidget::IsAvailable() const {
     auto* Manager=PC?PC->GetCommandScreenManager():nullptr;
     const auto* Move=Manager && Manager->GetMapShell()?Manager->GetMapShell()->GetMovePanel():nullptr;
     const auto* Map=Manager?Manager->GetMapService():nullptr;
-    return Map && !Map->IsPlanning() && !Map->IsRouteEditCameraLocked() && !(Move && Move->IsMoving());
+    return Map && !PlanConfiguration::Active(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans())
+        && !Map->IsPlanning() && !Map->IsRouteEditCameraLocked() && !(Move && Move->IsMoving());
 }
 bool UMapFleetInteractionWidget::IsOverControls(const FVector2D& Screen) const {
     return Panel && Panel->IsVisible() && Panel->GetCachedGeometry().IsUnderLocation(Screen);
@@ -275,6 +278,7 @@ void UMapFleetInteractionWidget::BuildPreview() {
     PreviewRoutes.Retain(Live);
 }
 FText UMapFleetInteractionWidget::UnavailableReason() const {
+    if(PlanConfiguration::Active(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans()))return T(TEXT("Configuration.MoveBlocked"));
     if(bSelectionPending)return T(TEXT("Fleet.SelectionPending"));
     const auto Selected=OrderedSelection();if(Selected.Num()<2)return T(TEXT("Fleet.SelectTwo"));
     auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();if(!S->IsReady())return T(TEXT("Errors.SYNC_OFFLINE"));
@@ -299,19 +303,17 @@ void UMapFleetInteractionWidget::Refresh() {
         bSelectionPending=false;if(MessageKey==TEXT("Fleet.SelectionPending"))MessageKey=TEXT("Fleet.SelectionReady");
     }
     if(bHasTarget && (Selected!=TargetMembers || Selected.IsEmpty() || Selected[0]!=TargetPrimary)){ClearTarget();MessageKey=TEXT("Fleet.SelectionChanged");}
-    auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto All=Object(S->GetPlans(),TEXT("executions"));TSharedPtr<FJsonObject> Latest;double Time=-1;
-    TMap<FString,TArray<int32>> MembersByGroup;
-    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(Field(E,TEXT("control_kind"))!=TEXT("GROUP_MOVE"))continue;
-        int32 Id=0;LexTryParseString(Id,*Field(E,TEXT("uav_id")).Mid(4));MembersByGroup.FindOrAdd(Field(E,TEXT("group_id"))).AddUnique(Id);}
-    for(auto& Item:MembersByGroup)Item.Value.Sort();
-    auto Sorted=Selected;Sorted.Sort();
-    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();const auto* Members=MembersByGroup.Find(Field(E,TEXT("group_id")));
-        if(Field(E,TEXT("control_kind"))==TEXT("GROUP_MOVE") && Members && Sorted==*Members && E->GetNumberField(TEXT("created_at"))>Time){Latest=E;Time=E->GetNumberField(TEXT("created_at"));}}
-    ExecutionId=Field(Latest,TEXT("execution_id"));ManagedGroup=Field(Latest,TEXT("group_id"));const FString State=Field(Latest,TEXT("state"));
-    const bool Active=Latest && ExecutionUI::Active(Latest);if(!Active || (bAbortConfirm && ManagedGroup!=AbortGroup))bAbortConfirm=false;
+    auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto All=Object(S->GetPlans(),TEXT("executions"));
+    TArray<FString> SelectedIds;for(int Id:Selected)SelectedIds.Add(FString::Printf(TEXT("UAV-%02d"),Id));SelectedIds.Sort();
+    ExecutionControls::FGroup Group;
+    for(const auto& Candidate:ExecutionControls::Groups(S->GetPlans(),false))if(Candidate.Members==SelectedIds
+        && Field(ExecutionControls::Representative(Candidate),TEXT("control_kind"))==TEXT("GROUP_MOVE")){Group=Candidate;break;}
+    const auto Latest=ExecutionControls::Representative(Group);ExecutionId=Field(Latest,TEXT("execution_id"));ManagedGroup=Group.Id;const FString State=Group.State;
+    const bool Active=Group.ActiveCount>0;if(!Active || (bAbortConfirm && ManagedGroup!=AbortGroup))bAbortConfirm=false;
     double RecoveryAltitude=0;const bool BelowSurface=!Active && RecoveryHeight(RecoveryAltitude);
     const bool Mock=Field(S->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock");
-    const bool Show=BelowSurface || Mode!=EMapFleetMode::Browse || (Latest && ExecutionId!=DismissedExecution) || !MessageKey.IsEmpty() || !ErrorDetails.IsEmpty();
+    const bool Configuring=PlanConfiguration::Active(S->GetPlans());
+    const bool Show=Configuring?Active:BelowSurface || Mode!=EMapFleetMode::Browse || (Latest && ExecutionId!=DismissedExecution) || !MessageKey.IsEmpty() || !ErrorDetails.IsEmpty();
     Panel->SetVisibility(Show?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     const int Step=Mode==EMapFleetMode::BoxSelect || Selected.Num()<2?0:bHasTarget?2:1;
     Steps[0]->GetParent()->SetVisibility(Active || Mode==EMapFleetMode::Browse?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
@@ -359,11 +361,11 @@ void UMapFleetInteractionWidget::Refresh() {
     ShowButton(TEXT("again"),Mode==EMapFleetMode::Browse && Latest && !Active,Unavailable.IsEmpty() && IsAvailable());
     ShowButton(TEXT("recover"),BelowSurface && Mock && (!bRecoveryPreview || !SurfaceError.IsEmpty()),Unavailable.IsEmpty() && IsAvailable());
     ShowButton(TEXT("confirm"),Mode==EMapFleetMode::GroupMove && !Active,bHasTarget && HeightValid && SurfaceError.IsEmpty() && Unavailable.IsEmpty() && IsAvailable());
-    ShowButton(TEXT("pause"),State==TEXT("EXECUTING") && !bAbortConfirm,S->IsReady());ShowButton(TEXT("resume"),State==TEXT("PAUSED") && !bAbortConfirm,S->IsReady());
-    ShowButton(TEXT("abort"),Active && !bAbortConfirm,S->IsReady());ShowButton(TEXT("reselect"),Mode==EMapFleetMode::GroupMove && bHasTarget && !Active);
+    ShowButton(TEXT("pause"),Group.CanPause && !bAbortConfirm,S->IsReady() && S->IsHydrated());ShowButton(TEXT("resume"),Group.CanResume && !bAbortConfirm,S->IsReady() && S->IsHydrated());
+    ShowButton(TEXT("abort"),Group.CanAbort && !bAbortConfirm,S->IsReady() && S->IsHydrated());ShowButton(TEXT("reselect"),Mode==EMapFleetMode::GroupMove && bHasTarget && !Active);
     ShowButton(TEXT("fit_preview"),Mode==EMapFleetMode::GroupMove && bHasTarget && !Active,IsAvailable());
     ShowButton(TEXT("cancel"),!bAbortConfirm);AbortPrompt->SetVisibility(bAbortConfirm?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
-    ShowButton(TEXT("abort_confirm"),bAbortConfirm,S->IsReady());ShowButton(TEXT("abort_cancel"),bAbortConfirm);
+    ShowButton(TEXT("abort_confirm"),bAbortConfirm,S->IsReady() && S->IsHydrated());ShowButton(TEXT("abort_cancel"),bAbortConfirm);
     for(auto Name:{TEXT("next"),TEXT("again"),TEXT("confirm"),TEXT("pause"),TEXT("resume"),TEXT("abort_confirm")})
         CastChecked<UTextBlock>(Buttons[Name]->GetContent())->SetColorAndOpacity(Buttons[Name]->GetIsEnabled()?CommandTheme::Background:CommandTheme::SecondaryText);
     for(auto Name:{TEXT("height_up"),TEXT("height_down"),TEXT("height_current")})Buttons[Name]->SetIsEnabled(!bPending && !Active && Selected.Num()>1 && HasAnchor);
@@ -429,8 +431,11 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
         // A large explicit envelope preserves the existing relative formation. No packing request.
         R->SetNumberField(TEXT("target_area_radius_m"),10000.);
     } else {
-        const auto E=Find(S->GetPlans(),TEXT("executions"),ExecutionId);if(!E)return;
-        R->SetStringField(TEXT("action"),TEXT("execution_")+Name.ToString());R->SetStringField(TEXT("execution_id"),ExecutionId);R->SetNumberField(TEXT("control_version"),E->GetNumberField(TEXT("control_version")));
+        if(!S->IsReady() || !S->IsHydrated()){MessageKey=TEXT("Errors.SYNC_OFFLINE");Refresh();return;}
+        const auto Group=ExecutionControls::Find(S->GetPlans(),ManagedGroup);TArray<FString> SelectedIds;
+        for(int Id:OrderedSelection())SelectedIds.Add(FString::Printf(TEXT("UAV-%02d"),Id));SelectedIds.Sort();
+        const auto E=ExecutionControls::Representative(Group,Name);if(!E || Group.Members!=SelectedIds){MessageKey=TEXT("Errors.EXECUTION_STATE_INVALID");Refresh();return;}
+        R->SetStringField(TEXT("action"),TEXT("execution_")+Name.ToString());R->SetStringField(TEXT("execution_id"),Field(E,TEXT("execution_id")));R->SetNumberField(TEXT("control_version"),E->GetNumberField(TEXT("control_version")));
     }
     bPending=true;ErrorDetails=FText::GetEmpty();const bool Moving=Name==TEXT("confirm");const auto Weak=TWeakObjectPtr<UMapFleetInteractionWidget>(this);
     if(!S->SubmitPlan(R,[Weak,Moving](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;auto* Self=Weak.Get();Self->bPending=false;

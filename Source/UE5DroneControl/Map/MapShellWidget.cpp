@@ -1,5 +1,6 @@
 #include "Map/MapShellWidget.h"
 #include "Shared/PlanWidgetSupport.h"
+#include "Shared/PlanConfiguration.h"
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "PathEditor/DronePathActor.h"
 #include "EngineUtils.h"
@@ -129,7 +130,10 @@ void UMapShellWidget::NativeOnInitialized()
 }
 void UMapShellWidget::Refresh()
 {
+    const auto PlanState=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();
+    const bool Configuring=PlanConfiguration::Active(PlanState);
     if(MovePanel)MovePanel->Refresh();const bool Moving=MovePanel && MovePanel->IsMoving();
+    if(Configuring && MovePanel)MovePanel->SetVisibility(ESlateVisibility::Collapsed);
     if(PlanPanel && !Moving){if(bWasMoving)PlanPanel->ReloadGeometry();PlanPanel->Refresh();}
     if(Moving && PlanPanel)PlanPanel->SetVisibility(ESlateVisibility::Collapsed);bWasMoving=Moving;
     if(ExecutionMonitor){
@@ -142,6 +146,8 @@ void UMapShellWidget::Refresh()
         FleetInteraction->Refresh();const bool Available=FleetInteraction->IsAvailable();
         if(ExecutionMonitor)ExecutionMonitor->SetManagedFleetGroup(FleetInteraction->GetManagedGroup(),FleetInteraction->GetPreviewMembers());
         BoxSelectButton->SetIsEnabled(Available);GroupMoveButton->SetIsEnabled(Available);
+        BoxSelectButton->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+        GroupMoveButton->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
         CommandTheme::Button(BoxSelectButton,FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
         CommandTheme::Button(GroupMoveButton,FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
     }
@@ -172,7 +178,11 @@ void UMapShellWidget::Refresh()
     Map2DButton->SetIsEnabled(!Locked);Map3DButton->SetIsEnabled(!Locked);
     const FText ModeHint=Locked?ProductText::Get(TEXT("Map.FinishBeforeMode")):FText::GetEmpty();
     Map2DButton->SetToolTipText(ModeHint);Map3DButton->SetToolTipText(ModeHint);
-    ActionStatus->SetText(ProductText::Get(Map && Map->HasInvalidMapPosition()?TEXT("Map.InvalidPosition"):Locked?TEXT("Map.ViewLocked"):TEXT("Map.AdjustBeforeEdit")));
+    const FText MapHint=ProductText::Get(Map && Map->HasInvalidMapPosition()?TEXT("Map.InvalidPosition"):Locked?TEXT("Map.ViewLocked"):TEXT("Map.AdjustBeforeEdit"));
+    const bool EditingConfigurationRoute=PlanPanel && PlanPanel->IsEditorEnabled() && PlanPanel->OwnsRouteVisual();
+    ActionStatus->SetText(Configuring?FText::Format(ProductText::Get(EditingConfigurationRoute?TEXT("Configuration.MapRouteContext"):TEXT("Configuration.MapContext")),PlanConfiguration::PlanName(PlanState)):MapHint);
+    ActionStatus->SetToolTipText(Configuring?FText::Format(PlanUI::User(TEXT("{0}\n{1}")),ActionStatus->GetText(),MapHint):MapHint);
+    Aircraft->SetIsEnabled(!Configuring);Aircraft->SetToolTipText(Configuring?ActionStatus->GetText():FText::GetEmpty());
     CommandTheme::Button(Map2DButton, b2D); CommandTheme::Button(Map3DButton, !b2D);
     Status->SetText(ProductText::Source(FString::Printf(TEXT("UAV %02d  |  %s  |  %s"), Registry->GetPrimarySelectedDrone(),
         b2D ? TEXT("2D") : TEXT("3D"), Map && Map->OwnsCamera() ? TEXT("Camera ready") : TEXT("Initializing"))));
@@ -183,6 +193,7 @@ void UMapShellWidget::Refresh()
 }
 void UMapShellWidget::AircraftSelected(FString Item, ESelectInfo::Type Type)
 {
+    if(PlanConfiguration::Active(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans()))return;
     if (bRefreshing || !Manager.IsValid() || !Manager->GetMapService()) return;
     if (const int32* Id = AircraftIds.Find(Item)) Manager->GetMapService()->SelectDrone(*Id);
 }

@@ -481,7 +481,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 {"http_port", config_.http_port},
                 {"ws_port",   config_.ws_port},
                 {"debug",     config_.debug},
-                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls"}},
+                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration"}},
             }));
 
         if (method == "GET"  && path == "/api/drones")
@@ -1590,6 +1590,7 @@ boost::json::value HttpServer::RegisterContextClient(const boost::json::object& 
     return client;
 }
 boost::json::value HttpServer::UpdateContext(const boost::json::object& body) {
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
     std::string source, role;
     {
         std::lock_guard<std::mutex> lock(context_clients_mutex_);
@@ -1603,6 +1604,16 @@ boost::json::value HttpServer::UpdateContext(const boost::json::object& body) {
     const auto& patch = item->as_object();
     if (role != "Command") for (const auto& field : patch)
         if (field.key() != "active_uav_id" && field.key() != "selected_uav_ids") throw ApiError(403, "only Command may update this field");
+    if(patch.contains("active_security_plan_id") || patch.contains("active_mission_id")) {
+        const auto context=operational_context_.snapshot();
+        const auto plan=patch.contains("active_security_plan_id")?get_string(patch,"active_security_plan_id"):get_string(context,"active_security_plan_id");
+        security_plans_.checkConfigurationAccess({{"action","select"},{"instance_id",get_string(body,"instance_id")},{"plan_id",plan}});
+        const auto plans=security_plans_.snapshot();const auto* configuration=plans.if_contains("configuration_session");
+        if(configuration && configuration->is_object() && configuration->as_object().at("lease_expires_at").to_number<double>()>OperationalContext::now()) {
+            const auto mission=patch.contains("active_mission_id")?get_string(patch,"active_mission_id"):get_string(context,"active_mission_id");
+            security_plans_.checkSelection(plan,mission);
+        }
+    }
     try {
         return operational_context_.update(patch, source, [this](const boost::json::object& event) {
             spdlog::debug("[P1][Backend] Context v{}", event.at("version").to_number<int64_t>());
@@ -1680,13 +1691,14 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     }
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
-    const std::set<std::string> commandActions{"execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
+    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
     const std::set<std::string> mapActions{"execution_group_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     if(role=="Map" && (action=="execution_pause" || action=="execution_resume" || action=="execution_abort")) {
         const auto state=security_plans_.snapshot();const auto* execution=state.at("executions").as_object().if_contains(get_string(body,"execution_id"));
         if(!execution || SecurityPlanStore::str(execution->as_object(),"control_kind")!="GROUP_MOVE")throw ApiError(403,"Map can control only fleet movement executions");
     }
+    if(action=="select" || action=="request_map_route_edit" || action=="request_map_plan_move")security_plans_.checkConfigurationAccess(body);
     auto select=[&](const std::string& plan,const std::string& mission) {
         security_plans_.checkSelection(plan,mission);
         return operational_context_.update({{"active_security_plan_id",plan.empty()?boost::json::value(nullptr):boost::json::value(plan)},

@@ -1,6 +1,7 @@
 #include "Shared/SecurityPlanWorkspaceWidget.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/ExecutionPresentation.h"
+#include "Shared/PlanConfiguration.h"
 #include "Components/ProgressBar.h"
 #include "Components/CheckBox.h"
 #include "Components/VerticalBoxSlot.h"
@@ -69,12 +70,18 @@ void UPlanReviewWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TShar
 void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     Super::NativeOnInitialized();Content=Root(WidgetTree);
     auto Add=[&](UPanelWidget* Parent,const TCHAR* A,const TCHAR* K){auto* B=Button(WidgetTree,Parent,A,K);B->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);CommandTheme::Button(B);Actions.Add(A,B);return B;};
+    ConfigurationStatus=Label(WidgetTree,Content,T(TEXT("Configuration.Saved")),14);
+    ConfigurationGuard=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(ConfigurationGuard);
+    Label(WidgetTree,ConfigurationGuard,T(TEXT("Configuration.UnsavedPrompt")),16);
+    auto* GuardRow=WidgetTree->ConstructWidget<UHorizontalBox>();ConfigurationGuard->AddChild(GuardRow);
+    Add(GuardRow,TEXT("guard_save"),TEXT("Configuration.SaveContinue"));Add(GuardRow,TEXT("guard_discard"),TEXT("Configuration.DiscardContinue"));Add(GuardRow,TEXT("guard_keep"),TEXT("Configuration.KeepEditing"));
     ListPage=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(ListPage);
     Label(WidgetTree,ListPage,T(TEXT("Nav.Plans")),26);Add(ListPage,TEXT("new_plan"),TEXT("Workflow.NewPlan"));
     Add(ListPage,TEXT("confirm_delete"),TEXT("Workflow.DeleteDraft"));Add(ListPage,TEXT("cancel_delete"),TEXT("Common.Cancel"));
     PlanCards=WidgetTree->ConstructWidget<UVerticalBox>();ListPage->AddChild(PlanCards);
     Workspace=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(Workspace);
     Add(Workspace,TEXT("back_list"),TEXT("Workflow.BackPlans"));
+    Add(Workspace,TEXT("resume_configuration"),TEXT("Configuration.Resume"));
     WorkspaceTitle=Label(WidgetTree,Workspace,FText::GetEmpty(),26);
     Summary=Label(WidgetTree,Workspace,FText::GetEmpty(),14);
     Add(Workspace,TEXT("request_map_plan_move"),TEXT("Geometry.MovePlan"));
@@ -141,18 +148,27 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
 }
 void USecurityPlanWorkspaceWidget::Refresh(){
     if(!Content)return;auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto State=Sync->GetPlans();
-    PlanId=Field(Sync->GetContext(),TEXT("active_security_plan_id"));MissionId=Field(Sync->GetContext(),TEXT("active_mission_id"));const auto P=Find(State,TEXT("plans"),PlanId),M=Find(State,TEXT("missions"),MissionId);
+    const bool LocalDirty=HasUnsavedChanges();
+    const FString IncomingPlan=Field(Sync->GetContext(),TEXT("active_security_plan_id")),IncomingMission=Field(Sync->GetContext(),TEXT("active_mission_id"));
+    const bool PreserveDraft=!LoadedSelection.IsEmpty() && LocalDirty && !bPending && !bCreating && (IncomingPlan!=PlanId || IncomingMission!=MissionId);
+    if(PreserveDraft)ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");
+    else if(!bCreating){PlanId=IncomingPlan;MissionId=IncomingMission;}
+    const auto P=Find(State,TEXT("plans"),PlanId),M=Find(State,TEXT("missions"),MissionId);
     bRefreshing=true;TArray<FString> Ids,Labels;const auto All=Object(State,TEXT("plans"));if(All)for(const auto& E:All->Values){Ids.Add(FString(E.Key.ToView()));Labels.Add(Field(E.Value->AsObject(),TEXT("name")));}
     if(Labels!=PlanLabels){Plans->ClearOptions();for(const auto& L:Labels)Plans->AddOption(L);PlanLabels=Labels;PlanIds=Ids;}
     const int Index=PlanIds.IndexOfByKey(PlanId);if(Index>=0)Plans->SetSelectedOption(PlanLabels[Index]);
     Ids.Empty();for(const auto& D:GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetFriendlyDroneDescriptors())Ids.Add(FString::Printf(TEXT("UAV-%02d"),D.DroneId));
     if(Ids!=UavIds){const auto Selected=UAVs->GetSelectedOption();UAVs->ClearOptions();for(const auto& ID:Ids)UAVs->AddOption(ID);UavIds=Ids;UAVs->SetSelectedOption(Selected);}
     const FString AssignmentKey=PlanId+TEXT("/")+MissionId+FString::Join(Ids,TEXT(","))+AssignedUAVs(M)+(M && M->HasField(TEXT("spacing_m"))?FString::SanitizeFloat(M->GetNumberField(TEXT("spacing_m"))):TEXT(""));
-    if(AssignmentSelection!=AssignmentKey){AssignmentSelection=AssignmentKey;AssignmentList->ClearChildren();AssignmentChecks.Empty();
+    if(AssignmentSelection!=AssignmentKey){
+        const bool PreserveAssignment=LocalDirty && LoadedSelection==PlanId+TEXT("/")+MissionId && !AssignmentSelection.IsEmpty();
+        TMap<FString,bool> PreviousChecks;for(const auto& Entry:AssignmentChecks)PreviousChecks.Add(Entry.Key,Entry.Value->IsChecked());
+        const FText PreviousSpacing=SpacingInput->GetText();
+        AssignmentSelection=AssignmentKey;AssignmentList->ClearChildren();AssignmentChecks.Empty();
         const TArray<TSharedPtr<FJsonValue>>* Members=nullptr;if(M)M->TryGetArrayField(TEXT("assigned_uav_ids"),Members);
         for(const auto& ID:Ids){auto* Check=WidgetTree->ConstructWidget<UCheckBox>();Check->HorizontalAlignment=HAlign_Fill;AssignmentList->AddChildToVerticalBox(Check)->SetHorizontalAlignment(HAlign_Fill);Label(WidgetTree,Check,User(ID),16)->SetAutoWrapText(false);bool Assigned=Field(M,TEXT("assigned_uav_id"))==ID;
-            if(Members)for(const auto& V:*Members)Assigned|=V->AsString()==ID;Check->SetIsChecked(Assigned);AssignmentChecks.Add(ID,Check);}
-        double Spacing=3.;if(M)M->TryGetNumberField(TEXT("spacing_m"),Spacing);SpacingInput->SetText(User(FString::SanitizeFloat(Spacing)));
+            if(Members)for(const auto& V:*Members)Assigned|=V->AsString()==ID;if(PreserveAssignment && PreviousChecks.Contains(ID))Assigned=PreviousChecks[ID];Check->SetIsChecked(Assigned);AssignmentChecks.Add(ID,Check);}
+        double Spacing=3.;if(M)M->TryGetNumberField(TEXT("spacing_m"),Spacing);SpacingInput->SetText(PreserveAssignment?PreviousSpacing:User(FString::SanitizeFloat(Spacing)));
     }
     // Refresh in place on every execution update: preserve unsaved checkbox choices.
     bool HasUnavailableSelection=false;
@@ -163,7 +179,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     }
     Actions[TEXT("clear_unavailable")]->SetVisibility(HasUnavailableSelection?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     bRefreshing=false;const FString Selection=PlanId+TEXT("/")+MissionId;
-    if(Selection!=LoadedSelection && (PlanId.IsEmpty() || P)){LoadedSelection=Selection;bReview=false;bConfirm=false;PlanName->SetText(User(Field(P,TEXT("name"))));Description->SetText(User(Field(P,TEXT("description"))));MissionName->SetText(User(Field(M,TEXT("name"))));if(Field(M,TEXT("assigned_uav_id")).IsEmpty())UAVs->ClearSelection();else UAVs->SetSelectedOption(Field(M,TEXT("assigned_uav_id")));}
+    if(!bCreating && Selection!=LoadedSelection && (PlanId.IsEmpty() || P)){LoadedSelection=Selection;bReview=false;bConfirm=false;PlanName->SetText(User(Field(P,TEXT("name"))));Description->SetText(User(Field(P,TEXT("description"))));MissionName->SetText(User(Field(M,TEXT("name"))));if(Field(M,TEXT("assigned_uav_id")).IsEmpty())UAVs->ClearSelection();else UAVs->SetSelectedOption(Field(M,TEXT("assigned_uav_id")));}
     const auto Status=Field(P,TEXT("status"));const bool Deployed=Status==TEXT("DEPLOYED"),Ready=Status==TEXT("READY"),Reviewed=PlanUI::Reviewed(P);
     if(P && ConfirmRevision!=P->GetNumberField(TEXT("content_revision")))bConfirm=false;
     AssignmentList->SetIsEnabled(!Deployed && !bPending);SpacingInput->SetIsReadOnly(Deployed);
@@ -172,7 +188,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     for(const TCHAR* A:{TEXT("update_plan"),TEXT("add_mission"),TEXT("rename_mission"),TEXT("delete_mission"),TEXT("assign"),TEXT("assign_group"),TEXT("unassign"),TEXT("request_map_route_edit")})Actions[A]->SetIsEnabled(!bPending && Sync->IsReady() && P && !Deployed);
     const bool MovingBlocked=ExecutionUI::Latest(State,PlanId,true).IsValid();
     Actions[TEXT("request_map_plan_move")]->SetIsEnabled(!bPending && Sync->IsReady() && P && M && !MovingBlocked);
-    GeometryStatus->SetText(MovingBlocked?T(TEXT("Errors.PLAN_EXECUTING")):FText::GetEmpty());GeometryStatus->SetVisibility(MovingBlocked?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    GeometryStatus->SetText(MovingBlocked?T(TEXT("Errors.PLAN_EXECUTING")):FText::GetEmpty());GeometryStatus->SetVisibility(MovingBlocked && !bCreating?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     Actions[TEXT("create_plan")]->SetIsEnabled(!bPending && Sync->IsReady() && !PlanName->GetText().IsEmpty());
     auto Show=[&](const TCHAR* A,bool B){Actions[A]->SetVisibility(B?ESlateVisibility::Visible:ESlateVisibility::Collapsed);};
     Show(TEXT("confirm_delete"),!PendingDeletePlan.IsEmpty());Show(TEXT("cancel_delete"),!PendingDeletePlan.IsEmpty());Show(TEXT("copy_plan"),Deployed);Show(TEXT("deploy_page"),false);
@@ -184,11 +200,8 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     if(Deployed)CurrentStep=4;
     if(bCreating)CurrentStep=0;
     auto Visible=[](UWidget* W,bool Yes){W->SetVisibility(Yes?ESlateVisibility::Visible:ESlateVisibility::Collapsed);};
-    Content->SetIsEnabled(!bCreating);
-    if(bCreating && BasicPage->GetParent()!=NewPlanDialog){BasicPage->RemoveFromParent();NewPlanDialog->SetContent(BasicPage);}
-    if(!bCreating && BasicPage->GetParent()==NewPlanDialog){NewPlanDialog->SetContent(nullptr);Workspace->AddChild(BasicPage);}
-    Visible(NewPlanDialog,bCreating);Visible(BasicHeading,true);BasicHeading->SetText(bCreating?T(TEXT("Workflow.NewPlan")):P?FText::Format(T(TEXT("Workflow.CreatedAt")),FText::AsDateTime(FDateTime::FromUnixTimestamp(P->GetNumberField(TEXT("created_at"))))):FText::GetEmpty());
-    Visible(ListPage,bList || bCreating);Visible(Workspace,!bList && !bCreating);Visible(BasicPage,CurrentStep==0);Visible(TaskPage,CurrentStep==1);Visible(RoutePage,CurrentStep==2);Visible(ReviewPage,CurrentStep>=3);
+    Visible(NewPlanDialog,false);Visible(BasicHeading,!bCreating);Visible(Summary,!bCreating);BasicHeading->SetText(P?FText::Format(T(TEXT("Workflow.CreatedAt")),FText::AsDateTime(FDateTime::FromUnixTimestamp(P->GetNumberField(TEXT("created_at"))))):FText::GetEmpty());
+    Visible(ListPage,bList && !bCreating);Visible(Workspace,!bList || bCreating);Visible(BasicPage,CurrentStep==0);Visible(TaskPage,CurrentStep==1);Visible(RoutePage,CurrentStep==2);Visible(ReviewPage,CurrentStep>=3);
     Show(TEXT("assign"),false);Show(TEXT("next_task"),!bCreating);Show(TEXT("create_plan"),bCreating);Show(TEXT("cancel_new"),bCreating);Show(TEXT("update_plan"),!bCreating);Show(TEXT("task_step"),!Deployed && !bCreating);
     WorkspaceTitle->SetText(bCreating?T(TEXT("Workflow.NewPlan")):User(Field(P,TEXT("name"))));
     TArray<FText> StepNames;const TCHAR* Keys[]={TEXT("Workflow.StepInfo"),TEXT("Workflow.StepTask"),TEXT("Workflow.StepRoute"),TEXT("Workflow.StepCheck"),TEXT("Workflow.StepDeploy")};
@@ -215,6 +228,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     if(Deployed && ExecutionUI::Latest(State,PlanId))Lines[0]=T(TEXT("Workflow.DeploymentSuccess"));
     Summary->SetText(FText::Join(User(TEXT("\n")),Lines));
     RefreshExecution(State,P);
+    RefreshConfiguration();
     FString EditingMission;const auto Sessions=Object(State,TEXT("edit_sessions"));if(Sessions)for(const auto& E:Sessions->Values){const auto Session=E.Value->AsObject();if(Field(Session,TEXT("plan_id"))==PlanId){EditingMission=Field(Find(State,TEXT("missions"),Field(Session,TEXT("mission_id"))),TEXT("name"));break;}}
     if(!EditingMission.IsEmpty()){
         for(const TCHAR* A:{TEXT("review_page"),TEXT("review"),TEXT("deploy_page"),TEXT("deploy"),TEXT("confirm_deployment")})Actions[A]->SetIsEnabled(false);
@@ -226,31 +240,43 @@ void USecurityPlanWorkspaceWidget::Submit(const TSharedRef<FJsonObject>& R){
     if(bPending)return;bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
     if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);if(Weak->ErrorCode.IsEmpty()){Weak->bCreating=false;Weak->bList=Field(Weak->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetContext(),TEXT("active_security_plan_id")).IsEmpty();}Weak->Refresh();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
 }
-void USecurityPlanWorkspaceWidget::PlanSelected(FString Item,ESelectInfo::Type){if(bRefreshing)return;const int I=PlanLabels.IndexOfByKey(Item);if(I<0)return;auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanIds[I]);const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanIds[I]);if(P && !P->GetArrayField(TEXT("mission_ids")).IsEmpty())R->SetStringField(TEXT("mission_id"),P->GetArrayField(TEXT("mission_ids"))[0]->AsString());Submit(R);}
+void USecurityPlanWorkspaceWidget::PlanSelected(FString Item,ESelectInfo::Type){if(bRefreshing)return;const int I=PlanLabels.IndexOfByKey(Item);if(I<0)return;auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanIds[I]);const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanIds[I]);if(P && !P->GetArrayField(TEXT("mission_ids")).IsEmpty())R->SetStringField(TEXT("mission_id"),P->GetArrayField(TEXT("mission_ids"))[0]->AsString());GuardConfigurationChange([this,R]{Submit(R);});}
 void USecurityPlanWorkspaceWidget::MissionAction(FName Name,int32 Index){
     if(!MissionList->MissionIds.IsValidIndex(Index))return;const auto ID=MissionList->MissionIds[Index];auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     if(Name==TEXT("video_mission")){Sync->OpenVideo(Field(Find(Sync->GetPlans(),TEXT("missions"),ID),TEXT("assigned_uav_id")));return;}
-    auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name==TEXT("edit_mission")?TEXT("request_map_route_edit"):TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),ID);Submit(R);
+    auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name==TEXT("edit_mission")?TEXT("request_map_route_edit"):TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),ID);
+    GuardConfigurationChange([this,R]{Submit(R);});
 }
 void USecurityPlanWorkspaceWidget::Action(FName Name,int32 Index){
+    if(Name==TEXT("guard_keep")){bConfigurationGuard=false;GuardedConfigurationChange={};AfterConfigurationFinish={};Refresh();return;}
+    if(Name==TEXT("guard_save")){auto Continue=GuardedConfigurationChange;SaveConfiguration([this,Continue]{GuardedConfigurationChange={};if(Continue)Continue();});return;}
+    if(Name==TEXT("guard_discard")){if(bPending)return;ResetConfigurationInputs();bConfigurationGuard=false;auto Continue=MoveTemp(GuardedConfigurationChange);if(Continue)Continue();Refresh();return;}
+    if(Name==TEXT("resume_configuration")){BeginConfiguration(PlanId,[this]{FocusConfiguration();});return;}
     if(Name==TEXT("clear_unavailable")){
         if(bPending)return;const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();
         for(const auto& Item:AssignmentChecks)if(UAVReservation(State,PlanId,Item.Key))Item.Value->SetIsChecked(false);
         ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();Refresh();return;
     }
     if(Name.ToString().StartsWith(TEXT("execution_"))){ExecutionAction(Name);return;}
-    if(Name==TEXT("back_list") || Name==TEXT("cancel_new")){bList=true;bCreating=false;Refresh();return;}
-    if(Name==TEXT("new_plan")){bList=false;bCreating=true;PlanName->SetText(FText::GetEmpty());Description->SetText(FText::GetEmpty());Refresh();return;}
+    if(Name==TEXT("back_list") || Name==TEXT("cancel_new")){RequestFinishConfiguration();return;}
+    if(Name==TEXT("new_plan")){BeginConfiguration(TEXT(""),[this]{bList=false;bCreating=true;PlanName->SetText(FText::GetEmpty());Description->SetText(FText::GetEmpty());Refresh();});return;}
+    if(Name==TEXT("create_plan") || Name==TEXT("update_plan") || Name==TEXT("assign_group") || Name==TEXT("rename_mission")){SaveConfiguration();return;}
     if(Name==TEXT("basic_step") || Name==TEXT("task_step") || Name==TEXT("next_task")){
-        auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("set_workflow_step"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("workflow_step"),Name==TEXT("basic_step")?TEXT("BasicInfo"):TEXT("TaskConfig"));Submit(R);return;
+        auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("set_workflow_step"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("workflow_step"),Name==TEXT("basic_step")?TEXT("BasicInfo"):TEXT("TaskConfig"));SaveConfiguration([this,R]{Submit(R);});return;
     }
     if(Name==TEXT("cancel_delete")){PendingDeletePlan.Empty();Refresh();return;}
     if(Name==TEXT("confirm_delete")){if(!PendingDeletePlan.IsEmpty()){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("delete_plan"));R->SetStringField(TEXT("plan_id"),PendingDeletePlan);PendingDeletePlan.Empty();Submit(R);}return;}
     if(Name==TEXT("delete_card")){if(PlanIds.IsValidIndex(Index)){PendingDeletePlan=PlanIds[Index];Refresh();}return;}
     if(Name==TEXT("open_card") || Name==TEXT("copy_card")){
-        if(PlanIds.IsValidIndex(Index)){bList=false;bCreating=false;auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name==TEXT("open_card")?TEXT("open_plan"):TEXT("copy_plan"));R->SetStringField(TEXT("plan_id"),PlanIds[Index]);R->SetBoolField(TEXT("allow_draft"),true);
-            const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanIds[Index]);if(P && !P->GetArrayField(TEXT("mission_ids")).IsEmpty())R->SetStringField(TEXT("mission_id"),P->GetArrayField(TEXT("mission_ids"))[0]->AsString());Submit(R);}return;
+        if(PlanIds.IsValidIndex(Index)){const auto Id=PlanIds[Index];auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Name==TEXT("open_card")?TEXT("open_plan"):TEXT("copy_plan"));R->SetStringField(TEXT("plan_id"),Id);R->SetBoolField(TEXT("allow_draft"),true);
+            const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),Id);if(P && !P->GetArrayField(TEXT("mission_ids")).IsEmpty())R->SetStringField(TEXT("mission_id"),P->GetArrayField(TEXT("mission_ids"))[0]->AsString());
+            auto Open=[this,R]{bList=false;bCreating=false;Submit(R);};
+            if(Name==TEXT("open_card") && Field(P,TEXT("status"))==TEXT("DEPLOYED"))Open();else BeginConfiguration(Name==TEXT("copy_card")?TEXT(""):Id,Open);
+        }return;
     }
+    if(Name==TEXT("copy_plan")){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("copy_plan"));R->SetStringField(TEXT("plan_id"),PlanId);BeginConfiguration(TEXT(""),[this,R]{Submit(R);});return;}
+    if(Name==TEXT("request_map_route_edit")){SaveConfiguration([this]{auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("request_map_route_edit"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),MissionId);Submit(R);});return;}
+    if(Name==TEXT("add_mission")){SaveConfiguration([this]{const auto P=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanId);auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("add_mission"));R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("name"),FText::Format(T(TEXT("Configuration.NewMissionName")),FText::AsNumber(P?P->GetArrayField(TEXT("mission_ids")).Num()+1:1)).ToString());Submit(R);});return;}
     if(Name==TEXT("confirm_deployment")){ConfirmDeployment();return;}
     if(Name==TEXT("retry_map")){
         auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
@@ -322,8 +348,8 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     ScheduleInput->SetVisibility((ExecutionIntent==TEXT("start") && ScheduleEnabled->IsChecked()) || Scheduled?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     ExecutionSummary->SetText(ExecutionIntent==TEXT("start")?T(TEXT("Execution.StartConfirm")):ExecutionUI::Summary(E));ExecutionProgress->SetVisibility(ExecutionIntent.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);ExecutionProgress->SetPercent(E?E->GetNumberField(TEXT("progress")):0);
     const bool Prompt=!ExecutionIntent.IsEmpty();
-    Show(TEXT("execution_pause"),!Prompt && StateName==TEXT("EXECUTING"));Show(TEXT("execution_resume"),!Prompt && StateName==TEXT("PAUSED"));
-    Show(TEXT("execution_return_prompt"),!Prompt && StateName==TEXT("EXECUTING"));Show(TEXT("execution_abort_prompt"),!Prompt && (StateName==TEXT("EXECUTING") || StateName==TEXT("PAUSED")));
+    Show(TEXT("execution_pause"),!Prompt && (StateName==TEXT("EXECUTING") || StateName==TEXT("RETURNING")));Show(TEXT("execution_resume"),!Prompt && StateName==TEXT("PAUSED"));
+    Show(TEXT("execution_return_prompt"),!Prompt && StateName==TEXT("EXECUTING"));Show(TEXT("execution_abort_prompt"),!Prompt && (StateName==TEXT("EXECUTING") || StateName==TEXT("PAUSED") || StateName==TEXT("RETURNING")));
     Show(TEXT("execution_confirm"),Prompt);Show(TEXT("execution_cancel"),Prompt);Show(TEXT("execution_details"),!Prompt);Show(TEXT("execution_video"),E.IsValid() && !Prompt);
     if(auto* Caption=Cast<UTextBlock>(Actions[TEXT("execution_confirm")]->GetContent()))Caption->SetText(T(ExecutionIntent==TEXT("start")?TEXT("Execution.ConfirmStart"):ExecutionIntent==TEXT("return")?TEXT("Execution.ConfirmReturn"):TEXT("Execution.ConfirmAbort")));
     TArray<FText> Lines;

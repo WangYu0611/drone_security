@@ -2262,3 +2262,111 @@ msgstr "UAV-{0} · 离地 {1} 米"
 msgctxt "DroneOps,FleetTerrain.TargetAGL"
 msgid "Target · {0} m AGL"
 msgstr "目标 · 离地 {0} 米"
+
+msgctxt "DroneOps,Configuration.NewPlan"
+msgid "New security plan"
+msgstr "新建安保方案"
+
+msgctxt "DroneOps,Configuration.MapContext"
+msgid "Configuring {0}. Continue configuration in Command."
+msgstr "正在配置「{0}」，请返回指挥端继续配置。"
+
+msgctxt "DroneOps,Configuration.MoveBlocked"
+msgid "Finish plan configuration before starting a fleet move."
+msgstr "请先结束方案配置，再开始集群移动。"
+
+msgctxt "DroneOps,ExecutionControls.Title"
+msgid "Active execution controls"
+msgstr "运行任务控制"
+
+msgctxt "DroneOps,ExecutionControls.Group"
+msgid "{0} · {1} | {2}\n{3} · {4}"
+msgstr "{0} · {1} | {2}\n{3} · {4}"
+
+msgctxt "DroneOps,ExecutionControls.ConfirmAbort"
+msgid "Confirm stop"
+msgstr "确认终止"
+
+msgctxt "DroneOps,ExecutionControls.Result"
+msgid "{0}: {1}"
+msgstr "{0}：{1}"
+
+msgctxt "DroneOps,Execution.Mixed"
+msgid "Mixed member states"
+msgstr "成员状态不同"
+
+msgctxt "DroneOps,Configuration.Context"
+msgid "Configuring {0} · {1} | {2}"
+msgstr "正在配置：{0} · {1} | {2}"
+
+msgctxt "DroneOps,Configuration.OfflineDraft"
+msgid "Offline · local changes retained"
+msgstr "已断线 · 本地修改已保留"
+
+msgctxt "DroneOps,Configuration.ReadOnly"
+msgid "Read only · enter configuration to edit"
+msgstr "只读查看 · 进入配置后可编辑"
+
+msgctxt "DroneOps,Configuration.Unsaved"
+msgid "Unsaved changes"
+msgstr "有未保存修改"
+
+msgctxt "DroneOps,Configuration.Saved"
+msgid "Saved"
+msgstr "已保存"
+
+msgctxt "DroneOps,Configuration.NotCreated"
+msgid "Not created yet"
+msgstr "尚未创建"
+
+msgctxt "DroneOps,Configuration.UnsavedPrompt"
+msgid "You have unsaved changes. Save and continue, discard these changes, or keep editing."
+msgstr "有未保存修改。请选择保存后继续、放弃本次修改或继续编辑。"
+
+msgctxt "DroneOps,Configuration.SaveContinue"
+msgid "Save and continue"
+msgstr "保存后继续"
+
+msgctxt "DroneOps,Configuration.DiscardContinue"
+msgid "Discard changes and continue"
+msgstr "放弃修改并继续"
+
+msgctxt "DroneOps,Configuration.KeepEditing"
+msgid "Keep editing"
+msgstr "继续编辑"
+
+msgctxt "DroneOps,Configuration.Resume"
+msgid "Continue configuration"
+msgstr "继续配置"
+
+msgctxt "DroneOps,Configuration.Finish"
+msgid "Finish configuration"
+msgstr "结束配置"
+
+msgctxt "DroneOps,Configuration.NewMissionName"
+msgid "Task {0}"
+msgstr "任务 {0}"
+
+msgctxt "DroneOps,Configuration.Return"
+msgid "Return to configuration"
+msgstr "返回方案配置"
+
+msgctxt "DroneOps,Configuration.ScheduledWaiting"
+msgid "Scheduled starts wait until configuration is finished."
+msgstr "配置期间暂缓启动预约任务，结束配置后重新检查。"
+
+msgctxt "DroneOps,Errors.CONFIGURATION_IN_PROGRESS"
+msgid "Finish the current plan configuration first. Alerts and active task pause/stop controls remain available."
+msgstr "请先结束当前安保方案配置；查看告警和暂停、终止运行任务仍可用。"
+
+msgctxt "DroneOps,Errors.CONFIGURATION_CONTEXT_CHANGED"
+msgid "Selection changed elsewhere. Your local changes are retained; finish or discard them before switching."
+msgstr "其他窗口已切换任务。本地修改已保留，请保存或放弃修改后再切换。"
+
+msgctxt "DroneOps,Configuration.MapRouteContext"
+msgid "Editing the route for {0}. Finish the route to continue in Command."
+msgstr "正在编辑「{0}」航线，完成航线后返回指挥端继续。"
+
+msgctxt "DroneOps,Configuration.DeployedReadOnly"
+msgid "Deployed plan is read only. Create a new version to make changes."
+msgstr "已部署方案只读；需要修改请创建新版本。"

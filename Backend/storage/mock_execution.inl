@@ -41,7 +41,7 @@ public:
         // adapter and state machine as immediate starts. Due groups start atomically.
         std::set<std::string> due;
         for(const auto& item:next.at("executions").as_object()){const auto& e=item.value().as_object();
-            if(str(e,"state")=="SCHEDULED" && number(e,"scheduled_start_epoch")<=OperationalContext::now())due.insert(str(e,"group_id"));}
+            if(!activeConfiguration(next) && str(e,"state")=="SCHEDULED" && number(e,"scheduled_start_epoch")<=OperationalContext::now())due.insert(str(e,"group_id"));}
         for(const auto& group:due) {
             Object routes;
             for(const auto& item:next.at("executions").as_object()){const auto& e=item.value().as_object();if(str(e,"group_id")==group && str(e,"state")=="SCHEDULED")routes[str(e,"uav_id")]=e.at("route_snapshot");}
@@ -184,6 +184,7 @@ private:
             if(old->as_object().at("request")!=identity)throw PlanError("REQUEST_ID_REUSED","Request id has different content");
             return {{"state",state_},{"execution_id",old->as_object().at("execution_id")}};
         }
+        checkConfigurationRequest(state_,r);
         auto next=state_;auto& all=next.at("executions").as_object();auto id=str(r,"execution_id");
         if(action=="execution_group_move") {
             const auto members=assignment(r);if(members.size()<2)throw PlanError("INVALID_UAV","Select at least two UAVs");
@@ -274,7 +275,15 @@ private:
             const auto* version=r.if_contains("control_version");
             if(!version || !version->is_number() || version->to_number<double>()!=number(e,"control_version"))throw PlanError("EXECUTION_STALE","Execution state changed; retry");
             const auto group=str(e,"group_id");std::vector<std::string> targets;
-            for(const auto& member:all)if(std::string(member.key())==id || (!group.empty() && str(member.value().as_object(),"group_id")==group))targets.emplace_back(member.key());
+            for(const auto& member:all) {
+                const auto& candidate=member.value().as_object();const auto status=str(candidate,"state");
+                if((std::string(member.key())!=id && (group.empty() || str(candidate,"group_id")!=group)) || !executionActive(candidate))continue;
+                if(action=="execution_pause" && status!="EXECUTING" && status!="RETURNING" && status!="PAUSED")continue;
+                if(action=="execution_resume" && status!="PAUSED")continue;
+                if(action=="execution_abort" && status=="SCHEDULED")continue;
+                targets.emplace_back(member.key());
+            }
+            if(targets.empty())throw PlanError("EXECUTION_STATE_INVALID","No active group members remain");
             for(const auto& target:targets){auto& e=all.at(target).as_object();const auto s=str(e,"state");
             if(action=="execution_reschedule" && s=="SCHEDULED") {
                 const double when=parseScheduledTime(str(r,"scheduled_start_at"));if(when<=OperationalContext::now())throw PlanError("INVALID_SCHEDULE","Time must be in the future");
@@ -283,14 +292,16 @@ private:
                 e["scheduled_start_epoch"]=OperationalContext::now();transition(next,e,"SCHEDULED","SCHEDULE_DUE");
             } else if(action=="execution_cancel" && s=="SCHEDULED") {
                 e["completed_at"]=OperationalContext::now();transition(next,e,"CANCELLED","MISSION_CANCELLED");
-            } else if(action=="execution_pause" && s=="EXECUTING")transition(next,e,"PAUSED","MISSION_PAUSED");
+            } else if(action=="execution_pause" && (s=="EXECUTING" || s=="RETURNING")) {
+                e["resume_state"]=s;transition(next,e,"PAUSED","MISSION_PAUSED");
+            }
             else if(action=="execution_pause" && s=="PAUSED"){}
             else if(action=="execution_resume" && s=="PAUSED") {
                 const auto previous=str(e,"resume_state");e.erase("resume_state");
                 transition(next,e,previous.empty()?"EXECUTING":previous.c_str(),"MISSION_RESUMED");
             } else if(action=="execution_return" && s=="EXECUTING") {
                 e["segment_start"]=e.at("position");transition(next,e,"RETURNING","MISSION_RETURNING");
-            } else if(action=="execution_abort" && (s=="EXECUTING" || s=="PAUSED")) {
+            } else if(action=="execution_abort" && executionActive(e) && s!="SCHEDULED") {
                 e["completed_at"]=OperationalContext::now();transition(next,e,"ABORTED","MISSION_ABORTED");
             } else throw PlanError("EXECUTION_STATE_INVALID","Action is unavailable in current execution state");
             }

@@ -11,6 +11,7 @@ class UE5DRONECONTROL_API UCommandCenterPanel : public UUserWidget
 public:
     void Refresh();
     FString GetHeaderText() const;
+    class USecurityPlanWorkspaceWidget* GetPlanWorkspace() const { return PlanPanel; }
 protected:
     virtual void NativeOnInitialized() override;
 private:

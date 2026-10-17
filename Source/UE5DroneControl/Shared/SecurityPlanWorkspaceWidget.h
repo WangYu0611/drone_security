@@ -40,7 +40,14 @@ class UE5DRONECONTROL_API USecurityPlanWorkspaceWidget:public UUserWidget {
     friend class FP4CommandReviewCopy;
     friend class FP52ExecutionWidgets;
     friend class FP55ReservationWidgets;
-public:void Refresh();
+    friend class FPlanConfigurationWorkspace;
+public:
+    void Refresh();
+    bool IsConfiguring() const;
+    bool HasUnsavedChanges() const;
+    FText ConfigurationStatusText() const;
+    void RequestFinishConfiguration(TFunction<void()> OnFinished = {});
+    void FocusConfiguration();
 protected:virtual void NativeOnInitialized() override;
 private:
     UPROPERTY() TObjectPtr<class UVerticalBox> ListPage;
@@ -104,4 +111,19 @@ private:
     UFUNCTION() void Action(FName Name,int32 Id);
     UFUNCTION() void MissionAction(FName Name,int32 Index);
     void Submit(const TSharedRef<FJsonObject>& Body);
+    bool CanEditConfiguration() const;
+    void BeginConfiguration(const FString& Id, TFunction<void()> Continue);
+    void GuardConfigurationChange(TFunction<void()> Continue);
+    void SaveConfiguration(TFunction<void()> Continue = {});
+    void SaveNextConfigurationChange();
+    void FinishConfiguration();
+    void ResetConfigurationInputs();
+    void RefreshConfiguration();
+    UPROPERTY() TObjectPtr<class UVerticalBox> ConfigurationGuard;
+    UPROPERTY() TObjectPtr<class UTextBlock> ConfigurationStatus;
+    bool bConfigurationGuard=false;
+    TFunction<void()> GuardedConfigurationChange;
+    TFunction<void()> AfterConfigurationSave;
+    TFunction<void()> AfterConfigurationFinish;
+    TArray<TSharedRef<FJsonObject>> ConfigurationSaveQueue;
 };

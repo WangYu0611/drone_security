@@ -28,6 +28,10 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> CurrentPlanSummary;
     UPROPERTY() TObjectPtr<class UTextBlock> RecentEvents;
     UPROPERTY() TArray<TObjectPtr<class UCommandActionButton>> PrimaryNavigationButtons;
+    UPROPERTY() TObjectPtr<class UVerticalBox> ConfigurationHeader;
+    UPROPERTY() TObjectPtr<class UTextBlock> ConfigurationCaption;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> ConfigurationFinish;
+    UPROPERTY() TObjectPtr<class UActiveExecutionControlsWidget> ActiveControls;
     UFUNCTION() void Navigate(FName Action,int32 Index);
     UPROPERTY() TObjectPtr<class UCommandCenterPanel> CenterPanel;
     TWeakObjectPtr<class UCommandScreenManager> Manager;

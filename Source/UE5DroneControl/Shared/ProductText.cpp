@@ -566,6 +566,33 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("FleetTerrain.InvalidHeight"),NSLOCTEXT("DroneOps","FleetTerrain.InvalidHeight","Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m.")},
 {TEXT("FleetTerrain.MarkerAGL"),NSLOCTEXT("DroneOps","FleetTerrain.MarkerAGL","UAV-{0} · {1} m AGL")},
 {TEXT("FleetTerrain.TargetAGL"),NSLOCTEXT("DroneOps","FleetTerrain.TargetAGL","Target · {0} m AGL")},
+{TEXT("Configuration.NewPlan"),NSLOCTEXT("DroneOps","Configuration.NewPlan","New security plan")},
+{TEXT("Configuration.MapContext"),NSLOCTEXT("DroneOps","Configuration.MapContext","Configuring {0}. Continue configuration in Command.")},
+{TEXT("Configuration.MoveBlocked"),NSLOCTEXT("DroneOps","Configuration.MoveBlocked","Finish plan configuration before starting a fleet move.")},
+{TEXT("ExecutionControls.Title"),NSLOCTEXT("DroneOps","ExecutionControls.Title","Active execution controls")},
+{TEXT("ExecutionControls.Group"),NSLOCTEXT("DroneOps","ExecutionControls.Group","{0} · {1} | {2}\n{3} · {4}")},
+{TEXT("ExecutionControls.ConfirmAbort"),NSLOCTEXT("DroneOps","ExecutionControls.ConfirmAbort","Confirm stop")},
+{TEXT("ExecutionControls.Result"),NSLOCTEXT("DroneOps","ExecutionControls.Result","{0}: {1}")},
+{TEXT("Execution.Mixed"),NSLOCTEXT("DroneOps","Execution.Mixed","Mixed member states")},
+{TEXT("Configuration.Context"),NSLOCTEXT("DroneOps","Configuration.Context","Configuring {0} · {1} | {2}")},
+{TEXT("Configuration.OfflineDraft"),NSLOCTEXT("DroneOps","Configuration.OfflineDraft","Offline · local changes retained")},
+{TEXT("Configuration.ReadOnly"),NSLOCTEXT("DroneOps","Configuration.ReadOnly","Read only · enter configuration to edit")},
+{TEXT("Configuration.Unsaved"),NSLOCTEXT("DroneOps","Configuration.Unsaved","Unsaved changes")},
+{TEXT("Configuration.Saved"),NSLOCTEXT("DroneOps","Configuration.Saved","Saved")},
+{TEXT("Configuration.NotCreated"),NSLOCTEXT("DroneOps","Configuration.NotCreated","Not created yet")},
+{TEXT("Configuration.UnsavedPrompt"),NSLOCTEXT("DroneOps","Configuration.UnsavedPrompt","You have unsaved changes. Save and continue, discard these changes, or keep editing.")},
+{TEXT("Configuration.SaveContinue"),NSLOCTEXT("DroneOps","Configuration.SaveContinue","Save and continue")},
+{TEXT("Configuration.DiscardContinue"),NSLOCTEXT("DroneOps","Configuration.DiscardContinue","Discard changes and continue")},
+{TEXT("Configuration.KeepEditing"),NSLOCTEXT("DroneOps","Configuration.KeepEditing","Keep editing")},
+{TEXT("Configuration.Resume"),NSLOCTEXT("DroneOps","Configuration.Resume","Continue configuration")},
+{TEXT("Configuration.Finish"),NSLOCTEXT("DroneOps","Configuration.Finish","Finish configuration")},
+{TEXT("Configuration.NewMissionName"),NSLOCTEXT("DroneOps","Configuration.NewMissionName","Task {0}")},
+{TEXT("Configuration.Return"),NSLOCTEXT("DroneOps","Configuration.Return","Return to configuration")},
+{TEXT("Configuration.ScheduledWaiting"),NSLOCTEXT("DroneOps","Configuration.ScheduledWaiting","Scheduled starts wait until configuration is finished.")},
+{TEXT("Errors.CONFIGURATION_IN_PROGRESS"),NSLOCTEXT("DroneOps","Errors.CONFIGURATION_IN_PROGRESS","Finish the current plan configuration first. Alerts and active task pause/stop controls remain available.")},
+{TEXT("Errors.CONFIGURATION_CONTEXT_CHANGED"),NSLOCTEXT("DroneOps","Errors.CONFIGURATION_CONTEXT_CHANGED","Selection changed elsewhere. Your local changes are retained; finish or discard them before switching.")},
+{TEXT("Configuration.MapRouteContext"),NSLOCTEXT("DroneOps","Configuration.MapRouteContext","Editing the route for {0}. Finish the route to continue in Command.")},
+{TEXT("Configuration.DeployedReadOnly"),NSLOCTEXT("DroneOps","Configuration.DeployedReadOnly","Deployed plan is read only. Create a new version to make changes.")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1135,6 +1162,33 @@ if(Source==TEXT("Vertical Mock recovery preview only. Confirm to raise the group
 if(Source==TEXT("Enter a finite height within 10 km of the anchor; surface-relative height must be at least 1 m."))return Get(TEXT("FleetTerrain.InvalidHeight"));
 if(Source==TEXT("UAV-{0} · {1} m AGL"))return Get(TEXT("FleetTerrain.MarkerAGL"));
 if(Source==TEXT("Target · {0} m AGL"))return Get(TEXT("FleetTerrain.TargetAGL"));
+if(Source==TEXT("New security plan"))return Get(TEXT("Configuration.NewPlan"));
+if(Source==TEXT("Configuring {0}. Continue configuration in Command."))return Get(TEXT("Configuration.MapContext"));
+if(Source==TEXT("Finish plan configuration before starting a fleet move."))return Get(TEXT("Configuration.MoveBlocked"));
+if(Source==TEXT("Active execution controls"))return Get(TEXT("ExecutionControls.Title"));
+if(Source==TEXT("{0} · {1} | {2}\n{3} · {4}"))return Get(TEXT("ExecutionControls.Group"));
+if(Source==TEXT("Confirm stop"))return Get(TEXT("ExecutionControls.ConfirmAbort"));
+if(Source==TEXT("{0}: {1}"))return Get(TEXT("ExecutionControls.Result"));
+if(Source==TEXT("Mixed member states"))return Get(TEXT("Execution.Mixed"));
+if(Source==TEXT("Configuring {0} · {1} | {2}"))return Get(TEXT("Configuration.Context"));
+if(Source==TEXT("Offline · local changes retained"))return Get(TEXT("Configuration.OfflineDraft"));
+if(Source==TEXT("Read only · enter configuration to edit"))return Get(TEXT("Configuration.ReadOnly"));
+if(Source==TEXT("Unsaved changes"))return Get(TEXT("Configuration.Unsaved"));
+if(Source==TEXT("Saved"))return Get(TEXT("Configuration.Saved"));
+if(Source==TEXT("Not created yet"))return Get(TEXT("Configuration.NotCreated"));
+if(Source==TEXT("You have unsaved changes. Save and continue, discard these changes, or keep editing."))return Get(TEXT("Configuration.UnsavedPrompt"));
+if(Source==TEXT("Save and continue"))return Get(TEXT("Configuration.SaveContinue"));
+if(Source==TEXT("Discard changes and continue"))return Get(TEXT("Configuration.DiscardContinue"));
+if(Source==TEXT("Keep editing"))return Get(TEXT("Configuration.KeepEditing"));
+if(Source==TEXT("Continue configuration"))return Get(TEXT("Configuration.Resume"));
+if(Source==TEXT("Finish configuration"))return Get(TEXT("Configuration.Finish"));
+if(Source==TEXT("Task {0}"))return Get(TEXT("Configuration.NewMissionName"));
+if(Source==TEXT("Return to configuration"))return Get(TEXT("Configuration.Return"));
+if(Source==TEXT("Scheduled starts wait until configuration is finished."))return Get(TEXT("Configuration.ScheduledWaiting"));
+if(Source==TEXT("Finish the current plan configuration first. Alerts and active task pause/stop controls remain available."))return Get(TEXT("Errors.CONFIGURATION_IN_PROGRESS"));
+if(Source==TEXT("Selection changed elsewhere. Your local changes are retained; finish or discard them before switching."))return Get(TEXT("Errors.CONFIGURATION_CONTEXT_CHANGED"));
+if(Source==TEXT("Editing the route for {0}. Finish the route to continue in Command."))return Get(TEXT("Configuration.MapRouteContext"));
+if(Source==TEXT("Deployed plan is read only. Create a new version to make changes."))return Get(TEXT("Configuration.DeployedReadOnly"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

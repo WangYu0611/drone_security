@@ -71,6 +71,12 @@ TEST_F(P53Geometry, AllMissionRoutesUseOneDelta){readyGeometry();const auto firs
 TEST_F(P53Geometry, TranslationPublisherFailureRollsBack){readyGeometry();const auto session=move();const auto before=store.snapshot();O r{{"action","move_plan"},{"instance_id","Map-1"},{"plan_id",p},{"mission_id",m},{"edit_session_id",session},{"paths",translated()}};EXPECT_THROW(store.transact(r,uavs,"QA",[](const O&){throw std::runtime_error("publisher rejected");}),std::runtime_error);EXPECT_EQ(store.snapshot(),before);}
 
 TEST_F(P53Geometry, MoveLeaseCannotBeReusedForWaypointEdits){readyGeometry();const auto session=move();error({{"action","begin_route_edit"},{"content_revision",plan().at("content_revision")}},"EDIT_SESSION_CONFLICT");error({{"action","save_route"},{"edit_session_id",session},{"path",geometryRoute()}},"EDIT_SESSION_CONFLICT");error({{"action","mark_route_dirty"},{"edit_session_id",session}},"EDIT_SESSION_CONFLICT");}
+TEST_F(P53Geometry, HeartbeatStaleRouteDiscardCannotReleaseMoveLease) {
+    readyGeometry();const auto session=move();const auto oldVersion=store.snapshot().at("version");
+    store.heartbeat("Map-1",[](const O&){});
+    error({{"action","discard_route_edit"},{"edit_session_id",session},{"expected_version",oldVersion}},"EDIT_SESSION_CONFLICT");
+    EXPECT_TRUE(store.snapshot().at("edit_sessions").as_object().contains(session));
+}
 
 TEST_F(P53Geometry, CanonicalClosedRouteAliasAndConflict){begin();auto r=geometryRoute();r.erase("bClosedLoop");r["closedRoute"]=true;send({{"action","save_route"},{"edit_session_id",sid},{"path",r},{"keep_editing",true}});auto saved=store.snapshot().at("paths").as_object().begin()->value().as_object();EXPECT_TRUE(saved.at("closedRoute").as_bool());EXPECT_TRUE(saved.at("bClosedLoop").as_bool());r["bClosedLoop"]=false;error({{"action","save_route"},{"edit_session_id",sid},{"path",r}},"INVALID_ROUTE");}
 
@@ -317,6 +323,132 @@ TEST_F(P55Reservation, ReadyDeployedScheduledAndCancelledDoNotReserve){deployed(
     EXPECT_NO_THROW(send(r));
     auto snapshot=store.snapshot();execution=std::string(snapshot.at("executions").as_object().begin()->key());control("execution_cancel","cancel-schedule");
     EXPECT_EQ(exec().at("state"),"CANCELLED");EXPECT_NO_THROW(send(r));
+}
+
+struct ConfigurationWorkflow:P54Mission {
+    O command(O r){r["instance_id"]="Command-config";return send(r);}
+    void configure(const std::string& plan){command({{"action","begin_configuration"},{"plan_id",plan}});}
+    O session(){return store.snapshot().at("configuration_session").as_object();}
+};
+TEST_F(ConfigurationWorkflow, NewConfigurationBindsCreatedPlanAndIsExclusive) {
+    configure("");const auto first=store.snapshot();command({{"action","begin_configuration"},{"plan_id",""},{"expected_version",0}});EXPECT_EQ(store.snapshot(),first);
+    error({{"action","begin_configuration"},{"plan_id",""},{"instance_id","Other-command"}},"CONFIGURATION_IN_PROGRESS");
+    error({{"action","create_plan"},{"name","Stranger"}},"CONFIGURATION_IN_PROGRESS");
+    const auto result=command({{"action","create_plan"},{"name","Configured plan"},{"default_mission_name","First mission"}});
+    const auto created=SecurityPlanStore::str(result,"plan_id");EXPECT_EQ(SecurityPlanStore::str(session(),"plan_id"),created);
+    EXPECT_EQ(session().at("owner_instance_id"),"Command-config");EXPECT_EQ(session().at("owner_client_id"),"QA");
+    error({{"action","begin_configuration"},{"instance_id","Command-config"},{"plan_id",p}},"CONFIGURATION_IN_PROGRESS");
+    command({{"action","end_configuration"},{"plan_id",created}});EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());
+}
+TEST_F(ConfigurationWorkflow, CopyBindsNewDraftWithoutChangingDeployedSource) {
+    deployed();const auto original=plan();configure("");
+    const auto result=command({{"action","copy_plan"}});const auto copied=SecurityPlanStore::str(result,"plan_id");
+    EXPECT_NE(copied,p);EXPECT_EQ(SecurityPlanStore::str(session(),"plan_id"),copied);EXPECT_EQ(plan(),original);
+    EXPECT_EQ(store.snapshot().at("plans").as_object().at(copied).as_object().at("status"),"DRAFT");
+}
+TEST_F(ConfigurationWorkflow, SelectedPlanAndRouteLeaseAreProtected) {
+    const auto other=SecurityPlanStore::str(send({{"action","create_plan"},{"name","Other plan"}}),"plan_id");
+    configure(p);
+    error({{"action","update_plan"},{"instance_id","Other-command"},{"name","Wrong owner"}},"CONFIGURATION_IN_PROGRESS");
+    error({{"action","open_plan"},{"instance_id","Command-config"},{"plan_id",other}},"CONFIGURATION_IN_PROGRESS");
+    EXPECT_THROW(store.checkConfigurationAccess({{"action","select"},{"plan_id",other},{"instance_id","Map-1"}}),PlanError);
+    EXPECT_THROW(store.checkConfigurationAccess({{"action","select"},{"plan_id",p},{"mission_id",m},{"instance_id","Map-1"}}),PlanError);
+    EXPECT_NO_THROW(store.checkConfigurationAccess({{"action","select"},{"plan_id",p},{"mission_id",m},{"instance_id","Command-config"}}));
+    command({{"action","update_plan"},{"name","Owner update"}});
+    begin(); // The separate Map client may edit this configuration's route.
+    error({{"action","end_configuration"},{"instance_id","Command-config"}},"PLAN_EDIT_IN_PROGRESS");
+    send({{"action","discard_route_edit"},{"edit_session_id",sid}});
+    command({{"action","end_configuration"}});EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());
+}
+TEST_F(ConfigurationWorkflow, NewMovementBlockedButExistingEmergencyControlsRemain) {
+    multi();start();tick();tick();tick();
+    const auto draft=command({{"action","copy_plan"}});const auto configPlan=SecurityPlanStore::str(draft,"plan_id");configure(configPlan);
+    error({{"action","execution_start"},{"request_id","blocked-start"}},"CONFIGURATION_IN_PROGRESS");
+    error({{"action","execution_group_move"},{"request_id","blocked-fleet"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},
+        {"target",O{{"latitude",39.0001},{"longitude",116.},{"altitude",60.}}}},"CONFIGURATION_IN_PROGRESS");
+    error({{"action","execution_start_now"},{"request_id","blocked-schedule"},{"execution_id",execution},{"control_version",exec().at("control_version")}},"CONFIGURATION_IN_PROGRESS");
+    error({{"action","begin_plan_move"}},"CONFIGURATION_IN_PROGRESS");
+    EXPECT_THROW(store.checkConfigurationAccess({{"action","request_map_plan_move"},{"instance_id","Command-config"},{"plan_id",configPlan}}),PlanError);
+    EXPECT_NO_THROW(start()); // An accepted request replay must survive a lost response.
+    control("execution_pause","safe-pause");for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"PAUSED");
+    control("execution_resume","safe-resume");control("execution_abort","safe-abort");
+    for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"ABORTED");
+    EXPECT_EQ(SecurityPlanStore::str(session(),"plan_id"),configPlan);
+}
+TEST_F(ConfigurationWorkflow, FailedDeployRetainsConfigurationSuccessfulDeployEndsIt) {
+    configure(p);error({{"action","deploy"},{"instance_id","Command-config"}},"PLAN_NOT_READY");
+    EXPECT_EQ(SecurityPlanStore::str(session(),"plan_id"),p);
+    command({{"action","assign"},{"assigned_uav_id","UAV-01"}});begin();
+    send({{"action","save_route"},{"edit_session_id",sid},{"path",route()}});
+    command({{"action","validate"}});command({{"action","review"}});command({{"action","deploy"}});
+    EXPECT_EQ(plan().at("status"),"DEPLOYED");EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());
+}
+TEST_F(ConfigurationWorkflow, OwnerHeartbeatRenewsLeaseAndRestartClearsOwnership) {
+    configure(p);const auto before=session();
+    store.heartbeat("Other-command",[](const O&){});EXPECT_EQ(session(),before);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    store.heartbeat("Command-config",[](const O&){});EXPECT_GT(session().at("lease_expires_at").to_number<double>(),before.at("lease_expires_at").to_number<double>());
+    const auto state=store.snapshot();const auto file=std::filesystem::temp_directory_path()/("configuration-restart-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(state);}
+    SecurityPlanStore restored(file.string());EXPECT_TRUE(restored.snapshot().at("configuration_session").is_null());
+    EXPECT_GT(restored.snapshot().at("version").to_number<int64_t>(),state.at("version").to_number<int64_t>());std::filesystem::remove(file);
+}
+TEST_F(ConfigurationWorkflow, HeartbeatStaleExitSucceedsButCannotReleaseReacquiredLease) {
+    configure(p);const auto acquired=store.snapshot().at("version");EXPECT_EQ(session().at("acquired_version"),acquired);
+    store.heartbeat("Command-config",[](const O&){});
+    EXPECT_NO_THROW(command({{"action","end_configuration"},{"plan_id",p},{"expected_version",acquired}}));
+    EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());
+    configure(p);const auto replacement=session();
+    error({{"action","end_configuration"},{"instance_id","Command-config"},{"plan_id",p},{"expected_version",acquired}},"VERSION_CONFLICT");
+    error({{"action","end_configuration"},{"instance_id","Command-config"},{"plan_id",p},{"expected_version",store.snapshot().at("version").to_number<int64_t>()+1}},"VERSION_CONFLICT");
+    EXPECT_EQ(session(),replacement);
+}
+TEST_F(ConfigurationWorkflow, HeartbeatStaleExitRequiresSamePlanAndFinishedRouteLease) {
+    configure(p);begin();const auto acknowledged=store.snapshot().at("version");
+    store.heartbeat("Command-config",[](const O&){});
+    error({{"action","end_configuration"},{"instance_id","Command-config"},{"plan_id","wrong-plan"},{"expected_version",acknowledged}},"VERSION_CONFLICT");
+    error({{"action","end_configuration"},{"instance_id","Command-config"},{"plan_id",p},{"expected_version",acknowledged}},"PLAN_EDIT_IN_PROGRESS");
+    EXPECT_TRUE(store.snapshot().at("edit_sessions").as_object().contains(sid));EXPECT_EQ(SecurityPlanStore::str(session(),"plan_id"),p);
+}
+TEST_F(ConfigurationWorkflow, ExpiredOwnerDoesNotBlockMovementAndHeartbeatPublishesRelease) {
+    multi();configure(p);std::this_thread::sleep_for(std::chrono::milliseconds(20020));
+    EXPECT_NO_THROW(start());int published=0;store.heartbeat("",[&](const O&){++published;});
+    EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());EXPECT_EQ(published,1);
+}
+TEST_F(ConfigurationWorkflow, DueScheduleWaitsForConfigurationThenRevalidates) {
+    multi();execution=SecurityPlanStore::str(send({{"action","execution_start"},{"request_id","due-config"},{"scheduled_start_at","2099-09-22T13:30:00Z"}}),"execution_id");
+    auto state=store.snapshot();for(auto& e:state.at("executions").as_object())e.value().as_object()["scheduled_start_epoch"]=0.;
+    const auto file=std::filesystem::temp_directory_path()/("configuration-schedule-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(state);}
+    SecurityPlanStore restored(file.string());restored.configureMock(state.at("mock_execution").as_object());
+    restored.transact({{"action","begin_configuration"},{"instance_id","Command-config"},{"plan_id",p}},uavs,"QA",[](const O&){});
+    restored.tickExecutions(1,uavs,[](const O&){});
+    const auto waiting=restored.snapshot();for(const auto& e:waiting.at("executions").as_object()){EXPECT_EQ(e.value().as_object().at("state"),"SCHEDULED");EXPECT_EQ(e.value().as_object().at("scheduled_start_epoch"),0.);}
+    restored.transact({{"action","end_configuration"},{"instance_id","Command-config"}},uavs,"QA",[](const O&){});
+    restored.tickExecutions(1,{},[](const O&){}); // Revalidation catches aircraft removed while configuring.
+    const auto failed=restored.snapshot();for(const auto& e:failed.at("executions").as_object())EXPECT_EQ(e.value().as_object().at("state"),"FAILED");
+    std::filesystem::remove(file);
+}
+TEST_F(P54Mission, MixedCompletedGroupCanPauseResumeAndAbortRemainingMembers) {
+    multi();auto config=store.snapshot().at("mock_execution").as_object();
+    config.at("uavs").as_object().at("UAV-02").as_object().at("home_position").as_object()["latitude"]=38.999;
+    store.configureMock(config);start();bool mixed=false;std::string completed;
+    for(int i=0;i<100;++i){tick(1);int done=0,active=0;for(const auto& item:executions()){const auto& e=item.value().as_object();
+        if(e.at("state")=="COMPLETED"){++done;completed=std::string(item.key());}if(e.at("state")=="EXECUTING"){++active;execution=std::string(item.key());}}
+        if(done==1 && active==1){mixed=true;break;}}
+    ASSERT_TRUE(mixed);const auto finished=executions().at(completed);
+    control("execution_pause","mixed-pause");EXPECT_EQ(exec().at("state"),"PAUSED");
+    control("execution_resume","mixed-resume");EXPECT_EQ(exec().at("state"),"EXECUTING");
+    control("execution_abort","mixed-abort");EXPECT_EQ(exec().at("state"),"ABORTED");EXPECT_EQ(executions().at(completed),finished);
+}
+TEST_F(P52Execution, ReturnCanPauseResumeAndAbort) {
+    running();tick(1);control("execution_return","return");ASSERT_EQ(exec().at("state"),"RETURNING");
+    control("execution_pause","return-pause");EXPECT_EQ(exec().at("state"),"PAUSED");const auto stopped=exec().at("position");tick(1);EXPECT_EQ(exec().at("position"),stopped);
+    control("execution_resume","return-resume");EXPECT_EQ(exec().at("state"),"RETURNING");control("execution_abort","return-abort");EXPECT_EQ(exec().at("state"),"ABORTED");
+}
+TEST_F(P52Execution, PendingStartCanBeAbortedBeforeDispatch) {
+    deployed();start();control("execution_abort","created-abort");EXPECT_EQ(exec().at("state"),"ABORTED");
+    tick(1);EXPECT_EQ(exec().at("state"),"ABORTED");
 }
 
 }

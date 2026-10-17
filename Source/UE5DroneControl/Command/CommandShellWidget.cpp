@@ -6,6 +6,8 @@
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/OperationalEventStore.h"
 #include "Shared/SecurityPlanWorkspaceWidget.h"
+#include "Shared/PlanConfiguration.h"
+#include "Shared/ActiveExecutionControlsWidget.h"
 #include "Shared/Stage1HeaderWidget.h"
 #include "Shared/ProductText.h"
 #include "Command/CommandCenterPanel.h"
@@ -239,6 +241,21 @@ void UCommandShellWidget::NativeOnInitialized()
         MissionActions->SetVisibility(ESlateVisibility::Collapsed);
         AlarmPanel->RemoveFromParent();WorkspacePages->AddChild(AlarmPanel);
         WorkspacePages->AddChild(CreateWidget<UOperationalLogWidget>(GetOwningPlayer()));
+        ConfigurationHeader=WidgetTree->ConstructWidget<UVerticalBox>();
+        auto* ConfigurationSlot=Root->AddChildToCanvas(ConfigurationHeader);
+        ConfigurationSlot->SetAnchors(FAnchors(0,0,1,0));ConfigurationSlot->SetOffsets(FMargin(184,88,16,76));
+        ConfigurationCaption=PlanUI::Label(WidgetTree,ConfigurationHeader,FText::GetEmpty(),16);
+        auto* ConfigurationActions=WidgetTree->ConstructWidget<UHorizontalBox>();ConfigurationHeader->AddChild(ConfigurationActions);
+        for(const TCHAR* Name:{TEXT("configuration_return"),TEXT("configuration_finish")}){
+            auto* B=PlanUI::Button(WidgetTree,ConfigurationActions,Name,Name==FString(TEXT("configuration_return"))?TEXT("Configuration.Return"):TEXT("Configuration.Finish"));
+            B->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
+            CommandTheme::Button(B);
+            Cast<UHorizontalBoxSlot>(B->Slot)->SetPadding(FMargin(0,4,8,0));
+            if(Name==FString(TEXT("configuration_finish")))ConfigurationFinish=B;
+        }
+        ActiveControls=CreateWidget<UActiveExecutionControlsWidget>(GetOwningPlayer());
+        auto* ActiveSlot=Root->AddChildToCanvas(ActiveControls);
+        ActiveSlot->SetAnchors(FAnchors(0,0,1,0));ActiveSlot->SetOffsets(FMargin(184,88,16,154));
         auto* Hint=PlanUI::Label(WidgetTree,Root,ProductText::Get(TEXT("Workflow.GlobalHint")),12);
         auto* HintSlot=Cast<UCanvasPanelSlot>(Hint->Slot);HintSlot->SetAnchors(FAnchors(0,1,1,1));HintSlot->SetOffsets(FMargin(184,-32,16,28));
         auto* Languages=WidgetTree->ConstructWidget<UHorizontalBox>();auto* LanguageSlot=Root->AddChildToCanvas(Languages);
@@ -290,6 +307,20 @@ void UCommandShellWidget::Refresh()
     if (CenterPanel) {
         CenterPanel->Refresh();
         if(auto* Label=Cast<UTextBlock>(Header->GetContent())) {Label->SetText(ProductText::Source(CenterPanel->GetHeaderText()));CommandTheme::Text(Label,15);}
+        auto* Plan=CenterPanel->GetPlanWorkspace();
+        const bool Configuring=Plan && Plan->IsConfiguring();
+        ConfigurationHeader->SetVisibility(Configuring?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+        if(Configuring)ConfigurationCaption->SetText(Plan->ConfigurationStatusText());
+        auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        ConfigurationFinish->SetVisibility(!PlanConfiguration::Active(Sync->GetPlans()) || PlanConfiguration::IsOwner(Sync->GetPlans(),Sync->GetInstanceId())?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+        PrimaryNavigationButtons[2]->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+        if(Configuring && WorkspacePages->GetActiveWidgetIndex()==2)Navigate(TEXT("configuration_return"),1);
+        ActiveControls->Refresh();
+        const bool HasControls=ActiveControls->GetVisibility()!=ESlateVisibility::Collapsed;
+        ActiveControls->SetVisibility(HasControls?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+        const float ControlsTop=88.f+(Configuring?76.f:0.f);
+        Cast<UCanvasPanelSlot>(ActiveControls->Slot)->SetOffsets(FMargin(184,ControlsTop,16,154));
+        Cast<UCanvasPanelSlot>(WorkspacePages->Slot)->SetOffsets(FMargin(184,ControlsTop+(HasControls?166.f:0.f),16,44));
     }
     if (Manager.IsValid() && Manager->GetMapService()) MapModeChanged(Manager->GetMapService()->GetMapMode());
     UDroneRegistrySubsystem* Registry = Manager.IsValid() ? Manager->GetRegistry() : nullptr;
@@ -323,6 +354,7 @@ void UCommandShellWidget::Refresh()
             for(const auto& Member:All->Values)if(PlanUI::Field(Member.Value->AsObject(),TEXT("group_id"))==Group)++Count;
             const auto Time=FTimespan::FromSeconds(FMath::Max(0.,E->GetNumberField(TEXT("scheduled_start_epoch"))-FDateTime::UtcNow().ToUnixTimestamp()));
             Lines.Add(FText::Format(ProductText::Get(TEXT("Schedule.Overview")),PlanUI::User(PlanUI::Field(E,TEXT("plan_name"))),PlanUI::User(Time.ToString(TEXT("%h:%m:%s"))),FText::AsNumber(Count)));}
+        if(!Groups.IsEmpty() && PlanConfiguration::Active(State))Lines.Add(ProductText::Get(TEXT("Configuration.ScheduledWaiting")));
         CurrentExecutionSummary->SetText(FText::Join(PlanUI::User(TEXT("\n")),Lines));
     }
     if(CurrentPlanSummary){
@@ -465,8 +497,13 @@ void UCommandShellWidget::NativeDestruct()
 
 void UCommandShellWidget::Navigate(FName Action,int32 Index){
     if(Action==TEXT("follow_situation") && SituationMap){SituationMap->ToggleFollow();return;}
+    auto* Plan=CenterPanel?CenterPanel->GetPlanWorkspace():nullptr;
+    const bool Configuring=Plan && Plan->IsConfiguring();
+    if(Action==TEXT("configuration_return")){if(Plan)Plan->FocusConfiguration();Index=1;}
+    if(Action==TEXT("configuration_finish")){if(Plan)Plan->RequestFinishConfiguration();Index=1;}
+    if(Configuring && Index==2){if(Plan)Plan->FocusConfiguration();Index=1;}
 
-    if(Action==TEXT("open_execution")){auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto E=ExecutionUI::Latest(S->GetPlans(),TEXT(""),true);if(E){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanUI::Field(E,TEXT("plan_id")));R->SetStringField(TEXT("mission_id"),PlanUI::Field(E,TEXT("mission_id")));S->SubmitPlan(R,[](TSharedPtr<FJsonObject>){});}}
+    if(Action==TEXT("open_execution")){if(Configuring)return;auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto E=ExecutionUI::Latest(S->GetPlans(),TEXT(""),true);if(E){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanUI::Field(E,TEXT("plan_id")));R->SetStringField(TEXT("mission_id"),PlanUI::Field(E,TEXT("mission_id")));S->SubmitPlan(R,[](TSharedPtr<FJsonObject>){});}}
 
     if(Action==TEXT("en") || Action==TEXT("zh-Hans")){GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLanguage(Action.ToString());return;}
     if(!WorkspacePages || Index<0 || Index>=5)return;

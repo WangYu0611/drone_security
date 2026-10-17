@@ -15,7 +15,7 @@ import urllib.parse
 import uuid
 
 ROLES = ('Command', 'Map', 'Video')
-REQUIRED_CAPABILITIES = frozenset(('fleet_move_3d', 'map_fleet_controls'))
+REQUIRED_CAPABILITIES = frozenset(('fleet_move_3d', 'map_fleet_controls', 'plan_configuration'))
 
 
 class BackendCompatibilityError(RuntimeError):

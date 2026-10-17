@@ -37,6 +37,11 @@ public:
         if (!state_.contains("execution_requests")) state_["execution_requests"] = Object{};
         if (!state_.contains("deployments")) state_["deployments"] = Object{};
         if (!state_.contains("edit_sessions")) state_["edit_sessions"] = Object{};
+        // Client subscriptions are not restored across a Backend restart. A stale
+        // configuration owner must not keep movement locked after reconnecting.
+        const bool restoredConfiguration=state_.contains("configuration_session") && state_.at("configuration_session").is_object();
+        state_["configuration_session"]=nullptr;
+        if(restoredConfiguration)state_["version"]=state_.at("version").to_number<int64_t>()+1;
         for (auto& entry : state_.at("plans").as_object()) {
             auto& p=entry.value().as_object();
             if (!p.contains("content_revision")) {
@@ -72,6 +77,11 @@ public:
             for(const auto& member:assignment(mission))checkReservation(state,plan,std::string(member.as_string()));
         }
     }
+    // HTTP-only selection/edit requests also obey the same authoritative lease.
+    void checkConfigurationAccess(const Object& request) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        checkConfigurationRequest(state_,request);
+    }
     Object transact(const Object& request, const std::set<std::string>& uavs,
                     const std::string& source, const std::function<void(const Object&)>& publish) {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -79,14 +89,63 @@ public:
         expire(next, OperationalContext::now());
         const auto action = str(request, "action");
         if (action.rfind("execution_",0)==0) return executionRequest(request,uavs,source,publish);
-        if (auto v = request.if_contains("expected_version"))
-            if (!v->is_number() || v->to_number<int64_t>() != state_.at("version").to_number<int64_t>())
-                throw PlanError("VERSION_CONFLICT", "Plan data changed; reload and retry");
+        checkConfigurationRequest(next,request);
+        if(action=="begin_configuration")if(const auto* current=activeConfiguration(next)) {
+            if(str(*current,"owner_instance_id")!=str(request,"instance_id") || str(*current,"plan_id")!=str(request,"plan_id"))configurationConflict(*current);
+            return {{"state",state_},{"plan_id",str(*current,"plan_id")},{"mission_id",str(request,"mission_id")}};
+        }
+        if(action=="end_configuration" && state_.at("configuration_session").is_null())
+            return {{"state",state_},{"plan_id",str(request,"plan_id")},{"mission_id",str(request,"mission_id")}};
+        if (auto v = request.if_contains("expected_version")) {
+            const auto currentVersion=state_.at("version").to_number<int64_t>();
+            if (!v->is_number() || v->to_number<int64_t>() != currentVersion) {
+                // A heartbeat advances the document version without changing the
+                // saved route. Discard only releases this exact live owned lease;
+                // a stale document snapshot must not trap an unsaved local draft.
+                if(!v->is_number() || v->to_number<int64_t>()>currentVersion)
+                    throw PlanError("VERSION_CONFLICT", "Plan data changed; reload and retry");
+                if(action=="discard_route_edit") {
+                    const auto& session=ownedSession(next,request,str(request,"plan_id"),str(request,"mission_id"));
+                    if(str(session,"mode")=="MOVE")throw PlanError("EDIT_SESSION_CONFLICT","Finish plan movement first");
+                } else if(action=="end_configuration") {
+                    const auto* session=activeConfiguration(next);
+                    const auto* acquired=session?session->if_contains("acquired_version"):nullptr;
+                    // Fence a delayed exit from an earlier same-owner/plan lease.
+                    if(!session || str(*session,"owner_instance_id")!=str(request,"instance_id") ||
+                       str(*session,"plan_id")!=str(request,"plan_id") || !acquired || !acquired->is_number() ||
+                       v->to_number<int64_t>()<acquired->to_number<int64_t>())
+                        throw PlanError("VERSION_CONFLICT", "Configuration changed; reload and retry");
+                } else throw PlanError("VERSION_CONFLICT", "Plan data changed; reload and retry");
+            }
+        }
         auto& plans = next.at("plans").as_object();
         auto& missions = next.at("missions").as_object();
         auto& paths = next.at("paths").as_object();
         std::string planId = str(request, "plan_id"), missionId = str(request, "mission_id");
-        if (action == "create_plan") {
+        if(action=="begin_configuration") {
+            const auto owner=str(request,"instance_id");
+            if(owner.empty())throw PlanError("INVALID_IDENTITY","Configuration owner required");
+            if(!planId.empty())lookup(plans,planId,"PLAN_NOT_FOUND");
+            for(const auto& entry:next.at("edit_sessions").as_object()) {
+                const auto& edit=entry.value().as_object();
+                if(str(edit,"plan_id")!=planId || str(edit,"mode")=="MOVE")
+                    throw PlanError("PLAN_EDIT_IN_PROGRESS","Finish the active route edit or plan movement first");
+            }
+            const double now=OperationalContext::now();
+            next["configuration_session"]=Object{{"owner_instance_id",owner},{"owner_client_id",source},
+                {"plan_id",planId},{"last_seen_at",now},{"lease_expires_at",now+20},
+                {"acquired_version",state_.at("version").to_number<int64_t>()+1}};
+        } else if(action=="end_configuration") {
+            const auto* current=activeConfiguration(next);
+            if(current) {
+                if(str(*current,"owner_instance_id")!=str(request,"instance_id"))configurationConflict(*current);
+                planId=str(*current,"plan_id");
+                for(const auto& entry:next.at("edit_sessions").as_object())
+                    if(str(entry.value().as_object(),"plan_id")==planId)
+                        throw PlanError("PLAN_EDIT_IN_PROGRESS","Finish or explicitly discard the route edit before leaving configuration");
+            }
+            next["configuration_session"]=nullptr;
+        } else if (action == "create_plan") {
             const auto name = requiredName(request);
             planId = allocate(next, "plan-");
             plans[planId] = Object{{"id", planId}, {"name", name}, {"description", str(request,"description")},
@@ -102,6 +161,7 @@ public:
                 plans.at(planId).as_object()["workflow_step"]="TaskConfig";
                 event(next,"MISSION_CREATED","MISSION",missionId,"Default task created",source);
             }
+            bindConfigurationPlan(next,request,planId);
         } else if(action=="open_plan") {
             lookup(plans,planId,"PLAN_NOT_FOUND");
             event(next,"PLAN_OPENED","PLAN",planId,"Security plan opened",source);
@@ -128,6 +188,7 @@ public:
             if(!ids.empty())missionId=std::string(ids[0].as_string());
             event(next,"PLAN_COPIED","PLAN",planId,"Plan copied as draft",source);
             event(next,"PLAN_VERSION_CREATED","PLAN",planId,"New plan version created",source);
+            bindConfigurationPlan(next,request,planId);
         } else if(action=="delete_plan") {
             const auto plan=lookup(plans,planId,"PLAN_NOT_FOUND");
             if(str(plan,"status")!="DRAFT")throw PlanError("PLAN_DEPLOYED","Only drafts may be deleted");
@@ -244,6 +305,9 @@ public:
                             {"snapshot",Object{{"plan",plan},{"missions",snapM},{"paths",snapR}}}};
                         event(next,"DEPLOYMENT_CREATED","PLAN",planId,"Deployment snapshot created",source);
                         event(next,"PLAN_DEPLOYED","PLAN",planId,"Deployed. Execution has not started.",source);
+                        if(const auto* current=activeConfiguration(next))
+                            if(str(*current,"owner_instance_id")==str(request,"instance_id") && str(*current,"plan_id")==planId)
+                                next["configuration_session"]=nullptr;
                     }
                 }
             } else {
@@ -345,15 +409,58 @@ public:
                 session["last_seen_at"]=now;session["lease_expires_at"]=now+20;changed=true;
             }
         }
+        if(auto* current=next.if_contains("configuration_session");current && current->is_object()) {
+            auto& session=current->as_object();
+            if(str(session,"owner_instance_id")==owner) {
+                session["last_seen_at"]=now;session["lease_expires_at"]=now+20;changed=true;
+            }
+        }
         if(changed){next["version"]=state_.at("version").to_number<int64_t>()+1;persist(next);state_=next;publish({{"type","SecurityPlansChanged"},{"payload",state_}});}
     }
 private:
+    static const Object* activeConfiguration(const Object& state) {
+        const auto* value=state.if_contains("configuration_session");
+        if(!value || !value->is_object())return nullptr;
+        const auto& session=value->as_object();
+        const auto* until=session.if_contains("lease_expires_at");
+        return until && until->is_number() && until->to_number<double>()>OperationalContext::now()?&session:nullptr;
+    }
+    [[noreturn]] static void configurationConflict(const Object& session) {
+        throw PlanError("CONFIGURATION_IN_PROGRESS","Finish the active plan configuration first",
+            {{"owner_instance_id",session.at("owner_instance_id")},{"owner_client_id",session.at("owner_client_id")},{"plan_id",session.at("plan_id")}});
+    }
+    static void checkConfigurationRequest(const Object& state,const Object& request) {
+        const auto* session=activeConfiguration(state);if(!session)return;
+        const auto action=str(request,"action");
+        if(action=="execution_group_move" || action=="execution_start" || action=="execution_start_now" ||
+           action=="begin_plan_move" || action=="request_map_plan_move" || action=="move_plan")configurationConflict(*session);
+        // Existing execution controls are independent of the plan being configured.
+        if(action.rfind("execution_",0)==0 || action=="begin_configuration")return;
+        const bool owner=str(*session,"owner_instance_id")==str(request,"instance_id");
+        if(action=="end_configuration"){if(!owner)configurationConflict(*session);return;}
+        const auto chosen=str(*session,"plan_id"),requested=str(request,"plan_id");
+        if((action=="create_plan" || action=="copy_plan") && owner && chosen.empty())return;
+        if(chosen.empty() || requested!=chosen)configurationConflict(*session);
+        const bool routeAction=action=="begin_route_edit" || action=="mark_route_dirty" || action=="save_route" ||
+            action=="discard_route_edit" || action=="finish_route_edit" || action=="cancel_plan_move";
+        if(!owner && !routeAction)configurationConflict(*session);
+        if(action=="create_plan" || action=="copy_plan" || action=="delete_plan")configurationConflict(*session);
+    }
+    static void bindConfigurationPlan(Object& state,const Object& request,const std::string& plan) {
+        auto* session=state.if_contains("configuration_session");
+        if(session && session->is_object() && str(session->as_object(),"owner_instance_id")==str(request,"instance_id") &&
+           str(session->as_object(),"plan_id").empty())session->as_object()["plan_id"]=plan;
+    }
 #include "storage/plan_geometry.inl"
 #include "storage/mission_trajectory.inl"
     static bool expire(Object& state,double now) {
         auto& sessions=state.at("edit_sessions").as_object();std::vector<std::string> expired;
         for(const auto& e:sessions)if(e.value().as_object().at("lease_expires_at").to_number<double>()<=now)expired.emplace_back(e.key());
-        for(const auto& id:expired)sessions.erase(id);return !expired.empty();
+        for(const auto& id:expired)sessions.erase(id);
+        bool configurationExpired=false;
+        if(auto* value=state.if_contains("configuration_session");value && value->is_object() &&
+           value->as_object().at("lease_expires_at").to_number<double>()<=now){*value=nullptr;configurationExpired=true;}
+        return !expired.empty() || configurationExpired;
     }
     static Object& ownedSession(Object& state,const Object& request,const std::string& plan,const std::string& mission) {
         auto& s=lookup(state.at("edit_sessions").as_object(),str(request,"edit_session_id"),"EDIT_SESSION_EXPIRED");

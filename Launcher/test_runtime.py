@@ -55,7 +55,8 @@ class LauncherTests(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as folder:
                 runtime = Runtime(folder, {'http_endpoint': base, 'runtime_directory': 'Saved/test'})
-                for capabilities in (None, [], ['fleet_move_3d'], 'fleet_move_3d', {'map_fleet_controls': True}):
+                for capabilities in (None, [], ['fleet_move_3d'], ['fleet_move_3d', 'map_fleet_controls'],
+                                     'fleet_move_3d', {'map_fleet_controls': True}):
                     with self.subTest(capabilities=capabilities):
                         payloads['/']['capabilities'] = capabilities
                         with self.assertRaisesRegex(BackendCompatibilityError, 'SetupDroneSecurity.cmd'):

@@ -54,6 +54,37 @@ TEST_F(P4Workflow, OwnerRevisionAndDiscard){
     send({{"action","update_plan"},{"name","Modified"}});error({{"action","save_route"},{"edit_session_id",sid},{"path",route()}},"VERSION_CONFLICT");
     send({{"action","discard_route_edit"},{"edit_session_id",sid}});EXPECT_TRUE(store.snapshot().at("edit_sessions").as_object().empty());
 }
+TEST_F(P4Workflow, OwnerDiscardSurvivesHeartbeatButSaveStillRequiresCurrentVersion) {
+    ready();begin();send({{"action","mark_route_dirty"},{"edit_session_id",sid}});
+    const auto acknowledged=store.snapshot();const auto oldVersion=acknowledged.at("version");
+    store.heartbeat("Map-1",[](const O&){});
+    ASSERT_GT(store.snapshot().at("version").to_number<int64_t>(),oldVersion.to_number<int64_t>());
+    error({{"action","save_route"},{"edit_session_id",sid},{"path",route()},{"expected_version",oldVersion}},"VERSION_CONFLICT");
+    EXPECT_NO_THROW(send({{"action","discard_route_edit"},{"edit_session_id",sid},{"expected_version",oldVersion}}));
+    const auto after=store.snapshot();EXPECT_TRUE(after.at("edit_sessions").as_object().empty());
+    EXPECT_EQ(after.at("paths"),acknowledged.at("paths"));EXPECT_EQ(plan().at("content_revision"),acknowledged.at("plans").as_object().at(p).as_object().at("content_revision"));
+}
+TEST_F(P4Workflow, HeartbeatStaleDiscardCannotCrossLeaseIdentityOrUseFutureVersion) {
+    ready();begin();const auto oldSession=sid;const auto oldVersion=store.snapshot().at("version");
+    store.heartbeat("Map-1",[](const O&){});
+    error({{"action","discard_route_edit"},{"edit_session_id",sid},{"instance_id","Other"},{"expected_version",oldVersion}},"EDIT_SESSION_CONFLICT");
+    error({{"action","discard_route_edit"},{"edit_session_id",sid},{"mission_id","wrong-mission"},{"expected_version",oldVersion}},"EDIT_SESSION_CONFLICT");
+    error({{"action","discard_route_edit"},{"edit_session_id",sid},{"expected_version",store.snapshot().at("version").to_number<int64_t>()+1}},"VERSION_CONFLICT");
+    send({{"action","discard_route_edit"},{"edit_session_id",sid}});begin();
+    error({{"action","discard_route_edit"},{"edit_session_id",oldSession},{"expected_version",oldVersion}},"EDIT_SESSION_EXPIRED");
+    EXPECT_TRUE(store.snapshot().at("edit_sessions").as_object().contains(sid));
+}
+TEST_F(P4Workflow, HeartbeatStaleDiscardStillRejectsExpiredLease) {
+    ready();begin();auto before=store.snapshot();const auto oldVersion=before.at("version");
+    before["version"]=oldVersion.to_number<int64_t>()+1;
+    before.at("edit_sessions").as_object().at(sid).as_object()["lease_expires_at"]=0.;
+    const auto file=std::filesystem::temp_directory_path()/("p4-expired-discard-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(before);}
+    SecurityPlanStore restored(file.string());
+    try {restored.transact({{"action","discard_route_edit"},{"plan_id",p},{"mission_id",m},{"edit_session_id",sid},{"instance_id","Map-1"},{"expected_version",oldVersion}},uavs,"QA",[](const O&){});FAIL();}
+    catch(const PlanError& e){EXPECT_EQ(e.code,"EDIT_SESSION_EXPIRED");}
+    EXPECT_EQ(restored.snapshot(),before);std::filesystem::remove(file);
+}
 TEST_F(P4Workflow, IndependentViewsNoopValidationAndBusinessIsolation){
     reviewed();const auto before=store.snapshot();UIPreferenceStore lang("");VideoViewStore video("");int events=0;auto pub=[&](const O&){++events;};
     EXPECT_EQ(lang.snapshot().at("language"),"en");lang.update({{"language","zh-Hans"}},uavs,"Command",pub);lang.update({{"language","zh-Hans"}},uavs,"Video",pub);
