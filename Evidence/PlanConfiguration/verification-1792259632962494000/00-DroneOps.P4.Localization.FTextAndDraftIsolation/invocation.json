@@ -1,0 +1,20 @@
+{
+  "role": "Map",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Map",
+    "-P5Instance=c773c95a-7ba2-4ba2-919f-714b6138f771",
+    "-P1Http=http://127.0.0.1:22584",
+    "-P1Ws=ws://127.0.0.1:22585/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.P4.Localization.FTextAndDraftIsolation",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792259632962494000\\00-DroneOps.P4.Localization.FTextAndDraftIsolation",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792259632962494000\\00-DroneOps.P4.Localization.FTextAndDraftIsolation\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792259632962494000-0"
+}

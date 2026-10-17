@@ -1,0 +1,607 @@
+{
+  "sealed_at_utc": "2026-10-17T17:58:17.267848+00:00",
+  "baseline": "ea80c1e9f2b2afc7b9726c16a826980de189aada",
+  "scope": "Isolated Mock data only. Native mouse workflows and RHI automation reported separately.",
+  "runs": [
+    {
+      "directory": "verification-1792258135884655000",
+      "pass": true,
+      "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+      "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651"
+    },
+    {
+      "directory": "verification-1792258310870083400",
+      "pass": false,
+      "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+      "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651"
+    },
+    {
+      "directory": "verification-1792258610031847100",
+      "pass": true,
+      "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+      "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651"
+    },
+    {
+      "directory": "verification-1792258727524693800",
+      "pass": false,
+      "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+      "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651"
+    },
+    {
+      "directory": "verification-1792258799488106200",
+      "pass": true,
+      "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+      "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651"
+    },
+    {
+      "directory": "verification-1792259274506787500",
+      "pass": true,
+      "ue_module_sha256": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048",
+      "backend_sha256": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067"
+    },
+    {
+      "directory": "verification-1792259275501704500",
+      "pass": true,
+      "ue_module_sha256": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048",
+      "backend_sha256": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067"
+    },
+    {
+      "directory": "verification-1792259362820560200",
+      "pass": true,
+      "ue_module_sha256": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048",
+      "backend_sha256": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067"
+    },
+    {
+      "directory": "verification-1792259632962494000",
+      "pass": true,
+      "ue_module_sha256": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048",
+      "backend_sha256": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067"
+    }
+  ],
+  "latest_tests": [
+    {
+      "test": "DroneOps.P4.Localization.FTextAndDraftIsolation",
+      "role": "Map",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.P4.Localization.FTextAndDraftIsolation"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.P4.Localization.FTextAndDraftIsolation"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792259632962494000-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792259632962494000"
+    },
+    {
+      "test": "DroneOps.P4.Workflow.CommandLiveCRUD",
+      "role": "Command",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.P4.Workflow.CommandLiveCRUD"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.P4.Workflow.CommandLiveCRUD"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792258799488106200-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792258799488106200"
+    },
+    {
+      "test": "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo",
+      "role": "Command",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792258799488106200-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792258799488106200"
+    },
+    {
+      "test": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+      "role": "Map",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.P4.Workflow.MapLiveDraftGuard"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.P4.Workflow.MapLiveDraftGuard"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792259362820560200-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792259362820560200"
+    },
+    {
+      "test": "DroneOps.P54.RouteEditCameraLock",
+      "role": "Map",
+      "pass": true,
+      "expected": 2,
+      "exit": 0,
+      "discovered": 2,
+      "discovery_log_counts": [
+        2
+      ],
+      "completed": 2,
+      "completed_tests": [
+        "DroneOps.P54.RouteEditCameraLock.2D",
+        "DroneOps.P54.RouteEditCameraLock.3D"
+      ],
+      "passed": 2,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.P54.RouteEditCameraLock.2D",
+        "DroneOps.P54.RouteEditCameraLock.3D"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792258310870083400-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792258310870083400"
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.MapControls",
+      "role": "Map",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.MapControls"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.MapControls"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792259274506787500-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792259274506787500"
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.Workspace",
+      "role": "Command",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.Workspace"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.Workspace"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792259274506787500-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "directory": "verification-1792259274506787500"
+    }
+  ],
+  "failed_runs_retained": true,
+  "native": {
+    "date_local": "2026-10-18",
+    "method": "Actual Windows mouse/keyboard through computer-use sky; no business API writes. Read-only Backend snapshots corroborate outcomes.",
+    "environment": "Owned isolated Mock Backend and Command/Map/Video on online CesiumWorld, 22580/22581; fixture ellipsoid altitude 80 m, not AGL.",
+    "owned_processes_stopped": true,
+    "final_visual_recheck_passed": true,
+    "build_2_workflow": {
+      "host_run": "1792258224472745500",
+      "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+      "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651",
+      "passed": [
+        "Create plan and default mission after acknowledgement",
+        "Keep typed draft across Alerts and Keep Editing",
+        "Assign UAV-01, draw route in Map, Save Draft retains editing, Finish Route releases camera",
+        "Review and deploy: zero executions and configuration lease released",
+        "Explicit Mock start, pause, then configure a second plan and confirm abort of original group",
+        "Second local draft remains, Save and Finish persists it and releases configuration"
+      ],
+      "note": "Full business workflow predates final visual polish and heartbeat-release fix. This is not labeled a full replay on build 3."
+    },
+    "build_3_recheck": {
+      "host_run": "1792259446934307100",
+      "ue_module_sha256": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048",
+      "backend_sha256": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067",
+      "passed": [
+        "Chinese new-plan layout without duplicate status/heading or previous-plan summary",
+        "Named unsaved draft retained across Alerts; Finish exposes Save/Discard/Keep guard",
+        "Keep Editing, create plan, assign UAV-01 and hand off route to Map",
+        "Map shows route-specific guidance and hides box/group movement",
+        "Add unsaved waypoint, explicitly confirm discard: waypoint removed, 2D/3D controls unlocked",
+        "Finish configuration: lease and edit sessions empty; Fleet navigation and Map box/group controls restored; zero executions"
+      ]
+    },
+    "not_native_verified": [
+      "Final-build full deploy/start/pause/abort replay (covered on build 2 and by final-build RHI automation)",
+      "Restart/reconnect and ownership-expiry scenarios (Backend/protocol coverage only)",
+      "Actual alarm arrival/acknowledgement (empty Alerts navigation exercised)",
+      "Physical UAV flight or real device control"
+    ],
+    "video_boundary": "No native video-target action was issued; automated tests verify exact Video target/state invariance."
+  },
+  "localization": {
+    "attempts": [
+      {
+        "attempt": "-1",
+        "gather_completed": false
+      },
+      {
+        "attempt": "-2",
+        "gather_completed": true
+      },
+      {
+        "attempt": "-3",
+        "gather_completed": true
+      }
+    ],
+    "final_internal_exit": 0,
+    "final_process_exit": 1
+  },
+  "backend_final_manifest": "backend/revision-lease-release/manifest.json",
+  "binaries": {
+    "Backend/build/Release/DroneBackend.exe": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067",
+    "Binaries/Win64/UnrealEditor-UE5DroneControl.dll": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048"
+  },
+  "sources": {
+    ".gitattributes": {
+      "sha256_raw": "22e950175370b5cb311273c9c9aed9324f327f4a9a307aafcbf63fea853c19d1",
+      "git_blob": "dfafab5226a78f265be9b9075461195dcd37b0ab"
+    },
+    "Backend/http/http_server.cpp": {
+      "sha256_raw": "03953e938f6a446f71ba771eef8cb1cd304186ab1671d60afb020034664ed578",
+      "git_blob": "d1b6d9d5a451d3524d0679eaf73e9ba128a6560a"
+    },
+    "Backend/storage/mock_execution.inl": {
+      "sha256_raw": "d0e39bfc091e0b72031a5b62e98a9b27215225ce6beda645d60250b1cc3d6261",
+      "git_blob": "639cc4ede478db508f9981082e4c5148a534b780"
+    },
+    "Backend/storage/security_plan_store.h": {
+      "sha256_raw": "72792d18e810a8f4a201928da7def0f530c6f645ed026bd5426599a9d30f13f8",
+      "git_blob": "fab7c84c223b9846c5c739629e7a2305bbc9d700"
+    },
+    "Backend/tests/configuration_workflow_integration.mjs": {
+      "sha256_raw": "801e3f580029ae3b3c5bc48ebc216e20e7c7c2886a12ca6a5b8c2a19d88972db",
+      "git_blob": "35752f6ea357ce5c6fd6368a72e82d4a7c99ab2a"
+    },
+    "Backend/tests/test_p4_workflow.cpp": {
+      "sha256_raw": "4f2da5e0a27443c84214e2cf07e24df640c0997e0b36621dfaabc4fdd2c65728",
+      "git_blob": "2ecf70fc5ac63d057877ded24b32dba5db8595a3"
+    },
+    "Backend/tests/test_p52_execution.cpp": {
+      "sha256_raw": "b7896bbd84934b2db46cb330d3e07565a67b40f4dbed3f56ec97d34a7d56a7ac",
+      "git_blob": "e81bd42319a1206ff15edb2039d8a6f1ad1c50cb"
+    },
+    "Content/Localization/DroneOps/DroneOps.manifest": {
+      "sha256_raw": "d5dc27d561e0b67a2685254ed69827b4441f0c58d922119f16d4885c34360cc0",
+      "git_blob": "71ea57976a42cd1b1c759f439ac34b8fbf88e29d"
+    },
+    "Content/Localization/DroneOps/en/DroneOps.archive": {
+      "sha256_raw": "2a89b9cabbf9261595a766db745ccce8d44008a396e73c16f5356c1ab8227797",
+      "git_blob": "f37c490649f3a52d0d6b5f8ebf9ff8186df71bf1"
+    },
+    "Content/Localization/DroneOps/en/DroneOps.locres": {
+      "sha256_raw": "d01dedaa03c160d447aa42dde1f72aa873185d700d464b26cafe109815b9dd86",
+      "git_blob": "3d9854697f30943dc6205ce533d605bc9ed9b9cf"
+    },
+    "Content/Localization/DroneOps/en/DroneOps.po": {
+      "sha256_raw": "0e5e4cc800891773ef5aa536381dafaac65d2ac3b21106b16448d6d26d591b9d",
+      "git_blob": "7088f9c72ffe625d2bdf51ff924a48db606c753c"
+    },
+    "Content/Localization/DroneOps/zh-Hans/DroneOps.archive": {
+      "sha256_raw": "9c915931a348bc1c0e5ebb989df54849d4ab8cc938eb4dfa701465d55d3ecf8a",
+      "git_blob": "85d5a97acaef92cac4351d41592aba50a005ba58"
+    },
+    "Content/Localization/DroneOps/zh-Hans/DroneOps.locres": {
+      "sha256_raw": "24a82aca2624268a0ae9a3d8d442a51a6a22d55635620e96ea2d2aa752d86a53",
+      "git_blob": "2536993ab702668e59e274e30ac8769c11f63710"
+    },
+    "Content/Localization/DroneOps/zh-Hans/DroneOps.po": {
+      "sha256_raw": "7904abfb8c1b03382f447a6e1ed729a3f4d61df190a8868f453f121274961ce3",
+      "git_blob": "068f41c340a4595fb7b44e046ceaa57b1bbdf1ed"
+    },
+    "Launcher/runtime.py": {
+      "sha256_raw": "c7a28529eb89392c7b90b8d61666ee588a222195784f73ac7f2aaeaf01600800",
+      "git_blob": "99f25b6e068dbf736bf5e55c42fcb214467a2715"
+    },
+    "Launcher/test_runtime.py": {
+      "sha256_raw": "d72b067ad6f55c9249eec11724ebaab2a689b44ce1f1a5c45a3d783fb99053ab",
+      "git_blob": "2213d4fa6c8c7604da17e64679ceff8390fd1657"
+    },
+    "Scripts/P4/localization.json": {
+      "sha256_raw": "a21a57af38cd0fab66e125c39be8a09414f9f219d805d8b67fefc0e7e07f1e7f",
+      "git_blob": "baf7e11d2a7c2a430a3c5bd6a929a7d5dd32d5a1"
+    },
+    "Scripts/PlanConfiguration/qa_host.py": {
+      "sha256_raw": "1e6a3c6f9aea83cc6f96a14947b8a7ed92d63aed25dffd8c282e91ff8761ea8c",
+      "git_blob": "7c985a00bbfc90003bbe41c4b9a444cd9f831c2b"
+    },
+    "Scripts/PlanConfiguration/sanitize.py": {
+      "sha256_raw": "c3748d2ab7ec44e23657ac7821cdf2dbece2c2d8e3b751b7b0441c8bef804437",
+      "git_blob": "2a19ed30a5bd17f111a344f8f837d4659065163b"
+    },
+    "Scripts/PlanConfiguration/seal.py": {
+      "sha256_raw": "e3f224d2f91b10eb6b5725f2bfd5ab44a5fb85f889b50526f8699c8cd396829e",
+      "git_blob": "21a095fd97f86b2e5438bb4da7eb48249010d6a5"
+    },
+    "Scripts/PlanConfiguration/verify.py": {
+      "sha256_raw": "68381e7f8722e3325bf6205fd55f086d15f86a73183becf62e7c08a3bfba14e5",
+      "git_blob": "470a8c8bae97ec96ddc7e479fcdad94116825190"
+    },
+    "Source/UE5DroneControl/Command/CommandCenterPanel.h": {
+      "sha256_raw": "ca8e19180572ad341571aeb448b06536aa4cf8c6217f675ef0fd7ea3c2d0ea27",
+      "git_blob": "de1092eeb5e10fbccdb6c250b97a36d17c48e9ae"
+    },
+    "Source/UE5DroneControl/Command/CommandShellWidget.cpp": {
+      "sha256_raw": "14bb56bf0bb09f832c14f19ab802792c253679be0c44e43ffeead10397afede6",
+      "git_blob": "64b468ea450c43d6124d4298a63b142abe58ca48"
+    },
+    "Source/UE5DroneControl/Command/CommandShellWidget.h": {
+      "sha256_raw": "14daa55a356fe27f2112b494e0aeaf91b00de1b5b37cd1a4fa462b8aa3dca82e",
+      "git_blob": "e9ddd4d23336c58b51d7ac703dcb5fd50eb7d750"
+    },
+    "Source/UE5DroneControl/Command/GroupControlWidget.cpp": {
+      "sha256_raw": "30d9199478a1ef59e6d7dcda29eaf8676522e0e26eb0e766a7d9b99eea5dd98e",
+      "git_blob": "ec20a804533ebdca07d1b68b4a08876a2c1b4146"
+    },
+    "Source/UE5DroneControl/Command/GroupControlWidget.h": {
+      "sha256_raw": "f535d83f0b5e311bce4e2f704aadea1bbb22bde20bf9062b17e09d9d74967a30",
+      "git_blob": "2e5c6b7d960b792b52737b97174c4e9d09977226"
+    },
+    "Source/UE5DroneControl/Map/MapFleetInteractionWidget.cpp": {
+      "sha256_raw": "a4a6a9a6bdd53e06ac82ceba3758199d451df5be16dd4d2fbbf1be1242dbb509",
+      "git_blob": "628156683b361541f538f864b63f1b6cb5f57a35"
+    },
+    "Source/UE5DroneControl/Map/MapShellWidget.cpp": {
+      "sha256_raw": "194ff4d221b9091575e4eb29a747e4f014c65df64e19e7b5e15a6966fc52097b",
+      "git_blob": "1bade4f777ec759a99e512d2940f84ce68bbaad5"
+    },
+    "Source/UE5DroneControl/Shared/ActiveExecutionControlsWidget.cpp": {
+      "sha256_raw": "dd5ea25e26fd15c0e93155a1ec242d608bf45d15cd775cd6de3974303e5020a4",
+      "git_blob": "581bbab3a415b6fd06ca49cf333d6d278036e685"
+    },
+    "Source/UE5DroneControl/Shared/ActiveExecutionControlsWidget.h": {
+      "sha256_raw": "e3d67fa6f5b36c93e65dd48ba8514f2a6df087108ead65f0c64bf5cfc9015e8a",
+      "git_blob": "1375e472b3a6c4a97fae5156ea0ef47c9c292cfe"
+    },
+    "Source/UE5DroneControl/Shared/PlanConfiguration.h": {
+      "sha256_raw": "5ed8de39af974c411b6755f3422b75a7a588e00445b32f7998f825388ba93f26",
+      "git_blob": "0638dacca70efe0ac7ba36c390e60c032429e79e"
+    },
+    "Source/UE5DroneControl/Shared/ProductText.cpp": {
+      "sha256_raw": "f14700e50d477e7f12a371291cc2ac18107f33390434ef9029b6a41970dc39e7",
+      "git_blob": "2fcc12af025dcc141ac13db81f6d21b33289c1dd"
+    },
+    "Source/UE5DroneControl/Shared/SecurityPlanWorkspaceConfiguration.cpp": {
+      "sha256_raw": "8afd44e3147b60ea00fd69335d45cb73131e4fb847b833e3bed5e594224c8659",
+      "git_blob": "1e4e39b95add9651f2d0fc30aed8ee11ad0af586"
+    },
+    "Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp": {
+      "sha256_raw": "56e95c312ce3449fc849b2cc4d850bac9052f4ffc8b751a1f1c154ca086a4257",
+      "git_blob": "79196e50be4ca2fe4253fc4c3f674f7000901a89"
+    },
+    "Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.h": {
+      "sha256_raw": "121abf386e24ae2e1bdf3754e2133f35051c0e41135be689c5c5ee08b287ce79",
+      "git_blob": "c4eb36a040fcb5b612800b83bca0f736c37e8f10"
+    },
+    "Source/UE5DroneControl/Tests/PlanConfigurationTests.cpp": {
+      "sha256_raw": "af700bee5dd4e2cfea2a1360ad135a75f58a1f67361c87cdfb42b233554e45f2",
+      "git_blob": "48f64323fc2656af779669e6e0c08d8216274508"
+    }
+  },
+  "credential_pattern_scan_flagged_files": [],
+  "files": {
+    "backend/build-identity.json": "962889a6a96bb4d4facd6bac5de8d3f00d762491da9476333c4be495f7747f79",
+    "backend/manifest.json": "9e641548dbd0b0aa9ec0e8ee35747d1cb05f274240de1a0e54bf9fbd34a9294c",
+    "backend/protocol-result.json": "6dc5385b21b4c2f50f51266d897c05d0886b4bb6a868f3656618c7d293c436b6",
+    "backend/protocol-traffic.json": "deb3236e3e8e29a1909d2a4b19fd33a24cbcec2be0e65534b8c1c6ca818998a6",
+    "backend/revision-lease-release/build-identity.json": "d2c93ec4a7ff27b9a3e221e05d6b74c37e6d5879583532060d443df48b3ab4c9",
+    "backend/revision-lease-release/manifest.json": "b24b92b5b94b67d0ecaf02f9c9d065cf546362101d9e7bd9b59de3c64da1cdff",
+    "backend/revision-lease-release/protocol-result.json": "3fba100a676b382f87dd9861b7d889caa916b9030aa49ead83e524f72e907d0b",
+    "backend/revision-lease-release/protocol-traffic.json": "bf1955f706c4a7922df186fbf3e43b775336178c42434b04cf4f55b7ff0ea9ff",
+    "backend/revision-lease-release/unit-result.json": "bbcb0980fe88f6d29a1135916214ea79b57a082f7b92e7ea2ab4513d29015f57",
+    "backend/revision-lease-release/unit-summary.json": "a9e05bb5432007c32a1c4e83fe1afaca102b75cbd05d3bcb4372866130eb2918",
+    "backend/unit-result.json": "31d94c84a5f8fd78b914e6521221c1257287906caf854a304edadeaf07c59439",
+    "backend/unit-summary.json": "4dc0ea806c8d46d4be6bc111ebea31360418075f58e92760aa2bd89e630a69db",
+    "logs/build-1.log": "e9d2fa4cbd3caa4b43988c7f02605625040255ad01ada09de64f377e2d1a4ba5",
+    "logs/build-2.log": "3240c12658be86b2dbc28286a636bc35550bed2fc67d101d1528e091a4f268c5",
+    "logs/build-3.log": "74d6816329e7960ed64de6587d039ed52b55b9c2f76aec7682d87c1a16bb8420",
+    "logs/launcher-tests.log": "a3a328c2c4c13e92595b7d0f4b297950f77c168829dde3cf150bc14c8008d280",
+    "logs/localization-2-diagnostics.txt": "0fbc6f1b5a74f8a57748578347963a9e17e9bb27b35d5f6a0cd6f6fb9fc6eb66",
+    "logs/localization-3-diagnostics.txt": "c69424cd0f0470edb050335e8213562426223d12b647449d2b010cde6e3551cf",
+    "logs/localization-diagnostics.txt": "095f8b7cc7e6535959f452cd79f80b76f4c3e83c1d8bf11fb8f01f39ab31e184",
+    "native/acceptance.json": "30212e49cbdee01300ed399f957c4d0587b22a6a29b4e648b6b5e73549cb88fd",
+    "native/build-2-workflow/01-deployed-no-execution.json": "4f1cedb5b938ba3bf59d22b32775d039df2d789723601f09723463802657ef1c",
+    "native/build-2-workflow/02-aborted-while-configuring.json": "cc6025b92bb1509f058ba8dca8800493cdf8120c5cfeba99e3a461d645aa2504",
+    "native/build-2-workflow/03-saved-and-finished.json": "abb5be18ca28f6040b4dd1f8249a5f86477dd02d383f04e6dba867caf57ac7e6",
+    "native/build-2-workflow/configuration-retained-after-abort.png": "00bd66ad5e525a26dd6b657a4b0d8ccac653b37d82b86ac5ff04dcd95805e661",
+    "native/build-3-recheck/01-clean-form.png": "180ff2907cc791cb1e4ce90b25a5af9b499eb226c7863887c7bac7fa0927a27e",
+    "native/build-3-recheck/02-alerts-context.png": "85bfdde893ef44948015c53cf8f8bfddab77249af42aef49282cd599a1913546",
+    "native/build-3-recheck/03-unsaved-guard.png": "2d0d112e318cc583145bfe418c30f61499907b17e1ae819f29406f226504d0f1",
+    "native/build-3-recheck/04-map-route-context.png": "7203b3490b94f1060439f2151b1bdc987db0561950d265b60ebb39890fdd005a",
+    "native/build-3-recheck/05-route-discarded-unlocked.png": "fa1f097fecc3b78e517e793d31b03a2a773d0147b8ff080455e66b48fb5d646a",
+    "native/build-3-recheck/06-finished-plans.json": "479279aa6c352ca7509df75e9a9f19fa3950b936effbfe4cada1bb838bb61c6d",
+    "native/build-3-recheck/07-finished-command.png": "e05a14192f739ca14954524a8014cd79d0a6126c344fd6e240ee57c008692ea0",
+    "native/build-3-recheck/08-map-controls-restored.png": "a432a04472e51ef9e6b74611f390f9977f01cb03d552bfe026f796670d07ae26",
+    "native/host-1792258224472745500.json": "e7f6244574c20faf5895dbc67c43228aaf4b68742ff6ad68e2181fa6b4cf09d8",
+    "native/host-1792259446934307100.json": "c1a3afd831d5153ff4e37533a3a463fbe1dd82569594e40b86bd1ec45b443b57",
+    "sanitization.json": "55ba97f5999f12d8962a301b3a24a50339c04ddbddc709ef650debfc13efc054",
+    "verification-1792258135884655000/00-DroneOps.PlanConfiguration.Workspace/editor.log": "d543d77757520cb31c3d08176e2427892e7911b85407f841c97f4e6a82896584",
+    "verification-1792258135884655000/00-DroneOps.PlanConfiguration.Workspace/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258135884655000/00-DroneOps.PlanConfiguration.Workspace/index.json": "89db3eda5522646026f7e70f41ebc686f8d3c7fda4ea2d319b97954b6e27f046",
+    "verification-1792258135884655000/00-DroneOps.PlanConfiguration.Workspace/invocation.json": "77dc2d69200e08c017385b1f725cc1e08ea5f28ea01ca4b8b1a024737a63b057",
+    "verification-1792258135884655000/00-DroneOps.PlanConfiguration.Workspace/result.json": "03d640a35705a1ca0d9f9805b7597175d34c62884dee651b721fd4e9e301a1eb",
+    "verification-1792258135884655000/01-DroneOps.PlanConfiguration.MapControls/editor.log": "622716121e3e22417fb39d5462c7d1119e49b2d43a02eafc430c963e07828b40",
+    "verification-1792258135884655000/01-DroneOps.PlanConfiguration.MapControls/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258135884655000/01-DroneOps.PlanConfiguration.MapControls/index.json": "7a363d30471c303356ccfba015f838bb9fe799094469492ccc1b048f5f0ce35c",
+    "verification-1792258135884655000/01-DroneOps.PlanConfiguration.MapControls/invocation.json": "a97e702e5c60e948247a3fc4f7ba2ada37b2e462489a1ef496a367c47d97aaea",
+    "verification-1792258135884655000/01-DroneOps.PlanConfiguration.MapControls/result.json": "0dc2a31b4a3473b92cbd429cc95431f94e37b8f41fd35e3b9f8d09dbd8548582",
+    "verification-1792258135884655000/run.json": "e133f9194425522f52601f7ab87de8c4d7d46a9c42e11ae2e6090f210a09aeb1",
+    "verification-1792258135884655000/summary.json": "6f61401fb2908f8b33f9120db965cc093a9ec0a017524011ba0519b0cb1cc548",
+    "verification-1792258310870083400/00-DroneOps.P54.RouteEditCameraLock/editor.log": "ac217c56263c9ae90d4090e6d401d4b5f4003bee2dccbb284f4723d64d4878cc",
+    "verification-1792258310870083400/00-DroneOps.P54.RouteEditCameraLock/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258310870083400/00-DroneOps.P54.RouteEditCameraLock/index.json": "f00f82696f5bd4032888c0e5e80c02a63988dbf2b1b692352d24a90311506db4",
+    "verification-1792258310870083400/00-DroneOps.P54.RouteEditCameraLock/invocation.json": "fec3d574498ae86323b03abd0c0e5517e02c4eb12e6bde96e2ae27d1c101dadf",
+    "verification-1792258310870083400/00-DroneOps.P54.RouteEditCameraLock/result.json": "83ebdf0524caa867d987f01ecb4bd70c09d277b0f6cad663c1dc8c2614bc2535",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/editor.log": "bb87c0306c97fc1104e0a25fdc58e2bde393db57e6f14d1728d05fe9e8e99575",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/index.json": "0e09575898c576c54e63faa1e8e4c3f44985f1dab082ab94c66a4f61dbc634d5",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/invocation.json": "1dfa17a385ad5aaaa88d2bca9ea71009adcdda97be7c58144f4720e2c01eb3b4",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/result.json": "41b490a82409c416998df081e6437ef5ccbfde40cffd19f4a1db8f33b7c0d8a0",
+    "verification-1792258310870083400/01-DroneOps.P4.Workflow.MapLiveDraftGuard/route-fixture.json": "df116df0b4954dbcb0f9103a542cc014e54c2ede6b6f4477af7be36d19497b55",
+    "verification-1792258310870083400/run.json": "79cbe74d9ae0ce5869957b6c2957035eb02d717922cf3a2d62dc6be3badf1a2a",
+    "verification-1792258310870083400/summary.json": "c6bd8ab64fd5a11cedb9956114f8d9ea91ed027f48526df23207e4de085009c2",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/editor.log": "b106c5771e79ad5d9b4c24d0e5629953adb95296796569cd82eee2aef213a2d9",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.json": "dad5f95a2bd82eb207ca4890365b478ea83e23ce7f3edb1ec1380df7dd9eec09",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/invocation.json": "1fc984c2bf5fddc6cc1dfa58870f9194c8ecd2291f831ad84ec40d8ff47788a2",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/result.json": "0bc14d914ce6f685d1f479442e0fab88d0f26ed71921cbbe7528e7cab83130fa",
+    "verification-1792258610031847100/00-DroneOps.P4.Workflow.MapLiveDraftGuard/route-fixture.json": "df116df0b4954dbcb0f9103a542cc014e54c2ede6b6f4477af7be36d19497b55",
+    "verification-1792258610031847100/http-trace-metadata.json": "9a1988417bc7a74f3bba0f7088de7fda2dd23e8e98c25933c3b265ca0de00fb2",
+    "verification-1792258610031847100/http-trace.jsonl": "851ace2edc843bc85d84cbabf98a2a9789321aefdaf1c615a92f3d10ee8ef722",
+    "verification-1792258610031847100/run.json": "25b67631d7ce32d8a6ef3673ba0198c1ca37dcfc90134f2b7c194356e430955a",
+    "verification-1792258610031847100/summary.json": "4ac79f2a266a82344281f56d6fad268d525102e95d20e1087d2e9477d3c06182",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/editor.log": "9e382107537a47e40dc59be5da1cffeded04947a8bdf4d38bbde174704c3ad62",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.json": "436aa360f245798fe2410a5f6828387e00fb0a11d448f912570be8f9447459b2",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/invocation.json": "991aad25a20c023b27f044906ffa2d068abc74cd0c288429bda9c7679deacf5e",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/result.json": "05221b28afd8cfde59e0b60535b9083253ff01f288a7b4c6bc199011d8e66e07",
+    "verification-1792258727524693800/00-DroneOps.P4.Workflow.MapLiveDraftGuard/route-fixture.json": "df116df0b4954dbcb0f9103a542cc014e54c2ede6b6f4477af7be36d19497b55",
+    "verification-1792258727524693800/http-trace-metadata.json": "9b434d8f55d9576ea4090ef42650d29d2c44358f2e942089405e24038309d5b5",
+    "verification-1792258727524693800/http-trace.jsonl": "6c6d0fa918732089e5b05bf8334a626b1cde9b74604322c882520cf75409e7fc",
+    "verification-1792258727524693800/run.json": "d1ca7faead44a51e1e77d209f3b51ac5384ec1a9214b72f38adacc291b21f48c",
+    "verification-1792258727524693800/summary.json": "ac17274b4b55bb1716bdc56804c60f461e1f113b1f5cce33567bebae40f254e5",
+    "verification-1792258799488106200/00-DroneOps.P4.Workflow.CommandLiveCRUD/editor.log": "480bd480e538a34f1b251b4e13f6e9b76eeb0e4181ae6b99ff528655352e1912",
+    "verification-1792258799488106200/00-DroneOps.P4.Workflow.CommandLiveCRUD/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258799488106200/00-DroneOps.P4.Workflow.CommandLiveCRUD/index.json": "79dcc0926a1f3a56acea7ad4a22eed7c06c479086bc0104e8c330c4e123bb351",
+    "verification-1792258799488106200/00-DroneOps.P4.Workflow.CommandLiveCRUD/invocation.json": "9d5981e8a8240e37cebc2839464fdad3eaa1ed75fd7e23302360ac99947e7e12",
+    "verification-1792258799488106200/00-DroneOps.P4.Workflow.CommandLiveCRUD/result.json": "a3aa8eb670610b11486eb134bd9328758f3cd8a0a91f5235968da39e7ecf9d4c",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/editor.log": "d5d9e2558195dd327aee5be50664f581ebfc6e9ec93e8e9a854ce2df1657eb4a",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/fixture.log": "b143800a6185a7b8437439d1ea55fb16b2d598d07eda867d13e731649c3c1ba1",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/index.json": "d8afef670b15cf3dc154b85cca05d4db2dcab76ef5e6c5cb3658fe955c226e50",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/invocation.json": "4fac897f2d10dc22d6657fdd879059da6665efe4620e11ed93319352d82e39db",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/p4-fixture/p4-http.json": "f3dd3ecab040aa305e93edd3d6e19189ac2f95b07e5a640c3ca582996249fe06",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/p4-fixture/p4-results.json": "6632658074dba718b912a272afbf177dea1f72452e578beda4272e331490e13c",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/p4-fixture/p4-ws.json": "adb41a5dbf9484451f53cd72345de7061344096e79a2c5787b34c851e9f92c9c",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/p4-fixture/restart-before.json": "d91400ee1c95940528ffe5e9f111f68061ae49843a00eca4354360c41d6ee5a4",
+    "verification-1792258799488106200/01-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/result.json": "6a82fb4692325c305c807c13e9f8dee1ede5e3218b213b96a8df1e7344e980ff",
+    "verification-1792258799488106200/run.json": "378fe465b56b79a9198031d7e40429a74cecd0adf6070570c922f77ab282983b",
+    "verification-1792258799488106200/summary.json": "7cdf029f3a1c3c4092b6643446e257e6b7e87a8263bd68bba95221fcd78eda88",
+    "verification-1792259274506787500/00-DroneOps.PlanConfiguration.Workspace/editor.log": "4de52c78d6e02be0a1a07a45e5dec07ad0eef20c35ac39c7915254312ddbed7a",
+    "verification-1792259274506787500/00-DroneOps.PlanConfiguration.Workspace/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792259274506787500/00-DroneOps.PlanConfiguration.Workspace/index.json": "c0314314cdb5f0424b34bfdae1f988c0f0b17fc1ebf411f7fd0c24a5e27184f9",
+    "verification-1792259274506787500/00-DroneOps.PlanConfiguration.Workspace/invocation.json": "61093acd06902ebb4689bb3983328f2de69493e5962f5cff7929cb77e074ef6a",
+    "verification-1792259274506787500/00-DroneOps.PlanConfiguration.Workspace/result.json": "7fc7d0cb66036cb3bbb08392ccb0c5b7913405d866d312b32074565776a8aad1",
+    "verification-1792259274506787500/01-DroneOps.PlanConfiguration.MapControls/editor.log": "8bf6ef72ba0464066c574b36e3318225a4ce2b5074b2565ce5350989811f4f1e",
+    "verification-1792259274506787500/01-DroneOps.PlanConfiguration.MapControls/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792259274506787500/01-DroneOps.PlanConfiguration.MapControls/index.json": "e19a7aa241d734fe441420bf62759c93368c8b3cdd2becebd08ffcce22c74e6e",
+    "verification-1792259274506787500/01-DroneOps.PlanConfiguration.MapControls/invocation.json": "f35916e6d2f573ed171a296b27c265939b34bb6e8ff3f0cee728d582ebbc9936",
+    "verification-1792259274506787500/01-DroneOps.PlanConfiguration.MapControls/result.json": "7384ddfa35a709ae2a1b384307850a3d44afce681b93606268af9f955c7833b1",
+    "verification-1792259274506787500/run.json": "fb832890f9c7da814951bab412f4561aafa37d3373fb8eed340db6eeb0900f75",
+    "verification-1792259274506787500/summary.json": "38a1b67ef7fafc8560f9049cd649721cd6655307a73fce5e89812019c060a862",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/editor.log": "685469ec6d2672e4d1fc8177696fd93677ccac358e979ddc0cf97d244e72bb74",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.json": "c94c12c2f601457502ec6a9dc4150eb2f891f1839e55dcf9746254eb68fbbc52",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/invocation.json": "88657bfc51a45e64cf4e2ec9a03522547964023d4b29c87ba307b6b0e0d34ddc",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/result.json": "5860e4b5592085dac4dd679d7ccb15f5e50e4489eb371f3e491fd8198a5406bb",
+    "verification-1792259275501704500/00-DroneOps.P4.Workflow.MapLiveDraftGuard/route-fixture.json": "df116df0b4954dbcb0f9103a542cc014e54c2ede6b6f4477af7be36d19497b55",
+    "verification-1792259275501704500/run.json": "22e4289e28719979eaba176cc72c81a9d2c11e7d1ca8f0a5e51cc790ac6cd597",
+    "verification-1792259275501704500/summary.json": "11b43fd7523ebd6bf04bf854fc098d7660909b4b9ee60308ac4d7b8af3620b24",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/editor.log": "b6f592fc0ff172c9a5c820aedc91817ac5e78d0e4ab1cc967a31720f65f128a4",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/index.json": "66616dd0cc8bfc02429827a4e7005e498e2ff0058df5b7465c1ab1db8e069d3d",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/invocation.json": "bd0a89657efca4e6403661824182588ac8a5deffb8ec2b6e0b3ff49d2b220ee3",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/result.json": "ed126f07fee88e8dcf8e55a0fb24ceabc751d985bf8a32686e032a4a7bd36eaf",
+    "verification-1792259362820560200/00-DroneOps.P4.Workflow.MapLiveDraftGuard/route-fixture.json": "df116df0b4954dbcb0f9103a542cc014e54c2ede6b6f4477af7be36d19497b55",
+    "verification-1792259362820560200/http-trace-metadata.json": "95ba68050bad6c28b0874d4c59198057804ce2a982783fa105b49438a90cac09",
+    "verification-1792259362820560200/http-trace.jsonl": "acb4b55ded6450ddd9ae9a093e495030ec12e6d9ed7bb376fd3e78ccc888bdbe",
+    "verification-1792259362820560200/run.json": "a091c43dfbf2a5d503698fed5ed053568f86c7cc18edb13dfd08427e0f0cba6b",
+    "verification-1792259362820560200/summary.json": "2d9bf09ab5ceb19455c394bbd5d1a2a64137f836dcfa9d0890de51f0f9941e73",
+    "verification-1792259632962494000/00-DroneOps.P4.Localization.FTextAndDraftIsolation/editor.log": "fc44ec22f846ae361a4735cb39bea601e807b6ee29f428c3a69374e58e817109",
+    "verification-1792259632962494000/00-DroneOps.P4.Localization.FTextAndDraftIsolation/index.html": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+    "verification-1792259632962494000/00-DroneOps.P4.Localization.FTextAndDraftIsolation/index.json": "ee76cc238dd67c9dd7a206175fdcfce19e62faeb73c74dded57db27aeb29e5dd",
+    "verification-1792259632962494000/00-DroneOps.P4.Localization.FTextAndDraftIsolation/invocation.json": "d8df317545b98abc9abb49d951c6e1cb7e9880b2250cb75733cfad57bad40f64",
+    "verification-1792259632962494000/00-DroneOps.P4.Localization.FTextAndDraftIsolation/result.json": "15a16ee64ed78e1979438131a21921d6748d47a0a87fa87cfdf558e9dc0d3114",
+    "verification-1792259632962494000/run.json": "1d9cf6603a2540c48907171b57ea424f4aae1b89c6d44b55f1492cb40520b4a7",
+    "verification-1792259632962494000/summary.json": "e4442b79f56f736c90e937f3d4d5be143cefc5902bbad82bc8610460704bc30f"
+  }
+}

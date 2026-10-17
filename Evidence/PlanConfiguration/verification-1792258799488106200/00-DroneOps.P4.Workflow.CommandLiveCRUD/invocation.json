@@ -1,0 +1,20 @@
+{
+  "role": "Command",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Command",
+    "-P5Instance=b7736ece-d490-4ed6-b3a7-52519e2f66cc",
+    "-P1Http=http://127.0.0.1:22584",
+    "-P1Ws=ws://127.0.0.1:22585/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.P4.Workflow.CommandLiveCRUD",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792258799488106200\\00-DroneOps.P4.Workflow.CommandLiveCRUD",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792258799488106200\\00-DroneOps.P4.Workflow.CommandLiveCRUD\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792258799488106200-0"
+}

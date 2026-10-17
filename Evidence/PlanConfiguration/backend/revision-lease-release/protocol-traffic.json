@@ -1,0 +1,4774 @@
+[
+  {
+    "route": "/",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "status": "ok",
+      "http_port": 23180,
+      "ws_port": 23181,
+      "debug": false,
+      "capabilities": [
+        "fleet_move_3d",
+        "map_fleet_controls",
+        "plan_configuration"
+      ]
+    }
+  },
+  {
+    "route": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "client_id": "CONFIG-QA-Command",
+      "client_role": "Command",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "CONFIG-QA-Command",
+      "client_role": "Command",
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 1
+    }
+  },
+  {
+    "route": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "client_id": "CONFIG-QA-Command",
+      "client_role": "Command",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "CONFIG-QA-Command",
+      "client_role": "Command",
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 3
+    }
+  },
+  {
+    "route": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "client_id": "CONFIG-QA-Map",
+      "client_role": "Map",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "CONFIG-QA-Map",
+      "client_role": "Map",
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 5
+    }
+  },
+  {
+    "route": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "8f082b56-35eb-4bb8-a401-ee8044d6cbe0",
+      "client_id": "CONFIG-QA-Video",
+      "client_role": "Video",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "CONFIG-QA-Video",
+      "client_role": "Video",
+      "instance_id": "8f082b56-35eb-4bb8-a401-ee8044d6cbe0",
+      "hostname": "ISOLATED-QA",
+      "app_version": "configuration-workflow",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 7
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "create_plan",
+      "name": "Existing plan",
+      "default_mission_name": "Existing mission"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 1,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "context": {
+        "context_version": 1,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-2",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1792259194.801807,
+        "updated_by": "CONFIG-QA-Command"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "begin_configuration"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Role cannot perform this plan action"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "8f082b56-35eb-4bb8-a401-ee8044d6cbe0",
+      "action": "begin_configuration"
+    },
+    "status": 403,
+    "data": {
+      "code": "ROLE_FORBIDDEN",
+      "params": {},
+      "message": "Video cannot modify security plans"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "begin_configuration"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "",
+      "mission_id": ""
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "action": "begin_configuration"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": ""
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "create_plan",
+      "name": "Configuration plan",
+      "default_mission_name": "Configured mission"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-3",
+      "mission_id": "mission-4",
+      "context": {
+        "context_version": 2,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-4",
+        "active_security_plan_id": "plan-3",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1792259194.8305151,
+        "updated_by": "CONFIG-QA-Command"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "begin_configuration",
+      "plan_id": "plan-3"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-3",
+      "mission_id": ""
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "execution_start",
+      "plan_id": "plan-1",
+      "request_id": "63e01335-69b4-47e2-97b7-e08bbd083e97"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "execution_start_now",
+      "plan_id": "plan-1",
+      "request_id": "09f8dd77-0b36-4adb-bd84-5b58ae94cbae"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "execution_group_move",
+      "plan_id": "plan-1",
+      "request_id": "331724ae-36fa-4f21-998b-ff35940e8e8f"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "begin_plan_move",
+      "plan_id": "plan-1",
+      "request_id": "67f5b951-445e-4b68-82bf-413f895afaff"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "request_map_plan_move",
+      "plan_id": "plan-3",
+      "mission_id": "mission-4"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "action": "update_plan",
+      "plan_id": "plan-3",
+      "name": "Unowned change"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "select",
+      "plan_id": "plan-1"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "select",
+      "plan_id": "plan-3",
+      "mission_id": "mission-4"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "action": "select",
+      "plan_id": "plan-3",
+      "mission_id": "mission-4"
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first",
+      "state": {
+        "version": 3,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/context",
+    "method": "PATCH",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "patch": {
+        "active_security_plan_id": "plan-1",
+        "active_mission_id": null
+      }
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first"
+    }
+  },
+  {
+    "route": "/api/context",
+    "method": "PATCH",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "patch": {
+        "active_security_plan_id": "plan-3",
+        "active_mission_id": "mission-4"
+      }
+    },
+    "status": 409,
+    "data": {
+      "code": "CONFIGURATION_IN_PROGRESS",
+      "params": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3"
+      },
+      "message": "Finish the active plan configuration first"
+    }
+  },
+  {
+    "route": "/api/context",
+    "method": "PATCH",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "patch": {
+        "active_uav_id": "UAV-01",
+        "active_alert_id": "ALERT-QA"
+      }
+    },
+    "status": 200,
+    "data": {
+      "context_version": 3,
+      "active_uav_id": "UAV-01",
+      "active_alert_id": "ALERT-QA",
+      "active_mission_id": "mission-4",
+      "active_security_plan_id": "plan-3",
+      "active_area_id": null,
+      "operation_mode": "MONITOR",
+      "updated_at": 1792259194.9121227,
+      "updated_by": "CONFIG-QA-Command",
+      "selected_uav_ids": [
+        "UAV-01"
+      ]
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 3,
+      "next_id": 5,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "Existing plan",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1792259194.8001518,
+          "updated_at": 1792259194.8001518,
+          "mission_ids": [
+            "mission-2"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-2",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-2",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        },
+        "plan-3": {
+          "id": "plan-3",
+          "name": "Configuration plan",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1792259194.8282669,
+          "updated_at": 1792259194.8282669,
+          "mission_ids": [
+            "mission-4"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-4",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-4",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "Existing mission",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        },
+        "mission-4": {
+          "id": "mission-4",
+          "plan_id": "plan-3",
+          "name": "Configured mission",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1792259194.8001692,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "Existing plan"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: Existing plan",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1792259194.8001795,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Existing mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Default task created",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 3,
+          "timestamp": 1792259194.8282735,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-3",
+            "plan_name": "Configuration plan"
+          },
+          "category": "PLAN",
+          "target_id": "plan-3",
+          "message": "Security plan created: Configuration plan",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 4,
+          "timestamp": 1792259194.8282895,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-4",
+            "mission_name": "Configured mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-4",
+          "message": "Default task created",
+          "source": "CONFIG-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {},
+      "executions": {},
+      "execution_version": 0,
+      "execution_requests": {},
+      "configuration_session": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3",
+        "last_seen_at": 1792259194.8155456,
+        "lease_expires_at": 1792259214.8155456,
+        "acquired_version": 2
+      },
+      "mock_execution": {
+        "default_speed_mps": 5,
+        "uavs": {},
+        "safety_separation_m": 1.5
+      },
+      "execution_adapter": "Mock"
+    }
+  },
+  {
+    "route": "/api/context",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "context_version": 3,
+      "active_uav_id": "UAV-01",
+      "active_alert_id": "ALERT-QA",
+      "active_mission_id": "mission-4",
+      "active_security_plan_id": "plan-3",
+      "active_area_id": null,
+      "operation_mode": "MONITOR",
+      "updated_at": 1792259194.9121227,
+      "updated_by": "CONFIG-QA-Command",
+      "selected_uav_ids": [
+        "UAV-01"
+      ]
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 3,
+      "next_id": 5,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "Existing plan",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1792259194.8001518,
+          "updated_at": 1792259194.8001518,
+          "mission_ids": [
+            "mission-2"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-2",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-2",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        },
+        "plan-3": {
+          "id": "plan-3",
+          "name": "Configuration plan",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1792259194.8282669,
+          "updated_at": 1792259194.8282669,
+          "mission_ids": [
+            "mission-4"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-4",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-4",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "Existing mission",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        },
+        "mission-4": {
+          "id": "mission-4",
+          "plan_id": "plan-3",
+          "name": "Configured mission",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1792259194.8001692,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "Existing plan"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: Existing plan",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1792259194.8001795,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Existing mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Default task created",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 3,
+          "timestamp": 1792259194.8282735,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-3",
+            "plan_name": "Configuration plan"
+          },
+          "category": "PLAN",
+          "target_id": "plan-3",
+          "message": "Security plan created: Configuration plan",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 4,
+          "timestamp": 1792259194.8282895,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-4",
+            "mission_name": "Configured mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-4",
+          "message": "Default task created",
+          "source": "CONFIG-QA-Command"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {},
+      "executions": {},
+      "execution_version": 0,
+      "execution_requests": {},
+      "configuration_session": {
+        "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+        "owner_client_id": "CONFIG-QA-Command",
+        "plan_id": "plan-3",
+        "last_seen_at": 1792259194.8155456,
+        "lease_expires_at": 1792259214.8155456,
+        "acquired_version": 2
+      },
+      "mock_execution": {
+        "default_speed_mps": 5,
+        "uavs": {},
+        "safety_separation_m": 1.5
+      },
+      "execution_adapter": "Mock"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "begin_route_edit",
+      "plan_id": "plan-3",
+      "mission_id": "mission-4",
+      "content_revision": 1
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 4,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {
+          "edit-5": {
+            "edit_session_id": "edit-5",
+            "plan_id": "plan-3",
+            "mission_id": "mission-4",
+            "owner_instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+            "owner_client_id": "CONFIG-QA-Map",
+            "base_content_revision": 1,
+            "state": "EDITING",
+            "started_at": 1792259194.92749,
+            "last_seen_at": 1792259194.92749,
+            "lease_expires_at": 1792259214.92749
+          }
+        },
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-3",
+      "mission_id": "mission-4",
+      "edit_session_id": "edit-5"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "mark_route_dirty",
+      "plan_id": "plan-3",
+      "mission_id": "mission-4",
+      "edit_session_id": "edit-5"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 5,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {
+          "edit-5": {
+            "edit_session_id": "edit-5",
+            "plan_id": "plan-3",
+            "mission_id": "mission-4",
+            "owner_instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+            "owner_client_id": "CONFIG-QA-Map",
+            "base_content_revision": 1,
+            "state": "DIRTY",
+            "started_at": 1792259194.92749,
+            "last_seen_at": 1792259194.92749,
+            "lease_expires_at": 1792259214.92749
+          }
+        },
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-3",
+      "mission_id": "mission-4"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "end_configuration",
+      "plan_id": "plan-3"
+    },
+    "status": 409,
+    "data": {
+      "code": "PLAN_EDIT_IN_PROGRESS",
+      "params": {},
+      "message": "Finish or explicitly discard the route edit before leaving configuration",
+      "state": {
+        "version": 5,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {
+          "edit-5": {
+            "edit_session_id": "edit-5",
+            "plan_id": "plan-3",
+            "mission_id": "mission-4",
+            "owner_instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+            "owner_client_id": "CONFIG-QA-Map",
+            "base_content_revision": 1,
+            "state": "DIRTY",
+            "started_at": 1792259194.92749,
+            "last_seen_at": 1792259194.92749,
+            "lease_expires_at": 1792259214.92749
+          }
+        },
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "discard_route_edit",
+      "plan_id": "plan-3",
+      "mission_id": "mission-4",
+      "edit_session_id": "edit-5"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 6,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-3",
+          "last_seen_at": 1792259194.8155456,
+          "lease_expires_at": 1792259214.8155456,
+          "acquired_version": 2
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-3",
+      "mission_id": "mission-4"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "6df6dcd8-6219-4ea9-9e61-ede65586c83b",
+      "action": "end_configuration",
+      "plan_id": "plan-3"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 7,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-3",
+      "mission_id": ""
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "GET",
+    "status": 200,
+    "data": {
+      "version": 7,
+      "next_id": 6,
+      "plans": {
+        "plan-1": {
+          "id": "plan-1",
+          "name": "Existing plan",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1792259194.8001518,
+          "updated_at": 1792259194.8001518,
+          "mission_ids": [
+            "mission-2"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-2",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-2",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        },
+        "plan-3": {
+          "id": "plan-3",
+          "name": "Configuration plan",
+          "description": "",
+          "status": "DRAFT",
+          "content_revision": 1,
+          "review": null,
+          "version": 1,
+          "created_at": 1792259194.8282669,
+          "updated_at": 1792259194.8282669,
+          "mission_ids": [
+            "mission-4"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": false,
+            "issues": [
+              {
+                "mission_id": "mission-4",
+                "code": "NO_UAV_ASSIGNED",
+                "params": {}
+              },
+              {
+                "mission_id": "mission-4",
+                "code": "ROUTE_MISSING",
+                "params": {}
+              }
+            ],
+            "mission_count": 1,
+            "assigned_count": 0,
+            "routes_ready": 0,
+            "validated_content_revision": null
+          }
+        }
+      },
+      "missions": {
+        "mission-2": {
+          "id": "mission-2",
+          "plan_id": "plan-1",
+          "name": "Existing mission",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        },
+        "mission-4": {
+          "id": "mission-4",
+          "plan_id": "plan-3",
+          "name": "Configured mission",
+          "assigned_uav_id": null,
+          "route_id": null,
+          "status": "DRAFT"
+        }
+      },
+      "paths": {},
+      "events": [
+        {
+          "sequence": 1,
+          "timestamp": 1792259194.8001692,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-1",
+            "plan_name": "Existing plan"
+          },
+          "category": "PLAN",
+          "target_id": "plan-1",
+          "message": "Security plan created: Existing plan",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 2,
+          "timestamp": 1792259194.8001795,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-2",
+            "mission_name": "Existing mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-2",
+          "message": "Default task created",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 3,
+          "timestamp": 1792259194.8282735,
+          "event_type": "PLAN_CREATED",
+          "params": {
+            "target_id": "plan-3",
+            "plan_name": "Configuration plan"
+          },
+          "category": "PLAN",
+          "target_id": "plan-3",
+          "message": "Security plan created: Configuration plan",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 4,
+          "timestamp": 1792259194.8282895,
+          "event_type": "MISSION_CREATED",
+          "params": {
+            "target_id": "mission-4",
+            "mission_name": "Configured mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-4",
+          "message": "Default task created",
+          "source": "CONFIG-QA-Command"
+        },
+        {
+          "sequence": 5,
+          "timestamp": 1792259194.9274993,
+          "event_type": "ROUTE_EDIT_STARTED",
+          "params": {
+            "target_id": "mission-4",
+            "mission_name": "Configured mission",
+            "uav_id": null
+          },
+          "category": "MISSION",
+          "target_id": "mission-4",
+          "message": "Route editing started",
+          "source": "CONFIG-QA-Map"
+        }
+      ],
+      "deployments": {},
+      "edit_sessions": {},
+      "executions": {},
+      "execution_version": 0,
+      "execution_requests": {},
+      "configuration_session": null,
+      "mock_execution": {
+        "default_speed_mps": 5,
+        "uavs": {},
+        "safety_separation_m": 1.5
+      },
+      "execution_adapter": "Mock"
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "27e56da4-e235-4ecd-aa26-f6b3ac198fc8",
+      "action": "select",
+      "plan_id": "plan-1"
+    },
+    "status": 200,
+    "data": {
+      "context": {
+        "context_version": 4,
+        "active_uav_id": "UAV-01",
+        "active_alert_id": "ALERT-QA",
+        "active_mission_id": null,
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1792259194.9585571,
+        "updated_by": "CONFIG-QA-Map",
+        "selected_uav_ids": [
+          "UAV-01"
+        ]
+      },
+      "state": {
+        "version": 7,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      }
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "action": "begin_configuration",
+      "plan_id": "plan-1"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 8,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": {
+          "owner_instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+          "owner_client_id": "CONFIG-QA-Command",
+          "plan_id": "plan-1",
+          "last_seen_at": 1792259194.9644885,
+          "lease_expires_at": 1792259214.9644885,
+          "acquired_version": 8
+        },
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": ""
+    }
+  },
+  {
+    "route": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "34b1c3d7-948f-4b20-bb4d-1b06ba5a7eab",
+      "action": "end_configuration"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 9,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Existing plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8001518,
+            "updated_at": 1792259194.8001518,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          },
+          "plan-3": {
+            "id": "plan-3",
+            "name": "Configuration plan",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792259194.8282669,
+            "updated_at": 1792259194.8282669,
+            "mission_ids": [
+              "mission-4"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-4",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-4",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Existing mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          },
+          "mission-4": {
+            "id": "mission-4",
+            "plan_id": "plan-3",
+            "name": "Configured mission",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792259194.8001692,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Existing plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Existing plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792259194.8001795,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Existing mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792259194.8282735,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-3",
+              "plan_name": "Configuration plan"
+            },
+            "category": "PLAN",
+            "target_id": "plan-3",
+            "message": "Security plan created: Configuration plan",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792259194.8282895,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Default task created",
+            "source": "CONFIG-QA-Command"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792259194.9274993,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-4",
+              "mission_name": "Configured mission",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-4",
+            "message": "Route editing started",
+            "source": "CONFIG-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "default_speed_mps": 5,
+          "uavs": {},
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": ""
+    }
+  }
+]

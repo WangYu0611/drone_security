@@ -1,0 +1,1738 @@
+{
+  "tests": 148,
+  "failures": 2,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-10-18T01:24:08Z",
+  "time": "20.368s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "P1BackendContext",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.01s",
+      "testsuite": [
+        {
+          "name": "SnapshotVersionAtomicUpdateAndNoop",
+          "file": "$REPOSITORY\\Backend\\tests\\test_operational_context.cpp",
+          "line": 4,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P1BackendContext"
+        },
+        {
+          "name": "ConcurrentWritersPublishMonotonically",
+          "file": "$REPOSITORY\\Backend\\tests\\test_operational_context.cpp",
+          "line": 16,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P1BackendContext"
+        },
+        {
+          "name": "RestartPreservesVersionAndAllFields",
+          "file": "$REPOSITORY\\Backend\\tests\\test_operational_context.cpp",
+          "line": 24,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.008s",
+          "classname": "P1BackendContext"
+        }
+      ]
+    },
+    {
+      "name": "PlanFixture",
+      "tests": 6,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.009s",
+      "testsuite": [
+        {
+          "name": "Create",
+          "file": "$REPOSITORY\\Backend\\tests\\test_security_plans.cpp",
+          "line": 32,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "AssignmentAndDuplicateRejected",
+          "file": "$REPOSITORY\\Backend\\tests\\test_security_plans.cpp",
+          "line": 33,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "ValidationFailureAndAtomicDeploy",
+          "file": "$REPOSITORY\\Backend\\tests\\test_security_plans.cpp",
+          "line": 41,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "InvalidCoordinatesAndStaleVersion",
+          "file": "$REPOSITORY\\Backend\\tests\\test_security_plans.cpp",
+          "line": 49,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "SelectionAndReadinessInvalidation",
+          "file": "$REPOSITORY\\Backend\\tests\\test_security_plans.cpp",
+          "line": 58,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "PlanFixture"
+        },
+        {
+          "name": "PersistenceRestart",
+          "file": "$REPOSITORY\\Backend\\tests\\test_security_plans.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.007s",
+          "classname": "PlanFixture"
+        }
+      ]
+    },
+    {
+      "name": "P4Workflow",
+      "tests": 10,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.006s",
+      "testsuite": [
+        {
+          "name": "RevisionValidationReviewInvalidation",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 23,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "ReviewRequiredAndDeploymentCopyImmutable",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 30,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "SessionBlocksReviewDeployAndSaveFailureRetains",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "OwnerRevisionAndDiscard",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "IndependentViewsNoopValidationAndBusinessIsolation",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 57,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "PublisherFailureRetainsCompleteDeploymentState",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 67,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowCreateHasAtomicDefaultTask",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 84,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 92,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowFinishOwnerAndInvalidSaveAreAtomic",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 107,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowDraftCopyAndDeleteDoNotChangeOriginal",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 114,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        }
+      ]
+    },
+    {
+      "name": "P4Atomicity",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.002s",
+      "testsuite": [
+        {
+          "name": "PersistenceFailurePublishesNothing",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p4_workflow.cpp",
+          "line": 73,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P4Atomicity"
+        }
+      ]
+    },
+    {
+      "name": "P52Execution",
+      "tests": 15,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.035s",
+      "testsuite": [
+        {
+          "name": "CreateAndExplicitStartStateMachine",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 35,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "PauseResumePreservesPosition",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 36,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "Completion",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 37,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.004s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "AbortStops",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 38,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ReturnToExplicitHome",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 39,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "DuplicateAndConflictingStarts",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 40,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ImmutableDeploymentRoute",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 41,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "MissingFixtureFailsWithReason",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StaleControlDoesNotMutate",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 43,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ProgressDoesNotInvalidatePlanVersion",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 44,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ShutdownPausesAndResumesReturn",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 45,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "DurableRestartRetainsPositionAndContinues",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 46,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.012s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "PersistencePublisherFailureIsAtomic",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 47,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ReturnCanPauseResumeAndAbort",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 421,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "PendingStartCanBeAbortedBeforeDispatch",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 426,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        }
+      ]
+    },
+    {
+      "name": "P53Geometry",
+      "tests": 14,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.024s",
+      "testsuite": [
+        {
+          "name": "ClosedRoundTripAndOnceCompletion",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 59,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "RejectShortClosedAndInvalidFlag",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 60,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "CancelPreservesAllGeometry",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 61,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "DeployedTranslationCreatesImmutableReplacement",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 62,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "RejectNonRigidAndMissingRoutesAtomically",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 63,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "ActiveExecutionBlocksAllMoveStates",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.003s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "MoveLeaseBlocksExecutionAndRouteEditing",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 65,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "StaleMoveCannotOverwritePlan",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 66,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "UnauthorizedMoveCannotCommit",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 67,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "ReloadPreservesTranslatedDeployment",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 68,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.01s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "AllMissionRoutesUseOneDelta",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 70,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "TranslationPublisherFailureRollsBack",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 71,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "MoveLeaseCannotBeReusedForWaypointEdits",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 73,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        },
+        {
+          "name": "CanonicalClosedRouteAliasAndConflict",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 75,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P53Geometry"
+        }
+      ]
+    },
+    {
+      "name": "P54Mission",
+      "tests": 21,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.1s",
+      "testsuite": [
+        {
+          "name": "MultiAssignmentCreatesSeparateImmutableTrajectories",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 89,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "MultiHoverAndCompletionStaySeparated",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 90,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.047s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "GroupPauseIsAtomic",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 91,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "DuplicateAndTooCloseAssignmentsRejectAtomically",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 92,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "IntersectingApproachesBlockStart",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 93,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "MissingAltitudeDatumRejected",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 96,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "AGLResolvesOnceInRuntimeSnapshot",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 97,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "SchedulePersistsAndCancelsWithoutMoving",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 98,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "ScheduleStartNowUsesSameStateMachine",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 99,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "InvalidScheduleDoesNotPartiallyCreateGroup",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 100,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "ScheduleRestartAndReschedule",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 101,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.011s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "GroupMovePreservesRelativePositions",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 103,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.006s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "InsufficientGroupSpaceRejectsAtomically",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 104,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "SharedGroupSelectionIsDurableAndPrimaryIsMember",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 105,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "ThreeAircraftCompleteDistinctSlots",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 107,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.01s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "MissingGroupTargetCoordinateRejectsAtomically",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 115,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "ScheduledDeadlineSurvivesGracefulShutdown",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 217,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "RealGroupFailureHoldsRemainingMembers",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 218,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "RealMeasuredCrossingHoldsBothMembers",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 225,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "RealFaultWhilePausedReleasesWholeGroup",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 234,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P54Mission"
+        },
+        {
+          "name": "MixedCompletedGroupCanPauseResumeAndAbortRemainingMembers",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 409,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.006s",
+          "classname": "P54Mission"
+        }
+      ]
+    },
+    {
+      "name": "FleetMove",
+      "tests": 6,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.019s",
+      "testsuite": [
+        {
+          "name": "ActivePlanCannotBeStolenByFleet",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 121,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "FleetMove"
+        },
+        {
+          "name": "FleetOccupancyBlocksPlanAssignmentUntilAbort",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 125,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.003s",
+          "classname": "FleetMove"
+        },
+        {
+          "name": "PrimaryAnchorAndRelativeHeightsArePreserved",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 133,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "FleetMove"
+        },
+        {
+          "name": "ConcurrentPlanAndFleetStartAreAtomic",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 143,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "FleetMove"
+        },
+        {
+          "name": "ThreeDimensionalTranslationPreservesLayeredFormation",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 149,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.006s",
+          "classname": "FleetMove"
+        },
+        {
+          "name": "PureVerticalFleetMovementKeepsHorizontalCoordinates",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 161,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.006s",
+          "classname": "FleetMove"
+        }
+      ]
+    },
+    {
+      "name": "P54RealAdapter",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.043s",
+      "testsuite": [
+        {
+          "name": "SameControllerUsesMeasuredArrivalAndHover",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 179,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "PauseHoldsAndResumeReissuesThroughSameController",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 186,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "RejectedTransportCannotFabricateArrival",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 190,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "RejectedHoldIsReported",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 191,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "RestartPausesRealWithoutDispatch",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 192,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.021s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "MockDocumentCannotBecomeRealFlight",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 199,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "PublicationFailureKeepsDurableRealIntent",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 202,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "FailedPreflightDoesNotSendOrHold",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 243,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54RealAdapter"
+        },
+        {
+          "name": "ScheduledObservationLossFailsAtomically",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 245,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.013s",
+          "classname": "P54RealAdapter"
+        }
+      ]
+    },
+    {
+      "name": "P54MissionGeodesy",
+      "tests": 2,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "CalibratedNonzeroNedRoundTrip",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 208,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54MissionGeodesy"
+        },
+        {
+          "name": "NonfiniteAndDistantFramesReject",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 214,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P54MissionGeodesy"
+        }
+      ]
+    },
+    {
+      "name": "P55Reservation",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "0.026s",
+      "testsuite": [
+        {
+          "name": "Reservation01AssignAndPendingStart",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 273,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation02OtherAircraftAndSamePlan",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 277,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation03CompletionReleases",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 281,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.005s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation04AbortAndFailureRelease",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 285,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.002s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation05PausedStillLocked",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 289,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation06ExistingDraftRace",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 292,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation07ConcurrentStarts",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 295,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation08RestartRebuild",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 306,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.01s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "ReadyDeployedScheduledAndCancelledDoNotReserve",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 313,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        }
+      ]
+    },
+    {
+      "name": "ConfigurationWorkflow",
+      "tests": 8,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:08Z",
+      "time": "20.074s",
+      "testsuite": [
+        {
+          "name": "NewConfigurationBindsCreatedPlanAndIsExclusive",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 327,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "CopyBindsNewDraftWithoutChangingDeployedSource",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 337,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "SelectedPlanAndRouteLeaseAreProtected",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 343,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "NewMovementBlockedButExistingEmergencyControlsRemain",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 357,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.004s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "FailedDeployRetainsConfigurationSuccessfulDeployEndsIt",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 372,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "OwnerHeartbeatRenewsLeaseAndRestartClearsOwnership",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 380,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "0.024s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "ExpiredOwnerDoesNotBlockMovementAndHeartbeatPublishesRelease",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 390,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:08Z",
+          "time": "20.025s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "DueScheduleWaitsForConfigurationThenRevalidates",
+          "file": "$REPOSITORY\\Backend\\tests\\test_p52_execution.cpp",
+          "line": 395,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0.017s",
+          "classname": "ConfigurationWorkflow"
+        }
+      ]
+    },
+    {
+      "name": "CoordinateConverterTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "NedToUeOffset",
+          "file": "$REPOSITORY\\Backend\\tests\\test_coordinate_converter.cpp",
+          "line": 6,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CoordinateConverterTest"
+        },
+        {
+          "name": "UeOffsetToNed",
+          "file": "$REPOSITORY\\Backend\\tests\\test_coordinate_converter.cpp",
+          "line": 26,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CoordinateConverterTest"
+        },
+        {
+          "name": "RoundTrip",
+          "file": "$REPOSITORY\\Backend\\tests\\test_coordinate_converter.cpp",
+          "line": 44,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CoordinateConverterTest"
+        }
+      ]
+    },
+    {
+      "name": "QuaternionUtilsTest",
+      "tests": 4,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "SpeedFromVelocity",
+          "file": "$REPOSITORY\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 10,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        },
+        {
+          "name": "IdentityQuaternion",
+          "file": "$REPOSITORY\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 20,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        },
+        {
+          "name": "YawFlip",
+          "file": "$REPOSITORY\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 31,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        },
+        {
+          "name": "GetUeYaw",
+          "file": "$REPOSITORY\\Backend\\tests\\test_quaternion_utils.cpp",
+          "line": 48,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "QuaternionUtilsTest"
+        }
+      ]
+    },
+    {
+      "name": "GpsAnchorManagerTest",
+      "tests": 5,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "SetAndGetAnchor",
+          "file": "$REPOSITORY\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 4,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "UpdateAnchor",
+          "file": "$REPOSITORY\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 25,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "ClearAnchor",
+          "file": "$REPOSITORY\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 39,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "MultipleDrones",
+          "file": "$REPOSITORY\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 50,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        },
+        {
+          "name": "GetNonExistent",
+          "file": "$REPOSITORY\\Backend\\tests\\test_gps_anchor_manager.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "GpsAnchorManagerTest"
+        }
+      ]
+    },
+    {
+      "name": "CommandQueueTest",
+      "tests": 11,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0.001s",
+      "testsuite": [
+        {
+          "name": "PushAndPop",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "PopFromEmpty",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 26,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "FifoOrder",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 33,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "CoalescesPendingVerticalTargets",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "DoesNotCoalesceDifferentHorizontalTargets",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 78,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "CoalescesPendingManualTargetsToLatest",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 98,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "PreservesRequestedSpeedWhenReplacingManualTarget",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 127,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "OverflowDropsOldest",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 149,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "PauseBlocksPop",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 165,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "Clear",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 182,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "CommandQueueTest"
+        },
+        {
+          "name": "ThreadSafety",
+          "file": "$REPOSITORY\\Backend\\tests\\test_command_queue.cpp",
+          "line": 193,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0.001s",
+          "classname": "CommandQueueTest"
+        }
+      ]
+    },
+    {
+      "name": "StateMachineTest",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "InitialStateIsOffline",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 6,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "TelemetryTransitionsToOnline",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 12,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "TimeoutTransitionsToLost",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 19,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "TelemetryAfterTimeoutResetsToOnline",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 31,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "ResetGoesToOffline",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "PowerOnEvent",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 50,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "LostConnectionEvent",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 59,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "ReconnectEvent",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 69,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        },
+        {
+          "name": "NoTimeoutWhenNotOnline",
+          "file": "$REPOSITORY\\Backend\\tests\\test_state_machine.cpp",
+          "line": 80,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "StateMachineTest"
+        }
+      ]
+    },
+    {
+      "name": "AssignmentSolverTest",
+      "tests": 2,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Hungarian3x3",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 8,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "AssignmentSolverTest"
+        },
+        {
+          "name": "HungarianDiagonal",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 34,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "AssignmentSolverTest"
+        }
+      ]
+    },
+    {
+      "name": "SegmentDistanceTest",
+      "tests": 4,
+      "failures": 1,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Parallel",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest"
+        },
+        {
+          "name": "Crossing",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 60,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest",
+          "failures": [
+            {
+              "failure": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp:66\nThe difference between d and 0.0 is 5, which exceeds 1e-4, where\nd evaluates to 5,\n0.0 evaluates to 0, and\n1e-4 evaluates to 0.0001.\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "EndpointClosest",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 69,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest"
+        },
+        {
+          "name": "VerticalSeparation",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 77,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "SegmentDistanceTest"
+        }
+      ]
+    },
+    {
+      "name": "AssemblyPlannerTest",
+      "tests": 3,
+      "failures": 1,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "NoConflictSparse",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 90,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "AssemblyPlannerTest"
+        },
+        {
+          "name": "ConflictHeightSeparation",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 110,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "AssemblyPlannerTest",
+          "failures": [
+            {
+              "failure": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp:128\nExpected: (conflicts.size()) >= (1u), actual: 0 vs 1\n",
+              "type": ""
+            },
+            {
+              "failure": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp:133\nValue of: z_changed\n  Actual: false\nExpected: true\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "PreservePreassignedTargets",
+          "file": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp",
+          "line": 136,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "AssemblyPlannerTest"
+        }
+      ]
+    },
+    {
+      "name": "VideoMetadataStoreTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-18T01:24:28Z",
+      "time": "0.013s",
+      "testsuite": [
+        {
+          "name": "StoresJsonLinesAndDeduplicatesRetry",
+          "file": "$REPOSITORY\\Backend\\tests\\test_video_metadata_store.cpp",
+          "line": 53,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0.007s",
+          "classname": "VideoMetadataStoreTest"
+        },
+        {
+          "name": "RejectsUnsafeMissionNameAndOversizedBatch",
+          "file": "$REPOSITORY\\Backend\\tests\\test_video_metadata_store.cpp",
+          "line": 76,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0s",
+          "classname": "VideoMetadataStoreTest"
+        },
+        {
+          "name": "AcceptsEmptyFinalBatchAndWritesCompletionMarker",
+          "file": "$REPOSITORY\\Backend\\tests\\test_video_metadata_store.cpp",
+          "line": 86,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-18T01:24:28Z",
+          "time": "0.005s",
+          "classname": "VideoMetadataStoreTest"
+        }
+      ]
+    }
+  ]
+}

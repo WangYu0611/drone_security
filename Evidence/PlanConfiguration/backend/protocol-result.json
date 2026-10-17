@@ -1,0 +1,16 @@
+{
+  "pass": true,
+  "checks": [
+    "Only Command owns configuration; concurrent owner is rejected",
+    "New plan binds its configuration owner and repeat begin is idempotent",
+    "Both clients reject new movement during configuration",
+    "Alternate context selection cannot escape plan; alert/UAV selection and reads remain available",
+    "Map route editing is retained; configuration exit requires explicit route finish/discard",
+    "Released lease permits normal selection and a new configuration owner"
+  ],
+  "failure": null,
+  "pid": 217864,
+  "owned_backend_stopped": true,
+  "empty_fleet": true,
+  "empty_port_map": true
+}

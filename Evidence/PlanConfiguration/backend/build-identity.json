@@ -1,0 +1,55 @@
+{
+  "baseline_commit": "ea80c1e9f2b2afc7b9726c16a826980de189aada",
+  "source_state": "Uncommitted implementation on main; final task commit is recorded by the parent acceptance manifest",
+  "configuration": "Release x64",
+  "backend": {
+    "path": "Backend/build/Release/DroneBackend.exe",
+    "sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651",
+    "bytes": 1345536
+  },
+  "test_binary": {
+    "path": "Backend/build/Release/DroneBackend_tests.exe",
+    "sha256": "69ca1113c4ac95ff89942fbb7ce9827c2dcc57c3ca439bdc7fa054b28f055d7e",
+    "bytes": 1156608
+  },
+  "capabilities": [
+    "fleet_move_3d",
+    "map_fleet_controls",
+    "plan_configuration"
+  ],
+  "canonical_build": {
+    "exit_code": 0,
+    "raw_log": "Saved/ConfigurationWorkflow/backend-canonical-build-2.log",
+    "command": "cmake --build Backend/build --config Release --target DroneBackend DroneBackend_tests --parallel 2"
+  },
+  "unit_command": "Backend/build/Release/DroneBackend_tests.exe --gtest_output=json:result.json",
+  "unit_cwd": "Saved/ConfigurationWorkflow/unit-canonical-final",
+  "protocol_command": "node Backend/tests/configuration_workflow_integration.mjs Backend/build/Release/DroneBackend.exe",
+  "raw_protocol_directory": "Saved/ConfigurationWorkflow/protocol-1792257848575",
+  "sources": [
+    {
+      "path": "Backend/storage/security_plan_store.h",
+      "sha256": "d59fde90887a33cc1f6c5dcb849621a310ee9292528006139202a1bf441aca2d"
+    },
+    {
+      "path": "Backend/storage/mock_execution.inl",
+      "sha256": "d0e39bfc091e0b72031a5b62e98a9b27215225ce6beda645d60250b1cc3d6261"
+    },
+    {
+      "path": "Backend/http/http_server.cpp",
+      "sha256": "03953e938f6a446f71ba771eef8cb1cd304186ab1671d60afb020034664ed578"
+    },
+    {
+      "path": "Backend/tests/test_p52_execution.cpp",
+      "sha256": "8998ef932a5ad8865d9c491b882bffa7af9d75e0011c2379bc65bbf138ccaeb8"
+    },
+    {
+      "path": "Backend/tests/configuration_workflow_integration.mjs",
+      "sha256": "801e3f580029ae3b3c5bc48ebc216e20e7c7c2886a12ca6a5b8c2a19d88972db"
+    }
+  ],
+  "preserved_prior_build_diagnostic": {
+    "path": "Saved/ConfigurationWorkflow/backend-build.log",
+    "reason": "Initial added test comparison used boost::json::value versus std::string; corrected the test type comparison, with production build already successful. No assertion threshold was weakened."
+  }
+}

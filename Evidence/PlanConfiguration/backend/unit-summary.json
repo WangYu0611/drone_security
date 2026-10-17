@@ -1,0 +1,64 @@
+{
+  "discovered": 148,
+  "completed": 148,
+  "passed": 146,
+  "failed": 2,
+  "disabled": 0,
+  "errors": 0,
+  "overall_status": "BASELINE_FAILURES_REMAIN",
+  "new_regressions": {
+    "discovered": 11,
+    "completed": 11,
+    "passed": 11,
+    "failed": 0,
+    "cases": [
+      "P52Execution.ReturnCanPauseResumeAndAbort",
+      "P52Execution.PendingStartCanBeAbortedBeforeDispatch",
+      "P54Mission.MixedCompletedGroupCanPauseResumeAndAbortRemainingMembers",
+      "ConfigurationWorkflow.NewConfigurationBindsCreatedPlanAndIsExclusive",
+      "ConfigurationWorkflow.CopyBindsNewDraftWithoutChangingDeployedSource",
+      "ConfigurationWorkflow.SelectedPlanAndRouteLeaseAreProtected",
+      "ConfigurationWorkflow.NewMovementBlockedButExistingEmergencyControlsRemain",
+      "ConfigurationWorkflow.FailedDeployRetainsConfigurationSuccessfulDeployEndsIt",
+      "ConfigurationWorkflow.OwnerHeartbeatRenewsLeaseAndRestartClearsOwnership",
+      "ConfigurationWorkflow.ExpiredOwnerDoesNotBlockMovementAndHeartbeatPublishesRelease",
+      "ConfigurationWorkflow.DueScheduleWaitsForConfigurationThenRevalidates"
+    ]
+  },
+  "failures": [
+    {
+      "test": "SegmentDistanceTest.Crossing",
+      "details": [
+        {
+          "failure": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp:66\nThe difference between d and 0.0 is 5, which exceeds 1e-4, where\nd evaluates to 5,\n0.0 evaluates to 0, and\n1e-4 evaluates to 0.0001.\n",
+          "type": ""
+        }
+      ]
+    },
+    {
+      "test": "AssemblyPlannerTest.ConflictHeightSeparation",
+      "details": [
+        {
+          "failure": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp:128\nExpected: (conflicts.size()) >= (1u), actual: 0 vs 1\n",
+          "type": ""
+        },
+        {
+          "failure": "$REPOSITORY\\Backend\\tests\\test_assembly_planner.cpp:133\nValue of: z_changed\n  Actual: false\nExpected: true\n",
+          "type": ""
+        }
+      ]
+    }
+  ],
+  "baseline_comparison": {
+    "discovered": 137,
+    "completed": 137,
+    "passed": 135,
+    "failed": 2,
+    "same_failing_tests": true,
+    "source": "%TEMP%/drone-design-audit-e491ec5ed0e1453282b2121a6739eb77/existing-tests.json",
+    "source_sha256": "984b9cf5cedb4119aa8e3eece502c5d8f8971ee6a27c642b169f9ee882d08e78"
+  },
+  "raw_result": "Saved/ConfigurationWorkflow/unit-canonical-final/result.json",
+  "raw_log": "Saved/ConfigurationWorkflow/unit-canonical-final/run.log",
+  "scope": "C++ software/unit evidence; no native mouse or real aircraft claims"
+}

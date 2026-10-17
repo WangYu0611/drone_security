@@ -1,0 +1,293 @@
+Log started at 10/18/2026 01:25:00 (2026-10-17T17:25:00Z)
+Resolved project argument D:\CodexPublish\drone_security\UE5DroneControl.uproject to D:\CodexPublish\drone_security\UE5DroneControl.uproject
+No config file at C:\ProgramData\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at <USER>\AppData\Local\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at <USER>\Documents\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Configuration will be read from:
+  <USER>\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (D:\CodexPublish\drone_security\Intermediate\Build\XmlConfigCache.bin): <USER>\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (D:\CodexPublish\drone_security\Intermediate\Build\XmlConfigCache.bin): D:\CodexPublish\drone_security\Saved\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (D:\CodexPublish\drone_security\Intermediate\Build\XmlConfigCache.bin): <USER>\AppData\Local\UnrealEngine\Intermediate\Build\UnrealBuildTool.Env.BuildConfiguration.xml
+Setting temp directory to '<USER>\AppData\Local\Temp\UnrealBuildTool\eb6d2d82'
+    Registering build platform: UnrealBuildTool.AndroidPlatformFactory
+Unable to find valid SDK(s) for Android:
+  Found Sdk Version, MinRequired=r27c, MaxRequired=r29.
+  Found AutoSdk Version, Required=r27c.
+        Registering build platform: Android - buildable: False
+    Registering build platform: UnrealBuildTool.IOSPlatformFactory
+IOS Installed SDK(s): MinVersion_Sdk=1100.0.0.0, MaxVersion_Sdk=8999.0, CurrentVersion_Sdk=1860.2.5.1, Version_AutoSdk=26.1.1, CurrentVersion_AutoSdk=
+        Registering build platform: IOS - buildable: True
+    Registering build platform: UnrealBuildTool.LinuxPlatformFactory
+Unable to find valid SDK(s) for Linux:
+  Found Sdk Version, Required=v26_clang-20.1.8-rockylinux8.
+  Found AutoSdk Version, Required=v26_clang-20.1.8-rockylinux8.
+        Registering build platform: Linux - buildable: False
+Unable to find valid SDK(s) for LinuxArm64:
+  Found Sdk Version, Required=v26_clang-20.1.8-rockylinux8.
+  Found AutoSdk Version, Required=v26_clang-20.1.8-rockylinux8.
+        Registering build platform: LinuxArm64 - buildable: False
+    Registering build platform: UnrealBuildTool.MacPlatformFactory
+    Registering build platform: UnrealBuildTool.TVOSPlatformFactory
+TVOS Installed SDK(s): MinVersion_Sdk=1100.0.0.0, MaxVersion_Sdk=8999.0, CurrentVersion_Sdk=1860.2.5.1, Version_AutoSdk=26.1.1, CurrentVersion_AutoSdk=
+        Registering build platform: TVOS - buildable: True
+    Registering build platform: UnrealBuildTool.WindowsPlatformFactory
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (1)
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (2)
+Found Windows 10 SDK version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Found Universal CRT version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Win64 Installed SDK(s): MinVersion_Sdk=10.0.19041.0, MaxVersion_Sdk=10.9.99999.0, CurrentVersion_Sdk=10.0.26100.0, Version_AutoSdk=10.0.22621.0, CurrentVersion_AutoSdk=
+        Registering build platform: Win64 - buildable: True
+    Registering build platform: UnrealBuildTool.VisionOSPlatformFactory
+Command line: "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=D:\CodexPublish\drone_security\UE5DroneControl.uproject -WaitMutex -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Deleting old log file: <USER>\AppData\Local\UnrealBuildTool\Log-backup-2026.07.10-02.52.03.txt
+Deleting old log file: <USER>\AppData\Local\UnrealBuildTool\Log-backup-2026.07.10-02.52.03.json
+
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build (D:\CodexPublish\drone_security).
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5Rules.dll: File is installed
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5ProgramRules.dll: File is installed
+Invalidating makefile for UE5DroneControlEditor (source file added)
+Compiler: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe
+Linker: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\link.exe
+Library Manager: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\link.exe
+Resource Compiler: C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\rc.exe
+Resource Converter: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cvtres.exe
+Using EngineIncludeOrderVersion.Unreal5_8 for target UE5DroneControlEditor.Target.cs
+Building UnrealEditor - UE5DroneControlEditor - Win64 - Development
+VerseVMBytecodeGenerator.Generate, generating CPP headers in: 'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMBytecodeOps.gen.h'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMBytecodesAndCaptures.gen.h'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMMakeCapturesFuncs.gen.h'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMCaptureSwitch.gen.h'
+UnrealHeaderTool needs to run because module UE5DroneControl had different hash than what was found in timestamps file
+Found 5 shared PCH headers (listed in order of preference):
+	UnrealEd
+	Engine
+	Slate
+	CoreUObject
+	Core
+Parsing headers for UE5DroneControlEditor
+  Running Internal UnrealHeaderTool D:\CodexPublish\drone_security\UE5DroneControl.uproject D:\CodexPublish\drone_security\Intermediate\Build\Win64\UE5DroneControlEditor\UE5DroneControlEditor.uhtmanifest -WarningsAsErrors -installed
+UHT compiled-in object format Default
+Step - Parse Headers
+Updating D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\Module.UE5DroneControl.gen.cpp: contents have changed. Saving previous version to D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\Module.UE5DroneControl.gen.cpp.old.
+Updating D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.dll.rsp: contents have changed. Saving previous version to D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.dll.rsp.old.
+Updating D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib.rsp: contents have changed. Saving previous version to D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib.rsp.old.
+Updating D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\LiveCodingInfo.json: contents have changed. Saving previous version to D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\LiveCodingInfo.json.old.
+Reading engine version from file: C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Launch\Resources\Version.h
+Got engine version 5.8.0
+Step - Populate symbol table
+Step - Exports
+       Exporter Stats skipped
+       Exporter Json skipped
+       Running exporter CodeGen
+UHT processed UE5DroneControlEditor in 11.1190104 seconds (6 generated files written)
+Checking for live coding mutex: Global\LiveCoding_C++Program Files+Epic Games+UE_5.8+Engine+Binaries+Win64+UnrealEditor.exe
+Deleting outdated item: D:\CodexPublish\drone_security\Binaries\Win64\UnrealEditor-UE5DroneControl.pdb
+Deleting outdated item: D:\CodexPublish\drone_security\Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandShellWidget.cpp, GroupControlWidget.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, ActiveExecutionControlsWidget.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspaceWidget.cpp, PlanConfigurationTests.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 22 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 20.33 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+  UBA RootDir C:\ProgramData\Epic\UnrealBuildAccelerator
+Cache bucket 812248844 used. Action: Compile [x64] ActiveExecutionControlsWidget.cpp ()
+Cache bucket 2375383593 used. Action: Compile [x64] Module.UE5DroneControl.gen.cpp ()
+Cache bucket 416513229 used. Action: Link [x64] UnrealEditor-UE5DroneControl.dll ()
+All processes queued
+[1/22] Compile [x64] ActiveExecutionControlsWidget.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(98,159): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+    if(!Sync->SubmitPlan(Request,[Weak,Id,TargetName](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->PendingGroups.Remove(Id);const auto Code=Error(Reply);
+                                                                                                                                                              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(23,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(98,164): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+    if(!Sync->SubmitPlan(Request,[Weak,Id,TargetName](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->PendingGroups.Remove(Id);const auto Code=Error(Reply);
+                                                                                                                                                                   ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(98,154): error C2737: ﾡﾰCodeﾡﾱ: ﾱ￘￐￫ﾳ￵ￊﾼﾻﾯ const ﾶￔￏ￳
+    if(!Sync->SubmitPlan(Request,[Weak,Id,TargetName](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->PendingGroups.Remove(Id);const auto Code=Error(Reply);
+                                                                                                                                                         ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(99,28): error C3536: ﾡﾰCodeﾡﾱ: ﾳ￵ￊﾼﾻﾯￖﾮￇﾰￎ￞ﾷﾨￊﾹￓￃ
+        Weak->bLastFailed=!Code.IsEmpty();Weak->LastResultUntil=FPlatformTime::Seconds()+8.;Weak->LastResult=FText::Format(T(TEXT("ExecutionControls.Result")),TargetName,Code.IsEmpty()?T(TEXT("Group.Accepted")):T(*(TEXT("Errors.")+Code)));Weak->Refresh();
+                           ^
+ Compile [x64] ActiveExecutionControlsWidget.cpp [NoUba]: Exited with error code 2 . The build will fail.
+ Compile [x64] ActiveExecutionControlsWidget.cpp [NoUba]: WorkingDirectory C:\Program Files\Epic Games\UE_5.8\Engine\Source
+ Compile [x64] ActiveExecutionControlsWidget.cpp [NoUba]: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe @"D:/CodexPublish/drone_security/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/ActiveExecutionControlsWidget.cpp.obj.rsp" 
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(99,212): error C2664: ﾡﾰFText PlanUI::T(const TCHAR *)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 1 ﾴￓﾡﾰconst wchar_tﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst TCHAR *ﾡﾱ
+        Weak->bLastFailed=!Code.IsEmpty();Weak->LastResultUntil=FPlatformTime::Seconds()+8.;Weak->LastResult=FText::Format(T(TEXT("ExecutionControls.Result")),TargetName,Code.IsEmpty()?T(TEXT("Group.Accepted")):T(*(TEXT("Errors.")+Code)));Weak->Refresh();
+                                                                                                                                                                                                                   ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(99,214): note: ﾴￓￕ￻￐ￍ￀￠￐ￍￗﾪﾻﾻￎﾪￖﾸￕ￫￀￠￐ￍ￐￨ￒﾪ reinterpret_castﾡﾢC ￑￹ￊﾽￗﾪﾻﾻﾻ￲ﾴ￸ￔﾲ￀ﾨﾺￅﾵￄﾺﾯￊ�￑￹ￊﾽￇ﾿ￖￆￗﾪﾻﾻ
+        Weak->bLastFailed=!Code.IsEmpty();Weak->LastResultUntil=FPlatformTime::Seconds()+8.;Weak->LastResult=FText::Format(T(TEXT("ExecutionControls.Result")),TargetName,Code.IsEmpty()?T(TEXT("Group.Accepted")):T(*(TEXT("Errors.")+Code)));Weak->Refresh();
+                                                                                                                                                                                                                     ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(18,14): note: ﾲￎﾼ￻ﾡﾰPlanUI::Tﾡﾱﾵￄ￉￹ￃ￷
+inline FText T(const TCHAR* K){return ProductText::Get(K);}
+             ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\ActiveExecutionControlsWidget.cpp(99,212): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(const wchar_t)ﾡﾱￊﾱ
+        Weak->bLastFailed=!Code.IsEmpty();Weak->LastResultUntil=FPlatformTime::Seconds()+8.;Weak->LastResult=FText::Format(T(TEXT("ExecutionControls.Result")),TargetName,Code.IsEmpty()?T(TEXT("Group.Accepted")):T(*(TEXT("Errors.")+Code)));Weak->Refresh();
+                                                                                                                                                                                                                   ^
+[2/22] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[3/22] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[4/22] Compile [x64] CommandClientTest.cpp [NoUba]
+[5/22] Compile [x64] CommandScreenManager.cpp [NoUba]
+[6/22] Compile [x64] GroupControlWidget.cpp [NoUba]
+[7/22] Compile [x64] CommandShellWidget.cpp [NoUba]
+[8/22] Compile [x64] MapExtractionTest.cpp [NoUba]
+[9/22] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[10/22] Compile [x64] MapShellWidget.cpp [NoUba]
+[11/22] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[12/22] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[13/22] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(286,114): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+            if(!MoveReply->Done)return false;if(!Test->TestTrue(TEXT("Map group fixture has actual Backend ACK"),Error(MoveReply->Reply).IsEmpty()))return true;
+                                                                                                                 ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(23,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(286,119): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+            if(!MoveReply->Done)return false;if(!Test->TestTrue(TEXT("Map group fixture has actual Backend ACK"),Error(MoveReply->Reply).IsEmpty()))return true;
+                                                                                                                      ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+ Compile [x64] PlanConfigurationTests.cpp [NoUba]: Exited with error code 2 . The build will fail.
+ Compile [x64] PlanConfigurationTests.cpp [NoUba]: WorkingDirectory C:\Program Files\Epic Games\UE_5.8\Engine\Source
+ Compile [x64] PlanConfigurationTests.cpp [NoUba]: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe @"D:/CodexPublish/drone_security/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/PlanConfigurationTests.cpp.obj.rsp" 
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(286,56): error C2661: ﾡﾰFAutomationTestBase::TestTrueﾡﾱ: ￃﾻￓ￐ￖ￘ￔ￘ﾺﾯￊ�ﾽￓￊￜ 1 ﾸ￶ﾲￎￊ�
+            if(!MoveReply->Done)return false;if(!Test->TestTrue(TEXT("Map group fixture has actual Backend ACK"),Error(MoveReply->Reply).IsEmpty()))return true;
+                                                       ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(286,56): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(const wchar_t [41])ﾡﾱￊﾱ
+[14/22] Compile [x64] ReservationWidgetTest.cpp [NoUba]
+[15/22] Compile [x64] SecurityPlanWorkspaceConfiguration.cpp [NoUba]
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceConfiguration.cpp(53,72): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+        if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);
+                                                                       ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(23,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceConfiguration.cpp(53,77): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+        if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);
+                                                                            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceConfiguration.cpp(82,72): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+        if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);
+                                                                       ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(23,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceConfiguration.cpp(82,77): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+        if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=Error(Reply);
+                                                                            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceConfiguration.cpp(136,51): error C2872: ﾡﾰErrorﾡﾱ: ﾲﾻￃ￷￈ﾷﾵￄﾷ￻ﾺￅ
+        if(!Weak.IsValid())return;Weak->ErrorCode=Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);
+                                                  ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾿￉ￄￜￊￇﾡﾰErrorﾡﾱ
+class Error;
+      ^
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\PlanWidgetSupport.h(23,16): note: ﾻ￲  ﾡﾰFString PlanUI::Error(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &)ﾡﾱ
+inline FString Error(const TSharedPtr<FJsonObject>& Reply){if(!Reply)return TEXT("SYNC_OFFLINE");FString C=Field(Reply,TEXT("code"));if(C.IsEmpty() && Reply->HasField(TEXT("error")))C=TEXT("Request");return C;}
+               ^
+ Compile [x64] SecurityPlanWorkspaceConfiguration.cpp [NoUba]: Exited with error code 2 . The build will fail.
+ Compile [x64] SecurityPlanWorkspaceConfiguration.cpp [NoUba]: WorkingDirectory C:\Program Files\Epic Games\UE_5.8\Engine\Source
+ Compile [x64] SecurityPlanWorkspaceConfiguration.cpp [NoUba]: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe @"D:/CodexPublish/drone_security/Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/SecurityPlanWorkspaceConfiguration.cpp.obj.rsp" 
+D:\CodexPublish\drone_security\Source\UE5DroneControl\Shared\SecurityPlanWorkspaceConfiguration.cpp(136,56): error C2027: ￊﾹￓￃ￁ￋￎﾴﾶﾨￒ￥￀￠￐ￍﾡﾰErrorﾡﾱ
+        if(!Weak.IsValid())return;Weak->ErrorCode=Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);
+                                                       ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\GenericPlatform\GenericPlatformMisc.h(23,7): note: ﾲￎﾼ￻ﾡﾰErrorﾡﾱﾵￄ￉￹ￃ￷
+class Error;
+      ^
+[16/22] Compile [x64] ProductText.cpp [NoUba]
+[17/22] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[18/22] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[19/22] Compile [x64] VideoClientTest.cpp [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 110.18 seconds
+CompilationResultException: OtherCompilationError
+   at UnrealBuildTool.ActionGraph.InternalExecuteActions(ActionExecutor Executor, List`1 ActionsToExecute, ILogger Logger) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Actions\ActionGraph.cs:line 442
+   at UnrealBuildTool.ActionGraph.ExecuteActionsAsync(BuildConfiguration BuildConfiguration, List`1 ActionsToExecute, List`1 TargetDescriptors, ILogger Logger, ActionExecutor executor) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Actions\ActionGraph.cs:line 417
+   at UnrealBuildTool.BuildMode.BuildAsync(List`1 Targets, BuildConfiguration BuildConfiguration, BuildOptions Options, FileReference WriteOutdatedActionsFile, CppDependencyCache cppDependencyCache, ILogger Logger, String ActionTypeFilter, ActionExecutor executor) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Modes\BuildMode.cs:line 812
+   at UnrealBuildTool.BuildMode.ExecuteAsync(CommandLineArguments Arguments, ILogger Logger) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Modes\BuildMode.cs:line 282
+   at UnrealBuildTool.BuildMode.ExecuteAsync(CommandLineArguments Arguments, ILogger Logger) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Modes\BuildMode.cs:line 303
+   at UnrealBuildTool.UnrealBuildTool.Main(String[] ArgumentsArray) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\UnrealBuildTool.cs:line 483
+WriteFileIfChanged() wrote 0 changed files of 1 requested writes.
+
+Timeline:
+[  0.000]  +1.617 Main
+   0.025          [  0.025]  +0.174 Apply XmlConfig
+   0.203          [  0.203]  +0.560 AddTelemetry
+   0.846          [  0.846]  +0.770 RegisterPlatforms
+[  1.647]  +0.032 ParseCommandLine
+[  1.763]  +0.957 EngineRulesPlugins
+[  2.723]  +0.038 EngineRulesFetchDirs
+[  2.769]  +0.019 EngineRulesAssembly
+[  2.789]  +0.003 ProgramRulesAssembly
+[  2.886]  +0.094 ProjectRulesAssembly
+[  2.981]  +0.266 CreateTargetRules
+[  3.324]  +0.016 CppDependencyCache
+[  3.359]  +0.120 LoadMakefile
+[  3.481]  +0.000 FindPlugins
+[  3.488]  +0.017 MakefileValid
+[  3.506]  +3.645 UE5DroneControlEditor Win64 Development
+   3.506          [  0.000]  +0.896 <unknown>
+   4.403          [  0.896]  +0.062 UHTModules
+   4.465          [  0.958]  +0.225 <unknown>
+   4.690          [  1.184]  +0.203 UHTManifest
+   4.893          [  1.387] +11.124 UHT
+   4.893             1.387          [  0.000]  +0.219 <unknown>
+   5.113             1.606          [  0.219]  +0.000 GitWait
+   5.113             1.607          [  0.219]  +1.978 <unknown>
+   7.092             3.586          [  2.198]  +0.000 WaitOnWrites
+   7.152             3.646          [  2.259]  +0.188 SavingMakefile
+   7.341             3.834          [  2.447]  +8.677 <unknown>
+[  7.152]  +8.867 <unknown>
+[ 16.019]  +0.021 UHTTimestamps
+[ 16.052]  +0.010 CppDependencyCache
+[ 16.063]  +0.130 Preparing ActionGraph
+  16.114          [  0.051]  +0.005 LinkActions
+  16.119             0.056          [  0.005]  +0.000 DetectActionGraphCycles
+  16.120          [  0.057]  +0.000 GatherPrerequisiteActions
+  16.122          [  0.059]  +0.000 CppDependencyCacheWait
+  16.123          [  0.060]  +0.055 GatherOutdatedActions
+  16.181          [  0.118]  +0.003 LinkActions
+  16.181             0.118          [  0.000]  +0.000 DetectActionGraphCycles
+  16.186          [  0.123]  +0.002 DeleteOutdatedProducedItems
+  16.188          [  0.125]  +0.004 SaveActionHistory
+  16.194          [  0.130]  +0.000 CreateDirectoriesForProducedItems
+[ 16.208]  +0.299 GarbageCollect
+[ 16.507]+109.880 <unknown>
+[126.387]  +0.000 DisconnectCache
+[126.391]  +0.000 SaveCasTable
+[126.394]  +0.063 Saving caches
+[126.491]  +0.002 TelemetryService.FlushEvents
+[126.496]
+
+Result: Failed (OtherCompilationError)
+Total execution time: 126.50 seconds

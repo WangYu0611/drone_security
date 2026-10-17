@@ -1,0 +1,69 @@
+{
+  "assembled_at_utc": "2026-10-17T17:26:56.497153+00:00",
+  "scope": "Backend configuration workflow software acceptance only",
+  "frozen": true,
+  "sanitization": {
+    "repository_absolute_paths_replaced_with": "$REPOSITORY",
+    "protocol_identity": "Only synthetic CONFIG-QA client identities and ISOLATED-QA hostname; random instance IDs retained for ownership traceability",
+    "credential_and_private_path_scan": "PASS"
+  },
+  "files": [
+    {
+      "path": "build-identity.json",
+      "sha256": "962889a6a96bb4d4facd6bac5de8d3f00d762491da9476333c4be495f7747f79",
+      "bytes": 2379
+    },
+    {
+      "path": "protocol-result.json",
+      "sha256": "6dc5385b21b4c2f50f51266d897c05d0886b4bb6a868f3656618c7d293c436b6",
+      "bytes": 637
+    },
+    {
+      "path": "protocol-traffic.json",
+      "sha256": "deb3236e3e8e29a1909d2a4b19fd33a24cbcec2be0e65534b8c1c6ca818998a6",
+      "bytes": 142072
+    },
+    {
+      "path": "unit-result.json",
+      "sha256": "31d94c84a5f8fd78b914e6521221c1257287906caf854a304edadeaf07c59439",
+      "bytes": 56247
+    },
+    {
+      "path": "unit-summary.json",
+      "sha256": "4dc0ea806c8d46d4be6bc111ebea31360418075f58e92760aa2bd89e630a69db",
+      "bytes": 2515
+    }
+  ],
+  "raw_saved_sources": [
+    {
+      "path": "Saved/ConfigurationWorkflow/unit-canonical-final/result.json",
+      "sha256": "05b70c9c23a8ceb5d75e6385494dde6ce3922f1e3e32d971f909da384af87253",
+      "bytes": 61156
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/unit-canonical-final/run.log",
+      "sha256": "7a7332d0633674275432409efbd2cf44345ecb2cac1688d10a87eed1ad59c4f0",
+      "bytes": 22190
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/protocol-1792257848575/result.json",
+      "sha256": "6dfab32e1c801208b1fbc8e8df108ac7cd0159cd9dc0f6bbf24cfe07dbe8aedc",
+      "bytes": 636
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/protocol-1792257848575/traffic.json",
+      "sha256": "483685186ec9ccc3bd81be0493ce8ae8417163154c214ee1ea01e9ca86d46240",
+      "bytes": 142071
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/protocol-1792257848575/stdio.log",
+      "sha256": "0fb8c1f4c6976d80b9b349c61886f6da8d19c7d38bdfbd2762095fbf3f132356",
+      "bytes": 1111
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/backend-canonical-build-2.log",
+      "sha256": "58f0205fdd3defbd675af1bc1792e48c67e77dff46ff255f62c8dcc528d2e58d",
+      "bytes": 484
+    }
+  ]
+}

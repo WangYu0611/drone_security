@@ -1,0 +1,56 @@
+[
+  {
+    "test": "DroneOps.P54.RouteEditCameraLock",
+    "role": "Map",
+    "pass": true,
+    "expected": 2,
+    "exit": 0,
+    "discovered": 2,
+    "discovery_log_counts": [
+      2
+    ],
+    "completed": 2,
+    "completed_tests": [
+      "DroneOps.P54.RouteEditCameraLock.2D",
+      "DroneOps.P54.RouteEditCameraLock.3D"
+    ],
+    "passed": 2,
+    "warnings": 0,
+    "failed": 0,
+    "not_run": 0,
+    "in_process": 0,
+    "report_tests": [
+      "DroneOps.P54.RouteEditCameraLock.2D",
+      "DroneOps.P54.RouteEditCameraLock.3D"
+    ],
+    "runtime_directory": "Saved\\PlanConfiguration-verify-1792258310870083400-0",
+    "cleanup_errors": [],
+    "ownership_after_stop": []
+  },
+  {
+    "test": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+    "role": "Map",
+    "pass": false,
+    "expected": 1,
+    "exit": 0,
+    "discovered": 1,
+    "discovery_log_counts": [
+      1
+    ],
+    "completed": 1,
+    "completed_tests": [
+      "DroneOps.P4.Workflow.MapLiveDraftGuard"
+    ],
+    "passed": 0,
+    "warnings": 0,
+    "failed": 1,
+    "not_run": 0,
+    "in_process": 0,
+    "report_tests": [
+      "DroneOps.P4.Workflow.MapLiveDraftGuard"
+    ],
+    "runtime_directory": "Saved\\PlanConfiguration-verify-1792258310870083400-1",
+    "cleanup_errors": [],
+    "ownership_after_stop": []
+  }
+]

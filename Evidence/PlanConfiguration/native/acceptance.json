@@ -1,0 +1,41 @@
+{
+  "date_local": "2026-10-18",
+  "method": "Actual Windows mouse/keyboard through computer-use sky; no business API writes. Read-only Backend snapshots corroborate outcomes.",
+  "environment": "Owned isolated Mock Backend and Command/Map/Video on online CesiumWorld, 22580/22581; fixture ellipsoid altitude 80 m, not AGL.",
+  "owned_processes_stopped": true,
+  "final_visual_recheck_passed": true,
+  "build_2_workflow": {
+    "host_run": "1792258224472745500",
+    "ue_module_sha256": "1441c11746be9c8577bb498968c0b9636862e861ee88df97ee2dea89145b7f9d",
+    "backend_sha256": "b18cc1c2e1aa9bf0177be828971aa2907d1eb971a321486bea5078fdbca0a651",
+    "passed": [
+      "Create plan and default mission after acknowledgement",
+      "Keep typed draft across Alerts and Keep Editing",
+      "Assign UAV-01, draw route in Map, Save Draft retains editing, Finish Route releases camera",
+      "Review and deploy: zero executions and configuration lease released",
+      "Explicit Mock start, pause, then configure a second plan and confirm abort of original group",
+      "Second local draft remains, Save and Finish persists it and releases configuration"
+    ],
+    "note": "Full business workflow predates final visual polish and heartbeat-release fix. This is not labeled a full replay on build 3."
+  },
+  "build_3_recheck": {
+    "host_run": "1792259446934307100",
+    "ue_module_sha256": "60f5412b45ecee3ba11021f38049df5942f0c233eacb9dd8064f68bb598f7048",
+    "backend_sha256": "5bae091ae8c677af33dbe5bae2e10a5d8abe6d279d57888908eb335e1defd067",
+    "passed": [
+      "Chinese new-plan layout without duplicate status/heading or previous-plan summary",
+      "Named unsaved draft retained across Alerts; Finish exposes Save/Discard/Keep guard",
+      "Keep Editing, create plan, assign UAV-01 and hand off route to Map",
+      "Map shows route-specific guidance and hides box/group movement",
+      "Add unsaved waypoint, explicitly confirm discard: waypoint removed, 2D/3D controls unlocked",
+      "Finish configuration: lease and edit sessions empty; Fleet navigation and Map box/group controls restored; zero executions"
+    ]
+  },
+  "not_native_verified": [
+    "Final-build full deploy/start/pause/abort replay (covered on build 2 and by final-build RHI automation)",
+    "Restart/reconnect and ownership-expiry scenarios (Backend/protocol coverage only)",
+    "Actual alarm arrival/acknowledgement (empty Alerts navigation exercised)",
+    "Physical UAV flight or real device control"
+  ],
+  "video_boundary": "No native video-target action was issued; automated tests verify exact Video target/state invariance."
+}

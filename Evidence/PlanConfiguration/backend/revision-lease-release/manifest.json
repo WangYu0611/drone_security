@@ -1,0 +1,85 @@
+{
+  "assembled_at_utc": "2026-10-17T17:47:53.547227+00:00",
+  "scope": "Backend configuration workflow and heartbeat lease-release software acceptance only",
+  "revision": "lease-release",
+  "frozen": true,
+  "sanitization": {
+    "repository_absolute_paths_replaced_with": "$REPOSITORY",
+    "protocol_identity": "Only synthetic CONFIG-QA client identities and ISOLATED-QA hostname; random instance IDs retained for ownership traceability",
+    "credential_and_private_path_scan": "PASS"
+  },
+  "files": [
+    {
+      "path": "build-identity.json",
+      "sha256": "d2c93ec4a7ff27b9a3e221e05d6b74c37e6d5879583532060d443df48b3ab4c9",
+      "bytes": 2934
+    },
+    {
+      "path": "protocol-result.json",
+      "sha256": "3fba100a676b382f87dd9861b7d889caa916b9030aa49ead83e524f72e907d0b",
+      "bytes": 637
+    },
+    {
+      "path": "protocol-traffic.json",
+      "sha256": "bf1955f706c4a7922df186fbf3e43b775336178c42434b04cf4f55b7ff0ea9ff",
+      "bytes": 142876
+    },
+    {
+      "path": "unit-result.json",
+      "sha256": "bbcb0980fe88f6d29a1135916214ea79b57a082f7b92e7ea2ab4513d29015f57",
+      "bytes": 58530
+    },
+    {
+      "path": "unit-summary.json",
+      "sha256": "a9e05bb5432007c32a1c4e83fe1afaca102b75cbd05d3bcb4372866130eb2918",
+      "bytes": 4234
+    }
+  ],
+  "raw_saved_sources": [
+    {
+      "path": "Saved/ConfigurationWorkflow/unit-lease-release-canonical/result.json",
+      "sha256": "f51809e99b15f39ae2f724587b19b280116829e91e5b789e7d8bdc75358a88fb",
+      "bytes": 63625
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/unit-lease-release-canonical/run.log",
+      "sha256": "d72a1bb60e88a798411bd06e2b6663547d6674122ab6904f3dd4b9d7dba0845a",
+      "bytes": 23263
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/protocol-1792259194484/result.json",
+      "sha256": "01fecc55ab7fa504769161fcbc760d84d57235fbe2b6c660507b5ccec33e09cd",
+      "bytes": 636
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/protocol-1792259194484/traffic.json",
+      "sha256": "c997e2ab2d17a6d7976b5c197f1bd3bf4160c3a4d4e763d3f381e19fc82e5a7c",
+      "bytes": 142875
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/protocol-1792259194484/stdio.log",
+      "sha256": "43a1e7e8da04497a83a5909bf3f19cb42d24ce7120aad7ed7bbee9119ad70862",
+      "bytes": 1111
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/backend-lease-release-canonical-build.log",
+      "sha256": "58f0205fdd3defbd675af1bc1792e48c67e77dff46ff255f62c8dcc528d2e58d",
+      "bytes": 484
+    },
+    {
+      "path": "Saved/ConfigurationWorkflow/unit-lease-release-isolated/result.json",
+      "sha256": "02a1fd45e08dec58ad77a22633885c3849db659035ea268ae50bc218484c1f0c",
+      "bytes": 63537
+    },
+    {
+      "path": "Saved/PlanConfiguration-heartbeat-race-1792258726983/trace.jsonl",
+      "sha256": "6c6d0fa918732089e5b05bf8334a626b1cde9b74604322c882520cf75409e7fc",
+      "bytes": 24815
+    }
+  ],
+  "preserved_failure_evidence": "Evidence/PlanConfiguration/verification-1792258727524693800",
+  "previous_phase_manifest": {
+    "path": "Evidence/PlanConfiguration/backend/manifest.json",
+    "sha256": "9e641548dbd0b0aa9ec0e8ee35747d1cb05f274240de1a0e54bf9fbd34a9294c"
+  }
+}

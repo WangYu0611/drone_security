@@ -1,0 +1,151 @@
+{
+  "version": 87,
+  "next_id": 4,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "最终配置复核 QA",
+      "description": "",
+      "status": "DRAFT",
+      "content_revision": 2,
+      "review": null,
+      "version": 2,
+      "created_at": 1792259542.986822,
+      "updated_at": 1792259554.6869996,
+      "mission_ids": [
+        "mission-2"
+      ],
+      "workflow_step": "TaskConfig",
+      "validation": {
+        "ready": false,
+        "issues": [
+          {
+            "mission_id": "mission-2",
+            "code": "ROUTE_MISSING",
+            "params": {}
+          }
+        ],
+        "mission_count": 1,
+        "assigned_count": 1,
+        "routes_ready": 0,
+        "validated_content_revision": null
+      },
+      "workflow_mission_id": "mission-2"
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "任务 01",
+      "assigned_uav_id": "UAV-01",
+      "route_id": null,
+      "status": "DRAFT",
+      "assigned_uav_ids": [
+        "UAV-01"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    }
+  },
+  "paths": {},
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1792259542.9868317,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "最终配置复核 QA"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: 最终配置复核 QA",
+      "source": "CLIENT-COMMAND-e836b746"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1792259542.9868453,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "任务 01",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Default task created",
+      "source": "CLIENT-COMMAND-e836b746"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1792259554.6869943,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "任务 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV assignment updated",
+      "source": "CLIENT-COMMAND-e836b746"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1792259558.938775,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "任务 01",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "CLIENT-MAP-ca7308c4"
+    }
+  ],
+  "deployments": {},
+  "edit_sessions": {},
+  "executions": {},
+  "execution_version": 0,
+  "execution_requests": {},
+  "configuration_session": null,
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8.0,
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 80.0
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34706,
+          "altitude": 80.0
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34709,
+          "altitude": 80.0
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34712,
+          "altitude": 80.0
+        }
+      }
+    },
+    "safety_separation_m": 1.5
+  },
+  "execution_adapter": "Mock"
+}
