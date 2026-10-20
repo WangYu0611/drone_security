@@ -2357,8 +2357,7 @@ bool ADroneOpsPlayerController::FocusCommandDrone(int32 DroneId)
 {
     if (IsCommandMapViewActive())
     {
-        const AActor* Drone = ResolveFollowViewTargetByDroneId(DroneId);
-        return Drone && CommandScreenManager->GetMapService()->FocusLocation(Drone->GetActorLocation());
+        return CommandScreenManager->GetMapService()->FocusDrone(DroneId);
     }
     if (bPathEditMode || bVideoKeyboardControlActive) return false;
     if (!IsValid(ResolveFollowViewTargetByDroneId(DroneId))) return false;

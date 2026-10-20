@@ -380,6 +380,8 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Events.WAYPOINT_REACHED"),NSLOCTEXT("DroneOps","Events.WAYPOINT_REACHED","Waypoint reached · {uav_id}")},
 {TEXT("Events.MISSION_RETURNING"),NSLOCTEXT("DroneOps","Events.MISSION_RETURNING","Returning Home · {uav_id}")},
 {TEXT("Events.MISSION_ABORTED"),NSLOCTEXT("DroneOps","Events.MISSION_ABORTED","Mission aborted · {uav_id}")},
+{TEXT("Events.MOCK_STARTUP_RESET"),NSLOCTEXT("DroneOps","Events.MOCK_STARTUP_RESET","Mock aircraft returned to the startup formation")},
+{TEXT("Errors.MOCK_STARTUP_RESET"),NSLOCTEXT("DroneOps","Errors.MOCK_STARTUP_RESET","Ended when the Mock session restarted and aircraft returned to formation.")},
 {TEXT("Events.MISSION_COMPLETED"),NSLOCTEXT("DroneOps","Events.MISSION_COMPLETED","Mission completed · {uav_id}")},
 {TEXT("Events.MISSION_FAILED"),NSLOCTEXT("DroneOps","Events.MISSION_FAILED","Mission failed · {uav_id}")},
 {TEXT("Execution.Estimate"),NSLOCTEXT("DroneOps","Execution.Estimate","Estimated distance: {0} m · Time: {1} seconds")},
@@ -519,7 +521,7 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("FleetUX.Next"),NSLOCTEXT("DroneOps","FleetUX.Next","Next · choose destination")},
 {TEXT("FleetUX.Again"),NSLOCTEXT("DroneOps","FleetUX.Again","Move again")},
 {TEXT("FleetUX.Confirm"),NSLOCTEXT("DroneOps","FleetUX.Confirm","Move {0} aircraft")},
-{TEXT("FleetUX.NeedTarget"),NSLOCTEXT("DroneOps","FleetUX.NeedTarget","Click a destination on the map")},
+{TEXT("FleetUX.NeedTarget"),NSLOCTEXT("DroneOps","FleetUX.NeedTarget","Right-click a destination")},
 {TEXT("FleetUX.Reselect"),NSLOCTEXT("DroneOps","FleetUX.Reselect","Choose again")},
 {TEXT("FleetUX.Exit"),NSLOCTEXT("DroneOps","FleetUX.Exit","Cancel / Esc")},
 {TEXT("FleetUX.Hide"),NSLOCTEXT("DroneOps","FleetUX.Hide","Collapse")},
@@ -535,9 +537,9 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("FleetUX.Level"),NSLOCTEXT("DroneOps","FleetUX.Level","Current {0} m · keep height")},
 {TEXT("FleetUX.Selected"),NSLOCTEXT("DroneOps","FleetUX.Selected","{0} aircraft · anchor {1}")},
 {TEXT("FleetUX.EmptySelection"),NSLOCTEXT("DroneOps","FleetUX.EmptySelection","No aircraft selected")},
-{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Drag a box around at least two aircraft.")},
-{TEXT("FleetUX.SelectionReady"),NSLOCTEXT("DroneOps","FleetUX.SelectionReady","Selection ready. Choose a destination next.")},
-{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Click the map to choose a destination.")},
+{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Left-click an aircraft or drag to select. Shift adds; Ctrl toggles.")},
+{TEXT("FleetUX.SelectionReady"),NSLOCTEXT("DroneOps","FleetUX.SelectionReady","Selection ready. Right-click the map to preview a move.")},
+{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Right-click a destination. Left-drag to change aircraft.")},
 {TEXT("FleetUX.ReviewHint"),NSLOCTEXT("DroneOps","FleetUX.ReviewHint","Review height and formation.")},
 {TEXT("FleetUX.RunningHint"),NSLOCTEXT("DroneOps","FleetUX.RunningHint","The group moves together. Control it here.")},
 {TEXT("FleetUX.FinishedHint"),NSLOCTEXT("DroneOps","FleetUX.FinishedHint","Movement ended. You can choose a new target.")},
@@ -593,6 +595,165 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Errors.CONFIGURATION_CONTEXT_CHANGED"),NSLOCTEXT("DroneOps","Errors.CONFIGURATION_CONTEXT_CHANGED","Selection changed elsewhere. Your local changes are retained; finish or discard them before switching.")},
 {TEXT("Configuration.MapRouteContext"),NSLOCTEXT("DroneOps","Configuration.MapRouteContext","Editing the route for {0}. Finish the route to continue in Command.")},
 {TEXT("Configuration.DeployedReadOnly"),NSLOCTEXT("DroneOps","Configuration.DeployedReadOnly","Deployed plan is read only. Create a new version to make changes.")},
+{TEXT("Figma.TotalUAV"),NSLOCTEXT("DroneOps","Figma.TotalUAV","Total UAVs")},
+{TEXT("Figma.OnlineDevices"),NSLOCTEXT("DroneOps","Figma.OnlineDevices","Online devices")},
+{TEXT("Figma.AlertCenter"),NSLOCTEXT("DroneOps","Figma.AlertCenter","Alert center")},
+{TEXT("Figma.CurrentTask"),NSLOCTEXT("DroneOps","Figma.CurrentTask","Current task")},
+{TEXT("Figma.CurrentPlan"),NSLOCTEXT("DroneOps","Figma.CurrentPlan","Current plan")},
+{TEXT("Figma.ViewAll"),NSLOCTEXT("DroneOps","Figma.ViewAll","View all ›")},
+{TEXT("Figma.Close"),NSLOCTEXT("DroneOps","Figma.Close","Close")},
+{TEXT("Figma.Refresh"),NSLOCTEXT("DroneOps","Figma.Refresh","Refresh")},
+{TEXT("Figma.RoleHealth"),NSLOCTEXT("DroneOps","Figma.RoleHealth","{0} {1}")},
+{TEXT("Figma.ConfigurationBusy"),NSLOCTEXT("DroneOps","Figma.ConfigurationBusy","Finish the current configuration before opening the fleet.")},
+{TEXT("Figma.DeviceId"),NSLOCTEXT("DroneOps","Figma.DeviceId","Device ID")},
+{TEXT("Figma.DeviceName"),NSLOCTEXT("DroneOps","Figma.DeviceName","Device name")},
+{TEXT("Figma.Connection"),NSLOCTEXT("DroneOps","Figma.Connection","Connection")},
+{TEXT("Figma.Battery"),NSLOCTEXT("DroneOps","Figma.Battery","Battery")},
+{TEXT("Figma.Actions"),NSLOCTEXT("DroneOps","Figma.Actions","Actions")},
+{TEXT("Figma.TimeUTC"),NSLOCTEXT("DroneOps","Figma.TimeUTC","Time (UTC)")},
+{TEXT("Figma.AlertType"),NSLOCTEXT("DroneOps","Figma.AlertType","Alert type")},
+{TEXT("Figma.EventType"),NSLOCTEXT("DroneOps","Figma.EventType","Type")},
+{TEXT("Figma.Content"),NSLOCTEXT("DroneOps","Figma.Content","Content")},
+{TEXT("Figma.Details"),NSLOCTEXT("DroneOps","Figma.Details","View details")},
+{TEXT("Figma.NoDevices"),NSLOCTEXT("DroneOps","Figma.NoDevices","No registered devices")},
+{TEXT("Figma.DeviceCount"),NSLOCTEXT("DroneOps","Figma.DeviceCount","{0} devices · Includes offline devices")},
+{TEXT("Figma.AlertCount"),NSLOCTEXT("DroneOps","Figma.AlertCount","{0} alerts")},
+{TEXT("Figma.LogCount"),NSLOCTEXT("DroneOps","Figma.LogCount","{0} records")},
+{TEXT("Figma.WaitingPosition"),NSLOCTEXT("DroneOps","Figma.WaitingPosition","Waiting for UAV location data")},
+{TEXT("Figma.Plans.EmptyTitle"),NSLOCTEXT("DroneOps","Figma.Plans.EmptyTitle","No security plans yet")},
+{TEXT("Figma.Plans.EmptyHint"),NSLOCTEXT("DroneOps","Figma.Plans.EmptyHint","Create a plan to configure devices and mission routes")},
+{TEXT("Figma.Plans.NewPlan"),NSLOCTEXT("DroneOps","Figma.Plans.NewPlan","New security plan")},
+{TEXT("Figma.Plans.NewPlanHint"),NSLOCTEXT("DroneOps","Figma.Plans.NewPlanHint","Enter basic information to continue configuring your security plan")},
+{TEXT("Figma.Plans.NameHint"),NSLOCTEXT("DroneOps","Figma.Plans.NameHint","Enter a plan name")},
+{TEXT("Figma.Plans.DescriptionHint"),NSLOCTEXT("DroneOps","Figma.Plans.DescriptionHint","Enter a plan description")},
+{TEXT("Figma.Plans.Flow"),NSLOCTEXT("DroneOps","Figma.Plans.Flow","Plan workflow: Create / Configure devices / Edit routes / Review / Deploy")},
+{TEXT("Figma.Fleet.Title"),NSLOCTEXT("DroneOps","Figma.Fleet.Title","UAVs")},
+{TEXT("Figma.Fleet.List"),NSLOCTEXT("DroneOps","Figma.Fleet.List","UAV list")},
+{TEXT("Figma.Fleet.Empty"),NSLOCTEXT("DroneOps","Figma.Fleet.Empty","No registered UAVs")},
+{TEXT("Figma.Fleet.Telemetry"),NSLOCTEXT("DroneOps","Figma.Fleet.Telemetry","Current UAV telemetry")},
+{TEXT("Figma.Fleet.Altitude"),NSLOCTEXT("DroneOps","Figma.Fleet.Altitude","Altitude")},
+{TEXT("Figma.Fleet.Speed"),NSLOCTEXT("DroneOps","Figma.Fleet.Speed","Speed")},
+{TEXT("Figma.Fleet.Battery"),NSLOCTEXT("DroneOps","Figma.Fleet.Battery","Battery")},
+{TEXT("Figma.Fleet.Link"),NSLOCTEXT("DroneOps","Figma.Fleet.Link","Link")},
+{TEXT("Figma.Fleet.Task"),NSLOCTEXT("DroneOps","Figma.Fleet.Task","Task")},
+{TEXT("Figma.Fleet.Group"),NSLOCTEXT("DroneOps","Figma.Fleet.Group","UAV group control")},
+{TEXT("Figma.Fleet.Video"),NSLOCTEXT("DroneOps","Figma.Fleet.Video","Video monitor")},
+{TEXT("Figma.Fleet.NoVideo"),NSLOCTEXT("DroneOps","Figma.Fleet.NoVideo","No video signal")},
+{TEXT("Figma.Fleet.VideoHint"),NSLOCTEXT("DroneOps","Figma.Fleet.VideoHint","Choose a UAV, then open it in the Video client")},
+{TEXT("Figma.Fleet.VideoTarget"),NSLOCTEXT("DroneOps","Figma.Fleet.VideoTarget","Video client target: {0}")},
+{TEXT("Figma.Fleet.Join"),NSLOCTEXT("DroneOps","Figma.Fleet.Join","Add to group")},
+{TEXT("Figma.Fleet.SetPrimary"),NSLOCTEXT("DroneOps","Figma.Fleet.SetPrimary","Set primary")},
+{TEXT("Figma.Fleet.Label"),NSLOCTEXT("DroneOps","Figma.Fleet.Label","Edit label")},
+{TEXT("Figma.Fleet.RowDetail"),NSLOCTEXT("DroneOps","Figma.Fleet.RowDetail","Battery {0}  ·  Task {1}")},
+{TEXT("Figma.Fleet.NoSelection"),NSLOCTEXT("DroneOps","Figma.Fleet.NoSelection","No UAV selected")},
+{TEXT("Figma.Fleet.LabelTitle"),NSLOCTEXT("DroneOps","Figma.Fleet.LabelTitle","Edit UAV label")},
+{TEXT("Figma.Fleet.LabelName"),NSLOCTEXT("DroneOps","Figma.Fleet.LabelName","Display name")},
+{TEXT("Figma.Fleet.LabelColor"),NSLOCTEXT("DroneOps","Figma.Fleet.LabelColor","Label color")},
+{TEXT("Figma.Fleet.LabelSize"),NSLOCTEXT("DroneOps","Figma.Fleet.LabelSize","Font size")},
+{TEXT("Figma.Fleet.LabelScope"),NSLOCTEXT("DroneOps","Figma.Fleet.LabelScope","Only affects the UAV label")},
+{TEXT("Figma.Fleet.LabelPreview"),NSLOCTEXT("DroneOps","Figma.Fleet.LabelPreview","Label preview")},
+{TEXT("Figma.Fleet.Confirm"),NSLOCTEXT("DroneOps","Figma.Fleet.Confirm","Confirm")},
+{TEXT("Figma.Fleet.Task.Assembling"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Assembling","Assembling")},
+{TEXT("Figma.Fleet.Task.Moving"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Moving","Moving")},
+{TEXT("Figma.Fleet.Task.Scouting"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Scouting","Scouting")},
+{TEXT("Figma.Fleet.Task.Patrolling"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Patrolling","Patrolling")},
+{TEXT("Figma.Fleet.Task.Attacking"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Attacking","Attacking")},
+{TEXT("Figma.Fleet.Task.Paused"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Paused","Paused")},
+{TEXT("Figma.Fleet.Task.Avoiding"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Avoiding","Avoiding")},
+{TEXT("Figma.Fleet.Task.Completed"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Completed","Completed")},
+{TEXT("Figma.Fleet.Task.Error"),NSLOCTEXT("DroneOps","Figma.Fleet.Task.Error","Error")},
+{TEXT("Figma.Fleet.VideoOffline"),NSLOCTEXT("DroneOps","Figma.Fleet.VideoOffline","This UAV is offline. Check its connection.")},
+{TEXT("Figma.Fleet.VideoClient"),NSLOCTEXT("DroneOps","Figma.Fleet.VideoClient","View in Video client")},
+{TEXT("Figma.Fleet.VideoTargetHint"),NSLOCTEXT("DroneOps","Figma.Fleet.VideoTargetHint","Current target: {0}. Use the upper-right button to view it in the Video client.")},
+{TEXT("Figma.Fleet.SelectionSuperseded"),NSLOCTEXT("DroneOps","Figma.Fleet.SelectionSuperseded","Selection changed in another operation. Please retry.")},
+{TEXT("Overview.ActiveTasks"),NSLOCTEXT("DroneOps","Overview.ActiveTasks","Active tasks ({0})")},
+{TEXT("Overview.ViewTask"),NSLOCTEXT("DroneOps","Overview.ViewTask","View task")},
+{TEXT("Overview.FreeMove"),NSLOCTEXT("DroneOps","Overview.FreeMove","Free movement")},
+{TEXT("Overview.TaskState"),NSLOCTEXT("DroneOps","Overview.TaskState","{0} · {1} · {2}")},
+{TEXT("Overview.TaskMembers"),NSLOCTEXT("DroneOps","Overview.TaskMembers","{0} · {1}")},
+{TEXT("Plan.Tasks.Title"),NSLOCTEXT("DroneOps","Plan.Tasks.Title","Tasks in this plan")},
+{TEXT("Plan.Tasks.Hint"),NSLOCTEXT("DroneOps","Plan.Tasks.Hint","Choose a task to edit or execute. Checking and deploying a plan does not start a task.")},
+{TEXT("Plan.Tasks.Assignment"),NSLOCTEXT("DroneOps","Plan.Tasks.Assignment","UAVs: {0} · Waypoints: {1}")},
+{TEXT("Plan.Tasks.State"),NSLOCTEXT("DroneOps","Plan.Tasks.State","Configuration: {0} · Execution: {1}")},
+{TEXT("Plan.Tasks.Select"),NSLOCTEXT("DroneOps","Plan.Tasks.Select","Select task")},
+{TEXT("Plan.Tasks.Selected"),NSLOCTEXT("DroneOps","Plan.Tasks.Selected","Selected")},
+{TEXT("Plan.Tasks.Edit"),NSLOCTEXT("DroneOps","Plan.Tasks.Edit","Edit task")},
+{TEXT("Plan.Tasks.EditVersion"),NSLOCTEXT("DroneOps","Plan.Tasks.EditVersion","Edit in new version")},
+{TEXT("Plan.Tasks.Execute"),NSLOCTEXT("DroneOps","Plan.Tasks.Execute","Execute task")},
+{TEXT("Plan.Tasks.CheckDeploy"),NSLOCTEXT("DroneOps","Plan.Tasks.CheckDeploy","Check and deploy")},
+{TEXT("Plan.Tasks.ViewExecution"),NSLOCTEXT("DroneOps","Plan.Tasks.ViewExecution","View execution")},
+{TEXT("MapMove.Title"),NSLOCTEXT("DroneOps","MapMove.Title","Map movement")},
+{TEXT("MapMove.SelectAircraft"),NSLOCTEXT("DroneOps","MapMove.SelectAircraft","Select at least one aircraft to move.")},
+{TEXT("MapMove.SelectHint"),NSLOCTEXT("DroneOps","MapMove.SelectHint","Select an aircraft icon. Shift adds aircraft; Ctrl toggles selection.")},
+{TEXT("MapMove.ClickHint"),NSLOCTEXT("DroneOps","MapMove.ClickHint","{0} selected · Click a map destination to preview. Drag to pan; wheel to zoom.")},
+{TEXT("MapMove.Preview"),NSLOCTEXT("DroneOps","MapMove.Preview","Move {0} aircraft to {1}, {2} · altitude {3} m. Confirm to send; click the map to choose again.")},
+{TEXT("MapMove.Confirm"),NSLOCTEXT("DroneOps","MapMove.Confirm","Confirm movement")},
+{TEXT("MapMove.EditCameraHint"),NSLOCTEXT("DroneOps","MapMove.EditCameraHint","Edit view: middle drag to pan, right drag to orbit in 3D, wheel to zoom. Left mouse edits waypoints.")},
+{TEXT("MapMove.MockMarker"),NSLOCTEXT("DroneOps","MapMove.MockMarker","{0} · Mock")},
+{TEXT("Figma.Header.BackendOnline"),NSLOCTEXT("DroneOps","Figma.Header.BackendOnline","Backend online")},
+{TEXT("Figma.Header.BackendOffline"),NSLOCTEXT("DroneOps","Figma.Header.BackendOffline","Backend offline")},
+{TEXT("Figma.Header.Synced"),NSLOCTEXT("DroneOps","Figma.Header.Synced","Synchronized")},
+{TEXT("Figma.Header.SyncPending"),NSLOCTEXT("DroneOps","Figma.Header.SyncPending","Sync pending")},
+{TEXT("VideoUI.Title"),NSLOCTEXT("DroneOps","VideoUI.Title","Video intelligence")},
+{TEXT("VideoUI.Single"),NSLOCTEXT("DroneOps","VideoUI.Single","One active player · Other slots reserved · AI not connected")},
+{TEXT("VideoUI.Aircraft"),NSLOCTEXT("DroneOps","VideoUI.Aircraft","Aircraft")},
+{TEXT("VideoUI.SelectSource"),NSLOCTEXT("DroneOps","VideoUI.SelectSource","Select a video target")},
+{TEXT("VideoUI.ModelDisclaimer"),NSLOCTEXT("DroneOps","VideoUI.ModelDisclaimer","Visual presets do not represent aircraft specifications.")},
+{TEXT("VideoUI.Primary"),NSLOCTEXT("DroneOps","VideoUI.Primary","Primary video")},
+{TEXT("VideoUI.Current"),NSLOCTEXT("DroneOps","VideoUI.Current","Video target")},
+{TEXT("VideoUI.Detection"),NSLOCTEXT("DroneOps","VideoUI.Detection","AI detection")},
+{TEXT("VideoUI.People"),NSLOCTEXT("DroneOps","VideoUI.People","People")},
+{TEXT("VideoUI.Vehicles"),NSLOCTEXT("DroneOps","VideoUI.Vehicles","Vehicles")},
+{TEXT("VideoUI.Drones"),NSLOCTEXT("DroneOps","VideoUI.Drones","UAVs")},
+{TEXT("VideoUI.Behavior"),NSLOCTEXT("DroneOps","VideoUI.Behavior","Abnormal behavior")},
+{TEXT("VideoUI.Other"),NSLOCTEXT("DroneOps","VideoUI.Other","Other targets")},
+{TEXT("VideoUI.Alerts"),NSLOCTEXT("DroneOps","VideoUI.Alerts","Recent alerts")},
+{TEXT("VideoUI.NoAlerts"),NSLOCTEXT("DroneOps","VideoUI.NoAlerts","No active alerts")},
+{TEXT("VideoUI.AlertSession"),NSLOCTEXT("DroneOps","VideoUI.AlertSession","Received alerts · This session")},
+{TEXT("VideoUI.System"),NSLOCTEXT("DroneOps","VideoUI.System","System status")},
+{TEXT("VideoUI.Online"),NSLOCTEXT("DroneOps","VideoUI.Online","Online aircraft")},
+{TEXT("VideoUI.AI"),NSLOCTEXT("DroneOps","VideoUI.AI","AI engine")},
+{TEXT("VideoUI.Storage"),NSLOCTEXT("DroneOps","VideoUI.Storage","Storage")},
+{TEXT("VideoUI.Network"),NSLOCTEXT("DroneOps","VideoUI.Network","Backend")},
+{TEXT("VideoUI.NotConnected"),NSLOCTEXT("DroneOps","VideoUI.NotConnected","Not connected")},
+{TEXT("VideoUI.Unavailable"),NSLOCTEXT("DroneOps","VideoUI.Unavailable","Unavailable")},
+{TEXT("VideoUI.Four"),NSLOCTEXT("DroneOps","VideoUI.Four","4 slots")},
+{TEXT("VideoUI.Six"),NSLOCTEXT("DroneOps","VideoUI.Six","6 slots")},
+{TEXT("VideoUI.Focus"),NSLOCTEXT("DroneOps","VideoUI.Focus","Focus")},
+{TEXT("VideoUI.SetActive"),NSLOCTEXT("DroneOps","VideoUI.SetActive","Select this UAV")},
+{TEXT("VideoUI.SetActiveHint"),NSLOCTEXT("DroneOps","VideoUI.SetActiveHint","Explicitly select this UAV in the shared context. This action does not change the video target.")},
+{TEXT("VideoUI.ActiveSelection"),NSLOCTEXT("DroneOps","VideoUI.ActiveSelection","Selected: {0}")},
+{TEXT("VideoUI.Retry"),NSLOCTEXT("DroneOps","VideoUI.Retry","Retry")},
+{TEXT("VideoUI.Record"),NSLOCTEXT("DroneOps","VideoUI.Record","Record")},
+{TEXT("VideoUI.Playback"),NSLOCTEXT("DroneOps","VideoUI.Playback","Playback")},
+{TEXT("VideoUI.Screenshot"),NSLOCTEXT("DroneOps","VideoUI.Screenshot","Capture")},
+{TEXT("VideoUI.Filter"),NSLOCTEXT("DroneOps","VideoUI.Filter","Filter")},
+{TEXT("VideoUI.Unsupported"),NSLOCTEXT("DroneOps","VideoUI.Unsupported","This capability is not connected yet.")},
+{TEXT("VideoUI.Reserved"),NSLOCTEXT("DroneOps","VideoUI.Reserved","Reserved slot")},
+{TEXT("VideoUI.Unassigned"),NSLOCTEXT("DroneOps","VideoUI.Unassigned","No UAV assigned")},
+{TEXT("VideoUI.ModelUnavailable"),NSLOCTEXT("DroneOps","VideoUI.ModelUnavailable","Model: unavailable")},
+{TEXT("VideoUI.NoSource"),NSLOCTEXT("DroneOps","VideoUI.NoSource","No video source")},
+{TEXT("VideoUI.InactiveSource"),NSLOCTEXT("DroneOps","VideoUI.InactiveSource","Click to view")},
+{TEXT("VideoUI.SourceSet"),NSLOCTEXT("DroneOps","VideoUI.SourceSet","Source configured")},
+{TEXT("VideoUI.NoTarget"),NSLOCTEXT("DroneOps","VideoUI.NoTarget","No video target")},
+{TEXT("VideoUI.ConfigureSource"),NSLOCTEXT("DroneOps","VideoUI.ConfigureSource","Configure a video source for this UAV")},
+{TEXT("VideoUI.WaitingFrames"),NSLOCTEXT("DroneOps","VideoUI.WaitingFrames","Waiting for decoded video frames")},
+{TEXT("VideoUI.RetryHint"),NSLOCTEXT("DroneOps","VideoUI.RetryHint","Reconnect the current video source")},
+{TEXT("VideoUI.RetryUnavailable"),NSLOCTEXT("DroneOps","VideoUI.RetryUnavailable","Select a UAV with a configured video source to retry.")},
+{TEXT("VideoUI.NA"),NSLOCTEXT("DroneOps","VideoUI.NA","N/A")},
+{TEXT("MapUI.Operations"),NSLOCTEXT("DroneOps","MapUI.Operations","Map operations")},
+{TEXT("MapUI.MissionRoute"),NSLOCTEXT("DroneOps","MapUI.MissionRoute","Mission route")},
+{TEXT("MapUI.ViewVideo"),NSLOCTEXT("DroneOps","MapUI.ViewVideo","View video")},
+{TEXT("MapUI.CurrentDevice"),NSLOCTEXT("DroneOps","MapUI.CurrentDevice","Current device")},
+{TEXT("MapUI.SelectDevice"),NSLOCTEXT("DroneOps","MapUI.SelectDevice","Select a device")},
+{TEXT("MapUI.CameraHint"),NSLOCTEXT("DroneOps","MapUI.CameraHint","Middle: pan · Right: orbit · Wheel: zoom")},
+{TEXT("MapUI.FleetPointerHint"),NSLOCTEXT("DroneOps","MapUI.FleetPointerHint","Left: select · Right-click: target · Middle: pan")},
+{TEXT("MapUI.FleetPointerHelp"),NSLOCTEXT("DroneOps","MapUI.FleetPointerHelp","Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom.")},
+{TEXT("MapUI.RouteEditor"),NSLOCTEXT("DroneOps","MapUI.RouteEditor","Route editor")},
+{TEXT("MapUI.DefaultSpeed"),NSLOCTEXT("DroneOps","MapUI.DefaultSpeed","Default flight speed")},
+{TEXT("MapUI.DefaultSpeedHint"),NSLOCTEXT("DroneOps","MapUI.DefaultSpeedHint","Used for newly added waypoints.")},
+{TEXT("MapUI.SpeedRange"),NSLOCTEXT("DroneOps","MapUI.SpeedRange","m/s · 0 = unlimited, or 0.5–15")},
+{TEXT("MapUI.SpeedInvalid"),NSLOCTEXT("DroneOps","MapUI.SpeedInvalid","Enter 0 (unlimited) or a speed from 0.5 to 15 m/s.")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -976,6 +1137,8 @@ if(Source==TEXT("Mission resumed · {uav_id}"))return Get(TEXT("Events.MISSION_R
 if(Source==TEXT("Waypoint reached · {uav_id}"))return Get(TEXT("Events.WAYPOINT_REACHED"));
 if(Source==TEXT("Returning Home · {uav_id}"))return Get(TEXT("Events.MISSION_RETURNING"));
 if(Source==TEXT("Mission aborted · {uav_id}"))return Get(TEXT("Events.MISSION_ABORTED"));
+if(Source==TEXT("Mock aircraft returned to the startup formation"))return Get(TEXT("Events.MOCK_STARTUP_RESET"));
+if(Source==TEXT("Ended when the Mock session restarted and aircraft returned to formation."))return Get(TEXT("Errors.MOCK_STARTUP_RESET"));
 if(Source==TEXT("Mission completed · {uav_id}"))return Get(TEXT("Events.MISSION_COMPLETED"));
 if(Source==TEXT("Mission failed · {uav_id}"))return Get(TEXT("Events.MISSION_FAILED"));
 if(Source==TEXT("Estimated distance: {0} m · Time: {1} seconds"))return Get(TEXT("Execution.Estimate"));
@@ -1115,7 +1278,7 @@ if(Source==TEXT("Target height · m"))return Get(TEXT("FleetUX.Height"));
 if(Source==TEXT("Next · choose destination"))return Get(TEXT("FleetUX.Next"));
 if(Source==TEXT("Move again"))return Get(TEXT("FleetUX.Again"));
 if(Source==TEXT("Move {0} aircraft"))return Get(TEXT("FleetUX.Confirm"));
-if(Source==TEXT("Click a destination on the map"))return Get(TEXT("FleetUX.NeedTarget"));
+if(Source==TEXT("Right-click a destination"))return Get(TEXT("FleetUX.NeedTarget"));
 if(Source==TEXT("Choose again"))return Get(TEXT("FleetUX.Reselect"));
 if(Source==TEXT("Cancel / Esc"))return Get(TEXT("FleetUX.Exit"));
 if(Source==TEXT("Collapse"))return Get(TEXT("FleetUX.Hide"));
@@ -1131,9 +1294,9 @@ if(Source==TEXT("Current {0} m · descend {1} m"))return Get(TEXT("FleetUX.Desce
 if(Source==TEXT("Current {0} m · keep height"))return Get(TEXT("FleetUX.Level"));
 if(Source==TEXT("{0} aircraft · anchor {1}"))return Get(TEXT("FleetUX.Selected"));
 if(Source==TEXT("No aircraft selected"))return Get(TEXT("FleetUX.EmptySelection"));
-if(Source==TEXT("Drag a box around at least two aircraft."))return Get(TEXT("FleetUX.SelectHint"));
-if(Source==TEXT("Selection ready. Choose a destination next."))return Get(TEXT("FleetUX.SelectionReady"));
-if(Source==TEXT("Click the map to choose a destination."))return Get(TEXT("FleetUX.PickHint"));
+if(Source==TEXT("Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."))return Get(TEXT("FleetUX.SelectHint"));
+if(Source==TEXT("Selection ready. Right-click the map to preview a move."))return Get(TEXT("FleetUX.SelectionReady"));
+if(Source==TEXT("Right-click a destination. Left-drag to change aircraft."))return Get(TEXT("FleetUX.PickHint"));
 if(Source==TEXT("Review height and formation."))return Get(TEXT("FleetUX.ReviewHint"));
 if(Source==TEXT("The group moves together. Control it here."))return Get(TEXT("FleetUX.RunningHint"));
 if(Source==TEXT("Movement ended. You can choose a new target."))return Get(TEXT("FleetUX.FinishedHint"));
@@ -1189,6 +1352,165 @@ if(Source==TEXT("Finish the current plan configuration first. Alerts and active 
 if(Source==TEXT("Selection changed elsewhere. Your local changes are retained; finish or discard them before switching."))return Get(TEXT("Errors.CONFIGURATION_CONTEXT_CHANGED"));
 if(Source==TEXT("Editing the route for {0}. Finish the route to continue in Command."))return Get(TEXT("Configuration.MapRouteContext"));
 if(Source==TEXT("Deployed plan is read only. Create a new version to make changes."))return Get(TEXT("Configuration.DeployedReadOnly"));
+if(Source==TEXT("Total UAVs"))return Get(TEXT("Figma.TotalUAV"));
+if(Source==TEXT("Online devices"))return Get(TEXT("Figma.OnlineDevices"));
+if(Source==TEXT("Alert center"))return Get(TEXT("Figma.AlertCenter"));
+if(Source==TEXT("Current task"))return Get(TEXT("Figma.CurrentTask"));
+if(Source==TEXT("Current plan"))return Get(TEXT("Figma.CurrentPlan"));
+if(Source==TEXT("View all ›"))return Get(TEXT("Figma.ViewAll"));
+if(Source==TEXT("Close"))return Get(TEXT("Figma.Close"));
+if(Source==TEXT("Refresh"))return Get(TEXT("Figma.Refresh"));
+if(Source==TEXT("{0} {1}"))return Get(TEXT("Figma.RoleHealth"));
+if(Source==TEXT("Finish the current configuration before opening the fleet."))return Get(TEXT("Figma.ConfigurationBusy"));
+if(Source==TEXT("Device ID"))return Get(TEXT("Figma.DeviceId"));
+if(Source==TEXT("Device name"))return Get(TEXT("Figma.DeviceName"));
+if(Source==TEXT("Connection"))return Get(TEXT("Figma.Connection"));
+if(Source==TEXT("Battery"))return Get(TEXT("Figma.Battery"));
+if(Source==TEXT("Actions"))return Get(TEXT("Figma.Actions"));
+if(Source==TEXT("Time (UTC)"))return Get(TEXT("Figma.TimeUTC"));
+if(Source==TEXT("Alert type"))return Get(TEXT("Figma.AlertType"));
+if(Source==TEXT("Type"))return Get(TEXT("Figma.EventType"));
+if(Source==TEXT("Content"))return Get(TEXT("Figma.Content"));
+if(Source==TEXT("View details"))return Get(TEXT("Figma.Details"));
+if(Source==TEXT("No registered devices"))return Get(TEXT("Figma.NoDevices"));
+if(Source==TEXT("{0} devices · Includes offline devices"))return Get(TEXT("Figma.DeviceCount"));
+if(Source==TEXT("{0} alerts"))return Get(TEXT("Figma.AlertCount"));
+if(Source==TEXT("{0} records"))return Get(TEXT("Figma.LogCount"));
+if(Source==TEXT("Waiting for UAV location data"))return Get(TEXT("Figma.WaitingPosition"));
+if(Source==TEXT("No security plans yet"))return Get(TEXT("Figma.Plans.EmptyTitle"));
+if(Source==TEXT("Create a plan to configure devices and mission routes"))return Get(TEXT("Figma.Plans.EmptyHint"));
+if(Source==TEXT("New security plan"))return Get(TEXT("Figma.Plans.NewPlan"));
+if(Source==TEXT("Enter basic information to continue configuring your security plan"))return Get(TEXT("Figma.Plans.NewPlanHint"));
+if(Source==TEXT("Enter a plan name"))return Get(TEXT("Figma.Plans.NameHint"));
+if(Source==TEXT("Enter a plan description"))return Get(TEXT("Figma.Plans.DescriptionHint"));
+if(Source==TEXT("Plan workflow: Create / Configure devices / Edit routes / Review / Deploy"))return Get(TEXT("Figma.Plans.Flow"));
+if(Source==TEXT("UAVs"))return Get(TEXT("Figma.Fleet.Title"));
+if(Source==TEXT("UAV list"))return Get(TEXT("Figma.Fleet.List"));
+if(Source==TEXT("No registered UAVs"))return Get(TEXT("Figma.Fleet.Empty"));
+if(Source==TEXT("Current UAV telemetry"))return Get(TEXT("Figma.Fleet.Telemetry"));
+if(Source==TEXT("Altitude"))return Get(TEXT("Figma.Fleet.Altitude"));
+if(Source==TEXT("Speed"))return Get(TEXT("Figma.Fleet.Speed"));
+if(Source==TEXT("Battery"))return Get(TEXT("Figma.Fleet.Battery"));
+if(Source==TEXT("Link"))return Get(TEXT("Figma.Fleet.Link"));
+if(Source==TEXT("Task"))return Get(TEXT("Figma.Fleet.Task"));
+if(Source==TEXT("UAV group control"))return Get(TEXT("Figma.Fleet.Group"));
+if(Source==TEXT("Video monitor"))return Get(TEXT("Figma.Fleet.Video"));
+if(Source==TEXT("No video signal"))return Get(TEXT("Figma.Fleet.NoVideo"));
+if(Source==TEXT("Choose a UAV, then open it in the Video client"))return Get(TEXT("Figma.Fleet.VideoHint"));
+if(Source==TEXT("Video client target: {0}"))return Get(TEXT("Figma.Fleet.VideoTarget"));
+if(Source==TEXT("Add to group"))return Get(TEXT("Figma.Fleet.Join"));
+if(Source==TEXT("Set primary"))return Get(TEXT("Figma.Fleet.SetPrimary"));
+if(Source==TEXT("Edit label"))return Get(TEXT("Figma.Fleet.Label"));
+if(Source==TEXT("Battery {0}  ·  Task {1}"))return Get(TEXT("Figma.Fleet.RowDetail"));
+if(Source==TEXT("No UAV selected"))return Get(TEXT("Figma.Fleet.NoSelection"));
+if(Source==TEXT("Edit UAV label"))return Get(TEXT("Figma.Fleet.LabelTitle"));
+if(Source==TEXT("Display name"))return Get(TEXT("Figma.Fleet.LabelName"));
+if(Source==TEXT("Label color"))return Get(TEXT("Figma.Fleet.LabelColor"));
+if(Source==TEXT("Font size"))return Get(TEXT("Figma.Fleet.LabelSize"));
+if(Source==TEXT("Only affects the UAV label"))return Get(TEXT("Figma.Fleet.LabelScope"));
+if(Source==TEXT("Label preview"))return Get(TEXT("Figma.Fleet.LabelPreview"));
+if(Source==TEXT("Confirm"))return Get(TEXT("Figma.Fleet.Confirm"));
+if(Source==TEXT("Assembling"))return Get(TEXT("Figma.Fleet.Task.Assembling"));
+if(Source==TEXT("Moving"))return Get(TEXT("Figma.Fleet.Task.Moving"));
+if(Source==TEXT("Scouting"))return Get(TEXT("Figma.Fleet.Task.Scouting"));
+if(Source==TEXT("Patrolling"))return Get(TEXT("Figma.Fleet.Task.Patrolling"));
+if(Source==TEXT("Attacking"))return Get(TEXT("Figma.Fleet.Task.Attacking"));
+if(Source==TEXT("Paused"))return Get(TEXT("Figma.Fleet.Task.Paused"));
+if(Source==TEXT("Avoiding"))return Get(TEXT("Figma.Fleet.Task.Avoiding"));
+if(Source==TEXT("Completed"))return Get(TEXT("Figma.Fleet.Task.Completed"));
+if(Source==TEXT("Error"))return Get(TEXT("Figma.Fleet.Task.Error"));
+if(Source==TEXT("This UAV is offline. Check its connection."))return Get(TEXT("Figma.Fleet.VideoOffline"));
+if(Source==TEXT("View in Video client"))return Get(TEXT("Figma.Fleet.VideoClient"));
+if(Source==TEXT("Current target: {0}. Use the upper-right button to view it in the Video client."))return Get(TEXT("Figma.Fleet.VideoTargetHint"));
+if(Source==TEXT("Selection changed in another operation. Please retry."))return Get(TEXT("Figma.Fleet.SelectionSuperseded"));
+if(Source==TEXT("Active tasks ({0})"))return Get(TEXT("Overview.ActiveTasks"));
+if(Source==TEXT("View task"))return Get(TEXT("Overview.ViewTask"));
+if(Source==TEXT("Free movement"))return Get(TEXT("Overview.FreeMove"));
+if(Source==TEXT("{0} · {1} · {2}"))return Get(TEXT("Overview.TaskState"));
+if(Source==TEXT("{0} · {1}"))return Get(TEXT("Overview.TaskMembers"));
+if(Source==TEXT("Tasks in this plan"))return Get(TEXT("Plan.Tasks.Title"));
+if(Source==TEXT("Choose a task to edit or execute. Checking and deploying a plan does not start a task."))return Get(TEXT("Plan.Tasks.Hint"));
+if(Source==TEXT("UAVs: {0} · Waypoints: {1}"))return Get(TEXT("Plan.Tasks.Assignment"));
+if(Source==TEXT("Configuration: {0} · Execution: {1}"))return Get(TEXT("Plan.Tasks.State"));
+if(Source==TEXT("Select task"))return Get(TEXT("Plan.Tasks.Select"));
+if(Source==TEXT("Selected"))return Get(TEXT("Plan.Tasks.Selected"));
+if(Source==TEXT("Edit task"))return Get(TEXT("Plan.Tasks.Edit"));
+if(Source==TEXT("Edit in new version"))return Get(TEXT("Plan.Tasks.EditVersion"));
+if(Source==TEXT("Execute task"))return Get(TEXT("Plan.Tasks.Execute"));
+if(Source==TEXT("Check and deploy"))return Get(TEXT("Plan.Tasks.CheckDeploy"));
+if(Source==TEXT("View execution"))return Get(TEXT("Plan.Tasks.ViewExecution"));
+if(Source==TEXT("Map movement"))return Get(TEXT("MapMove.Title"));
+if(Source==TEXT("Select at least one aircraft to move."))return Get(TEXT("MapMove.SelectAircraft"));
+if(Source==TEXT("Select an aircraft icon. Shift adds aircraft; Ctrl toggles selection."))return Get(TEXT("MapMove.SelectHint"));
+if(Source==TEXT("{0} selected · Click a map destination to preview. Drag to pan; wheel to zoom."))return Get(TEXT("MapMove.ClickHint"));
+if(Source==TEXT("Move {0} aircraft to {1}, {2} · altitude {3} m. Confirm to send; click the map to choose again."))return Get(TEXT("MapMove.Preview"));
+if(Source==TEXT("Confirm movement"))return Get(TEXT("MapMove.Confirm"));
+if(Source==TEXT("Edit view: middle drag to pan, right drag to orbit in 3D, wheel to zoom. Left mouse edits waypoints."))return Get(TEXT("MapMove.EditCameraHint"));
+if(Source==TEXT("{0} · Mock"))return Get(TEXT("MapMove.MockMarker"));
+if(Source==TEXT("Backend online"))return Get(TEXT("Figma.Header.BackendOnline"));
+if(Source==TEXT("Backend offline"))return Get(TEXT("Figma.Header.BackendOffline"));
+if(Source==TEXT("Synchronized"))return Get(TEXT("Figma.Header.Synced"));
+if(Source==TEXT("Sync pending"))return Get(TEXT("Figma.Header.SyncPending"));
+if(Source==TEXT("Video intelligence"))return Get(TEXT("VideoUI.Title"));
+if(Source==TEXT("One active player · Other slots reserved · AI not connected"))return Get(TEXT("VideoUI.Single"));
+if(Source==TEXT("Aircraft"))return Get(TEXT("VideoUI.Aircraft"));
+if(Source==TEXT("Select a video target"))return Get(TEXT("VideoUI.SelectSource"));
+if(Source==TEXT("Visual presets do not represent aircraft specifications."))return Get(TEXT("VideoUI.ModelDisclaimer"));
+if(Source==TEXT("Primary video"))return Get(TEXT("VideoUI.Primary"));
+if(Source==TEXT("Video target"))return Get(TEXT("VideoUI.Current"));
+if(Source==TEXT("AI detection"))return Get(TEXT("VideoUI.Detection"));
+if(Source==TEXT("People"))return Get(TEXT("VideoUI.People"));
+if(Source==TEXT("Vehicles"))return Get(TEXT("VideoUI.Vehicles"));
+if(Source==TEXT("UAVs"))return Get(TEXT("VideoUI.Drones"));
+if(Source==TEXT("Abnormal behavior"))return Get(TEXT("VideoUI.Behavior"));
+if(Source==TEXT("Other targets"))return Get(TEXT("VideoUI.Other"));
+if(Source==TEXT("Recent alerts"))return Get(TEXT("VideoUI.Alerts"));
+if(Source==TEXT("No active alerts"))return Get(TEXT("VideoUI.NoAlerts"));
+if(Source==TEXT("Received alerts · This session"))return Get(TEXT("VideoUI.AlertSession"));
+if(Source==TEXT("System status"))return Get(TEXT("VideoUI.System"));
+if(Source==TEXT("Online aircraft"))return Get(TEXT("VideoUI.Online"));
+if(Source==TEXT("AI engine"))return Get(TEXT("VideoUI.AI"));
+if(Source==TEXT("Storage"))return Get(TEXT("VideoUI.Storage"));
+if(Source==TEXT("Backend"))return Get(TEXT("VideoUI.Network"));
+if(Source==TEXT("Not connected"))return Get(TEXT("VideoUI.NotConnected"));
+if(Source==TEXT("Unavailable"))return Get(TEXT("VideoUI.Unavailable"));
+if(Source==TEXT("4 slots"))return Get(TEXT("VideoUI.Four"));
+if(Source==TEXT("6 slots"))return Get(TEXT("VideoUI.Six"));
+if(Source==TEXT("Focus"))return Get(TEXT("VideoUI.Focus"));
+if(Source==TEXT("Select this UAV"))return Get(TEXT("VideoUI.SetActive"));
+if(Source==TEXT("Explicitly select this UAV in the shared context. This action does not change the video target."))return Get(TEXT("VideoUI.SetActiveHint"));
+if(Source==TEXT("Selected: {0}"))return Get(TEXT("VideoUI.ActiveSelection"));
+if(Source==TEXT("Retry"))return Get(TEXT("VideoUI.Retry"));
+if(Source==TEXT("Record"))return Get(TEXT("VideoUI.Record"));
+if(Source==TEXT("Playback"))return Get(TEXT("VideoUI.Playback"));
+if(Source==TEXT("Capture"))return Get(TEXT("VideoUI.Screenshot"));
+if(Source==TEXT("Filter"))return Get(TEXT("VideoUI.Filter"));
+if(Source==TEXT("This capability is not connected yet."))return Get(TEXT("VideoUI.Unsupported"));
+if(Source==TEXT("Reserved slot"))return Get(TEXT("VideoUI.Reserved"));
+if(Source==TEXT("No UAV assigned"))return Get(TEXT("VideoUI.Unassigned"));
+if(Source==TEXT("Model: unavailable"))return Get(TEXT("VideoUI.ModelUnavailable"));
+if(Source==TEXT("No video source"))return Get(TEXT("VideoUI.NoSource"));
+if(Source==TEXT("Click to view"))return Get(TEXT("VideoUI.InactiveSource"));
+if(Source==TEXT("Source configured"))return Get(TEXT("VideoUI.SourceSet"));
+if(Source==TEXT("No video target"))return Get(TEXT("VideoUI.NoTarget"));
+if(Source==TEXT("Configure a video source for this UAV"))return Get(TEXT("VideoUI.ConfigureSource"));
+if(Source==TEXT("Waiting for decoded video frames"))return Get(TEXT("VideoUI.WaitingFrames"));
+if(Source==TEXT("Reconnect the current video source"))return Get(TEXT("VideoUI.RetryHint"));
+if(Source==TEXT("Select a UAV with a configured video source to retry."))return Get(TEXT("VideoUI.RetryUnavailable"));
+if(Source==TEXT("N/A"))return Get(TEXT("VideoUI.NA"));
+if(Source==TEXT("Map operations"))return Get(TEXT("MapUI.Operations"));
+if(Source==TEXT("Mission route"))return Get(TEXT("MapUI.MissionRoute"));
+if(Source==TEXT("View video"))return Get(TEXT("MapUI.ViewVideo"));
+if(Source==TEXT("Current device"))return Get(TEXT("MapUI.CurrentDevice"));
+if(Source==TEXT("Select a device"))return Get(TEXT("MapUI.SelectDevice"));
+if(Source==TEXT("Middle: pan · Right: orbit · Wheel: zoom"))return Get(TEXT("MapUI.CameraHint"));
+if(Source==TEXT("Left: select · Right-click: target · Middle: pan"))return Get(TEXT("MapUI.FleetPointerHint"));
+if(Source==TEXT("Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom."))return Get(TEXT("MapUI.FleetPointerHelp"));
+if(Source==TEXT("Route editor"))return Get(TEXT("MapUI.RouteEditor"));
+if(Source==TEXT("Default flight speed"))return Get(TEXT("MapUI.DefaultSpeed"));
+if(Source==TEXT("Used for newly added waypoints."))return Get(TEXT("MapUI.DefaultSpeedHint"));
+if(Source==TEXT("m/s · 0 = unlimited, or 0.5–15"))return Get(TEXT("MapUI.SpeedRange"));
+if(Source==TEXT("Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."))return Get(TEXT("MapUI.SpeedInvalid"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

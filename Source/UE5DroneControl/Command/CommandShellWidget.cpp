@@ -1,4 +1,5 @@
 #include "Command/CommandShellWidget.h"
+#include "Command/FigmaCommandStyle.h"
 #include "Command/CommandTacticalMap.h"
 #include "Command/GroupControlWidget.h"
 #include "Shared/ExecutionPresentation.h"
@@ -209,60 +210,7 @@ void UCommandShellWidget::NativeOnInitialized()
     if (bCommand)
     {
         Left->SetVisibility(ESlateVisibility::Collapsed);
-        auto* Nav=WidgetTree->ConstructWidget<UVerticalBox>();
-        auto* NavSlot=Root->AddChildToCanvas(Nav);
-        NavSlot->SetAnchors(FAnchors(0,0,0,1));NavSlot->SetOffsets(FMargin(12,96,152,48));
-        const TCHAR* Keys[]={TEXT("Nav.Overview"),TEXT("Nav.Plans"),TEXT("Nav.Fleet"),TEXT("Nav.Alerts"),TEXT("Nav.Logs")};
-        for(int I=0;I<5;++I){auto* B=PlanUI::Button(WidgetTree,Nav,TEXT("navigate"),Keys[I],I);
-            B->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);CommandTheme::Button(B,I==0);
-            Cast<UVerticalBoxSlot>(B->Slot)->SetPadding(FMargin(0,0,0,12));PrimaryNavigationButtons.Add(B);}
-        WorkspacePages=WidgetTree->ConstructWidget<UWidgetSwitcher>();
-        auto* WorkspaceSlot=Root->AddChildToCanvas(WorkspacePages);
-        WorkspaceSlot->SetAnchors(FAnchors(0,0,1,1));WorkspaceSlot->SetOffsets(FMargin(184,88,16,44));
-        auto* Home=WidgetTree->ConstructWidget<UVerticalBox>();WorkspacePages->AddChild(Home);
-        PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Nav.Overview")),26);
-        Overview->RemoveFromParent();Home->AddChildToVerticalBox(Overview)->SetPadding(FMargin(0,4));
-        CurrentExecutionSummary=PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Execution.None")),20);
-        auto* OpenExecution=PlanUI::Button(WidgetTree,Home,TEXT("open_execution"),TEXT("Execution.Open"),1);OpenExecution->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
-        CurrentPlanSummary=PlanUI::Label(WidgetTree,Home,FText::GetEmpty(),20);
-        auto* Open=PlanUI::Button(WidgetTree,Home,TEXT("navigate"),TEXT("Workflow.OpenPlan"),1);Open->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
-        PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Situation.Title")),18);
-        SituationMap=CreateWidget<UCommandTacticalMap>(GetOwningPlayer());Fill(Home,SituationMap,2.f);
-        auto* Follow=PlanUI::Button(WidgetTree,Home,TEXT("follow_situation"),TEXT("Situation.Follow"));Follow->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
-        PlanUI::Label(WidgetTree,Home,ProductText::Get(TEXT("Workflow.RecentEvents")),18);
-        RecentEvents=PlanUI::Label(WidgetTree,Home,FText::GetEmpty(),14);
-        Cast<UVerticalBoxSlot>(RecentEvents->Slot)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-        CenterPanel=CreateWidget<UCommandCenterPanel>(GetOwningPlayer());WorkspacePages->AddChild(CenterPanel);
-        auto* Fleet=WidgetTree->ConstructWidget<UVerticalBox>();WorkspacePages->AddChild(Fleet);
-        PlanUI::Label(WidgetTree,Fleet,ProductText::Get(TEXT("Nav.Fleet")),26);
-        DroneList->RemoveFromParent();Fill(Fleet,DroneList,1);
-        GroupControl=CreateWidget<UGroupControlWidget>(GetOwningPlayer());Fill(Fleet,GroupControl,1);
-        MissionPanel->RemoveFromParent();Fleet->AddChild(MissionPanel);MissionPanel->SetVisibility(ESlateVisibility::Visible);
-        MissionActions->SetVisibility(ESlateVisibility::Collapsed);
-        AlarmPanel->RemoveFromParent();WorkspacePages->AddChild(AlarmPanel);
-        WorkspacePages->AddChild(CreateWidget<UOperationalLogWidget>(GetOwningPlayer()));
-        ConfigurationHeader=WidgetTree->ConstructWidget<UVerticalBox>();
-        auto* ConfigurationSlot=Root->AddChildToCanvas(ConfigurationHeader);
-        ConfigurationSlot->SetAnchors(FAnchors(0,0,1,0));ConfigurationSlot->SetOffsets(FMargin(184,88,16,76));
-        ConfigurationCaption=PlanUI::Label(WidgetTree,ConfigurationHeader,FText::GetEmpty(),16);
-        auto* ConfigurationActions=WidgetTree->ConstructWidget<UHorizontalBox>();ConfigurationHeader->AddChild(ConfigurationActions);
-        for(const TCHAR* Name:{TEXT("configuration_return"),TEXT("configuration_finish")}){
-            auto* B=PlanUI::Button(WidgetTree,ConfigurationActions,Name,Name==FString(TEXT("configuration_return"))?TEXT("Configuration.Return"):TEXT("Configuration.Finish"));
-            B->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);
-            CommandTheme::Button(B);
-            Cast<UHorizontalBoxSlot>(B->Slot)->SetPadding(FMargin(0,4,8,0));
-            if(Name==FString(TEXT("configuration_finish")))ConfigurationFinish=B;
-        }
-        ActiveControls=CreateWidget<UActiveExecutionControlsWidget>(GetOwningPlayer());
-        auto* ActiveSlot=Root->AddChildToCanvas(ActiveControls);
-        ActiveSlot->SetAnchors(FAnchors(0,0,1,0));ActiveSlot->SetOffsets(FMargin(184,88,16,154));
-        auto* Hint=PlanUI::Label(WidgetTree,Root,ProductText::Get(TEXT("Workflow.GlobalHint")),12);
-        auto* HintSlot=Cast<UCanvasPanelSlot>(Hint->Slot);HintSlot->SetAnchors(FAnchors(0,1,1,1));HintSlot->SetOffsets(FMargin(184,-32,16,28));
-        auto* Languages=WidgetTree->ConstructWidget<UHorizontalBox>();auto* LanguageSlot=Root->AddChildToCanvas(Languages);
-        LanguageSlot->SetAnchors(FAnchors(1,0));LanguageSlot->SetAlignment(FVector2D(1,0));LanguageSlot->SetPosition(FVector2D(-16,12));LanguageSlot->SetAutoSize(true);LanguageSlot->SetZOrder(20);
-        for(const TCHAR* Locale:{TEXT("zh-Hans"),TEXT("en")}){auto* B=PlanUI::Button(WidgetTree,Languages,Locale,Locale==FString(TEXT("en"))?TEXT("Workflow.English"):TEXT("Workflow.Chinese"));B->OnAction.AddDynamic(this,&UCommandShellWidget::Navigate);}
-        WorkspacePages->SetActiveWidgetIndex(0);
-        SelectedInfo->SetMinDesiredWidth(0);SelectedInfo->SetWrapTextAt(0);
+        BuildFigmaShell(Root);
         return;
     }
     UOverlaySlot* MissionSlot = CenterHost->AddChildToOverlay(MissionPanel);
@@ -303,24 +251,27 @@ void UCommandShellWidget::NativeConstruct()
 void UCommandShellWidget::Refresh()
 {
     if(SituationMap)SituationMap->Refresh();
+    if(WorkspacePages)RefreshFigmaShell();
     if(GroupControl)GroupControl->Refresh();
     if (CenterPanel) {
         CenterPanel->Refresh();
         if(auto* Label=Cast<UTextBlock>(Header->GetContent())) {Label->SetText(ProductText::Source(CenterPanel->GetHeaderText()));CommandTheme::Text(Label,15);}
         auto* Plan=CenterPanel->GetPlanWorkspace();
         const bool Configuring=Plan && Plan->IsConfiguring();
-        ConfigurationHeader->SetVisibility(Configuring?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+        const bool ShowConfigurationHeader=Configuring && !Plan->IsCreatingPlan();
+        ConfigurationHeader->SetVisibility(ShowConfigurationHeader?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
         if(Configuring)ConfigurationCaption->SetText(Plan->ConfigurationStatusText());
         auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
         ConfigurationFinish->SetVisibility(!PlanConfiguration::Active(Sync->GetPlans()) || PlanConfiguration::IsOwner(Sync->GetPlans(),Sync->GetInstanceId())?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
-        PrimaryNavigationButtons[2]->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+        PrimaryNavigationButtons[2]->SetIsEnabled(!Configuring);
         if(Configuring && WorkspacePages->GetActiveWidgetIndex()==2)Navigate(TEXT("configuration_return"),1);
         ActiveControls->Refresh();
         const bool HasControls=ActiveControls->GetVisibility()!=ESlateVisibility::Collapsed;
         ActiveControls->SetVisibility(HasControls?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
-        const float ControlsTop=88.f+(Configuring?76.f:0.f);
-        Cast<UCanvasPanelSlot>(ActiveControls->Slot)->SetOffsets(FMargin(184,ControlsTop,16,154));
-        Cast<UCanvasPanelSlot>(WorkspacePages->Slot)->SetOffsets(FMargin(184,ControlsTop+(HasControls?166.f:0.f),16,44));
+        const float ControlsTop=102.f+(ShowConfigurationHeader?76.f:0.f);
+        Cast<UCanvasPanelSlot>(ActiveControls->Slot)->SetOffsets(FMargin(30,ControlsTop,30,154));
+        Cast<UCanvasPanelSlot>(WorkspacePages->Slot)->SetOffsets(FMargin(30,ControlsTop+(HasControls?166.f:0.f),30,50));
+        Cast<UCanvasPanelSlot>(FigmaDialog->Slot)->SetOffsets(FMargin(0,HasControls?ControlsTop+166.f:0,0,0));
     }
     if (Manager.IsValid() && Manager->GetMapService()) MapModeChanged(Manager->GetMapService()->GetMapMode());
     UDroneRegistrySubsystem* Registry = Manager.IsValid() ? Manager->GetRegistry() : nullptr;
@@ -356,6 +307,7 @@ void UCommandShellWidget::Refresh()
             Lines.Add(FText::Format(ProductText::Get(TEXT("Schedule.Overview")),PlanUI::User(PlanUI::Field(E,TEXT("plan_name"))),PlanUI::User(Time.ToString(TEXT("%h:%m:%s"))),FText::AsNumber(Count)));}
         if(!Groups.IsEmpty() && PlanConfiguration::Active(State))Lines.Add(ProductText::Get(TEXT("Configuration.ScheduledWaiting")));
         CurrentExecutionSummary->SetText(FText::Join(PlanUI::User(TEXT("\n")),Lines));
+        CurrentExecutionSummary->SetToolTipText(CurrentExecutionSummary->GetText());
     }
     if(CurrentPlanSummary){
         auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
@@ -506,7 +458,8 @@ void UCommandShellWidget::Navigate(FName Action,int32 Index){
     if(Action==TEXT("open_execution")){if(Configuring)return;auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto E=ExecutionUI::Latest(S->GetPlans(),TEXT(""),true);if(E){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanUI::Field(E,TEXT("plan_id")));R->SetStringField(TEXT("mission_id"),PlanUI::Field(E,TEXT("mission_id")));S->SubmitPlan(R,[](TSharedPtr<FJsonObject>){});}}
 
     if(Action==TEXT("en") || Action==TEXT("zh-Hans")){GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLanguage(Action.ToString());return;}
-    if(!WorkspacePages || Index<0 || Index>=5)return;
+    if(Index==3 || Index==4){FigmaAction(Index==3?TEXT("alerts"):TEXT("logs"),0);return;}
+    if(!WorkspacePages || Index<0 || Index>=3)return;
     WorkspacePages->SetActiveWidgetIndex(Index);
-    for(int I=0;I<PrimaryNavigationButtons.Num();++I)CommandTheme::Button(PrimaryNavigationButtons[I],I==Index);
+    for(int I=0;I<PrimaryNavigationButtons.Num();++I)FigmaUI::Button(PrimaryNavigationButtons[I],I==Index,true);
 }

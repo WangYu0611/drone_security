@@ -1519,6 +1519,14 @@ msgctxt "DroneOps,Events.MISSION_ABORTED"
 msgid "Mission aborted · {uav_id}"
 msgstr "任务已终止 · {uav_id}"
 
+msgctxt "DroneOps,Events.MOCK_STARTUP_RESET"
+msgid "Mock aircraft returned to the startup formation"
+msgstr "模拟无人机已归位至初始队列"
+
+msgctxt "DroneOps,Errors.MOCK_STARTUP_RESET"
+msgid "Ended when the Mock session restarted and aircraft returned to formation."
+msgstr "模拟会话重启，无人机归位排列，原模拟任务已结束。"
+
 msgctxt "DroneOps,Events.MISSION_COMPLETED"
 msgid "Mission completed · {uav_id}"
 msgstr "任务已完成 · {uav_id}"
@@ -2076,8 +2084,8 @@ msgid "Move {0} aircraft"
 msgstr "确认移动 {0} 架"
 
 msgctxt "DroneOps,FleetUX.NeedTarget"
-msgid "Click a destination on the map"
-msgstr "请在地图上选择目的地"
+msgid "Right-click a destination"
+msgstr "请右击地图选择目的地"
 
 msgctxt "DroneOps,FleetUX.Reselect"
 msgid "Choose again"
@@ -2140,16 +2148,16 @@ msgid "No aircraft selected"
 msgstr "尚未选择无人机"
 
 msgctxt "DroneOps,FleetUX.SelectHint"
-msgid "Drag a box around at least two aircraft."
-msgstr "拖动框选至少两架无人机。"
+msgid "Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."
+msgstr "左键点选或拖框选择无人机；Shift 添加，Ctrl 切换多选。"
 
 msgctxt "DroneOps,FleetUX.SelectionReady"
-msgid "Selection ready. Choose a destination next."
-msgstr "选择已就绪，下一步选择目的地。"
+msgid "Selection ready. Right-click the map to preview a move."
+msgstr "选择已就绪，右击地图预览移动。"
 
 msgctxt "DroneOps,FleetUX.PickHint"
-msgid "Click the map to choose a destination."
-msgstr "在地图上点击目的地。"
+msgid "Right-click a destination. Left-drag to change aircraft."
+msgstr "右击地图选择目的地；左键拖框可重新选择无人机。"
 
 msgctxt "DroneOps,FleetUX.ReviewHint"
 msgid "Review height and formation."
@@ -2370,3 +2378,639 @@ msgstr "正在编辑「{0}」航线，完成航线后返回指挥端继续。"
 msgctxt "DroneOps,Configuration.DeployedReadOnly"
 msgid "Deployed plan is read only. Create a new version to make changes."
 msgstr "已部署方案只读；需要修改请创建新版本。"
+
+msgctxt "DroneOps,Figma.TotalUAV"
+msgid "Total UAVs"
+msgstr "无人机总数"
+
+msgctxt "DroneOps,Figma.OnlineDevices"
+msgid "Online devices"
+msgstr "在线设备"
+
+msgctxt "DroneOps,Figma.AlertCenter"
+msgid "Alert center"
+msgstr "告警中心"
+
+msgctxt "DroneOps,Figma.CurrentTask"
+msgid "Current task"
+msgstr "当前任务"
+
+msgctxt "DroneOps,Figma.CurrentPlan"
+msgid "Current plan"
+msgstr "当前方案"
+
+msgctxt "DroneOps,Figma.ViewAll"
+msgid "View all ›"
+msgstr "查看全部 ›"
+
+msgctxt "DroneOps,Figma.Close"
+msgid "Close"
+msgstr "关闭"
+
+msgctxt "DroneOps,Figma.Refresh"
+msgid "Refresh"
+msgstr "刷新"
+
+msgctxt "DroneOps,Figma.RoleHealth"
+msgid "{0} {1}"
+msgstr "{0}{1}"
+
+msgctxt "DroneOps,Figma.ConfigurationBusy"
+msgid "Finish the current configuration before opening the fleet."
+msgstr "请先完成当前方案配置，再进入无人机页。"
+
+msgctxt "DroneOps,Figma.DeviceId"
+msgid "Device ID"
+msgstr "设备编号"
+
+msgctxt "DroneOps,Figma.DeviceName"
+msgid "Device name"
+msgstr "设备名称"
+
+msgctxt "DroneOps,Figma.Connection"
+msgid "Connection"
+msgstr "连接状态"
+
+msgctxt "DroneOps,Figma.Battery"
+msgid "Battery"
+msgstr "电量"
+
+msgctxt "DroneOps,Figma.Actions"
+msgid "Actions"
+msgstr "操作"
+
+msgctxt "DroneOps,Figma.TimeUTC"
+msgid "Time (UTC)"
+msgstr "时间（UTC）"
+
+msgctxt "DroneOps,Figma.AlertType"
+msgid "Alert type"
+msgstr "告警类型"
+
+msgctxt "DroneOps,Figma.EventType"
+msgid "Type"
+msgstr "类型"
+
+msgctxt "DroneOps,Figma.Content"
+msgid "Content"
+msgstr "内容"
+
+msgctxt "DroneOps,Figma.Details"
+msgid "View details"
+msgstr "查看详情"
+
+msgctxt "DroneOps,Figma.NoDevices"
+msgid "No registered devices"
+msgstr "暂无注册设备"
+
+msgctxt "DroneOps,Figma.DeviceCount"
+msgid "{0} devices · Includes offline devices"
+msgstr "共 {0} 台设备 · 含离线设备"
+
+msgctxt "DroneOps,Figma.AlertCount"
+msgid "{0} alerts"
+msgstr "共 {0} 条告警"
+
+msgctxt "DroneOps,Figma.LogCount"
+msgid "{0} records"
+msgstr "共 {0} 条记录"
+
+msgctxt "DroneOps,Figma.WaitingPosition"
+msgid "Waiting for UAV location data"
+msgstr "等待无人机定位数据"
+
+msgctxt "DroneOps,Figma.Plans.EmptyTitle"
+msgid "No security plans yet"
+msgstr "暂无安保方案"
+
+msgctxt "DroneOps,Figma.Plans.EmptyHint"
+msgid "Create a plan to configure devices and mission routes"
+msgstr "创建方案，开始配置设备与任务航线"
+
+msgctxt "DroneOps,Figma.Plans.NewPlan"
+msgid "New security plan"
+msgstr "新建安保方案"
+
+msgctxt "DroneOps,Figma.Plans.NewPlanHint"
+msgid "Enter basic information to continue configuring your security plan"
+msgstr "填写基本信息，继续配置安保方案"
+
+msgctxt "DroneOps,Figma.Plans.NameHint"
+msgid "Enter a plan name"
+msgstr "请输入方案名称"
+
+msgctxt "DroneOps,Figma.Plans.DescriptionHint"
+msgid "Enter a plan description"
+msgstr "请输入方案描述"
+
+msgctxt "DroneOps,Figma.Plans.Flow"
+msgid "Plan workflow: Create / Configure devices / Edit routes / Review / Deploy"
+msgstr "方案流程：新建方案 / 配置设备 / 编辑航线 / 检查 / 部署"
+
+msgctxt "DroneOps,Figma.Fleet.Title"
+msgid "UAVs"
+msgstr "无人机"
+
+msgctxt "DroneOps,Figma.Fleet.List"
+msgid "UAV list"
+msgstr "无人机列表"
+
+msgctxt "DroneOps,Figma.Fleet.Empty"
+msgid "No registered UAVs"
+msgstr "暂无已注册无人机"
+
+msgctxt "DroneOps,Figma.Fleet.Telemetry"
+msgid "Current UAV telemetry"
+msgstr "当前无人机态势"
+
+msgctxt "DroneOps,Figma.Fleet.Altitude"
+msgid "Altitude"
+msgstr "高度"
+
+msgctxt "DroneOps,Figma.Fleet.Speed"
+msgid "Speed"
+msgstr "速度"
+
+msgctxt "DroneOps,Figma.Fleet.Battery"
+msgid "Battery"
+msgstr "电量"
+
+msgctxt "DroneOps,Figma.Fleet.Link"
+msgid "Link"
+msgstr "连接"
+
+msgctxt "DroneOps,Figma.Fleet.Task"
+msgid "Task"
+msgstr "任务"
+
+msgctxt "DroneOps,Figma.Fleet.Group"
+msgid "UAV group control"
+msgstr "无人机组控制"
+
+msgctxt "DroneOps,Figma.Fleet.Video"
+msgid "Video monitor"
+msgstr "视频监控"
+
+msgctxt "DroneOps,Figma.Fleet.NoVideo"
+msgid "No video signal"
+msgstr "暂无视频信号"
+
+msgctxt "DroneOps,Figma.Fleet.VideoHint"
+msgid "Choose a UAV, then open it in the Video client"
+msgstr "选择设备，点击右上角在视频端查看"
+
+msgctxt "DroneOps,Figma.Fleet.VideoTarget"
+msgid "Video client target: {0}"
+msgstr "视频端目标：{0}"
+
+msgctxt "DroneOps,Figma.Fleet.Join"
+msgid "Add to group"
+msgstr "加入编组"
+
+msgctxt "DroneOps,Figma.Fleet.SetPrimary"
+msgid "Set primary"
+msgstr "设为主选"
+
+msgctxt "DroneOps,Figma.Fleet.Label"
+msgid "Edit label"
+msgstr "标签设置"
+
+msgctxt "DroneOps,Figma.Fleet.RowDetail"
+msgid "Battery {0}  ·  Task {1}"
+msgstr "电量 {0}  ·  任务 {1}"
+
+msgctxt "DroneOps,Figma.Fleet.NoSelection"
+msgid "No UAV selected"
+msgstr "未选择无人机"
+
+msgctxt "DroneOps,Figma.Fleet.LabelTitle"
+msgid "Edit UAV label"
+msgstr "编辑飞机顶部标签"
+
+msgctxt "DroneOps,Figma.Fleet.LabelName"
+msgid "Display name"
+msgstr "显示名称"
+
+msgctxt "DroneOps,Figma.Fleet.LabelColor"
+msgid "Label color"
+msgstr "显示颜色"
+
+msgctxt "DroneOps,Figma.Fleet.LabelSize"
+msgid "Font size"
+msgstr "字体大小"
+
+msgctxt "DroneOps,Figma.Fleet.LabelScope"
+msgid "Only affects the UAV label"
+msgstr "仅影响飞机标签"
+
+msgctxt "DroneOps,Figma.Fleet.LabelPreview"
+msgid "Label preview"
+msgstr "标签预览"
+
+msgctxt "DroneOps,Figma.Fleet.Confirm"
+msgid "Confirm"
+msgstr "确认"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Assembling"
+msgid "Assembling"
+msgstr "集结中"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Moving"
+msgid "Moving"
+msgstr "移动中"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Scouting"
+msgid "Scouting"
+msgstr "侦察中"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Patrolling"
+msgid "Patrolling"
+msgstr "巡逻中"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Attacking"
+msgid "Attacking"
+msgstr "攻击中"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Paused"
+msgid "Paused"
+msgstr "暂停"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Avoiding"
+msgid "Avoiding"
+msgstr "避障中"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Completed"
+msgid "Completed"
+msgstr "已完成"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Error"
+msgid "Error"
+msgstr "异常"
+
+msgctxt "DroneOps,Figma.Fleet.VideoOffline"
+msgid "This UAV is offline. Check its connection."
+msgstr "当前设备离线，请检查连接"
+
+msgctxt "DroneOps,Figma.Fleet.VideoClient"
+msgid "View in Video client"
+msgstr "在视频端查看"
+
+msgctxt "DroneOps,Figma.Fleet.VideoTargetHint"
+msgid "Current target: {0}. Use the upper-right button to view it in the Video client."
+msgstr "当前目标：{0}；使用右上角按钮在视频端查看"
+
+msgctxt "DroneOps,Figma.Fleet.SelectionSuperseded"
+msgid "Selection changed in another operation. Please retry."
+msgstr "选择已由其他操作更新，请重试"
+
+msgctxt "DroneOps,Overview.ActiveTasks"
+msgid "Active tasks ({0})"
+msgstr "正在执行的任务（{0}）"
+
+msgctxt "DroneOps,Overview.ViewTask"
+msgid "View task"
+msgstr "查看任务"
+
+msgctxt "DroneOps,Overview.FreeMove"
+msgid "Free movement"
+msgstr "自由移动"
+
+msgctxt "DroneOps,Overview.TaskState"
+msgid "{0} · {1} · {2}"
+msgstr "{0} · {1} · {2}"
+
+msgctxt "DroneOps,Overview.TaskMembers"
+msgid "{0} · {1}"
+msgstr "{0} · {1}"
+
+msgctxt "DroneOps,Plan.Tasks.Title"
+msgid "Tasks in this plan"
+msgstr "方案内任务"
+
+msgctxt "DroneOps,Plan.Tasks.Hint"
+msgid "Choose a task to edit or execute. Checking and deploying a plan does not start a task."
+msgstr "选择任务进行编辑或执行。检查与部署方案不会自动启动任务。"
+
+msgctxt "DroneOps,Plan.Tasks.Assignment"
+msgid "UAVs: {0} · Waypoints: {1}"
+msgstr "无人机：{0} · 航点：{1}"
+
+msgctxt "DroneOps,Plan.Tasks.State"
+msgid "Configuration: {0} · Execution: {1}"
+msgstr "配置：{0} · 执行：{1}"
+
+msgctxt "DroneOps,Plan.Tasks.Select"
+msgid "Select task"
+msgstr "选择任务"
+
+msgctxt "DroneOps,Plan.Tasks.Selected"
+msgid "Selected"
+msgstr "当前任务"
+
+msgctxt "DroneOps,Plan.Tasks.Edit"
+msgid "Edit task"
+msgstr "编辑任务"
+
+msgctxt "DroneOps,Plan.Tasks.EditVersion"
+msgid "Edit in new version"
+msgstr "新版本中编辑"
+
+msgctxt "DroneOps,Plan.Tasks.Execute"
+msgid "Execute task"
+msgstr "执行任务"
+
+msgctxt "DroneOps,Plan.Tasks.CheckDeploy"
+msgid "Check and deploy"
+msgstr "检查并部署"
+
+msgctxt "DroneOps,Plan.Tasks.ViewExecution"
+msgid "View execution"
+msgstr "查看执行"
+
+msgctxt "DroneOps,MapMove.Title"
+msgid "Map movement"
+msgstr "地图移动"
+
+msgctxt "DroneOps,MapMove.SelectAircraft"
+msgid "Select at least one aircraft to move."
+msgstr "请先选择至少一架无人机。"
+
+msgctxt "DroneOps,MapMove.SelectHint"
+msgid "Select an aircraft icon. Shift adds aircraft; Ctrl toggles selection."
+msgstr "点击无人机图标选择；Shift 添加，Ctrl 切换多选。"
+
+msgctxt "DroneOps,MapMove.ClickHint"
+msgid "{0} selected · Click a map destination to preview. Drag to pan; wheel to zoom."
+msgstr "已选 {0} 架 · 点击地图位置预览移动；拖动平移，滚轮缩放。"
+
+msgctxt "DroneOps,MapMove.Preview"
+msgid "Move {0} aircraft to {1}, {2} · altitude {3} m. Confirm to send; click the map to choose again."
+msgstr "移动 {0} 架至 {1}，{2} · 高度 {3} 米。确认后发送；可点击地图重新选点。"
+
+msgctxt "DroneOps,MapMove.Confirm"
+msgid "Confirm movement"
+msgstr "确认移动"
+
+msgctxt "DroneOps,MapMove.EditCameraHint"
+msgid "Edit view: middle drag to pan, right drag to orbit in 3D, wheel to zoom. Left mouse edits waypoints."
+msgstr "编辑视角：中键拖动平移，3D 下右键拖动旋转，滚轮缩放；左键编辑航点。"
+
+msgctxt "DroneOps,MapMove.MockMarker"
+msgid "{0} · Mock"
+msgstr "{0} · 模拟"
+
+msgctxt "DroneOps,Figma.Header.BackendOnline"
+msgid "Backend online"
+msgstr "后端在线"
+
+msgctxt "DroneOps,Figma.Header.BackendOffline"
+msgid "Backend offline"
+msgstr "后端离线"
+
+msgctxt "DroneOps,Figma.Header.Synced"
+msgid "Synchronized"
+msgstr "同步已连接"
+
+msgctxt "DroneOps,Figma.Header.SyncPending"
+msgid "Sync pending"
+msgstr "同步未就绪"
+
+msgctxt "DroneOps,VideoUI.Title"
+msgid "Video intelligence"
+msgstr "视频情报"
+
+msgctxt "DroneOps,VideoUI.Single"
+msgid "One active player · Other slots reserved · AI not connected"
+msgstr "单个活动播放器 · 其他视频格位为预留 · 未连接AI后端"
+
+msgctxt "DroneOps,VideoUI.Aircraft"
+msgid "Aircraft"
+msgstr "无人机列表"
+
+msgctxt "DroneOps,VideoUI.SelectSource"
+msgid "Select a video target"
+msgstr "选择视频目标"
+
+msgctxt "DroneOps,VideoUI.ModelDisclaimer"
+msgid "Visual presets do not represent aircraft specifications."
+msgstr "外观预设不代表飞机规格；注册表未提供机型。"
+
+msgctxt "DroneOps,VideoUI.Primary"
+msgid "Primary video"
+msgstr "主视频"
+
+msgctxt "DroneOps,VideoUI.Current"
+msgid "Video target"
+msgstr "视频目标"
+
+msgctxt "DroneOps,VideoUI.Detection"
+msgid "AI detection"
+msgstr "智能检测"
+
+msgctxt "DroneOps,VideoUI.People"
+msgid "People"
+msgstr "人员"
+
+msgctxt "DroneOps,VideoUI.Vehicles"
+msgid "Vehicles"
+msgstr "车辆"
+
+msgctxt "DroneOps,VideoUI.Drones"
+msgid "UAVs"
+msgstr "无人机"
+
+msgctxt "DroneOps,VideoUI.Behavior"
+msgid "Abnormal behavior"
+msgstr "异常行为"
+
+msgctxt "DroneOps,VideoUI.Other"
+msgid "Other targets"
+msgstr "其他目标"
+
+msgctxt "DroneOps,VideoUI.Alerts"
+msgid "Recent alerts"
+msgstr "最近告警"
+
+msgctxt "DroneOps,VideoUI.NoAlerts"
+msgid "No active alerts"
+msgstr "无活动告警"
+
+msgctxt "DroneOps,VideoUI.AlertSession"
+msgid "Received alerts · This session"
+msgstr "本会话收到的告警"
+
+msgctxt "DroneOps,VideoUI.System"
+msgid "System status"
+msgstr "系统状态"
+
+msgctxt "DroneOps,VideoUI.Online"
+msgid "Online aircraft"
+msgstr "在线无人机"
+
+msgctxt "DroneOps,VideoUI.AI"
+msgid "AI engine"
+msgstr "AI引擎"
+
+msgctxt "DroneOps,VideoUI.Storage"
+msgid "Storage"
+msgstr "存储"
+
+msgctxt "DroneOps,VideoUI.Network"
+msgid "Backend"
+msgstr "后端网络"
+
+msgctxt "DroneOps,VideoUI.NotConnected"
+msgid "Not connected"
+msgstr "未接入"
+
+msgctxt "DroneOps,VideoUI.Unavailable"
+msgid "Unavailable"
+msgstr "暂无"
+
+msgctxt "DroneOps,VideoUI.Four"
+msgid "4 slots"
+msgstr "4格布局"
+
+msgctxt "DroneOps,VideoUI.Six"
+msgid "6 slots"
+msgstr "6格布局"
+
+msgctxt "DroneOps,VideoUI.Focus"
+msgid "Focus"
+msgstr "聚焦布局"
+
+msgctxt "DroneOps,VideoUI.SetActive"
+msgid "Select this UAV"
+msgstr "设为当前无人机"
+
+msgctxt "DroneOps,VideoUI.SetActiveHint"
+msgid "Explicitly select this UAV in the shared context. This action does not change the video target."
+msgstr "明确将此无人机设为共享选择；该操作不改变视频目标。"
+
+msgctxt "DroneOps,VideoUI.ActiveSelection"
+msgid "Selected: {0}"
+msgstr "当前选择：{0}"
+
+msgctxt "DroneOps,VideoUI.Retry"
+msgid "Retry"
+msgstr "重试"
+
+msgctxt "DroneOps,VideoUI.Record"
+msgid "Record"
+msgstr "录像"
+
+msgctxt "DroneOps,VideoUI.Playback"
+msgid "Playback"
+msgstr "回放"
+
+msgctxt "DroneOps,VideoUI.Screenshot"
+msgid "Capture"
+msgstr "截图"
+
+msgctxt "DroneOps,VideoUI.Filter"
+msgid "Filter"
+msgstr "告警筛选"
+
+msgctxt "DroneOps,VideoUI.Unsupported"
+msgid "This capability is not connected yet."
+msgstr "该能力尚未接入，当前不可用。"
+
+msgctxt "DroneOps,VideoUI.Reserved"
+msgid "Reserved slot"
+msgstr "预留格位"
+
+msgctxt "DroneOps,VideoUI.Unassigned"
+msgid "No UAV assigned"
+msgstr "未分配无人机"
+
+msgctxt "DroneOps,VideoUI.ModelUnavailable"
+msgid "Model: unavailable"
+msgstr "机型：暂无"
+
+msgctxt "DroneOps,VideoUI.NoSource"
+msgid "No video source"
+msgstr "无视频源"
+
+msgctxt "DroneOps,VideoUI.InactiveSource"
+msgid "Click to view"
+msgstr "点击切换播放"
+
+msgctxt "DroneOps,VideoUI.SourceSet"
+msgid "Source configured"
+msgstr "已配置视频源"
+
+msgctxt "DroneOps,VideoUI.NoTarget"
+msgid "No video target"
+msgstr "未选择视频目标"
+
+msgctxt "DroneOps,VideoUI.ConfigureSource"
+msgid "Configure a video source for this UAV"
+msgstr "请为此无人机配置视频源"
+
+msgctxt "DroneOps,VideoUI.WaitingFrames"
+msgid "Waiting for decoded video frames"
+msgstr "等待解码视频帧"
+
+msgctxt "DroneOps,VideoUI.RetryHint"
+msgid "Reconnect the current video source"
+msgstr "重新连接当前视频源"
+
+msgctxt "DroneOps,VideoUI.RetryUnavailable"
+msgid "Select a UAV with a configured video source to retry."
+msgstr "选择已配置视频源的无人机后可重试。"
+
+msgctxt "DroneOps,VideoUI.NA"
+msgid "N/A"
+msgstr "暂无"
+
+msgctxt "DroneOps,MapUI.Operations"
+msgid "Map operations"
+msgstr "地图作业"
+
+msgctxt "DroneOps,MapUI.MissionRoute"
+msgid "Mission route"
+msgstr "任务航线"
+
+msgctxt "DroneOps,MapUI.ViewVideo"
+msgid "View video"
+msgstr "查看视频"
+
+msgctxt "DroneOps,MapUI.CurrentDevice"
+msgid "Current device"
+msgstr "当前控制设备"
+
+msgctxt "DroneOps,MapUI.SelectDevice"
+msgid "Select a device"
+msgstr "选择设备"
+
+msgctxt "DroneOps,MapUI.CameraHint"
+msgid "Middle: pan · Right: orbit · Wheel: zoom"
+msgstr "中键平移 · 右键旋转 · 滚轮缩放"
+
+msgctxt "DroneOps,MapUI.FleetPointerHint"
+msgid "Left: select · Right-click: target · Middle: pan"
+msgstr "左键框选 · 右击选点 · 中键平移"
+
+msgctxt "DroneOps,MapUI.FleetPointerHelp"
+msgid "Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom."
+msgstr "左键点选或框选无人机；右键单击预览目的地，确认后执行。中键拖动平移；右键拖动在 2D 中平移、3D 中旋转；滚轮缩放。"
+
+msgctxt "DroneOps,MapUI.RouteEditor"
+msgid "Route editor"
+msgstr "航线编辑"
+
+msgctxt "DroneOps,MapUI.DefaultSpeed"
+msgid "Default flight speed"
+msgstr "默认飞行速度"
+
+msgctxt "DroneOps,MapUI.DefaultSpeedHint"
+msgid "Used for newly added waypoints."
+msgstr "用于之后添加的新航点。"
+
+msgctxt "DroneOps,MapUI.SpeedRange"
+msgid "m/s · 0 = unlimited, or 0.5–15"
+msgstr "米/秒 · 0不限速，或0.5–15"
+
+msgctxt "DroneOps,MapUI.SpeedInvalid"
+msgid "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."
+msgstr "请输入0（不限速）或0.5至15米/秒。"

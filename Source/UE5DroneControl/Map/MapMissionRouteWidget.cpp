@@ -1,4 +1,7 @@
 #include "Map/MapMissionRouteWidget.h"
+#include "Map/FigmaMapStyle.h"
+#include "Components/VerticalBoxSlot.h"
+#include "Components/SizeBox.h"
 #include "Map/PlanRouteVisualSet.h"
 #include "Components/CheckBox.h"
 #include "Components/HorizontalBoxSlot.h"
@@ -11,45 +14,49 @@
 #include "Serialization/JsonSerializer.h"
 using namespace PlanUI;
 void UMapMissionRouteWidget::NativeOnInitialized(){
-    Super::NativeOnInitialized();Content=Root(WidgetTree);
-    Label(WidgetTree,Content,T(TEXT("Workflow.RouteEditBanner")),20);
-    Label(WidgetTree,Content,T(TEXT("Inspector.Title")),20);
-    SelectedPointLabel=Label(WidgetTree,Content,FText::GetEmpty(),18);
-    Label(WidgetTree,Content,T(TEXT("Inspector.Help")),13);
-    Result=Label(WidgetTree,Content,FText::GetEmpty(),14);
+    Super::NativeOnInitialized();
+    auto* Card=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(Card,MapUI::Surface,FigmaUI::Outline,8,FMargin(18));WidgetTree->RootWidget=Card;
+    auto* Scroll=WidgetTree->ConstructWidget<UScrollBox>();Card->SetContent(Scroll);Content=WidgetTree->ConstructWidget<UVerticalBox>();Scroll->AddChild(Content);
+    auto Text=[&](UPanelWidget* Parent,const FText& Value,int Size,bool Bold=false){auto* L=Label(WidgetTree,Parent,Value,Size);MapUI::Text(L,Size,FigmaUI::PrimaryText,Bold);return L;};
+    auto Space=[&](float H){auto* S=WidgetTree->ConstructWidget<USizeBox>();S->SetHeightOverride(H);Content->AddChild(S);};
+    Text(Content,T(TEXT("MapUI.RouteEditor")),22,true);Space(8);
+    SelectedPointLabel=Text(Content,FText::GetEmpty(),14,true);Text(Content,T(TEXT("Inspector.Help")),11);Space(10);
+    ErrorBanner=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(ErrorBanner,FLinearColor(FColor(42,35,16)),FLinearColor(FColor(91,72,14)),5,FMargin(10));Content->AddChild(ErrorBanner);
+    auto* ErrorRow=WidgetTree->ConstructWidget<UHorizontalBox>();ErrorBanner->SetContent(ErrorRow);auto* Disc=MapUI::Icon(WidgetTree,TEXT("error-disc"),FVector2D(17));ErrorRow->AddChildToHorizontalBox(Disc)->SetVerticalAlignment(VAlign_Center);
+    Result=Text(ErrorRow,FText::GetEmpty(),12);auto* ERS=CastChecked<UHorizontalBoxSlot>(Result->Slot);ERS->SetSize(FSlateChildSize(ESlateSizeRule::Fill));ERS->SetPadding(FMargin(8,0));Result->SetColorAndOpacity(FigmaUI::Warning);
     InspectorFields=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(InspectorFields);
-    CoordinatesLabel=Label(WidgetTree,InspectorFields,FText::GetEmpty(),14);
-    auto Input=[&](const TCHAR* Key){
-        auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(Row);
-        Label(WidgetTree,Row,T(Key),16);
-        auto* Box=WidgetTree->ConstructWidget<UEditableTextBox>();CommandTheme::Input(Box);
-        Row->AddChildToHorizontalBox(Box)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-        Box->OnTextCommitted.AddDynamic(this,&UMapMissionRouteWidget::ParametersCommitted);return Box;
-    };
-    AltitudeInput=Input(TEXT("Mission3D.Altitude"));
-    Label(WidgetTree,InspectorFields,T(TEXT("Inspector.Reference")),16);
-    AltitudeReference=WidgetTree->ConstructWidget<UComboBoxString>();InspectorFields->AddChild(AltitudeReference);
-    AltitudeReference->AddOption(TEXT("AGL"));AltitudeReference->AddOption(TEXT("Ellipsoid"));
-    AltitudeReference->OnSelectionChanged.AddDynamic(this,&UMapMissionRouteWidget::ReferenceChanged);
-    HoverInput=Input(TEXT("Mission3D.Hover"));SpeedInput=Input(TEXT("Inspector.Speed"));
-    auto AddTo=[&](UPanelWidget* Parent,const TCHAR* A,const TCHAR* K){auto* B=Button(WidgetTree,Parent,A,K);B->OnAction.AddDynamic(this,&UMapMissionRouteWidget::Action);CommandTheme::Text(Cast<UTextBlock>(B->GetContent()),15);Actions.Add(A,B);};
-    auto* PointActions=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(PointActions);
-    AddTo(PointActions,TEXT("waypoint_parameters"),TEXT("Mission3D.Apply"));AddTo(PointActions,TEXT("delete"),TEXT("Map.Delete"));
-    auto* SaveActions=WidgetTree->ConstructWidget<UHorizontalBox>();Content->AddChild(SaveActions);
-    AddTo(SaveActions,TEXT("save"),TEXT("Workflow.SaveDraft"));AddTo(SaveActions,TEXT("finish"),TEXT("Workflow.FinishRoute"));
-    CommandTheme::Button(Actions[TEXT("finish")],true);
-    Summary=Label(WidgetTree,Content,FText::GetEmpty(),14);
-    UnsavedDialog=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(UnsavedDialog,CommandTheme::Elevated,CommandTheme::Warning);UnsavedDialog->SetPadding(FMargin(8));Content->AddChild(UnsavedDialog);
-    auto* Guard=WidgetTree->ConstructWidget<UVerticalBox>();UnsavedDialog->SetContent(Guard);
-    Label(WidgetTree,Guard,T(TEXT("Map.DirtyPrompt")),16);
-    for(const auto& Entry:TArray<TPair<FString,FString>>{{TEXT("cancel"),TEXT("Workflow.ContinueEditing")},{TEXT("save"),TEXT("Workflow.SaveExit")},{TEXT("discard"),TEXT("Common.Discard")}}){auto* B=Button(WidgetTree,Guard,*Entry.Key,*Entry.Value);B->OnAction.AddDynamic(this,&UMapMissionRouteWidget::Action);}
-    auto Add=[&](const TCHAR* A,const TCHAR* K){AddTo(Content,A,K);};
-    Add(TEXT("begin"),TEXT("Map.Begin"));Actions[TEXT("begin")]->SetToolTipText(T(TEXT("Map.AdjustBeforeEdit")));Add(TEXT("undo"),TEXT("Workflow.Undo"));Add(TEXT("coordinates"),TEXT("Map.Add"));Add(TEXT("speed"),TEXT("Workflow.EditSpeed"));Add(TEXT("add"),TEXT("Map.Add"));Add(TEXT("clear"),TEXT("Map.Clear"));
-    Add(TEXT("discard"),TEXT("Common.Discard"));Add(TEXT("cancel"),TEXT("Workflow.ContinueEditing"));Add(TEXT("exit"),TEXT("Common.Exit"));Add(TEXT("focus"),TEXT("Map.Focus"));Add(TEXT("video"),TEXT("Video.Assigned"));
-    ClosedRoute=WidgetTree->ConstructWidget<UCheckBox>();Content->AddChild(ClosedRoute);Label(WidgetTree,ClosedRoute,T(TEXT("Geometry.ClosedRoute")),16);ClosedRoute->OnCheckStateChanged.AddDynamic(this,&UMapMissionRouteWidget::ClosedChanged);
-    WaypointDetails=Label(WidgetTree,Content,FText::GetEmpty(),14);
+    CoordinatesLabel=Text(InspectorFields,FText::GetEmpty(),11);
+    auto FieldColumn=[&](UHorizontalBox* Row,const TCHAR* Key){auto* Col=WidgetTree->ConstructWidget<UVerticalBox>();auto* S=Row->AddChildToHorizontalBox(Col);S->SetSize(FSlateChildSize(ESlateSizeRule::Fill));S->SetPadding(FMargin(0,4,10,7));Text(Col,T(Key),12);return Col;};
+    auto Input=[&](UVerticalBox* Col){auto* Box=WidgetTree->ConstructWidget<UEditableTextBox>();MapUI::Input(Box);auto Style=Box->GetWidgetStyle();Style.SetPadding(FMargin(8,5));Box->SetWidgetStyle(Style);Col->AddChild(Box);Box->OnTextCommitted.AddDynamic(this,&UMapMissionRouteWidget::ParametersCommitted);return Box;};
+    auto* First=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(First);AltitudeInput=Input(FieldColumn(First,TEXT("Mission3D.Altitude")));
+    auto* Reference=FieldColumn(First,TEXT("Inspector.Reference"));AltitudeReference=WidgetTree->ConstructWidget<UComboBoxString>();Reference->AddChild(AltitudeReference);AltitudeReference->SetContentPadding(FMargin(8,5));
+    AltitudeReference->OnGenerateWidgetEvent.BindDynamic(this,&UMapMissionRouteWidget::GenerateReferenceOption);
+    auto Combo=AltitudeReference->GetWidgetStyle();Combo.ComboButtonStyle.ButtonStyle.SetNormal(FSlateRoundedBoxBrush(FigmaUI::Inset,5,FigmaUI::Outline,1));Combo.ComboButtonStyle.ButtonStyle.SetHovered(FSlateRoundedBoxBrush(FigmaUI::Inset,5,FigmaUI::Muted,1));AltitudeReference->SetWidgetStyle(Combo);
+    AltitudeReference->AddOption(TEXT("AGL"));AltitudeReference->AddOption(TEXT("Ellipsoid"));AltitudeReference->OnSelectionChanged.AddDynamic(this,&UMapMissionRouteWidget::ReferenceChanged);
+    auto* Second=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(Second);HoverInput=Input(FieldColumn(Second,TEXT("Mission3D.Hover")));SpeedInput=Input(FieldColumn(Second,TEXT("Inspector.Speed")));
+    auto AddTo=[&](UPanelWidget* Parent,const TCHAR* A,const TCHAR* K,bool Primary=false){auto* B=Button(WidgetTree,Parent,A,K);B->OnAction.AddDynamic(this,&UMapMissionRouteWidget::Action);MapUI::Button(B,Primary,true);MapUI::Text(Cast<UTextBlock>(B->GetContent()),13,Primary?FigmaUI::Background:FigmaUI::PrimaryText,true);Actions.Add(A,B);
+        if(auto* HorizontalSlot=Cast<UHorizontalBoxSlot>(B->Slot)){HorizontalSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));HorizontalSlot->SetPadding(FMargin(0,3,8,3));}else if(auto* VerticalSlot=Cast<UVerticalBoxSlot>(B->Slot))VerticalSlot->SetPadding(FMargin(0,3));return B;};
+    auto Pair=[&](UPanelWidget* Parent,const TCHAR* A,const TCHAR* K,const TCHAR* A2,const TCHAR* K2,bool Primary=false){auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();Parent->AddChild(Row);AddTo(Row,A,K);AddTo(Row,A2,K2,Primary);};
+    Pair(InspectorFields,TEXT("waypoint_parameters"),TEXT("Mission3D.Apply"),TEXT("delete"),TEXT("Map.Delete"));Space(6);
+    Pair(Content,TEXT("save"),TEXT("Workflow.SaveDraft"),TEXT("finish"),TEXT("Workflow.FinishRoute"),true);Space(10);
+    auto* Divider=WidgetTree->ConstructWidget<USizeBox>();Divider->SetHeightOverride(1);Divider->SetContent(MapUI::Icon(WidgetTree,TEXT("divider"),FVector2D(375,1)));Content->AddChild(Divider);Space(10);
+    UnsavedDialog=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(UnsavedDialog,MapUI::Elevated,MapUI::Warning,5,FMargin(10));Content->AddChild(UnsavedDialog);
+    auto* Guard=WidgetTree->ConstructWidget<UVerticalBox>();UnsavedDialog->SetContent(Guard);Text(Guard,T(TEXT("Map.DirtyPrompt")),13,true);
+    for(const auto& Entry:TArray<TPair<FString,FString>>{{TEXT("cancel"),TEXT("Workflow.ContinueEditing")},{TEXT("save"),TEXT("Workflow.SaveExit")},{TEXT("discard"),TEXT("Common.Discard")}}){auto* B=Button(WidgetTree,Guard,*Entry.Key,*Entry.Value);B->OnAction.AddDynamic(this,&UMapMissionRouteWidget::Action);MapUI::Button(B,false,true);}
+    Pair(Content,TEXT("begin"),TEXT("Map.Begin"),TEXT("undo"),TEXT("Workflow.Undo"));Actions[TEXT("begin")]->SetToolTipText(T(TEXT("Map.AdjustBeforeEdit")));
+    AddTo(Content,TEXT("coordinates"),TEXT("Map.Add"));Pair(Content,TEXT("speed"),TEXT("Workflow.EditSpeed"),TEXT("add"),TEXT("Map.Add"));Pair(Content,TEXT("clear"),TEXT("Map.Clear"),TEXT("focus"),TEXT("Map.Focus"));
+    Pair(Content,TEXT("discard"),TEXT("Common.Discard"),TEXT("exit"),TEXT("Common.Exit"));AddTo(Content,TEXT("cancel"),TEXT("Workflow.ContinueEditing"));AddTo(Content,TEXT("video"),TEXT("Video.Assigned"));Space(8);
+    DefaultSpeedPanel=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(DefaultSpeedPanel,FigmaUI::Inset,FigmaUI::Outline,6,FMargin(12));Content->AddChild(DefaultSpeedPanel);
+    auto* SpeedBody=WidgetTree->ConstructWidget<UVerticalBox>();DefaultSpeedPanel->SetContent(SpeedBody);Text(SpeedBody,T(TEXT("MapUI.DefaultSpeed")),15,true);Text(SpeedBody,T(TEXT("MapUI.DefaultSpeedHint")),12);
+    DefaultSpeedInput=WidgetTree->ConstructWidget<UEditableTextBox>();MapUI::Input(DefaultSpeedInput);DefaultSpeedInput->SetHintText(T(TEXT("MapUI.SpeedRange")));SpeedBody->AddChild(DefaultSpeedInput);
+    DefaultSpeedFeedback=Text(SpeedBody,FText::GetEmpty(),12);DefaultSpeedFeedback->SetColorAndOpacity(FigmaUI::Warning);
+    Pair(SpeedBody,TEXT("default_speed_cancel"),TEXT("Common.Cancel"),TEXT("default_speed_apply"),TEXT("Mission3D.Apply"),true);DefaultSpeedPanel->SetVisibility(ESlateVisibility::Collapsed);
+    ClosedRoute=WidgetTree->ConstructWidget<UCheckBox>();Content->AddChild(ClosedRoute);Text(ClosedRoute,T(TEXT("Geometry.ClosedRoute")),13);ClosedRoute->OnCheckStateChanged.AddDynamic(this,&UMapMissionRouteWidget::ClosedChanged);
+    WaypointDetails=Text(Content,FText::GetEmpty(),12);Summary=Text(Content,FText::GetEmpty(),11);Summary->SetColorAndOpacity(FigmaUI::Muted);
     GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->OnMapRouteEditRequested.AddUObject(this,&UMapMissionRouteWidget::MapRequested);
 }
+UWidget* UMapMissionRouteWidget::GenerateReferenceOption(FString Option){auto* L=WidgetTree->ConstructWidget<UTextBlock>();MapUI::Text(L,13);L->SetText(FText::AsCultureInvariant(Option));return L;}
+
 int32 UMapMissionRouteWidget::GetAssignedUAV() const {auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto ID=Field(Find(S->GetPlans(),TEXT("missions"),MissionId),TEXT("assigned_uav_id"));int32 N=0;if(ID.StartsWith(TEXT("UAV-")))LexTryParseString(N,*ID.Mid(4));return N;}
 void UMapMissionRouteWidget::SetEditorEnabled(bool Enabled){
     if(!Enabled && !bDirty && !SessionId.IsEmpty()){bExitPending=true;Discard();return;}
@@ -161,6 +168,9 @@ void UMapMissionRouteWidget::Refresh(){
     WaypointLines.Insert(FText::Format(T(TEXT("Workflow.RouteStats")),FText::AsNumber(Distance),FText::AsNumber(Seconds/60)),0);
     WaypointDetails->SetText(FText::Join(User(TEXT("\n")),WaypointLines));
     Summary->SetText(FText::Join(User(TEXT("\n")),Lines));Result->SetText(bPrompt?T(TEXT("Map.DirtyPrompt")):bDiscardConfirm?T(TEXT("Map.DiscardPrompt")):ErrorCode.IsEmpty()?FText::GetEmpty():ErrorCode==TEXT("DRONE_ACTIVE_PLAN_CONFLICT") && !ReservationDetails.IsEmpty()?ReservationDetails:ProductText::Get(TEXT("Errors.")+ErrorCode));
+    DefaultSpeedPanel->SetVisibility(bDefaultSpeedOpen && !SessionId.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    DefaultSpeedPanel->SetIsEnabled(!bPending && !bSaving && S->IsReady() && !bPrompt);
+    ErrorBanner->SetVisibility(Result->GetText().IsEmpty()?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
     UnsavedDialog->SetVisibility(bPrompt?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionPathEditing(!SessionId.IsEmpty() && !bPrompt && !bSaving, !SessionId.IsEmpty() || bBeginning);
     const bool CanEdit=!SessionId.IsEmpty() && !bPending && !bSaving && S->IsReady();
@@ -197,6 +207,7 @@ void UMapMissionRouteWidget::Action(FName Name,int32){
     if(Name==TEXT("cancel")){bPrompt=false;bExitPending=false;bSelectionPending=false;PendingPlan.Empty();PendingMission.Empty();bDiscardConfirm=false;bBeginPending=false;return;}
     if(Name==TEXT("exit")){SetEditorEnabled(false);return;}if(Name==TEXT("focus")){Focus();return;}
     if(Name==TEXT("video")){const int ID=GetAssignedUAV();if(ID>0)GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->OpenVideo(FString::Printf(TEXT("UAV-%02d"),ID));return;}
+    if(Name==TEXT("default_speed_cancel")){bDefaultSpeedOpen=false;Refresh();return;}
     if(bPending)return;if(Name==TEXT("begin")){Begin();return;}if(Name==TEXT("save")){if(bPrompt || ApplyParameters())Save();return;}if(Name==TEXT("finish")){if(ApplyParameters())Finish();return;}
     if(Name==TEXT("discard")){if(bPrompt || bDiscardConfirm || !bDirty)Discard();else bDiscardConfirm=true;return;}
     if(SessionId.IsEmpty() || bSaving)return;
@@ -205,7 +216,13 @@ void UMapMissionRouteWidget::Action(FName Name,int32){
     }
     if(Name==TEXT("undo"))PC->UndoMissionRouteEdit();
     if(Name==TEXT("coordinates"))return;
-    if(Name==TEXT("speed") && PC->GetCommandScreenManager())PC->GetCommandScreenManager()->ToggleSpeedPanel();
+    if(Name==TEXT("speed")){bDefaultSpeedOpen=!bDefaultSpeedOpen;DefaultSpeedInput->SetText(User(FString::SanitizeFloat(PC->GetEditDefaultSegmentSpeed())));DefaultSpeedFeedback->SetText(FText::GetEmpty());Refresh();if(bDefaultSpeedOpen)if(auto* Scroll=Cast<UScrollBox>(Content->GetParent()))Scroll->ScrollWidgetIntoView(DefaultSpeedPanel,true);return;}
+    if(Name==TEXT("default_speed_apply")){
+        if(bPrompt || !GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady())return;
+        float Speed=0;const FString Value=DefaultSpeedInput->GetText().ToString().TrimStartAndEnd();
+        if(Value.IsEmpty() || !LexTryParseString(Speed,*Value) || !FMath::IsFinite(Speed) || (!FMath::IsNearlyZero(Speed) && (Speed<.5f || Speed>15.f))){DefaultSpeedFeedback->SetText(T(TEXT("MapUI.SpeedInvalid")));return;}
+        PC->SetEditDefaultSegmentSpeed(Speed);bDefaultSpeedOpen=false;Refresh();return;
+    }
     if(Name==TEXT("add"))PC->SetMissionPathEditing(true);if(Name==TEXT("delete")){PC->DeleteCommandWaypoint();if(RouteJson()->GetArrayField(TEXT("waypoints")).Num()<3)PC->SetAllEditingPathsClosedLoop(false);}
     if(Name==TEXT("clear")){FDronePathSaveData Empty;Empty.PathId=FMath::Max(1,GetAssignedUAV());PC->LoadMissionPath(Empty,true);}
 }

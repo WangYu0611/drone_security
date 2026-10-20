@@ -1,6 +1,7 @@
 #include "Shared/SecurityPlanWorkspaceWidget.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/PlanConfiguration.h"
+#include "Shared/ExecutionPresentation.h"
 #include "Components/CheckBox.h"
 
 using namespace PlanUI;
@@ -63,6 +64,76 @@ void USecurityPlanWorkspaceWidget::GuardConfigurationChange(TFunction<void()> Co
 }
 
 void USecurityPlanWorkspaceWidget::FocusConfiguration() { bList=false;Refresh(); }
+
+void USecurityPlanWorkspaceWidget::SelectMission(const FString& InPlanId,const FString& InMissionId,TFunction<void()> Continue,bool FinishConfigurationFirst) {
+    if(IsMissionNavigationBlocked())return;
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto State=Sync->GetPlans();
+    const auto Plan=Find(State,TEXT("plans"),InPlanId);const TArray<TSharedPtr<FJsonValue>>* Ids=nullptr;bool Contains=false;
+    if(Plan && Plan->TryGetArrayField(TEXT("mission_ids"),Ids))for(const auto& Id:*Ids)Contains|=Id->AsString()==InMissionId;
+    if(!Contains){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
+    auto Select=[this,InPlanId,InMissionId,Continue]{
+        auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),InPlanId);R->SetStringField(TEXT("mission_id"),InMissionId);
+        Submit(R,[this,InPlanId,InMissionId,Continue]{
+            // Submit hydrates from the ACK before opening or editing a task.
+            if(PlanId!=InPlanId || MissionId!=InMissionId){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
+            bList=false;if(Continue)Continue();Refresh();
+        });
+    };
+    if(PlanConfiguration::IsOwner(State,Sync->GetInstanceId()) && (FinishConfigurationFirst || PlanConfiguration::PlanId(State)!=InPlanId))RequestFinishConfiguration(Select);
+    else GuardConfigurationChange(Select);
+}
+
+void USecurityPlanWorkspaceWidget::OpenMissionExecution(const FString& InPlanId,const FString& InMissionId) {
+    SelectMission(InPlanId,InMissionId,[this]{bExecutionView=true;ExecutionIntent.Empty();Refresh();if(WorkspaceScroll)WorkspaceScroll->ScrollWidgetIntoView(ExecutionPage,false);});
+}
+
+void USecurityPlanWorkspaceWidget::EditMission(const FString& InPlanId,const FString& InMissionId) {
+    const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();const auto Plan=Find(State,TEXT("plans"),InPlanId);
+    if(!Plan)return;
+    if(Field(Plan,TEXT("status"))==TEXT("DEPLOYED")){
+        const auto& Ids=Plan->GetArrayField(TEXT("mission_ids"));int32 Ordinal=INDEX_NONE;
+        for(int32 I=0;I<Ids.Num();++I)if(Ids[I]->AsString()==InMissionId){Ordinal=I;break;}
+        if(Ordinal==INDEX_NONE)return;
+        SelectMission(InPlanId,InMissionId,[this,InPlanId,Ordinal]{
+            BeginConfiguration(TEXT(""),[this,InPlanId,Ordinal]{
+                auto Copy=MakeShared<FJsonObject>();Copy->SetStringField(TEXT("action"),TEXT("copy_plan"));Copy->SetStringField(TEXT("plan_id"),InPlanId);
+                Submit(Copy,[this,Ordinal]{
+                    const auto Copied=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanId);
+                    const TArray<TSharedPtr<FJsonValue>>* NewIds=nullptr;
+                    // Backend copy retains ordered mission_ids while allocating new IDs.
+                    if(!Copied || !Copied->TryGetArrayField(TEXT("mission_ids"),NewIds) || !NewIds->IsValidIndex(Ordinal)){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
+                    EditMission(PlanId,(*NewIds)[Ordinal]->AsString());
+                });
+            });
+        },true);return;
+    }
+    SelectMission(InPlanId,InMissionId,[this,InPlanId]{
+        auto Edit=[this,InPlanId]{
+            auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("set_workflow_step"));R->SetStringField(TEXT("plan_id"),InPlanId);R->SetStringField(TEXT("workflow_step"),TEXT("TaskConfig"));
+            Submit(R,[this]{CurrentStep=1;bExecutionView=false;ExecutionIntent.Empty();Refresh();if(WorkspaceScroll)WorkspaceScroll->ScrollWidgetIntoView(TaskPage,false);});
+        };
+        if(CanEditConfiguration())Edit();else BeginConfiguration(InPlanId,Edit);
+    });
+}
+
+void USecurityPlanWorkspaceWidget::PrepareMissionExecution(const FString& InPlanId,const FString& InMissionId) {
+    const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();const auto Plan=Find(State,TEXT("plans"),InPlanId);
+    if(!Plan)return;
+    if(Field(Plan,TEXT("status"))==TEXT("DEPLOYED")){
+        SelectMission(InPlanId,InMissionId,[this]{
+            if(ExecutionUI::Active(SelectedExecution(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans()))){bExecutionView=true;ExecutionIntent.Empty();Refresh();}
+            else ExecutionAction(TEXT("execution_start_prompt"));
+            if(WorkspaceScroll)WorkspaceScroll->ScrollWidgetIntoView(ExecutionPage,false);
+        },true);return;
+    }
+    SelectMission(InPlanId,InMissionId,[this,InPlanId]{
+        auto Check=[this,InPlanId]{SaveConfiguration([this,InPlanId]{
+            auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("validate"));R->SetStringField(TEXT("plan_id"),InPlanId);
+            Submit(R,[this]{CurrentStep=3;bExecutionView=false;ExecutionIntent.Empty();Refresh();if(WorkspaceScroll)WorkspaceScroll->ScrollWidgetIntoView(ReviewPage,false);});
+        });};
+        if(CanEditConfiguration())Check();else BeginConfiguration(InPlanId,Check);
+    });
+}
 
 void USecurityPlanWorkspaceWidget::RequestFinishConfiguration(TFunction<void()> OnFinished) {
     if(bPending)return;

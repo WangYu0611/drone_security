@@ -3,6 +3,7 @@
 #include "Map/MapShellWidget.h"
 #include "Command/CommandShellWidget.h"
 #include "Command/CommandMapInteractionService.h"
+#include "Shared/OperationalContextSubsystem.h"
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "DroneOps/Control/DroneOpsGameMode.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
@@ -38,6 +39,7 @@ void UCommandScreenManager::Initialize(ADroneOpsPlayerController* Owner)
     Controller = Owner;
     if (!Owner || !Owner->IsLocalController()) return;
     ClientRole = ResolveClientRole();
+    bInitialMapFocusPending = ClientRole == EDroneClientRole::Map;
     if (ClientRole == EDroneClientRole::Map) GConfig->GetBool(TEXT("OperationalContext"), TEXT("FollowSelection"), bFollowSelection, GGameIni);
     if (ClientRole == EDroneClientRole::Video)
     {
@@ -64,7 +66,7 @@ void UCommandScreenManager::Initialize(ADroneOpsPlayerController* Owner)
     }
     Show();
     // Coalesces per-drone telemetry bursts; also handles deletion and late-spawned actors.
-    Owner->GetWorldTimerManager().SetTimer(RefreshTimer, this, &UCommandScreenManager::Refresh, 0.25f, true);
+    Owner->GetWorldTimerManager().SetTimer(RefreshTimer, this, &UCommandScreenManager::RefreshFromTimer, 0.25f, true);
     bSelectionDirty = true;
     UE_LOG(LogTemp, Log, TEXT("[Command] Shell created, role=%s"), *StaticEnum<EDroneClientRole>()->GetNameStringByValue(static_cast<int64>(ClientRole)));
 }
@@ -133,6 +135,8 @@ void UCommandScreenManager::Destroy()
     PathPanel = nullptr; GeographicPanel = nullptr; SpeedPanel = nullptr; Shell = nullptr; MapService = nullptr;
     Registry.Reset(); Controller.Reset();
     bSelectionDirty = false;
+    bInitialMapFocusPending = false;
+    InitialMapFocusWaitStarted = 0;
 }
 void UCommandScreenManager::SelectionChanged(int32 OldId, int32 NewId)
 {
@@ -152,10 +156,27 @@ void UCommandScreenManager::Refresh()
     if (VideoShell) VideoShell->Refresh();
     if (MapShell) MapShell->Refresh();
     if (Shell) Shell->Refresh();
-    if (bFollowSelection && bSelectionDirty && Registry.IsValid() && MapService)
+    if (!bInitialMapFocusPending && bFollowSelection && bSelectionDirty && Registry.IsValid() && MapService)
     {
         const int32 Id = Registry->GetPrimarySelectedDrone();
         if (Id <= 0 || MapService->FocusDrone(Id)) bSelectionDirty = false;
+    }
+}
+void UCommandScreenManager::RefreshFromTimer()
+{
+    Refresh();
+    // DroneRegistered can run inside a REST batch before its positions arrive.
+    // Frame only on the coalesced timer, after the accepted snapshot is ready.
+    if (!bInitialMapFocusPending || !MapService || !Controller.IsValid()) return;
+    const auto* Sync=Controller->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    if (!Sync || !Sync->IsHydrated()) return;
+    const double Now=FPlatformTime::Seconds();
+    if (InitialMapFocusWaitStarted==0) InitialMapFocusWaitStarted=Now;
+    // A removed or unavailable fixture UAV must not block the valid fleet forever.
+    if (MapService->FocusFleet(Now-InitialMapFocusWaitStarted<5.))
+    {
+        bInitialMapFocusPending=false;
+        bSelectionDirty=false;
     }
 }
 USequenceDispatchPanelWidget* UCommandScreenManager::ShowPathPanel()

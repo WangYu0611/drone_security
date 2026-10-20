@@ -27,6 +27,34 @@
 #include "Map/MapFleetInteractionWidget.h"
 #include "Map/MapShellWidget.h"
 #include "Map/MapSurfaceHeight.h"
+#include "Map/MapMoveSupport.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+
+namespace {
+bool MapBoundsDistance(ADroneOpsPlayerController* Controller,const FBox& Bounds,double FOV,double& Distance)
+{
+    if (!Bounds.IsValid) return false;
+    Distance=Bounds.GetExtent().Size()*5.;
+    auto* Manager=Controller?Controller->GetCommandScreenManager():nullptr;
+    if (auto* Shell=Manager?Manager->GetMapShell():nullptr)
+    {
+        const auto View=UWidgetLayoutLibrary::GetViewportWidgetGeometry(Controller);
+        const FVector2D Size=View.GetLocalSize(),Center=Size*.5;
+        const auto Frame=Shell->GetMapViewportGeometry();
+        const FVector2D Min=View.AbsoluteToLocal(Frame.GetAbsolutePosition());
+        const FVector2D Max=View.AbsoluteToLocal(Frame.LocalToAbsolute(Frame.GetLocalSize()));
+        // Projection uses the whole viewport; fit to its visible map portion.
+        // A bounding sphere also covers routes viewed with 3D orbit/pitch.
+        const double Half=FMath::Min(FMath::Min(Center.X-Min.X,Max.X-Center.X),
+                                    FMath::Min(Center.Y-Min.Y,Max.Y-Center.Y))-40.;
+        if (Size.X<=0 || Half<=0) return false;
+        const double Slope=2.*Half/Size.X*FMath::Tan(FMath::DegreesToRadians(FOV*.5));
+        const double Radius=Bounds.GetExtent().Size();
+        Distance=Radius+Radius/Slope;
+    }
+    return true;
+}
+}
 
 // UMG retains ownership. A hit on an editable waypoint body owns its complete
 // native gesture, so deferred gameplay input cannot re-read its release as press.
@@ -67,8 +95,14 @@ public:
     }
     bool HandleMouseButtonDownEvent(FSlateApplication&,const FPointerEvent& E) override {
         FVector2D Position;
+        if((bWaypointDrag || bGroundClick) && E.GetEffectingButton()!=EKeys::LeftMouseButton)return true;
         if(E.GetEffectingButton()==EKeys::LeftMouseButton && Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()))
-            if(auto* F=Fleet();F && F->BeginPointer(E.GetScreenSpacePosition(),E.IsShiftDown(),E.IsControlDown())){Service->CancelPointer();bFleetGesture=true;return true;}
+            if(auto* F=Fleet();F && F->IsAvailable()){
+                // Selection owns left input even while an ACK is pending.
+                // A refused selection must not fall through to legacy panning.
+                Service->CancelPointer();F->CancelGesture();
+                bFleetGesture=F->BeginPointer(E.GetScreenSpacePosition(),E.IsShiftDown(),E.IsControlDown());return true;
+            }
         if(bFleetGesture){if(auto* F=Fleet())F->CancelGesture();bFleetGesture=false;}
         if(Service.IsValid() && E.GetEffectingButton()==EKeys::LeftMouseButton
             && Service->IsPlanning() && Service->CanUsePointer(E.GetScreenSpacePosition())
@@ -120,12 +154,15 @@ public:
         return false;
     }
     bool HandleMouseWheelOrGestureEvent(FSlateApplication&,const FPointerEvent& E,const FPointerEvent*) override {
+        if(bWaypointDrag || bGroundClick)return true;
         if(Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()))Service->ZoomAtScreen(E.GetWheelDelta(),E.GetScreenSpacePosition());
         return false;
     }
     bool HandleKeyDownEvent(FSlateApplication&,const FKeyEvent& E) override {
         if(E.GetKey()!=EKeys::Escape)return false;
-        if(auto* F=Fleet();F && F->CancelMode()){bFleetGesture=false;return true;}return false;
+        const bool HadPointer=Service.IsValid() && Service->GestureButton.IsValid();
+        if(Service.IsValid())Service->CancelPointer();
+        if(auto* F=Fleet();F && F->CancelMode()){bFleetGesture=false;return true;}return HadPointer;
     }
 };
 
@@ -187,8 +224,8 @@ void UCommandMapInteractionService::SetRouteEditCameraLocked(bool Locked)
     CancelPointer();
     bZoomAnchored=false;
     if(Locked){
-        // Freeze the currently displayed pose once; discard outstanding damping
-        // targets without teleporting or changing the browsing integrator.
+        // Route editing owns the view: retire an earlier automatic focus target,
+        // but subsequent manual pan/zoom/orbit continue through the same integrator.
         ViewFocus=ActualFocus;ViewDistance=ActualDistance;
         ViewYaw=ActualRotation.Yaw;
         if(CurrentMapMode==ECommandMapMode::Map3D)View3DPitch=ActualRotation.Pitch;
@@ -212,7 +249,57 @@ bool UCommandMapInteractionService::SelectDrone(int32 DroneId)
 bool UCommandMapInteractionService::FocusDrone(int32 DroneId)
 {
     if(bRouteEditCameraLocked)return false;
+    if (OwnsCamera())
+    {
+        if (DroneId <= 0) return FocusFleet();
+        if (!Registry.IsValid() || !Controller.IsValid()) return false;
+        auto* Coordinates=Registry->GetCoordinateService().GetObject();
+        auto* Sync=Controller->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        FVector Geographic=FVector::ZeroVector;
+        // Use the same accepted position as the screen symbol. A spawned actor
+        // (or fallback pawn) is not evidence that the aircraft has a position yet.
+        if (!Coordinates || !ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)
+            || !ICoordinateService::Execute_IsGeographicSupported(Coordinates)
+            || !MapMove::Position(Registry.Get(),Sync->GetPlans(),DroneId,Geographic)) return false;
+        return FocusGeographicLocation(Geographic.Y,Geographic.X,Geographic.Z);
+    }
     return Controller.IsValid() && Controller->FocusCommandDrone(DroneId);
+}
+
+bool UCommandMapInteractionService::FocusFleet(bool WaitForMockFleet)
+{
+    if (bRouteEditCameraLocked || !OwnsCamera() || !Registry.IsValid() || !Controller.IsValid()) return false;
+    auto* Sync=Controller->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    auto* Coordinates=Registry->GetCoordinateService().GetObject();
+    if (!Sync->IsHydrated() || !Coordinates || !ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)
+        || !ICoordinateService::Execute_IsGeographicSupported(Coordinates)) return false;
+    if(WaitForMockFleet && PlanUI::Field(Sync->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock"))
+    {
+        auto Expected=PlanUI::Object(PlanUI::Object(Sync->GetPlans(),TEXT("mock_position_baseline")),TEXT("positions"));
+        if(!Expected)Expected=PlanUI::Object(PlanUI::Object(Sync->GetPlans(),TEXT("mock_execution")),TEXT("uavs"));
+        if(Expected)for(const auto& Entry:Expected->Values)
+        {
+            const FString IdString(Entry.Key.ToView());int32 Id=0;
+            if(!IdString.StartsWith(TEXT("UAV-")) || !LexTryParseString(Id,*IdString.Mid(4)))continue;
+            if(!Registry->IsDroneRegistered(Id))return false;
+            FDroneTelemetrySnapshot Snapshot;
+            if(Registry->GetTelemetry(Id,Snapshot) && Snapshot.TelemetrySource==TEXT("received"))continue;
+            FVector Geographic;if(!MapMove::Position(Registry.Get(),Sync->GetPlans(),Id,Geographic))return false;
+        }
+    }
+    FBox Bounds(ForceInit);
+    for (const auto& Drone:Registry->GetFriendlyDroneDescriptors())
+    {
+        FVector Geographic=FVector::ZeroVector;
+        if (!MapMove::Position(Registry.Get(),Sync->GetPlans(),Drone.DroneId,Geographic)) continue;
+        Bounds+=ICoordinateService::Execute_GeographicToWorld(Coordinates,Geographic.Y,Geographic.X,Geographic.Z);
+    }
+    double RequiredDistance=0;
+    if(!MapBoundsDistance(Controller.Get(),Bounds,MapCamera->GetCameraComponent()->FieldOfView,RequiredDistance))return false;
+    // Keep compact aircraft individually selectable while retaining surrounding
+    // map context. Execution views keep their wider minimum distance.
+    ViewDistance=FMath::Clamp(FMath::Max(6000.,RequiredDistance),double(MinDistance),double(MaxDistance));
+    return FocusLocation(Bounds.GetCenter());
 }
 
 bool UCommandMapInteractionService::FocusLocation(const FVector& WorldLocation)
@@ -232,8 +319,9 @@ bool UCommandMapInteractionService::FocusExecutionBounds(const FBox& Bounds)
 {
     if(bRouteEditCameraLocked)return false;
     if(!Bounds.IsValid || !OwnsCamera())return false;
-    // Frame the immutable mission snapshot without changing coordinates or selection.
-    ViewDistance=FMath::Clamp(FMath::Max(15000.,Bounds.GetExtent().Size()*5.),double(MinDistance),double(MaxDistance));
+    double RequiredDistance=0;
+    if(!MapBoundsDistance(Controller.Get(),Bounds,MapCamera->GetCameraComponent()->FieldOfView,RequiredDistance))return false;
+    ViewDistance=FMath::Clamp(FMath::Max(15000.,RequiredDistance),double(MinDistance),double(MaxDistance));
     return FocusLocation(Bounds.GetCenter());
 }
 
@@ -425,7 +513,7 @@ bool UCommandMapInteractionService::CanUsePointer(const FVector2D& Cursor) const
     const auto Path=App.LocateWindowUnderMouse(Cursor,App.GetInteractiveTopLevelWindows());
     if(!Path.IsValid() || Path.Widgets.Last().Widget!=Widget)return false;
     const auto* Manager=Controller->GetCommandScreenManager();
-    return Manager && Manager->IsCursorOverMap();
+    return Manager && (Manager->GetMapShell()?Manager->GetMapShell()->IsPointOverMap(Cursor):Manager->IsCursorOverMap());
 }
 void UCommandMapInteractionService::CancelPointer()
 {
@@ -435,16 +523,16 @@ void UCommandMapInteractionService::CancelPointer()
 void UCommandMapInteractionService::BeginPointer(const FKey& Button,const FVector2D& Cursor,bool bOverMap,bool bShift)
 {
     CancelPointer();
-    if(bRouteEditCameraLocked || !bOverMap || Cursor.ContainsNaN())return;
+    if(!bOverMap || Cursor.ContainsNaN())return;
     const bool Primary=Button==EKeys::LeftMouseButton;
-    if(Primary && (IsPlanning() || bShift || CurrentMapMode!=ECommandMapMode::Map2D))return;
+    if(Primary && (bRouteEditCameraLocked || IsPlanning() || bShift || CurrentMapMode!=ECommandMapMode::Map2D))return;
     if(!Primary && Button!=EKeys::MiddleMouseButton && Button!=EKeys::RightMouseButton)return;
     GestureButton=Button;LeftStart=PointerLast=Cursor;bLeftGesture=Primary;
 }
 void UCommandMapInteractionService::MovePointer(const FVector2D& Cursor,bool bOverMap)
 {
     if(!GestureButton.IsValid())return;
-    if(bRouteEditCameraLocked || !bOverMap || Cursor.ContainsNaN() || (bLeftGesture && IsPlanning())){CancelPointer();return;}
+    if(!bOverMap || Cursor.ContainsNaN() || (bLeftGesture && (bRouteEditCameraLocked || IsPlanning()))){CancelPointer();return;}
     if(!bLeftDragging){
         if(FVector2D::Distance(Cursor,LeftStart)<=DragThreshold)return;
         bLeftDragging=true;
@@ -456,7 +544,16 @@ void UCommandMapInteractionService::MovePointer(const FVector2D& Cursor,bool bOv
 void UCommandMapInteractionService::EndPointer(const FKey& Button,const FVector2D& Cursor,bool bOverMap)
 {
     if(Button!=GestureButton)return;
-    MovePointer(Cursor,bOverMap);CancelPointer();
+    MovePointer(Cursor,bOverMap);
+    // Keep drag history, even if an orbit ends at its starting point. Only a
+    // right click stages a destination; dragging remains a camera operation.
+    const bool DestinationClick=Button==EKeys::RightMouseButton && GestureButton==Button && !bLeftDragging && bOverMap;
+    CancelPointer();
+    if(DestinationClick && Controller.IsValid()) {
+        auto* Manager=Controller->GetCommandScreenManager();
+        auto* Fleet=Manager && Manager->GetMapShell()?Manager->GetMapShell()->GetFleetInteraction():nullptr;
+        if(Fleet)Fleet->PickDestinationAtScreen(Cursor);
+    }
 }
 void UCommandMapInteractionService::BeginPrimaryGesture(const FVector2D& Cursor)
 {
@@ -469,10 +566,15 @@ void UCommandMapInteractionService::EndPrimaryGesture(const FVector2D& Cursor)
 }
 void UCommandMapInteractionService::PanView(const FVector2D& Delta)
 {
-    if(bRouteEditCameraLocked)return;
     if(!Controller.IsValid() || !OwnsCamera() || Delta.ContainsNaN())return;
     int32 W=0,H=0;Controller->GetViewportSize(W,H);if(W<=0)return;
-    const double Scale=2.*ActualDistance*FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView*.5))/W;
+    PanAtViewport(Delta,W);
+}
+void UCommandMapInteractionService::PanAtViewport(const FVector2D& Delta,int32 Width)
+{
+    if(!OwnsCamera() || Width<=0 || Delta.ContainsNaN())return;
+    if(Controller.IsValid() && Controller->GetCommandScreenManager())Controller->GetCommandScreenManager()->CancelStartupFraming();
+    const double Scale=2.*ActualDistance*FMath::Tan(FMath::DegreesToRadians(MapCamera->GetCameraComponent()->FieldOfView*.5))/Width;
     const FRotationMatrix Basis(FRotator(0,ActualRotation.Yaw,0));
     const double Down=FMath::Max(.01,-ActualRotation.Vector().Z);
     // Screen X grows right, Y down. Moving the camera opposite the ray-plane
@@ -490,8 +592,8 @@ FVector UCommandMapInteractionService::PlaneOffset(double Distance,const FRotato
 }
 void UCommandMapInteractionService::ZoomAt(float Steps,const FVector2D* RaySlope)
 {
-    if(bRouteEditCameraLocked)return;
     if(!FMath::IsFinite(Steps) || Steps==0)return;
+    if(Controller.IsValid() && Controller->GetCommandScreenManager())Controller->GetCommandScreenManager()->CancelStartupFraming();
     const double Next=FMath::Clamp(ViewDistance*FMath::Pow(double(ZoomRatio),double(FMath::Clamp(Steps,-100.f,100.f))),double(MinDistance),double(MaxDistance));
     if(Next==ViewDistance)return; // No hidden target movement at either limit.
     if(CurrentMapMode==ECommandMapMode::Map2D && RaySlope && !RaySlope->ContainsNaN()){
@@ -535,15 +637,15 @@ void UCommandMapInteractionService::ZoomView(float Steps)
 }
 void UCommandMapInteractionService::RotateView(const FVector2D& Delta)
 {
-    if(bRouteEditCameraLocked)return;
     if(CurrentMapMode!=ECommandMapMode::Map3D || Delta.ContainsNaN())return;
+    if(Controller.IsValid() && Controller->GetCommandScreenManager())Controller->GetCommandScreenManager()->CancelStartupFraming();
     bZoomAnchored=false;
     ViewYaw=FMath::UnwindDegrees(ViewYaw+Delta.X*RotateSensitivity);
     View3DPitch=FMath::Clamp(View3DPitch-Delta.Y*RotateSensitivity,-MaxPitch,-MinPitch);
 }
 void UCommandMapInteractionService::AdvanceCamera(float DeltaSeconds)
 {
-    if(bRouteEditCameraLocked || !OwnsCamera() || !FMath::IsFinite(DeltaSeconds) || DeltaSeconds<=0)return;
+    if(!OwnsCamera() || !FMath::IsFinite(DeltaSeconds) || DeltaSeconds<=0)return;
     const double Dt=DeltaSeconds;
     ActualFocus=FMath::Lerp(ActualFocus,ViewFocus,1.-FMath::Exp(-Dt/PanDamping));
     ActualDistance=FMath::Lerp(ActualDistance,ViewDistance,1.-FMath::Exp(-Dt/ZoomDamping));

@@ -211,7 +211,10 @@ public:
             DispatchWidgetAction(Test,Shell,TEXT("Navigate"),TEXT("navigate"),3);Shell->Refresh();
             TArray<UWidget*> Children;Shell->WidgetTree->GetAllWidgets(Children);UWidgetSwitcher* Pages=nullptr;
             for(auto* Child:Children)if(auto* Switcher=Cast<UWidgetSwitcher>(Child)){Pages=Switcher;break;}
-            if(Test->TestNotNull(TEXT("Command workspace page switcher"),Pages))Test->TestEqual(TEXT("alarm view remains accessible during configuration"),Pages->GetActiveWidgetIndex(),3);
+            if(Test->TestNotNull(TEXT("Command workspace page switcher"),Pages))Test->TestEqual(TEXT("Figma retains three main pages"),Pages->GetChildrenCount(),3);
+            auto* AlarmModal=Shell->WidgetTree->FindWidget(TEXT("FigmaModalBackdrop"));
+            if(Test->TestNotNull(TEXT("Alarm modal exists"),AlarmModal))Test->TestTrue(TEXT("alarm view remains accessible during configuration"),AlarmModal->IsVisible());
+            DispatchWidgetAction(Test,Shell,TEXT("FigmaAction"),TEXT("close_dialog"),0);
             Test->TestEqual(TEXT("viewing alarms preserves unsaved input"),P->Description->GetText().ToString(),FString(TEXT("Keep while viewing alarms")));
             Test->TestTrue(TEXT("alarm viewing does not release configuration"),PlanConfiguration::IsOwner(Sync->GetPlans(),Sync->GetInstanceId()));
             Test->TestFalse(TEXT("alarm viewing does not send a plan mutation"),P->bPending);

@@ -5,6 +5,7 @@
 #include "Command/CommandShellWidget.h"
 #include "Command/CommandTacticalMap.h"
 #include "Command/OperationalLogWidget.h"
+#include "Command/FigmaFleetWidget.h"
 #include "Command/CommandAlertStore.h"
 #include "Command/CommandScreenManager.h"
 #include "Shared/OperationalContextSubsystem.h"
@@ -51,7 +52,7 @@ public:
         }
         if(Mode==0) {
             Test->TestNotNull(TEXT("Command V2 shell"),M->GetShell());
-            for(UClass* Class:{UDroneListWidget::StaticClass(),UCommandAlarmPanel::StaticClass(),UCommandTacticalMap::StaticClass(),UOperationalLogWidget::StaticClass()}){
+            for(UClass* Class:{UDroneListWidget::StaticClass(),UCommandAlarmPanel::StaticClass(),UCommandTacticalMap::StaticClass(),UFigmaFleetWidget::StaticClass()}){
                 TArray<UUserWidget*> Widgets;UWidgetBlueprintLibrary::GetAllWidgetsOfClass(W,Widgets,Class,false);Test->TestEqual(*Class->GetName(),Widgets.Num(),1);
                 for(auto* Widget:Widgets)if(auto* Map=Cast<UCommandTacticalMap>(Widget))Test->TestTrue(TEXT("valid configured XYZ basemap"),Map->HasConfiguredBasemap());}
             const auto Equator=UCommandTacticalMap::Project(0,0,0);Test->TestTrue(TEXT("WebMercator equator"),Equator.Equals(FVector2D(128,128),.001));return true;

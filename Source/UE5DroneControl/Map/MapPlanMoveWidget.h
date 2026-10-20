@@ -14,6 +14,7 @@ public:
     bool IsMoving() const { return !SessionId.IsEmpty(); }
     FString GetVisualPlanId() const { return PlanId; }
     void Refresh();
+    bool IsOverControls(const FVector2D& Screen) const;
 protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeDestruct() override;
@@ -23,6 +24,7 @@ protected:
     virtual FReply NativeOnMouseMove(const FGeometry&,const FPointerEvent&) override;
     virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
+    UPROPERTY() TObjectPtr<class UBorder> ControlPanel;
     struct FRoutePreview { FString Id; TSharedPtr<FJsonObject> Saved; TArray<FVector> Original; bool Closed=false; };
     TArray<FRoutePreview> Routes;
     FPlanRouteVisualSet PreviewVisuals;

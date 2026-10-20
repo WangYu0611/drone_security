@@ -1,4 +1,7 @@
 #include "Map/MapPlanMoveWidget.h"
+#include "Map/MapPaintGeometry.h"
+#include "Map/FigmaMapStyle.h"
+#include "Map/MapShellWidget.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "DroneOps/Core/ICoordinateService.h"
@@ -9,17 +12,19 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Rendering/DrawElements.h"
+#include "Layout/Clipping.h"
 #include "Styling/CoreStyle.h"
 using namespace PlanUI;
 void UMapPlanMoveWidget::NativeOnInitialized() {
     Super::NativeOnInitialized();auto* Root=WidgetTree->ConstructWidget<UCanvasPanel>();WidgetTree->RootWidget=Root;
     Root->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-    auto* Panel=WidgetTree->ConstructWidget<UBorder>();CommandTheme::Panel(Panel,CommandTheme::Elevated,CommandTheme::Warning);Panel->SetPadding(FMargin(16));
+    auto* Panel=WidgetTree->ConstructWidget<UBorder>();ControlPanel=Panel;MapUI::Panel(Panel,MapUI::Elevated,MapUI::Warning);Panel->SetPadding(FMargin(16));
     auto* Box=WidgetTree->ConstructWidget<UVerticalBox>();Panel->SetContent(Box);
-    Summary=Label(WidgetTree,Box,FText::GetEmpty(),22);
+    Summary=Label(WidgetTree,Box,FText::GetEmpty(),22);MapUI::Text(Summary,16);
     Confirm=Button(WidgetTree,Box,TEXT("confirm"),TEXT("Geometry.Confirm"));Cancel=Button(WidgetTree,Box,TEXT("cancel"),TEXT("Common.Cancel"));
     Confirm->OnAction.AddDynamic(this,&UMapPlanMoveWidget::Action);Cancel->OnAction.AddDynamic(this,&UMapPlanMoveWidget::Action);
-    auto* PanelSlot=Root->AddChildToCanvas(Panel);PanelSlot->SetPosition(FVector2D(12,190));PanelSlot->SetSize(FVector2D(510,250));
+    auto* Chrome=MapUI::Chrome(WidgetTree,Root);MapUI::Place(Chrome,Panel,FVector2D(45,230),FVector2D(380,250));
+    MapUI::Button(Confirm,true,true);MapUI::Button(Cancel,false,true);
     Handle=WidgetTree->ConstructWidget<UButton>();Handle->SetBackgroundColor(FLinearColor(1,.65f,.1f,.6f));
     auto* HandleText=WidgetTree->ConstructWidget<UTextBlock>();HandleText->SetText(FText::AsCultureInvariant(TEXT("+")));HandleText->SetJustification(ETextJustify::Center);Handle->SetContent(HandleText);
     Handle->SetToolTipText(T(TEXT("Geometry.Drag")));
@@ -96,10 +101,11 @@ bool UMapPlanMoveWidget::CursorOnPlane(const FVector2D& Absolute,FVector& Point)
 }
 void UMapPlanMoveWidget::NativeTick(const FGeometry& G,float Seconds){
     Super::NativeTick(G,Seconds);FVector2D P;
-    if(Handle && IsMoving() && Project(Anchor+Delta,P))Cast<UCanvasPanelSlot>(Handle->Slot)->SetPosition(P);
+    if(Handle && IsMoving()){const auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());const auto* Shell=PC && PC->GetCommandScreenManager()?PC->GetCommandScreenManager()->GetMapShell():nullptr;
+        const bool Visible=Project(Anchor+Delta,P) && (!Shell || Shell->IsPointOverMap(G.LocalToAbsolute(P)));Handle->SetVisibility(Visible?ESlateVisibility::Visible:ESlateVisibility::Collapsed);if(Visible)Cast<UCanvasPanelSlot>(Handle->Slot)->SetPosition(P);}
 }
 FReply UMapPlanMoveWidget::NativeOnPreviewMouseButtonDown(const FGeometry&,const FPointerEvent& E){
-    if(IsMoving() && !bPending && E.GetEffectingButton()==EKeys::LeftMouseButton && Handle->GetCachedGeometry().IsUnderLocation(E.GetScreenSpacePosition()) && CursorOnPlane(E.GetScreenSpacePosition(),DragStart)){
+    if(IsMoving() && !bPending && E.GetEffectingButton()==EKeys::LeftMouseButton && Handle->IsVisible() && Handle->GetCachedGeometry().IsUnderLocation(E.GetScreenSpacePosition()) && CursorOnPlane(E.GetScreenSpacePosition(),DragStart)){
         DragDelta=Delta;bDragging=true;UE_LOG(LogTemp,Log,TEXT("[PlanMove] Handle drag started: %s"),*PlanId);return FReply::Handled().CaptureMouse(TakeWidget());
     }return FReply::Unhandled();
 }
@@ -112,12 +118,21 @@ FReply UMapPlanMoveWidget::NativeOnMouseButtonUp(const FGeometry& G,const FPoint
 }
 int32 UMapPlanMoveWidget::NativePaint(const FPaintArgs& A,const FGeometry& G,const FSlateRect& C,FSlateWindowElementList& Out,int32 L,const FWidgetStyle& S,bool E) const {
     const int Base=Super::NativePaint(A,G,C,Out,L,S,E);if(!IsMoving())return Base;
-    const auto Color=FLinearColor(1,.65f,.1f);FBox2D Bounds(ForceInit);
-    auto Line=[&](const TArray<FVector2D>& P,float Width){if(P.Num()>1)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),P,ESlateDrawEffect::None,Color,true,Width);};
+    const FGeometry Desktop=MapPaint::DesktopGeometry(G,A);
+    const auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());const auto* Shell=PC && PC->GetCommandScreenManager()?PC->GetCommandScreenManager()->GetMapShell():nullptr;
+    if(Shell)Out.PushClip(FSlateClippingZone(MapPaint::ClipGeometry(G,Desktop,Shell->GetMapViewportGeometry())));
+    const auto Color=MapUI::Warning;FBox2D Bounds(ForceInit);
+    auto Line=[&](const TArray<FVector2D>& P,float Width){for(int I=1;I<P.Num();++I){
+        bool Clear=true;const int Samples=FMath::Clamp(FMath::CeilToInt(FVector2D::Distance(P[I-1],P[I])/8.),1,2048);
+        if(Shell)for(int J=0;J<=Samples;++J)if(!Shell->IsPointOverMap(Desktop.LocalToAbsolute(FMath::Lerp(P[I-1],P[I],double(J)/Samples)))){Clear=false;break;}
+        if(Clear)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),TArray<FVector2D>{P[I-1],P[I]},ESlateDrawEffect::None,Color,true,Width);
+    }};
     // Slate owns the move affordance only. Route geometry belongs to Route V2.
     for(const auto& Route:Routes)for(const auto& Original:Route.Original){FVector2D P;if(Project(Original+Delta,P))Bounds+=P;}
     if(Bounds.bIsValid){const auto Min=Bounds.Min-FVector2D(18),Max=Bounds.Max+FVector2D(18);Line({Min,FVector2D(Max.X,Min.Y),Max,FVector2D(Min.X,Max.Y),Min},1);}
-    FVector2D P;if(Project(Anchor+Delta,P)){Line({P+FVector2D(-30,0),P+FVector2D(30,0)},5);Line({P+FVector2D(0,-30),P+FVector2D(0,30)},5);
-        FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(FVector2D(180,28),FSlateLayoutTransform(P+FVector2D(32,0))),T(TEXT("Geometry.MovePlan")),FCoreStyle::GetDefaultFontStyle("Bold",18),ESlateDrawEffect::None,Color);}
-    return Base+3;
+    FVector2D P;if(Project(Anchor+Delta,P) && (!Shell || Shell->IsPointOverMap(Desktop.LocalToAbsolute(P)))){Line({P+FVector2D(-30,0),P+FVector2D(30,0)},5);Line({P+FVector2D(0,-30),P+FVector2D(0,30)},5);
+        if(!Shell || (Shell->IsPointOverMap(Desktop.LocalToAbsolute(P+FVector2D(32,0))) && Shell->IsPointOverMap(Desktop.LocalToAbsolute(P+FVector2D(212,28)))))FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(FVector2D(180,28),FSlateLayoutTransform(P+FVector2D(32,0))),T(TEXT("Geometry.MovePlan")),FCoreStyle::GetDefaultFontStyle("Bold",18),ESlateDrawEffect::None,Color);}
+    if(Shell)Out.PopClip();return Base+3;
 }
+
+bool UMapPlanMoveWidget::IsOverControls(const FVector2D& Screen) const {return IsVisible() && ControlPanel && ControlPanel->IsVisible() && ControlPanel->GetCachedGeometry().IsUnderLocation(Screen);}

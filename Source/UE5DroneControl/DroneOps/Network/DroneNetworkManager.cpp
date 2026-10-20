@@ -3,6 +3,9 @@
 #include "Misc/Parse.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "DroneOps/Core/DroneOpsTypes.h"
+#include "DroneOps/Core/ICoordinateService.h"
+#include "Shared/OperationalContextSubsystem.h"
+#include "RealTimeDroneReceiver.h"
 #include "PathEditor/DronePathActor.h"
 #include "PathEditor/DroneWaypointTypes.h"
 #include "Engine/GameInstance.h"
@@ -209,6 +212,12 @@ void UDroneNetworkManager::StartPolling()
 
 void UDroneNetworkManager::StopPolling()
 {
+	++DroneListRequestGeneration;
+	if (DroneListRequest.IsValid())
+	{
+		DroneListRequest->CancelRequest();
+		DroneListRequest.Reset();
+	}
 	if (UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr)
 	{
 		World->GetTimerManager().ClearTimer(PollTimer);
@@ -222,17 +231,32 @@ void UDroneNetworkManager::PollDroneList()
 		return;
 	}
 
-	if (!HttpClient)
+	if (!HttpClient || DroneListRequest.IsValid())
 	{
 		return;
 	}
 
-	FOnHttpResponse Callback;
-	Callback.BindDynamic(this, &UDroneNetworkManager::OnDroneListResponse);
-	HttpClient->Get(TEXT("/api/drones"), Callback);
+	const uint64 Generation = ++DroneListRequestGeneration;
+	const TMap<int32, uint64> AtRequest = WsTelemetryGeneration;
+	const auto* Context = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+	const TSharedPtr<FJsonObject> PlansAtRequest = Context ? Context->GetPlans() : nullptr;
+	DroneListRequest = FHttpModule::Get().CreateRequest();
+	DroneListRequest->SetURL(HttpClient->BaseUrl + TEXT("/api/drones"));
+	DroneListRequest->SetVerb(TEXT("GET"));
+	DroneListRequest->SetTimeout(HttpClient->TimeoutSec);
+	DroneListRequest->OnProcessRequestComplete().BindWeakLambda(this,
+		[this, Generation, AtRequest, PlansAtRequest](FHttpRequestPtr, FHttpResponsePtr Response, bool bConnected)
+		{
+			if (Generation != DroneListRequestGeneration) return;
+			DroneListRequest.Reset();
+			OnDroneListResponse(bConnected && Response.IsValid() && EHttpResponseCodes::IsOk(Response->GetResponseCode()),
+				Response.IsValid() ? Response->GetContentAsString() : FString(), AtRequest, PlansAtRequest);
+		});
+	if (!DroneListRequest->ProcessRequest()) DroneListRequest.Reset();
 }
 
-void UDroneNetworkManager::OnDroneListResponse(bool bSuccess, const FString& Body)
+void UDroneNetworkManager::OnDroneListResponse(bool bSuccess, const FString& Body, const TMap<int32, uint64>& AtRequest,
+	const TSharedPtr<FJsonObject>& PlansAtRequest)
 {
 	if (!bSuccess)
 	{
@@ -264,7 +288,7 @@ void UDroneNetworkManager::OnDroneListResponse(bool bSuccess, const FString& Bod
 		}
 	}
 
-	SyncDroneListToRegistry(DroneObjects);
+	SyncDroneListToRegistry(DroneObjects, &AtRequest, &PlansAtRequest);
 }
 
 void UDroneNetworkManager::OnRegisterDroneResponse(bool bSuccess, const FString& Body)
@@ -325,7 +349,8 @@ void UDroneNetworkManager::OnRegisterDroneResponse(bool bSuccess, const FString&
 	PendingRegisterIpAddress.Reset();
 }
 
-void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJsonObject>>& DroneObjects)
+void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJsonObject>>& DroneObjects,
+	const TMap<int32, uint64>* AtRequest, const TSharedPtr<FJsonObject>* PlansAtRequest)
 {
 	UDroneRegistrySubsystem* Registry = GetGameInstance()
 		? GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()
@@ -335,6 +360,8 @@ void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJson
 	{
 		return;
 	}
+	const auto* Context = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+	const bool bPlansChanged = PlansAtRequest && Context && Context->GetPlans() != *PlansAtRequest;
 
 	TSet<int32> SeenBackendIds;
 	for (const TSharedPtr<FJsonObject>& Obj : DroneObjects)
@@ -414,6 +441,19 @@ void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJson
 		Obj->TryGetStringField(TEXT("video_url"), Desc.VideoUrl);
 
 		Registry->RegisterDrone(Desc);
+		// A WebSocket sample/state received after this GET began is newer than
+		// its cached response. Still hydrate the descriptor, but not old telemetry.
+		if (AtRequest && AtRequest->FindRef(Id) != WsTelemetryGeneration.FindRef(Id)) continue;
+		FString TelemetrySource;
+		Obj->TryGetStringField(TEXT("telemetry_source"), TelemetrySource);
+		bool bProjected = false;
+		Obj->TryGetBoolField(TEXT("simulation"), bProjected);
+		bProjected = bProjected || TelemetrySource.StartsWith(TEXT("mock_"));
+		// ApplyPlans can acknowledge a newer simulated position independently of
+		// the telemetry socket. A GET begun before that snapshot must not rewind it.
+		if (bPlansChanged && bProjected) continue;
+		FDroneTelemetrySnapshot BeforeTask;
+		Registry->GetTelemetry(Id, BeforeTask);
 
 		FString TaskStateText;
 		if (Obj->TryGetStringField(TEXT("task_state"), TaskStateText))
@@ -438,7 +478,24 @@ void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJson
 			Obj->TryGetStringField(TEXT("task_detail"), TaskState.Detail);
 			Obj->TryGetNumberField(TEXT("task_updated_at"), TaskState.UpdatedAt);
 			Registry->UpdateTaskState(Id, TaskState);
+            if (bProjected || TelemetrySource == TEXT("unavailable"))
+            {
+                FDroneTelemetrySnapshot AfterTask;
+                Registry->GetTelemetry(Id, AfterTask);
+                AfterTask.LastUpdateTime = BeforeTask.LastUpdateTime;
+                Registry->UpdateTelemetry(Id, AfterTask);
+            }
         }
+
+		// REST and WebSocket carry the same provenance-aware position contract.
+		// Legacy servers retain their status-only path below.
+		if (Obj->HasField(TEXT("telemetry_source")))
+		{
+			auto Telemetry = MakeShared<FJsonObject>(*Obj);
+			Telemetry->SetNumberField(TEXT("drone_id"), Id);
+			ApplyTelemetryToRegistry(Telemetry, true);
+			continue;
+		}
 
 		FString Status;
 		if (Obj->TryGetStringField(TEXT("status"), Status))
@@ -511,6 +568,176 @@ void UDroneNetworkManager::OnWsConnected()
 	PollDroneList();
 }
 
+void UDroneNetworkManager::ApplyTelemetryToRegistry(const TSharedPtr<FJsonObject>& Root, bool bFromRest)
+{
+	UDroneRegistrySubsystem* Registry = GetGameInstance()
+		? GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()
+		: nullptr;
+
+	if (!Registry)
+	{
+		return;
+	}
+
+	int32 DroneId = 0;
+	Root->TryGetNumberField(TEXT("drone_id"), DroneId);
+	if (!bFromRest) ++WsTelemetryGeneration.FindOrAdd(DroneId);
+
+	FDroneTelemetrySnapshot Snap;
+	Snap.DroneId = DroneId;
+	Root->TryGetBoolField(TEXT("simulation"), Snap.bSimulation);
+	if (!Root->TryGetStringField(TEXT("telemetry_source"), Snap.TelemetrySource))
+	{
+		// A legacy telemetry packet originated in the receiver, never in the
+		// newly added Mock publisher (which always supplies provenance).
+		Snap.TelemetrySource = Snap.bSimulation ? TEXT("mock_execution") : TEXT("received");
+	}
+	Snap.bSimulation = Snap.bSimulation || Snap.TelemetrySource.StartsWith(TEXT("mock_"));
+	FDroneTelemetrySnapshot ExistingSnap;
+	const bool bHasExisting = Registry->GetTelemetry(DroneId, ExistingSnap);
+	// Retain the last received position across backend restarts. The restarted
+	// server may only have a Mock/home payload, but its offline/lost status is
+	// still authoritative and must not leave the previous hardware state online.
+	if (bHasExisting && ExistingSnap.TelemetrySource == TEXT("received")
+		&& Snap.TelemetrySource != TEXT("received"))
+	{
+		FString Status;
+		if (Root->TryGetStringField(TEXT("status"), Status))
+		{
+			if (Status.Equals(TEXT("offline"), ESearchCase::IgnoreCase))
+				Registry->MarkDroneAvailability(DroneId, EDroneAvailability::Offline);
+			else if (Status.Equals(TEXT("lost"), ESearchCase::IgnoreCase))
+				Registry->MarkDroneAvailability(DroneId, EDroneAvailability::Lost);
+		}
+		return;
+	}
+
+	double X = 0, Y = 0, Z = 0;
+	const bool bHasX = Root->TryGetNumberField(TEXT("x"), X);
+	const bool bHasY = Root->TryGetNumberField(TEXT("y"), Y);
+	const bool bHasZ = Root->TryGetNumberField(TEXT("z"), Z);
+	const bool bHasFiniteLocalPosition = bHasX && bHasY && bHasZ
+		&& FMath::IsFinite(X) && FMath::IsFinite(Y) && FMath::IsFinite(Z);
+	Snap.WorldLocation = FVector(X, Y, Z);
+	// Backend x/y/z use the existing UE-offset wire convention in centimetres.
+	Snap.NedLocation = FVector(X * 0.01, Y * 0.01, -Z * 0.01);
+
+	double Pitch = 0, Yaw = 0, Roll = 0;
+	Root->TryGetNumberField(TEXT("pitch"), Pitch);
+	Root->TryGetNumberField(TEXT("yaw"), Yaw);
+	Root->TryGetNumberField(TEXT("roll"), Roll);
+	Snap.Attitude = FRotator(Pitch, Yaw, Roll);
+
+	double Speed = 0;
+	Root->TryGetNumberField(TEXT("speed"), Speed);
+	Snap.Velocity = FVector(Speed, 0, 0); // scalar speed stored in X component
+
+	// GPS must be a complete tuple for synchronized geographic dispatch.
+	double GpsLat = 0, GpsLon = 0, GpsAlt = 0;
+	const bool bHasGpsLat = Root->TryGetNumberField(TEXT("gps_lat"), GpsLat);
+	const bool bHasGpsLon = Root->TryGetNumberField(TEXT("gps_lon"), GpsLon);
+	const bool bHasGpsAlt = Root->TryGetNumberField(TEXT("gps_alt"), GpsAlt);
+	const bool bHasCompleteGpsTuple = bHasGpsLat && bHasGpsLon && bHasGpsAlt;
+	int32 Battery = -1;
+	Root->TryGetNumberField(TEXT("battery"), Battery);
+
+	if (bHasExisting)
+	{
+		if (!bHasCompleteGpsTuple)
+		{
+			GpsLat = ExistingSnap.GpsLatitude;
+			GpsLon = ExistingSnap.GpsLongitude;
+			GpsAlt = ExistingSnap.GpsAltitude;
+		}
+		if (Battery < 0)
+		{
+			Battery = ExistingSnap.BatteryPercent;
+		}
+	}
+
+	Snap.GpsLatitude = GpsLat;
+	Snap.GpsLongitude = GpsLon;
+	Snap.GpsAltitude = GpsAlt;
+	Snap.BatteryPercent = Battery;
+
+	Snap.Battery = Battery;
+
+	Root->TryGetBoolField(TEXT("armed"), Snap.bArmed);
+	Root->TryGetBoolField(TEXT("offboard"), Snap.bOffboard);
+	bool bIncomingLocalPositionValid = false;
+	const bool bHasLocalPositionValid = Root->TryGetBoolField(
+		TEXT("local_position_valid"), bIncomingLocalPositionValid);
+	Snap.bLocalPositionValid = bHasLocalPositionValid
+		&& bIncomingLocalPositionValid
+		&& bHasFiniteLocalPosition;
+	bool bIncomingGpsFix = false;
+	const bool bHasGpsFix = Root->TryGetBoolField(TEXT("gps_fix"), bIncomingGpsFix);
+	const bool bValidGpsTuple = bHasCompleteGpsTuple
+		&& FMath::IsFinite(GpsLat) && GpsLat >= -90.0 && GpsLat <= 90.0
+		&& FMath::IsFinite(GpsLon) && GpsLon >= -180.0 && GpsLon <= 180.0
+		&& FMath::IsFinite(GpsAlt);
+	Snap.bGpsFix = bHasGpsFix && bIncomingGpsFix && bValidGpsTuple;
+	Snap.GeographicLocation = FVector(GpsLat, GpsLon, GpsAlt);
+	Snap.Altitude = static_cast<float>(GpsAlt);
+
+	// A display projection is not a hardware heartbeat. In particular the
+	// fixed home marker must remain offline until the receiver confirms it.
+	Snap.LastUpdateTime = Snap.bSimulation || Snap.TelemetrySource == TEXT("unavailable")
+		? ExistingSnap.LastUpdateTime : FPlatformTime::Seconds();
+	FString Status;
+	if (Root->TryGetStringField(TEXT("status"), Status))
+	{
+		Snap.Availability = Status.Equals(TEXT("online"), ESearchCase::IgnoreCase)
+			? EDroneAvailability::Online
+			: Status.Equals(TEXT("lost"), ESearchCase::IgnoreCase)
+				? EDroneAvailability::Lost : EDroneAvailability::Offline;
+	}
+	else
+	{
+		Snap.Availability = Snap.bSimulation ? ExistingSnap.Availability : EDroneAvailability::Online;
+	}
+	if ((Snap.bSimulation || Snap.TelemetrySource == TEXT("unavailable"))
+		&& Snap.Availability == EDroneAvailability::Online)
+	{
+		// Only a received sample or connection event may upgrade hardware liveness.
+		Snap.Availability = ExistingSnap.Availability;
+	}
+
+	if (Snap.bSimulation && Snap.bGpsFix)
+	{
+		UObject* Coordinates = Registry->GetCoordinateService().GetObject();
+		if (Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates))
+		{
+			Snap.WorldLocation = ICoordinateService::Execute_GeographicToWorld(Coordinates,
+				Snap.GpsLatitude, Snap.GpsLongitude, Snap.GpsAltitude);
+			if (auto* Mirror = Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(DroneId)))
+				Mirror->ApplySimulationPosition(Snap.WorldLocation);
+		}
+	}
+	Registry->UpdateTelemetry(DroneId, Snap);
+
+	// power_on may predate this UE connection. Reuse the backend's frozen
+	// anchor instead of substituting the current GPS position.
+	bool bAnchorValid = false;
+	double AnchorLat = 0.0, AnchorLon = 0.0, AnchorAlt = 0.0;
+	const bool bHasAnchorTuple = Root->TryGetBoolField(TEXT("anchor_valid"), bAnchorValid)
+		&& Root->TryGetNumberField(TEXT("anchor_gps_lat"), AnchorLat)
+		&& Root->TryGetNumberField(TEXT("anchor_gps_lon"), AnchorLon)
+		&& Root->TryGetNumberField(TEXT("anchor_gps_alt"), AnchorAlt);
+	if (bAnchorValid && bHasAnchorTuple && !CachedGpsAnchors.Contains(DroneId)
+		&& FMath::IsFinite(AnchorLat) && AnchorLat >= -90.0 && AnchorLat <= 90.0
+		&& FMath::IsFinite(AnchorLon) && AnchorLon >= -180.0 && AnchorLon <= 180.0
+		&& FMath::IsFinite(AnchorAlt))
+	{
+		FGpsAnchorCache& Cache = CachedGpsAnchors.Add(DroneId);
+		Cache.Lat = AnchorLat;
+		Cache.Lon = AnchorLon;
+		Cache.Alt = AnchorAlt;
+		OnDroneWsEvent.Broadcast(DroneId, TEXT("power_on"), AnchorLat, AnchorLon, AnchorAlt);
+	}
+	return;
+}
+
 void UDroneNetworkManager::OnWsMessage(const FString& Message)
 {
 	// Parse top-level JSON to route by "type" field
@@ -572,114 +799,7 @@ void UDroneNetworkManager::OnWsMessage(const FString& Message)
 	//                          "yaw":..., "pitch":..., "roll":..., "speed":..., "battery":... }
 	if (MsgType == TEXT("telemetry"))
 	{
-		UDroneRegistrySubsystem* Registry = GetGameInstance()
-			? GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()
-			: nullptr;
-
-		if (!Registry)
-		{
-			return;
-		}
-
-		int32 DroneId = 0;
-		Root->TryGetNumberField(TEXT("drone_id"), DroneId);
-
-		FDroneTelemetrySnapshot Snap;
-		Snap.DroneId = DroneId;
-
-		double X = 0, Y = 0, Z = 0;
-		const bool bHasX = Root->TryGetNumberField(TEXT("x"), X);
-		const bool bHasY = Root->TryGetNumberField(TEXT("y"), Y);
-		const bool bHasZ = Root->TryGetNumberField(TEXT("z"), Z);
-		const bool bHasFiniteLocalPosition = bHasX && bHasY && bHasZ
-			&& FMath::IsFinite(X) && FMath::IsFinite(Y) && FMath::IsFinite(Z);
-		Snap.WorldLocation = FVector(X, Y, Z);
-		// Backend x/y/z use the existing UE-offset wire convention in centimetres.
-		Snap.NedLocation = FVector(X * 0.01, Y * 0.01, -Z * 0.01);
-
-		double Pitch = 0, Yaw = 0, Roll = 0;
-		Root->TryGetNumberField(TEXT("pitch"), Pitch);
-		Root->TryGetNumberField(TEXT("yaw"), Yaw);
-		Root->TryGetNumberField(TEXT("roll"), Roll);
-		Snap.Attitude = FRotator(Pitch, Yaw, Roll);
-
-		double Speed = 0;
-		Root->TryGetNumberField(TEXT("speed"), Speed);
-		Snap.Velocity = FVector(Speed, 0, 0); // scalar speed stored in X component
-		
-		// GPS must be a complete tuple for synchronized geographic dispatch.
-		double GpsLat = 0, GpsLon = 0, GpsAlt = 0;
-		const bool bHasGpsLat = Root->TryGetNumberField(TEXT("gps_lat"), GpsLat);
-		const bool bHasGpsLon = Root->TryGetNumberField(TEXT("gps_lon"), GpsLon);
-		const bool bHasGpsAlt = Root->TryGetNumberField(TEXT("gps_alt"), GpsAlt);
-		const bool bHasCompleteGpsTuple = bHasGpsLat && bHasGpsLon && bHasGpsAlt;
-		int32 Battery = -1;
-		Root->TryGetNumberField(TEXT("battery"), Battery);
-
-		FDroneTelemetrySnapshot ExistingSnap;
-		if (Registry->GetTelemetry(DroneId, ExistingSnap))
-		{
-			if (!bHasCompleteGpsTuple)
-			{
-				GpsLat = ExistingSnap.GpsLatitude;
-				GpsLon = ExistingSnap.GpsLongitude;
-				GpsAlt = ExistingSnap.GpsAltitude;
-			}
-			if (Battery < 0)
-			{
-				Battery = ExistingSnap.BatteryPercent;
-			}
-		}
-    
-    	Snap.GpsLatitude = GpsLat;
-    	Snap.GpsLongitude = GpsLon;
-    	Snap.GpsAltitude = GpsAlt;
-    	Snap.BatteryPercent = Battery;
-
-		Snap.Battery = Battery;
-
-		Root->TryGetBoolField(TEXT("armed"), Snap.bArmed);
-		Root->TryGetBoolField(TEXT("offboard"), Snap.bOffboard);
-		bool bIncomingLocalPositionValid = false;
-		const bool bHasLocalPositionValid = Root->TryGetBoolField(
-			TEXT("local_position_valid"), bIncomingLocalPositionValid);
-		Snap.bLocalPositionValid = bHasLocalPositionValid
-			&& bIncomingLocalPositionValid
-			&& bHasFiniteLocalPosition;
-		bool bIncomingGpsFix = false;
-		const bool bHasGpsFix = Root->TryGetBoolField(TEXT("gps_fix"), bIncomingGpsFix);
-		const bool bValidGpsTuple = bHasCompleteGpsTuple
-			&& FMath::IsFinite(GpsLat) && GpsLat >= -90.0 && GpsLat <= 90.0
-			&& FMath::IsFinite(GpsLon) && GpsLon >= -180.0 && GpsLon <= 180.0
-			&& FMath::IsFinite(GpsAlt);
-		Snap.bGpsFix = bHasGpsFix && bIncomingGpsFix && bValidGpsTuple;
-		Snap.GeographicLocation = FVector(GpsLat, GpsLon, GpsAlt);
-		Snap.Altitude = static_cast<float>(GpsAlt);
-
-		Snap.LastUpdateTime = FPlatformTime::Seconds();
-		Snap.Availability = EDroneAvailability::Online;
-
-		Registry->UpdateTelemetry(DroneId, Snap);
-
-		// power_on may predate this UE connection. Reuse the backend's frozen
-		// anchor instead of substituting the current GPS position.
-		bool bAnchorValid = false;
-		double AnchorLat = 0.0, AnchorLon = 0.0, AnchorAlt = 0.0;
-		const bool bHasAnchorTuple = Root->TryGetBoolField(TEXT("anchor_valid"), bAnchorValid)
-			&& Root->TryGetNumberField(TEXT("anchor_gps_lat"), AnchorLat)
-			&& Root->TryGetNumberField(TEXT("anchor_gps_lon"), AnchorLon)
-			&& Root->TryGetNumberField(TEXT("anchor_gps_alt"), AnchorAlt);
-		if (bAnchorValid && bHasAnchorTuple && !CachedGpsAnchors.Contains(DroneId)
-			&& FMath::IsFinite(AnchorLat) && AnchorLat >= -90.0 && AnchorLat <= 90.0
-			&& FMath::IsFinite(AnchorLon) && AnchorLon >= -180.0 && AnchorLon <= 180.0
-			&& FMath::IsFinite(AnchorAlt))
-		{
-			FGpsAnchorCache& Cache = CachedGpsAnchors.Add(DroneId);
-			Cache.Lat = AnchorLat;
-			Cache.Lon = AnchorLon;
-			Cache.Alt = AnchorAlt;
-			OnDroneWsEvent.Broadcast(DroneId, TEXT("power_on"), AnchorLat, AnchorLon, AnchorAlt);
-		}
+		ApplyTelemetryToRegistry(Root);
 		return;
 	}
 
@@ -688,6 +808,7 @@ void UDroneNetworkManager::OnWsMessage(const FString& Message)
 	{
 		int32 DroneId = 0;
 		Root->TryGetNumberField(TEXT("drone_id"), DroneId);
+		++WsTelemetryGeneration.FindOrAdd(DroneId);
 
 		FString Event;
 		Root->TryGetStringField(TEXT("event"), Event);

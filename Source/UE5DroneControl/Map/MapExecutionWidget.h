@@ -9,6 +9,7 @@ class UE5DRONECONTROL_API UMapExecutionWidget:public UUserWidget {
     GENERATED_BODY()
     friend class FP52ExecutionWidgets;
 public:void Refresh();
+    bool IsOverControls(const FVector2D& Screen) const;
     void SetManagedFleetGroup(const FString& Group,const TArray<int32>& PreviewMembers);
     void SetRouteSuppression(const FString& Plan,const FString& Mission,bool Moving) { SuppressedPlan=Plan;SuppressedMission=Mission;bPlanMoving=Moving; }
     bool OwnsMission(const FString& Plan,const FString& Mission) const;
@@ -26,6 +27,7 @@ private:
     FString ManagedFleetGroup;
     TSet<FString> FleetPreviewUavs;
     bool bPlanMoving=false;
+    bool bInitialExecutionSnapshotObserved=false;
     bool IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const;
     FPlanRouteVisualSet VisualRoutes;
 };

@@ -260,6 +260,8 @@ public:
 	UDroneWebSocketClient* GetWebSocketClient() const { return WsClient; }
 
 private:
+	friend class FMockTelemetryProjectionTest;
+
 	UPROPERTY()
 	TObjectPtr<UDroneHttpClient> HttpClient;
 
@@ -267,6 +269,9 @@ private:
 	TObjectPtr<UDroneWebSocketClient> WsClient;
 
 	FTimerHandle PollTimer;
+	TSharedPtr<IHttpRequest, ESPMode::ThreadSafe> DroneListRequest;
+	uint64 DroneListRequestGeneration = 0;
+	TMap<int32, uint64> WsTelemetryGeneration;
 
 	FOnHttpResponse PendingRegisterCallback;
 	int32 PendingRegisterSlot = 0;
@@ -276,8 +281,8 @@ private:
 	void StopPolling();
 	void PollDroneList();
 
-	UFUNCTION()
-	void OnDroneListResponse(bool bSuccess, const FString& Body);
+	void OnDroneListResponse(bool bSuccess, const FString& Body, const TMap<int32, uint64>& AtRequest,
+		const TSharedPtr<FJsonObject>& PlansAtRequest);
 
 	UFUNCTION()
 	void OnRegisterDroneResponse(bool bSuccess, const FString& Body);
@@ -290,7 +295,10 @@ private:
 	UFUNCTION()
 	void OnWsMessage(const FString& Message);
 
-	void SyncDroneListToRegistry(const TArray<TSharedPtr<FJsonObject>>& DroneObjects);
+	void SyncDroneListToRegistry(const TArray<TSharedPtr<FJsonObject>>& DroneObjects,
+		const TMap<int32, uint64>* AtRequest = nullptr,
+		const TSharedPtr<FJsonObject>* PlansAtRequest = nullptr);
+	void ApplyTelemetryToRegistry(const TSharedPtr<FJsonObject>& Root, bool bFromRest = false);
 
 	// ---- Strict Local Preview Isolation ----
 	bool bStrictLocalPreviewIsolation = false;

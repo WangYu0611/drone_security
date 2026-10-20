@@ -18,13 +18,17 @@ UCLASS()
 class UE5DRONECONTROL_API UPlanMissionListWidget:public UUserWidget {
     GENERATED_BODY()
 public:
-    void Refresh(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan);
+    void Refresh(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan,const FString& SelectedMission=TEXT(""));
     TArray<FString> MissionIds;
+    TArray<int32> MissionActionIds;
+    bool ResolveAction(int32 Id,FString& OutPlan,FString& OutMission) const;
     FPlanMissionAction OnAction;
 protected:virtual void NativeOnInitialized() override;
 private:
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
-    int64 Version=-1;FString PlanId;
+    int64 Version=-1;FString PlanId,SelectedId,ExecutionSignature;
+    int32 NextActionId=0;
+    TMap<int32,FString> ActionTargets;
     UFUNCTION() void Action(FName Name,int32 Id){OnAction.Broadcast(Name,Id);}
 };
 UCLASS()
@@ -41,19 +45,26 @@ class UE5DRONECONTROL_API USecurityPlanWorkspaceWidget:public UUserWidget {
     friend class FP52ExecutionWidgets;
     friend class FP55ReservationWidgets;
     friend class FPlanConfigurationWorkspace;
+    friend class FFigmaCommandChecks;
+    friend class FPlanMissionActions;
 public:
     void Refresh();
     bool IsConfiguring() const;
+    bool IsCreatingPlan() const { return bCreating; }
+    bool IsMissionNavigationBlocked() const { return bPending || bConfigurationGuard; }
     bool HasUnsavedChanges() const;
     FText ConfigurationStatusText() const;
     void RequestFinishConfiguration(TFunction<void()> OnFinished = {});
     void FocusConfiguration();
+    // Selects the exact acknowledged task and opens its execution details only.
+    void OpenMissionExecution(const FString& InPlanId,const FString& InMissionId);
 protected:virtual void NativeOnInitialized() override;
 private:
     UPROPERTY() TObjectPtr<class UVerticalBox> ListPage;
     UPROPERTY() TObjectPtr<class UVerticalBox> PlanCards;
     UPROPERTY() TObjectPtr<class UVerticalBox> Workspace;
     UPROPERTY() TObjectPtr<class UVerticalBox> BasicPage;
+    UPROPERTY() TObjectPtr<class UVerticalBox> BasicPageHost;
     UPROPERTY() TObjectPtr<class UVerticalBox> TaskPage;
     UPROPERTY() TObjectPtr<class UVerticalBox> RoutePage;
     UPROPERTY() TObjectPtr<class UVerticalBox> ReviewPage;
@@ -63,6 +74,12 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> RouteStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> ReviewHeading;
     UPROPERTY() TObjectPtr<class UBorder> NewPlanDialog;
+    UPROPERTY() TObjectPtr<class UOverlay> NewPlanLayer;
+    UPROPERTY() TObjectPtr<class UOverlay> ConfigurationGuardLayer;
+    UPROPERTY() TObjectPtr<class UVerticalBox> NewPlanContent;
+    UPROPERTY() TObjectPtr<class UVerticalBox> EmptyPlanState;
+    UPROPERTY() TObjectPtr<class UScrollBox> WorkspaceScroll;
+    UPROPERTY() TObjectPtr<class UMultiLineEditableTextBox> DescriptionEditor;
     UPROPERTY() TObjectPtr<class UTextBlock> BasicHeading;
     bool bList=true,bCreating=false,bInitializedSelection=false;
     int32 CurrentStep=1;
@@ -80,6 +97,10 @@ private:
     bool bExecutionView=false;
     void RefreshExecution(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan);
     void ExecutionAction(FName Name);
+    TSharedPtr<FJsonObject> SelectedExecution(const TSharedPtr<FJsonObject>& State) const;
+    void SelectMission(const FString& InPlanId,const FString& InMissionId,TFunction<void()> Continue,bool FinishConfigurationFirst=false);
+    void EditMission(const FString& InPlanId,const FString& InMissionId);
+    void PrepareMissionExecution(const FString& InPlanId,const FString& InMissionId);
 
 
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
@@ -110,7 +131,7 @@ private:
     UFUNCTION() UWidget* UAVOption(FString Item);
     UFUNCTION() void Action(FName Name,int32 Id);
     UFUNCTION() void MissionAction(FName Name,int32 Index);
-    void Submit(const TSharedRef<FJsonObject>& Body);
+    void Submit(const TSharedRef<FJsonObject>& Body,TFunction<void()> OnSuccess = {});
     bool CanEditConfiguration() const;
     void BeginConfiguration(const FString& Id, TFunction<void()> Continue);
     void GuardConfigurationChange(TFunction<void()> Continue);
@@ -119,6 +140,10 @@ private:
     void FinishConfiguration();
     void ResetConfigurationInputs();
     void RefreshConfiguration();
+    void BuildPlanPresentation();
+    void RefreshPlanPresentation();
+    UFUNCTION() void PlanNameChanged(const FText& Text);
+    UFUNCTION() void DescriptionChanged(const FText& Text);
     UPROPERTY() TObjectPtr<class UVerticalBox> ConfigurationGuard;
     UPROPERTY() TObjectPtr<class UTextBlock> ConfigurationStatus;
     bool bConfigurationGuard=false;

@@ -17,7 +17,7 @@ void UCommandCenterPanel::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
     auto* Root = WidgetTree->ConstructWidget<UBorder>();
-    CommandTheme::Panel(Root); Root->SetPadding(FMargin(12)); WidgetTree->RootWidget = Root;
+    Root->SetBrushColor(FLinearColor::Transparent); Root->SetPadding(FMargin(0)); WidgetTree->RootWidget = Root;
     Content = WidgetTree->ConstructWidget<UVerticalBox>(); Root->SetContent(Content);
     Status = WidgetTree->ConstructWidget<UTextBlock>(); CommandTheme::Text(Status, 16);
     Status->SetAutoWrapText(true);

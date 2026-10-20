@@ -230,6 +230,14 @@ struct FDroneTelemetrySnapshot
 	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
 	EDroneAvailability Availability = EDroneAvailability::Offline;
 
+	/** Display provenance. Mock coordinates never establish a hardware connection. */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	bool bSimulation = false;
+
+	/** received, mock_home, mock_execution, or unavailable. */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	FString TelemetrySource;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
 	FVector WorldLocation = FVector::ZeroVector;
 

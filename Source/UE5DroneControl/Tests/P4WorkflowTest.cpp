@@ -107,6 +107,27 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
         if(Step==1){
             if(P->bPending)return false;if(P->SessionId.IsEmpty()){Test->AddError(TEXT("Backend begin ACK missing"));return true;}
             Test->TestTrue(TEXT("editing begins after lease ACK"),PC->IsPathEditMode());
+            const float OriginalDefaultSpeed=PC->GetEditDefaultSegmentSpeed();
+            Test->TestTrue(TEXT("default speed action enabled with acknowledged route lease"),P->Actions[TEXT("speed")]->GetIsEnabled());
+            P->Actions[TEXT("speed")]->OnClicked.Broadcast();
+            Test->TestTrue(TEXT("default speed button opens inline editor"),P->DefaultSpeedPanel->IsVisible());
+            P->DefaultSpeedInput->SetText(FText::AsCultureInvariant(TEXT("16")));
+            P->Actions[TEXT("default_speed_apply")]->OnClicked.Broadcast();
+            Test->TestEqual(TEXT("invalid default speed is rejected"),PC->GetEditDefaultSegmentSpeed(),OriginalDefaultSpeed);
+            Test->TestTrue(TEXT("invalid speed retains editor with feedback"),P->DefaultSpeedPanel->IsVisible() && !P->DefaultSpeedFeedback->GetText().IsEmpty());
+            P->DefaultSpeedInput->SetText(FText::AsCultureInvariant(TEXT("5.5")));
+            P->Actions[TEXT("default_speed_cancel")]->OnClicked.Broadcast();
+            Test->TestEqual(TEXT("cancel preserves previous default speed"),PC->GetEditDefaultSegmentSpeed(),OriginalDefaultSpeed);
+            Test->TestFalse(TEXT("cancel closes inline speed editor"),P->DefaultSpeedPanel->IsVisible());
+            P->Actions[TEXT("speed")]->OnClicked.Broadcast();
+            P->DefaultSpeedInput->SetText(FText::AsCultureInvariant(TEXT("5.5")));
+            P->Actions[TEXT("default_speed_apply")]->OnClicked.Broadcast();
+            Test->TestEqual(TEXT("legal default speed applies through button delegate"),PC->GetEditDefaultSegmentSpeed(),5.5f);
+            Test->TestFalse(TEXT("successful apply closes inline speed editor"),P->DefaultSpeedPanel->IsVisible());
+            P->Actions[TEXT("speed")]->OnClicked.Broadcast();
+            P->DefaultSpeedInput->SetText(FText::AsCultureInvariant(FString::SanitizeFloat(OriginalDefaultSpeed)));
+            P->Actions[TEXT("default_speed_apply")]->OnClicked.Broadcast();
+            Test->TestEqual(TEXT("fixture restores prior default speed"),PC->GetEditDefaultSegmentSpeed(),OriginalDefaultSpeed);
             Test->TestFalse(TEXT("RouteEditSuspendsFollowCamera"),PC->GetCommandScreenManager()->bFollowSelection);
             Test->TestFalse(TEXT("route entry discards queued selection follow"),PC->GetCommandScreenManager()->bSelectionDirty);
             Test->TestTrue(TEXT("RouteEditCameraLock follows acknowledged edit"),PC->GetCommandScreenManager()->GetMapService()->IsRouteEditCameraLocked());
@@ -253,9 +274,11 @@ public:FP52ExecutionWidgets(FAutomationTestBase* T,bool C):Test(T),Command(C){}
             Test->TestNotNull(TEXT("Map execution monitor exists"),Monitor);if(Monitor){Monitor->Refresh();Test->TestTrue(TEXT("Map execution monitor visible after hydration"),Monitor->IsVisible());
                 auto* CameraService=CastChecked<ADroneOpsPlayerController>(W->GetFirstPlayerController())->GetCommandScreenManager()->GetMapService();
                 CameraService->SetRouteEditCameraLocked(true);Monitor->FocusedExecution.Empty();Monitor->Refresh();
-                Test->TestEqual(TEXT("editing consumes automatic execution framing without deferring it"),Monitor->FocusedExecution,PlanUI::Field(Monitor->Execution,TEXT("execution_id")));
+                const FString Group=PlanUI::Field(Monitor->Execution,TEXT("group_id"));
+                const FString FocusKey=Group.IsEmpty()?PlanUI::Field(Monitor->Execution,TEXT("execution_id")):TEXT("group/")+Group;
+                Test->TestEqual(TEXT("editing consumes automatic execution framing without deferring it"),Monitor->FocusedExecution,FocusKey);
                 CameraService->SetRouteEditCameraLocked(false);Monitor->Refresh();
-                Test->TestEqual(TEXT("unlock does not requeue execution focus"),Monitor->FocusedExecution,PlanUI::Field(Monitor->Execution,TEXT("execution_id")));
+                Test->TestEqual(TEXT("unlock does not requeue execution focus"),Monitor->FocusedExecution,FocusKey);
             }
             Test->TestTrue(TEXT("Mock execution suppresses duplicate local preview"),Preview->IsHidden() && !Preview->IsActorTickEnabled());
             Test->TestTrue(TEXT("Mock receiver retains visible aircraft presentation"),!Mirror->IsHidden());

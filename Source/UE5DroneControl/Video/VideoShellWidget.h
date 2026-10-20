@@ -4,7 +4,7 @@
 #include "Components/Button.h"
 #include "VideoShellWidget.generated.h"
 
-/** Routes both aircraft rows and reserved feed cards to the shared selection. */
+/** Aircraft rows and source cards explicitly request the shared VideoView target. */
 UCLASS()
 class UE5DRONECONTROL_API UVideoFeedButton : public UButton
 {
@@ -13,6 +13,13 @@ public:
     int32 DroneId = 0;
     TWeakObjectPtr<class UVideoShellWidget> Owner;
     UPROPERTY() TObjectPtr<class UTextBlock> Label;
+    UPROPERTY() TObjectPtr<class UTextBlock> Availability;
+    UPROPERTY() TObjectPtr<class UTextBlock> Model;
+    UPROPERTY() TObjectPtr<class UTextBlock> Source;
+    UPROPERTY() TObjectPtr<class UBorder> IconPanel;
+    UPROPERTY() TObjectPtr<class UWidget> AssignedIcon;
+    UPROPERTY() TObjectPtr<class UWidget> ReservedIcon;
+    bool bSecondary = false;
     UFUNCTION() void ActivateFeed();
 };
 
@@ -44,6 +51,7 @@ protected:
     virtual TSharedRef<SWidget> RebuildWidget() override;
     virtual void NativeDestruct() override;
 private:
+    friend class FFigmaVideoChecks;
     TWeakObjectPtr<class UDroneRegistrySubsystem> Registry;
     UPROPERTY() TObjectPtr<class UVerticalBox> AircraftList;
     UPROPERTY() TObjectPtr<class UHorizontalBox> SecondaryArea;
@@ -58,6 +66,24 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> Status;
     UPROPERTY() TObjectPtr<class UTextBlock> Details;
     UPROPERTY() TObjectPtr<class UButton> Retry;
+    UPROPERTY() TObjectPtr<class UImage> RetryIcon;
+    UPROPERTY() TObjectPtr<class UImage> RetryReadyIcon;
+    UPROPERTY() TObjectPtr<class UTextBlock> RetryCaption;
+    UPROPERTY() TObjectPtr<class UCanvasPanel> DesignCanvas;
+    UPROPERTY() TObjectPtr<class UBorder> PrimaryPanel;
+    UPROPERTY() TObjectPtr<class UOverlay> VideoSurface;
+    UPROPERTY() TObjectPtr<class UTextBlock> EmptyHint;
+    UPROPERTY() TObjectPtr<class UTextBlock> PrimaryTarget;
+    UPROPERTY() TObjectPtr<class UTextBlock> DetectionTarget;
+    UPROPERTY() TObjectPtr<class UTextBlock> OnlineValue;
+    UPROPERTY() TObjectPtr<class UTextBlock> NetworkValue;
+    UPROPERTY() TObjectPtr<class UVerticalBox> AlertRows;
+    UPROPERTY() TObjectPtr<class UWidget> AlertEmpty;
+    UPROPERTY() TObjectPtr<class UButton> SetActiveButton;
+    UPROPERTY() TArray<TObjectPtr<class UButton>> UnsupportedButtons;
+    UPROPERTY() TArray<TObjectPtr<class UTextBlock>> StaticLabels;
+    TArray<FString> StaticKeys;
+    FString AlertSignature;
     // Presentation order only; descriptors, selection and telemetry remain in Registry.
     TArray<int32> AircraftIds, SecondaryIds;
     int32 ViewMode = 6;
@@ -74,7 +100,10 @@ private:
     UFUNCTION() void ToggleFollow() { SetFollowTarget(!bFollowTarget); }
     UFUNCTION() void PublishActive() { SetAsActiveUAV(); }
     class UTextBlock* MakeText(const FString& Value, int32 Size);
-    UVideoFeedButton* MakeFeedButton();
+    UVideoFeedButton* MakeFeedButton(bool Secondary = false);
+    void BuildPresentation();
+    void UpdateFeed(UVideoFeedButton* Button);
+    void UpdatePresentation();
     void UpdateFeeds();
     FString FeedDescription(int32 Id, bool Secondary) const;
     void SetSource(int32 Id, const FString& Url);

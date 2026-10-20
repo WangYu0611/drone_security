@@ -14,6 +14,7 @@ class UE5DRONECONTROL_API UMapFleetInteractionWidget : public UUserWidget {
     GENERATED_BODY()
     friend class FFleetMapWorkflow;
     friend class FFleetTerrainWorkflow;
+    friend class FMapStartupVisibility;
 public:
     void SetMode(EMapFleetMode Value);
     EMapFleetMode GetMode() const { return Mode; }
@@ -21,6 +22,7 @@ public:
     bool BeginPointer(const FVector2D& Screen,bool Shift,bool Control);
     void MovePointer(const FVector2D& Screen,bool OverMap);
     void EndPointer(const FVector2D& Screen,bool OverMap);
+    bool PickDestinationAtScreen(const FVector2D& Screen);
     void CancelGesture();
     bool CancelMode();
     bool OwnsPrimaryInput() const { return Mode!=EMapFleetMode::Browse || bDragging; }
@@ -35,6 +37,9 @@ protected:
     virtual void NativeDestruct() override;
     virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
+    mutable TArray<int32> PaintedDroneIds;
+    UPROPERTY() TObjectPtr<class UImage> MarkerIcon;
+    UPROPERTY() TObjectPtr<class UImage> SelectionMarkerIcon;
     UPROPERTY() TObjectPtr<class UBorder> Panel;
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     UPROPERTY() TObjectPtr<class UTextBlock> TargetText;
@@ -59,6 +64,7 @@ private:
     FleetSelection::EOperation SelectionOperation=FleetSelection::EOperation::Replace;
     bool bDragging=false,bPointerValid=false,bPending=false,bHasTarget=false;
     bool bSelectionPending=false;
+    double SelectionRequestedAt=0;
     bool bUpdatingHeight=false,bHadMapMode=false,bWas3D=false;
     bool bAbortConfirm=false,bShowCoordinates=false;
     bool bHeightAGL=true,bRecoveryPreview=false;
@@ -71,6 +77,7 @@ private:
     int32 TargetPrimary=0;
     FString ExecutionId,MessageKey,ManagedGroup,DismissedExecution,AbortGroup;
     TMap<TWeakObjectPtr<class UWidgetComponent>,bool> SuppressedLabels;
+    TMap<TWeakObjectPtr<class UMeshComponent>,bool> SuppressedMeshes;
     FText ErrorDetails;
     mutable FText CachedTerrainError;
     mutable double NextTerrainCheck=0;

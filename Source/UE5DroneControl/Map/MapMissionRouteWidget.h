@@ -43,6 +43,12 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
     UPROPERTY() TObjectPtr<class UTextBlock> WaypointDetails;
     UPROPERTY() TObjectPtr<class UBorder> UnsavedDialog;
+    UPROPERTY() TObjectPtr<class UBorder> ErrorBanner;
+    UPROPERTY() TObjectPtr<class UBorder> DefaultSpeedPanel;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> DefaultSpeedInput;
+    UPROPERTY() TObjectPtr<class UTextBlock> DefaultSpeedFeedback;
+    bool bDefaultSpeedOpen=false;
+    UFUNCTION() UWidget* GenerateReferenceOption(FString Option);
     bool bSaved=false;
     int SaveRetries=0;
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Actions;

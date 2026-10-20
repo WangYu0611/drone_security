@@ -1,4 +1,5 @@
 #include "Command/CommandTacticalMap.h"
+#include "Command/FigmaCommandStyle.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "Rendering/DrawElements.h"
 #include "Styling/CoreStyle.h"
@@ -24,12 +25,22 @@
 #include "Misc/Paths.h"
 #include "HAL/FileManager.h"
 #include "GameFramework/PlayerController.h"
+#include "Map/MapMoveSupport.h"
+#include "Components/HorizontalBoxSlot.h"
+#include "Components/VerticalBoxSlot.h"
+#include "Components/SizeBox.h"
+#include "Framework/Application/SlateApplication.h"
 
 FVector2D UCommandTacticalMap::Project(double Lat, double Lon, int32 Z)
 {
     const double R = FMath::DegreesToRadians(FMath::Clamp(Lat,-85.05112878,85.05112878));
     const double Scale = 256.0 * FMath::Pow(2.0,Z);
     return FVector2D((Lon+180.0)/360.0*Scale, (1.0-FMath::Loge(FMath::Tan(R)+1.0/FMath::Cos(R))/PI)*0.5*Scale);
+}
+FVector2D UCommandTacticalMap::Unproject(const FVector2D& Pixel,int32 Z)
+{
+    const double Scale=256.*FMath::Pow(2.,Z);
+    return FVector2D(FMath::UnwindDegrees(Pixel.X/Scale*360.-180.),FMath::RadiansToDegrees(FMath::Atan(FMath::Sinh(PI*(1.-2.*Pixel.Y/Scale)))));
 }
 void UCommandTacticalMap::NativeOnInitialized()
 {
@@ -71,28 +82,119 @@ void UCommandTacticalMap::LoadTile(const FString& Key,int32 X,int32 Y)
 }
 bool UCommandTacticalMap::SelectUAV(int32 Id)
 {
+    if(bSelectionPending || bMovePending)return false;
     auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     FDroneDescriptor D; if(!Registry->GetDroneDescriptor(Id,D) || D.bIsEnemyTarget) return false;
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    if(Sync->IsEnabled()) return Sync->SetActiveUAV(Id);
-    Registry->SetPrimarySelectedDrone(Id); return true;
+    ClearMoveTarget();MoveMessage=FText::GetEmpty();
+    if(Sync->IsEnabled()){
+        RequestedSelection={Id};RequestedPrimary=Id;SelectionRequestedAt=FPlatformTime::Seconds();
+        bSelectionPending=Sync->SetLocalSelection(Id,RequestedSelection);return bSelectionPending;
+    }
+    Registry->SetMultiSelectedDrones({Id});Registry->SetPrimarySelectedDrone(Id); return true;
 }
-void UCommandTacticalMap::MarkerClicked(FName,int32 Id){SelectUAV(Id);}
+void UCommandTacticalMap::MarkerClicked(FName,int32 Id){
+    if(bSelectionPending || bMovePending)return;
+    const auto Keys=FSlateApplication::Get().GetModifierKeys();
+    if(!Keys.IsControlDown() && !Keys.IsShiftDown()){SelectUAV(Id);return;}
+    auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    auto Members=Registry->GetMultiSelectedDrones();
+    if(Keys.IsControlDown() && Members.Contains(Id))Members.Remove(Id);else Members.AddUnique(Id);Members.Sort();
+    RequestedPrimary=Members.Contains(Registry->GetPrimarySelectedDrone())?Registry->GetPrimarySelectedDrone():Members.IsEmpty()?0:Members[0];
+    RequestedSelection=Members;SelectionRequestedAt=FPlatformTime::Seconds();ClearMoveTarget();MoveMessage=FText::GetEmpty();
+    bSelectionPending=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLocalSelection(RequestedPrimary,Members);
+    if(!bSelectionPending)MoveMessage=PlanUI::T(TEXT("Errors.SYNC_OFFLINE"));
+}
+void UCommandTacticalMap::ClearMoveTarget(){bHasMoveTarget=false;MoveMembers.Empty();}
+FText UCommandTacticalMap::MoveUnavailable() const {
+    if(bSelectionPending)return PlanUI::T(TEXT("Fleet.SelectionPending"));
+    return MapMove::Unavailable(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>(),GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(),MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()));
+}
+bool UCommandTacticalMap::PickMoveTarget(const FVector2D& Local){
+    if(bMovePending)return false;
+    ClearMoveTarget();MoveErrorCode.Empty();MoveMessage=MoveUnavailable();if(!MoveMessage.IsEmpty())return false;
+    auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    const auto Members=MapMove::Selection(Registry);FVector Anchor;
+    if(!MapMove::Position(Registry,Sync->GetPlans(),Members[0],Anchor,true))return false;
+    const FVector2D Geo=Unproject(Center*(256.*FMath::Pow(2.,Zoom))+Local-GetCachedGeometry().GetLocalSize()*.5,Zoom);
+    if(Geo.ContainsNaN() || FMath::Abs(Geo.Y)>80.){MoveMessage=PlanUI::T(TEXT("Map.InvalidPosition"));return false;}
+    const double North=FMath::DegreesToRadians(Geo.Y-Anchor.Y)*6371000.;
+    const double East=FMath::DegreesToRadians(FMath::UnwindDegrees(Geo.X-Anchor.X))*6371000.*FMath::Cos(FMath::DegreesToRadians((Geo.Y+Anchor.Y)*.5));
+    if(FVector2D(North,East).Size()>10000.){MoveMessage=PlanUI::T(TEXT("Errors.TRAJECTORY_DOMAIN_UNSUPPORTED"));return false;}
+    MoveTarget=FVector(Geo.X,Geo.Y,Anchor.Z);MoveMembers=Members;bHasMoveTarget=true;bFollow=false;MoveMessage=FText::GetEmpty();return true;
+}
+void UCommandTacticalMap::MoveAction(FName Action,int32){
+    if(bMovePending)return;
+    if(Action==TEXT("cancel_move")){ClearMoveTarget();MoveMessage=FText::GetEmpty();Refresh();return;}
+    if(Action!=TEXT("confirm_move"))return;
+    MoveMessage=MoveUnavailable();
+    if(!bHasMoveTarget || !MoveMessage.IsEmpty()){Refresh();return;}
+    if(MoveMembers!=MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>())){
+        ClearMoveTarget();MoveMessage=PlanUI::T(TEXT("Fleet.SelectionChanged"));Refresh();return;
+    }
+    bMovePending=true;MoveErrorCode.Empty();const auto Weak=TWeakObjectPtr<UCommandTacticalMap>(this);
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(MapMove::Request(MoveMembers,MoveTarget),[Weak](TSharedPtr<FJsonObject> Reply){
+        if(!Weak.IsValid())return;auto* Self=Weak.Get();Self->bMovePending=false;
+        const FString Code=PlanUI::Error(Reply);Self->MoveErrorCode=Code;Self->MoveMessage=Code.IsEmpty()?PlanUI::T(TEXT("FleetUX.Accepted")):PlanUI::T(*(TEXT("Errors.")+Code));
+        const FText Reservation=PlanUI::ReservationError(Reply);if(!Reservation.IsEmpty())Self->MoveMessage=Reservation;
+        const auto Params=PlanUI::Object(Reply,TEXT("params"));if(Params && Params->HasField(TEXT("minimum_separation_m")))
+            Self->MoveMessage=FText::Format(PlanUI::T(TEXT("Group.Conflict")),PlanUI::User(PlanUI::Field(Params,TEXT("uav_a"))),PlanUI::User(PlanUI::Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m"))));
+        if(Code.IsEmpty())Self->ClearMoveTarget();Self->Refresh();
+    })){bMovePending=false;MoveErrorCode=TEXT("SYNC_OFFLINE");MoveMessage=PlanUI::T(TEXT("Errors.SYNC_OFFLINE"));}Refresh();
+}
+void UCommandTacticalMap::AddMoveControls(const FVector2D& Size){
+    using namespace PlanUI;
+    const auto Members=MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>());
+    auto* Plate=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Plate,FigmaUI::Inset,FigmaUI::Outline,8,FMargin(10));
+    auto* Body=WidgetTree->ConstructWidget<UVerticalBox>();Plate->SetContent(Body);
+    auto* Hint=WidgetTree->ConstructWidget<UTextBlock>();Hint->SetAutoWrapText(true);FigmaUI::Text(Hint,14);
+    FText Text=bHasMoveTarget?FText::Format(T(TEXT("MapMove.Preview")),FText::AsNumber(MoveMembers.Num()),User(FString::Printf(TEXT("%.6f"),MoveTarget.Y)),User(FString::Printf(TEXT("%.6f"),MoveTarget.X)),FText::AsNumber(MoveTarget.Z)):
+        Members.IsEmpty()?T(TEXT("MapMove.SelectHint")):FText::Format(T(TEXT("MapMove.ClickHint")),FText::AsNumber(Members.Num()));
+    const auto Unavailable=MoveUnavailable();
+    if(bMovePending)Text=T(TEXT("Common.Waiting"));else if(!MoveMessage.IsEmpty())Text=MoveMessage;else if(bSelectionPending)Text=Unavailable;
+    Hint->SetText(Text);Body->AddChildToVerticalBox(Hint);
+    if(bHasMoveTarget){
+        auto* Actions=WidgetTree->ConstructWidget<UHorizontalBox>();Body->AddChildToVerticalBox(Actions)->SetPadding(FMargin(0,8,0,0));
+        for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("confirm_move"),TEXT("MapMove.Confirm")},{TEXT("cancel_move"),TEXT("Common.Cancel")}}){
+            auto* B=WidgetTree->ConstructWidget<UCommandActionButton>();B->Configure(FName(*P.Key));B->OnAction.AddDynamic(this,&UCommandTacticalMap::MoveAction);FigmaUI::Button(B,P.Key==TEXT("confirm_move"),true);
+            auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(T(*P.Value));FigmaUI::Text(L,14);B->SetContent(L);B->SetIsEnabled(!bMovePending && (P.Key!=TEXT("confirm_move") || Unavailable.IsEmpty()));
+            auto* Layout=Actions->AddChildToHorizontalBox(B);Layout->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Layout->SetPadding(FMargin(0,0,8,0));
+        }
+        if(!Unavailable.IsEmpty() && !bMovePending){auto* Reason=WidgetTree->ConstructWidget<UTextBlock>();Reason->SetText(Unavailable);Reason->SetAutoWrapText(true);FigmaUI::Text(Reason,13,FigmaUI::Warning);Body->AddChildToVerticalBox(Reason);}
+    }
+    auto* Width=WidgetTree->ConstructWidget<USizeBox>();Width->SetWidthOverride(FMath::Min(470.,Size.X-24.));Width->SetContent(Plate);MoveControls=Width;
+    auto* Layout=Canvas->AddChildToCanvas(Width);Layout->SetPosition(FVector2D(12,Size.Y-12));Layout->SetAlignment(FVector2D(0,1));Layout->SetAutoSize(true);Layout->SetZOrder(20);
+}
 void UCommandTacticalMap::Refresh()
 {
     if(!Canvas) return;
     if(!bDragging && GetOwningPlayer() && GetOwningPlayer()->IsInputKeyDown(EKeys::LeftMouseButton))return;
     const FVector2D Size=GetCachedGeometry().GetLocalSize(); if(Size.X<10 || Size.Y<10)return;
     auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    auto Selected=Registry->GetMultiSelectedDrones();Selected.Sort();
+    if(bSelectionPending && Selected==RequestedSelection && Registry->GetPrimarySelectedDrone()==RequestedPrimary)bSelectionPending=false;
+    if(bSelectionPending && (!Sync->IsReady() || FPlatformTime::Seconds()-SelectionRequestedAt>10.)){
+        bSelectionPending=false;MoveMessage=PlanUI::T(TEXT("Errors.SYNC_FAILED"));
+    }
+    if(bHasMoveTarget && MapMove::Selection(Registry)!=MoveMembers){ClearMoveTarget();MoveMessage=PlanUI::T(TEXT("Fleet.SelectionChanged"));}
     const auto Drones=Registry->GetFriendlyDroneDescriptors();
     if(!bCentered) for(const auto& D:Drones)
     {
-        FDroneTelemetrySnapshot T;
-        if(Registry->GetTelemetry(D.DroneId,T) && T.bGpsFix && FMath::IsFinite(T.GpsLatitude) && FMath::IsFinite(T.GpsLongitude) && FMath::Abs(T.GpsLatitude)<=90 && FMath::Abs(T.GpsLongitude)<=180)
-        {Center=Project(T.GpsLatitude,T.GpsLongitude,0)/256.0;bCentered=true;break;}
+        FVector Geographic;
+        if(MapMove::Position(Registry,Sync->GetPlans(),D.DroneId,Geographic))
+        {Center=Project(Geographic.Y,Geographic.X,0)/256.0;bCentered=true;break;}
     }
-    if(bFollow){FDroneTelemetrySnapshot T;if(Registry->GetTelemetry(Registry->GetPrimarySelectedDrone(),T) && T.bGpsFix){Center=Project(T.GpsLatitude,T.GpsLongitude,0)/256.;bCentered=true;}}
-    Canvas->ClearChildren();
+    if(bFollow && !bHasMoveTarget){FVector Geographic;if(MapMove::Position(Registry,Sync->GetPlans(),Registry->GetPrimarySelectedDrone(),Geographic)){Center=Project(Geographic.Y,Geographic.X,0)/256.;bCentered=true;}}
+    MoveControls=nullptr;Canvas->ClearChildren();
+    if(bFigmaPresentation && !bCentered) {
+        auto* Icon=FigmaUI::Icon(WidgetTree,TEXT("no-position"),FVector2D(48));
+        auto* IS=Canvas->AddChildToCanvas(Icon);IS->SetPosition(Size*.5-FVector2D(24,45));IS->SetSize(FVector2D(48));
+        auto* Caption=WidgetTree->ConstructWidget<UTextBlock>();Caption->SetText(ProductText::Get(TEXT("Figma.WaitingPosition")));FigmaUI::Text(Caption,16,FigmaUI::Muted);
+        Caption->SetJustification(ETextJustify::Center);Caption->SetVisibility(ESlateVisibility::HitTestInvisible);
+        auto* CS=Canvas->AddChildToCanvas(Caption);CS->SetPosition(Size*.5+FVector2D(-200,14));CS->SetSize(FVector2D(400,28));
+        return;
+    }
     auto Label=[&](const FString& Text,FVector2D Position,int32 Font,FLinearColor Color)
     {
         auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(FText::FromString(Text));CommandTheme::Text(L,Font,Color);
@@ -121,38 +223,65 @@ void UCommandTacticalMap::Refresh()
     int32 Missing=0;
     for(const auto& D:Drones)
     {
-        FDroneTelemetrySnapshot T;
-        if(!Registry->GetTelemetry(D.DroneId,T) || !T.bGpsFix || !FMath::IsFinite(T.GpsLatitude) || !FMath::IsFinite(T.GpsLongitude) || FMath::Abs(T.GpsLatitude)>90 || FMath::Abs(T.GpsLongitude)>180){++Missing;continue;}
-        const FVector2D P=Project(T.GpsLatitude,T.GpsLongitude,Zoom)-Origin;
+        FDroneTelemetrySnapshot T;Registry->GetTelemetry(D.DroneId,T);FVector Geographic;
+        if(!MapMove::Position(Registry,Sync->GetPlans(),D.DroneId,Geographic)){++Missing;continue;}
+        const FVector2D P=Project(Geographic.Y,Geographic.X,Zoom)-Origin;
         auto* B=WidgetTree->ConstructWidget<UCommandActionButton>();B->Configure(TEXT("select"),D.DroneId);B->OnAction.AddDynamic(this,&UCommandTacticalMap::MarkerClicked);
-        bool Active=Registry->GetMultiSelectedDrones().Contains(D.DroneId);CommandTheme::Button(B,Active,true);
-        auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(FText::FromString(FString::Printf(TEXT("%s UAV-%02d%s"),Active?*ProductText::Get(TEXT("Tactical.Active")).ToString():TEXT("+"),D.DroneId,AlertDrones.Contains(D.DroneId)?*ProductText::Get(TEXT("Tactical.Alert")).ToString():TEXT(""))));
-        L->SetText(FText::Format(FText::AsCultureInvariant(TEXT("{0} · {1}")),L->GetText(),ProductText::Get(T.Availability==EDroneAvailability::Online?TEXT("Fleet.Online"):T.Availability==EDroneAvailability::Lost?TEXT("Fleet.Lost"):TEXT("Fleet.Offline"))));
-        CommandTheme::Text(L,15,AlertDrones.Contains(D.DroneId)?CommandTheme::Warning:Active?CommandTheme::Cyan:CommandTheme::PrimaryText);B->SetContent(L);
-        auto* S=Canvas->AddChildToCanvas(B);S->SetPosition(P);S->SetAutoSize(true);S->SetZOrder(2);
+        const bool Active=Registry->GetMultiSelectedDrones().Contains(D.DroneId);FigmaUI::Button(B,Active,true);
+        auto* Icon=FigmaUI::Icon(WidgetTree,TEXT("drone"),FVector2D(28));B->SetContent(Icon);
+        auto IconStyle=B->GetStyle();IconStyle.SetNormalPadding(FMargin(4)).SetPressedPadding(FMargin(4));B->SetStyle(IconStyle);
+        B->SetIsEnabled(!bSelectionPending && !bMovePending);
+        const auto State=ProductText::Get(T.Availability==EDroneAvailability::Online?TEXT("Fleet.Online"):T.Availability==EDroneAvailability::Lost?TEXT("Fleet.Lost"):TEXT("Fleet.Offline"));
+        FText Caption=FText::Format(FText::AsCultureInvariant(TEXT("{0} · {1}")),PlanUI::User(MapMove::UAV(D.DroneId)),State);
+        if(T.bSimulation)Caption=FText::Format(ProductText::Get(TEXT("MapMove.MockMarker")),Caption);
+        B->SetToolTipText(FText::Format(FText::AsCultureInvariant(TEXT("{0}\n{1}")),PlanUI::User(D.Name),Caption));
+        FDroneLabelSettings Settings;Registry->GetDroneLabelSettings(D.DroneId,Settings);
+        const FString Name=Settings.DisplayName.IsEmpty()?D.Name:Settings.DisplayName;
+        Label(Name,P+FVector2D(24,-22),FMath::Clamp(Settings.FontSize,8,72),Settings.LabelColor);
+        Label(Caption.ToString(),P+FVector2D(24,FMath::Clamp(Settings.FontSize,8,72)*1.4-16),11,AlertDrones.Contains(D.DroneId)?CommandTheme::Warning:Active?CommandTheme::Cyan:CommandTheme::PrimaryText);
+        auto* MarkerLayout=Canvas->AddChildToCanvas(B);MarkerLayout->SetPosition(P-FVector2D(18));MarkerLayout->SetSize(FVector2D(36));MarkerLayout->SetZOrder(4);
     }
-    Label(FText::Format(ProductText::Get(TEXT("Tactical.Header")),FText::AsNumber(Zoom),FText::AsNumber(Missing)).ToString(),FVector2D(12,8),15,CommandTheme::PrimaryText);
-    Label(Attribution,FVector2D(12,Size.Y-26),12,CommandTheme::PrimaryText);
-    if(!Error.IsEmpty())Label(Error,FVector2D(12,Size.Y-52),12,CommandTheme::Warning);
+    if(!bFigmaPresentation)Label(FText::Format(ProductText::Get(TEXT("Tactical.Header")),FText::AsNumber(Zoom),FText::AsNumber(Missing)).ToString(),FVector2D(12,8),15,CommandTheme::PrimaryText);
+    if(!Attribution.IsEmpty())Label(Attribution,FVector2D(12,Size.Y-172),10,CommandTheme::PrimaryText);
+    if(!Error.IsEmpty())Label(Error,FVector2D(12,Size.Y-196),10,CommandTheme::Warning);
+    AddMoveControls(Size);
 }
 FReply UCommandTacticalMap::NativeOnMouseWheel(const FGeometry&,const FPointerEvent& E)
-{Zoom=FMath::Clamp(Zoom+(E.GetWheelDelta()>0?1:-1),3,19);Refresh();return FReply::Handled();}
-FReply UCommandTacticalMap::NativeOnMouseButtonDown(const FGeometry&,const FPointerEvent& E)
-{if(E.GetEffectingButton()==EKeys::LeftMouseButton){bDragging=true;return FReply::Handled().CaptureMouse(TakeWidget());}return FReply::Unhandled();}
-FReply UCommandTacticalMap::NativeOnMouseButtonUp(const FGeometry&,const FPointerEvent&)
-{bDragging=false;return FReply::Handled().ReleaseMouseCapture();}
+{SetZoom(Zoom+(E.GetWheelDelta()>0?1:-1));return FReply::Handled();}
+FReply UCommandTacticalMap::NativeOnMouseButtonDown(const FGeometry& G,const FPointerEvent& E)
+{if(MoveControls && MoveControls->GetCachedGeometry().IsUnderLocation(E.GetScreenSpacePosition()))return FReply::Handled();
+    if(E.GetEffectingButton()==EKeys::LeftMouseButton || E.GetEffectingButton()==EKeys::MiddleMouseButton){bDragging=true;bPanning=false;PointerButton=E.GetEffectingButton();PointerStart=PointerLast=G.AbsoluteToLocal(E.GetScreenSpacePosition());return FReply::Handled().CaptureMouse(TakeWidget());}return FReply::Unhandled();}
+FReply UCommandTacticalMap::NativeOnMouseButtonUp(const FGeometry& G,const FPointerEvent& E)
+{if(!bDragging || E.GetEffectingButton()!=PointerButton)return FReply::Unhandled();bDragging=false;
+    if(!bPanning && PointerButton==EKeys::LeftMouseButton && G.IsUnderLocation(E.GetScreenSpacePosition()))PickMoveTarget(G.AbsoluteToLocal(E.GetScreenSpacePosition()));
+    PointerButton=FKey();Refresh();return FReply::Handled().ReleaseMouseCapture();}
 FReply UCommandTacticalMap::NativeOnMouseMove(const FGeometry& G,const FPointerEvent& E)
-{if(!bDragging)return FReply::Unhandled();bFollow=false;Center-=(G.AbsoluteToLocal(E.GetScreenSpacePosition())-G.AbsoluteToLocal(E.GetLastScreenSpacePosition()))/(256.0*FMath::Pow(2.0,Zoom));bCentered=true;Refresh();return FReply::Handled();}
+{if(!bDragging)return FReply::Unhandled();const auto Local=G.AbsoluteToLocal(E.GetScreenSpacePosition());
+    if(!bPanning && FVector2D::Distance(Local,PointerStart)<=5.)return FReply::Handled();bPanning=true;bFollow=false;
+    Center-=(Local-PointerLast)/(256.0*FMath::Pow(2.0,Zoom));Center.Y=FMath::Clamp(Center.Y,0.,1.);PointerLast=Local;bCentered=true;Refresh();return FReply::Handled();}
 
 int32 UCommandTacticalMap::NativePaint(const FPaintArgs& A,const FGeometry& G,const FSlateRect& C,FSlateWindowElementList& Out,int32 L,const FWidgetStyle& S,bool E) const {
     const int Base=Super::NativePaint(A,G,C,Out,L,S,E);using namespace PlanUI;
+    auto PaintOverlays=[&](){
     auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     const auto Origin0=Center*(256.*FMath::Pow(2.,Zoom))-G.GetLocalSize()*.5;
-    for(const auto& D:Registry->GetFriendlyDroneDescriptors()){FDroneTelemetrySnapshot T;if(!Registry->GetTelemetry(D.DroneId,T)||!T.bGpsFix)continue;
-        const auto Pos=Project(T.GpsLatitude,T.GpsLongitude,Zoom)-Origin0;
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    for(const auto& D:Registry->GetFriendlyDroneDescriptors()){FDroneTelemetrySnapshot T;Registry->GetTelemetry(D.DroneId,T);FVector Geographic;
+        if(!MapMove::Position(Registry,Sync->GetPlans(),D.DroneId,Geographic))continue;
+        const auto Pos=Project(Geographic.Y,Geographic.X,Zoom)-Origin0;
         const double Heading=FMath::DegreesToRadians(T.Attitude.Yaw);const FVector2D Dir(FMath::Sin(Heading),-FMath::Cos(Heading)),Side(-Dir.Y,Dir.X);
         TArray<FVector2D> Arrow{Pos+Dir*24.+Side*7.,Pos+Dir*34.,Pos+Dir*24.-Side*7.};
-        FSlateDrawElement::MakeLines(Out,Base+2,G.ToPaintGeometry(),Arrow,ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+        FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),Arrow,ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+    }
+    if(bHasMoveTarget && !MoveMembers.IsEmpty()){
+        FVector Anchor;if(MapMove::Position(Registry,Sync->GetPlans(),MoveMembers[0],Anchor))for(int32 Id:MoveMembers){FVector From;
+            if(!MapMove::Position(Registry,Sync->GetPlans(),Id,From))continue;
+            const FVector To(MoveTarget.X+FMath::UnwindDegrees(From.X-Anchor.X),MoveTarget.Y+From.Y-Anchor.Y,MoveTarget.Z+From.Z-Anchor.Z);
+            const auto A0=Project(From.Y,From.X,Zoom)-Origin0,B0=Project(To.Y,To.X,Zoom)-Origin0;
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),TArray<FVector2D>{A0,B0},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),TArray<FVector2D>{B0-FVector2D(10,0),B0+FVector2D(10,0)},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),TArray<FVector2D>{B0-FVector2D(0,10),B0+FVector2D(0,10)},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+        }
     }
     const auto AllExecutions=Object(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("executions"));
     if(AllExecutions)for(const auto& Item:AllExecutions->Values){const auto X=Item.Value->AsObject();if(Field(X,TEXT("state"))!=TEXT("EXECUTING") && Field(X,TEXT("state"))!=TEXT("PAUSED"))continue;
@@ -162,7 +291,7 @@ int32 UCommandTacticalMap::NativePaint(const FPaintArgs& A,const FGeometry& G,co
         if(Line.Num()>1)FSlateDrawElement::MakeLines(Out,Base+2,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,CommandTheme::Warning,true,2.f);
     }
 
-    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Sync->GetContext(),TEXT("active_security_plan_id")));if(!Plan)return Base;
+    const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),Field(Sync->GetContext(),TEXT("active_security_plan_id")));if(!Plan)return Base+2;
     const auto Origin=Center*(256.*FMath::Pow(2.,Zoom))-G.GetLocalSize()*.5;
     for(const auto& Id:Plan->GetArrayField(TEXT("mission_ids"))){const auto Mission=Find(Sync->GetPlans(),TEXT("missions"),Id->AsString());const auto Route=Find(Sync->GetPlans(),TEXT("paths"),Field(Mission,TEXT("route_id")));if(!Route)continue;
         TArray<FVector2D> Line;for(const auto& V:Route->GetArrayField(TEXT("waypoints"))){const auto P=V->AsObject();Line.Add(Project(P->GetNumberField(TEXT("latitude")),P->GetNumberField(TEXT("longitude")),Zoom)-Origin);}
@@ -170,4 +299,19 @@ int32 UCommandTacticalMap::NativePaint(const FPaintArgs& A,const FGeometry& G,co
         if(Line.Num()>1)FSlateDrawElement::MakeLines(Out,Base+1,G.ToPaintGeometry(),Line,ESlateDrawEffect::None,CommandTheme::Cyan,true,3);
         if(!Line.IsEmpty())FSlateDrawElement::MakeText(Out,Base+2,G.ToPaintGeometry(FVector2D(220,24),FSlateLayoutTransform(Line[0])),User(Field(Plan,TEXT("name"))),FCoreStyle::GetDefaultFontStyle("Bold",12),ESlateDrawEffect::None,CommandTheme::Cyan);
     }return Base+2;
+    };
+    if(MoveControls && MoveControls->GetCachedGeometry().GetLocalSize().Y>1.){
+        // NativePaint runs after child UMG painting. Clip overlays around the
+        // action card so projected routes never cover its text or buttons.
+        const auto& ControlGeometry=MoveControls->GetCachedGeometry();
+        const auto Min=G.AbsoluteToLocal(ControlGeometry.GetAbsolutePosition());
+        const auto Max=G.AbsoluteToLocal(ControlGeometry.LocalToAbsolute(ControlGeometry.GetLocalSize()));
+        const auto Size=G.GetLocalSize();
+        const TArray<FBox2D> Regions{FBox2D(FVector2D::ZeroVector,FVector2D(Size.X,Min.Y)),FBox2D(FVector2D(0,Min.Y),FVector2D(Min.X,Max.Y)),
+            FBox2D(FVector2D(Max.X,Min.Y),FVector2D(Size.X,Max.Y)),FBox2D(FVector2D(0,Max.Y),Size)};
+        for(const auto& Region:Regions)if(Region.GetSize().X>0 && Region.GetSize().Y>0){
+            Out.PushClip(FSlateClippingZone(G.MakeChild(Region.GetSize(),FSlateLayoutTransform(Region.Min))));PaintOverlays();Out.PopClip();
+        }
+    }else PaintOverlays();
+    return Base+2;
 }

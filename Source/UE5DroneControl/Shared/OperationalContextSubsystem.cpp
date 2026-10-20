@@ -274,27 +274,41 @@ void UOperationalContextSubsystem::ApplyPlans(const TSharedPtr<FJsonObject>& Inc
     if(Plans && Next<Previous)Merged->Values=Plans->Values;
     if(Plans && E<OldE) {
         for(const TCHAR* K:{TEXT("execution_version"),TEXT("executions"),TEXT("execution_requests")})if(Plans->HasField(K))Merged->SetField(K,Plans->TryGetField(K));
+        if(Plans->HasField(TEXT("mock_position_baseline")))Merged->SetField(TEXT("mock_position_baseline"),Plans->TryGetField(TEXT("mock_position_baseline")));
+        else Merged->RemoveField(TEXT("mock_position_baseline"));
     } else if(Next<Previous) {
         for(const TCHAR* K:{TEXT("execution_version"),TEXT("executions"),TEXT("execution_requests")})if(Incoming->HasField(K))Merged->SetField(K,Incoming->TryGetField(K));
+        if(Incoming->HasField(TEXT("mock_position_baseline")))Merged->SetField(TEXT("mock_position_baseline"),Incoming->TryGetField(TEXT("mock_position_baseline")));
+        else Merged->RemoveField(TEXT("mock_position_baseline"));
     }
     if(Plans && Plans->GetArrayField(TEXT("events")).Num()>Incoming->GetArrayField(TEXT("events")).Num())Merged->SetArrayField(TEXT("events"),Plans->GetArrayField(TEXT("events")));
     Plans=Merged;
-    if(const auto All=PlanUI::Object(Plans,TEXT("executions"))){
-        TMap<FString,TSharedPtr<FJsonObject>> Latest;
-        for(const auto& Entry:All->Values){const auto Item=Entry.Value->AsObject();const auto UAV=PlanUI::Field(Item,TEXT("uav_id"));const auto Old=Latest.FindRef(UAV);
-            if(!Old || Item->GetNumberField(TEXT("created_at"))>Old->GetNumberField(TEXT("created_at")))Latest.Add(UAV,Item);}
+    {
+        TSet<FString> Uavs;const auto All=PlanUI::Object(Plans,TEXT("executions"));
+        if(All)for(const auto& Entry:All->Values)if(const auto Item=Entry.Value->AsObject())Uavs.Add(PlanUI::Field(Item,TEXT("uav_id")));
+        const auto BaselinePositions=PlanUI::Object(PlanUI::Object(Plans,TEXT("mock_position_baseline")),TEXT("positions"));
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(FString(Entry.Key.ToView()));
         auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();auto* C=Registry->GetCoordinateService().GetObject();
-        for(const auto& Entry:Latest){const auto Item=Entry.Value,P=PlanUI::Object(Item,TEXT("position"));int32 Id=0;LexTryParseString(Id,*Entry.Key.Mid(4));if(!P || Id<=0 || !Item->GetBoolField(TEXT("simulation")))continue;
-            FDroneTelemetrySnapshot T;T.DroneId=Id;T.GpsLatitude=P->GetNumberField(TEXT("latitude"));T.GpsLongitude=P->GetNumberField(TEXT("longitude"));T.GpsAltitude=P->GetNumberField(TEXT("altitude"));
+        for(const auto& UAV:Uavs){
+            const auto Item=ExecutionUI::PositionExecution(Plans,UAV);
+            bool Simulation=false;if(Item && (!Item->TryGetBoolField(TEXT("simulation"),Simulation) || !Simulation))continue;
+            const auto P=Item?PlanUI::Object(Item,TEXT("position")):ExecutionUI::MockBaselinePosition(Plans,UAV);
+            int32 Id=0;LexTryParseString(Id,*UAV.Mid(4));if(!P || Id<=0)continue;
+            FDroneTelemetrySnapshot T;Registry->GetTelemetry(Id,T);
+            // An acknowledged Mock execution may position its simulated marker,
+            // but must never replace received telemetry or invent hardware liveness.
+            if(T.TelemetrySource==TEXT("received"))continue;
+            T.DroneId=Id;T.bSimulation=true;T.TelemetrySource=Item?TEXT("mock_execution"):TEXT("mock_reset");T.bLocalPositionValid=false;
+            T.GpsLatitude=P->GetNumberField(TEXT("latitude"));T.GpsLongitude=P->GetNumberField(TEXT("longitude"));T.GpsAltitude=P->GetNumberField(TEXT("altitude"));
             const auto Route=PlanUI::Object(Item,TEXT("route_snapshot"));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
             if(Route && Route->TryGetArrayField(TEXT("waypoints"),Points) && !Points->IsEmpty()){
                 const int Target=FMath::Clamp(int(Item->GetNumberField(TEXT("completed_waypoints"))),0,Points->Num()-1);const auto To=(*Points)[Target]->AsObject();
                 const double North=To->GetNumberField(TEXT("latitude"))-T.GpsLatitude,East=(To->GetNumberField(TEXT("longitude"))-T.GpsLongitude)*FMath::Cos(FMath::DegreesToRadians(T.GpsLatitude));
                 if(FMath::Abs(North)+FMath::Abs(East)>1e-10)T.Attitude.Yaw=FMath::RadiansToDegrees(FMath::Atan2(East,North));}
-            T.GeographicLocation=FVector(T.GpsLatitude,T.GpsLongitude,T.GpsAltitude);T.Altitude=T.GpsAltitude;T.bGpsFix=true;T.Availability=EDroneAvailability::Online;T.LastUpdateTime=FPlatformTime::Seconds();
+            T.GeographicLocation=FVector(T.GpsLatitude,T.GpsLongitude,T.GpsAltitude);T.Altitude=T.GpsAltitude;T.bGpsFix=true;
             if(C && ICoordinateService::Execute_IsCoordinateSystemReady(C)){
                 T.WorldLocation=ICoordinateService::Execute_GeographicToWorld(C,T.GpsLatitude,T.GpsLongitude,T.GpsAltitude);
-                if(Item->GetBoolField(TEXT("simulation")))if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Id)))Mirror->ApplySimulationPosition(T.WorldLocation);
+                if(auto* Mirror=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(Id)))Mirror->ApplySimulationPosition(T.WorldLocation);
             }
             Registry->UpdateTelemetry(Id,T);
         }

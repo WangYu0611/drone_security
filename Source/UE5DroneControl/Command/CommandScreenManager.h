@@ -35,7 +35,8 @@ public:
     void ToggleGeographicPanel();
     void ShowDroneList(bool bVisible);
     bool IsCursorOverMap() const;
-    void StopCameraFollow() { bFollowSelection=false; bSelectionDirty=false; }
+    void StopCameraFollow() { bFollowSelection=false; bSelectionDirty=false; bInitialMapFocusPending=false; }
+    void CancelStartupFraming() { bInitialMapFocusPending=false; bSelectionDirty=false; }
     void RequestOpenVideo();
     void TogglePathTools();
     void ToggleSpeedPanel();
@@ -54,7 +55,10 @@ private:
     FTimerHandle RefreshTimer;
     bool bSelectionDirty = false;
     bool bFollowSelection = true;
+    bool bInitialMapFocusPending = false;
+    double InitialMapFocusWaitStarted = 0;
     void Refresh();
+    void RefreshFromTimer();
     UFUNCTION() void SelectionChanged(int32 OldId, int32 NewId);
     UFUNCTION() void DroneChanged(int32 Id);
     UFUNCTION() void TelemetryChanged(int32 Id, const FDroneTelemetrySnapshot& Snapshot);

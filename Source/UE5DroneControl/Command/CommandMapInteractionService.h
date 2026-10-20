@@ -19,6 +19,8 @@ class UE5DRONECONTROL_API UCommandMapInteractionService : public UObject
     friend class FP54MapControls;
     friend class FMapPointerInput;
     friend class FRouteEditCameraLockTest;
+    friend class FFleetMapWorkflow;
+    friend class FMapStartupVisibility;
 public:
     static UCommandMapInteractionService* GetOrCreateForWorld(UWorld* World);
     void InitializeWorld(UWorld* World);
@@ -27,6 +29,7 @@ public:
     void SetPathPanel(class USequenceDispatchPanelWidget* Panel);
     UFUNCTION(BlueprintCallable) bool SelectDrone(int32 DroneId);
     UFUNCTION(BlueprintCallable) bool FocusDrone(int32 DroneId);
+    bool FocusFleet(bool WaitForMockFleet=false);
     UFUNCTION(BlueprintCallable) bool FocusLocation(const FVector& WorldLocation);
     bool FocusExecutionBounds(const FBox& Bounds);
     UFUNCTION(BlueprintCallable) bool FocusAlertOnMap(int32 AlertId);
@@ -103,6 +106,7 @@ private:
     void EndPointer(const FKey& Button, const FVector2D& Cursor, bool bOverMap);
     void CancelPointer();
     void AdvanceCamera(float DeltaSeconds);
+    void PanAtViewport(const FVector2D& Delta, int32 Width);
     FVector PlaneOffset(double Distance, const FRotator& Rotation, const FVector2D& RaySlope) const;
     void ZoomAt(float Steps, const FVector2D* RaySlope);
     void ZoomAtScreen(float Steps, const FVector2D& ScreenPosition);

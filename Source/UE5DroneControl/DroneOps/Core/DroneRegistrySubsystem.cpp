@@ -7,6 +7,8 @@
 #include "GameFramework/Pawn.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -16,6 +18,10 @@ namespace
 {
 FString GetDroneRegistrySavePath()
 {
+	FString IsolatedPath;
+	if (FParse::Param(FCommandLine::Get(), TEXT("P55OfflineVisualQA")) &&
+		FParse::Value(FCommandLine::Get(), TEXT("AutomationRegistryFile="), IsolatedPath) && !IsolatedPath.IsEmpty())
+		return FPaths::ConvertRelativePathToFull(IsolatedPath);
 	return FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("DroneRegistry.json"));
 }
 

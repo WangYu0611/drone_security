@@ -1,22 +1,22 @@
 #pragma once
-#include "Command/CommandTheme.h"
+#include "Map/FigmaMapStyle.h"
 
 // MAP fleet-only styling. Shared Command/Video controls keep their existing theme.
 namespace FleetPanelStyle {
 inline void Card(UBorder* W) {
-    W->SetBrush(FSlateRoundedBoxBrush(CommandTheme::Surface,12.f,CommandTheme::Border,1.f));
-    W->SetBrushColor(FLinearColor::White);W->SetPadding(FMargin(20));
+    W->SetBrush(FSlateRoundedBoxBrush(MapUI::Surface,12.f,MapUI::Border,1.f));
+    W->SetBrushColor(FLinearColor::White);W->SetPadding(FMargin(16));
 }
 inline void Button(UButton* W,bool Primary=false,bool Danger=false) {
-    CommandTheme::Button(W,false,false);
-    auto S=W->GetStyle();const auto Accent=Danger?CommandTheme::Critical:CommandTheme::Cyan;
-    S.SetNormal(FSlateRoundedBoxBrush(Primary?Accent:CommandTheme::Elevated,8.f,Primary?Accent:CommandTheme::Border,1.f));
-    S.SetHovered(FSlateRoundedBoxBrush(Primary?Accent*1.1f:CommandTheme::Hover,8.f,Accent,1.f));
-    S.SetPressed(FSlateRoundedBoxBrush(CommandTheme::Selected,8.f,Accent,2.f));
-    S.SetNormalForeground(Primary?CommandTheme::Background:CommandTheme::PrimaryText);
-    S.SetNormalPadding(FMargin(12,10)).SetPressedPadding(FMargin(12,10));W->SetStyle(S);
+    MapUI::Button(W,false,false);
+    auto S=W->GetStyle();const auto Accent=Danger?MapUI::Critical:MapUI::Cyan;
+    S.SetNormal(FSlateRoundedBoxBrush(Primary?Accent:MapUI::Elevated,8.f,Primary?Accent:MapUI::Border,1.f));
+    S.SetHovered(FSlateRoundedBoxBrush(Primary?Accent*1.1f:MapUI::Hover,8.f,Accent,1.f));
+    S.SetPressed(FSlateRoundedBoxBrush(MapUI::Selected,8.f,Accent,2.f));
+    S.SetNormalForeground(Primary?MapUI::Background:MapUI::PrimaryText);
+    S.SetNormalPadding(FMargin(10,7)).SetPressedPadding(FMargin(10,7));W->SetStyle(S);
     if(auto* Label=Cast<UTextBlock>(W->GetContent())){
-        CommandTheme::Text(Label,16,Primary?CommandTheme::Background:Danger?CommandTheme::Critical:CommandTheme::PrimaryText,Primary);
+        MapUI::Text(Label,14,Primary?MapUI::Background:Danger?MapUI::Critical:MapUI::PrimaryText,Primary);
         Label->SetJustification(ETextJustify::Center);
     }
 }

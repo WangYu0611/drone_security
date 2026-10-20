@@ -1,13 +1,30 @@
 #pragma once
 #include "Shared/PlanWidgetSupport.h"
 namespace ExecutionUI {
+inline TSharedPtr<FJsonObject> MockBaselinePosition(const TSharedPtr<FJsonObject>& State,const FString& Uav) {
+    return PlanUI::Find(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions"),Uav);
+}
+// Position ownership is separate from history/route ownership. A startup reset
+// only affects listed aircraft; their earlier executions remain browsable.
+inline TSharedPtr<FJsonObject> PositionExecution(const TSharedPtr<FJsonObject>& State,const FString& Uav) {
+    const bool HasBaseline=MockBaselinePosition(State,Uav).IsValid();
+    int64 Epoch=-1;const auto Baseline=PlanUI::Object(State,TEXT("mock_position_baseline"));
+    if(HasBaseline && !Baseline->TryGetNumberField(TEXT("epoch"),Epoch))return nullptr;
+    double Latest=-1;TSharedPtr<FJsonObject> Result;const auto All=PlanUI::Object(State,TEXT("executions"));
+    if(All)for(const auto& Entry:All->Values){const auto E=Entry.Value->AsObject();
+        if(!E || PlanUI::Field(E,TEXT("uav_id"))!=Uav || PlanUI::Field(E,TEXT("state"))==TEXT("SCHEDULED"))continue;
+        if(HasBaseline){bool Simulation=false;int64 ExecutionEpoch=-1;
+            if(!E->TryGetBoolField(TEXT("simulation"),Simulation) || !Simulation ||
+                !E->TryGetNumberField(TEXT("mock_epoch"),ExecutionEpoch) || ExecutionEpoch!=Epoch)continue;}
+        double Updated=-1;if(!E->TryGetNumberField(TEXT("updated_at"),Updated))E->TryGetNumberField(TEXT("created_at"),Updated);
+        if(Updated>=Latest){Result=E;Latest=Updated;}}
+    return Result;
+}
 // Same position source as SecurityPlanStore::currentPosition for Mock clients.
 inline TSharedPtr<FJsonObject> MockPosition(const TSharedPtr<FJsonObject>& State,const FString& Uav) {
-    auto Position=PlanUI::Object(PlanUI::Find(PlanUI::Object(State,TEXT("mock_execution")),TEXT("uavs"),Uav),TEXT("home_position"));
-    double Latest=-1;const auto All=PlanUI::Object(State,TEXT("executions"));
-    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();double Updated=-1;E->TryGetNumberField(TEXT("updated_at"),Updated);
-        if(PlanUI::Field(E,TEXT("uav_id"))==Uav && PlanUI::Field(E,TEXT("state"))!=TEXT("SCHEDULED") && Updated>=Latest){Position=PlanUI::Object(E,TEXT("position"));Latest=Updated;}}
-    return Position;
+    if(const auto E=PositionExecution(State,Uav))return PlanUI::Object(E,TEXT("position"));
+    if(const auto Baseline=MockBaselinePosition(State,Uav))return Baseline;
+    return PlanUI::Object(PlanUI::Find(PlanUI::Object(State,TEXT("mock_execution")),TEXT("uavs"),Uav),TEXT("home_position"));
 }
 inline bool Active(const TSharedPtr<FJsonObject>& E) {
     const auto S=PlanUI::Field(E,TEXT("state"));

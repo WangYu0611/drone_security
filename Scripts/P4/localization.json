@@ -1515,6 +1515,14 @@
     "Mission aborted · {uav_id}",
     "任务已终止 · {uav_id}"
   ],
+  "Events.MOCK_STARTUP_RESET": [
+    "Mock aircraft returned to the startup formation",
+    "模拟无人机已归位至初始队列"
+  ],
+  "Errors.MOCK_STARTUP_RESET": [
+    "Ended when the Mock session restarted and aircraft returned to formation.",
+    "模拟会话重启，无人机归位排列，原模拟任务已结束。"
+  ],
   "Events.MISSION_COMPLETED": [
     "Mission completed · {uav_id}",
     "任务已完成 · {uav_id}"
@@ -2072,8 +2080,8 @@
     "确认移动 {0} 架"
   ],
   "FleetUX.NeedTarget": [
-    "Click a destination on the map",
-    "请在地图上选择目的地"
+    "Right-click a destination",
+    "请右击地图选择目的地"
   ],
   "FleetUX.Reselect": [
     "Choose again",
@@ -2136,16 +2144,16 @@
     "尚未选择无人机"
   ],
   "FleetUX.SelectHint": [
-    "Drag a box around at least two aircraft.",
-    "拖动框选至少两架无人机。"
+    "Left-click an aircraft or drag to select. Shift adds; Ctrl toggles.",
+    "左键点选或拖框选择无人机；Shift 添加，Ctrl 切换多选。"
   ],
   "FleetUX.SelectionReady": [
-    "Selection ready. Choose a destination next.",
-    "选择已就绪，下一步选择目的地。"
+    "Selection ready. Right-click the map to preview a move.",
+    "选择已就绪，右击地图预览移动。"
   ],
   "FleetUX.PickHint": [
-    "Click the map to choose a destination.",
-    "在地图上点击目的地。"
+    "Right-click a destination. Left-drag to change aircraft.",
+    "右击地图选择目的地；左键拖框可重新选择无人机。"
   ],
   "FleetUX.ReviewHint": [
     "Review height and formation.",
@@ -2366,5 +2374,641 @@
   "Configuration.DeployedReadOnly": [
     "Deployed plan is read only. Create a new version to make changes.",
     "已部署方案只读；需要修改请创建新版本。"
+  ],
+  "Figma.TotalUAV": [
+    "Total UAVs",
+    "无人机总数"
+  ],
+  "Figma.OnlineDevices": [
+    "Online devices",
+    "在线设备"
+  ],
+  "Figma.AlertCenter": [
+    "Alert center",
+    "告警中心"
+  ],
+  "Figma.CurrentTask": [
+    "Current task",
+    "当前任务"
+  ],
+  "Figma.CurrentPlan": [
+    "Current plan",
+    "当前方案"
+  ],
+  "Figma.ViewAll": [
+    "View all ›",
+    "查看全部 ›"
+  ],
+  "Figma.Close": [
+    "Close",
+    "关闭"
+  ],
+  "Figma.Refresh": [
+    "Refresh",
+    "刷新"
+  ],
+  "Figma.RoleHealth": [
+    "{0} {1}",
+    "{0}{1}"
+  ],
+  "Figma.ConfigurationBusy": [
+    "Finish the current configuration before opening the fleet.",
+    "请先完成当前方案配置，再进入无人机页。"
+  ],
+  "Figma.DeviceId": [
+    "Device ID",
+    "设备编号"
+  ],
+  "Figma.DeviceName": [
+    "Device name",
+    "设备名称"
+  ],
+  "Figma.Connection": [
+    "Connection",
+    "连接状态"
+  ],
+  "Figma.Battery": [
+    "Battery",
+    "电量"
+  ],
+  "Figma.Actions": [
+    "Actions",
+    "操作"
+  ],
+  "Figma.TimeUTC": [
+    "Time (UTC)",
+    "时间（UTC）"
+  ],
+  "Figma.AlertType": [
+    "Alert type",
+    "告警类型"
+  ],
+  "Figma.EventType": [
+    "Type",
+    "类型"
+  ],
+  "Figma.Content": [
+    "Content",
+    "内容"
+  ],
+  "Figma.Details": [
+    "View details",
+    "查看详情"
+  ],
+  "Figma.NoDevices": [
+    "No registered devices",
+    "暂无注册设备"
+  ],
+  "Figma.DeviceCount": [
+    "{0} devices · Includes offline devices",
+    "共 {0} 台设备 · 含离线设备"
+  ],
+  "Figma.AlertCount": [
+    "{0} alerts",
+    "共 {0} 条告警"
+  ],
+  "Figma.LogCount": [
+    "{0} records",
+    "共 {0} 条记录"
+  ],
+  "Figma.WaitingPosition": [
+    "Waiting for UAV location data",
+    "等待无人机定位数据"
+  ],
+  "Figma.Plans.EmptyTitle": [
+    "No security plans yet",
+    "暂无安保方案"
+  ],
+  "Figma.Plans.EmptyHint": [
+    "Create a plan to configure devices and mission routes",
+    "创建方案，开始配置设备与任务航线"
+  ],
+  "Figma.Plans.NewPlan": [
+    "New security plan",
+    "新建安保方案"
+  ],
+  "Figma.Plans.NewPlanHint": [
+    "Enter basic information to continue configuring your security plan",
+    "填写基本信息，继续配置安保方案"
+  ],
+  "Figma.Plans.NameHint": [
+    "Enter a plan name",
+    "请输入方案名称"
+  ],
+  "Figma.Plans.DescriptionHint": [
+    "Enter a plan description",
+    "请输入方案描述"
+  ],
+  "Figma.Plans.Flow": [
+    "Plan workflow: Create / Configure devices / Edit routes / Review / Deploy",
+    "方案流程：新建方案 / 配置设备 / 编辑航线 / 检查 / 部署"
+  ],
+  "Figma.Fleet.Title": [
+    "UAVs",
+    "无人机"
+  ],
+  "Figma.Fleet.List": [
+    "UAV list",
+    "无人机列表"
+  ],
+  "Figma.Fleet.Empty": [
+    "No registered UAVs",
+    "暂无已注册无人机"
+  ],
+  "Figma.Fleet.Telemetry": [
+    "Current UAV telemetry",
+    "当前无人机态势"
+  ],
+  "Figma.Fleet.Altitude": [
+    "Altitude",
+    "高度"
+  ],
+  "Figma.Fleet.Speed": [
+    "Speed",
+    "速度"
+  ],
+  "Figma.Fleet.Battery": [
+    "Battery",
+    "电量"
+  ],
+  "Figma.Fleet.Link": [
+    "Link",
+    "连接"
+  ],
+  "Figma.Fleet.Task": [
+    "Task",
+    "任务"
+  ],
+  "Figma.Fleet.Group": [
+    "UAV group control",
+    "无人机组控制"
+  ],
+  "Figma.Fleet.Video": [
+    "Video monitor",
+    "视频监控"
+  ],
+  "Figma.Fleet.NoVideo": [
+    "No video signal",
+    "暂无视频信号"
+  ],
+  "Figma.Fleet.VideoHint": [
+    "Choose a UAV, then open it in the Video client",
+    "选择设备，点击右上角在视频端查看"
+  ],
+  "Figma.Fleet.VideoTarget": [
+    "Video client target: {0}",
+    "视频端目标：{0}"
+  ],
+  "Figma.Fleet.Join": [
+    "Add to group",
+    "加入编组"
+  ],
+  "Figma.Fleet.SetPrimary": [
+    "Set primary",
+    "设为主选"
+  ],
+  "Figma.Fleet.Label": [
+    "Edit label",
+    "标签设置"
+  ],
+  "Figma.Fleet.RowDetail": [
+    "Battery {0}  ·  Task {1}",
+    "电量 {0}  ·  任务 {1}"
+  ],
+  "Figma.Fleet.NoSelection": [
+    "No UAV selected",
+    "未选择无人机"
+  ],
+  "Figma.Fleet.LabelTitle": [
+    "Edit UAV label",
+    "编辑飞机顶部标签"
+  ],
+  "Figma.Fleet.LabelName": [
+    "Display name",
+    "显示名称"
+  ],
+  "Figma.Fleet.LabelColor": [
+    "Label color",
+    "显示颜色"
+  ],
+  "Figma.Fleet.LabelSize": [
+    "Font size",
+    "字体大小"
+  ],
+  "Figma.Fleet.LabelScope": [
+    "Only affects the UAV label",
+    "仅影响飞机标签"
+  ],
+  "Figma.Fleet.LabelPreview": [
+    "Label preview",
+    "标签预览"
+  ],
+  "Figma.Fleet.Confirm": [
+    "Confirm",
+    "确认"
+  ],
+  "Figma.Fleet.Task.Assembling": [
+    "Assembling",
+    "集结中"
+  ],
+  "Figma.Fleet.Task.Moving": [
+    "Moving",
+    "移动中"
+  ],
+  "Figma.Fleet.Task.Scouting": [
+    "Scouting",
+    "侦察中"
+  ],
+  "Figma.Fleet.Task.Patrolling": [
+    "Patrolling",
+    "巡逻中"
+  ],
+  "Figma.Fleet.Task.Attacking": [
+    "Attacking",
+    "攻击中"
+  ],
+  "Figma.Fleet.Task.Paused": [
+    "Paused",
+    "暂停"
+  ],
+  "Figma.Fleet.Task.Avoiding": [
+    "Avoiding",
+    "避障中"
+  ],
+  "Figma.Fleet.Task.Completed": [
+    "Completed",
+    "已完成"
+  ],
+  "Figma.Fleet.Task.Error": [
+    "Error",
+    "异常"
+  ],
+  "Figma.Fleet.VideoOffline": [
+    "This UAV is offline. Check its connection.",
+    "当前设备离线，请检查连接"
+  ],
+  "Figma.Fleet.VideoClient": [
+    "View in Video client",
+    "在视频端查看"
+  ],
+  "Figma.Fleet.VideoTargetHint": [
+    "Current target: {0}. Use the upper-right button to view it in the Video client.",
+    "当前目标：{0}；使用右上角按钮在视频端查看"
+  ],
+  "Figma.Fleet.SelectionSuperseded": [
+    "Selection changed in another operation. Please retry.",
+    "选择已由其他操作更新，请重试"
+  ],
+  "Overview.ActiveTasks": [
+    "Active tasks ({0})",
+    "正在执行的任务（{0}）"
+  ],
+  "Overview.ViewTask": [
+    "View task",
+    "查看任务"
+  ],
+  "Overview.FreeMove": [
+    "Free movement",
+    "自由移动"
+  ],
+  "Overview.TaskState": [
+    "{0} · {1} · {2}",
+    "{0} · {1} · {2}"
+  ],
+  "Overview.TaskMembers": [
+    "{0} · {1}",
+    "{0} · {1}"
+  ],
+  "Plan.Tasks.Title": [
+    "Tasks in this plan",
+    "方案内任务"
+  ],
+  "Plan.Tasks.Hint": [
+    "Choose a task to edit or execute. Checking and deploying a plan does not start a task.",
+    "选择任务进行编辑或执行。检查与部署方案不会自动启动任务。"
+  ],
+  "Plan.Tasks.Assignment": [
+    "UAVs: {0} · Waypoints: {1}",
+    "无人机：{0} · 航点：{1}"
+  ],
+  "Plan.Tasks.State": [
+    "Configuration: {0} · Execution: {1}",
+    "配置：{0} · 执行：{1}"
+  ],
+  "Plan.Tasks.Select": [
+    "Select task",
+    "选择任务"
+  ],
+  "Plan.Tasks.Selected": [
+    "Selected",
+    "当前任务"
+  ],
+  "Plan.Tasks.Edit": [
+    "Edit task",
+    "编辑任务"
+  ],
+  "Plan.Tasks.EditVersion": [
+    "Edit in new version",
+    "新版本中编辑"
+  ],
+  "Plan.Tasks.Execute": [
+    "Execute task",
+    "执行任务"
+  ],
+  "Plan.Tasks.CheckDeploy": [
+    "Check and deploy",
+    "检查并部署"
+  ],
+  "Plan.Tasks.ViewExecution": [
+    "View execution",
+    "查看执行"
+  ],
+  "MapMove.Title": [
+    "Map movement",
+    "地图移动"
+  ],
+  "MapMove.SelectAircraft": [
+    "Select at least one aircraft to move.",
+    "请先选择至少一架无人机。"
+  ],
+  "MapMove.SelectHint": [
+    "Select an aircraft icon. Shift adds aircraft; Ctrl toggles selection.",
+    "点击无人机图标选择；Shift 添加，Ctrl 切换多选。"
+  ],
+  "MapMove.ClickHint": [
+    "{0} selected · Click a map destination to preview. Drag to pan; wheel to zoom.",
+    "已选 {0} 架 · 点击地图位置预览移动；拖动平移，滚轮缩放。"
+  ],
+  "MapMove.Preview": [
+    "Move {0} aircraft to {1}, {2} · altitude {3} m. Confirm to send; click the map to choose again.",
+    "移动 {0} 架至 {1}，{2} · 高度 {3} 米。确认后发送；可点击地图重新选点。"
+  ],
+  "MapMove.Confirm": [
+    "Confirm movement",
+    "确认移动"
+  ],
+  "MapMove.EditCameraHint": [
+    "Edit view: middle drag to pan, right drag to orbit in 3D, wheel to zoom. Left mouse edits waypoints.",
+    "编辑视角：中键拖动平移，3D 下右键拖动旋转，滚轮缩放；左键编辑航点。"
+  ],
+  "MapMove.MockMarker": [
+    "{0} · Mock",
+    "{0} · 模拟"
+  ],
+  "Figma.Header.BackendOnline": [
+    "Backend online",
+    "后端在线"
+  ],
+  "Figma.Header.BackendOffline": [
+    "Backend offline",
+    "后端离线"
+  ],
+  "Figma.Header.Synced": [
+    "Synchronized",
+    "同步已连接"
+  ],
+  "Figma.Header.SyncPending": [
+    "Sync pending",
+    "同步未就绪"
+  ],
+  "VideoUI.Title": [
+    "Video intelligence",
+    "视频情报"
+  ],
+  "VideoUI.Single": [
+    "One active player · Other slots reserved · AI not connected",
+    "单个活动播放器 · 其他视频格位为预留 · 未连接AI后端"
+  ],
+  "VideoUI.Aircraft": [
+    "Aircraft",
+    "无人机列表"
+  ],
+  "VideoUI.SelectSource": [
+    "Select a video target",
+    "选择视频目标"
+  ],
+  "VideoUI.ModelDisclaimer": [
+    "Visual presets do not represent aircraft specifications.",
+    "外观预设不代表飞机规格；注册表未提供机型。"
+  ],
+  "VideoUI.Primary": [
+    "Primary video",
+    "主视频"
+  ],
+  "VideoUI.Current": [
+    "Video target",
+    "视频目标"
+  ],
+  "VideoUI.Detection": [
+    "AI detection",
+    "智能检测"
+  ],
+  "VideoUI.People": [
+    "People",
+    "人员"
+  ],
+  "VideoUI.Vehicles": [
+    "Vehicles",
+    "车辆"
+  ],
+  "VideoUI.Drones": [
+    "UAVs",
+    "无人机"
+  ],
+  "VideoUI.Behavior": [
+    "Abnormal behavior",
+    "异常行为"
+  ],
+  "VideoUI.Other": [
+    "Other targets",
+    "其他目标"
+  ],
+  "VideoUI.Alerts": [
+    "Recent alerts",
+    "最近告警"
+  ],
+  "VideoUI.NoAlerts": [
+    "No active alerts",
+    "无活动告警"
+  ],
+  "VideoUI.AlertSession": [
+    "Received alerts · This session",
+    "本会话收到的告警"
+  ],
+  "VideoUI.System": [
+    "System status",
+    "系统状态"
+  ],
+  "VideoUI.Online": [
+    "Online aircraft",
+    "在线无人机"
+  ],
+  "VideoUI.AI": [
+    "AI engine",
+    "AI引擎"
+  ],
+  "VideoUI.Storage": [
+    "Storage",
+    "存储"
+  ],
+  "VideoUI.Network": [
+    "Backend",
+    "后端网络"
+  ],
+  "VideoUI.NotConnected": [
+    "Not connected",
+    "未接入"
+  ],
+  "VideoUI.Unavailable": [
+    "Unavailable",
+    "暂无"
+  ],
+  "VideoUI.Four": [
+    "4 slots",
+    "4格布局"
+  ],
+  "VideoUI.Six": [
+    "6 slots",
+    "6格布局"
+  ],
+  "VideoUI.Focus": [
+    "Focus",
+    "聚焦布局"
+  ],
+  "VideoUI.SetActive": [
+    "Select this UAV",
+    "设为当前无人机"
+  ],
+  "VideoUI.SetActiveHint": [
+    "Explicitly select this UAV in the shared context. This action does not change the video target.",
+    "明确将此无人机设为共享选择；该操作不改变视频目标。"
+  ],
+  "VideoUI.ActiveSelection": [
+    "Selected: {0}",
+    "当前选择：{0}"
+  ],
+  "VideoUI.Retry": [
+    "Retry",
+    "重试"
+  ],
+  "VideoUI.Record": [
+    "Record",
+    "录像"
+  ],
+  "VideoUI.Playback": [
+    "Playback",
+    "回放"
+  ],
+  "VideoUI.Screenshot": [
+    "Capture",
+    "截图"
+  ],
+  "VideoUI.Filter": [
+    "Filter",
+    "告警筛选"
+  ],
+  "VideoUI.Unsupported": [
+    "This capability is not connected yet.",
+    "该能力尚未接入，当前不可用。"
+  ],
+  "VideoUI.Reserved": [
+    "Reserved slot",
+    "预留格位"
+  ],
+  "VideoUI.Unassigned": [
+    "No UAV assigned",
+    "未分配无人机"
+  ],
+  "VideoUI.ModelUnavailable": [
+    "Model: unavailable",
+    "机型：暂无"
+  ],
+  "VideoUI.NoSource": [
+    "No video source",
+    "无视频源"
+  ],
+  "VideoUI.InactiveSource": [
+    "Click to view",
+    "点击切换播放"
+  ],
+  "VideoUI.SourceSet": [
+    "Source configured",
+    "已配置视频源"
+  ],
+  "VideoUI.NoTarget": [
+    "No video target",
+    "未选择视频目标"
+  ],
+  "VideoUI.ConfigureSource": [
+    "Configure a video source for this UAV",
+    "请为此无人机配置视频源"
+  ],
+  "VideoUI.WaitingFrames": [
+    "Waiting for decoded video frames",
+    "等待解码视频帧"
+  ],
+  "VideoUI.RetryHint": [
+    "Reconnect the current video source",
+    "重新连接当前视频源"
+  ],
+  "VideoUI.RetryUnavailable": [
+    "Select a UAV with a configured video source to retry.",
+    "选择已配置视频源的无人机后可重试。"
+  ],
+  "VideoUI.NA": [
+    "N/A",
+    "暂无"
+  ],
+  "MapUI.Operations": [
+    "Map operations",
+    "地图作业"
+  ],
+  "MapUI.MissionRoute": [
+    "Mission route",
+    "任务航线"
+  ],
+  "MapUI.ViewVideo": [
+    "View video",
+    "查看视频"
+  ],
+  "MapUI.CurrentDevice": [
+    "Current device",
+    "当前控制设备"
+  ],
+  "MapUI.SelectDevice": [
+    "Select a device",
+    "选择设备"
+  ],
+  "MapUI.CameraHint": [
+    "Middle: pan · Right: orbit · Wheel: zoom",
+    "中键平移 · 右键旋转 · 滚轮缩放"
+  ],
+  "MapUI.FleetPointerHint": [
+    "Left: select · Right-click: target · Middle: pan",
+    "左键框选 · 右击选点 · 中键平移"
+  ],
+  "MapUI.FleetPointerHelp": [
+    "Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom.",
+    "左键点选或框选无人机；右键单击预览目的地，确认后执行。中键拖动平移；右键拖动在 2D 中平移、3D 中旋转；滚轮缩放。"
+  ],
+  "MapUI.RouteEditor": [
+    "Route editor",
+    "航线编辑"
+  ],
+  "MapUI.DefaultSpeed": [
+    "Default flight speed",
+    "默认飞行速度"
+  ],
+  "MapUI.DefaultSpeedHint": [
+    "Used for newly added waypoints.",
+    "用于之后添加的新航点。"
+  ],
+  "MapUI.SpeedRange": [
+    "m/s · 0 = unlimited, or 0.5–15",
+    "米/秒 · 0不限速，或0.5–15"
+  ],
+  "MapUI.SpeedInvalid": [
+    "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s.",
+    "请输入0（不限速）或0.5至15米/秒。"
   ]
 }

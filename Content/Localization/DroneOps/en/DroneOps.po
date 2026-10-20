@@ -1519,6 +1519,14 @@ msgctxt "DroneOps,Events.MISSION_ABORTED"
 msgid "Mission aborted · {uav_id}"
 msgstr "Mission aborted · {uav_id}"
 
+msgctxt "DroneOps,Events.MOCK_STARTUP_RESET"
+msgid "Mock aircraft returned to the startup formation"
+msgstr "Mock aircraft returned to the startup formation"
+
+msgctxt "DroneOps,Errors.MOCK_STARTUP_RESET"
+msgid "Ended when the Mock session restarted and aircraft returned to formation."
+msgstr "Ended when the Mock session restarted and aircraft returned to formation."
+
 msgctxt "DroneOps,Events.MISSION_COMPLETED"
 msgid "Mission completed · {uav_id}"
 msgstr "Mission completed · {uav_id}"
@@ -2076,8 +2084,8 @@ msgid "Move {0} aircraft"
 msgstr "Move {0} aircraft"
 
 msgctxt "DroneOps,FleetUX.NeedTarget"
-msgid "Click a destination on the map"
-msgstr "Click a destination on the map"
+msgid "Right-click a destination"
+msgstr "Right-click a destination"
 
 msgctxt "DroneOps,FleetUX.Reselect"
 msgid "Choose again"
@@ -2140,16 +2148,16 @@ msgid "No aircraft selected"
 msgstr "No aircraft selected"
 
 msgctxt "DroneOps,FleetUX.SelectHint"
-msgid "Drag a box around at least two aircraft."
-msgstr "Drag a box around at least two aircraft."
+msgid "Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."
+msgstr "Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."
 
 msgctxt "DroneOps,FleetUX.SelectionReady"
-msgid "Selection ready. Choose a destination next."
-msgstr "Selection ready. Choose a destination next."
+msgid "Selection ready. Right-click the map to preview a move."
+msgstr "Selection ready. Right-click the map to preview a move."
 
 msgctxt "DroneOps,FleetUX.PickHint"
-msgid "Click the map to choose a destination."
-msgstr "Click the map to choose a destination."
+msgid "Right-click a destination. Left-drag to change aircraft."
+msgstr "Right-click a destination. Left-drag to change aircraft."
 
 msgctxt "DroneOps,FleetUX.ReviewHint"
 msgid "Review height and formation."
@@ -2370,3 +2378,639 @@ msgstr "Editing the route for {0}. Finish the route to continue in Command."
 msgctxt "DroneOps,Configuration.DeployedReadOnly"
 msgid "Deployed plan is read only. Create a new version to make changes."
 msgstr "Deployed plan is read only. Create a new version to make changes."
+
+msgctxt "DroneOps,Figma.TotalUAV"
+msgid "Total UAVs"
+msgstr "Total UAVs"
+
+msgctxt "DroneOps,Figma.OnlineDevices"
+msgid "Online devices"
+msgstr "Online devices"
+
+msgctxt "DroneOps,Figma.AlertCenter"
+msgid "Alert center"
+msgstr "Alert center"
+
+msgctxt "DroneOps,Figma.CurrentTask"
+msgid "Current task"
+msgstr "Current task"
+
+msgctxt "DroneOps,Figma.CurrentPlan"
+msgid "Current plan"
+msgstr "Current plan"
+
+msgctxt "DroneOps,Figma.ViewAll"
+msgid "View all ›"
+msgstr "View all ›"
+
+msgctxt "DroneOps,Figma.Close"
+msgid "Close"
+msgstr "Close"
+
+msgctxt "DroneOps,Figma.Refresh"
+msgid "Refresh"
+msgstr "Refresh"
+
+msgctxt "DroneOps,Figma.RoleHealth"
+msgid "{0} {1}"
+msgstr "{0} {1}"
+
+msgctxt "DroneOps,Figma.ConfigurationBusy"
+msgid "Finish the current configuration before opening the fleet."
+msgstr "Finish the current configuration before opening the fleet."
+
+msgctxt "DroneOps,Figma.DeviceId"
+msgid "Device ID"
+msgstr "Device ID"
+
+msgctxt "DroneOps,Figma.DeviceName"
+msgid "Device name"
+msgstr "Device name"
+
+msgctxt "DroneOps,Figma.Connection"
+msgid "Connection"
+msgstr "Connection"
+
+msgctxt "DroneOps,Figma.Battery"
+msgid "Battery"
+msgstr "Battery"
+
+msgctxt "DroneOps,Figma.Actions"
+msgid "Actions"
+msgstr "Actions"
+
+msgctxt "DroneOps,Figma.TimeUTC"
+msgid "Time (UTC)"
+msgstr "Time (UTC)"
+
+msgctxt "DroneOps,Figma.AlertType"
+msgid "Alert type"
+msgstr "Alert type"
+
+msgctxt "DroneOps,Figma.EventType"
+msgid "Type"
+msgstr "Type"
+
+msgctxt "DroneOps,Figma.Content"
+msgid "Content"
+msgstr "Content"
+
+msgctxt "DroneOps,Figma.Details"
+msgid "View details"
+msgstr "View details"
+
+msgctxt "DroneOps,Figma.NoDevices"
+msgid "No registered devices"
+msgstr "No registered devices"
+
+msgctxt "DroneOps,Figma.DeviceCount"
+msgid "{0} devices · Includes offline devices"
+msgstr "{0} devices · Includes offline devices"
+
+msgctxt "DroneOps,Figma.AlertCount"
+msgid "{0} alerts"
+msgstr "{0} alerts"
+
+msgctxt "DroneOps,Figma.LogCount"
+msgid "{0} records"
+msgstr "{0} records"
+
+msgctxt "DroneOps,Figma.WaitingPosition"
+msgid "Waiting for UAV location data"
+msgstr "Waiting for UAV location data"
+
+msgctxt "DroneOps,Figma.Plans.EmptyTitle"
+msgid "No security plans yet"
+msgstr "No security plans yet"
+
+msgctxt "DroneOps,Figma.Plans.EmptyHint"
+msgid "Create a plan to configure devices and mission routes"
+msgstr "Create a plan to configure devices and mission routes"
+
+msgctxt "DroneOps,Figma.Plans.NewPlan"
+msgid "New security plan"
+msgstr "New security plan"
+
+msgctxt "DroneOps,Figma.Plans.NewPlanHint"
+msgid "Enter basic information to continue configuring your security plan"
+msgstr "Enter basic information to continue configuring your security plan"
+
+msgctxt "DroneOps,Figma.Plans.NameHint"
+msgid "Enter a plan name"
+msgstr "Enter a plan name"
+
+msgctxt "DroneOps,Figma.Plans.DescriptionHint"
+msgid "Enter a plan description"
+msgstr "Enter a plan description"
+
+msgctxt "DroneOps,Figma.Plans.Flow"
+msgid "Plan workflow: Create / Configure devices / Edit routes / Review / Deploy"
+msgstr "Plan workflow: Create / Configure devices / Edit routes / Review / Deploy"
+
+msgctxt "DroneOps,Figma.Fleet.Title"
+msgid "UAVs"
+msgstr "UAVs"
+
+msgctxt "DroneOps,Figma.Fleet.List"
+msgid "UAV list"
+msgstr "UAV list"
+
+msgctxt "DroneOps,Figma.Fleet.Empty"
+msgid "No registered UAVs"
+msgstr "No registered UAVs"
+
+msgctxt "DroneOps,Figma.Fleet.Telemetry"
+msgid "Current UAV telemetry"
+msgstr "Current UAV telemetry"
+
+msgctxt "DroneOps,Figma.Fleet.Altitude"
+msgid "Altitude"
+msgstr "Altitude"
+
+msgctxt "DroneOps,Figma.Fleet.Speed"
+msgid "Speed"
+msgstr "Speed"
+
+msgctxt "DroneOps,Figma.Fleet.Battery"
+msgid "Battery"
+msgstr "Battery"
+
+msgctxt "DroneOps,Figma.Fleet.Link"
+msgid "Link"
+msgstr "Link"
+
+msgctxt "DroneOps,Figma.Fleet.Task"
+msgid "Task"
+msgstr "Task"
+
+msgctxt "DroneOps,Figma.Fleet.Group"
+msgid "UAV group control"
+msgstr "UAV group control"
+
+msgctxt "DroneOps,Figma.Fleet.Video"
+msgid "Video monitor"
+msgstr "Video monitor"
+
+msgctxt "DroneOps,Figma.Fleet.NoVideo"
+msgid "No video signal"
+msgstr "No video signal"
+
+msgctxt "DroneOps,Figma.Fleet.VideoHint"
+msgid "Choose a UAV, then open it in the Video client"
+msgstr "Choose a UAV, then open it in the Video client"
+
+msgctxt "DroneOps,Figma.Fleet.VideoTarget"
+msgid "Video client target: {0}"
+msgstr "Video client target: {0}"
+
+msgctxt "DroneOps,Figma.Fleet.Join"
+msgid "Add to group"
+msgstr "Add to group"
+
+msgctxt "DroneOps,Figma.Fleet.SetPrimary"
+msgid "Set primary"
+msgstr "Set primary"
+
+msgctxt "DroneOps,Figma.Fleet.Label"
+msgid "Edit label"
+msgstr "Edit label"
+
+msgctxt "DroneOps,Figma.Fleet.RowDetail"
+msgid "Battery {0}  ·  Task {1}"
+msgstr "Battery {0}  ·  Task {1}"
+
+msgctxt "DroneOps,Figma.Fleet.NoSelection"
+msgid "No UAV selected"
+msgstr "No UAV selected"
+
+msgctxt "DroneOps,Figma.Fleet.LabelTitle"
+msgid "Edit UAV label"
+msgstr "Edit UAV label"
+
+msgctxt "DroneOps,Figma.Fleet.LabelName"
+msgid "Display name"
+msgstr "Display name"
+
+msgctxt "DroneOps,Figma.Fleet.LabelColor"
+msgid "Label color"
+msgstr "Label color"
+
+msgctxt "DroneOps,Figma.Fleet.LabelSize"
+msgid "Font size"
+msgstr "Font size"
+
+msgctxt "DroneOps,Figma.Fleet.LabelScope"
+msgid "Only affects the UAV label"
+msgstr "Only affects the UAV label"
+
+msgctxt "DroneOps,Figma.Fleet.LabelPreview"
+msgid "Label preview"
+msgstr "Label preview"
+
+msgctxt "DroneOps,Figma.Fleet.Confirm"
+msgid "Confirm"
+msgstr "Confirm"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Assembling"
+msgid "Assembling"
+msgstr "Assembling"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Moving"
+msgid "Moving"
+msgstr "Moving"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Scouting"
+msgid "Scouting"
+msgstr "Scouting"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Patrolling"
+msgid "Patrolling"
+msgstr "Patrolling"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Attacking"
+msgid "Attacking"
+msgstr "Attacking"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Paused"
+msgid "Paused"
+msgstr "Paused"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Avoiding"
+msgid "Avoiding"
+msgstr "Avoiding"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Completed"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "DroneOps,Figma.Fleet.Task.Error"
+msgid "Error"
+msgstr "Error"
+
+msgctxt "DroneOps,Figma.Fleet.VideoOffline"
+msgid "This UAV is offline. Check its connection."
+msgstr "This UAV is offline. Check its connection."
+
+msgctxt "DroneOps,Figma.Fleet.VideoClient"
+msgid "View in Video client"
+msgstr "View in Video client"
+
+msgctxt "DroneOps,Figma.Fleet.VideoTargetHint"
+msgid "Current target: {0}. Use the upper-right button to view it in the Video client."
+msgstr "Current target: {0}. Use the upper-right button to view it in the Video client."
+
+msgctxt "DroneOps,Figma.Fleet.SelectionSuperseded"
+msgid "Selection changed in another operation. Please retry."
+msgstr "Selection changed in another operation. Please retry."
+
+msgctxt "DroneOps,Overview.ActiveTasks"
+msgid "Active tasks ({0})"
+msgstr "Active tasks ({0})"
+
+msgctxt "DroneOps,Overview.ViewTask"
+msgid "View task"
+msgstr "View task"
+
+msgctxt "DroneOps,Overview.FreeMove"
+msgid "Free movement"
+msgstr "Free movement"
+
+msgctxt "DroneOps,Overview.TaskState"
+msgid "{0} · {1} · {2}"
+msgstr "{0} · {1} · {2}"
+
+msgctxt "DroneOps,Overview.TaskMembers"
+msgid "{0} · {1}"
+msgstr "{0} · {1}"
+
+msgctxt "DroneOps,Plan.Tasks.Title"
+msgid "Tasks in this plan"
+msgstr "Tasks in this plan"
+
+msgctxt "DroneOps,Plan.Tasks.Hint"
+msgid "Choose a task to edit or execute. Checking and deploying a plan does not start a task."
+msgstr "Choose a task to edit or execute. Checking and deploying a plan does not start a task."
+
+msgctxt "DroneOps,Plan.Tasks.Assignment"
+msgid "UAVs: {0} · Waypoints: {1}"
+msgstr "UAVs: {0} · Waypoints: {1}"
+
+msgctxt "DroneOps,Plan.Tasks.State"
+msgid "Configuration: {0} · Execution: {1}"
+msgstr "Configuration: {0} · Execution: {1}"
+
+msgctxt "DroneOps,Plan.Tasks.Select"
+msgid "Select task"
+msgstr "Select task"
+
+msgctxt "DroneOps,Plan.Tasks.Selected"
+msgid "Selected"
+msgstr "Selected"
+
+msgctxt "DroneOps,Plan.Tasks.Edit"
+msgid "Edit task"
+msgstr "Edit task"
+
+msgctxt "DroneOps,Plan.Tasks.EditVersion"
+msgid "Edit in new version"
+msgstr "Edit in new version"
+
+msgctxt "DroneOps,Plan.Tasks.Execute"
+msgid "Execute task"
+msgstr "Execute task"
+
+msgctxt "DroneOps,Plan.Tasks.CheckDeploy"
+msgid "Check and deploy"
+msgstr "Check and deploy"
+
+msgctxt "DroneOps,Plan.Tasks.ViewExecution"
+msgid "View execution"
+msgstr "View execution"
+
+msgctxt "DroneOps,MapMove.Title"
+msgid "Map movement"
+msgstr "Map movement"
+
+msgctxt "DroneOps,MapMove.SelectAircraft"
+msgid "Select at least one aircraft to move."
+msgstr "Select at least one aircraft to move."
+
+msgctxt "DroneOps,MapMove.SelectHint"
+msgid "Select an aircraft icon. Shift adds aircraft; Ctrl toggles selection."
+msgstr "Select an aircraft icon. Shift adds aircraft; Ctrl toggles selection."
+
+msgctxt "DroneOps,MapMove.ClickHint"
+msgid "{0} selected · Click a map destination to preview. Drag to pan; wheel to zoom."
+msgstr "{0} selected · Click a map destination to preview. Drag to pan; wheel to zoom."
+
+msgctxt "DroneOps,MapMove.Preview"
+msgid "Move {0} aircraft to {1}, {2} · altitude {3} m. Confirm to send; click the map to choose again."
+msgstr "Move {0} aircraft to {1}, {2} · altitude {3} m. Confirm to send; click the map to choose again."
+
+msgctxt "DroneOps,MapMove.Confirm"
+msgid "Confirm movement"
+msgstr "Confirm movement"
+
+msgctxt "DroneOps,MapMove.EditCameraHint"
+msgid "Edit view: middle drag to pan, right drag to orbit in 3D, wheel to zoom. Left mouse edits waypoints."
+msgstr "Edit view: middle drag to pan, right drag to orbit in 3D, wheel to zoom. Left mouse edits waypoints."
+
+msgctxt "DroneOps,MapMove.MockMarker"
+msgid "{0} · Mock"
+msgstr "{0} · Mock"
+
+msgctxt "DroneOps,Figma.Header.BackendOnline"
+msgid "Backend online"
+msgstr "Backend online"
+
+msgctxt "DroneOps,Figma.Header.BackendOffline"
+msgid "Backend offline"
+msgstr "Backend offline"
+
+msgctxt "DroneOps,Figma.Header.Synced"
+msgid "Synchronized"
+msgstr "Synchronized"
+
+msgctxt "DroneOps,Figma.Header.SyncPending"
+msgid "Sync pending"
+msgstr "Sync pending"
+
+msgctxt "DroneOps,VideoUI.Title"
+msgid "Video intelligence"
+msgstr "Video intelligence"
+
+msgctxt "DroneOps,VideoUI.Single"
+msgid "One active player · Other slots reserved · AI not connected"
+msgstr "One active player · Other slots reserved · AI not connected"
+
+msgctxt "DroneOps,VideoUI.Aircraft"
+msgid "Aircraft"
+msgstr "Aircraft"
+
+msgctxt "DroneOps,VideoUI.SelectSource"
+msgid "Select a video target"
+msgstr "Select a video target"
+
+msgctxt "DroneOps,VideoUI.ModelDisclaimer"
+msgid "Visual presets do not represent aircraft specifications."
+msgstr "Visual presets do not represent aircraft specifications."
+
+msgctxt "DroneOps,VideoUI.Primary"
+msgid "Primary video"
+msgstr "Primary video"
+
+msgctxt "DroneOps,VideoUI.Current"
+msgid "Video target"
+msgstr "Video target"
+
+msgctxt "DroneOps,VideoUI.Detection"
+msgid "AI detection"
+msgstr "AI detection"
+
+msgctxt "DroneOps,VideoUI.People"
+msgid "People"
+msgstr "People"
+
+msgctxt "DroneOps,VideoUI.Vehicles"
+msgid "Vehicles"
+msgstr "Vehicles"
+
+msgctxt "DroneOps,VideoUI.Drones"
+msgid "UAVs"
+msgstr "UAVs"
+
+msgctxt "DroneOps,VideoUI.Behavior"
+msgid "Abnormal behavior"
+msgstr "Abnormal behavior"
+
+msgctxt "DroneOps,VideoUI.Other"
+msgid "Other targets"
+msgstr "Other targets"
+
+msgctxt "DroneOps,VideoUI.Alerts"
+msgid "Recent alerts"
+msgstr "Recent alerts"
+
+msgctxt "DroneOps,VideoUI.NoAlerts"
+msgid "No active alerts"
+msgstr "No active alerts"
+
+msgctxt "DroneOps,VideoUI.AlertSession"
+msgid "Received alerts · This session"
+msgstr "Received alerts · This session"
+
+msgctxt "DroneOps,VideoUI.System"
+msgid "System status"
+msgstr "System status"
+
+msgctxt "DroneOps,VideoUI.Online"
+msgid "Online aircraft"
+msgstr "Online aircraft"
+
+msgctxt "DroneOps,VideoUI.AI"
+msgid "AI engine"
+msgstr "AI engine"
+
+msgctxt "DroneOps,VideoUI.Storage"
+msgid "Storage"
+msgstr "Storage"
+
+msgctxt "DroneOps,VideoUI.Network"
+msgid "Backend"
+msgstr "Backend"
+
+msgctxt "DroneOps,VideoUI.NotConnected"
+msgid "Not connected"
+msgstr "Not connected"
+
+msgctxt "DroneOps,VideoUI.Unavailable"
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgctxt "DroneOps,VideoUI.Four"
+msgid "4 slots"
+msgstr "4 slots"
+
+msgctxt "DroneOps,VideoUI.Six"
+msgid "6 slots"
+msgstr "6 slots"
+
+msgctxt "DroneOps,VideoUI.Focus"
+msgid "Focus"
+msgstr "Focus"
+
+msgctxt "DroneOps,VideoUI.SetActive"
+msgid "Select this UAV"
+msgstr "Select this UAV"
+
+msgctxt "DroneOps,VideoUI.SetActiveHint"
+msgid "Explicitly select this UAV in the shared context. This action does not change the video target."
+msgstr "Explicitly select this UAV in the shared context. This action does not change the video target."
+
+msgctxt "DroneOps,VideoUI.ActiveSelection"
+msgid "Selected: {0}"
+msgstr "Selected: {0}"
+
+msgctxt "DroneOps,VideoUI.Retry"
+msgid "Retry"
+msgstr "Retry"
+
+msgctxt "DroneOps,VideoUI.Record"
+msgid "Record"
+msgstr "Record"
+
+msgctxt "DroneOps,VideoUI.Playback"
+msgid "Playback"
+msgstr "Playback"
+
+msgctxt "DroneOps,VideoUI.Screenshot"
+msgid "Capture"
+msgstr "Capture"
+
+msgctxt "DroneOps,VideoUI.Filter"
+msgid "Filter"
+msgstr "Filter"
+
+msgctxt "DroneOps,VideoUI.Unsupported"
+msgid "This capability is not connected yet."
+msgstr "This capability is not connected yet."
+
+msgctxt "DroneOps,VideoUI.Reserved"
+msgid "Reserved slot"
+msgstr "Reserved slot"
+
+msgctxt "DroneOps,VideoUI.Unassigned"
+msgid "No UAV assigned"
+msgstr "No UAV assigned"
+
+msgctxt "DroneOps,VideoUI.ModelUnavailable"
+msgid "Model: unavailable"
+msgstr "Model: unavailable"
+
+msgctxt "DroneOps,VideoUI.NoSource"
+msgid "No video source"
+msgstr "No video source"
+
+msgctxt "DroneOps,VideoUI.InactiveSource"
+msgid "Click to view"
+msgstr "Click to view"
+
+msgctxt "DroneOps,VideoUI.SourceSet"
+msgid "Source configured"
+msgstr "Source configured"
+
+msgctxt "DroneOps,VideoUI.NoTarget"
+msgid "No video target"
+msgstr "No video target"
+
+msgctxt "DroneOps,VideoUI.ConfigureSource"
+msgid "Configure a video source for this UAV"
+msgstr "Configure a video source for this UAV"
+
+msgctxt "DroneOps,VideoUI.WaitingFrames"
+msgid "Waiting for decoded video frames"
+msgstr "Waiting for decoded video frames"
+
+msgctxt "DroneOps,VideoUI.RetryHint"
+msgid "Reconnect the current video source"
+msgstr "Reconnect the current video source"
+
+msgctxt "DroneOps,VideoUI.RetryUnavailable"
+msgid "Select a UAV with a configured video source to retry."
+msgstr "Select a UAV with a configured video source to retry."
+
+msgctxt "DroneOps,VideoUI.NA"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "DroneOps,MapUI.Operations"
+msgid "Map operations"
+msgstr "Map operations"
+
+msgctxt "DroneOps,MapUI.MissionRoute"
+msgid "Mission route"
+msgstr "Mission route"
+
+msgctxt "DroneOps,MapUI.ViewVideo"
+msgid "View video"
+msgstr "View video"
+
+msgctxt "DroneOps,MapUI.CurrentDevice"
+msgid "Current device"
+msgstr "Current device"
+
+msgctxt "DroneOps,MapUI.SelectDevice"
+msgid "Select a device"
+msgstr "Select a device"
+
+msgctxt "DroneOps,MapUI.CameraHint"
+msgid "Middle: pan · Right: orbit · Wheel: zoom"
+msgstr "Middle: pan · Right: orbit · Wheel: zoom"
+
+msgctxt "DroneOps,MapUI.FleetPointerHint"
+msgid "Left: select · Right-click: target · Middle: pan"
+msgstr "Left: select · Right-click: target · Middle: pan"
+
+msgctxt "DroneOps,MapUI.FleetPointerHelp"
+msgid "Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom."
+msgstr "Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom."
+
+msgctxt "DroneOps,MapUI.RouteEditor"
+msgid "Route editor"
+msgstr "Route editor"
+
+msgctxt "DroneOps,MapUI.DefaultSpeed"
+msgid "Default flight speed"
+msgstr "Default flight speed"
+
+msgctxt "DroneOps,MapUI.DefaultSpeedHint"
+msgid "Used for newly added waypoints."
+msgstr "Used for newly added waypoints."
+
+msgctxt "DroneOps,MapUI.SpeedRange"
+msgid "m/s · 0 = unlimited, or 0.5–15"
+msgstr "m/s · 0 = unlimited, or 0.5–15"
+
+msgctxt "DroneOps,MapUI.SpeedInvalid"
+msgid "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."
+msgstr "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."
