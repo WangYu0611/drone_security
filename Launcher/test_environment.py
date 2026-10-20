@@ -36,6 +36,14 @@ class EnvironmentTests(unittest.TestCase):
 
     def test_custom_engine_path_and_generated_plugin_folder(self):
         self.assertEqual(preflight(self.root, self.config_for_test()), [])
+        self.assertFalse(self.config_for_test()['mock_reset_on_start'])
+
+    def test_startup_reset_is_an_explicit_config_choice(self):
+        self.config['mock_reset_on_start'] = True
+        self.put('Launcher/config.json', json.dumps(self.config))
+        self.assertTrue(self.config_for_test()['mock_reset_on_start'])
+        self.put('Launcher/config.local.json', '{"mock_reset_on_start": false}')
+        self.assertFalse(self.config_for_test()['mock_reset_on_start'])
 
     def test_missing_cesium_is_actionable(self):
         next(self.engine.rglob('*.uplugin')).unlink()

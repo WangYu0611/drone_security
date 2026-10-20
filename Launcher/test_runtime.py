@@ -1,11 +1,12 @@
 import json
+import io
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import threading
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from runtime import (Runtime, OwnedProcess, compatible_snapshot, role_arguments, SingleInstance,
                      BackendCompatibilityError, REQUIRED_CAPABILITIES)
@@ -101,9 +102,59 @@ class LauncherTests(unittest.TestCase):
             finally: unrelated.terminate(); unrelated.wait()
     def test_ActiveExecutionShutdownWarningPredicate(self):
         runtime=object.__new__(Runtime);runtime.config={'http_endpoint':'http://test'}
-        for state in ('CREATED','PREFLIGHT','STARTING','EXECUTING','PAUSED','RETURNING','COMPLETED','ABORTED','FAILED'):
+        for state in ('CREATED','PREFLIGHT','STARTING','EXECUTING','PAUSED','RETURNING','COMPLETED','CANCELLED','ABORTED','FAILED'):
             with patch('runtime.api',return_value={'executions':{'e':{'state':state}}}):
-                self.assertEqual(runtime.has_active_execution(),state not in ('COMPLETED','ABORTED','FAILED'))
+                self.assertEqual(runtime.has_active_execution(),state not in ('COMPLETED','CANCELLED','ABORTED','FAILED'))
+    def test_NewOwnedBackendResetsOnceAndPreservesExistingFixture(self):
+        formation = {'origin': {'latitude':39.9807,'longitude':116.34703,'altitude':30},
+                     'spacing_m':20, 'direction':'east'}
+        for enabled in (False, True):
+            with self.subTest(enabled=enabled), tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                (root/'fixture.json').write_text(json.dumps({'startup_formation':formation,'uavs':{}}))
+                runtime = Runtime(root, {'http_endpoint':'http://127.0.0.1:19880',
+                    'ws_endpoint':'ws://127.0.0.1:19881/ws', 'runtime_directory':'runtime',
+                    'mock_fixture':'fixture.json','backend_executable':'fake.exe',
+                    'mock_reset_on_start':enabled})
+                data = runtime.directory/'data'; data.mkdir()
+                original = '{"uavs":{"UAV-01":{"home_position":{"latitude":40}}}}'
+                (data/'mock_execution.json').write_text(original)
+                snapshot = {'backend':{'capabilities':['mock_startup_reset']},'plans':{}}
+                requests = []
+                def spawn(*args):
+                    runtime.owned['Backend'] = Mock()
+                    runtime.owned['Backend'].process.poll.return_value = None
+                def post(request, **kwargs):
+                    self.assertEqual(request.full_url, 'http://127.0.0.1:19880/api/mock-executions/reset')
+                    body=json.loads(request.data);requests.append(body)
+                    self.assertEqual(body['startup_formation'],formation)
+                    return io.BytesIO(json.dumps({'reset_epoch':1,'state':{'mock_position_baseline':
+                        {'request_id':body['request_id'],'epoch':1,'positions':{}}}}).encode())
+                with patch('runtime.port_open',return_value=False), patch('runtime.compatible_snapshot',return_value=snapshot), \
+                     patch.object(runtime,'_spawn',side_effect=spawn), patch('runtime.urllib.request.urlopen',side_effect=post):
+                    runtime._backend()
+                self.assertEqual(len(requests), int(enabled))
+                self.assertEqual((data/'mock_execution.json').read_text(),original)
+                with patch('runtime.port_open',return_value=True), patch('runtime.compatible_snapshot',return_value=snapshot), \
+                     patch('runtime.urllib.request.urlopen') as post_existing:
+                    runtime._backend()
+                    post_existing.assert_not_called()
+    def test_StartupResetLostReplyReusesIdAndRequiresAck(self):
+        with tempfile.TemporaryDirectory() as folder:
+            runtime=Runtime(folder, {'http_endpoint':'http://test','runtime_directory':'runtime'})
+            runtime.snapshot={'backend':{'capabilities':['mock_startup_reset']}}
+            calls=[]
+            def response(request, **kwargs):
+                body=json.loads(request.data);calls.append(body)
+                if len(calls)==1:raise OSError('reply lost')
+                return io.BytesIO(json.dumps({'reset_epoch':3,'state':{'mock_position_baseline':
+                    {'request_id':body['request_id'],'epoch':3,'positions':{}}}}).encode())
+            with patch('runtime.urllib.request.urlopen',side_effect=response), patch.object(runtime.stopping,'wait',return_value=False):
+                runtime.reset_mock_for_startup({'startup_formation':{}})
+            self.assertEqual(calls[0],calls[1])
+            with patch('runtime.urllib.request.urlopen',return_value=io.BytesIO(b'{}')):
+                with self.assertRaisesRegex(RuntimeError,'acknowledge'):
+                    runtime.reset_mock_for_startup({'startup_formation':{}})
     def test_ShutdownRequiresBackendPersistenceAck(self):
         runtime=object.__new__(Runtime);runtime.config={'http_endpoint':'http://test'}
         with patch('runtime.urllib.request.urlopen',side_effect=OSError('unavailable')):

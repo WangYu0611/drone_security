@@ -610,7 +610,7 @@ void DroneManager::HandleTelemetry(DroneContext& ctx, const TelemetryData& data)
     }
 
     if (telemetry_cb_) {
-        telemetry_cb_(drone_id, ctx.latest_telemetry);
+        telemetry_cb_(drone_id, ctx.latest_telemetry, ctx.state_machine->GetState());
     }
 }
 

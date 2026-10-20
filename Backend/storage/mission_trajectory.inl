@@ -26,15 +26,32 @@
         }
         return route;
     }
+    static const Object* mockBaselinePosition(const Object& doc,const std::string& uid) {
+        const auto* baseline=doc.if_contains("mock_position_baseline");
+        if(!baseline || !baseline->is_object())return nullptr;
+        const auto* p=baseline->as_object().at("positions").as_object().if_contains(uid);
+        return p?&p->as_object():nullptr;
+    }
+    static bool inMockEpoch(const Object& doc,const Object& execution) {
+        if(!mockBaselinePosition(doc,str(execution,"uav_id")))return true;
+        const auto* epoch=execution.if_contains("mock_epoch");
+        return execution.contains("simulation") && execution.at("simulation")==true && epoch &&
+            *epoch==doc.at("mock_position_baseline").as_object().at("epoch");
+    }
     Object currentPosition(const Object& doc,const std::string& uid,bool observed=true) const {
         const auto* u=mock_.at("uavs").as_object().if_contains(uid);
         if(!u || (adapter_->simulation() && !u->as_object().contains("home_position")))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","No adapter position for "+uid);
         Object start;double latest=-1;
         for(const auto& entry:doc.at("executions").as_object()) {
             const auto& e=entry.value().as_object();
-            if(str(e,"uav_id")==uid && str(e,"state")!="SCHEDULED" && number(e,"updated_at")>=latest){latest=number(e,"updated_at");start=e.at("position").as_object();}
+            if(str(e,"uav_id")==uid && str(e,"state")!="SCHEDULED" &&
+               (!adapter_->simulation() || inMockEpoch(doc,e)) &&
+               number(e,"updated_at")>=latest){latest=number(e,"updated_at");start=e.at("position").as_object();}
         }
-        if(latest<0)start=homePosition(uid);
+        if(latest<0) {
+            const auto* baseline=adapter_->simulation()?mockBaselinePosition(doc,uid):nullptr;
+            start=baseline?*baseline:homePosition(uid);
+        }
         return adapter_->simulation()||!observed?start:adapterPosition(uid,geo(start));
     }
     Object formationRoutes(const Object& mission,const Object& input) const {

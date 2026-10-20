@@ -11,6 +11,7 @@ import subprocess
 import threading
 import time
 import urllib.request
+import urllib.error
 import urllib.parse
 import uuid
 
@@ -217,9 +218,45 @@ log:
         while time.monotonic() < end and not self.stopping.is_set():
             if self.owned['Backend'].process.poll() is not None: raise RuntimeError('Backend exited before ready')
             try:
-                self.snapshot = compatible_snapshot(base); return
+                self.snapshot = compatible_snapshot(base)
+                break
             except (OSError, ValueError): self.stopping.wait(.3)
-        raise RuntimeError('Backend readiness timed out')
+        else:
+            raise RuntimeError('Backend readiness timed out')
+        # Only a newly owned Backend starts a new Mock session. Reattaching or
+        # restarting one UI role never rewinds the shared execution authority.
+        if self.config.get('mock_reset_on_start', False):
+            self.reset_mock_for_startup(fixture)
+    def reset_mock_for_startup(self, fixture):
+        if 'mock_startup_reset' not in self.snapshot['backend'].get('capabilities', []):
+            raise BackendCompatibilityError(
+                'Backend lacks Mock startup reset. Run SetupDroneSecurity.cmd before launching.')
+        request_id = str(uuid.uuid4())
+        body = json.dumps({'request_id': request_id, 'simulation': True,
+                           'startup_formation': fixture['startup_formation']}).encode()
+        request = urllib.request.Request(
+            self.config['http_endpoint'] + '/api/mock-executions/reset', data=body,
+            headers={'Content-Type': 'application/json'}, method='POST')
+        # A lost response is retried with the same id; never issue another reset.
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(request, timeout=10) as response:
+                    result = json.load(response)
+                baseline = result.get('state', {}).get('mock_position_baseline', {})
+                if (baseline.get('request_id') != request_id
+                        or baseline.get('epoch') != result.get('reset_epoch')
+                        or not isinstance(baseline.get('positions'), dict)):
+                    raise RuntimeError('Backend did not acknowledge the startup reset')
+                self.snapshot['plans'] = result['state']
+                self.log('mock_startup_reset', epoch=result['reset_epoch'],
+                         aircraft=len(baseline['positions']),
+                         skipped=len(baseline.get('skipped_uav_ids', [])))
+                return
+            except urllib.error.HTTPError:
+                raise
+            except OSError:
+                if attempt == 2 or self.stopping.wait(.3):
+                    raise
     def start_role(self, role):
         with self.lock:
             if role not in ROLES: raise ValueError(role)
@@ -296,7 +333,7 @@ log:
                 self.start_role(role)
     def has_active_execution(self):
         plans=api(self.config['http_endpoint'],'/api/security-plans')
-        return any(e.get('state') not in ('COMPLETED','ABORTED','FAILED') for e in plans.get('executions',{}).values())
+        return any(e.get('state') not in ('COMPLETED','CANCELLED','ABORTED','FAILED') for e in plans.get('executions',{}).values())
     def pause_for_shutdown(self):
         body=json.dumps({'request_id':str(uuid.uuid4()),'simulation':True}).encode()
         request=urllib.request.Request(self.config['http_endpoint']+'/api/mock-executions/pause-all',data=body,headers={'Content-Type':'application/json'},method='POST')

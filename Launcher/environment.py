@@ -40,6 +40,7 @@ def load_config(root):
     local = root / 'Launcher/config.local.json'
     overrides = json.loads(local.read_text(encoding='utf-8-sig')) if local.exists() else {}
     config.update(overrides)
+    config.setdefault('mock_reset_on_start', False)
     if not config.get('ue_executable'):
         config['ue_executable'] = next((str(p / EDITOR) for p in engine_candidates() if (p / EDITOR).is_file()), '')
     # Legacy directory is only a compatibility fallback for existing P5.3 users.

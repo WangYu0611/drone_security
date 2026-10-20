@@ -2,6 +2,7 @@
 #include <atomic>
 #include <thread>
 #include "storage/security_plan_store.h"
+#include "storage/mock_telemetry.h"
 #include "conversion/mission_geodesy.h"
 using O=boost::json::object;using A=boost::json::array;
 namespace {
@@ -31,6 +32,76 @@ struct P52Execution:testing::Test {
     void control(const char* action,const char* key){send({{"action",action},{"execution_id",execution},{"request_id",key},{"control_version",exec().at("control_version")}});}
 
 };
+
+TEST_F(P52Execution, MockHomeTelemetryIsStableAndDoesNotClaimHardware){
+    const auto before=store.snapshot();const auto first=store.mockTelemetryPositions();
+    ASSERT_EQ(first.size(),1u);const auto& entry=first.at("UAV-01");
+    EXPECT_EQ(entry.as_object().at("telemetry_source"),"mock_home");
+    EXPECT_EQ(entry.as_object().at("position"),O({{"latitude",39.},{"longitude",116.},{"altitude",60.}}));
+    for(int i=0;i<30;++i){tick();EXPECT_EQ(store.mockTelemetryPositions(),first);}
+    EXPECT_EQ(store.snapshot(),before);
+    O message{{"status","offline"},{"battery",-1},{"gps_fix",false}};
+    EXPECT_TRUE(mock_telemetry::project(message,&entry,false));
+    EXPECT_EQ(message.at("status"),"offline");EXPECT_EQ(message.at("battery"),-1);
+    EXPECT_EQ(message.at("gps_fix"),true);EXPECT_EQ(message.at("simulation"),true);
+    EXPECT_EQ(message.at("local_position_valid"),false);
+    O received{{"status","lost"},{"gps_fix",false},{"gps_lat",40.},{"telemetry_source","received"}};
+    const auto unchanged=received;
+    EXPECT_FALSE(mock_telemetry::project(received,&entry,true));EXPECT_EQ(received,unchanged);
+}
+TEST_F(P52Execution, MockTelemetryRestoresCompletedPositionInsteadOfHome){
+    running();for(int i=0;i<400 && exec().at("state")!="COMPLETED";++i)tick(1);
+    ASSERT_EQ(exec().at("state"),"COMPLETED");
+    const auto position=exec().at("position");EXPECT_NE(position,exec().at("home_position"));
+    const auto file=std::filesystem::temp_directory_path()/("mock-position-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream output(file);output<<boost::json::serialize(store.snapshot());}
+    SecurityPlanStore restored(file.string());restored.configureMock(store.snapshot().at("mock_execution").as_object());
+    const auto view=restored.mockTelemetryPositions().at("UAV-01").as_object();
+    EXPECT_EQ(view.at("position"),position);EXPECT_EQ(view.at("telemetry_source"),"mock_execution");
+    restored.tickExecutions(1,uavs,[](const O&){});EXPECT_EQ(restored.mockTelemetryPositions().at("UAV-01"),view);
+    std::filesystem::remove(file);
+}
+TEST_F(P52Execution, MockTelemetryDoesNotMoveForFutureSchedule){
+    deployed();const auto home=store.mockTelemetryPositions();
+    send({{"action","execution_start"},{"request_id","future-position"},{"scheduled_start_at","2099-09-22T13:30:00Z"}});
+    EXPECT_EQ(store.mockTelemetryPositions(),home);
+}
+TEST_F(P52Execution, MockTelemetryRejectsMissingInvalidAndRealAdapterPositions){
+    store.configureMock({{"uavs",O{{"UAV-01",O{{"home_position",O{{"latitude",91.},{"longitude",116.},{"altitude",30.}}}}},{"UAV-02",O{}}}}});
+    EXPECT_TRUE(store.mockTelemetryPositions().empty());
+    auto real=std::make_shared<security_mission::RealAdapter>(
+        [](const std::string&){return security_mission::Position{39.,116.,30.};},
+        [](const std::string&){return security_mission::Position{39.,116.,30.};},
+        [](const security_mission::Command&){return true;},[](const std::string&){return true;});
+    store.configureAdapter({{"uavs",O{{"UAV-01",O{}}}}},real);
+    EXPECT_TRUE(store.mockTelemetryPositions().empty());
+}
+
+TEST_F(P52Execution, SingleUavMoveUsesConfirmedPositionAndCompletes){
+    auto move=[&](const char* key,double latitude){return send({{"action","execution_group_move"},{"request_id",key},
+        {"assigned_uav_ids",A{"UAV-01"}},{"target",O{{"latitude",latitude},{"longitude",116.},{"altitude",60.}}}});};
+    auto response=move("single-move",39.0001);execution=SecurityPlanStore::str(response,"execution_id");
+    ASSERT_EQ(store.snapshot().at("executions").as_object().size(),1u);
+    EXPECT_EQ(exec().at("control_kind"),"GROUP_MOVE");
+    for(int i=0;i<100 && exec().at("state")!="COMPLETED";++i)tick(1);
+    ASSERT_EQ(exec().at("state"),"COMPLETED");const auto confirmed=exec().at("position");
+    response=move("single-next",39.0002);execution=SecurityPlanStore::str(response,"execution_id");
+    EXPECT_EQ(exec().at("position"),confirmed);
+    EXPECT_EQ(store.mockTelemetryPositions().at("UAV-01").as_object().at("position"),confirmed);
+}
+TEST_F(P52Execution, SingleUavMoveRetainsOccupancyAndDomainGuards){
+    auto request=O{{"action","execution_group_move"},{"request_id","single-guard"},{"assigned_uav_ids",A{}},
+        {"target",O{{"latitude",39.0001},{"longitude",116.},{"altitude",60.}}}};
+    error(request,"INVALID_UAV");request["assigned_uav_ids"]=A{"UAV-02"};error(request,"MOCK_UAV_UNAVAILABLE");
+    request["assigned_uav_ids"]=A{"UAV-01"};request["target"].as_object()["latitude"]=40.;
+    error(request,"TRAJECTORY_DOMAIN_UNSUPPORTED");request["target"].as_object()["latitude"]=91.;
+    error(request,"INVALID_WAYPOINT");request["target"].as_object()["latitude"]=39.0001;
+    send(request);request["request_id"]="single-again";error(request,"DRONE_ACTIVE_PLAN_CONFLICT");
+}
+TEST_F(P52Execution, SingleUavMoveRetainsPlanReservation){
+    running();error({{"action","execution_group_move"},{"request_id","single-reserved"},{"assigned_uav_ids",A{"UAV-01"}},
+        {"target",O{{"latitude",39.0001},{"longitude",116.},{"altitude",60.}}}},"DRONE_ACTIVE_PLAN_CONFLICT");
+}
 
 TEST_F(P52Execution, CreateAndExplicitStartStateMachine){deployed();EXPECT_TRUE(store.snapshot().at("executions").as_object().empty());start();EXPECT_EQ(exec().at("state"),"CREATED");tick();EXPECT_EQ(exec().at("state"),"PREFLIGHT");tick();EXPECT_EQ(exec().at("state"),"STARTING");tick();EXPECT_EQ(exec().at("state"),"EXECUTING");EXPECT_EQ(plan().at("status"),"DEPLOYED");}
 TEST_F(P52Execution, PauseResumePreservesPosition){running();tick();control("execution_pause","p");auto e=exec();tick(1);EXPECT_EQ(exec(),e);control("execution_resume","r");EXPECT_EQ(exec().at("position"),e.at("position"));tick(1);EXPECT_NE(exec().at("position"),e.at("position"));}
@@ -449,6 +520,127 @@ TEST_F(P52Execution, ReturnCanPauseResumeAndAbort) {
 TEST_F(P52Execution, PendingStartCanBeAbortedBeforeDispatch) {
     deployed();start();control("execution_abort","created-abort");EXPECT_EQ(exec().at("state"),"ABORTED");
     tick(1);EXPECT_EQ(exec().at("state"),"ABORTED");
+}
+
+O startupReset(const char* key="startup-reset") {
+    return {{"request_id",key},{"simulation",true},{"startup_formation",O{
+        {"origin",O{{"latitude",39.},{"longitude",116.},{"altitude",60.}}},
+        {"spacing_m",20.},{"direction","east"}}}};
+}
+TEST_F(P52Execution, StartupResetOrdersNumbersAndKeepsOfflineTelemetry) {
+    auto config=store.snapshot().at("mock_execution").as_object();
+    const auto aircraft=config.at("uavs").as_object().at("UAV-01");
+    config.at("uavs").as_object()["UAV-10"]=aircraft;config.at("uavs").as_object()["UAV-2"]=aircraft;
+    store.configureMock(config);const auto before=store.snapshot();int published=0;
+    const auto response=store.resetMockPositions(startupReset(),{"UAV-10","UAV-2","UAV-01"},{},
+        [&](const O& event){++published;EXPECT_TRUE(event.at("payload").as_object().contains("mock_position_baseline"));});
+    EXPECT_EQ(published,1);EXPECT_EQ(response.at("reset_epoch"),1);
+    const auto positions=response.at("positions").as_object();
+    EXPECT_DOUBLE_EQ(positions.at("UAV-01").as_object().at("longitude").as_double(),116.);
+    auto geo=[](const boost::json::value& p){const auto& o=p.as_object();return security_mission::Position{
+        o.at("latitude").to_number<double>(),o.at("longitude").to_number<double>(),o.at("altitude").to_number<double>()};};
+    EXPECT_NEAR(security_mission::distance(geo(positions.at("UAV-01")),geo(positions.at("UAV-2"))),20.,1e-6);
+    EXPECT_NEAR(security_mission::distance(geo(positions.at("UAV-2")),geo(positions.at("UAV-10"))),20.,1e-6);
+    EXPECT_EQ(store.snapshot().at("execution_version").to_number<int64_t>(),before.at("execution_version").to_number<int64_t>()+1);
+    const auto entry=store.mockTelemetryPositions().at("UAV-01");
+    O message{{"status","offline"},{"battery",-1}};EXPECT_TRUE(mock_telemetry::project(message,&entry,false));
+    EXPECT_EQ(message.at("telemetry_source"),"mock_reset");EXPECT_EQ(message.at("mock_epoch"),1);
+    EXPECT_EQ(message.at("status"),"offline");EXPECT_EQ(message.at("battery"),-1);
+    tick();EXPECT_EQ(store.mockTelemetryPositions().at("UAV-01"),entry);
+}
+TEST_F(P52Execution, StartupResetPreservesHistoryAndNewEpochMovementSurvivesReplay) {
+    running();for(int i=0;i<400 && exec().at("state")!="COMPLETED";++i)tick(1);
+    ASSERT_EQ(exec().at("state"),"COMPLETED");const auto history=store.snapshot().at("executions");
+    store.resetMockPositions(startupReset(),uavs,{},[](const O&){});
+    EXPECT_EQ(store.snapshot().at("executions"),history);
+    EXPECT_EQ(store.mockTelemetryPositions().at("UAV-01").as_object().at("telemetry_source"),"mock_reset");
+    execution=SecurityPlanStore::str(send({{"action","execution_group_move"},{"request_id","after-reset"},
+        {"assigned_uav_ids",A{"UAV-01"}},{"target",O{{"latitude",39.0001},{"longitude",116.},{"altitude",60.}}}}),"execution_id");
+    EXPECT_EQ(exec().at("mock_epoch"),1);EXPECT_EQ(exec().at("position"),startupReset().at("startup_formation").as_object().at("origin"));
+    for(int i=0;i<100 && exec().at("state")!="COMPLETED";++i)tick(1);
+    ASSERT_EQ(exec().at("state"),"COMPLETED");const auto moved=store.snapshot();
+    EXPECT_TRUE(store.resetMockPositions(startupReset(),uavs,{},[](const O&){}).at("replayed").as_bool());
+    EXPECT_EQ(store.snapshot(),moved);
+    EXPECT_EQ(store.mockTelemetryPositions().at("UAV-01").as_object().at("position"),exec().at("position"));
+    auto changed=startupReset();changed.at("startup_formation").as_object()["spacing_m"]=25.;
+    EXPECT_THROW(store.resetMockPositions(changed,uavs,{},[](const O&){}),PlanError);EXPECT_EQ(store.snapshot(),moved);
+}
+TEST_F(P54Mission, StartupResetAbortsWholeActiveGroupAndReleasesReservations) {
+    multi();start();tick();tick();tick();control("execution_pause","pause-for-reset");
+    const auto before=store.snapshot();
+    store.resetMockPositions(startupReset(),uavs,{},[](const O&){});
+    for(const auto& item:executions()) {
+        const auto& e=item.value().as_object();EXPECT_EQ(e.at("state"),"ABORTED");
+        EXPECT_EQ(e.at("failure_reason"),"MOCK_STARTUP_RESET");
+        EXPECT_EQ(e.at("route_snapshot"),before.at("executions").as_object().at(item.key()).as_object().at("route_snapshot"));
+        EXPECT_FALSE(SecurityPlanStore::reservesUav(e));
+        EXPECT_NO_THROW(SecurityPlanStore::checkReservation(store.snapshot(),"other-plan",SecurityPlanStore::str(e,"uav_id")));
+    }
+    EXPECT_EQ(store.snapshot().at("paths"),before.at("paths"));EXPECT_EQ(store.snapshot().at("deployments"),before.at("deployments"));
+}
+TEST_F(P54Mission, StartupResetCancelsScheduledGroupWithoutDispatch) {
+    multi();send({{"action","execution_start"},{"request_id","scheduled-reset"},{"scheduled_start_at","2099-09-22T13:30:00Z"}});
+    store.resetMockPositions(startupReset(),uavs,{},[](const O&){});
+    for(const auto& item:executions())EXPECT_EQ(item.value().as_object().at("state"),"CANCELLED");
+    const auto reset=store.snapshot();tick(1);EXPECT_EQ(store.snapshot(),reset);
+}
+TEST_F(P54Mission, StartupResetReceivedMemberProtectsEntireActiveGroup) {
+    multi();start();tick();tick();tick();const auto before=store.snapshot();
+    const auto response=store.resetMockPositions(startupReset(),uavs,{"UAV-02"},[](const O&){});
+    EXPECT_TRUE(response.at("positions").as_object().empty());EXPECT_EQ(response.at("skipped_uav_ids").as_array().size(),2u);
+    EXPECT_EQ(store.snapshot().at("executions"),before.at("executions"));
+}
+TEST_F(P52Execution, StartupResetDurableBackupRestartAndPublishRollback) {
+    running();tick(1);const auto original=store.snapshot();
+    const auto folder=std::filesystem::temp_directory_path()/("mock-reset-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+    std::filesystem::create_directory(folder);const auto file=folder/"security_plans.json";
+    {std::ofstream out(file);out<<boost::json::serialize(original);}
+    {
+        SecurityPlanStore restored(file.string());restored.configureMock(original.at("mock_execution").as_object());
+        const auto before=restored.snapshot();
+        EXPECT_THROW(restored.resetMockPositions(startupReset(),uavs,{},[](const O&){throw std::runtime_error("publish failed");}),std::runtime_error);
+        EXPECT_EQ(restored.snapshot(),before);
+        restored.resetMockPositions(startupReset(),uavs,{},[](const O&){});
+        SecurityPlanStore again(file.string());again.configureMock(original.at("mock_execution").as_object());
+        EXPECT_EQ(again.mockTelemetryPositions(),restored.mockTelemetryPositions());
+        EXPECT_EQ(again.mockTelemetryPositions().at("UAV-01").as_object().at("telemetry_source"),"mock_reset");
+        for(const auto& backup:std::filesystem::directory_iterator(folder/"mock-reset-history")) {
+            std::ifstream in(backup.path());std::string text((std::istreambuf_iterator<char>(in)),{});
+            boost::json::parse_options options;options.numbers=boost::json::number_precision::precise;
+            EXPECT_EQ(boost::json::parse(text,{},options).as_object().at("executions"),before.at("executions"));
+        }
+    }
+    for(const auto& backup:std::filesystem::directory_iterator(folder/"mock-reset-history"))std::filesystem::remove(backup.path());
+    std::filesystem::remove(folder/"mock-reset-history");std::filesystem::remove(file);std::filesystem::remove(folder);
+}
+TEST_F(P52Execution, StartupResetRejectsInvalidFormationAndRealAdapterAtomically) {
+    const auto before=store.snapshot();auto bad=startupReset();bad.at("startup_formation").as_object()["spacing_m"]=0.;
+    EXPECT_THROW(store.resetMockPositions(bad,uavs,{},[](const O&){}),PlanError);EXPECT_EQ(store.snapshot(),before);
+    bad=startupReset();bad["simulation"]=false;
+    EXPECT_THROW(store.resetMockPositions(bad,uavs,{},[](const O&){}),PlanError);EXPECT_EQ(store.snapshot(),before);
+    auto real=std::make_shared<security_mission::RealAdapter>(
+        [](const std::string&){return security_mission::Position{39.,116.,60.};},
+        [](const std::string&){return security_mission::Position{39.,116.,60.};},
+        [](const security_mission::Command&){return true;},[](const std::string&){return true;});
+    store.configureAdapter(before.at("mock_execution").as_object(),real);const auto realBefore=store.snapshot();
+    EXPECT_THROW(store.resetMockPositions(startupReset(),uavs,{},[](const O&){}),PlanError);EXPECT_EQ(store.snapshot(),realBefore);
+}
+TEST_F(P52Execution, StartupResetDoesNotRelabelLatestRealExecution) {
+    running();control("execution_abort","end-before-real-fixture");auto state=store.snapshot();
+    state.at("executions").as_object().at(execution).as_object()["simulation"]=false;
+    state.at("executions").as_object().at(execution).as_object()["adapter"]="Real";
+    const auto folder=std::filesystem::temp_directory_path()/("real-reset-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+    std::filesystem::create_directory(folder);const auto file=folder/"security_plans.json";
+    {std::ofstream out(file);out<<boost::json::serialize(state);}
+    {
+        SecurityPlanStore restored(file.string());restored.configureMock(state.at("mock_execution").as_object());
+        const auto response=restored.resetMockPositions(startupReset(),uavs,{},[](const O&){});
+        EXPECT_TRUE(response.at("positions").as_object().empty());
+        EXPECT_EQ(restored.snapshot().at("executions"),state.at("executions"));EXPECT_TRUE(restored.mockTelemetryPositions().empty());
+    }
+    const auto history=folder/"mock-reset-history";
+    for(const auto& backup:std::filesystem::directory_iterator(history))std::filesystem::remove(backup.path());
+    std::filesystem::remove(history);std::filesystem::remove(file);std::filesystem::remove(folder);
 }
 
 }

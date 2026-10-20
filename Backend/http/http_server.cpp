@@ -1,4 +1,5 @@
 #include "http/http_server.h"
+#include "storage/mock_telemetry.h"
 #include "conversion/assignment_solver.h"
 #include "conversion/coordinate_converter.h"
 #include "conversion/quaternion_utils.h"
@@ -94,6 +95,7 @@ double current_unix_seconds()
 }
 
 } // namespace
+static int drone_id_from_string(const std::string& id);
 
 // ============================================================
 // 构造 / 析构
@@ -130,7 +132,7 @@ HttpServer::HttpServer(const AppConfig& config,
         }
     }
     // 注册 DroneManager 回调 -> WS 推送
-    drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel) {
+    drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel, DroneConnectionState connection) {
         // 构建遥测 JSON
         double ux, uy, uz;
         CoordinateConverter::NedToUeOffset(
@@ -171,6 +173,13 @@ HttpServer::HttpServer(const AppConfig& config,
         msg["yaw"] = yaw;
         msg["speed"] = QuaternionUtils::SpeedFromVelocity(
             tel.velocity[0], tel.velocity[1], tel.velocity[2]);
+        std::lock_guard<std::mutex> source_lock(telemetry_source_mutex_);
+        received_telemetry_.insert(drone_id);
+        msg["simulation"]=false;msg["telemetry_source"]="received";
+        msg["status"]=connection==DroneConnectionState::Online?"online":
+            connection==DroneConnectionState::Lost?"lost":
+            connection==DroneConnectionState::Connecting?"connecting":"offline";
+        received_telemetry_snapshots_[drone_id]=msg;
         ws_manager_.broadcast(json_stringify(msg));
     });
 
@@ -194,6 +203,9 @@ HttpServer::HttpServer(const AppConfig& config,
         }
         spdlog::debug("[WS Push] event={} drone={} anchor_valid={}",
                       type, drone_id_string(drone_id), anchor.valid);
+        std::lock_guard<std::mutex> source_lock(telemetry_source_mutex_);
+        if(auto cached=received_telemetry_snapshots_.find(drone_id);cached!=received_telemetry_snapshots_.end())
+            cached->second["status"]=event==StateEvent::LostConnection?"lost":"online";
         ws_manager_.broadcast(json_stringify(msg));
     });
 
@@ -314,6 +326,7 @@ void HttpServer::Run() {
              std::set<std::string> uavs;for(const auto& d:drone_records_)if(d.slot>0)uavs.insert("UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot));
              security_plans_.tickExecutions(dt,uavs,[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});}
             if(++leaseTick<10)continue;leaseTick=0;
+            PublishMockTelemetry();
             std::vector<std::shared_ptr<WsSession>> expired;
             { std::lock_guard<std::mutex> lock(context_clients_mutex_);
               for(const auto& entry:context_sessions_) {
@@ -438,6 +451,23 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 catch(const PlanError& e){return MakeResponse(req,400,json_stringify(boost::json::object{{"code",e.code},{"params",e.params},{"message",e.what()}}));}
             }
         }
+        if(method=="POST" && path=="/api/mock-executions/reset") {
+            if(security_plans_.usesRealAdapter())throw PlanError("ADAPTER_MODE_MISMATCH","Mock reset cannot control real aircraft");
+            const auto request=require_object(body,"body");
+            std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+            std::lock_guard<std::mutex> records(records_mutex_);
+            // This lock makes received-source exclusion atomic with the reset.
+            // No store operation holds its mutex while acquiring this guard.
+            std::lock_guard<std::mutex> source(telemetry_source_mutex_);
+            std::set<std::string> registered,received;
+            for(const auto& rec:drone_records_) {
+                const auto uid="UAV-"+std::string(rec.slot<10?"0":"")+std::to_string(rec.slot);
+                registered.insert(uid);
+                if(received_telemetry_.count(drone_id_from_string(rec.id)))received.insert(uid);
+            }
+            return MakeResponse(req,200,json_stringify(security_plans_.resetMockPositions(request,registered,received,
+                [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));})));
+        }
         if(method=="POST" && path=="/api/mock-executions/pause-all") {
             if(security_plans_.usesRealAdapter())throw PlanError("ADAPTER_MODE_MISMATCH","Mock shutdown endpoint cannot control real aircraft");
             auto r=require_object(body,"body");if(!r.contains("simulation") || r.at("simulation")!=true)throw ApiError(400,"Simulation confirmation required");
@@ -481,7 +511,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 {"http_port", config_.http_port},
                 {"ws_port",   config_.ws_port},
                 {"debug",     config_.debug},
-                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration"}},
+                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset"}},
             }));
 
         if (method == "GET"  && path == "/api/drones")
@@ -554,6 +584,7 @@ static int drone_id_from_string(const std::string& id) {
 
 boost::json::value HttpServer::ApiListDrones() {
     std::lock_guard<std::mutex> lock(records_mutex_);
+    const auto mock_positions=security_plans_.mockTelemetryPositions();
     boost::json::array arr;
     for (const auto& rec : drone_records_) {
         int numeric_id = drone_id_from_string(rec.id);
@@ -575,7 +606,7 @@ boost::json::value HttpServer::ApiListDrones() {
             }
         }
 
-        arr.push_back(boost::json::object{
+        boost::json::object item{
             {"id", numeric_id},
             {"id_str", rec.id},
             {"name", rec.name},
@@ -596,6 +627,11 @@ boost::json::value HttpServer::ApiListDrones() {
             {"gps_lon", telemetry.gps_lon},
             {"gps_alt", telemetry.gps_alt},
             {"gps_fix", telemetry.gps_fix},
+            {"local_position_valid", telemetry.local_position_valid},
+            {"anchor_valid", status.anchor.valid},
+            {"anchor_gps_lat", status.anchor.latitude},
+            {"anchor_gps_lon", status.anchor.longitude},
+            {"anchor_gps_alt", status.anchor.altitude},
             {"armed", telemetry.IsArmed()},
             {"offboard", telemetry.IsOffboard()},
             {"task_mode", task_state.mode},
@@ -611,9 +647,42 @@ boost::json::value HttpServer::ApiListDrones() {
             {"mavlink_system_id", rec.slot},
             // task_state/task_detail/current waypoint above are the single
             // authoritative task cache also used by drone_task_state WS pushes.
-        });
+        };
+        {
+            std::lock_guard<std::mutex> source_lock(telemetry_source_mutex_);
+            const bool received=received_telemetry_.count(numeric_id)>0;
+            item["simulation"]=false;item["telemetry_source"]=received?"received":"unavailable";
+            if(const auto cached=received_telemetry_snapshots_.find(numeric_id);cached!=received_telemetry_snapshots_.end()) {
+                // The source tag and payload are one atomic callback snapshot.
+                // Never tag an older pre-UDP GetLatestTelemetry result received.
+                for(const auto& field:cached->second)
+                    if(field.key()!="type" && field.key()!="drone_id" && field.key()!="drone_id_str")item[field.key()]=field.value();
+            } else {
+                const auto uid="UAV-"+std::string(rec.slot<10?"0":"")+std::to_string(rec.slot);
+                mock_telemetry::project(item,mock_positions.if_contains(uid),received);
+            }
+        }
+        arr.push_back(std::move(item));
     }
     return arr;
+}
+
+void HttpServer::PublishMockTelemetry() {
+    std::lock_guard<std::mutex> records(records_mutex_);
+    const auto positions=security_plans_.mockTelemetryPositions();
+    for(const auto& rec:drone_records_) {
+        const auto uid="UAV-"+std::string(rec.slot<10?"0":"")+std::to_string(rec.slot);
+        const auto* position=positions.if_contains(uid);if(!position)continue;
+        const int id=drone_id_from_string(rec.id);
+        const auto status=drone_mgr_.GetStatus(id);
+        boost::json::object message{{"type","telemetry"},{"drone_id",id},{"drone_id_str",rec.id},
+            {"status",status.connection_state},{"battery",status.battery},
+            {"x",status.pos_x},{"y",status.pos_y},{"z",status.pos_z},
+            {"yaw",status.yaw},{"pitch",0.},{"roll",0.},{"speed",status.speed}};
+        std::lock_guard<std::mutex> source_lock(telemetry_source_mutex_);
+        if(mock_telemetry::project(message,position,received_telemetry_.count(id)>0))
+            ws_manager_.broadcast(json_stringify(message));
+    }
 }
 
 boost::json::value HttpServer::ApiRefreshDrones()

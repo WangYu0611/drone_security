@@ -4,6 +4,38 @@
 public:
     void configureMock(const Object& config) {configureAdapter(config,std::make_shared<security_mission::MockAdapter>());}
     bool usesRealAdapter() const {std::lock_guard<std::mutex> lock(mutex_);return !adapter_->simulation();}
+    #include "storage/mock_reset.inl"
+    // Presentation only; never inject synthetic positions into the hardware
+    // state machine. Reuse the controller's durable current-position rule.
+    Object mockTelemetryPositions() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        Object result;
+        if(!adapter_->simulation())return result;
+        for(const auto& item:mock_.at("uavs").as_object()) {
+            const std::string uid(item.key());const Object* latest=nullptr;const Object* current=nullptr;
+            double updated=-1,currentUpdated=-1;
+            for(const auto& entry:state_.at("executions").as_object()) {
+                const auto& e=entry.value().as_object();
+                if(str(e,"uav_id")==uid && str(e,"state")!="SCHEDULED" && number(e,"updated_at")>=updated) {
+                    latest=&e;updated=number(e,"updated_at");
+                }
+                if(str(e,"uav_id")==uid && str(e,"state")!="SCHEDULED" && inMockEpoch(state_,e) &&
+                   number(e,"updated_at")>=currentUpdated){current=&e;currentUpdated=number(e,"updated_at");}
+            }
+            // Do not relabel a confirmed real-flight position as simulation.
+            if(latest && (!latest->contains("simulation") || latest->at("simulation")!=true))continue;
+            try {
+                const auto p=currentPosition(state_,uid);security_mission::validate(geo(p));
+                const bool reset=mockBaselinePosition(state_,uid)!=nullptr;
+                Object projection{{"position",p},{"telemetry_source",current?"mock_execution":reset?"mock_reset":"mock_home"}};
+                if(reset)projection["mock_epoch"]=state_.at("mock_position_baseline").as_object().at("epoch");
+                result[uid]=std::move(projection);
+            } catch(const std::exception&) {
+                // Missing/invalid configured GPS is unavailable, never (0,0).
+            }
+        }
+        return result;
+    }
     void configureAdapter(const Object& config,std::shared_ptr<security_mission::Adapter> adapter) {
         if(!adapter)throw std::runtime_error("ADAPTER_REQUIRED");
         std::lock_guard<std::mutex> lock(mutex_);
@@ -124,6 +156,7 @@ private:
         }
     }
     Object homePosition(const std::string& uid) const {
+        if(adapter_->simulation())if(const auto* p=mockBaselinePosition(state_,uid))return *p;
         const auto& config=mock_.at("uavs").as_object().at(uid).as_object();
         const auto* p=config.if_contains("home_position");
         if(!p && adapter_->simulation())throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","No configured home");
@@ -173,6 +206,8 @@ private:
                 {"default_speed_mps",mock_.at("default_speed_mps")},{"distance_m",total},{"estimated_seconds",seconds},{"distance_travelled_m",0.},
                 {"wait_remaining",0.},{"elapsed_seconds",0.},{"created_at",now},{"started_at",nullptr},{"updated_at",now},{"completed_at",nullptr},
                 {"completion_reason",""},{"failure_reason",""},{"simulation",adapter_->simulation()},{"adapter",adapter_->simulation()?"Mock":"Real"},{"loopMode","Once"},{"closure_completed",false}};
+        if(adapter_->simulation() && mockBaselinePosition(next,uid))
+            all.at(id).as_object()["mock_epoch"]=next.at("mock_position_baseline").as_object().at("epoch");
         return id;
     }
     Object executionRequest(const Object& r,const std::set<std::string>& uavs,const std::string&,const std::function<void(const Object&)>& publish) {
@@ -187,7 +222,7 @@ private:
         checkConfigurationRequest(state_,r);
         auto next=state_;auto& all=next.at("executions").as_object();auto id=str(r,"execution_id");
         if(action=="execution_group_move") {
-            const auto members=assignment(r);if(members.size()<2)throw PlanError("INVALID_UAV","Select at least two UAVs");
+            const auto members=assignment(r);if(members.empty())throw PlanError("INVALID_UAV","Select at least one UAV");
             std::set<std::string> unique;
             for(const auto& v:members){const std::string uid(v.as_string());if(!unique.insert(uid).second || !uavs.count(uid) || !mock_.at("uavs").as_object().contains(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Selected UAV is unavailable");
                 checkReservation(next,"",uid);

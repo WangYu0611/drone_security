@@ -23,6 +23,8 @@
 #include <filesystem>
 #include <fstream>
 #include <mutex>
+#include <map>
+#include <set>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -105,6 +107,7 @@ private:
 
     // ---- REST 路由实现 ----
     boost::json::value ApiListDrones();
+    void PublishMockTelemetry();
     boost::json::value ApiRegisterDrone(const boost::json::object& body);
     boost::json::value ApiUpdateDrone(const std::string& id, const boost::json::object& body);
     boost::json::value ApiDeleteDrone(const std::string& id);
@@ -169,6 +172,11 @@ private:
     std::thread plan_lease_thread_;
     boost::json::value ViewRequest(const boost::json::object& body,bool language);
     std::mutex plan_requests_mutex_;
+    // Once received telemetry exists, link/GPS loss never restores Mock home.
+    // Serialize source arbitration and broadcasts to preserve source ordering.
+    std::mutex telemetry_source_mutex_;
+    std::set<int> received_telemetry_;
+    std::map<int, boost::json::object> received_telemetry_snapshots_;
     boost::json::value PlanRequest(const boost::json::object& body);
     std::mutex context_clients_mutex_;
     int64_t context_client_version_ = 0;

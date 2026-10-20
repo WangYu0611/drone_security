@@ -1,6 +1,15 @@
 {
   "simulation": true,
   "default_speed_mps": 8.0,
+  "startup_formation": {
+    "origin": {
+      "latitude": 39.9807,
+      "longitude": 116.34703,
+      "altitude": 30.0
+    },
+    "spacing_m": 2.0,
+    "direction": "east"
+  },
   "uavs": {
     "UAV-01": {
       "home_position": {

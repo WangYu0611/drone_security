@@ -140,7 +140,7 @@ struct DroneTaskState {
     double updated_at = 0.0;
 };
 
-using TelemetryCallback = std::function<void(int drone_id, const TelemetryData&)>;
+using TelemetryCallback = std::function<void(int drone_id, const TelemetryData&, DroneConnectionState)>;
 using StateChangeCallback = std::function<void(int drone_id, StateEvent event, const GpsAnchor&)>;
 using AlertCallback = std::function<void(int drone_id, const std::string& alert_type, int value)>;
 using AssemblyCallback = std::function<void(const AssemblyProgress&)>;

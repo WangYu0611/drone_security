@@ -2,6 +2,7 @@
 #include "storage/operational_context.h"
 #include "execution/security_mission_adapter.h"
 #include <set>
+#include <map>
 #include <vector>
 #include <cmath>
 #include <limits>
