@@ -1,0 +1,27 @@
+{
+  "scope": "Owned loopback Backend with isolated state; no production storage changes",
+  "binary_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+  "checks": [
+    "HTTP reset accepts four UAVs ordered east at 2m",
+    "REST projects the same four positions and epoch without hardware Online",
+    "1m remains rejected and the entire acknowledged state is unchanged"
+  ],
+  "result": "PASS",
+  "spacing_m": 2,
+  "adjacent_distances_m": [
+    1.9999999999102513,
+    1.9999999999102513,
+    1.9999999999102513
+  ],
+  "uav_ids": [
+    "UAV-01",
+    "UAV-02",
+    "UAV-03",
+    "UAV-04"
+  ],
+  "reset_epoch": 1,
+  "minimum_separation_m": 1.5,
+  "rejected_spacing_m": 1,
+  "rejected_code": "INVALID_STARTUP_FORMATION",
+  "owned_process_exited": true
+}

@@ -1,0 +1,15 @@
+PASS Natural REST startup has fixed Mock home and no hardware liveness
+PASS WebSocket and REST expose the same fixed location and provenance
+PASS Refresh and idle telemetry do not move the Mock home or invent Online
+PASS Singleton starts through normal controller and repeated occupancy rejects
+PASS Owned restart restores completed execution position and stays there
+PASS Explicit reset preserves history and shares the acknowledged epoch across REST and WS
+PASS Reset writes a complete pre-reset history snapshot before acknowledging
+PASS A later same-epoch move starts from formation and reset retry never rewinds it
+PASS Backend-only restart preserves the current reset epoch and subsequent movement
+PASS Singleton does not bypass client role authorization
+PASS Concurrent first-packet REST hydration never labels old or empty GPS received
+PASS Received UDP takes priority in both transports with actual connection status
+PASS Lost hardware and invalid GPS never fall back to Mock in REST or WebSocket
+PASS Reset excludes received hardware even after connection loss and invalid GPS
+Evidence: Saved\MockPositionQA\transport-1792486963176

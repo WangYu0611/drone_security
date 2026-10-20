@@ -1,0 +1,171 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (source file added)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandMapInteractionService.cpp, CommandShellFigma.cpp, CommandShellTasks.cpp, CommandShellWidget.cpp, CommandTacticalMap.cpp, FigmaCommandStyle.cpp, FigmaFleetWidget.cpp, GroupControlWidget.cpp, DroneRegistrySubsystem.cpp, DroneNetworkManager.cpp, FigmaMapStyle.cpp, MapExecutionWidget.cpp, MapFleetInteractionWidget.cpp, MapMissionRouteWidget.cpp, MapPlanMoveWidget.cpp, MapShellWidget.cpp, FigmaRoleHeaderWidget.cpp, OperationalContextSubsystem.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, Stage1HeaderWidget.cpp, CommandCenterV2Test.cpp, FigmaCommandTest.cpp, FigmaMapTest.cpp, FigmaVideoTest.cpp, FleetControlTest.cpp, MapLabelPlacementTest.cpp, MapPointMoveTest.cpp, MapStartupVisibilityTest.cpp, MockTelemetryProjectionTest.cpp, P4WorkflowTest.cpp, PlanConfigurationTests.cpp, PlanMissionActionsTest.cpp, RouteEditCameraLockTest.cpp, VideoShellPresentation.cpp, VideoShellWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 44 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 20.21 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/44] Compile [x64] CommandAlarmPanel.cpp [NoUba]
+[2/44] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[3/44] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[4/44] Compile [x64] CommandClientTest.cpp [NoUba]
+[5/44] Compile [x64] CommandScreenManager.cpp [NoUba]
+[6/44] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[7/44] Compile [x64] CommandShellTasks.cpp [NoUba]
+Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,20): error C2664: ﾡﾰTSharedPtr<FJsonObject,ESPMode::ThreadSafe> PlanUI::Object(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &,const TCHAR *)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 2 ﾴￓﾡﾰconst FStringﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst TCHAR *ﾡﾱ
+    return PlanUI::Object(PlanUI::Object(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions")),Uav);
+                   ^
+Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,114): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+    return PlanUI::Object(PlanUI::Object(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions")),Uav);
+                                                                                                                 ^
+Source\UE5DroneControl\Shared\PlanWidgetSupport.h(14,32): note: ﾲￎﾼ￻ﾡﾰPlanUI::Objectﾡﾱﾵￄ￉￹ￃ￷
+inline TSharedPtr<FJsonObject> Object(const TSharedPtr<FJsonObject>& O,const TCHAR* K){const TSharedPtr<FJsonObject>* P;return O && O->TryGetObjectField(K,P)?*P:nullptr;}
+                               ^
+Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,20): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(TSharedPtr<FJsonObject,ESPMode::ThreadSafe>, const FString)ﾡﾱￊﾱ
+    return PlanUI::Object(PlanUI::Object(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions")),Uav);
+                   ^
+[8/44] Compile [x64] CommandShellFigma.cpp [NoUba]
+[9/44] Compile [x64] CommandShellWidget.cpp [NoUba]
+Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,20): error C2664: ﾡﾰTSharedPtr<FJsonObject,ESPMode::ThreadSafe> PlanUI::Object(const TSharedPtr<FJsonObject,ESPMode::ThreadSafe> &,const TCHAR *)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 2 ﾴￓﾡﾰconst FStringﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst TCHAR *ﾡﾱ
+    return PlanUI::Object(PlanUI::Object(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions")),Uav);
+                   ^
+Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,114): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+    return PlanUI::Object(PlanUI::Object(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions")),Uav);
+                                                                                                                 ^
+Source\UE5DroneControl\Shared\PlanWidgetSupport.h(14,32): note: ﾲￎﾼ￻ﾡﾰPlanUI::Objectﾡﾱﾵￄ￉￹ￃ￷
+inline TSharedPtr<FJsonObject> Object(const TSharedPtr<FJsonObject>& O,const TCHAR* K){const TSharedPtr<FJsonObject>* P;return O && O->TryGetObjectField(K,P)?*P:nullptr;}
+                               ^
+Source\UE5DroneControl\Shared\ExecutionPresentation.h(5,20): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(TSharedPtr<FJsonObject,ESPMode::ThreadSafe>, const FString)ﾡﾱￊﾱ
+    return PlanUI::Object(PlanUI::Object(PlanUI::Object(State,TEXT("mock_position_baseline")),TEXT("positions")),Uav);
+                   ^
+[10/44] Compile [x64] CommandStartupTest.cpp [NoUba]
+[11/44] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[12/44] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[13/44] Compile [x64] FigmaCommandTest.cpp [NoUba]
+[14/44] Compile [x64] FigmaMapTest.cpp [NoUba]
+[15/44] Compile [x64] FigmaRoleHeaderWidget.cpp [NoUba]
+[16/44] Compile [x64] FigmaVideoTest.cpp [NoUba]
+[17/44] Compile [x64] FleetControlTest.cpp [NoUba]
+[18/44] Compile [x64] FleetTerrainTest.cpp [NoUba]
+[19/44] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[20/44] Compile [x64] MapExtractionTest.cpp [NoUba]
+[21/44] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+[22/44] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[23/44] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[24/44] Compile [x64] MapShellWidget.cpp [NoUba]
+[25/44] Compile [x64] MockTelemetryProjectionTest.cpp [NoUba]
+[26/44] Compile [x64] MapStartupVisibilityTest.cpp [NoUba]
+[27/44] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,83): error C2665: ﾡﾰTSet<FString,DefaultKeyFuncs<InElementType,false>,FDefaultSetAllocator>::Addﾡﾱ: ￃﾻￓ￐ￖ￘ￔ￘ﾺﾯￊ�﾿￉ￒￔￗﾪﾻﾻￋ￹ￓ￐ﾲￎￊ�￀￠￐ￍ
+        with
+        [
+            InElementType=FString
+        ]
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(Entry.Key);
+                                                                                  ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Containers\SparseSet.h.inl(419,36): note: ﾿￉ￄￜￊￇﾡﾰFSetElementId TSet<FString,DefaultKeyFuncs<InElementType,false>,FDefaultSetAllocator>::Add(InElementType &&,bool *)ﾡﾱ
+        with
+        [
+            InElementType=FString
+        ]
+	UE_FORCEINLINE_HINT FSetElementId Add(InElementType&& InElement, bool* bIsAlreadyInSetPtr = nullptr)
+	                                  ^
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,83): note: ﾡﾰFSetElementId TSet<FString,DefaultKeyFuncs<InElementType,false>,FDefaultSetAllocator>::Add(InElementType &&,bool *)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 1 ﾴￓﾡﾰconst TﾡﾱￗﾪﾻﾻￎﾪﾡﾰInElementType &&ﾡﾱ
+        with
+        [
+            InElementType=FString
+        ]
+        and
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        and
+        [
+            InElementType=FString
+        ]
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(Entry.Key);
+                                                                                  ^
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,92): note: ￔﾭￒ￲￈￧ￏￂ: ￎ￞ﾷﾨﾴￓﾡﾰconst TﾡﾱￗﾪﾻﾻￎﾪﾡﾰInElementTypeﾡﾱ
+        with
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        and
+        [
+            InElementType=FString
+        ]
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(Entry.Key);
+                                                                                           ^
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,92): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Containers\SparseSet.h.inl(415,36): note: ﾻ￲    ﾡﾰFSetElementId TSet<FString,DefaultKeyFuncs<InElementType,false>,FDefaultSetAllocator>::Add(const InElementType &,bool *)ﾡﾱ
+        with
+        [
+            InElementType=FString
+        ]
+	UE_FORCEINLINE_HINT FSetElementId Add(const InElementType&  InElement, bool* bIsAlreadyInSetPtr = nullptr)
+	                                  ^
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,83): note: ﾡﾰFSetElementId TSet<FString,DefaultKeyFuncs<InElementType,false>,FDefaultSetAllocator>::Add(const InElementType &,bool *)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 1 ﾴￓﾡﾰconst Tﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst InElementType &ﾡﾱ
+        with
+        [
+            InElementType=FString
+        ]
+        and
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        and
+        [
+            InElementType=FString
+        ]
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(Entry.Key);
+                                                                                  ^
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,92): note: ￔﾭￒ￲￈￧ￏￂ: ￎ￞ﾷﾨﾴￓﾡﾰconst Tﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst InElementTypeﾡﾱ
+        with
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        and
+        [
+            InElementType=FString
+        ]
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(Entry.Key);
+                                                                                           ^
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,92): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.cpp(290,83): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(const T)ﾡﾱￊﾱ
+        with
+        [
+            T=UE::JSON::Private::FJsonObjectSharedStringStorage::FStringType
+        ]
+        if(BaselinePositions)for(const auto& Entry:BaselinePositions->Values)Uavs.Add(Entry.Key);
+                                                                                  ^
+[28/44] Compile [x64] OperationalContextTest.cpp [NoUba]
+[29/44] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[30/44] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[31/44] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+[32/44] Compile [x64] PlanMissionActionsTest.cpp [NoUba]
+[33/44] Compile [x64] RouteEditCameraLockTest.cpp [NoUba]
+[34/44] Compile [x64] RouteVisualQA.cpp [NoUba]
+[35/44] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+[36/44] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[37/44] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[38/44] Compile [x64] Stage1HeaderWidget.cpp [NoUba]
+[39/44] Compile [x64] UE5DroneControl.cpp [NoUba]
+[40/44] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[41/44] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 217.60 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 222.46 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 34.5kb

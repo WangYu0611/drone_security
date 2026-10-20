@@ -1,0 +1,76 @@
+{
+  "generated_utc": "2026-10-20T06:33:28.979905+00:00",
+  "method": "Offline comparison of manifests, SHA-256, byte counts and SVG/PNG native dimensions; no runtime logs or remote downloads read. Native dimensions do not establish rendered layout fidelity.",
+  "Map": {
+    "manifest": {
+      "path": "Content/UI/Figma/Map/manifest.json",
+      "bytes": 8991,
+      "sha256": "20c0c7e4f01f5426cb99b440f5f64cd0a3badefb15b1613185343416801023ce"
+    },
+    "manifest_entries": 25,
+    "unique_files": 25,
+    "source_file": "Source/UE5DroneControl/Map/FigmaMapStyle.cpp",
+    "source_literal_files": 17,
+    "missing_files": [],
+    "hash_failures": [],
+    "byte_count_failures": [],
+    "native_dimension_failures": [],
+    "conflicting_file_records": [],
+    "unmanifested_disk_files": [],
+    "missing_source_files": [],
+    "unmanifested_source_files": [],
+    "pass": true,
+    "verified_inventory_sha256": "df9accfd3326eafc1c4094dc9a06203eda4c9ce41c398ebf6de09443effce024",
+    "dimensions_review_path": "Content/UI/Figma/Map/manifest.json"
+  },
+  "Video": {
+    "manifest": {
+      "path": "Content/UI/Figma/Video/asset-manifest.json",
+      "bytes": 17225,
+      "sha256": "6771c9a5473de87eb5f9dcde4f69693c37cb8be86a68b6cf01c3505da8b6bc52"
+    },
+    "manifest_entries": 69,
+    "unique_files": 30,
+    "source_file": "Source/UE5DroneControl/Video/VideoShellPresentation.cpp",
+    "source_literal_files": 14,
+    "missing_files": [],
+    "hash_failures": [],
+    "byte_count_failures": [],
+    "native_dimension_failures": [],
+    "conflicting_file_records": [],
+    "unmanifested_disk_files": [],
+    "missing_source_files": [],
+    "unmanifested_source_files": [],
+    "references": 69,
+    "pass": true,
+    "verified_inventory_sha256": "a496842d6f9fb076a233a5e983857e9a539173c756db750864405306db0bbac9",
+    "dimensions_review_path": "Content/UI/Figma/Video/asset-manifest.json"
+  },
+  "Shared": {
+    "manifest": {
+      "path": "Content/UI/Figma/asset-manifest.json",
+      "bytes": 51814,
+      "sha256": "2d83e08ed02a294379c13cd1d552dceaf16746772ee11f6d71c2bae6e244ab2a"
+    },
+    "manifest_entries": 153,
+    "unique_files": 55,
+    "source_file": "Source/UE5DroneControl/Command/FigmaCommandStyle.cpp",
+    "source_literal_files": 49,
+    "missing_files": [],
+    "hash_failures": [],
+    "byte_count_failures": [],
+    "native_dimension_failures": [],
+    "conflicting_file_records": [],
+    "unmanifested_disk_files": [],
+    "missing_source_files": [],
+    "unmanifested_source_files": [],
+    "pass": true,
+    "verified_inventory_sha256": "206d7b85fc1b3aad1396db18119abffa17d3c3e212f9e1c563aae4db62f63bb5",
+    "dimensions_review_path": "Content/UI/Figma/asset-manifest.json"
+  },
+  "staging": {
+    "path": "Config/DefaultGame.ini",
+    "ui_figma_ufs_enabled": true
+  },
+  "pass": true
+}

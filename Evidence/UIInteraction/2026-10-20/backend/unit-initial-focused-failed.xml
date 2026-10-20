@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="52" failures="2" disabled="0" errors="0" time="0.199" timestamp="2026-10-20T13:10:41.143" name="AllTests">
+  <testsuite name="P52Execution" tests="22" failures="2" disabled="0" skipped="0" errors="0" time="0.051" timestamp="2026-10-20T13:10:41.144">
+    <testcase name="MockHomeTelemetryIsStableAndDoesNotClaimHardware" file="Backend\tests\test_p52_execution.cpp" line="36" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.144" classname="P52Execution" />
+    <testcase name="MockTelemetryRestoresCompletedPositionInsteadOfHome" file="Backend\tests\test_p52_execution.cpp" line="52" status="run" result="completed" time="0.013" timestamp="2026-10-20T13:10:41.144" classname="P52Execution" />
+    <testcase name="MockTelemetryDoesNotMoveForFutureSchedule" file="Backend\tests\test_p52_execution.cpp" line="64" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.157" classname="P52Execution" />
+    <testcase name="MockTelemetryRejectsMissingInvalidAndRealAdapterPositions" file="Backend\tests\test_p52_execution.cpp" line="69" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.158" classname="P52Execution" />
+    <testcase name="SingleUavMoveUsesConfirmedPositionAndCompletes" file="Backend\tests\test_p52_execution.cpp" line="80" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.158" classname="P52Execution">
+      <failure message="unknown file&#x0A;C++ exception with description &quot;out of range [boost.json:17 at Backend\build\vcpkg_installed\vcpkg\blds\boost-json\src\ost-1.89.0-76537c35e0.clean\libs\json\include\boost/json/impl/object.ipp:452:5 in function &apos;class boost::system::result&lt;class boost::json::value const &amp;,class boost::system::error_code&gt; __cdecl boost::json::object::try_at(class boost::core::basic_string_view&lt;char&gt;) noexcept const&apos;]&quot; thrown in the test body.&#x0A;" type=""><![CDATA[unknown file
+C++ exception with description "out of range [boost.json:17 at Backend\build\vcpkg_installed\vcpkg\blds\boost-json\src\ost-1.89.0-76537c35e0.clean\libs\json\include\boost/json/impl/object.ipp:452:5 in function 'class boost::system::result<class boost::json::value const &,class boost::system::error_code> __cdecl boost::json::object::try_at(class boost::core::basic_string_view<char>) noexcept const']" thrown in the test body.
+]]></failure>
+    </testcase>
+    <testcase name="SingleUavMoveRetainsOccupancyAndDomainGuards" file="Backend\tests\test_p52_execution.cpp" line="92" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.159" classname="P52Execution">
+      <failure message="Backend\tests\test_p52_execution.cpp:25&#x0A;Expected equality of these values:&#x0A;  e.code&#x0A;    Which is: &quot;DRONE_ACTIVE_PLAN_CONFLICT&quot;&#x0A;  code&#x0A;    Which is: &quot;EXECUTION_CONFLICT&quot;&#x0A;" type=""><![CDATA[Backend\tests\test_p52_execution.cpp:25
+Expected equality of these values:
+  e.code
+    Which is: "DRONE_ACTIVE_PLAN_CONFLICT"
+  code
+    Which is: "EXECUTION_CONFLICT"
+]]></failure>
+    </testcase>
+    <testcase name="SingleUavMoveRetainsPlanReservation" file="Backend\tests\test_p52_execution.cpp" line="101" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.160" classname="P52Execution" />
+    <testcase name="CreateAndExplicitStartStateMachine" file="Backend\tests\test_p52_execution.cpp" line="106" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.162" classname="P52Execution" />
+    <testcase name="PauseResumePreservesPosition" file="Backend\tests\test_p52_execution.cpp" line="107" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.163" classname="P52Execution" />
+    <testcase name="Completion" file="Backend\tests\test_p52_execution.cpp" line="108" status="run" result="completed" time="0.004" timestamp="2026-10-20T13:10:41.164" classname="P52Execution" />
+    <testcase name="AbortStops" file="Backend\tests\test_p52_execution.cpp" line="109" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.169" classname="P52Execution" />
+    <testcase name="ReturnToExplicitHome" file="Backend\tests\test_p52_execution.cpp" line="110" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.170" classname="P52Execution" />
+    <testcase name="DuplicateAndConflictingStarts" file="Backend\tests\test_p52_execution.cpp" line="111" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.171" classname="P52Execution" />
+    <testcase name="ImmutableDeploymentRoute" file="Backend\tests\test_p52_execution.cpp" line="112" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.172" classname="P52Execution" />
+    <testcase name="MissingFixtureFailsWithReason" file="Backend\tests\test_p52_execution.cpp" line="113" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.174" classname="P52Execution" />
+    <testcase name="StaleControlDoesNotMutate" file="Backend\tests\test_p52_execution.cpp" line="114" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.175" classname="P52Execution" />
+    <testcase name="ProgressDoesNotInvalidatePlanVersion" file="Backend\tests\test_p52_execution.cpp" line="115" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.176" classname="P52Execution" />
+    <testcase name="ShutdownPausesAndResumesReturn" file="Backend\tests\test_p52_execution.cpp" line="116" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.177" classname="P52Execution" />
+    <testcase name="DurableRestartRetainsPositionAndContinues" file="Backend\tests\test_p52_execution.cpp" line="117" status="run" result="completed" time="0.012" timestamp="2026-10-20T13:10:41.178" classname="P52Execution" />
+    <testcase name="PersistencePublisherFailureIsAtomic" file="Backend\tests\test_p52_execution.cpp" line="118" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.191" classname="P52Execution" />
+    <testcase name="ReturnCanPauseResumeAndAbort" file="Backend\tests\test_p52_execution.cpp" line="515" status="run" result="completed" time="0.002" timestamp="2026-10-20T13:10:41.192" classname="P52Execution" />
+    <testcase name="PendingStartCanBeAbortedBeforeDispatch" file="Backend\tests\test_p52_execution.cpp" line="520" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.194" classname="P52Execution" />
+  </testsuite>
+  <testsuite name="P54Mission" tests="21" failures="0" disabled="0" skipped="0" errors="0" time="0.108" timestamp="2026-10-20T13:10:41.195">
+    <testcase name="MultiAssignmentCreatesSeparateImmutableTrajectories" file="Backend\tests\test_p52_execution.cpp" line="166" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.195" classname="P54Mission" />
+    <testcase name="MultiHoverAndCompletionStaySeparated" file="Backend\tests\test_p52_execution.cpp" line="167" status="run" result="completed" time="0.05" timestamp="2026-10-20T13:10:41.196" classname="P54Mission" />
+    <testcase name="GroupPauseIsAtomic" file="Backend\tests\test_p52_execution.cpp" line="168" status="run" result="completed" time="0.004" timestamp="2026-10-20T13:10:41.246" classname="P54Mission" />
+    <testcase name="DuplicateAndTooCloseAssignmentsRejectAtomically" file="Backend\tests\test_p52_execution.cpp" line="169" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.251" classname="P54Mission" />
+    <testcase name="IntersectingApproachesBlockStart" file="Backend\tests\test_p52_execution.cpp" line="170" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.251" classname="P54Mission" />
+    <testcase name="MissingAltitudeDatumRejected" file="Backend\tests\test_p52_execution.cpp" line="173" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.252" classname="P54Mission" />
+    <testcase name="AGLResolvesOnceInRuntimeSnapshot" file="Backend\tests\test_p52_execution.cpp" line="174" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.252" classname="P54Mission" />
+    <testcase name="SchedulePersistsAndCancelsWithoutMoving" file="Backend\tests\test_p52_execution.cpp" line="175" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.253" classname="P54Mission" />
+    <testcase name="ScheduleStartNowUsesSameStateMachine" file="Backend\tests\test_p52_execution.cpp" line="176" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.254" classname="P54Mission" />
+    <testcase name="InvalidScheduleDoesNotPartiallyCreateGroup" file="Backend\tests\test_p52_execution.cpp" line="177" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.256" classname="P54Mission" />
+    <testcase name="ScheduleRestartAndReschedule" file="Backend\tests\test_p52_execution.cpp" line="178" status="run" result="completed" time="0.012" timestamp="2026-10-20T13:10:41.257" classname="P54Mission" />
+    <testcase name="GroupMovePreservesRelativePositions" file="Backend\tests\test_p52_execution.cpp" line="180" status="run" result="completed" time="0.007" timestamp="2026-10-20T13:10:41.269" classname="P54Mission" />
+    <testcase name="InsufficientGroupSpaceRejectsAtomically" file="Backend\tests\test_p52_execution.cpp" line="181" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.277" classname="P54Mission" />
+    <testcase name="SharedGroupSelectionIsDurableAndPrimaryIsMember" file="Backend\tests\test_p52_execution.cpp" line="182" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.279" classname="P54Mission" />
+    <testcase name="ThreeAircraftCompleteDistinctSlots" file="Backend\tests\test_p52_execution.cpp" line="184" status="run" result="completed" time="0.01" timestamp="2026-10-20T13:10:41.279" classname="P54Mission" />
+    <testcase name="MissingGroupTargetCoordinateRejectsAtomically" file="Backend\tests\test_p52_execution.cpp" line="192" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.289" classname="P54Mission" />
+    <testcase name="ScheduledDeadlineSurvivesGracefulShutdown" file="Backend\tests\test_p52_execution.cpp" line="294" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.290" classname="P54Mission" />
+    <testcase name="RealGroupFailureHoldsRemainingMembers" file="Backend\tests\test_p52_execution.cpp" line="295" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.291" classname="P54Mission" />
+    <testcase name="RealMeasuredCrossingHoldsBothMembers" file="Backend\tests\test_p52_execution.cpp" line="302" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.293" classname="P54Mission" />
+    <testcase name="RealFaultWhilePausedReleasesWholeGroup" file="Backend\tests\test_p52_execution.cpp" line="311" status="run" result="completed" time="0.002" timestamp="2026-10-20T13:10:41.294" classname="P54Mission" />
+    <testcase name="MixedCompletedGroupCanPauseResumeAndAbortRemainingMembers" file="Backend\tests\test_p52_execution.cpp" line="503" status="run" result="completed" time="0.006" timestamp="2026-10-20T13:10:41.296" classname="P54Mission" />
+  </testsuite>
+  <testsuite name="P54RealAdapter" tests="9" failures="0" disabled="0" skipped="0" errors="0" time="0.04" timestamp="2026-10-20T13:10:41.303">
+    <testcase name="SameControllerUsesMeasuredArrivalAndHover" file="Backend\tests\test_p52_execution.cpp" line="256" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.303" classname="P54RealAdapter" />
+    <testcase name="PauseHoldsAndResumeReissuesThroughSameController" file="Backend\tests\test_p52_execution.cpp" line="263" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.305" classname="P54RealAdapter" />
+    <testcase name="RejectedTransportCannotFabricateArrival" file="Backend\tests\test_p52_execution.cpp" line="267" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.307" classname="P54RealAdapter" />
+    <testcase name="RejectedHoldIsReported" file="Backend\tests\test_p52_execution.cpp" line="268" status="run" result="completed" time="0.001" timestamp="2026-10-20T13:10:41.308" classname="P54RealAdapter" />
+    <testcase name="RestartPausesRealWithoutDispatch" file="Backend\tests\test_p52_execution.cpp" line="269" status="run" result="completed" time="0.019" timestamp="2026-10-20T13:10:41.309" classname="P54RealAdapter" />
+    <testcase name="MockDocumentCannotBecomeRealFlight" file="Backend\tests\test_p52_execution.cpp" line="276" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.329" classname="P54RealAdapter" />
+    <testcase name="PublicationFailureKeepsDurableRealIntent" file="Backend\tests\test_p52_execution.cpp" line="279" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.330" classname="P54RealAdapter" />
+    <testcase name="FailedPreflightDoesNotSendOrHold" file="Backend\tests\test_p52_execution.cpp" line="320" status="run" result="completed" time="0." timestamp="2026-10-20T13:10:41.330" classname="P54RealAdapter" />
+    <testcase name="ScheduledObservationLossFailsAtomically" file="Backend\tests\test_p52_execution.cpp" line="322" status="run" result="completed" time="0.012" timestamp="2026-10-20T13:10:41.331" classname="P54RealAdapter" />
+  </testsuite>
+</testsuites>

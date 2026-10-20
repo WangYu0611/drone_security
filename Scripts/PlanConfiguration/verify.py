@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import socket
 import subprocess
 import sys
@@ -52,7 +53,8 @@ def isolated_config(http_port, ws_port, directory):
         raise RuntimeError('The normal Launcher configuration does not resolve an Unreal Editor')
     config.update(http_endpoint=f'http://127.0.0.1:{http_port}',
                   ws_endpoint=f'ws://127.0.0.1:{ws_port}/ws',
-                  runtime_directory=directory, mock_fixture='Backend/mock_execution.json')
+                  runtime_directory=directory, mock_fixture='Backend/mock_execution.json',
+                  mock_reset_on_start=False)
     return config
 
 
@@ -135,10 +137,16 @@ def main(argv=None):
     parser.add_argument('--ws-port', type=int, default=22583)
     parser.add_argument('--timeout', type=int, default=300)
     parser.add_argument('--null-rhi', action='store_true', help='Explicit component-only run; never native evidence')
+    parser.add_argument('--startup-state', type=Path,
+                        help='Read-only source of saved JSON state for the production startup visibility test')
+    parser.add_argument('--reset-mock-startup', action='store_true',
+                        help='Use the Launcher Mock formation reset before this isolated run')
     args = parser.parse_args(argv)
     if args.timeout < 1:
         parser.error('--timeout must be positive')
     tests = args.tests or list(DEFAULT_TESTS)
+    if args.startup_state and tests != ['DroneOps.Map.StartupVisibility']:
+        parser.error('--startup-state is restricted to DroneOps.Map.StartupVisibility')
     expected = {}
     for item in args.expected:
         try:
@@ -161,7 +169,8 @@ def main(argv=None):
     results = []
     binary = ROOT / 'Binaries/Win64/UnrealEditor-UE5DroneControl.dll'
     metadata = {'run': run, 'rendering': 'NullRHI component only' if args.null_rhi else 'RHI automation',
-                'ue_module_sha256': sha256(binary) if binary.is_file() else None}
+                'ue_module_sha256': sha256(binary) if binary.is_file() else None,
+                'mock_startup_reset': args.reset_mock_startup}
     write_json(out / 'run.json', metadata)
     guard = SingleInstance(f'http://127.0.0.1:{args.http_port}')
     try:
@@ -174,28 +183,69 @@ def main(argv=None):
             try:
                 config = isolated_config(args.http_port, args.ws_port,
                                          f'Saved/PlanConfiguration-verify-{run}-{number}')
+                config['mock_reset_on_start'] = args.reset_mock_startup
                 metadata['backend'] = str((ROOT / config['backend_executable']).resolve())
                 metadata['backend_sha256'] = sha256(metadata['backend'])
                 write_json(out / 'run.json', metadata)
                 runtime = Runtime(ROOT, config)
+                if args.startup_state:
+                    # Reproduce a restart from a copy; never run a verifier against
+                    # the user's live store or rewrite their confirmed positions.
+                    state_source = args.startup_state.resolve(strict=True)
+                    data = runtime.directory / 'data'
+                    data.mkdir(exist_ok=True)
+                    copied = {}
+                    for filename in ('drones.json', 'security_plans.json', 'operational_context.json', 'video_view.json'):
+                        source = state_source / filename
+                        if source.is_file():
+                            json.loads(source.read_text(encoding='utf-8-sig'))
+                            shutil.copy2(source, data / filename)
+                            copied[filename] = sha256(source)
+                    if 'security_plans.json' not in copied:
+                        raise RuntimeError('Startup state must include security_plans.json')
+                    write_json(report / 'startup-state.json', {'source_sha256': copied})
                 start_owned_backend(runtime, args.http_port, args.ws_port)
-                fixture_script = {
-                    'DroneOps.P4.Workflow.MapLiveDraftGuard': 'p4_ue_route_fixture.mjs',
-                    'DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo': 'p4_workflow_integration.mjs',
-                }.get(test)
-                if fixture_script:
+                # Each Editor has its own writable registry. Parallel acceptance
+                # must not overwrite the user's labels or another test's data.
+                registry = runtime.directory / 'DroneRegistry.json'
+                original_registry = ROOT / 'Saved/DroneRegistry.json'
+                if original_registry.is_file():
+                    shutil.copy2(original_registry, registry)
+                fixture_scripts = {
+                    'DroneOps.PlanConfiguration.MissionActions': [
+                        ('Scripts/PlanConfiguration/mission_fixture.mjs', 'mission-fixture.log')],
+                    'DroneOps.P4.Workflow.MapLiveDraftGuard': [
+                        ('Backend/tests/p4_ue_route_fixture.mjs', 'fixture.log')],
+                    'DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo': [
+                        ('Backend/tests/p4_workflow_integration.mjs', 'fixture.log')],
+                    'DroneOps.P55.ReservationWidgets': [
+                        ('Scripts/P55Fix02/fixture.mjs', '00-p55-route-fixture.log'),
+                        ('Backend/tests/p52_execution_integration.mjs', '01-p52-execution-fixture.log')],
+                }.get(test, [])
+                if fixture_scripts:
                     # Existing regressions declare a named route task or a
                     # deployed plan. Prepare only that case's isolated store.
                     fixture_env = dict(os.environ, P1_HTTP=config['http_endpoint'],
                                        P1_WS=config['ws_endpoint'],
                                        P54_ROUTE_FIXTURE=str(report / 'route-fixture.json'),
                                        P4_EVIDENCE_DIR=str(report / 'p4-fixture'))
-                    with (report / 'fixture.log').open('w', encoding='utf-8') as log:
-                        subprocess.run(['node', str(ROOT / 'Backend/tests' / fixture_script)],
-                                       cwd=ROOT, env=fixture_env, stdout=log, stderr=subprocess.STDOUT,
-                                       timeout=180, check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
-                command = [config['ue_executable'], str(ROOT / config['project']), '/Game/Tests/P55OfflineMap',
-                           '-P55OfflineVisualQA', '-ClientRole=' + role, '-P5Instance=' + str(uuid.uuid4()),
+                    if test == 'DroneOps.P55.ReservationWidgets':
+                        # The UI test requires the named three-mission draft and
+                        # a separate active execution. UAV-04 leaves UAV-01/02/03
+                        # available to the draft; the protocol fixture ends PAUSED.
+                        fixture_env.update(P52_UAV='UAV-04', P52_LONGITUDE='116.34712',
+                                           P52_EVIDENCE_DIR=str(report / 'p52-fixture'))
+                    for fixture_script, log_name in fixture_scripts:
+                        with (report / log_name).open('w', encoding='utf-8') as log:
+                            subprocess.run(['node', str(ROOT / fixture_script)],
+                                           cwd=ROOT, env=fixture_env, stdout=log, stderr=subprocess.STDOUT,
+                                           timeout=180, check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+                production_map = test == 'DroneOps.Map.StartupVisibility'
+                map_arguments = ([config['map']] if production_map
+                                 else ['/Game/Tests/P55OfflineMap', '-P55OfflineVisualQA'])
+                command = [config['ue_executable'], str(ROOT / config['project']), *map_arguments,
+                           '-ClientRole=' + role, '-P5Instance=' + str(uuid.uuid4()),
+                           '-AutomationRegistryFile=' + str(registry),
                            '-P1Http=' + config['http_endpoint'], '-P1Ws=' + config['ws_endpoint'],
                            '-unattended', '-nosplash', '-ExecCmds=Automation RunTests ' + test,
                            '-TestExit=Automation Test Queue Empty', '-ReportExportPath=' + str(report),

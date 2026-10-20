@@ -1,0 +1,734 @@
+{
+  "scope": "Mock initialization and production CesiumWorld small-window rendering",
+  "native_input": "NOT NATIVE VERIFIED",
+  "physical_flight": "NOT VERIFIED",
+  "baseline_rendering_bug": {
+    "run": "Evidence/PlanConfiguration/verification-1792486725331974500",
+    "automation_result": "PASS for the original projection-only assertions",
+    "visual_result": "FAIL: screenshot shows no UAV symbols despite valid projection",
+    "repair": "Convert NativePaint window geometry to desktop coordinates for cached-map hit tests and back to window geometry for clipping."
+  },
+  "undiscovered_baseline_attempt": "Evidence/PlanConfiguration/verification-1792486080031939500",
+  "runs": [
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792487860019372400",
+      "metadata": {
+        "run": "1792487860019372400",
+        "rendering": "RHI automation",
+        "ue_module_sha256": "73f8d8b8a03905794c24cd37993d88dc391380f817d2075f9fe329c29acd7d39",
+        "mock_startup_reset": true,
+        "backend": "Backend\\build\\Release\\DroneBackend.exe",
+        "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+        "ue_module_sha256_after": "73f8d8b8a03905794c24cd37993d88dc391380f817d2075f9fe329c29acd7d39",
+        "binary_unchanged": true,
+        "pass": true
+      },
+      "results": [
+        {
+          "test": "DroneOps.Map.StartupVisibility",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Map.StartupVisibility"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Map.StartupVisibility"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792487860019372400-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792487939052018000",
+      "metadata": {
+        "run": "1792487939052018000",
+        "rendering": "RHI automation",
+        "ue_module_sha256": "73f8d8b8a03905794c24cd37993d88dc391380f817d2075f9fe329c29acd7d39",
+        "mock_startup_reset": true,
+        "backend": "Backend\\build\\Release\\DroneBackend.exe",
+        "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+        "ue_module_sha256_after": "73f8d8b8a03905794c24cd37993d88dc391380f817d2075f9fe329c29acd7d39",
+        "binary_unchanged": true,
+        "pass": false
+      },
+      "results": [
+        {
+          "test": "DroneOps.Fleet.Reselection",
+          "role": "Map",
+          "pass": false,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.Reselection"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.Reselection"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792487939052018000-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.ThreeDimensionalWorkflow"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.ThreeDimensionalWorkflow"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792487939052018000-1",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Figma.MapPresentation",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Figma.MapPresentation"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Figma.MapPresentation"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792487939052018000-2",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Mock.TelemetrySource",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Mock.TelemetrySource"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Mock.TelemetrySource"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792487939052018000-3",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792488260945953400",
+      "metadata": {
+        "run": "1792488260945953400",
+        "rendering": "RHI automation",
+        "ue_module_sha256": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+        "mock_startup_reset": true,
+        "backend": "Backend\\build\\Release\\DroneBackend.exe",
+        "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+        "ue_module_sha256_after": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+        "binary_unchanged": true,
+        "pass": true
+      },
+      "results": [
+        {
+          "test": "DroneOps.Fleet.Reselection",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.Reselection"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.Reselection"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792488260945953400-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.ThreeDimensionalWorkflow"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.ThreeDimensionalWorkflow"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792488260945953400-1",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792488404958500000",
+      "metadata": {
+        "run": "1792488404958500000",
+        "rendering": "RHI automation",
+        "ue_module_sha256": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+        "mock_startup_reset": true,
+        "backend": "Backend\\build\\Release\\DroneBackend.exe",
+        "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+        "ue_module_sha256_after": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+        "binary_unchanged": true,
+        "pass": true
+      },
+      "results": [
+        {
+          "test": "DroneOps.Map.StartupVisibility",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Map.StartupVisibility"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Map.StartupVisibility"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792488404958500000-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    }
+  ],
+  "all_listed_runs_pass": false,
+  "latest_by_test": {
+    "DroneOps.Map.StartupVisibility": {
+      "pass": true,
+      "run": "Evidence/PlanConfiguration/verification-1792488404958500000",
+      "ue_module_sha256": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+      "result": {
+        "test": "DroneOps.Map.StartupVisibility",
+        "role": "Map",
+        "pass": true,
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Map.StartupVisibility"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Map.StartupVisibility"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792488404958500000-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    },
+    "DroneOps.Fleet.Reselection": {
+      "pass": true,
+      "run": "Evidence/PlanConfiguration/verification-1792488260945953400",
+      "ue_module_sha256": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+      "result": {
+        "test": "DroneOps.Fleet.Reselection",
+        "role": "Map",
+        "pass": true,
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.Reselection"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.Reselection"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792488260945953400-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    },
+    "DroneOps.Fleet.ThreeDimensionalWorkflow": {
+      "pass": true,
+      "run": "Evidence/PlanConfiguration/verification-1792488260945953400",
+      "ue_module_sha256": "be473be8b77b626e0101008c90cea5567d77a9841cd563847018a278748112ec",
+      "result": {
+        "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+        "role": "Map",
+        "pass": true,
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.ThreeDimensionalWorkflow"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.ThreeDimensionalWorkflow"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792488260945953400-1",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    },
+    "DroneOps.Figma.MapPresentation": {
+      "pass": true,
+      "run": "Evidence/PlanConfiguration/verification-1792487939052018000",
+      "ue_module_sha256": "73f8d8b8a03905794c24cd37993d88dc391380f817d2075f9fe329c29acd7d39",
+      "result": {
+        "test": "DroneOps.Figma.MapPresentation",
+        "role": "Map",
+        "pass": true,
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Figma.MapPresentation"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Figma.MapPresentation"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792487939052018000-2",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    },
+    "DroneOps.Mock.TelemetrySource": {
+      "pass": true,
+      "run": "Evidence/PlanConfiguration/verification-1792487939052018000",
+      "ue_module_sha256": "73f8d8b8a03905794c24cd37993d88dc391380f817d2075f9fe329c29acd7d39",
+      "result": {
+        "test": "DroneOps.Mock.TelemetrySource",
+        "role": "Map",
+        "pass": true,
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Mock.TelemetrySource"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Mock.TelemetrySource"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792487939052018000-3",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    }
+  },
+  "all_latest_tests_pass": true,
+  "protected_files": {
+    "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset": {
+      "before": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+      "after": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+      "unchanged": true
+    },
+    "Saved/DroneRegistry.json": {
+      "before": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+      "after": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+      "unchanged": true
+    },
+    "Saved/Stage1/data/drones.json": {
+      "before": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+      "after": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+      "unchanged": true
+    },
+    "Saved/Stage1/data/mock_execution.json": {
+      "before": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+      "after": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+      "unchanged": true
+    },
+    "Saved/Stage1/data/operational_context.json": {
+      "before": "1cce598d7c296b74d2b41fb1d2219c66cbde355b8685b0844118abe8493bc27d",
+      "after": "1cce598d7c296b74d2b41fb1d2219c66cbde355b8685b0844118abe8493bc27d",
+      "unchanged": true
+    },
+    "Saved/Stage1/data/security_plans.json": {
+      "before": "7c7940e482e412d12d08245fd371733c25d80ff90cdbe722e1d12f9b395b75b9",
+      "after": "7c7940e482e412d12d08245fd371733c25d80ff90cdbe722e1d12f9b395b75b9",
+      "unchanged": true
+    },
+    "Saved/Stage1/data/ui_preferences.json": {
+      "before": "057a42f866fd2179c57218daae17da32a0ba45888baccbd38ac9882a1186e3e6",
+      "after": "057a42f866fd2179c57218daae17da32a0ba45888baccbd38ac9882a1186e3e6",
+      "unchanged": true
+    },
+    "Saved/Stage1/data/video_view.json": {
+      "before": "d0f68638436d9919bf73f65a9bb6739c17e3d04cb00c9eafd1a0ee51b05d833f",
+      "after": "d0f68638436d9919bf73f65a9bb6739c17e3d04cb00c9eafd1a0ee51b05d833f",
+      "unchanged": true
+    }
+  },
+  "protected_files_unchanged": true,
+  "backend_launcher": "backend/summary.json",
+  "files": [
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/baseline-build-2.log",
+      "source": "Saved/MapStartupVisibility/baseline-build-2.log",
+      "source_sha256": "ea85bc7d0a9f55f583fe51b2ab45b0767be08ff80cac373f1acd56e059d5a519",
+      "public_sha256": "a9011620122c7de9ac6bc54fe9f11373404cfabff51b3dc10436bb0b8ab17b29",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 18
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/baseline-build-3.log",
+      "source": "Saved/MapStartupVisibility/baseline-build-3.log",
+      "source_sha256": "6d14d20040cbc26f7ffdba7d97089acde96428a3fc771c7d6a21fce771128e2e",
+      "public_sha256": "871aa4573adc425b83203af0233565d304e1e3f7dfa9cda3a515e65e8fd043b9",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 4
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/baseline-build.log",
+      "source": "Saved/MapStartupVisibility/baseline-build.log",
+      "source_sha256": "efc837df2ea964d18acb2ae5ccc9a748813b7a7e2a10f0f7120499e107e39f6c",
+      "public_sha256": "1e9acd0375663e75a82c2d5feceaefc62ee36434f7b17cd2de26e9b9d37fffad",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 4
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/fix-build-1792487552676626700.json",
+      "source": "Saved/MapStartupVisibility/fix-build-1792487552676626700.json",
+      "source_sha256": "8f6d3291077ad84f0b3ebd992e5212b41cd9fa7c2032238b286c4a3d7899de61",
+      "public_sha256": "8f6d3291077ad84f0b3ebd992e5212b41cd9fa7c2032238b286c4a3d7899de61",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/fix-build-1792487552676626700.log",
+      "source": "Saved/MapStartupVisibility/fix-build-1792487552676626700.log",
+      "source_sha256": "47f57f0c8d0669dec3573d3f868d140e3daef5c2c028c3d28f7b8aad7019feb8",
+      "public_sha256": "0c58c65c5061f06a8256c8477207f1a56342a30a03fa562579bbc3888e1248fc",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 5
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/fix-build-1792487834481026000.json",
+      "source": "Saved/MapStartupVisibility/fix-build-1792487834481026000.json",
+      "source_sha256": "8b3ba58deb9d01fd1dd2bdba238a19f1c85267faacb90ee4517401a7389f2617",
+      "public_sha256": "8b3ba58deb9d01fd1dd2bdba238a19f1c85267faacb90ee4517401a7389f2617",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/fix-build-1792487834481026000.log",
+      "source": "Saved/MapStartupVisibility/fix-build-1792487834481026000.log",
+      "source_sha256": "b9f38a9fddf26c6c805ebb8b80e898b5e4b465c33651add87b42612decc93140",
+      "public_sha256": "8bd29a4ed7eb6b6b4390fe8926674ff6fb1af913f331130d5d63bea53c9034ce",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 4
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/fix-build-1792488196129263600.json",
+      "source": "Saved/MapStartupVisibility/fix-build-1792488196129263600.json",
+      "source_sha256": "b24936c0816ece920857336ea1baa5d9b4cd83b342d44ff7b9d566a0d9bfcf63",
+      "public_sha256": "b24936c0816ece920857336ea1baa5d9b4cd83b342d44ff7b9d566a0d9bfcf63",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/fix-build-1792488196129263600.log",
+      "source": "Saved/MapStartupVisibility/fix-build-1792488196129263600.log",
+      "source_sha256": "b75c2eb06bd728b8a21e54173919f8270cd811dde8844b9b7a9c8d3817ebe559",
+      "public_sha256": "e58bd52ba0e5b218ee8d81c9ab8ff28b6e9cf4f634475d0bb67196c48210d2a0",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 4
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/localization-console.log",
+      "source": "Saved/MapStartupVisibility/localization-console.log",
+      "source_sha256": "67356e0b45920b13550e889a7f4c08a166b94214009ef54a02385dcd174353d8",
+      "public_sha256": "74b646bd8a44fddc2bc975c7f761159a1279113d2cf08d569ed01fa9d02fff48",
+      "redactions": {
+        "account-path": 12,
+        "machine-id": 1,
+        "repository-path": 31
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/localization-summary.json",
+      "source": "Saved/MapStartupVisibility/localization-summary.json",
+      "source_sha256": "955ca7b4a4a8390760fe639834964f626c4154bfb3ce4674eca8bc4cea0e7a27",
+      "public_sha256": "955ca7b4a4a8390760fe639834964f626c4154bfb3ce4674eca8bc4cea0e7a27",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/localization.log",
+      "source": "Saved/MapStartupVisibility/localization.log",
+      "source_sha256": "f01822514db2dd373464f7f0519b318320cac6483a92f0edf8066f658754d702",
+      "public_sha256": "ec19ae717fe6ddfc48f39d11fa5a8eeeae0c6ca30357d39895d63e7f58bb96bf",
+      "redactions": {
+        "account": 1,
+        "account-path": 17,
+        "machine": 2,
+        "machine-id": 2,
+        "machine-network": 1,
+        "repository-path": 46,
+        "ue-session": 2
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/ue/projectfiles.log",
+      "source": "Saved/MapStartupVisibility/projectfiles.log",
+      "source_sha256": "cd1e2ce68318fba48c9f9588e75cfccce20c199791acab59e0a339b9e1e7bf03",
+      "public_sha256": "749ec6449e07bae457e6b2be387cb7f11e0a8efc593a27960a65b7c3fcbcdc57",
+      "redactions": {
+        "account-path": 2,
+        "repository-path": 5
+      }
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/before/01-startup.png",
+      "source": "Saved/MapStartupQA/20261020-085913/01-startup.png",
+      "source_sha256": "3b53160f4d73b1e7124dbe71dbf48dc94f26897fe5d10cf02c4120276d4d0f5d",
+      "public_sha256": "3b53160f4d73b1e7124dbe71dbf48dc94f26897fe5d10cf02c4120276d4d0f5d",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/before/02-explicit-locate.png",
+      "source": "Saved/MapStartupQA/20261020-085913/02-explicit-locate.png",
+      "source_sha256": "4647d803e913bf42ea86a7b892bd7e1d8b141a9b912b4c679edf273ade1c01a3",
+      "public_sha256": "4647d803e913bf42ea86a7b892bd7e1d8b141a9b912b4c679edf273ade1c01a3",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/before/startup.json",
+      "source": "Saved/MapStartupQA/20261020-085913/startup.json",
+      "source_sha256": "a7aa0555abba8dd1c115ce7e66d02d40a42a5f4d0635df7d43b61b436eab8c65",
+      "public_sha256": "a7aa0555abba8dd1c115ce7e66d02d40a42a5f4d0635df7d43b61b436eab8c65",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/after/01-startup.png",
+      "source": "Saved/MapStartupQA/20261020-092713/01-startup.png",
+      "source_sha256": "b1a85a40480b63b554e99a372cdb74e87c631584d057da040a022cb4c42ff63e",
+      "public_sha256": "b1a85a40480b63b554e99a372cdb74e87c631584d057da040a022cb4c42ff63e",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/after/02-explicit-locate.png",
+      "source": "Saved/MapStartupQA/20261020-092713/02-explicit-locate.png",
+      "source_sha256": "c4f83645eb9f2e17da3c0c7c6db4c211f44101da654587a8cd1fba10214e4d48",
+      "public_sha256": "c4f83645eb9f2e17da3c0c7c6db4c211f44101da654587a8cd1fba10214e4d48",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/after/03-empty-selection-fit-all.png",
+      "source": "Saved/MapStartupQA/20261020-092713/03-empty-selection-fit-all.png",
+      "source_sha256": "05ed49eb30be769842b6b6d94b91804b15b8b739d6daac7ac9688b00b9f69775",
+      "public_sha256": "05ed49eb30be769842b6b6d94b91804b15b8b739d6daac7ac9688b00b9f69775",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/after/startup.json",
+      "source": "Saved/MapStartupQA/20261020-092713/startup.json",
+      "source_sha256": "0eb74301e74b9f48d1554b5a147edfe45f13ab7cba8d4d3ecbab2ac7d014f3b6",
+      "public_sha256": "0eb74301e74b9f48d1554b5a147edfe45f13ab7cba8d4d3ecbab2ac7d014f3b6",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-091935/01-selected-fixed-size-symbols.png",
+      "source": "Saved/MapInteractionQA/20261020-091935/01-selected-fixed-size-symbols.png",
+      "source_sha256": "f5e7d3ac67f93ef1113dcc0bdf57cdf127b638996dec6908c0f803c2a8949580",
+      "public_sha256": "f5e7d3ac67f93ef1113dcc0bdf57cdf127b638996dec6908c0f803c2a8949580",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-091935/03-accepted-single-move.png",
+      "source": "Saved/MapInteractionQA/20261020-091935/03-accepted-single-move.png",
+      "source_sha256": "af9e873a6fe99bc71749657b07cfe3f7b86663383649f73bb6e427f0f84b8950",
+      "public_sha256": "af9e873a6fe99bc71749657b07cfe3f7b86663383649f73bb6e427f0f84b8950",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092501/01-selected-fixed-size-symbols.png",
+      "source": "Saved/MapInteractionQA/20261020-092501/01-selected-fixed-size-symbols.png",
+      "source_sha256": "c3d2ff3b013ac90d470af93288c1e1403bfe977cd220e362513051ecb138cc8c",
+      "public_sha256": "c3d2ff3b013ac90d470af93288c1e1403bfe977cd220e362513051ecb138cc8c",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092501/03-accepted-single-move.png",
+      "source": "Saved/MapInteractionQA/20261020-092501/03-accepted-single-move.png",
+      "source_sha256": "0807713b34d1012844edb146568c084e3e7e689e1a70de52f2efc650c20ec5cf",
+      "public_sha256": "0807713b34d1012844edb146568c084e3e7e689e1a70de52f2efc650c20ec5cf",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092501/reselection-completed-repeat.png",
+      "source": "Saved/MapInteractionQA/20261020-092501/reselection-completed-repeat.png",
+      "source_sha256": "eac78f00afa1f48fd86278458b3b6dfc7b19e288f64133906c167cecd82525f4",
+      "public_sha256": "eac78f00afa1f48fd86278458b3b6dfc7b19e288f64133906c167cecd82525f4",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092501/reselection-executing-subset.png",
+      "source": "Saved/MapInteractionQA/20261020-092501/reselection-executing-subset.png",
+      "source_sha256": "9d4a7afe0f6d8a9af75ec32ea9e7dc06643c4499021a6d4814a3bca1e54d365f",
+      "public_sha256": "9d4a7afe0f6d8a9af75ec32ea9e7dc06643c4499021a6d4814a3bca1e54d365f",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092501/reselection-second-move-completed.png",
+      "source": "Saved/MapInteractionQA/20261020-092501/reselection-second-move-completed.png",
+      "source_sha256": "b3dd68e508a7b436601afe10da2b5545ce3b4f7ec6604704ce600cf69d296730",
+      "public_sha256": "b3dd68e508a7b436601afe10da2b5545ce3b4f7ec6604704ce600cf69d296730",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092559/01-selected-fixed-size-symbols.png",
+      "source": "Saved/MapInteractionQA/20261020-092559/01-selected-fixed-size-symbols.png",
+      "source_sha256": "32c5ad426ca10661db304029fd9e0739153dc5cca742e51d8eeb9a7f1bd3dc1a",
+      "public_sha256": "32c5ad426ca10661db304029fd9e0739153dc5cca742e51d8eeb9a7f1bd3dc1a",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092559/02-3d-move-preview.png",
+      "source": "Saved/MapInteractionQA/20261020-092559/02-3d-move-preview.png",
+      "source_sha256": "e0dfeb3546d9dfd125b4059fc6d1a8c97848ee85b1630f309b5c149c078e0f93",
+      "public_sha256": "e0dfeb3546d9dfd125b4059fc6d1a8c97848ee85b1630f309b5c149c078e0f93",
+      "redactions": {}
+    },
+    {
+      "file": "Evidence/MockStartup/2026-10-20/screenshots/movement/20261020-092559/03-accepted-single-move.png",
+      "source": "Saved/MapInteractionQA/20261020-092559/03-accepted-single-move.png",
+      "source_sha256": "d31cc6aa9b7aafa28eada04397cc80cdf9d8e9e85d42c8b8614cfa385b1b0535",
+      "public_sha256": "d31cc6aa9b7aafa28eada04397cc80cdf9d8e9e85d42c8b8614cfa385b1b0535",
+      "redactions": {}
+    }
+  ]
+}

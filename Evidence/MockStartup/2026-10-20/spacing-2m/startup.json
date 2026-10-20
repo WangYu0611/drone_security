@@ -1,0 +1,1090 @@
+{
+	"evidence_boundary": "Production CesiumWorld RHI, actual Slate hit geometry, component Locate and left-click ACK; isolated Mock Backend; no OS mouse or physical flight verification",
+	"requested_window_width": 1280,
+	"requested_window_height": 800,
+	"initial":
+	{
+		"world": "UEDPIE_0_CesiumWorld",
+		"hydrated": true,
+		"primary": 3,
+		"selection": [
+			3
+		],
+		"map_screen_origin":
+		{
+			"x": 671.16668701171875,
+			"y": 570
+		},
+		"map_local_size":
+		{
+			"x": 1380,
+			"y": 574
+		},
+		"map_screen_size":
+		{
+			"x": 1226.666748046875,
+			"y": 510.2222900390625
+		},
+		"viewport_pixels":
+		{
+			"x": 1280,
+			"y": 803
+		},
+		"viewport_scale": 0.74300557374954224,
+		"camera_focus_target":
+		{
+			"x": 557.00825375318516,
+			"y": 3331.0433534681797,
+			"z": -1300.0091087818146
+		},
+		"camera_focus_actual":
+		{
+			"x": 557.00825375318516,
+			"y": 3331.0433534681797,
+			"z": -1300.0091087818146
+		},
+		"camera_distance_target": 6000,
+		"camera_distance_actual": 6000,
+		"camera_location":
+		{
+			"x": 546.53644334721776,
+			"y": 3331.0433534681797,
+			"z": 4699.9817529767952
+		},
+		"camera_rotation_pyr":
+		{
+			"x": -89.900001525891156,
+			"y": 0,
+			"z": -0
+		},
+		"camera_fov": 60,
+		"painted_uav_ids": [
+			4,
+			3,
+			2,
+			1
+		],
+		"painted_count": 4,
+		"coordinates_ready": true,
+		"camera_focus_projects": true,
+		"camera_focus_projected":
+		{
+			"x": 861.3663330078125,
+			"y": 539.699951171875
+		},
+		"uavs": [
+			{
+				"id": 1,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.34703,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 256.2548844218253,
+					"y": 3331.0435733795166,
+					"z": -1300.0088465213776
+				},
+				"distance_to_focus_target_cm": 300.75336933155461,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 615.0694580078125
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 256.2548844218253,
+						"y": 3331.0435733795166,
+						"z": -1300.0088465213776
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 615.0694580078125
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 256.2548844218253,
+						"y": 3331.0435733795166,
+						"z": -1300.0088465213776
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 615.0694580078125
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 615.0694580078125
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 2,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3470534729863,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 456.7571306824683,
+					"y": 3331.0434795618057,
+					"z": -1300.0089583396912
+				},
+				"distance_to_focus_target_cm": 100.25112307090905,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 565.2718505859375
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 456.7571306824683,
+						"y": 3331.0434795618057,
+						"z": -1300.0089583396912
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 565.2718505859375
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 456.7571306824683,
+						"y": 3331.0434795618057,
+						"z": -1300.0089583396912
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 565.2718505859375
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 565.2718505859375
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 3,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3470769459726,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 657.25937700271595,
+					"y": 3331.0433329343796,
+					"z": -1300.0091332793236
+				},
+				"distance_to_focus_target_cm": 100.25112324953589,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 515.4739990234375
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 657.25937700271595,
+						"y": 3331.0433329343796,
+						"z": -1300.0091332793236
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 515.4739990234375
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 657.25937700271595,
+						"y": 3331.0433329343796,
+						"z": -1300.0091332793236
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 515.4739990234375
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 515.4739990234375
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 4,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3471004189589,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 857.76162308454502,
+					"y": 3331.0431335568428,
+					"z": -1300.0093710422516
+				},
+				"distance_to_focus_target_cm": 300.75336933155461,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 465.67617797851562
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 857.76162308454502,
+						"y": 3331.0431335568428,
+						"z": -1300.0093710422516
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 465.67617797851562
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 857.76162308454502,
+						"y": 3331.0431335568428,
+						"z": -1300.0093710422516
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 465.67617797851562
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 465.67617797851562
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			}
+		],
+		"accepted_count": 4,
+		"projected_count": 4,
+		"visible_count": 4,
+		"accepted_spread_cm": 601.50673866310922
+	},
+	"mock_reset_epoch": 1,
+	"explicit_locate_id": 3,
+	"after_explicit_locate":
+	{
+		"world": "UEDPIE_0_CesiumWorld",
+		"hydrated": true,
+		"primary": 3,
+		"selection": [
+			3
+		],
+		"map_screen_origin":
+		{
+			"x": 671.16668701171875,
+			"y": 570
+		},
+		"map_local_size":
+		{
+			"x": 1380,
+			"y": 574
+		},
+		"map_screen_size":
+		{
+			"x": 1226.666748046875,
+			"y": 510.2222900390625
+		},
+		"viewport_pixels":
+		{
+			"x": 1280,
+			"y": 803
+		},
+		"viewport_scale": 0.74300557374954224,
+		"camera_focus_target":
+		{
+			"x": 657.25937700271595,
+			"y": 3331.0433329343796,
+			"z": -1300.0091332793236
+		},
+		"camera_focus_actual":
+		{
+			"x": 657.25937700271595,
+			"y": 3331.0433329343796,
+			"z": -1300.0091332793236
+		},
+		"camera_distance_target": 6000,
+		"camera_distance_actual": 6000,
+		"camera_location":
+		{
+			"x": 646.78756659674855,
+			"y": 3331.0433329343796,
+			"z": 4699.9817284792862
+		},
+		"camera_rotation_pyr":
+		{
+			"x": -89.900001525891156,
+			"y": 0,
+			"z": -0
+		},
+		"camera_fov": 60,
+		"painted_uav_ids": [
+			4,
+			3,
+			2,
+			1
+		],
+		"painted_count": 4,
+		"coordinates_ready": true,
+		"camera_focus_projects": true,
+		"camera_focus_projected":
+		{
+			"x": 861.3663330078125,
+			"y": 539.699951171875
+		},
+		"uavs": [
+			{
+				"id": 1,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.34703,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 256.2548844218253,
+					"y": 3331.0435733795166,
+					"z": -1300.0088465213776
+				},
+				"distance_to_focus_target_cm": 401.00449258106522,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 640.641357421875
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 256.2548844218253,
+						"y": 3331.0435733795166,
+						"z": -1300.0088465213776
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 640.641357421875
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 256.2548844218253,
+						"y": 3331.0435733795166,
+						"z": -1300.0088465213776
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 640.641357421875
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 640.641357421875
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 2,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3470534729863,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 456.7571306824683,
+					"y": 3331.0434795618057,
+					"z": -1300.0089583396912
+				},
+				"distance_to_focus_target_cm": 200.50224632037759,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 590.8436279296875
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 456.7571306824683,
+						"y": 3331.0434795618057,
+						"z": -1300.0089583396912
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 590.8436279296875
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 456.7571306824683,
+						"y": 3331.0434795618057,
+						"z": -1300.0089583396912
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 590.8436279296875
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 590.8436279296875
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 3,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3470769459726,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 657.25937700271595,
+					"y": 3331.0433329343796,
+					"z": -1300.0091332793236
+				},
+				"distance_to_focus_target_cm": 0,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 539.699951171875
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 657.25937700271595,
+						"y": 3331.0433329343796,
+						"z": -1300.0091332793236
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 539.699951171875
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 657.25937700271595,
+						"y": 3331.0433329343796,
+						"z": -1300.0091332793236
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 539.699951171875
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 539.699951171875
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 4,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3471004189589,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 857.76162308454502,
+					"y": 3331.0431335568428,
+					"z": -1300.0093710422516
+				},
+				"distance_to_focus_target_cm": 200.50224608206918,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 489.90206909179688
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 857.76162308454502,
+						"y": 3331.0431335568428,
+						"z": -1300.0093710422516
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 489.90206909179688
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 857.76162308454502,
+						"y": 3331.0431335568428,
+						"z": -1300.0093710422516
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 489.90206909179688
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 489.90206909179688
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			}
+		],
+		"accepted_count": 4,
+		"projected_count": 4,
+		"visible_count": 4,
+		"accepted_spread_cm": 601.50673866310922
+	},
+	"empty_selection_fit_all":
+	{
+		"world": "UEDPIE_0_CesiumWorld",
+		"hydrated": true,
+		"primary": 0,
+		"selection": [],
+		"map_screen_origin":
+		{
+			"x": 671.16668701171875,
+			"y": 570
+		},
+		"map_local_size":
+		{
+			"x": 1380,
+			"y": 574
+		},
+		"map_screen_size":
+		{
+			"x": 1226.666748046875,
+			"y": 510.2222900390625
+		},
+		"viewport_pixels":
+		{
+			"x": 1280,
+			"y": 803
+		},
+		"viewport_scale": 0.74300557374954224,
+		"camera_focus_target":
+		{
+			"x": 557.00825375318516,
+			"y": 3331.0433534681797,
+			"z": -1300.0091087818146
+		},
+		"camera_focus_actual":
+		{
+			"x": 557.00825375318516,
+			"y": 3331.0433534681797,
+			"z": -1300.0091087818146
+		},
+		"camera_distance_target": 6000,
+		"camera_distance_actual": 6000,
+		"camera_location":
+		{
+			"x": 546.53644334721776,
+			"y": 3331.0433534681797,
+			"z": 4699.9817529767952
+		},
+		"camera_rotation_pyr":
+		{
+			"x": -89.900001525891156,
+			"y": 0,
+			"z": -0
+		},
+		"camera_fov": 60,
+		"painted_uav_ids": [
+			4,
+			3,
+			2,
+			1
+		],
+		"painted_count": 4,
+		"coordinates_ready": true,
+		"camera_focus_projects": true,
+		"camera_focus_projected":
+		{
+			"x": 861.3663330078125,
+			"y": 539.699951171875
+		},
+		"uavs": [
+			{
+				"id": 1,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.34703,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 256.2548844218253,
+					"y": 3331.0435733795166,
+					"z": -1300.0088465213776
+				},
+				"distance_to_focus_target_cm": 300.75336933155461,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 615.0694580078125
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 256.2548844218253,
+						"y": 3331.0435733795166,
+						"z": -1300.0088465213776
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 615.0694580078125
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 256.2548844218253,
+						"y": 3331.0435733795166,
+						"z": -1300.0088465213776
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 615.0694580078125
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 615.0694580078125
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 2,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3470534729863,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 456.7571306824683,
+					"y": 3331.0434795618057,
+					"z": -1300.0089583396912
+				},
+				"distance_to_focus_target_cm": 100.25112307090905,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 565.2718505859375
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 456.7571306824683,
+						"y": 3331.0434795618057,
+						"z": -1300.0089583396912
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 565.2718505859375
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 456.7571306824683,
+						"y": 3331.0434795618057,
+						"z": -1300.0089583396912
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 565.2718505859375
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 565.2718505859375
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 3,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3470769459726,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 657.25937700271595,
+					"y": 3331.0433329343796,
+					"z": -1300.0091332793236
+				},
+				"distance_to_focus_target_cm": 100.25112324953589,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 515.4739990234375
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 657.25937700271595,
+						"y": 3331.0433329343796,
+						"z": -1300.0091332793236
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 515.4739990234375
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 657.25937700271595,
+						"y": 3331.0433329343796,
+						"z": -1300.0091332793236
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 515.4739990234375
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 515.4739990234375
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			},
+			{
+				"id": 4,
+				"painted": true,
+				"telemetry_present": true,
+				"telemetry_source": "mock_reset",
+				"simulation": true,
+				"gps_fix": true,
+				"availability": 1,
+				"accepted_position": true,
+				"accepted_geo_lon_lat_alt":
+				{
+					"x": 116.3471004189589,
+					"y": 39.980699999999999,
+					"z": 30
+				},
+				"accepted_world":
+				{
+					"x": 857.76162308454502,
+					"y": 3331.0431335568428,
+					"z": -1300.0093710422516
+				},
+				"distance_to_focus_target_cm": 300.75336933155461,
+				"raw_projection": true,
+				"raw_widget_point":
+				{
+					"x": 861.3663330078125,
+					"y": 465.67617797851562
+				},
+				"sender":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 857.76162308454502,
+						"y": 3331.0431335568428,
+						"z": -1300.0093710422516
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 465.67617797851562
+					}
+				},
+				"receiver":
+				{
+					"exists": true,
+					"world":
+					{
+						"x": 857.76162308454502,
+						"y": 3331.0431335568428,
+						"z": -1300.0093710422516
+					},
+					"distance_from_accepted_cm": 0,
+					"projects": true,
+					"widget_point":
+					{
+						"x": 861.3663330078125,
+						"y": 465.67617797851562
+					}
+				},
+				"fleet_projects": true,
+				"fleet_point":
+				{
+					"x": 861.3663330078125,
+					"y": 465.67617797851562
+				},
+				"whole_marker_inside_map": true,
+				"visible_outside_controls": true
+			}
+		],
+		"accepted_count": 4,
+		"projected_count": 4,
+		"visible_count": 4,
+		"accepted_spread_cm": 601.50673866310922
+	},
+	"selection_preserved": true,
+	"video_preserved": true
+}

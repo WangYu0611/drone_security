@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "scope": "owned loopback transport; not real hardware",
+  "httpPort": 52380,
+  "wsPort": 52381,
+  "udpPort": 53864,
+  "passed": [],
+  "process_ids": [
+    38360
+  ],
+  "result": "FAIL",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    altitude: 30,\n    latitude: 39.9807,\n+   longitude: 116.34703\n-   longitude: 116.34702999999999\n  }\n\n    at file:///Backend/tests/mock_position_transport.mjs:45:54\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+}

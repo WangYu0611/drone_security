@@ -1,0 +1,21 @@
+{
+  "role": "Map",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Map",
+    "-P5Instance=9acd9bb0-b15d-48a8-a694-c65228aded4e",
+    "-AutomationRegistryFile=Saved\\PlanConfiguration-verify-1792474652354490200-2\\DroneRegistry.json",
+    "-P1Http=http://127.0.0.1:22782",
+    "-P1Ws=ws://127.0.0.1:22783/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.Fleet.ThreeDimensionalWorkflow",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792474652354490200\\02-DroneOps.Fleet.ThreeDimensionalWorkflow",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792474652354490200\\02-DroneOps.Fleet.ThreeDimensionalWorkflow\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792474652354490200-2"
+}

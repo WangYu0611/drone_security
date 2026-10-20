@@ -1,0 +1,37 @@
+{
+  "scope": "New Mock position and singleton controller regression checks",
+  "total": 7,
+  "passed": 7,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "P52Execution.MockHomeTelemetryIsStableAndDoesNotClaimHardware",
+      "status": "PASS"
+    },
+    {
+      "name": "P52Execution.MockTelemetryRestoresCompletedPositionInsteadOfHome",
+      "status": "PASS"
+    },
+    {
+      "name": "P52Execution.MockTelemetryDoesNotMoveForFutureSchedule",
+      "status": "PASS"
+    },
+    {
+      "name": "P52Execution.MockTelemetryRejectsMissingInvalidAndRealAdapterPositions",
+      "status": "PASS"
+    },
+    {
+      "name": "P52Execution.SingleUavMoveUsesConfirmedPositionAndCompletes",
+      "status": "PASS"
+    },
+    {
+      "name": "P52Execution.SingleUavMoveRetainsOccupancyAndDomainGuards",
+      "status": "PASS"
+    },
+    {
+      "name": "P52Execution.SingleUavMoveRetainsPlanReservation",
+      "status": "PASS"
+    }
+  ],
+  "source": "Saved/MockPositionQA/backend-all.xml"
+}

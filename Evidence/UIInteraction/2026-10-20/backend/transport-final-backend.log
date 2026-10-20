@@ -1,0 +1,20 @@
+[2026-10-20 13:20:49.330] [info] [:] Logger initialized. Level=info, File=Saved\MockPositionQA\transport-1792473644950\backend.log
+[2026-10-20 13:20:49.330] [info] [:] ============================================
+[2026-10-20 13:20:49.330] [info] [:]   Drone Backend v1.0.0
+[2026-10-20 13:20:49.330] [info] [:]   HTTP :63839  WS :63840
+[2026-10-20 13:20:49.330] [info] [:] ============================================
+[2026-10-20 13:20:49.331] [info] [:] [UdpSender] JSON protocol session_id=backend-1792473649330163-99d8987a
+[2026-10-20 13:20:49.331] [info] [:] DroneManager created
+[2026-10-20 13:20:49.331] [info] [:] Drone 1 added: slot=1 name=Owned Mock GPS test
+[2026-10-20 13:20:49.331] [info] [:] [Storage] Loaded 1 drones from Saved\MockPositionQA\transport-1792473644950\drones.json
+[2026-10-20 13:20:49.332] [info] [:] [UdpReceiver] Slot 1: listening port 59618 for drone 1
+[2026-10-20 13:20:49.332] [info] [:] [UdpSender] Drone 1 target set: 127.0.0.1:59617
+[2026-10-20 13:20:49.332] [info] [:] [UdpReceiver] Listening on port 59618
+[2026-10-20 13:20:49.333] [info] [:] Backend started. Press Ctrl+C to stop.
+[2026-10-20 13:20:49.334] [info] [:] [WS] Listening on 0.0.0.0:63840
+[2026-10-20 13:20:49.334] [info] [:] [HTTP] Listening on 0.0.0.0:63839
+[2026-10-20 13:20:50.697] [info] [:] [GPS Anchor] Drone 1 first anchor: (40.100000, 116.400000, 75.00m)
+[2026-10-20 13:20:50.697] [info] [:] [StateMachine] Offline -> Online (PowerOn)
+[2026-10-20 13:20:50.697] [info] [:] [UdpSender] Drone 1 target set: 127.0.0.1:59617
+[2026-10-20 13:20:50.697] [info] [:] [Heartbeat] Started drone 1 slot 1 -> 127.0.0.1:59617 interval=200ms repeat=5
+[2026-10-20 13:20:52.360] [warning] [:] [StateMachine] Online -> Lost (1s timeout)

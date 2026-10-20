@@ -1,0 +1,96 @@
+{
+  "result": "PASS",
+  "scope": "Backend and Launcher source plus isolated Mock fixtures only; no native input or real hardware claim",
+  "initial_build": {
+    "result": "FAIL",
+    "error": "C3861 missing forward declaration of drone_id_from_string",
+    "repair": "Added declaration before HandleHttp",
+    "evidence": "build-initial.log"
+  },
+  "final_build": "PASS",
+  "binary_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+  "targeted_gtest": {
+    "discovered": 15,
+    "failed": 0,
+    "errors": 0,
+    "disabled": 0,
+    "startup_reset_cases": 8,
+    "existing_position_and_singleton_cases": 7
+  },
+  "transport": {
+    "result": "PASS",
+    "passed": 14,
+    "owned_processes_exited": true
+  },
+  "launcher": {
+    "runtime_passed": 10,
+    "source": "Launcher/test_runtime.py + Launcher/test_environment.py",
+    "environment_passed": 8,
+    "runtime_tests": 10,
+    "scope": "isolated unit fixtures; no production data or processes",
+    "timestamp_utc": "2026-10-20T09:00:27.9041420Z",
+    "environment_tests": 8,
+    "py_compile": "PASS"
+  },
+  "production_data_modified": false,
+  "raw_runtime_logs_published": false,
+  "files": [
+    {
+      "file": "build-initial.log",
+      "source": "Saved/MockStartupQA/build.log",
+      "raw_sha256": "aded9c407ce0b993fc1c562de03f30cd9e4d99185188a39896df427ce41d964a",
+      "public_sha256": "9199ce07791dfb31d2d687b2e65ef980cc6cae26336fc7c8f20f475ec7cf3d33",
+      "redactions": {
+        "repository-path": 2
+      }
+    },
+    {
+      "file": "build-final.log",
+      "source": "Saved/MockStartupQA/build-final.log",
+      "raw_sha256": "5729ca017b62ca82c455e271f4173f8b0b6f1afd57243f24242aa1d29326a5e6",
+      "public_sha256": "5fd57111565d8c19d6b478e0e7136e4b06577f041c1bd6b7c6681d8083b2477a",
+      "redactions": {
+        "repository-path": 2
+      }
+    },
+    {
+      "file": "backend-targeted.xml",
+      "source": "Saved/MockStartupQA/backend-targeted.xml",
+      "raw_sha256": "47c2f54b5e7cd612baad4ad0b812d141553e53b8f749a542293d645a9d57fc16",
+      "public_sha256": "8610774212c0550ae3e9c436627daa4af353586362685e05f29ab3f62df7454a",
+      "redactions": {
+        "repository-path": 15
+      }
+    },
+    {
+      "file": "backend-targeted.log",
+      "source": "Saved/MockStartupQA/backend-targeted.log",
+      "raw_sha256": "b9ef24f7bbb6f6842d6f2bafb253bd344929647715d27fb0e94e82c21f3b19f4",
+      "public_sha256": "b9ef24f7bbb6f6842d6f2bafb253bd344929647715d27fb0e94e82c21f3b19f4",
+      "redactions": {}
+    },
+    {
+      "file": "transport.log",
+      "source": "Saved/MockStartupQA/transport.log",
+      "raw_sha256": "6c633ad5922a3b057ed1e971a58fbd9ac7720ecc40ed81d99e6c129ae3641613",
+      "public_sha256": "dcba8d53c649d0b3bb426f7ba539dd72a1ca57ebde4f1594d586059113c79c01",
+      "redactions": {
+        "repository-path": 1
+      }
+    },
+    {
+      "file": "transport-result.json",
+      "source": "Saved/MockPositionQA/transport-1792486963176/result.json",
+      "raw_sha256": "ed89acf4bfb42efa208cd26a5b69081050e77e0ff4506be0fc0011984ce2ab67",
+      "public_sha256": "252028d72db154fc91d0ea2cafdfb4fbaa02507d6b61d3afcb9cd4909cb1fa0c",
+      "redactions": {}
+    },
+    {
+      "file": "launcher-summary.json",
+      "source": "Saved/MockStartupQA/launcher-summary.json",
+      "raw_sha256": "dc6f0e7bbe490742d2f89b26def84c6364c50c2f2ad0992162e66d1f57c8b64d",
+      "public_sha256": "dc6f0e7bbe490742d2f89b26def84c6364c50c2f2ad0992162e66d1f57c8b64d",
+      "redactions": {}
+    }
+  ]
+}

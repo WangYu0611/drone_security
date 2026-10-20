@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.16)
+project(BaselineGeometry LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(spdlog CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
+add_executable(BaselineGeometry tests/test_assembly_planner.cpp execution/assembly_planner.cpp conversion/assignment_solver.cpp)
+target_include_directories(BaselineGeometry PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(BaselineGeometry PRIVATE spdlog::spdlog GTest::gtest_main)

@@ -1,0 +1,137 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (source file added)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandMapInteractionService.cpp, CommandShellFigma.cpp, CommandShellTasks.cpp, CommandShellWidget.cpp, CommandTacticalMap.cpp, FigmaCommandStyle.cpp, FigmaFleetWidget.cpp, GroupControlWidget.cpp, DroneRegistrySubsystem.cpp, DroneNetworkManager.cpp, FigmaMapStyle.cpp, MapExecutionWidget.cpp, MapFleetInteractionWidget.cpp, MapMissionRouteWidget.cpp, MapPlanMoveWidget.cpp, MapShellWidget.cpp, FigmaRoleHeaderWidget.cpp, OperationalContextSubsystem.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, Stage1HeaderWidget.cpp, CommandCenterV2Test.cpp, FigmaCommandTest.cpp, FigmaMapTest.cpp, FigmaVideoTest.cpp, FleetControlTest.cpp, MapPointMoveTest.cpp, MockTelemetryProjectionTest.cpp, PlanConfigurationTests.cpp, PlanMissionActionsTest.cpp, RouteEditCameraLockTest.cpp, VideoShellPresentation.cpp, VideoShellWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 41 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 21.33 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/41] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[2/41] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[3/41] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/41] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[5/41] Compile [x64] CommandShellTasks.cpp [NoUba]
+[6/41] Compile [x64] CommandShellFigma.cpp [NoUba]
+[7/41] Compile [x64] CommandTacticalMap.cpp [NoUba]
+[8/41] Compile [x64] CommandShellWidget.cpp [NoUba]
+[9/41] Compile [x64] FigmaCommandStyle.cpp [NoUba]
+[10/41] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[11/41] Compile [x64] FigmaFleetWidget.cpp [NoUba]
+[12/41] Compile [x64] FigmaMapStyle.cpp [NoUba]
+[13/41] Compile [x64] FigmaRoleHeaderWidget.cpp [NoUba]
+Source\UE5DroneControl\Shared\FigmaRoleHeaderWidget.cpp(47,15): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+        auto* Slot=Buttons->AddChildToHorizontalBox(Button);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+[14/41] Compile [x64] FigmaMapTest.cpp [NoUba]
+[15/41] Compile [x64] FigmaVideoTest.cpp [NoUba]
+[16/41] Compile [x64] FleetControlTest.cpp [NoUba]
+[17/41] Compile [x64] FleetTerrainTest.cpp [NoUba]
+[18/41] Compile [x64] GroupControlWidget.cpp [NoUba]
+[19/41] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[20/41] Compile [x64] MapExtractionTest.cpp [NoUba]
+[21/41] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[22/41] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(38,152): error C4456: ﾡﾰSﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￉ￏￒﾻﾸ￶ﾱﾾﾵ￘￉￹ￃ￷
+        if(auto* S=Cast<UHorizontalBoxSlot>(B->Slot)){S->SetSize(FSlateChildSize(ESlateSizeRule::Fill));S->SetPadding(FMargin(0,3,8,3));}else if(auto* S=Cast<UVerticalBoxSlot>(B->Slot))S->SetPadding(FMargin(0,3));return B;};
+                                                                                                                                                       ^
+Source\UE5DroneControl\Map\MapMissionRouteWidget.cpp(38,18): note: ﾲￎﾼ￻ﾡﾰSﾡﾱﾵￄ￉￹ￃ￷
+        if(auto* S=Cast<UHorizontalBoxSlot>(B->Slot)){S->SetSize(FSlateChildSize(ESlateSizeRule::Fill));S->SetPadding(FMargin(0,3,8,3));}else if(auto* S=Cast<UVerticalBoxSlot>(B->Slot))S->SetPadding(FMargin(0,3));return B;};
+                 ^
+[23/41] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[24/41] Compile [x64] MapShellWidget.cpp [NoUba]
+[25/41] Compile [x64] OperationalContextTest.cpp [NoUba]
+[26/41] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[27/41] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[28/41] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+[29/41] Compile [x64] PlanMissionActionsTest.cpp [NoUba]
+[30/41] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[31/41] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[32/41] Compile [x64] SecurityPlanWorkspacePresentation.cpp [NoUba]
+[33/41] Compile [x64] ProductText.cpp [NoUba]
+[34/41] Compile [x64] Stage1HeaderWidget.cpp [NoUba]
+[35/41] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[36/41] Compile [x64] VideoShellPresentation.cpp [NoUba]
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(67,86): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Asset(Tree,TEXT("988a7.svg"),{156,15},{12.7,1.22}),11.65,17.39,12.7,1.22);
+                                                                                     ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(67,81): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Asset(Tree,TEXT("988a7.svg"),{156,15},{12.7,1.22}),11.65,17.39,12.7,1.22);
+                                                                                ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(67,75): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Asset(Tree,TEXT("988a7.svg"),{156,15},{12.7,1.22}),11.65,17.39,12.7,1.22);
+                                                                          ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(67,69): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Asset(Tree,TEXT("988a7.svg"),{156,15},{12.7,1.22}),11.65,17.39,12.7,1.22);
+                                                                    ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(69,44): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Vertical,11.65,17.39,12.7,1.22);
+                                           ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(69,39): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Vertical,11.65,17.39,12.7,1.22);
+                                      ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(69,33): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Vertical,11.65,17.39,12.7,1.22);
+                                ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(69,27): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(Canvas,Vertical,11.65,17.39,12.7,1.22);
+                          ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(115,83): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+    for(auto* Icon:{Button->AssignedIcon.Get(),Button->ReservedIcon.Get()}){auto* Slot=IconStack->AddChildToOverlay(Icon);Slot->SetHorizontalAlignment(HAlign_Center);Slot->SetVerticalAlignment(VAlign_Center);}
+                                                                                  ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(154,68): error C2039: "SetScrollBarThickness": ﾲﾻￊￇ "UScrollBox" ﾵￄﾳ￉ￔﾱ
+    auto* Scroll=WidgetTree->ConstructWidget<UScrollBox>();Scroll->SetScrollBarThickness({3,3});Scroll->SetAnimateWheelScrolling(true);
+                                                                   ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\ScrollBox.h(25,7): note: ﾲￎﾼ￻ﾡﾰUScrollBoxﾡﾱﾵￄ￉￹ￃ￷
+class UScrollBox : public UPanelWidget
+      ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(185,91): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+    for(int I=0;I<5;++I){auto* Card=MakeFeedButton(true);SecondaryButtons.Add(Card);auto* Slot=SecondaryArea->AddChildToHorizontalBox(Card);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(4,0));}
+                                                                                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(190,96): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(DesignCanvas,Asset(WidgetTree,TEXT("be4b8.svg"),{3089.016,5},{253,.41}),1144,200,253,.41);
+                                                                                               ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(201,78): error C2039: "SetScrollBarThickness": ﾲﾻￊￇ "UScrollBox" ﾵￄﾳ￉ￔﾱ
+    auto* AlertScroll=WidgetTree->ConstructWidget<UScrollBox>();AlertScroll->SetScrollBarThickness({2,2});Fill(AlertsOverlay,AlertScroll);AlertRows=WidgetTree->ConstructWidget<UVerticalBox>();AlertScroll->AddChild(AlertRows);
+                                                                             ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\ScrollBox.h(25,7): note: ﾲￎﾼ￻ﾡﾰUScrollBoxﾡﾱﾵￄ￉￹ￃ￷
+class UScrollBox : public UPanelWidget
+      ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(203,96): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    Place(DesignCanvas,Asset(WidgetTree,TEXT("be4b8.svg"),{3089.016,5},{253,.41}),1145,607,253,.41);
+                                                                                               ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(213,152): warning C4305: ﾡﾰﾲￎￊ�ﾡﾱ: ﾴￓﾡﾰdoubleﾡﾱﾵﾽﾡﾰfloatﾡﾱﾽ￘ﾶￏ
+    auto* Divider=Asset(WidgetTree,TEXT("326dd.svg"),{315.129,7},{26,.58});Divider->SetRenderTransformAngle(-90);Place(DesignCanvas,Divider,334,768,26,.58);
+                                                                                                                                                       ^
+Source\UE5DroneControl\Video\VideoShellPresentation.cpp(226,64): error C4458: ﾡﾰSlotﾡﾱﾵￄ￉￹ￃ￷ￒ￾ﾲ￘￁ￋ￀￠ﾳ￉ￔﾱ
+            for(auto* Layer:{Icon,RetryReadyIcon.Get()}){auto* Slot=IconsLayer->AddChildToOverlay(Layer);Slot->SetHorizontalAlignment(HAlign_Center);Slot->SetVerticalAlignment(VAlign_Center);}
+                                                               ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Components\Widget.h(264,25): note: ﾲￎﾼ￻ﾡﾰUWidget::Slotﾡﾱﾵￄ￉￹ￃ￷
+	TObjectPtr<UPanelSlot> Slot;
+	                       ^
+[37/41] Compile [x64] VideoShellWidget.cpp [NoUba]
+[38/41] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 192.50 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 197.39 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 33.0kb

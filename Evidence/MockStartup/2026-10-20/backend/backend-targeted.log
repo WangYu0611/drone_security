@@ -1,0 +1,42 @@
+Note: Google Test filter = *StartupReset*:*SingleUavMove*:*MockHomeTelemetry*:*MockTelemetry*
+[==========] Running 15 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 12 tests from P52Execution
+[ RUN      ] P52Execution.MockHomeTelemetryIsStableAndDoesNotClaimHardware
+[       OK ] P52Execution.MockHomeTelemetryIsStableAndDoesNotClaimHardware (0 ms)
+[ RUN      ] P52Execution.MockTelemetryRestoresCompletedPositionInsteadOfHome
+[       OK ] P52Execution.MockTelemetryRestoresCompletedPositionInsteadOfHome (13 ms)
+[ RUN      ] P52Execution.MockTelemetryDoesNotMoveForFutureSchedule
+[       OK ] P52Execution.MockTelemetryDoesNotMoveForFutureSchedule (0 ms)
+[ RUN      ] P52Execution.MockTelemetryRejectsMissingInvalidAndRealAdapterPositions
+[       OK ] P52Execution.MockTelemetryRejectsMissingInvalidAndRealAdapterPositions (0 ms)
+[ RUN      ] P52Execution.SingleUavMoveUsesConfirmedPositionAndCompletes
+[       OK ] P52Execution.SingleUavMoveUsesConfirmedPositionAndCompletes (0 ms)
+[ RUN      ] P52Execution.SingleUavMoveRetainsOccupancyAndDomainGuards
+[       OK ] P52Execution.SingleUavMoveRetainsOccupancyAndDomainGuards (0 ms)
+[ RUN      ] P52Execution.SingleUavMoveRetainsPlanReservation
+[       OK ] P52Execution.SingleUavMoveRetainsPlanReservation (1 ms)
+[ RUN      ] P52Execution.StartupResetOrdersNumbersAndKeepsOfflineTelemetry
+[       OK ] P52Execution.StartupResetOrdersNumbersAndKeepsOfflineTelemetry (0 ms)
+[ RUN      ] P52Execution.StartupResetPreservesHistoryAndNewEpochMovementSurvivesReplay
+[       OK ] P52Execution.StartupResetPreservesHistoryAndNewEpochMovementSurvivesReplay (8 ms)
+[ RUN      ] P52Execution.StartupResetDurableBackupRestartAndPublishRollback
+[       OK ] P52Execution.StartupResetDurableBackupRestartAndPublishRollback (27 ms)
+[ RUN      ] P52Execution.StartupResetRejectsInvalidFormationAndRealAdapterAtomically
+[       OK ] P52Execution.StartupResetRejectsInvalidFormationAndRealAdapterAtomically (0 ms)
+[ RUN      ] P52Execution.StartupResetDoesNotRelabelLatestRealExecution
+[       OK ] P52Execution.StartupResetDoesNotRelabelLatestRealExecution (14 ms)
+[----------] 12 tests from P52Execution (68 ms total)
+
+[----------] 3 tests from P54Mission
+[ RUN      ] P54Mission.StartupResetAbortsWholeActiveGroupAndReleasesReservations
+[       OK ] P54Mission.StartupResetAbortsWholeActiveGroupAndReleasesReservations (2 ms)
+[ RUN      ] P54Mission.StartupResetCancelsScheduledGroupWithoutDispatch
+[       OK ] P54Mission.StartupResetCancelsScheduledGroupWithoutDispatch (1 ms)
+[ RUN      ] P54Mission.StartupResetReceivedMemberProtectsEntireActiveGroup
+[       OK ] P54Mission.StartupResetReceivedMemberProtectsEntireActiveGroup (1 ms)
+[----------] 3 tests from P54Mission (5 ms total)
+
+[----------] Global test environment tear-down
+[==========] 15 tests from 2 test suites ran. (73 ms total)
+[  PASSED  ] 15 tests.

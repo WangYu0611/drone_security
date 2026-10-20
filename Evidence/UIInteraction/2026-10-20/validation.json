@@ -1,0 +1,997 @@
+{
+  "base_commit": "61e3362df6c7f69cecd3697d5db1ca095ba892c7",
+  "ue_module_sha256": "7eeb2faeb884448371df4c95912c8ec08420c63c21a45ed74c82d5542903918e",
+  "backend_summary": "backend/summary.json",
+  "ue_latest_cases": {
+    "DroneOps.Fleet.SinglePointMove": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792475216328807800/00-DroneOps.Fleet.SinglePointMove/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "7eeb2faeb884448371df4c95912c8ec08420c63c21a45ed74c82d5542903918e"
+    },
+    "DroneOps.Fleet.Workflow": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474652354490200/01-DroneOps.Fleet.Workflow/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.P54.RouteEditCameraLock.2D": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792473808593001500/02-DroneOps.P54.RouteEditCameraLock/index.json",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807"
+    },
+    "DroneOps.P54.RouteEditCameraLock.3D": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792473808593001500/02-DroneOps.P54.RouteEditCameraLock/index.json",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807"
+    },
+    "DroneOps.PlanConfiguration.MapControls": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792473808593001500/03-DroneOps.PlanConfiguration.MapControls/index.json",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807"
+    },
+    "DroneOps.P4.Workflow.MapLiveDraftGuard": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474652354490200/03-DroneOps.P4.Workflow.MapLiveDraftGuard/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.Figma.ActiveTaskOverview": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/00-DroneOps.Figma.ActiveTaskOverview/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.PlanConfiguration.MissionActions": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/01-DroneOps.PlanConfiguration.MissionActions/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.Command.SinglePointMove": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/02-DroneOps.Command.SinglePointMove/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.Command.MapProjectionInverse": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792473808593162700/03-DroneOps.Command.MapProjectionInverse/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807"
+    },
+    "DroneOps.Command.MapMockSource": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792473808593162700/04-DroneOps.Command.MapMockSource/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807"
+    },
+    "DroneOps.Mock.TelemetrySource": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/03-DroneOps.Mock.TelemetrySource/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.Figma.CommandPresentation": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/04-DroneOps.Figma.CommandPresentation/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.PlanConfiguration.Workspace": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/05-DroneOps.PlanConfiguration.Workspace/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/06-DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.P55.ReservationWidgets": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474643699201300/07-DroneOps.P55.ReservationWidgets/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    },
+    "DroneOps.Fleet.ThreeDimensionalWorkflow": {
+      "state": "Success",
+      "report": "Evidence/PlanConfiguration/verification-1792474652354490200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/index.json",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed"
+    }
+  },
+  "ue_latest_counts": {
+    "total": 17,
+    "passed": 17,
+    "failed": 0
+  },
+  "runs": [
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792473808593001500",
+      "run": "1792473808593001500",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807",
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "238c5813c137dad31a6afeab33d3af1b7a9657b8e35de121267b7b5d4073442e",
+      "ue_module_sha256_after": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807",
+      "binary_unchanged": true,
+      "pass": false,
+      "results": [
+        {
+          "test": "DroneOps.Fleet.SinglePointMove",
+          "role": "Map",
+          "pass": false,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.SinglePointMove"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.SinglePointMove"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593001500-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Fleet.Workflow",
+          "role": "Map",
+          "pass": false,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.Workflow"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.Workflow"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593001500-1",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.P54.RouteEditCameraLock",
+          "role": "Map",
+          "pass": true,
+          "expected": 2,
+          "exit": 0,
+          "discovered": 2,
+          "discovery_log_counts": [
+            2
+          ],
+          "completed": 2,
+          "completed_tests": [
+            "DroneOps.P54.RouteEditCameraLock.2D",
+            "DroneOps.P54.RouteEditCameraLock.3D"
+          ],
+          "passed": 2,
+          "warnings": 0,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.P54.RouteEditCameraLock.2D",
+            "DroneOps.P54.RouteEditCameraLock.3D"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593001500-2",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.MapControls",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.PlanConfiguration.MapControls"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.PlanConfiguration.MapControls"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593001500-3",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+          "role": "Map",
+          "pass": false,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.P4.Workflow.MapLiveDraftGuard"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.P4.Workflow.MapLiveDraftGuard"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593001500-4",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792473808593162700",
+      "run": "1792473808593162700",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807",
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "238c5813c137dad31a6afeab33d3af1b7a9657b8e35de121267b7b5d4073442e",
+      "ue_module_sha256_after": "24e0fae48c3d973ad53821fbd5f1f9595486b7c447ee81701feb7b01b1f2f807",
+      "binary_unchanged": true,
+      "pass": false,
+      "results": [
+        {
+          "test": "DroneOps.Figma.ActiveTaskOverview",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Figma.ActiveTaskOverview"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Figma.ActiveTaskOverview"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.MissionActions",
+          "role": "Command",
+          "pass": false,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.PlanConfiguration.MissionActions"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.PlanConfiguration.MissionActions"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-1",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Command.SinglePointMove",
+          "role": "Command",
+          "pass": false,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Command.SinglePointMove"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Command.SinglePointMove"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-2",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Command.MapProjectionInverse",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Command.MapProjectionInverse"
+          ],
+          "passed": 1,
+          "warnings": 0,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Command.MapProjectionInverse"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-3",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Command.MapMockSource",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Command.MapMockSource"
+          ],
+          "passed": 1,
+          "warnings": 0,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Command.MapMockSource"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-4",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Mock.TelemetrySource",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Mock.TelemetrySource"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Mock.TelemetrySource"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-5",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Figma.CommandPresentation",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Figma.CommandPresentation"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Figma.CommandPresentation"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-6",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792474643699201300",
+      "run": "1792474643699201300",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed",
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "238c5813c137dad31a6afeab33d3af1b7a9657b8e35de121267b7b5d4073442e",
+      "ue_module_sha256_after": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed",
+      "binary_unchanged": true,
+      "pass": true,
+      "results": [
+        {
+          "test": "DroneOps.Figma.ActiveTaskOverview",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Figma.ActiveTaskOverview"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Figma.ActiveTaskOverview"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.MissionActions",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.PlanConfiguration.MissionActions"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.PlanConfiguration.MissionActions"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-1",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Command.SinglePointMove",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Command.SinglePointMove"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Command.SinglePointMove"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-2",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Mock.TelemetrySource",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Mock.TelemetrySource"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Mock.TelemetrySource"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-3",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Figma.CommandPresentation",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Figma.CommandPresentation"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Figma.CommandPresentation"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-4",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.Workspace",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.PlanConfiguration.Workspace"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.PlanConfiguration.Workspace"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-5",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.P4.Workflow.CommandReviewReadonlyCopyAndCombo"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-6",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.P55.ReservationWidgets",
+          "role": "Command",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.P55.ReservationWidgets"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.P55.ReservationWidgets"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-7",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792474652354490200",
+      "run": "1792474652354490200",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed",
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "238c5813c137dad31a6afeab33d3af1b7a9657b8e35de121267b7b5d4073442e",
+      "ue_module_sha256_after": "d9e038c33645a1d27a601c11195ec23611ce85b80c4ed9a8906e54b0d339c1ed",
+      "binary_unchanged": true,
+      "pass": true,
+      "results": [
+        {
+          "test": "DroneOps.Fleet.SinglePointMove",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.SinglePointMove"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.SinglePointMove"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474652354490200-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Fleet.Workflow",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.Workflow"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.Workflow"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474652354490200-1",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.ThreeDimensionalWorkflow"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.ThreeDimensionalWorkflow"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474652354490200-2",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        },
+        {
+          "test": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.P4.Workflow.MapLiveDraftGuard"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.P4.Workflow.MapLiveDraftGuard"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792474652354490200-3",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1792475216328807800",
+      "run": "1792475216328807800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "7eeb2faeb884448371df4c95912c8ec08420c63c21a45ed74c82d5542903918e",
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "238c5813c137dad31a6afeab33d3af1b7a9657b8e35de121267b7b5d4073442e",
+      "ue_module_sha256_after": "7eeb2faeb884448371df4c95912c8ec08420c63c21a45ed74c82d5542903918e",
+      "binary_unchanged": true,
+      "pass": true,
+      "results": [
+        {
+          "test": "DroneOps.Fleet.SinglePointMove",
+          "role": "Map",
+          "pass": true,
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Fleet.SinglePointMove"
+          ],
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Fleet.SinglePointMove"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1792475216328807800-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/logs/UIFollowup-build-initial.log",
+      "raw_sha256": "600b1dc576afd74fc51aeabaab9c1094528f8a80d08364ae8855f343ed2bb66c",
+      "public_sha256": "c14c328b21bda7380d724d095b444f69853b4b92eb774aca520af60db306c17c",
+      "redactions": {
+        "account-path": 9,
+        "repository-path": 36
+      }
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/logs/UIFollowup-build-final.log",
+      "raw_sha256": "8cac128c91578e6c6cefb31468489178ee020c0640781a4e87db8d8b0c136e65",
+      "public_sha256": "c5d75718149794ed802774627689929fd4207d0a0f1890e086fde0928b10f89d",
+      "redactions": {
+        "account-path": 9,
+        "repository-path": 18
+      }
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/logs/UIFollowup-build-reviewed.log",
+      "raw_sha256": "65896f56353ec88dee4e211257106b2ea09589aac14f855ffbd3f3c0613e8769",
+      "public_sha256": "ce75ec6322058eba9cc178f9fad8954cd26e0cac9a10d1c85c4b30c35c885a4a",
+      "redactions": {
+        "account-path": 9,
+        "repository-path": 15
+      }
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/logs/UIFollowup-build-visual.log",
+      "raw_sha256": "5b402dda8185396c332a9acf51de5e88564823b10b40fbd802326fc33f53f44d",
+      "public_sha256": "ccd49e18cbeb9861a59915e249db421003f3c87be2275f2e172f6424761905d0",
+      "redactions": {
+        "account-path": 9,
+        "repository-path": 12
+      }
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/logs/UIFollowup-localization.log",
+      "raw_sha256": "566feb94a218050cfedeaa232db79906efd54e38175a67d8e07c281b0d7456a8",
+      "public_sha256": "a96455824ef4e829f629863fd3579e7c936350f12b6087ce53c1db774e1de71c",
+      "redactions": {
+        "account": 3,
+        "account-path": 17,
+        "machine": 2,
+        "machine-network": 1,
+        "repository-path": 44,
+        "ue-session": 2
+      }
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/logs/UIFollowup-localization-console.log",
+      "raw_sha256": "df06531d8147d8b80d4314b418326a1966ad59e7b96eac09eddcbc6799842dc9",
+      "public_sha256": "9b8ffac3a0e6946ff3ffa16b77eeeb68b2058b5b7d1c53c772e76256f4f88de6",
+      "redactions": {
+        "account": 1,
+        "account-path": 12,
+        "repository-path": 30
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/01-overview.png",
+      "source": "Saved/FigmaQA/20261020-054059/01-overview.png",
+      "sha256": "dc420cf9e583b4071b001206d3e38fbc24b2d3c6a2acf81e456b890e081fefda"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/02-devices.png",
+      "source": "Saved/FigmaQA/20261020-054059/02-devices.png",
+      "sha256": "ea6fdc0207ef041fc93a17fe7be24b3c9e3709cd13466a52b8b96c577641ca9c"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/03-alerts.png",
+      "source": "Saved/FigmaQA/20261020-054059/03-alerts.png",
+      "sha256": "26a0c55a6081f6a3c50accebdb0d9a385dbe33d19458f1fb1159aa2f96ab40d6"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/04-logs.png",
+      "source": "Saved/FigmaQA/20261020-054059/04-logs.png",
+      "sha256": "ee88e87826641c12d9dac5fbcaa64ad41924cc5d3e1fbfd25fbca7a8191cd77f"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/05-plans.png",
+      "source": "Saved/FigmaQA/20261020-054059/05-plans.png",
+      "sha256": "8a7943c156bdee75e871ec2d1de6ec0878f955bf5f5751124b9892aaeed75c36"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/06-new-plan.png",
+      "source": "Saved/FigmaQA/20261020-054059/06-new-plan.png",
+      "sha256": "bd6042b3458e82ce8999d400127065bd054a58f2260d8b22342bad889ecda3ac"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/07-fleet.png",
+      "source": "Saved/FigmaQA/20261020-054059/07-fleet.png",
+      "sha256": "0a6e61460704ce4d1e4e94230b1bd2544ef7dcc2e3d069111897b48bdb6fd33c"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/08-label.png",
+      "source": "Saved/FigmaQA/20261020-054059/08-label.png",
+      "sha256": "de967cda094d5eb1fed4c52c338516fd4dfe0ef1fea71ceee7fb94632f172f46"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/FigmaQA/09-fleet-en.png",
+      "source": "Saved/FigmaQA/20261020-054059/09-fleet-en.png",
+      "sha256": "391e0ba2d818ffe9e8ce7a00b54bca57b316e0458704b87504352a6c238a08ed"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/UIFollowupQA/01-overview-active-tasks.png",
+      "source": "Saved/UIFollowupQA/20261020-053753/01-overview-active-tasks.png",
+      "sha256": "308e392077961673de31bca3f1132a06285f1ee4334583ff249e2b175919d1a6"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/MissionActionsQA/01-deployed-task-list.png",
+      "source": "Saved/MissionActionsQA/20261020-053842/01-deployed-task-list.png",
+      "sha256": "95a258eba530cb01df9ccb45c1e6af5df320d7a93826140e4a2c17752f68d237"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/MissionActionsQA/02-second-task-version-editor.png",
+      "source": "Saved/MissionActionsQA/20261020-053842/02-second-task-version-editor.png",
+      "sha256": "5e737cffcb05fa0a2171d39746bfef65a7e031b008fbf35e5199525db6e81248"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/MissionActionsQA/03-second-task-executing.png",
+      "source": "Saved/MissionActionsQA/20261020-053842/03-second-task-executing.png",
+      "sha256": "5d746b0bba97841749f9b2718c61dba8b87ab00d7a1b1523cd0e3f76cd9e5274"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/MapInteractionQA/01-selected-fixed-size-symbols.png",
+      "source": "Saved/MapInteractionQA/20261020-054734/01-selected-fixed-size-symbols.png",
+      "sha256": "15711dfcb7c43cf71e3fdcd376c617920bdd8a87788c4471be72c7ddb7c52866"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/MapInteractionQA/02-single-point-preview.png",
+      "source": "Saved/MapInteractionQA/20261020-054734/02-single-point-preview.png",
+      "sha256": "b61e4756f126754ea2f50f90f6b77c79f4a7fc0f0981dac81df84f598d9c5d11"
+    },
+    {
+      "file": "Evidence/UIInteraction/2026-10-20/screenshots/MapInteractionQA/03-accepted-single-move.png",
+      "source": "Saved/MapInteractionQA/20261020-054734/03-accepted-single-move.png",
+      "sha256": "4b14e9ea8c42691a2c0450fcc5feb903b95c7df5f0ab6401a7e74575b5427f5e"
+    }
+  ],
+  "user_registry_unchanged": true,
+  "user_registry_sha256": "55c72e09c35ef9bb18f3fa5fe74466efb34db82c880af68e56e36794eeb0b782",
+  "localization": {
+    "generation": "687 keys",
+    "GatherText_steps_exit": 0,
+    "process_exit": 1,
+    "existing_error": "Missing GameFeatureData AssetManager rule; existing at previous Figma integration. Generated English/Chinese resources additionally checked by rendered UI tests."
+  },
+  "boundaries": {
+    "native_mouse": "NOT NATIVE VERIFIED",
+    "hardware_flight": "NOT VERIFIED",
+    "map_visuals": "Offline P55 test map, component/reflected widget actions, not production Cesium terrain or native mouse evidence",
+    "mission_map_peer": "MissionActions uses synthetic hydrated Map role peer for execution permission gate"
+  },
+  "failed_trials_retained": [
+    "Initial UE compile type errors corrected before final builds",
+    "Initial Map NullRHI projection failures; corrected RHI verification retains the same projection assertions",
+    "Initial MissionActions synthetic peer missing hydrated heartbeat; actual gate unchanged",
+    "Initial Command single move unsafe path rejected; regression now verifies refusal and a safe westward route",
+    "Initial screenshot revealed compressed overview map, filled drone symbols and cropped selection text; rendered after corrections"
+  ]
+}

@@ -1,0 +1,40 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" -ProjectFiles -Project=UE5DroneControl.uproject -Game -Engine
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log_GPF.txt
+
+Some Platforms were skipped due to invalid SDK setup: Android, Linux, LinuxArm64.
+See the log file for detailed information
+
+
+Generating VisualStudio project files:
+Discovering modules, targets and source code for project...
+Writing 'Automation_UE5DroneControl.sln'...
+Writing 'Automation_UE5DroneControl.slnx'...
+Writing automation project files took 0.17s
+Adding projects for all targets...
+Adding projects for all targets took 0.31s
+Adding projects for all game projects took 0.00s
+Adding projects for all modules took 0.10s
+Compiling Rules Assemblies 100%
+Creating Build Targets 100%
+Binding IntelliSense data...
+Creating Build Targets took 0.79s
+Binding IntelliSense data... 100%
+Binding IntelliSense data took 1.20s
+Writing project files...
+Building in Apple on Windows mode because the host machine is running Windows...
+Writing 'UE5DroneControl.sln'...
+Writing 'UE5DroneControl.slnx'...
+Writing project files... 100%
+Writing solution file took 0.14s
+Writing project files took 1.33s
+Compiling Rules Assemblies
+
+Generating QueryTargets data for editor...
+Compiling Rules Assemblies 100%
+Writing Query Target Info 100%
+Generating QueryTargets data for editor took 0.02s
+
+Result: Succeeded
+Total execution time: 7.40 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 132.9kb

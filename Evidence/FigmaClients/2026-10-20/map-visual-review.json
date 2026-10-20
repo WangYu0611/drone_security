@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "status": "PASS_WITH_DOCUMENTED_DYNAMIC_DIFFERENCES",
+  "scope": "Final visual review of the four Map client Figma screens; production source remains frozen.",
+  "reviewed_at_utc": "2026-10-20T06:52:23.4123442Z",
+  "screenshot_run": "20261020-064845",
+  "figma_file": "NcGzq4onhsQHsJFAe0JBJe",
+  "figma_page": "2527:1191",
+  "design_canvas": [
+    1440,
+    810
+  ],
+  "method": "Direct visual inspection of all four RHI screenshots against their saved Figma reference screenshots; local asset manifest/hash and declared native-aspect checks.",
+  "blocking_visual_findings": [],
+  "screenshots": [
+    {
+      "file": "01-main.png",
+      "source_relative_path": "Saved/FigmaMapQA/20261020-064845/01-main.png",
+      "sha256": "bea0c63521ddc8a1e0fdb15c29cc0e5c5b6ed3f27c75d12bbdcb511808fcfeae",
+      "pixels": [
+        1920,
+        1083
+      ],
+      "figma_node": "2527:1192",
+      "visual_status": "PASS",
+      "observations": [
+        "Dark label cards restore readable names and telemetry. All four labels fit without overlap. Header, toolbar, fixed-size aircraft SVGs, plus/minus controls and camera hint are visible.",
+        "No aircraft is selected in this initial acknowledged state; no selected ring is fabricated."
+      ]
+    },
+    {
+      "file": "02-dropdown.png",
+      "source_relative_path": "Saved/FigmaMapQA/20261020-064845/02-dropdown.png",
+      "sha256": "fd3c173ab53e93d62712c67015530fd0c29863bd16ad27a7bda423f184174a8a",
+      "pixels": [
+        1920,
+        1083
+      ],
+      "figma_node": "2528:1320",
+      "visual_status": "PASS",
+      "observations": [
+        "Four device rows contain the original drone asset, stable ID, live display name and radio indicator. Menu text fits. Aircraft labels do not paint over the open menu.",
+        "All radio indicators remain unselected before the backend selection acknowledgement."
+      ]
+    },
+    {
+      "file": "03-3d.png",
+      "source_relative_path": "Saved/FigmaMapQA/20261020-064845/03-3d.png",
+      "sha256": "f784fff67e54e2bb69de3d006f5d3617a0796f9cd0b0e3db175504438dc983b4",
+      "pixels": [
+        1920,
+        1083
+      ],
+      "figma_node": "2528:1634",
+      "visual_status": "PASS",
+      "observations": [
+        "3D button is visibly selected. The acknowledged UAV-01 has the purple selection ring and matching label outline. Four labels remain distinct and inside the map.",
+        "Device caption reflects the acknowledged selection; actual projected positions remain unchanged."
+      ]
+    },
+    {
+      "file": "04-route.png",
+      "source_relative_path": "Saved/FigmaMapQA/20261020-064845/04-route.png",
+      "sha256": "22d0abaadeb3ebb4014995c931b3381b97e7c01e49bf6468c7cb149288550e20",
+      "pixels": [
+        1920,
+        1083
+      ],
+      "figma_node": "2528:1742",
+      "visual_status": "PASS",
+      "observations": [
+        "Route sidebar fits beside the narrowed map. Dark labels form separate rows with leaders and do not overlap the sidebar, zoom controls or camera hint. Header and route toolbar remain complete.",
+        "This screenshot has no active editable route; waypoint actions are visibly disabled. The sidebar is scrollable and is not evidence of a populated route execution."
+      ]
+    }
+  ],
+  "common_checks": {
+    "dark_label_fill_and_readable_text": "PASS",
+    "telemetry_text_inside_cards": "PASS",
+    "label_collision_avoidance_and_leaders": "PASS",
+    "no_labels_over_header_toolbar_dropdown_or_route_sidebar": "PASS",
+    "zoom_plus_and_minus_visible": "PASS",
+    "dark_camera_hint_readable": "PASS",
+    "selected_aircraft_ring_and_outline_visible": "PASS",
+    "original_drone_icons_keep_native_aspect": "PASS",
+    "native_world_viewport_retained": "PASS"
+  },
+  "dynamic_differences": [
+    "The gray P55OfflineMap scene is the actual rendered world viewport. The dark Figma map canvas is not pasted into the application as a screenshot.",
+    "Mock aircraft coordinates remain backend-owned and can project close together. Only annotations are displaced with leaders; fixed aircraft symbols retain their true map coordinates.",
+    "Live labels include stable IDs, editable names, altitude and simulation state. They are larger than the reference name-only pills to retain existing operational information.",
+    "Box selection and fleet move toolbar actions are retained from the accepted workflow in addition to the Figma actions.",
+    "System and role indicators reflect actual backend/client availability. Offline roles are not painted green to imitate the reference.",
+    "An error banner appears only for an actual route failure; the reference error is not fabricated in this no-error fixture.",
+    "The camera hint describes the accepted manual middle-button pan, right-button orbit and wheel zoom behavior during route editing."
+  ],
+  "assets": {
+    "manifest": "Content/UI/Figma/Map/manifest.json",
+    "local_file_count": 25,
+    "all_nonempty_and_hashes_match": true,
+    "dimension_review": "Evidence/FigmaClients/2026-10-20/map-asset-dimensions.json",
+    "mapped_native_aspects_valid": true,
+    "files": [
+      {
+        "file": "54a8a.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "251",
+        "native_height": "251"
+      },
+      {
+        "file": "d6015.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "263",
+        "native_height": "263"
+      },
+      {
+        "file": "18e1c.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "267.584",
+        "native_height": "267.584"
+      },
+      {
+        "file": "9dfdd.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "32",
+        "native_height": "32"
+      },
+      {
+        "file": "f088c.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "543.134",
+        "native_height": "314.596"
+      },
+      {
+        "file": "32639.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "2199.44",
+        "native_height": "197.22"
+      },
+      {
+        "file": "326dd.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "315.129",
+        "native_height": "7"
+      },
+      {
+        "file": "07f8a.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "112",
+        "native_height": "112"
+      },
+      {
+        "file": "8ea89.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "138",
+        "native_height": "20"
+      },
+      {
+        "file": "f21a9.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "138",
+        "native_height": "138"
+      },
+      {
+        "file": "a7c2b.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "543",
+        "native_height": "314.517"
+      },
+      {
+        "file": "1c6e1.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "108.396",
+        "native_height": "66.2944"
+      },
+      {
+        "file": "6edcf.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "260",
+        "native_height": "260"
+      },
+      {
+        "file": "d6343.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "610.2",
+        "native_height": "610.2"
+      },
+      {
+        "file": "24dbc.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "543",
+        "native_height": "314.517"
+      },
+      {
+        "file": "9c126.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "108.396",
+        "native_height": "66.2944"
+      },
+      {
+        "file": "db870.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "208",
+        "native_height": "208"
+      },
+      {
+        "file": "6f178.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "4590.01",
+        "native_height": "5"
+      },
+      {
+        "file": "7fed1.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "543.134",
+        "native_height": "314.596"
+      },
+      {
+        "file": "1d2be.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "267.584",
+        "native_height": "267.584"
+      },
+      {
+        "file": "417f1.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "212",
+        "native_height": "212"
+      },
+      {
+        "file": "41176.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "114",
+        "native_height": "114"
+      },
+      {
+        "file": "80c89.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "319",
+        "native_height": "184.771"
+      },
+      {
+        "file": "59e33.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "212",
+        "native_height": "212"
+      },
+      {
+        "file": "6422d.svg",
+        "nonempty": true,
+        "hash_matches_manifest": true,
+        "native_width": "2908.01",
+        "native_height": "1"
+      }
+    ],
+    "callsites": [
+      "Source/UE5DroneControl/Map/FigmaMapStyle.cpp",
+      "Source/UE5DroneControl/Map/MapShellWidget.cpp",
+      "Source/UE5DroneControl/Map/MapFleetInteractionWidget.cpp",
+      "Source/UE5DroneControl/Map/MapMissionRouteWidget.cpp",
+      "Source/UE5DroneControl/Shared/FigmaRoleHeaderWidget.cpp"
+    ],
+    "effective_render_geometry": [
+      "Toolbar assets fit 22x22 logical boxes; original route asset rotation is retained.",
+      "World aircraft SVG is aspect-fitted to 28x28 logical pixels and selected ring is 36x36. The full-viewport painter is not scaled with the UI chrome.",
+      "Device menu drone assets fit 24x16 logical boxes and radio rings fit 17x17.",
+      "Zoom plus/minus assets fit 12x12 logical boxes with centered slot padding; both strokes are visible in the final screenshots.",
+      "Hint asset fits a 16x16 logical box; dark card provides stable contrast against the rendered world.",
+      "Shared header reuses exact brand and status assets; header is fully visible in every reviewed frame."
+    ]
+  },
+  "related_automation": [
+    {
+      "test": "DroneOps.Figma.MapPresentation",
+      "result": "Evidence/PlanConfiguration/verification-1792478895558095500/00-DroneOps.Figma.MapPresentation/result.json",
+      "discovered": 1,
+      "completed": 1,
+      "passed": 1,
+      "failed": 0,
+      "warnings": 1
+    },
+    {
+      "test": "DroneOps.Figma.MapLabelLayout",
+      "result": "Evidence/PlanConfiguration/verification-1792478895558095500/01-DroneOps.Figma.MapLabelLayout/result.json",
+      "discovered": 1,
+      "completed": 1,
+      "passed": 1,
+      "failed": 0,
+      "warnings": 0
+    }
+  ],
+  "evidence_boundary": [
+    "RHI rendering and component/widget-driven interaction evidence; not OS-native mouse-driven verification.",
+    "Offline synthetic/Mock fixture; not live Cesium imagery or real aircraft flight evidence.",
+    "These four screenshots do not cover an active route, point-move preview, target confirmation, English layout or every font-size customization. Their separate automated checks remain distinct."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "role": "Command",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Command",
+    "-P5Instance=9dd82457-1716-47ad-ad7d-80fc7e995c4f",
+    "-AutomationRegistryFile=Saved\\PlanConfiguration-verify-1792473808593162700-2\\DroneRegistry.json",
+    "-P1Http=http://127.0.0.1:22682",
+    "-P1Ws=ws://127.0.0.1:22683/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.Command.SinglePointMove",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792473808593162700\\02-DroneOps.Command.SinglePointMove",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792473808593162700\\02-DroneOps.Command.SinglePointMove\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792473808593162700-2"
+}

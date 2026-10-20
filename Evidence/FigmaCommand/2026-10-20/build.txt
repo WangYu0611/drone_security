@@ -1,0 +1,123 @@
+Log started at 10/20/2026 12:56:38 (2026-10-20T04:56:38Z)
+Resolved project argument UE5DroneControl.uproject to UE5DroneControl.uproject
+No config file at C:\ProgramData\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at <USER>\AppData\Local\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at <USER>\Documents\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Configuration will be read from:
+  <USER>\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (Intermediate\Build\XmlConfigCache.bin): <USER>\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (Intermediate\Build\XmlConfigCache.bin): Saved\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (Intermediate\Build\XmlConfigCache.bin): <USER>\AppData\Local\UnrealEngine\Intermediate\Build\UnrealBuildTool.Env.BuildConfiguration.xml
+Setting temp directory to '<USER>\AppData\Local\Temp\UnrealBuildTool\eb6d2d82'
+    Registering build platform: UnrealBuildTool.AndroidPlatformFactory
+Unable to find valid SDK(s) for Android:
+  Found Sdk Version, MinRequired=r27c, MaxRequired=r29.
+  Found AutoSdk Version, Required=r27c.
+        Registering build platform: Android - buildable: False
+    Registering build platform: UnrealBuildTool.IOSPlatformFactory
+IOS Installed SDK(s): MinVersion_Sdk=1100.0.0.0, MaxVersion_Sdk=8999.0, CurrentVersion_Sdk=1860.2.5.1, Version_AutoSdk=26.1.1, CurrentVersion_AutoSdk=
+        Registering build platform: IOS - buildable: True
+    Registering build platform: UnrealBuildTool.LinuxPlatformFactory
+Unable to find valid SDK(s) for Linux:
+  Found Sdk Version, Required=v26_clang-20.1.8-rockylinux8.
+  Found AutoSdk Version, Required=v26_clang-20.1.8-rockylinux8.
+        Registering build platform: Linux - buildable: False
+Unable to find valid SDK(s) for LinuxArm64:
+  Found Sdk Version, Required=v26_clang-20.1.8-rockylinux8.
+  Found AutoSdk Version, Required=v26_clang-20.1.8-rockylinux8.
+        Registering build platform: LinuxArm64 - buildable: False
+    Registering build platform: UnrealBuildTool.MacPlatformFactory
+    Registering build platform: UnrealBuildTool.TVOSPlatformFactory
+TVOS Installed SDK(s): MinVersion_Sdk=1100.0.0.0, MaxVersion_Sdk=8999.0, CurrentVersion_Sdk=1860.2.5.1, Version_AutoSdk=26.1.1, CurrentVersion_AutoSdk=
+        Registering build platform: TVOS - buildable: True
+    Registering build platform: UnrealBuildTool.WindowsPlatformFactory
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (1)
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (2)
+Found Windows 10 SDK version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Found Universal CRT version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Win64 Installed SDK(s): MinVersion_Sdk=10.0.19041.0, MaxVersion_Sdk=10.9.99999.0, CurrentVersion_Sdk=10.0.26100.0, Version_AutoSdk=10.0.22621.0, CurrentVersion_AutoSdk=
+        Registering build platform: Win64 - buildable: True
+    Registering build platform: UnrealBuildTool.VisionOSPlatformFactory
+Command line: "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Deleting old log file: <USER>\AppData\Local\UnrealBuildTool\Log-backup-2026.07.10-02.52.03.txt
+Deleting old log file: <USER>\AppData\Local\UnrealBuildTool\Log-backup-2026.07.10-02.52.03.json
+
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5Rules.dll: File is installed
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5ProgramRules.dll: File is installed
+Building UnrealEditor - UE5DroneControlEditor - Win64 - Development
+Generated code is up to date.
+Deleting outdated item: Binaries\Win64\UnrealEditor-UE5DroneControl.pdb
+Deleting outdated item: Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandShellFigma.cpp, CommandShellWidget.cpp, CommandTacticalMap.cpp, FigmaCommandStyle.cpp, FigmaFleetWidget.cpp, GroupControlWidget.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, CommandCenterV2Test.cpp, FigmaCommandTest.cpp, PlanConfigurationTests.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 4 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 20.34 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+  UBA RootDir C:\ProgramData\Epic\UnrealBuildAccelerator
+Cache bucket 812248844 used. Action: Compile [x64] SecurityPlanWorkspacePresentation.cpp ()
+Cache bucket 416513229 used. Action: Link [x64] UnrealEditor-UE5DroneControl.dll ()
+All processes queued
+[1/4] Compile [x64] SecurityPlanWorkspacePresentation.cpp [NoUba]
+[2/4] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[3/4] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[4/4] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 6.95 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+WriteFileIfChanged() wrote 0 changed files of 1 requested writes.
+
+Timeline:
+[  0.000]  +0.393 Main
+   0.014          [  0.014]  +0.085 Apply XmlConfig
+   0.102          [  0.102]  +0.060 AddTelemetry
+   0.179          [  0.179]  +0.214 RegisterPlatforms
+[  0.428]  +0.029 ParseCommandLine
+[  0.522]  +0.036 EngineRulesPlugins
+[  0.562]  +0.026 EngineRulesFetchDirs
+[  0.597]  +0.009 EngineRulesAssembly
+[  0.607]  +0.001 ProgramRulesAssembly
+[  0.613]  +0.002 ProjectRulesAssembly
+[  0.615]  +0.245 CreateTargetRules
+[  0.927]  +0.008 CppDependencyCache
+[  0.950]  +0.104 LoadMakefile
+[  1.056]  +0.000 FindPlugins
+[  1.062]  +0.016 MakefileValid
+   1.078          [  0.016]  +0.000 GitWait
+[  1.079]  +0.075 UE5DroneControlEditor Win64 Development
+[  1.156]  +0.020 UHTWait
+   1.157          [  0.001]  +0.017 UHTManifest
+   1.175          [  0.019]  +0.019 UHTTimestamps
+[  1.201]  +0.003 CppDependencyCache
+[  1.204]  +0.088 Preparing ActionGraph
+   1.218          [  0.013]  +0.005 LinkActions
+   1.223             0.019          [  0.005]  +0.000 DetectActionGraphCycles
+   1.224          [  0.020]  +0.000 GatherPrerequisiteActions
+   1.226          [  0.021]  +0.000 CppDependencyCacheWait
+   1.227          [  0.022]  +0.043 GatherOutdatedActions
+   1.273          [  0.068]  +0.008 LinkActions
+   1.273             0.068          [  0.000]  +0.000 DetectActionGraphCycles
+   1.282          [  0.077]  +0.008 DeleteOutdatedProducedItems
+   1.291          [  0.086]  +0.001 SaveActionHistory
+   1.292          [  0.088]  +0.000 CreateDirectoriesForProducedItems
+[  1.305]  +0.126 GarbageCollect
+[  1.431]  +6.822 <unknown>
+[  8.254]  +0.000 Deploying targets
+[  8.256]  +0.000 DisconnectCache
+[  8.259]  +0.000 SaveCasTable
+[  8.262]  +0.060 Saving caches
+[  8.324]  +0.002 TelemetryService.FlushEvents
+[  8.328]
+
+Result: Succeeded
+Total execution time: 8.33 seconds

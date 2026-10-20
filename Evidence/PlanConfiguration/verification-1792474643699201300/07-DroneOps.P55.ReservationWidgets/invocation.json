@@ -1,0 +1,21 @@
+{
+  "role": "Command",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Command",
+    "-P5Instance=cfb06c04-e78c-45c8-861c-edf88a6fd77c",
+    "-AutomationRegistryFile=Saved\\PlanConfiguration-verify-1792474643699201300-7\\DroneRegistry.json",
+    "-P1Http=http://127.0.0.1:22682",
+    "-P1Ws=ws://127.0.0.1:22683/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.P55.ReservationWidgets",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792474643699201300\\07-DroneOps.P55.ReservationWidgets",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792474643699201300\\07-DroneOps.P55.ReservationWidgets\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792474643699201300-7"
+}

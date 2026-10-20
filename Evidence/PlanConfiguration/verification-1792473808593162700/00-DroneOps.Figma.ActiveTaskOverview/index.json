@@ -1,0 +1,429 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_952b63843724>",
+			"instanceName": "<UE_INSTANCE_db5afe527e85>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.20-05.24.08",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 10.447795867919922,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "ActiveTaskOverview",
+			"fullTestPath": "DroneOps.Figma.ActiveTaskOverview",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_952b63843724>"
+			],
+			"duration": 10.447795867919922,
+			"dateTime": "2026.10.20-05.23.57",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Overview presentation evidence: Saved/UIFollowupQA/20261020-052357",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.23.57"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:22682  WebSocketUrl=ws://127.0.0.1:22683/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.23.58"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.23.58"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.06"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.07"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.08"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.08"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.08"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.08"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Presentation fixture only; no native mouse or real UAV execution claimed.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.24.08"
+				}
+			],
+			"warnings": 30,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

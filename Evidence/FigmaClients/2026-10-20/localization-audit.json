@@ -1,0 +1,164 @@
+{
+  "generated_utc": "2026-10-20T06:33:29.081370+00:00",
+  "scope": "62 new Map/Video/shared-header localization keys",
+  "method": "Catalog and NSLOCTEXT source compared with gathered manifest, en/zh-Hans PO and archives; locres version 3 parsed using UE 5.8 serialization layout to compare compiled translations. No runtime logs read.",
+  "counts": {
+    "required": 62,
+    "VideoUI": 47,
+    "MapUI": 11,
+    "Figma.Header": 4
+  },
+  "keys": [
+    "Figma.Header.BackendOffline",
+    "Figma.Header.BackendOnline",
+    "Figma.Header.SyncPending",
+    "Figma.Header.Synced",
+    "MapUI.CameraHint",
+    "MapUI.CurrentDevice",
+    "MapUI.DefaultSpeed",
+    "MapUI.DefaultSpeedHint",
+    "MapUI.MissionRoute",
+    "MapUI.Operations",
+    "MapUI.RouteEditor",
+    "MapUI.SelectDevice",
+    "MapUI.SpeedInvalid",
+    "MapUI.SpeedRange",
+    "MapUI.ViewVideo",
+    "VideoUI.AI",
+    "VideoUI.ActiveSelection",
+    "VideoUI.Aircraft",
+    "VideoUI.AlertSession",
+    "VideoUI.Alerts",
+    "VideoUI.Behavior",
+    "VideoUI.ConfigureSource",
+    "VideoUI.Current",
+    "VideoUI.Detection",
+    "VideoUI.Drones",
+    "VideoUI.Filter",
+    "VideoUI.Focus",
+    "VideoUI.Four",
+    "VideoUI.InactiveSource",
+    "VideoUI.ModelDisclaimer",
+    "VideoUI.ModelUnavailable",
+    "VideoUI.NA",
+    "VideoUI.Network",
+    "VideoUI.NoAlerts",
+    "VideoUI.NoSource",
+    "VideoUI.NoTarget",
+    "VideoUI.NotConnected",
+    "VideoUI.Online",
+    "VideoUI.Other",
+    "VideoUI.People",
+    "VideoUI.Playback",
+    "VideoUI.Primary",
+    "VideoUI.Record",
+    "VideoUI.Reserved",
+    "VideoUI.Retry",
+    "VideoUI.RetryHint",
+    "VideoUI.RetryUnavailable",
+    "VideoUI.Screenshot",
+    "VideoUI.SelectSource",
+    "VideoUI.SetActive",
+    "VideoUI.SetActiveHint",
+    "VideoUI.Single",
+    "VideoUI.Six",
+    "VideoUI.SourceSet",
+    "VideoUI.Storage",
+    "VideoUI.System",
+    "VideoUI.Title",
+    "VideoUI.Unassigned",
+    "VideoUI.Unavailable",
+    "VideoUI.Unsupported",
+    "VideoUI.Vehicles",
+    "VideoUI.WaitingFrames"
+  ],
+  "source_literal_keys": 62,
+  "missing_referenced_keys": [],
+  "catalog_cpp_manifest_issues": [],
+  "languages": {
+    "en": {
+      "required_keys": 62,
+      "po_covered": 62,
+      "archive_covered": 62,
+      "locres_covered": 62,
+      "compiled_resource": {
+        "version": 3,
+        "entries": 749,
+        "bytes": 55772
+      },
+      "missing_keys": {
+        "po": [],
+        "archive": [],
+        "locres": []
+      },
+      "mismatches": [],
+      "pass": true
+    },
+    "zh-Hans": {
+      "required_keys": 62,
+      "po_covered": 62,
+      "archive_covered": 62,
+      "locres_covered": 62,
+      "compiled_resource": {
+        "version": 3,
+        "entries": 749,
+        "bytes": 49325
+      },
+      "missing_keys": {
+        "po": [],
+        "archive": [],
+        "locres": []
+      },
+      "mismatches": [],
+      "pass": true
+    }
+  },
+  "input_files": [
+    {
+      "path": "Scripts/P4/localization.json",
+      "bytes": 78649,
+      "sha256": "060d8673726cd2dc38668fbc7ddcb85c6c33ab62e7dc8d4bd82fad2f138a1e82"
+    },
+    {
+      "path": "Source/UE5DroneControl/Shared/ProductText.cpp",
+      "bytes": 150355,
+      "sha256": "be22c0e1fd00de71faa6bbfa0d636b96a7985156a7c9a965e1d61c35a0e72a72"
+    },
+    {
+      "path": "Content/Localization/DroneOps/DroneOps.manifest",
+      "bytes": 332726,
+      "sha256": "098d1eb8a95d49a7aaa92b2166b1027b9d58a1c41e9200a2d923a021800c64cb"
+    },
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.po",
+      "bytes": 87752,
+      "sha256": "0f5dfdc69a8838107f66f172bceaa3b09fe216d9c2f3e85bff2ad367747f99b2"
+    },
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.archive",
+      "bytes": 284396,
+      "sha256": "fb830ceb7fdcaec64cb20e95e38cc04f6c0d991a527095fef2b7ce8e99840b8b"
+    },
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.locres",
+      "bytes": 55772,
+      "sha256": "300bac7b0775dde2160f3d86a9ee973baf8e332a39a581610023bb3daba498db"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.po",
+      "bytes": 87721,
+      "sha256": "6bc4ab4db82613108c886f2e3c5837f279b4a3ca00df55cc65c701605b0bf127"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.archive",
+      "bytes": 260190,
+      "sha256": "6b70c536c62058bdcaf397a0e2b982206085e982230e26403d05c352cfb45c83"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.locres",
+      "bytes": 49325,
+      "sha256": "e3a07ea0c042e067e8c0e4840028ff043b68913676c3c2722f3070346fe344f7"
+    }
+  ],
+  "pass": true
+}

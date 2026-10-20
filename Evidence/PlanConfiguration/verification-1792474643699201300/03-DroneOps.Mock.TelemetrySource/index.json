@@ -1,0 +1,1113 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_b92abfbf21db>",
+			"instanceName": "<UE_INSTANCE_e8ab5662e193>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.20-05.40.23",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 2.5481581687927246,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "TelemetrySource",
+			"fullTestPath": "DroneOps.Mock.TelemetrySource",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_b92abfbf21db>"
+			],
+			"duration": 2.5481581687927246,
+			"dateTime": "2026.10.20-05.40.20",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:22682  WebSocketUrl=ws://127.0.0.1:22683/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.20"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] ===== Strict Local Preview Isolation ENABLED =====",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] ===== Strict Local Preview Isolation DISABLED =====",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Synthetic component projection checks; no native mouse or real aircraft evidence.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field scheduled_start_epoch was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field progress was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field total_waypoints was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Field current_waypoint was not found.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogJson: Json Value of type 'Null' used as a 'Number'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.20-05.40.22"
+				}
+			],
+			"warnings": 88,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

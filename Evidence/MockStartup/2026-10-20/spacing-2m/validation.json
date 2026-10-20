@@ -1,0 +1,84 @@
+{
+  "requested_spacing_m": 2,
+  "configuration": "Backend/mock_execution.json",
+  "configuration_sha256": "9a86344a90616b184746fd290b018bc982d5d51787b60b4a77214cd2000cf8c7",
+  "run": "Evidence/PlanConfiguration/verification-1792489555647316500",
+  "earlier_close_view_run": "Evidence/PlanConfiguration/verification-1792489358436751500",
+  "metadata": {
+    "run": "1792489555647316500",
+    "rendering": "RHI automation",
+    "ue_module_sha256": "e79fc1421a91ce9f2a57308981296b59b1d6fb8f3a827fe4782a45c11a6e4e2a",
+    "mock_startup_reset": true,
+    "backend": "Backend\\build\\Release\\DroneBackend.exe",
+    "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+    "ue_module_sha256_after": "e79fc1421a91ce9f2a57308981296b59b1d6fb8f3a827fe4782a45c11a6e4e2a",
+    "binary_unchanged": true,
+    "pass": true
+  },
+  "tests": [
+    {
+      "test": "DroneOps.Map.StartupVisibility",
+      "role": "Map",
+      "pass": true,
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Map.StartupVisibility"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Map.StartupVisibility"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792489555647316500-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    }
+  ],
+  "backend_checks": "../backend/spacing-2m-result.json",
+  "protected_files_unchanged": {
+    "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset": true,
+    "Saved/DroneRegistry.json": true,
+    "Saved/Stage1/data/drones.json": true,
+    "Saved/Stage1/data/mock_execution.json": true,
+    "Saved/Stage1/data/operational_context.json": true,
+    "Saved/Stage1/data/security_plans.json": true,
+    "Saved/Stage1/data/ui_preferences.json": true,
+    "Saved/Stage1/data/video_view.json": true
+  },
+  "boundary": "Production CesiumWorld RHI and component/Slate input; NOT NATIVE VERIFIED; no physical flight validation",
+  "files": [
+    {
+      "file": "01-startup.png",
+      "sha256": "c8876a4cbea01e1f5f75a94ff72f318647b72bf4199f102539c26ab9b1eb2e56"
+    },
+    {
+      "file": "02-explicit-locate.png",
+      "sha256": "1f33daca0497e9148d9b8fbfdbb261e68d5aab2d19e39a427fe61ecdf88947f7"
+    },
+    {
+      "file": "03-empty-selection-fit-all.png",
+      "sha256": "f68e4834e04a0dab5c44848395e88fd6ce3bd1a7e0ea0d3ae63f680e0cd954d0"
+    },
+    {
+      "file": "startup.json",
+      "sha256": "d7bdf688e4ce9e898db457bc21185c14ea550a967a43cec0b427a8d74ab668f6"
+    },
+    {
+      "file": "fix-build-1792489508854497000.log",
+      "sha256": "dfc2d486d3dc6453d8a77bb84ccda1b9c48a576dba32494e315fe0aef0c99968"
+    },
+    {
+      "file": "fix-build-1792489508854497000.json",
+      "sha256": "b45685a8918b825e0021c6194f972946aec77278b11b02afa639c9f2316e4992"
+    }
+  ]
+}

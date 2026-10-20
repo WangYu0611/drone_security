@@ -1,0 +1,334 @@
+Log started at 10/20/2026 13:13:25 (2026-10-20T05:13:25Z)
+Resolved project argument UE5DroneControl.uproject to UE5DroneControl.uproject
+No config file at C:\ProgramData\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at <USER>\AppData\Local\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at <USER>\Documents\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Configuration will be read from:
+  <USER>\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (Intermediate\Build\XmlConfigCache.bin): <USER>\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (Intermediate\Build\XmlConfigCache.bin): Saved\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (Intermediate\Build\XmlConfigCache.bin): <USER>\AppData\Local\UnrealEngine\Intermediate\Build\UnrealBuildTool.Env.BuildConfiguration.xml
+Setting temp directory to '<USER>\AppData\Local\Temp\UnrealBuildTool\eb6d2d82'
+    Registering build platform: UnrealBuildTool.AndroidPlatformFactory
+Unable to find valid SDK(s) for Android:
+  Found Sdk Version, MinRequired=r27c, MaxRequired=r29.
+  Found AutoSdk Version, Required=r27c.
+        Registering build platform: Android - buildable: False
+    Registering build platform: UnrealBuildTool.IOSPlatformFactory
+IOS Installed SDK(s): MinVersion_Sdk=1100.0.0.0, MaxVersion_Sdk=8999.0, CurrentVersion_Sdk=1860.2.5.1, Version_AutoSdk=26.1.1, CurrentVersion_AutoSdk=
+        Registering build platform: IOS - buildable: True
+    Registering build platform: UnrealBuildTool.LinuxPlatformFactory
+Unable to find valid SDK(s) for Linux:
+  Found Sdk Version, Required=v26_clang-20.1.8-rockylinux8.
+  Found AutoSdk Version, Required=v26_clang-20.1.8-rockylinux8.
+        Registering build platform: Linux - buildable: False
+Unable to find valid SDK(s) for LinuxArm64:
+  Found Sdk Version, Required=v26_clang-20.1.8-rockylinux8.
+  Found AutoSdk Version, Required=v26_clang-20.1.8-rockylinux8.
+        Registering build platform: LinuxArm64 - buildable: False
+    Registering build platform: UnrealBuildTool.MacPlatformFactory
+    Registering build platform: UnrealBuildTool.TVOSPlatformFactory
+TVOS Installed SDK(s): MinVersion_Sdk=1100.0.0.0, MaxVersion_Sdk=8999.0, CurrentVersion_Sdk=1860.2.5.1, Version_AutoSdk=26.1.1, CurrentVersion_AutoSdk=
+        Registering build platform: TVOS - buildable: True
+    Registering build platform: UnrealBuildTool.WindowsPlatformFactory
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (1)
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (2)
+Found Windows 10 SDK version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Found Universal CRT version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Win64 Installed SDK(s): MinVersion_Sdk=10.0.19041.0, MaxVersion_Sdk=10.9.99999.0, CurrentVersion_Sdk=10.0.26100.0, Version_AutoSdk=10.0.22621.0, CurrentVersion_AutoSdk=
+        Registering build platform: Win64 - buildable: True
+    Registering build platform: UnrealBuildTool.VisionOSPlatformFactory
+Command line: "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Deleting old log file: <USER>\AppData\Local\UnrealBuildTool\Log-backup-2026.07.10-02.52.03.txt
+Deleting old log file: <USER>\AppData\Local\UnrealBuildTool\Log-backup-2026.07.10-02.52.03.json
+
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5Rules.dll: File is installed
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5ProgramRules.dll: File is installed
+Invalidating makefile for UE5DroneControlEditor (source file added)
+Compiler: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe
+Linker: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\link.exe
+Library Manager: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\link.exe
+Resource Compiler: C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\rc.exe
+Resource Converter: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cvtres.exe
+Using EngineIncludeOrderVersion.Unreal5_8 for target UE5DroneControlEditor.Target.cs
+Building UnrealEditor - UE5DroneControlEditor - Win64 - Development
+VerseVMBytecodeGenerator.Generate, generating CPP headers in: 'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMBytecodeOps.gen.h'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMBytecodesAndCaptures.gen.h'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMMakeCapturesFuncs.gen.h'
+	Writing out generated header file. Changed:False Path:'C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject\VerseVMBytecode\VVMCaptureSwitch.gen.h'
+UnrealHeaderTool needs to run because SavedTimestamp is older than HeaderFileTimestamp (Source\UE5DroneControl\Shared\SecurityPlanWorkspaceWidget.h) for module UE5DroneControl
+Found 5 shared PCH headers (listed in order of preference):
+	UnrealEd
+	Engine
+	Slate
+	CoreUObject
+	Core
+Parsing headers for UE5DroneControlEditor
+  Running Internal UnrealHeaderTool UE5DroneControl.uproject Intermediate\Build\Win64\UE5DroneControlEditor\UE5DroneControlEditor.uhtmanifest -WarningsAsErrors -installed
+UHT compiled-in object format Default
+Step - Parse Headers
+Updating Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib.rsp: contents have changed. Saving previous version to Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib.rsp.old.
+Updating Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.dll.rsp: contents have changed. Saving previous version to Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.dll.rsp.old.
+Reading engine version from file: C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Launch\Resources\Version.h
+Got engine version 5.8.0
+Step - Populate symbol table
+Step - Exports
+       Exporter Stats skipped
+       Exporter Json skipped
+       Running exporter CodeGen
+UHT processed UE5DroneControlEditor in 2.6380129 seconds (16 generated files written)
+Deleting outdated item: Binaries\Win64\UnrealEditor-UE5DroneControl.pdb
+Deleting outdated item: Intermediate\Build\Win64\x64\UnrealEditor\Development\UE5DroneControl\UnrealEditor-UE5DroneControl.lib
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandCenterPanel.cpp, CommandMapInteractionService.cpp, CommandShellFigma.cpp, CommandShellTasks.cpp, CommandShellWidget.cpp, CommandTacticalMap.cpp, FigmaCommandStyle.cpp, FigmaFleetWidget.cpp, GroupControlWidget.cpp, DroneNetworkManager.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, OperationalContextSubsystem.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, CommandCenterV2Test.cpp, FigmaCommandTest.cpp, FleetControlTest.cpp, MapPointMoveTest.cpp, MockTelemetryProjectionTest.cpp, PlanConfigurationTests.cpp, PlanMissionActionsTest.cpp, RouteEditCameraLockTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 80 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 21.27 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+  UBA RootDir C:\ProgramData\Epic\UnrealBuildAccelerator
+Cache bucket 812248844 used. Action: Compile [x64] CommandAlarmPanel.cpp ()
+Cache bucket 2375383593 used. Action: Compile [x64] Module.UE5DroneControl.gen.cpp ()
+Cache bucket 416513229 used. Action: Link [x64] UnrealEditor-UE5DroneControl.dll ()
+All processes queued
+[1/80] Compile [x64] CommandAlertStore.cpp [NoUba]
+[2/80] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[3/80] Compile [x64] CommandAlarmPanel.cpp [NoUba]
+[4/80] Compile [x64] CommandCenterVisualQA.cpp [NoUba]
+[5/80] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[6/80] Compile [x64] CommandClientTest.cpp [NoUba]
+[7/80] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[8/80] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[9/80] Compile [x64] CommandScreenManager.cpp [NoUba]
+[10/80] Compile [x64] CommandShellFigma.cpp [NoUba]
+[11/80] Compile [x64] CommandShellTasks.cpp [NoUba]
+[12/80] Compile [x64] CommandStartupTest.cpp [NoUba]
+[13/80] Compile [x64] CommandTacticalMap.cpp [NoUba]
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(136,74): error C2664: ﾡﾰbool UOperationalContextSubsystem::SubmitPlan(const TSharedRef<FJsonObject,ESPMode::ThreadSafe> &,TFunction<void (TSharedPtr<FJsonObject,ESPMode::ThreadSafe>)>)ﾡﾱ: ￎ￞ﾷﾨﾽﾫﾲￎￊ� 1 ﾴￓﾡﾰTSharedPtr<FJsonObject,ESPMode::ThreadSafe>ﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst TSharedRef<FJsonObject,ESPMode::ThreadSafe> &ﾡﾱ
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(MapMove::Request(MoveMembers,MoveTarget),[Weak](TSharedPtr<FJsonObject> Reply){
+                                                                         ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(136,101): note: ￔﾭￒ￲￈￧ￏￂ: ￎ￞ﾷﾨﾴￓﾡﾰTSharedPtr<FJsonObject,ESPMode::ThreadSafe>ﾡﾱￗﾪﾻﾻￎﾪﾡﾰconst TSharedRef<FJsonObject,ESPMode::ThreadSafe>ﾡﾱ
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(MapMove::Request(MoveMembers,MoveTarget),[Weak](TSharedPtr<FJsonObject> Reply){
+                                                                                                    ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(136,101): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+Source\UE5DroneControl\Shared\OperationalContextSubsystem.h(37,10): note: ﾲￎﾼ￻ﾡﾰUOperationalContextSubsystem::SubmitPlanﾡﾱﾵￄ￉￹ￃ￷
+    bool SubmitPlan(const TSharedRef<FJsonObject>& Body, TFunction<void(TSharedPtr<FJsonObject>)> Complete);
+         ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(136,74): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(TSharedPtr<FJsonObject,ESPMode::ThreadSafe>, UCommandTacticalMap::MoveAction::<lambda_1>)ﾡﾱￊﾱ
+    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(MapMove::Request(MoveMembers,MoveTarget),[Weak](TSharedPtr<FJsonObject> Reply){
+                                                                         ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(279,32): error C2668: ﾡﾰFSlateDrawElement::MakeLinesﾡﾱ: ﾶￔￖ￘ￔ￘ﾺﾯￊ�ﾵￄﾵ￷ￓￃﾲﾻￃ￷￈ﾷ
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),{A0,B0},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+                               ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementTypes.h(230,28): note: ﾿￉ￄￜￊￇﾡﾰvoid FSlateDrawElement::MakeLines(FSlateWindowElementList &,uint32,const FPaintGeometry &,TArray<UE::Math::TVector2<float>,FDefaultAllocator>,ESlateDrawEffect,const FLinearColor &,bool,float)ﾡﾱ
+	SLATECORE_API static void MakeLines(FSlateWindowElementList& ElementList, uint32 InLayer, const FPaintGeometry& PaintGeometry, TArray<FVector2f> Points, ESlateDrawEffect InDrawEffects = ESlateDrawEffect::None, const FLinearColor& InTint = FLinearColor::White, bool bAntialias = true, float Thickness = 1.0f);
+	                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementTypes.h(228,28): note: ﾻ￲    ﾡﾰvoid FSlateDrawElement::MakeLines(FSlateWindowElementList &,uint32,const FPaintGeometry &,const TArray<UE::Math::TVector2<double>,FDefaultAllocator> &,ESlateDrawEffect,const FLinearColor &,bool,float)ﾡﾱ
+	SLATECORE_API static void MakeLines(FSlateWindowElementList& ElementList, uint32 InLayer, const FPaintGeometry& PaintGeometry, const TArray<FVector2d>& Points, ESlateDrawEffect InDrawEffects = ESlateDrawEffect::None, const FLinearColor& InTint=FLinearColor::White, bool bAntialias = true, float Thickness = 1.0f);
+	                          ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(279,32): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(FSlateWindowElementList, int, FPaintGeometry, initializer list, ESlateDrawEffect, const FLinearColor, bool, float)ﾡﾱￊﾱ
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),{A0,B0},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+                               ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(280,32): error C2668: ﾡﾰFSlateDrawElement::MakeLinesﾡﾱ: ﾶￔￖ￘ￔ￘ﾺﾯￊ�ﾵￄﾵ￷ￓￃﾲﾻￃ￷￈ﾷ
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),{B0-FVector2D(10,0),B0+FVector2D(10,0)},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+                               ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementTypes.h(230,28): note: ﾿￉ￄￜￊￇﾡﾰvoid FSlateDrawElement::MakeLines(FSlateWindowElementList &,uint32,const FPaintGeometry &,TArray<UE::Math::TVector2<float>,FDefaultAllocator>,ESlateDrawEffect,const FLinearColor &,bool,float)ﾡﾱ
+	SLATECORE_API static void MakeLines(FSlateWindowElementList& ElementList, uint32 InLayer, const FPaintGeometry& PaintGeometry, TArray<FVector2f> Points, ESlateDrawEffect InDrawEffects = ESlateDrawEffect::None, const FLinearColor& InTint = FLinearColor::White, bool bAntialias = true, float Thickness = 1.0f);
+	                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementTypes.h(228,28): note: ﾻ￲    ﾡﾰvoid FSlateDrawElement::MakeLines(FSlateWindowElementList &,uint32,const FPaintGeometry &,const TArray<UE::Math::TVector2<double>,FDefaultAllocator> &,ESlateDrawEffect,const FLinearColor &,bool,float)ﾡﾱ
+	SLATECORE_API static void MakeLines(FSlateWindowElementList& ElementList, uint32 InLayer, const FPaintGeometry& PaintGeometry, const TArray<FVector2d>& Points, ESlateDrawEffect InDrawEffects = ESlateDrawEffect::None, const FLinearColor& InTint=FLinearColor::White, bool bAntialias = true, float Thickness = 1.0f);
+	                          ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(280,32): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(FSlateWindowElementList, int, FPaintGeometry, initializer list, ESlateDrawEffect, const FLinearColor, bool, float)ﾡﾱￊﾱ
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),{B0-FVector2D(10,0),B0+FVector2D(10,0)},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+                               ^
+ Compile [x64] CommandTacticalMap.cpp [NoUba]: Exited with error code 2 . The build will fail.
+ Compile [x64] CommandTacticalMap.cpp [NoUba]: WorkingDirectory C:\Program Files\Epic Games\UE_5.8\Engine\Source
+ Compile [x64] CommandTacticalMap.cpp [NoUba]: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe @"Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/CommandTacticalMap.cpp.obj.rsp" 
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(281,32): error C2668: ﾡﾰFSlateDrawElement::MakeLinesﾡﾱ: ﾶￔￖ￘ￔ￘ﾺﾯￊ�ﾵￄﾵ￷ￓￃﾲﾻￃ￷￈ﾷ
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),{B0-FVector2D(0,10),B0+FVector2D(0,10)},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+                               ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementTypes.h(230,28): note: ﾿￉ￄￜￊￇﾡﾰvoid FSlateDrawElement::MakeLines(FSlateWindowElementList &,uint32,const FPaintGeometry &,TArray<UE::Math::TVector2<float>,FDefaultAllocator>,ESlateDrawEffect,const FLinearColor &,bool,float)ﾡﾱ
+	SLATECORE_API static void MakeLines(FSlateWindowElementList& ElementList, uint32 InLayer, const FPaintGeometry& PaintGeometry, TArray<FVector2f> Points, ESlateDrawEffect InDrawEffects = ESlateDrawEffect::None, const FLinearColor& InTint = FLinearColor::White, bool bAntialias = true, float Thickness = 1.0f);
+	                          ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementTypes.h(228,28): note: ﾻ￲    ﾡﾰvoid FSlateDrawElement::MakeLines(FSlateWindowElementList &,uint32,const FPaintGeometry &,const TArray<UE::Math::TVector2<double>,FDefaultAllocator> &,ESlateDrawEffect,const FLinearColor &,bool,float)ﾡﾱ
+	SLATECORE_API static void MakeLines(FSlateWindowElementList& ElementList, uint32 InLayer, const FPaintGeometry& PaintGeometry, const TArray<FVector2d>& Points, ESlateDrawEffect InDrawEffects = ESlateDrawEffect::None, const FLinearColor& InTint=FLinearColor::White, bool bAntialias = true, float Thickness = 1.0f);
+	                          ^
+Source\UE5DroneControl\Command\CommandTacticalMap.cpp(281,32): note: ﾳﾢￊￔￆﾥￅ￤ﾲￎￊ�￁￐ﾱ￭ﾡﾰ(FSlateWindowElementList, int, FPaintGeometry, initializer list, ESlateDrawEffect, const FLinearColor, bool, float)ﾡﾱￊﾱ
+            FSlateDrawElement::MakeLines(Out,L+1,G.ToPaintGeometry(),{B0-FVector2D(0,10),B0+FVector2D(0,10)},ESlateDrawEffect::None,CommandTheme::Cyan,true,2.f);
+                               ^
+[14/80] Compile [x64] DefaultSegmentSpeedWidget.cpp [NoUba]
+[15/80] Compile [x64] CommandShellWidget.cpp [NoUba]
+[16/80] Compile [x64] DroneCommandSenderComponent.cpp [NoUba]
+[17/80] Compile [x64] DroneInfoProviderInterface.cpp [NoUba]
+[18/80] Compile [x64] DroneInfoPanelWidget.cpp [NoUba]
+[19/80] Compile [x64] DroneListItemWidget.cpp [NoUba]
+[20/80] Compile [x64] DroneListWidget.cpp [NoUba]
+[21/80] Compile [x64] DroneMissionService.cpp [NoUba]
+[22/80] Compile [x64] DroneNetworkManager.cpp [NoUba]
+[23/80] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[24/80] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[25/80] Compile [x64] DronePathActor.cpp [NoUba]
+[26/80] Compile [x64] DronePlaybackManager.cpp [NoUba]
+[27/80] Compile [x64] DroneRegistrySubsystem.cpp [NoUba]
+[28/80] Compile [x64] DroneSelectionComponent.cpp [NoUba]
+[29/80] Compile [x64] DroneTelemetryComponent.cpp [NoUba]
+[30/80] Compile [x64] DroneVideoWindowWidget.cpp [NoUba]
+[31/80] Compile [x64] DroneWaypointActor.cpp [NoUba]
+[32/80] Compile [x64] EnemyDroneListWidget.cpp [NoUba]
+[33/80] Compile [x64] FigmaFleetWidget.cpp [NoUba]
+[34/80] Compile [x64] FigmaCommandTest.cpp [NoUba]
+[35/80] Compile [x64] FleetControlTest.cpp [NoUba]
+[36/80] Compile [x64] FleetTerrainTest.cpp [NoUba]
+[37/80] Compile [x64] GeographicTargetPanelWidget.cpp [NoUba]
+[38/80] Compile [x64] GroupControlWidget.cpp [NoUba]
+[39/80] Compile [x64] HostileTargetManager.cpp [NoUba]
+[40/80] Compile [x64] MainMenuPlayerController.cpp [NoUba]
+[41/80] Compile [x64] MainMenuWidget.cpp [NoUba]
+[42/80] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[43/80] Compile [x64] MapExtractionTest.cpp [NoUba]
+[44/80] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(135) : warning C4701: ￊﾹￓￃ￁ￋ﾿￉ￄￜￎﾴﾳ￵ￊﾼﾻﾯﾵￄﾾￖﾲ﾿ﾱ￤￁﾿ﾡﾰGeographicﾡﾱ
+   while compiling UMapFleetInteractionWidget::Project
+[45/80] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+[46/80] Compile [x64] MapPointMoveTest.cpp [NoUba]
+[47/80] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[48/80] Compile [x64] MapVisualQA.cpp [NoUba]
+[49/80] Compile [x64] MockTelemetryProjectionTest.cpp [NoUba]
+Source\UE5DroneControl\Tests\MockTelemetryProjectionTest.cpp(31,5): error C2039: "ToSharedRef": ﾲﾻￊￇ "TSharedRef<FJsonObject,ESPMode::ThreadSafe>" ﾵￄﾳ￉ￔﾱ
+    ADD_LATENT_AUTOMATION_COMMAND(FRunMockTelemetryCheck([this]{
+    ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Core\Public\Templates\SharedPointer.h(153,7): note: ﾲￎﾼ￻ﾡﾰTSharedRef<FJsonObject,ESPMode::ThreadSafe>ﾡﾱﾵￄ￉￹ￃ￷
+class TSharedRef
+      ^
+ Compile [x64] MockTelemetryProjectionTest.cpp [NoUba]: Exited with error code 2 . The build will fail.
+ Compile [x64] MockTelemetryProjectionTest.cpp [NoUba]: WorkingDirectory C:\Program Files\Epic Games\UE_5.8\Engine\Source
+ Compile [x64] MockTelemetryProjectionTest.cpp [NoUba]: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe @"Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/MockTelemetryProjectionTest.cpp.obj.rsp" 
+Source\UE5DroneControl\Tests\MockTelemetryProjectionTest.cpp(31,5): error C2672: ﾡﾰTJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serializeﾡﾱ: ￎﾴￕￒﾵﾽￆﾥￅ￤ﾵￄￖ￘ￔ￘ﾺﾯￊ�
+    ADD_LATENT_AUTOMATION_COMMAND(FRunMockTelemetryCheck([this]{
+    ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(620,14): note: ﾿￉ￄￜￊￇﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const TSharedRef<FJsonSerializerPolicy_JsonObject::FElement,ESPMode::ThreadSafe> &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const TSharedRef<typename Policy::FElement>& StartingElement, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter)
+	            ^
+Source\UE5DroneControl\Tests\MockTelemetryProjectionTest.cpp(31,5): note: ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const TSharedRef<FJsonSerializerPolicy_JsonObject::FElement,ESPMode::ThreadSafe> &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ: ￓﾦￊ￤￈￫ 3 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 2 ﾸ￶
+    ADD_LATENT_AUTOMATION_COMMAND(FRunMockTelemetryCheck([this]{
+    ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(487,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FMapOfValues &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FMapOfValues& Object, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter = true)
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(467,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FMapOfValues &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FMapOfValues& Object, const TSharedRef<TJsonWriter<CharType, PrintPolicy>>& Writer, bool bCloseWriter = true )
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(446,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FArrayOfValues &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FArrayOfValues& Array, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter = true )
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(426,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FArrayOfValues &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FArrayOfValues& Array, const TSharedRef<TJsonWriter<CharType, PrintPolicy>>& Writer, bool bCloseWriter = true)
+	            ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(405,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FValue& Value, const FString& Identifier, TJsonWriter<CharType, PrintPolicy>& Writer, bool bCloseWriter = true)
+	            ^
+Source\UE5DroneControl\Tests\MockTelemetryProjectionTest.cpp(31,5): note: ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,TJsonWriter<CharType,PrintPolicy> &,bool)ﾡﾱ: ￓﾦￊ￤￈￫ 4 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 2 ﾸ￶
+    ADD_LATENT_AUTOMATION_COMMAND(FRunMockTelemetryCheck([this]{
+    ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\Json\Public\Serialization\JsonSerializer.h(377,14): note: ﾻ￲    ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ
+	static bool Serialize(const typename Policy::FValue& Value, const FString& Identifier, const TSharedRef<TJsonWriter<CharType, PrintPolicy>>& Writer, bool bCloseWriter = true)
+	            ^
+Source\UE5DroneControl\Tests\MockTelemetryProjectionTest.cpp(31,5): note: ﾡﾰbool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Serialize(const FJsonSerializerPolicy_JsonObject::FValue &,const FString &,const TSharedRef<TJsonWriter<CharType,PrintPolicy>,ESPMode::ThreadSafe> &,bool)ﾡﾱ: ￓﾦￊ￤￈￫ 4 ﾸ￶ﾲￎￊ�ﾣﾬ￈ﾴￌ￡ﾹﾩ￁ￋ 2 ﾸ￶
+    ADD_LATENT_AUTOMATION_COMMAND(FRunMockTelemetryCheck([this]{
+    ^
+[50/80] Compile [x64] MapShellWidget.cpp [NoUba]
+[51/80] Compile [x64] MultiDroneCharacter.cpp [NoUba]
+[52/80] Compile [x64] MultiDroneManager.cpp [NoUba]
+[53/80] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[54/80] Compile [x64] OperationalContextSubsystem.cpp [NoUba]
+[55/80] Compile [x64] OperationalContextTest.cpp [NoUba]
+[56/80] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[57/80] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+[58/80] Compile [x64] PlanMissionActionsTest.cpp [NoUba]
+[59/80] Compile [x64] RealTimeDroneReceiver.cpp [NoUba]
+[60/80] Compile [x64] ReservationWidgetTest.cpp [NoUba]
+[61/80] Compile [x64] ProductText.cpp [NoUba]
+[62/80] Compile [x64] RouteEditCameraLockTest.cpp [NoUba]
+[63/80] Compile [x64] RouteVisualQA.cpp [NoUba]
+[64/80] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+[65/80] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[66/80] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[67/80] Compile [x64] SecurityPlanWorkspaceConfiguration.cpp [NoUba]
+[68/80] Compile [x64] SecurityPlanWorkspacePresentation.cpp [NoUba]
+[69/80] Compile [x64] SequenceDispatchPanelWidget.cpp [NoUba]
+[70/80] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[71/80] Compile [x64] Stage1HeaderWidget.cpp [NoUba]
+[72/80] Compile [x64] UE5DroneControlCharacter.cpp [NoUba]
+[73/80] Compile [x64] UE5DroneControl.cpp [NoUba]
+[74/80] Compile [x64] UE5DroneControlPlayerController.cpp [NoUba]
+[75/80] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[76/80] Compile [x64] VideoClientTest.cpp [NoUba]
+[77/80] Compile [x64] VideoShellWidget.cpp [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 310.74 seconds
+CompilationResultException: OtherCompilationError
+   at UnrealBuildTool.ActionGraph.InternalExecuteActions(ActionExecutor Executor, List`1 ActionsToExecute, ILogger Logger) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Actions\ActionGraph.cs:line 442
+   at UnrealBuildTool.ActionGraph.ExecuteActionsAsync(BuildConfiguration BuildConfiguration, List`1 ActionsToExecute, List`1 TargetDescriptors, ILogger Logger, ActionExecutor executor) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Actions\ActionGraph.cs:line 417
+   at UnrealBuildTool.BuildMode.BuildAsync(List`1 Targets, BuildConfiguration BuildConfiguration, BuildOptions Options, FileReference WriteOutdatedActionsFile, CppDependencyCache cppDependencyCache, ILogger Logger, String ActionTypeFilter, ActionExecutor executor) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Modes\BuildMode.cs:line 812
+   at UnrealBuildTool.BuildMode.ExecuteAsync(CommandLineArguments Arguments, ILogger Logger) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Modes\BuildMode.cs:line 282
+   at UnrealBuildTool.BuildMode.ExecuteAsync(CommandLineArguments Arguments, ILogger Logger) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\Modes\BuildMode.cs:line 303
+   at UnrealBuildTool.UnrealBuildTool.Main(String[] ArgumentsArray) in D:\build\++UE5\Sync\Engine\Source\Programs\UnrealBuildTool\UnrealBuildTool.cs:line 483
+WriteFileIfChanged() wrote 0 changed files of 1 requested writes.
+
+Timeline:
+[  0.000]  +0.444 Main
+   0.014          [  0.014]  +0.086 Apply XmlConfig
+   0.103          [  0.103]  +0.065 AddTelemetry
+   0.186          [  0.186]  +0.258 RegisterPlatforms
+[  0.483]  +0.024 ParseCommandLine
+[  0.573]  +0.035 EngineRulesPlugins
+[  0.612]  +0.027 EngineRulesFetchDirs
+[  0.648]  +0.010 EngineRulesAssembly
+[  0.659]  +0.001 ProgramRulesAssembly
+[  0.666]  +0.004 ProjectRulesAssembly
+[  0.670]  +0.264 CreateTargetRules
+[  1.003]  +0.008 CppDependencyCache
+[  1.028]  +0.102 LoadMakefile
+[  1.132]  +0.000 FindPlugins
+[  1.138]  +0.008 MakefileValid
+[  1.147]  +1.863 UE5DroneControlEditor Win64 Development
+   1.147          [  0.000]  +0.599 <unknown>
+   1.746          [  0.599]  +0.059 UHTModules
+   1.943          [  0.795]  +0.169 UHTManifest
+   2.112          [  0.965]  +2.643 UHT
+   2.226             1.078          [  0.113]  +0.000 GitWait
+   2.226             1.078          [  0.113]  +0.744 <unknown>
+   2.970             1.823          [  0.858]  +0.000 WaitOnWrites
+   3.012             1.865          [  0.900]  +1.745 UHTWait
+[  3.010]  +1.773 <unknown>
+[  4.784]  +0.003 CppDependencyCache
+[  4.787]  +0.083 Preparing ActionGraph
+   4.801          [  0.013]  +0.006 LinkActions
+   4.807             0.019          [  0.005]  +0.000 DetectActionGraphCycles
+   4.808          [  0.020]  +0.000 GatherPrerequisiteActions
+   4.810          [  0.022]  +0.000 CppDependencyCacheWait
+   4.811          [  0.023]  +0.039 GatherOutdatedActions
+   4.853          [  0.065]  +0.003 LinkActions
+   4.853             0.066          [  0.000]  +0.000 DetectActionGraphCycles
+   4.858          [  0.070]  +0.008 DeleteOutdatedProducedItems
+   4.866          [  0.078]  +0.003 SaveActionHistory
+   4.871          [  0.083]  +0.000 CreateDirectoriesForProducedItems
+[  4.885]  +0.286 GarbageCollect
+[  5.172]+310.452 <unknown>
+[315.624]  +0.000 DisconnectCache
+[315.627]  +0.000 SaveCasTable
+[315.630]  +0.066 Saving caches
+[315.711]  +0.002 TelemetryService.FlushEvents
+[315.714]
+
+Result: Failed (OtherCompilationError)
+Total execution time: 315.71 seconds

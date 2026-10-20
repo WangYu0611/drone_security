@@ -1,0 +1,60 @@
+{
+  "backend_exe_sha256": "238c5813c137dad31a6afeab33d3af1b7a9657b8e35de121267b7b5d4073442e",
+  "final_build": "PASS",
+  "unit_suite": {
+    "total": 161,
+    "passed": 159,
+    "failed": 2,
+    "artifact": "unit-all.xml"
+  },
+  "new_tests": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "artifact": "unit-new-seven.json"
+  },
+  "transport": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "artifact": "transport-final.json",
+    "owned_processes_stopped": true
+  },
+  "baseline_reproduction": {
+    "head": "61e3362df6c7f69cecd3697d5db1ca095ba892c7",
+    "total": 2,
+    "failed": 2,
+    "artifact": "baseline/result.xml",
+    "source_manifest": "baseline/source-manifest.json",
+    "method": "git show exported exact original files, independently compiled original GTest source with MSVC Release; no working sources replaced"
+  },
+  "existing_failures": [
+    {
+      "name": "SegmentDistanceTest.Crossing",
+      "observed": "Distance 5 m instead of 0 m. Original endpoint-only approximation misses interior crossings.",
+      "scope": "Legacy AssemblyPlanner / array assembly path. Its source and assertions remain unchanged."
+    },
+    {
+      "name": "AssemblyPlannerTest.ConflictHeightSeparation",
+      "observed": "Original test defaults to target reassignment; optimal assignment avoids movement, producing no conflict or height change. Same failure reproduced at baseline.",
+      "scope": "Original default-planner test. Production AssemblyController passes bAllowTargetReassignment=false."
+    }
+  ],
+  "single_group_move_risk": "execution_group_move calls SecurityPlanStore::checkTrajectories in mission_trajectory.inl, which computes continuous-time pairwise separation including aircraft outside the selected group. It does not invoke AssemblyPlanner. The legacy crossing-distance issue remains unresolved in its separate array-assembly path; no all-suite PASS is claimed.",
+  "retained_failed_trials": [
+    {
+      "artifact": "transport-initial-precision-failed.json",
+      "reason": "Only exact comparison of configured longitude 116.34702999999999 versus JSON roundtrip 116.34703 failed (about 1e-14 degrees). Config input comparison now tolerates less than 1e-9; REST/WS/refresh/restart equality remains strict."
+    },
+    {
+      "artifact": "unit-initial-focused-failed.xml",
+      "total": 52,
+      "passed": 50,
+      "failed": 2,
+      "reason": "New tests referenced nonexistent mission_type instead of existing control_kind and expected EXECUTION_CONFLICT where existing reservation contract returns DRONE_ACTIVE_PLAN_CONFLICT. Corrected test expectations; controller checks unchanged."
+    }
+  ],
+  "evidence_boundary": "Synthetic C++ unit and owned loopback REST/WebSocket/UDP process evidence. Not native mouse or real hardware verification. UE results are produced separately by the parent run.",
+  "raw_root": "Saved/MockPositionQA",
+  "sanitizer": "Scripts/PlanConfiguration/sanitize.py sanitized/collect_identities/validate only; no full-tree invocation"
+}

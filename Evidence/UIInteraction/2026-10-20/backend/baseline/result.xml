@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="2" failures="2" disabled="0" errors="0" time="0.001" timestamp="2026-10-20T13:18:14.254" name="AllTests">
+  <testsuite name="SegmentDistanceTest" tests="1" failures="1" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-10-20T13:18:14.254">
+    <testcase name="Crossing" file="Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp" line="60" status="run" result="completed" time="0." timestamp="2026-10-20T13:18:14.254" classname="SegmentDistanceTest">
+      <failure message="Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp:66&#x0A;The difference between d and 0.0 is 5, which exceeds 1e-4, where&#x0A;d evaluates to 5,&#x0A;0.0 evaluates to 0, and&#x0A;1e-4 evaluates to 0.0001.&#x0A;" type=""><![CDATA[Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp:66
+The difference between d and 0.0 is 5, which exceeds 1e-4, where
+d evaluates to 5,
+0.0 evaluates to 0, and
+1e-4 evaluates to 0.0001.
+]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="AssemblyPlannerTest" tests="1" failures="1" disabled="0" skipped="0" errors="0" time="0." timestamp="2026-10-20T13:18:14.254">
+    <testcase name="ConflictHeightSeparation" file="Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp" line="110" status="run" result="completed" time="0." timestamp="2026-10-20T13:18:14.254" classname="AssemblyPlannerTest">
+      <failure message="Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp:128&#x0A;Expected: (conflicts.size()) &gt;= (1u), actual: 0 vs 1&#x0A;" type=""><![CDATA[Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp:128
+Expected: (conflicts.size()) >= (1u), actual: 0 vs 1
+]]></failure>
+      <failure message="Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp:133&#x0A;Value of: z_changed&#x0A;  Actual: false&#x0A;Expected: true&#x0A;" type=""><![CDATA[Saved\MockPositionQA\baseline-61e3362\tests\test_assembly_planner.cpp:133
+Value of: z_changed
+  Actual: false
+Expected: true
+]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>
