@@ -1,0 +1,31 @@
+{
+  "scope": "Only completed altitude followup runs; earlier evidence untouched. Public hashes use actual disk bytes.",
+  "files": [
+    {
+      "path": "fixture-policy.log",
+      "raw_sha256": "e6bcb27996993f6d08cd9243390c75018d3c3e4dd95624b1e266c4a853c35a3c",
+      "public_sha256": "bbe2015f2248c6578bcd4ee2c0bd2e00f03e5ee45e716e8ec849eb3cfb505d9a",
+      "replacements": {}
+    },
+    {
+      "path": "startup-migration.json",
+      "raw_sha256": "21e7c60777dd88665b5fef9526fb7ef411562f0d2b8cae1b76e29e7a055ae7a2",
+      "public_sha256": "f0326a29c76b47001464314ee70f5b7b230703fc3bdf57d087704dfee1c1cb88",
+      "replacements": {}
+    },
+    {
+      "path": "transport.log",
+      "raw_sha256": "e4be33ce03761a1330694fe5cb3f00558d3d02ba954e1a47667641d5fdb57322",
+      "public_sha256": "bbfdd24417883e817817a7d4cc2ec8d1c90b8922e2422d2756eb740ec2852ef6",
+      "replacements": {
+        "repository-path": 1
+      }
+    },
+    {
+      "path": "transport.json",
+      "raw_sha256": "48329814db920b64bb587ddd2338979c920a5f3862a780ae7781f377cfe4f55a",
+      "public_sha256": "48329814db920b64bb587ddd2338979c920a5f3862a780ae7781f377cfe4f55a",
+      "replacements": {}
+    }
+  ]
+}

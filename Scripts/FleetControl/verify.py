@@ -14,7 +14,7 @@ run=str(time.time_ns())
 out=root/'Evidence/FleetControl'/('verification-'+run)
 out.mkdir(parents=True)
 config=load_config(root)
-config.update(http_endpoint='http://127.0.0.1:20980',ws_endpoint='ws://127.0.0.1:20981/ws',
+config.update(mock_fixture='Backend/tests/fixtures/mock_execution_beijing.json', mock_reset_on_start=False, http_endpoint='http://127.0.0.1:20980',ws_endpoint='ws://127.0.0.1:20981/ws',
               runtime_directory='Saved/FleetControl-verify-'+run)
 runtime=Runtime(root,config)
 results=[]

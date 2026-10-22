@@ -1,0 +1,20 @@
+{
+  "role": "Map",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Level/CesiumWorld",
+    "-ClientRole=Map",
+    "-P5Instance=4cad8c78-cd27-4e5d-97f9-1821f64b9f50",
+    "-AutomationRegistryFile=Saved\\PlanConfiguration-verify-1792657499985356300-0\\DroneRegistry.json",
+    "-P1Http=http://127.0.0.1:24580",
+    "-P1Ws=ws://127.0.0.1:24581/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.Map.StartupVisibility",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792657499985356300\\00-DroneOps.Map.StartupVisibility",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792657499985356300\\00-DroneOps.Map.StartupVisibility\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792657499985356300-0"
+}

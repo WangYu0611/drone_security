@@ -10,7 +10,7 @@ from runtime import Runtime
 from environment import load_config
 
 config = load_config(root)
-config.update(ue_executable='C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe',
+config.update(mock_fixture='Backend/tests/fixtures/mock_execution_beijing.json', mock_reset_on_start=False, ue_executable='C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe',
               http_endpoint='http://127.0.0.1:21580', ws_endpoint='ws://127.0.0.1:21581/ws',
               runtime_directory='Saved/FleetControlUX-QA', max_fps=30,
               map='/Game/Tests/P55OfflineMap')

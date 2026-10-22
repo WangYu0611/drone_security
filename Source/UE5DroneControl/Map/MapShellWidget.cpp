@@ -270,7 +270,7 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
     }
     bool bOk = false;
     if (Action == TEXT("focus")) {
-        bOk = Map->FocusDrone(Manager->GetRegistry()->GetPrimarySelectedDrone());
+        bOk = Map->FocusDrone(Manager->GetRegistry()->GetPrimarySelectedDrone(),true);
         if(bOk)Manager->CancelStartupFraming();
     }
     if (Action == TEXT("plan")) { Manager->ShowPathPanel(); bOk = Map->BeginPathPlanning(); }

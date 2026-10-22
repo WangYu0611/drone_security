@@ -12,15 +12,22 @@
 #include "DroneOps/Core/ICoordinateService.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/WidgetTree.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
+#include "CesiumGeoreference.h"
+#include "CesiumCreditSystem.h"
+#include "Components/RichTextBlock.h"
+#include "Components/StaticMeshComponent.h"
 #include "Engine/Engine.h"
+#include "EngineUtils.h"
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Widgets/SViewport.h"
+#include "Widgets/SOverlay.h"
 #include "Widgets/SWindow.h"
 #include "ImageUtils.h"
 #include "Misc/CommandLine.h"
@@ -34,6 +41,7 @@
 #include "UnrealEdGlobals.h"
 #include "Editor/UnrealEdEngine.h"
 #include "Settings/LevelEditorPlaySettings.h"
+#include "UObject/UnrealType.h"
 
 DEFINE_LATENT_AUTOMATION_COMMAND(FMapStartupStartPIE);
 bool FMapStartupStartPIE::Update()
@@ -54,12 +62,199 @@ class FMapStartupVisibility : public IAutomationLatentCommand
 {
     FAutomationTestBase* Test;
     double Started=FPlatformTime::Seconds(),ReadyAt=0,LocateAt=0;
+    double OverviewObservedAt=0,MinimumOverviewDistance=MAX_dbl;
+    double InitialDetailReadyAt=0,RestoredDetailReadyAt=0;
+    int32 InitialDetailFrames=0,RestoredDetailFrames=0;
     int32 Phase=0,LocateId=0,InitialPrimary=0,ClickId=1;
     double ActionAt=0;
     bool WaitingForClick=false;
     TArray<int32> InitialSelection;
+    TWeakObjectPtr<UUserWidget> InitialCreditsWidget;
     FString Out,InitialVideo;
     TSharedRef<FJsonObject> Report=MakeShared<FJsonObject>();
+
+    struct FTilesState
+    {
+        int32 GoogleActors=0,GoogleMeshes=0,GoogleVisibleMeshes=0,GoogleRenderedMeshes=0;
+        int32 DuplicateVisibleMeshes=0,DuplicateRenderedMeshes=0;
+        double GoogleLoadProgress=100.;
+        bool GoogleActive=true,GoogleCredits=true,GoogleDetail=true,GoogleDisabled=true,DuplicatesDisabled=true;
+        TArray<TSharedPtr<FJsonValue>> Layers;
+        bool HasRenderedGoogle() const { return GoogleActors>0 && GoogleActive && GoogleRenderedMeshes>0; }
+        bool HasLoadedGoogleDetail() const { return HasRenderedGoogle() && GoogleLoadProgress>=99.; }
+    };
+    static FTilesState TilesState(UWorld* World)
+    {
+        FTilesState Result;
+        for(TActorIterator<ACesium3DTileset> It(World);It;++It)
+        {
+            auto* Tileset=*It;const int64 AssetId=Tileset->GetIonAssetID();
+            if(AssetId!=2275207 && AssetId!=96188 && AssetId!=1)continue;
+            auto Layer=MakeShared<FJsonObject>();Result.Layers.Add(MakeShared<FJsonValueObject>(Layer));
+            Layer->SetNumberField(TEXT("ion_asset_id"),static_cast<double>(AssetId));
+            Layer->SetNumberField(TEXT("source"),static_cast<int32>(Tileset->GetTilesetSource()));
+            Layer->SetBoolField(TEXT("hidden"),Tileset->IsHidden());
+            Layer->SetBoolField(TEXT("suspended"),Tileset->SuspendUpdate);
+            Layer->SetBoolField(TEXT("collision"),Tileset->GetActorEnableCollision());
+            Layer->SetBoolField(TEXT("show_credits"),Tileset->ShowCreditsOnScreen);
+            Layer->SetNumberField(TEXT("maximum_screen_space_error"),Tileset->GetMaximumScreenSpaceError());
+            Layer->SetNumberField(TEXT("load_progress"),Tileset->GetLoadProgress());
+            int32 Loaded=0,Visible=0,Rendered=0;TArray<UStaticMeshComponent*> Meshes;
+            // Public Engine components include Cesium's generated glTF primitives;
+            // an actor or a successful root.json request alone is not rendered data.
+            Tileset->GetComponents(Meshes);
+            for(const auto* Mesh:Meshes)
+            {
+                if(!IsValid(Mesh) || !Mesh->IsRegistered() || !Mesh->GetStaticMesh())continue;
+                ++Loaded;
+                if(Tileset->IsHidden() || !Mesh->IsVisible() || Mesh->bHiddenInGame)continue;
+                ++Visible;if(Mesh->WasRecentlyRendered(1.f))++Rendered;
+            }
+            Layer->SetNumberField(TEXT("loaded_static_meshes"),Loaded);
+            Layer->SetNumberField(TEXT("visible_static_meshes"),Visible);
+            Layer->SetNumberField(TEXT("recently_rendered_static_meshes"),Rendered);
+            const bool Disabled=Tileset->IsHidden() && Tileset->SuspendUpdate && !Tileset->GetActorEnableCollision()
+                && Tileset->GetTilesetSource()==ETilesetSource::FromEllipsoid;
+            if(AssetId==2275207)
+            {
+                ++Result.GoogleActors;Result.GoogleMeshes+=Loaded;
+                Result.GoogleLoadProgress=FMath::Min(Result.GoogleLoadProgress,static_cast<double>(Tileset->GetLoadProgress()));
+                Result.GoogleVisibleMeshes+=Visible;Result.GoogleRenderedMeshes+=Rendered;
+                Result.GoogleActive=Result.GoogleActive && !Tileset->IsHidden() && !Tileset->SuspendUpdate
+                    && Tileset->GetTilesetSource()==ETilesetSource::FromCesiumIon;
+                Result.GoogleCredits=Result.GoogleCredits && Tileset->ShowCreditsOnScreen;
+                Result.GoogleDetail=Result.GoogleDetail && FMath::IsNearlyEqual(Tileset->GetMaximumScreenSpaceError(),4.,.001);
+                Result.GoogleDisabled=Result.GoogleDisabled && Disabled;
+            }
+            else
+            {
+                Result.DuplicatesDisabled=Result.DuplicatesDisabled && Disabled;
+                Result.DuplicateVisibleMeshes+=Visible;Result.DuplicateRenderedMeshes+=Rendered;
+            }
+        }
+        return Result;
+    }
+    bool DetailSettled(const FTilesState& State,double Now,double& ReadySince,int32& ReadyFrames) const
+    {
+        if(!State.HasLoadedGoogleDetail()){ReadySince=0;ReadyFrames=0;return false;}
+        if(ReadySince==0)ReadySince=Now;
+        ++ReadyFrames;
+        return ReadyFrames>=3 && Now-ReadySince>=1.;
+    }
+    void RecordTiles(const FTilesState& State,const TCHAR* Name,double WaitSeconds,double DetailSeconds=0.,int32 DetailFrames=0)
+    {
+        auto Data=MakeShared<FJsonObject>();Report->SetObjectField(Name,Data);
+        Data->SetNumberField(TEXT("wait_seconds"),WaitSeconds);Data->SetArrayField(TEXT("layers"),State.Layers);
+        Data->SetBoolField(TEXT("google_render_ready"),State.HasRenderedGoogle());
+        const bool DetailReady=State.HasLoadedGoogleDetail() && DetailSeconds>=1. && DetailFrames>=3;
+        Data->SetNumberField(TEXT("google_minimum_load_progress"),State.GoogleActors>0?State.GoogleLoadProgress:0.);
+        Data->SetNumberField(TEXT("google_detail_stable_seconds"),DetailSeconds);
+        Data->SetNumberField(TEXT("google_detail_stable_frames"),DetailFrames);
+        Data->SetBoolField(TEXT("google_detail_ready"),DetailReady);
+        Data->SetBoolField(TEXT("google_load_timeout"),WaitSeconds>=120. && !DetailReady);
+        Data->SetNumberField(TEXT("google_actors"),State.GoogleActors);
+        Data->SetNumberField(TEXT("google_loaded_meshes"),State.GoogleMeshes);
+        Data->SetNumberField(TEXT("google_visible_meshes"),State.GoogleVisibleMeshes);
+        Data->SetNumberField(TEXT("google_recently_rendered_meshes"),State.GoogleRenderedMeshes);
+        Data->SetNumberField(TEXT("duplicate_visible_meshes"),State.DuplicateVisibleMeshes);
+        Data->SetNumberField(TEXT("duplicate_recently_rendered_meshes"),State.DuplicateRenderedMeshes);
+        Test->AddInfo(FString::Printf(TEXT("%s: Google actors=%d loaded=%d visible=%d rendered=%d progress=%.2f%% detail-stable=%.1fs/%d frames duplicate-visible=%d wait=%.1fs"),
+            Name,State.GoogleActors,State.GoogleMeshes,State.GoogleVisibleMeshes,State.GoogleRenderedMeshes,State.GoogleLoadProgress,
+            DetailSeconds,DetailFrames,State.DuplicateVisibleMeshes,WaitSeconds));
+    }
+    void CheckPhotorealistic3D(const FTilesState& State,const TCHAR* Name)
+    {
+        Test->TestEqual(*FString::Printf(TEXT("%s: exactly one Google 2275207 tileset"),Name),State.GoogleActors,1);
+        Test->TestTrue(*FString::Printf(TEXT("%s: Google ion source is active"),Name),State.GoogleActive && State.GoogleActors>0);
+        Test->TestTrue(*FString::Printf(TEXT("%s: Google generated static meshes are visible and recently rendered"),Name),State.HasRenderedGoogle());
+        Test->TestTrue(*FString::Printf(TEXT("%s: Google detail for the current view is at least 99 percent loaded"),Name),State.HasLoadedGoogleDetail());
+        Test->TestTrue(*FString::Printf(TEXT("%s: Google attribution enabled"),Name),State.GoogleCredits && State.GoogleActors>0);
+        Test->TestTrue(*FString::Printf(TEXT("%s: Google screen-space error is 4"),Name),State.GoogleDetail && State.GoogleActors>0);
+        Test->TestTrue(*FString::Printf(TEXT("%s: OSM 96188 and Terrain 1 are hidden, suspended, collision disabled and source detached"),Name),State.DuplicatesDisabled);
+        Test->TestEqual(*FString::Printf(TEXT("%s: no visible OSM or Terrain mesh overlaps Google"),Name),State.DuplicateVisibleMeshes,0);
+        Test->TestEqual(*FString::Printf(TEXT("%s: no recently rendered OSM or Terrain mesh overlaps Google"),Name),State.DuplicateRenderedMeshes,0);
+    }
+    struct FViewportLayer
+    {
+        TSharedPtr<SWidget> Parent;
+        int32 ZOrder=INDEX_NONE;
+    };
+    FViewportLayer ViewportLayer(UUserWidget* Widget) const
+    {
+        // Inspect the actual viewport overlay, not UGameViewportSubsystem's
+        // stored slot: SetWidgetSlot can update that value without reordering
+        // the outer host. This would detect the previous hidden-credit bug.
+        auto Child=Widget?Widget->GetCachedWidget():nullptr;
+        while(Child.IsValid())
+        {
+            auto Parent=Child->GetParentWidget();
+            if(!Parent.IsValid())break;
+            if(Parent->GetType()==FName(TEXT("SOverlay")))
+            {
+                auto* Children=Parent->GetChildren();
+                for(int32 Index=0;Index<Children->Num();++Index)
+                    if(Children->GetChildAt(Index)==Child.ToSharedRef())
+                        return {Parent,static_cast<const SOverlay::FOverlaySlot&>(Children->GetSlotAt(Index)).GetZOrder()};
+            }
+            Child=Parent;
+        }
+        return {};
+    }
+    void CheckAttribution(UWorld* World,UMapShellWidget* Shell,const TCHAR* Name)
+    {
+        auto Data=MakeShared<FJsonObject>();Report->SetObjectField(Name,Data);
+        const auto ShellLayer=ViewportLayer(Shell);
+        const auto* Property=FindFProperty<FObjectPropertyBase>(ACesiumCreditSystem::StaticClass(),TEXT("CreditsWidget"));
+        UUserWidget* Widget=nullptr;
+        for(TActorIterator<ACesiumCreditSystem> It(World);It && !Widget;++It)
+            if(Property)Widget=Cast<UUserWidget>(Property->GetObjectPropertyValue_InContainer(*It));
+        const auto CreditLayer=ViewportLayer(Widget);
+        const bool InViewport=Widget && Widget->IsInViewport() && Widget->GetWorld()==World;
+        const bool AboveShell=CreditLayer.Parent.IsValid() && CreditLayer.Parent==ShellLayer.Parent &&
+            CreditLayer.ZOrder>ShellLayer.ZOrder;
+        auto* Text=Widget && Widget->WidgetTree?Cast<URichTextBlock>(Widget->WidgetTree->FindWidget(TEXT("RichTextOnScreen"))):nullptr;
+        const int32 TextLength=Text?Text->GetText().ToString().Len():0;
+        Data->SetBoolField(TEXT("official_widget_in_game_viewport"),InViewport);
+        Data->SetNumberField(TEXT("shell_outer_overlay_z"),ShellLayer.ZOrder);
+        Data->SetNumberField(TEXT("credits_outer_overlay_z"),CreditLayer.ZOrder);
+        Data->SetBoolField(TEXT("credits_above_shell_in_same_overlay"),AboveShell);
+        Data->SetNumberField(TEXT("official_on_screen_credit_text_length"),TextLength);
+        Test->TestTrue(*FString::Printf(TEXT("%s: official Cesium widget is in the current game viewport"),Name),InViewport);
+        Test->TestTrue(*FString::Printf(TEXT("%s: actual outer viewport layer places Cesium credits above MapShell"),Name),AboveShell);
+        Test->TestTrue(*FString::Printf(TEXT("%s: official on-screen attribution contains live provider content"),Name),TextLength>0);
+        if(InitialCreditsWidget.IsValid())
+            Test->TestTrue(TEXT("Mode cycling retains the same official attribution widget and its dynamic state"),InitialCreditsWidget.Get()==Widget);
+        else InitialCreditsWidget=Widget;
+    }
+    void CheckCityOverview(UWorld* World,UCommandMapInteractionService* Map,UDroneRegistrySubsystem* Registry)
+    {
+        Test->TestTrue(TEXT("Configured city startup view is enabled"),Map->HasConfiguredStartupView());
+        Test->TestEqual(TEXT("Production startup defaults to 3D"),Map->GetMapMode(),ECommandMapMode::Map3D);
+        TArray<TSharedPtr<FJsonValue>> Origins;int32 Georeferences=0;bool CorrectOrigin=true;
+        for(TActorIterator<ACesiumGeoreference> It(World);It;++It)
+        {
+            ++Georeferences;auto Origin=MakeShared<FJsonObject>();Origins.Add(MakeShared<FJsonValueObject>(Origin));
+            const FVector Geographic=It->GetOriginLongitudeLatitudeHeight();Vector(Origin,TEXT("longitude_latitude_ellipsoid_m"),Geographic);
+            CorrectOrigin=CorrectOrigin && FMath::IsNearlyEqual(Geographic.X,103.8585,1.e-6)
+                && FMath::IsNearlyEqual(Geographic.Y,1.2834,1.e-6) && FMath::IsNearlyEqual(Geographic.Z,50.,.01);
+        }
+        Report->SetArrayField(TEXT("cesium_georeferences"),Origins);
+        Test->TestTrue(TEXT("Actual Cesium georeference is Marina Bay 103.8585 / 1.2834 / ellipsoid 50 m"),Georeferences>0 && CorrectOrigin);
+        Test->TestTrue(TEXT("Configured city overview target distance is 2400 m"),FMath::IsNearlyEqual(Map->ViewDistance,240000.,1.));
+        Test->TestTrue(TEXT("Settled city overview actual camera distance is at least 2000 m"),Map->ActualDistance>=200000.);
+        Test->TestTrue(TEXT("Hydrated fleet refresh did not replace the city overview with a close fleet fit"),
+            OverviewObservedAt>0 && MinimumOverviewDistance>=200000.);
+        Report->SetNumberField(TEXT("minimum_overview_distance_after_hydration_cm"),OverviewObservedAt>0?MinimumOverviewDistance:0.);
+        if(const auto* Camera=Map->GetMapCamera())
+        {
+            Test->TestTrue(TEXT("City overview pitch is -50 degrees"),FMath::Abs(FMath::FindDeltaAngleDegrees(Camera->GetActorRotation().Pitch,-50.))<.25);
+            Test->TestTrue(TEXT("City overview yaw is -35 degrees"),FMath::Abs(FMath::FindDeltaAngleDegrees(Camera->GetActorRotation().Yaw,-35.))<.25);
+        }
+        auto* Coordinates=Registry->GetCoordinateService().GetObject();
+        if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates))
+            Test->TestTrue(TEXT("City overview focuses the configured Singapore geographic anchor"),
+                Map->ViewFocus.Equals(ICoordinateService::Execute_GeographicToWorld(Coordinates,1.2834,103.8585,50.),100.));
+    }
 
     static void Vector(const TSharedRef<FJsonObject>& Json,const TCHAR* Name,const FVector& Value)
     {
@@ -96,6 +291,10 @@ class FMapStartupVisibility : public IAutomationLatentCommand
                 && Position->TryGetNumberField(TEXT("latitude"),Lat) && Position->TryGetNumberField(TEXT("altitude"),Alt);
             Test->TestTrue(*FString::Printf(TEXT("Reset UAV %d uses the new baseline, not historical execution"),Id),
                 Valid && HasReset && G.Equals(FVector(Lon,Lat,Alt),.000001));
+            if(Id==1)
+                Test->TestTrue(TEXT("Production Mock formation starts at Marina Bay, ellipsoid 50 m"),
+                    Valid && FMath::IsNearlyEqual(G.X,103.8585,1.e-6) && FMath::IsNearlyEqual(G.Y,1.2834,1.e-6)
+                    && FMath::IsNearlyEqual(G.Z,50.,.01));
             if(Id>1 && Valid)
             {
                 constexpr double MetresPerDegree=6371000.*3.14159265358979323846/180.;
@@ -167,6 +366,7 @@ class FMapStartupVisibility : public IAutomationLatentCommand
         Vector(Data,TEXT("camera_focus_actual"),Map->ActualFocus);
         Data->SetNumberField(TEXT("camera_distance_target"),Map->ViewDistance);
         Data->SetNumberField(TEXT("camera_distance_actual"),Map->ActualDistance);
+        Data->SetStringField(TEXT("map_mode"),Map->GetMapMode()==ECommandMapMode::Map3D?TEXT("3D"):TEXT("2D"));
         if(auto* Camera=Map->GetMapCamera())
         {
             Vector(Data,TEXT("camera_location"),Camera->GetActorLocation());
@@ -252,6 +452,7 @@ class FMapStartupVisibility : public IAutomationLatentCommand
             else if(Phase==1)
             {
                 Test->TestTrue(TEXT("Explicit Locate brings accepted UAV position into visible map"),LocateVisible);
+                Test->TestEqual(TEXT("Explicit Locate retains all four nearby aircraft for independent selection"),Visible,4);
                 FVector Geo=FVector::ZeroVector;
                 if(CoordsReady && MapMove::Position(Registry,Sync->GetPlans(),LocateId,Geo))
                     Test->TestTrue(TEXT("Explicit Locate focuses accepted geographic position rather than stale actor location"),
@@ -268,6 +469,7 @@ public:
         Out=FPaths::ProjectSavedDir()/TEXT("MapStartupQA")/FDateTime::UtcNow().ToString(TEXT("%Y%m%d-%H%M%S"));
         IFileManager::Get().MakeDirectory(*Out,true);
         Report->SetStringField(TEXT("evidence_boundary"),TEXT("Production CesiumWorld RHI, actual Slate hit geometry, component Locate and left-click ACK; isolated Mock Backend; no OS mouse or physical flight verification"));
+        Report->SetStringField(TEXT("startup_acceptance"),TEXT("Untouched Singapore city overview with rendered Google meshes; overlapping 2 m fleet symbols are allowed only in this initial overview. Explicit Locate and empty-selection Fit retain separate 36 logical pixel hit footprints."));
         Report->SetNumberField(TEXT("requested_window_width"),1280);Report->SetNumberField(TEXT("requested_window_height"),800);
         Test->AddInfo(TEXT("Startup evidence: ")+Out);
     }
@@ -298,20 +500,70 @@ public:
             }
             if(Ready && ReadyAt==0)ReadyAt=Now;
             if(!Ready)ReadyAt=0;
-            if((!Ready || Now-ReadyAt<3.) && Now-Started<60.)return false;
+            // Wait through several hydrated refreshes before judging automatic
+            // framing. A 2 m formation intentionally overlaps at the city scale.
+            if(Ready && Now-ReadyAt>=3.)
+            {
+                if(OverviewObservedAt==0)OverviewObservedAt=Now;
+                MinimumOverviewDistance=FMath::Min(MinimumOverviewDistance,FMath::Min(Map->ViewDistance,Map->ActualDistance));
+            }
+            const auto Tiles=TilesState(World);
+            const bool DetailReady=DetailSettled(Tiles,Now,InitialDetailReadyAt,InitialDetailFrames);
+            const bool Settled=Ready && Now-ReadyAt>=6.;
+            if((!Settled || !DetailReady) && Now-Started<120.)return false;
             Test->TestTrue(TEXT("Production startup backend, coordinates, descriptors and positions became ready"),Ready);
+            Test->TestTrue(TEXT("Production city overview remains observable through hydrated refreshes"),Settled);
             Test->TestTrue(TEXT("Actual startup world is CesiumWorld"),World->GetMapName().EndsWith(TEXT("CesiumWorld")));
             Test->TestEqual(TEXT("Actual startup client role is Map"),Manager->GetClientRole(),EDroneClientRole::Map);
             InitialPrimary=Registry->GetPrimarySelectedDrone();InitialSelection=Registry->GetMultiSelectedDrones();InitialVideo=Video(Sync);
             LocateId=InitialPrimary>=1 && InitialPrimary<=4?InitialPrimary:1;
+            RecordTiles(Tiles,TEXT("initial_tiles"),Now-Started,InitialDetailReadyAt>0?Now-InitialDetailReadyAt:0.,InitialDetailFrames);
+            Test->TestTrue(TEXT("Initial Google detail remains rendered and at least 99 percent loaded for one second and three frames"),DetailReady);
+            CheckPhotorealistic3D(Tiles,TEXT("Initial city overview"));
+            CheckCityOverview(World,Map,Registry);
+            CheckAttribution(World,Shell,TEXT("initial_attribution"));
             Capture(TEXT("01-startup"));
             Observe(World,PC,Shell,Map,Registry,Sync,TEXT("initial"),true);
             CheckFormation(Registry,Sync);
-            CheckSymbolSeparation(Shell);
-            // Continue after visibility failures: this comparison is the diagnostic,
-            // and the original failed assertions remain in the automation report.
+            // Continue after failures and retain them in the automation report.
+            // Mode cycling also verifies real mesh restoration, not only actor flags.
+            Map->SetMapMode(ECommandMapMode::Map2D);
+            Phase=6;ActionAt=Now;return false;
+        }
+        if(Phase==6)
+        {
+            if(Now-ActionAt<3.)return false;
+            const auto Tiles=TilesState(World);RecordTiles(Tiles,TEXT("mode_2d_tiles"),Now-ActionAt);
+            Test->TestEqual(TEXT("Explicit mode switch enters 2D"),Map->GetMapMode(),ECommandMapMode::Map2D);
+            Test->TestTrue(TEXT("2D detaches, hides and suspends the Google layer"),Tiles.GoogleActors>0 && Tiles.GoogleDisabled);
+            Test->TestEqual(TEXT("2D displays no Google mesh"),Tiles.GoogleVisibleMeshes,0);
+            Test->TestEqual(TEXT("2D has no recently rendered Google mesh"),Tiles.GoogleRenderedMeshes,0);
+            Test->TestEqual(TEXT("2D preserves primary selection"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
+            Test->TestTrue(TEXT("2D preserves group selection"),Registry->GetMultiSelectedDrones()==InitialSelection);
+            Test->TestEqual(TEXT("2D preserves explicit video target"),Video(Sync),InitialVideo);
+            Capture(TEXT("01a-mode-2d"));Save();
+            Map->SetMapMode(ECommandMapMode::Map3D);
+            Phase=7;ActionAt=Now;return false;
+        }
+        if(Phase==7)
+        {
+            const auto Tiles=TilesState(World);
+            const bool DetailReady=DetailSettled(Tiles,Now,RestoredDetailReadyAt,RestoredDetailFrames);
+            if((Now-ActionAt<3. || !DetailReady) && Now-ActionAt<120.)return false;
+            Test->TestEqual(TEXT("Mode restore enters 3D"),Map->GetMapMode(),ECommandMapMode::Map3D);
+            RecordTiles(Tiles,TEXT("restored_3d_tiles"),Now-ActionAt,RestoredDetailReadyAt>0?Now-RestoredDetailReadyAt:0.,RestoredDetailFrames);
+            Test->TestTrue(TEXT("Restored Google detail remains rendered and at least 99 percent loaded for one second and three frames"),DetailReady);
+            CheckPhotorealistic3D(Tiles,TEXT("Restored 3D"));
+            CheckCityOverview(World,Map,Registry);
+            CheckAttribution(World,Shell,TEXT("restored_3d_attribution"));
+            Test->TestEqual(TEXT("Mode cycling preserves primary selection"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
+            Test->TestTrue(TEXT("Mode cycling preserves group selection"),Registry->GetMultiSelectedDrones()==InitialSelection);
+            Test->TestEqual(TEXT("Mode cycling preserves explicit video target"),Video(Sync),InitialVideo);
+            Capture(TEXT("01b-restored-3d"));Save();
             Report->SetNumberField(TEXT("explicit_locate_id"),LocateId);
-            Test->TestTrue(TEXT("Explicit production Locate request accepted"),Map->FocusDrone(LocateId));
+            // The real Locate action requests a close frame; automatic selection
+            // uses the default false and must not zoom away from the city view.
+            Test->TestTrue(TEXT("Explicit production Locate request accepted"),Map->FocusDrone(LocateId,true));
             Phase=1;LocateAt=Now;return false;
         }
         if(Phase==1)
@@ -319,6 +571,7 @@ public:
             if(Now-LocateAt<3.)return false;
             Capture(TEXT("02-explicit-locate"));
             Observe(World,PC,Shell,Map,Registry,Sync,TEXT("after_explicit_locate"),true);
+            CheckSymbolSeparation(Shell);
             Test->TestEqual(TEXT("Initial observation and Locate preserve primary"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
             Test->TestTrue(TEXT("Initial observation and Locate preserve group"),Registry->GetMultiSelectedDrones()==InitialSelection);
             Test->TestEqual(TEXT("Initial observation and Locate preserve video"),Video(Sync),InitialVideo);

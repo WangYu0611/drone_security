@@ -77,7 +77,7 @@ bool FFleetPresentationTest::RunTest(const FString&) {
 class FFleetMapWorkflow:public IAutomationLatentCommand {
     FAutomationTestBase* Test;double Began=FPlatformTime::Seconds(),Next=0;int Step=0,MemberCount=4;
     FString VideoBefore,Group,SecondGroup,ThirdGroup,CaptureDirectory;FVector2D TargetLocal;int BeforeExecutions=0;
-    FVector CameraBefore,LastCameraSample=FVector::ZeroVector;bool View3D=false,bRequested3D=false,bReselection=false;double ExpectedHeight=0;int StableCameraFrames=0;
+    FVector CameraBefore,LastCameraSample=FVector::ZeroVector;bool View3D=false,bRequestedMode=false,bReselection=false;double ExpectedHeight=0;int StableCameraFrames=0;
     // Inspect the real rendered hit path in this test's PIE window. This does not
     // move the OS cursor and is deliberately not claimed as native mouse evidence.
     bool MapPointAvailable(UMapShellWidget* Shell,UMapFleetInteractionWidget* Fleet,const FVector2D& Local) const {
@@ -341,10 +341,15 @@ public:
         auto All=Object(S->GetPlans(),TEXT("executions"));
         if(bReselection && Step>=10)return UpdateReselection(Shell,F,S,R);
         if(Step==0) {
-            if(View3D){auto* Map=Manager->GetMapService();if(!bRequested3D){Map->Enter3DMode();bRequested3D=true;return false;}
-                if(FMath::Abs(Map->GetMapCamera()->GetActorRotation().Pitch+55.f)>.05f)return false;
-                const FVector Camera=Map->GetMapCamera()->GetActorLocation();StableCameraFrames=Camera.Equals(LastCameraSample,.001)?StableCameraFrames+1:0;LastCameraSample=Camera;if(StableCameraFrames<6)return false;
-                Test->TestEqual(TEXT("real map service is in 3D"),Map->GetMapMode(),ECommandMapMode::Map3D);}
+            // Exercise the requested workflow explicitly, independently of the
+            // production city's configurable startup mode. Settle real frames
+            // before recording the camera used by selection invariance checks.
+            auto* Map=Manager->GetMapService();
+            if(!bRequestedMode){Map->SetMapMode(View3D?ECommandMapMode::Map3D:ECommandMapMode::Map2D);bRequestedMode=true;return false;}
+            if(FMath::Abs(Map->GetMapCamera()->GetActorRotation().Pitch+(View3D?55.f:89.9f))>.05f)return false;
+            const FVector Camera=Map->GetMapCamera()->GetActorLocation();StableCameraFrames=Camera.Equals(LastCameraSample,.001)?StableCameraFrames+1:0;LastCameraSample=Camera;if(StableCameraFrames<6)return false;
+            if(View3D)Test->TestEqual(TEXT("real map service is in 3D"),Map->GetMapMode(),ECommandMapMode::Map3D);
+            else Test->TestEqual(TEXT("real map service explicitly entered 2D"),Map->GetMapMode(),ECommandMapMode::Map2D);
             if(R->GetFriendlyDroneDescriptors().Num()!=4 || F->GetCachedGeometry().GetLocalSize().X<100)return false;
             FVector2D Min(DBL_MAX,DBL_MAX),Max(-DBL_MAX,-DBL_MAX);
             for(int Id=1;Id<=MemberCount;++Id){FVector2D P;if(!F->Project(Id,P))return false;Min.X=FMath::Min(Min.X,P.X);Min.Y=FMath::Min(Min.Y,P.Y);Max.X=FMath::Max(Max.X,P.X);Max.Y=FMath::Max(Max.Y,P.Y);}

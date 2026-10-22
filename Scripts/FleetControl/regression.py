@@ -5,7 +5,7 @@ root=Path(__file__).resolve().parents[2];sys.path.insert(0,str(root/'Launcher'))
 from runtime import Runtime
 from environment import load_config
 run=str(time.time_ns());out=root/'Evidence/FleetControl'/('ue-'+run);out.mkdir(parents=True)
-cfg=load_config(root);cfg.update(http_endpoint='http://127.0.0.1:21080',ws_endpoint='ws://127.0.0.1:21081/ws',runtime_directory='Saved/FleetControl-regression-'+run)
+cfg=load_config(root);cfg.update(mock_fixture='Backend/tests/fixtures/mock_execution_beijing.json', mock_reset_on_start=False, http_endpoint='http://127.0.0.1:21080',ws_endpoint='ws://127.0.0.1:21081/ws',runtime_directory='Saved/FleetControl-regression-'+run)
 runtime=Runtime(root,cfg);env=os.environ.copy();env.update(P1_HTTP=cfg['http_endpoint'],P1_WS=cfg['ws_endpoint'],P4_EVIDENCE_DIR=str(out/'p4-fixture'),P52_EVIDENCE_DIR=str(out/'p52-fixture'),P52_UAV='UAV-04',P52_LONGITUDE='116.34712',P54_ROUTE_FIXTURE=str(out/'route-fixture.json'))
 cases=[('Command','Workflow.CommandLiveCRUD'),('Command','Workflow.CommandReviewReadonlyCopyAndCombo'),('Command','P52.CommandExecutionControls'),('Map','Workflow.MapLiveDraftGuard'),('Map','Localization.FTextAndDraftIsolation'),('Map','P52.MapExecutionMonitor'),('Map','P53.GeometryUIAndCesiumRoundtrip'),('Video','VideoTarget.ExplicitSelectionAndBrowserIsolation')]
 cases.append(('Map','P54.CameraDampingAnd3DRoute'))

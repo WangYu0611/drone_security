@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-22",
+  "test": "DroneOps.Command.A2MapMode",
+  "original_result": "FAIL",
+  "assertion_failure_count": 7,
+  "original_report_directory": "Evidence/PlanConfiguration/verification-1792658599392659200/01-DroneOps.Command.A2MapMode",
+  "original_log": "Evidence/PlanConfiguration/verification-1792658599392659200/01-DroneOps.Command.A2MapMode/editor.log",
+  "diagnostic_method": "Read-only inspection of the failed run and static comparison against Git baseline d7d2061; no additional Editor run or build.",
+  "failure_groups": [
+    {
+      "failure_count": 6,
+      "assertions": [
+        "add geographic waypoint: not in edit mode (three occurrences)",
+        "existing confirmation",
+        "one confirmation",
+        "playback started"
+      ],
+      "cause": "The fixture submits UAV-9011 selection and enters the legacy path editor within the same latent-command update, before the authoritative selection ACK. The editor therefore begins with zero paths.",
+      "runtime_sequence": [
+        {
+          "log_line": 2599,
+          "timestamp_utc": "2026-10-22T08:44:42.557Z",
+          "event": "Path editor reports Begin edit mode with 0 path(s)."
+        },
+        {
+          "log_line_start": 2606,
+          "log_line_end": 2608,
+          "timestamp_utc_start": "2026-10-22T08:44:42.696Z",
+          "timestamp_utc_end": "2026-10-22T08:44:42.699Z",
+          "event": "Primary selection changes to UAV-9011 and the remote selection is applied after editor entry."
+        }
+      ],
+      "source_evidence": [
+        "Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:104-106 submits selection without waiting for ACK; line 127 begins planning in the same update.",
+        "Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp:472-496 routes selection through OperationalContext and returns before ACK.",
+        "Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1383 collects the currently accepted selection before invoking BeginPathEditMode.",
+        "Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:3306-3399 permits editor entry with zero paths and reports the path count.",
+        "Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp:1994 reports the same not-in-edit-mode message when EditingPaths is empty; it does not prove the edit-mode boolean was false.",
+        "Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp:1467 rejects confirmation when the generated path collection is empty, preventing the popup and playback."
+      ]
+    },
+    {
+      "failure_count": 1,
+      "assertions": [
+        "alert selects and focuses"
+      ],
+      "cause": "The fixture registers UAV-9011 and its sender actor but supplies neither accepted GPS telemetry nor a Mock home/execution position for that ID. The existing FocusAlertOnMap to FocusDrone path requires MapMove::Position and does not substitute the sender actor's transform for an accepted aircraft position.",
+      "source_evidence": [
+        "Source/UE5DroneControl/Tests/CommandMapModeTest.cpp:103-106 creates the registered actor fixture without supplying accepted position data.",
+        "Source/UE5DroneControl/Command/CommandMapInteractionService.cpp:342-353 resolves the alert and delegates to SelectDrone and FocusDrone.",
+        "Source/UE5DroneControl/Command/CommandMapInteractionService.cpp:249-265 requires MapMove::Position before focusing.",
+        "Source/UE5DroneControl/Map/MapMoveSupport.h:Position accepts valid telemetry or an allowed acknowledged Mock position; actor existence alone is insufficient."
+      ]
+    }
+  ],
+  "baseline_comparison": {
+    "baseline": "d7d2061",
+    "static_equal_methods": [
+      "UCommandMapInteractionService::BeginPathPlanning",
+      "UCommandMapInteractionService::ConfirmPath",
+      "UCommandMapInteractionService::FocusAlertOnMap",
+      "UDroneRegistrySubsystem::SetPrimarySelectedDrone",
+      "UDroneRegistrySubsystem::SetMultiSelectedDrones"
+    ],
+    "unchanged_files_in_relevant_call_chain": [
+      "Source/UE5DroneControl/UI/SequenceDispatchPanelWidget.cpp",
+      "Source/UE5DroneControl/DroneOps/Control/DroneOpsPlayerController.cpp",
+      "Source/UE5DroneControl/Map/MapMoveSupport.h"
+    ],
+    "focus_drone_difference": "This change adds an optional bFrameClose parameter and a conditional near-view distance assignment. The A2 caller uses the false default, so that new assignment is not executed. The accepted-position guard is unchanged from the baseline.",
+    "startup_exclusion_evidence": "The run explicitly entered 2D before the failing workflow; its recorded fixture coordinates remained in Beijing, and no MapStartup origin-application event was present. The offline QA startup-origin gate was active.",
+    "conclusion": "The observed failure mechanisms are pre-existing fixture assumptions and unchanged call-chain behavior. The legacy entry points remain present; the evidence does not show this migration disabling a previously valid route editor."
+  },
+  "limitations": [
+    "The old d7d2061 DLL was not executed for a runtime A/B comparison. Static equivalence and the current run's ordering evidence do not constitute a completed baseline execution.",
+    "This diagnostic does not turn A2MapMode into a passing test or establish successful legacy playback.",
+    "The original raw log contains provider credential-bearing URLs. This JSON intentionally includes no such URLs or credentials; any publication of the original report requires the repository's sanitization process."
+  ],
+  "disposition": {
+    "original_failure_preserved": true,
+    "source_or_assertions_changed_by_diagnostic": false,
+    "marina_bay_migration_blocker": false,
+    "reason": "The seven failures are attributable to the old A2 fixture's missing selection-ACK wait and accepted-position setup, not to the startup-view and layer-switch changes assessed here.",
+    "future_fixture_repair": "Retain the existing assertions, provide an explicit accepted position for the fixture aircraft, and wait for acknowledged selection before entering the intended edit workflow. Validate that repair in a separate run while retaining this failure report."
+  }
+}

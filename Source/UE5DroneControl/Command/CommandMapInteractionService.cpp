@@ -246,7 +246,7 @@ bool UCommandMapInteractionService::SelectDrone(int32 DroneId)
     return true;
 }
 
-bool UCommandMapInteractionService::FocusDrone(int32 DroneId)
+bool UCommandMapInteractionService::FocusDrone(int32 DroneId,bool bFrameClose)
 {
     if(bRouteEditCameraLocked)return false;
     if (OwnsCamera())
@@ -261,6 +261,7 @@ bool UCommandMapInteractionService::FocusDrone(int32 DroneId)
         if (!Coordinates || !ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)
             || !ICoordinateService::Execute_IsGeographicSupported(Coordinates)
             || !MapMove::Position(Registry.Get(),Sync->GetPlans(),DroneId,Geographic)) return false;
+        if(bFrameClose)ViewDistance=FMath::Clamp(6000.,double(MinDistance),double(MaxDistance));
         return FocusGeographicLocation(Geographic.Y,Geographic.X,Geographic.Z);
     }
     return Controller.IsValid() && Controller->FocusCommandDrone(DroneId);
@@ -300,6 +301,19 @@ bool UCommandMapInteractionService::FocusFleet(bool WaitForMockFleet)
     // map context. Execution views keep their wider minimum distance.
     ViewDistance=FMath::Clamp(FMath::Max(6000.,RequiredDistance),double(MinDistance),double(MaxDistance));
     return FocusLocation(Bounds.GetCenter());
+}
+
+bool UCommandMapInteractionService::ApplyConfiguredStartupView()
+{
+    if(!StartupSettings.bEnabled || !OwnsCamera() || !Registry.IsValid() || bRouteEditCameraLocked)return false;
+    auto* Coordinates=Registry->GetCoordinateService().GetObject();
+    if(!Coordinates || !ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates)
+        || !ICoordinateService::Execute_IsGeographicSupported(Coordinates))return false;
+    ViewDistance=FMath::Clamp(StartupSettings.ViewDistanceMeters*100.,double(MinDistance),double(MaxDistance));
+    View3DPitch=FMath::Clamp(static_cast<float>(StartupSettings.PitchDegrees),-MaxPitch,-MinPitch);
+    ViewYaw=FMath::UnwindDegrees(static_cast<float>(StartupSettings.YawDegrees));
+    const auto& Location=StartupSettings.LongitudeLatitudeHeight;
+    return FocusGeographicLocation(Location.Y,Location.X,Location.Z);
 }
 
 bool UCommandMapInteractionService::FocusLocation(const FVector& WorldLocation)
@@ -375,6 +389,16 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
     if (bWorldInitialized || !World) return;
     bWorldInitialized = true;
     MapWorld = World;
+    // Called by OnPostWorldInitialization before Cesium construction/BeginPlay.
+    // Keep synthetic/offline QA worlds and other roles on their own origin.
+    if(World->IsGameWorld() && World->GetMapName().EndsWith(TEXT("CesiumWorld"))
+        && !FParse::Param(FCommandLine::Get(),TEXT("P55OfflineVisualQA"))
+        && UCommandScreenManager::ResolveClientRole()==EDroneClientRole::Map)
+    {
+        StartupSettings=FMapStartupSettings::Read();
+        StartupSettings.ResolveMenuOverride(World);
+        StartupSettings.ApplyOrigin(World);
+    }
     auto ConfigFloat=[&](const TCHAR* Key,float& Value,float Min,float Max) {
         GConfig->GetFloat(TEXT("CommandMapCamera"),Key,Value,GGameIni);
         Value=FMath::Clamp(FMath::IsFinite(Value)?Value:Min,Min,Max);
@@ -392,6 +416,12 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
     ConfigFloat(TEXT("ZoomRatio"),ZoomRatio,.1f,.99f);
     ViewDistance=FMath::Clamp(ViewDistance,double(MinDistance),double(MaxDistance));
     View3DPitch=FMath::Clamp(View3DPitch,-MaxPitch,-MinPitch);
+    if(StartupSettings.bEnabled)
+    {
+        ViewDistance=FMath::Clamp(StartupSettings.ViewDistanceMeters*100.,double(MinDistance),double(MaxDistance));
+        View3DPitch=FMath::Clamp(static_cast<float>(StartupSettings.PitchDegrees),-MaxPitch,-MinPitch);
+        ViewYaw=FMath::UnwindDegrees(static_cast<float>(StartupSettings.YawDegrees));
+    }
     FString Mode;
     GConfig->GetString(TEXT("CommandMap"), TEXT("DefaultMapMode"), Mode, GGameIni);
     if (!bModeRequested) CurrentMapMode = Mode.Equals(TEXT("3D"), ESearchCase::IgnoreCase) ? ECommandMapMode::Map3D : ECommandMapMode::Map2D;
@@ -405,13 +435,25 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
     if (!bValidUrl) UE_LOG(LogTemp, Error, TEXT("COMMAND FUNCTION ERROR: CommandMap.BasemapUrl must be an HTTP(S) WGS84/WebMercator XYZ template; keeping existing raster."));
     int32 IonAssetId = 0;
     GConfig->GetInt(TEXT("CommandMap"), TEXT("BasemapIonAssetId"), IonAssetId, GGameIni);
+    GConfig->GetBool(TEXT("CommandMap"),TEXT("PreferPhotorealistic3D"),bPreferPhotorealistic3D,GGameIni);
+    double PhotorealisticSSE=4.;
+    GConfig->GetDouble(TEXT("CommandMap"),TEXT("PhotorealisticMaximumScreenSpaceError"),PhotorealisticSSE,GGameIni);
+    if(!FMath::IsFinite(PhotorealisticSSE) || PhotorealisticSSE<1. || PhotorealisticSSE>64.)
+    {
+        UE_LOG(LogTemp,Warning,TEXT("[CommandMap] Invalid photorealistic screen-space error; using 4 pixels."));
+        PhotorealisticSSE=4.;
+    }
     for (TActorIterator<ACesium3DTileset> It(World); It; ++It)
     {
         ACesium3DTileset* Tileset = *It;
         TArray<UCesiumRasterOverlay*> Rasters;
         Tileset->GetComponents(Rasters);
-        if (Tileset->ActorHasTag(TEXT("CommandSharedLayer"))) continue;
-        const bool bBasemap = !Tileset->ActorHasTag(TEXT("Command3DOnly")) && (!Rasters.IsEmpty() || Tileset->ActorHasTag(TEXT("CommandBasemapSurface")));
+        const int64 AssetId=Tileset->GetIonAssetID();
+        const bool IsIon=Tileset->GetTilesetSource()==ETilesetSource::FromCesiumIon;
+        const bool IsPhotorealistic=IsIon && AssetId==2275207;
+        const bool IsDuplicate=IsIon && (AssetId==96188 || AssetId==1);
+        if (Tileset->ActorHasTag(TEXT("CommandSharedLayer")) && !(bPreferPhotorealistic3D && (IsPhotorealistic || IsDuplicate))) continue;
+        const bool bBasemap = !IsPhotorealistic && !Tileset->ActorHasTag(TEXT("Command3DOnly")) && (!Rasters.IsEmpty() || Tileset->ActorHasTag(TEXT("CommandBasemapSurface")));
         if (!bBasemap && Tileset->GetTilesetSource() == ETilesetSource::FromUrl && Tileset->GetUrl().IsEmpty()) continue;
         FLayer& Layer = Layers.AddDefaulted_GetRef();
         Layer.Actor = Tileset;
@@ -420,6 +462,16 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
         Layer.bHidden = Tileset->IsHidden();
         Layer.bSuspended = Tileset->SuspendUpdate;
         Layer.bCollision = Tileset->GetActorEnableCollision();
+        Layer.bPhotorealistic=IsPhotorealistic;
+        Layer.bDuplicatePhotorealisticSurface=IsDuplicate;
+        bHasPhotorealisticLayer|=IsPhotorealistic;
+        if(bPreferPhotorealistic3D && IsPhotorealistic)
+        {
+            Tileset->SetMaximumScreenSpaceError(PhotorealisticSSE);
+            // Cesium's live credits include the provider's required attribution.
+            // Do not replace them with a static Google label or inspect tokens.
+            Tileset->ShowCreditsOnScreen=true;
+        }
         if (!bBasemap) continue;
         for (UCesiumRasterOverlay* Raster : Rasters)
         {
@@ -444,6 +496,8 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
             Layer.RasterActivation.Add(Raster, true);
         }
     }
+    if(bPreferPhotorealistic3D && !bHasPhotorealisticLayer)
+        UE_LOG(LogTemp,Warning,TEXT("[CommandMap] Google Photorealistic 3D Tiles (ion asset 2275207) is absent. Existing layers retained; Google loading is not available."));
     OnCesiumRasterOverlayLoadFailure.AddUObject(this, &UCommandMapInteractionService::RasterFailed);
     OnCesium3DTilesetLoadFailure.AddUObject(this, &UCommandMapInteractionService::TilesetFailed);
     ApplyLayers();
@@ -460,16 +514,19 @@ void UCommandMapInteractionService::ApplyLayers()
         ACesium3DTileset* Actor = Layer.Actor.Get();
         if (!Actor) continue;
         const bool b2D = CurrentMapMode == ECommandMapMode::Map2D;
+        const bool GooglePrimary=bPreferPhotorealistic3D && bHasPhotorealisticLayer && !b2D;
+        const bool Duplicate=GooglePrimary && Layer.bDuplicatePhotorealisticSurface;
+        const bool Primary=GooglePrimary && Layer.bPhotorealistic;
         // SuspendUpdate alone does not prevent Cesium BeginPlay/OnConstruction from loading a source.
         // A disabled heavy layer gets a non-network ellipsoid source before BeginPlay, then restores its exact source in 3D.
-        Actor->SuspendUpdate = bOfflinePlane || (b2D ? !Layer.bBasemap : Layer.bSuspended);
-        const ETilesetSource Source = (b2D || bOfflinePlane) ? ETilesetSource::FromEllipsoid : Layer.OriginalSource;
+        Actor->SuspendUpdate = bOfflinePlane || Duplicate || (b2D ? !Layer.bBasemap : Primary?false:Layer.bSuspended);
+        const ETilesetSource Source = (b2D || bOfflinePlane || Duplicate) ? ETilesetSource::FromEllipsoid : Layer.OriginalSource;
         if (Actor->GetTilesetSource() != Source) Actor->SetTilesetSource(Source);
-        Actor->SetActorHiddenInGame(bOfflinePlane || (b2D ? !Layer.bBasemap : Layer.bHidden));
-        Actor->SetActorEnableCollision(!bOfflinePlane && (b2D ? Layer.bBasemap : Layer.bCollision));
+        Actor->SetActorHiddenInGame(bOfflinePlane || Duplicate || (b2D ? !Layer.bBasemap : Primary?false:Layer.bHidden));
+        Actor->SetActorEnableCollision(!bOfflinePlane && !Duplicate && (b2D ? Layer.bBasemap : Primary?true:Layer.bCollision));
         for (const auto& Pair : Layer.RasterActivation)
-            if (auto* Raster = Pair.Key.Get(); Raster && Raster->IsActive() != (!bOfflinePlane && Pair.Value))
-                Raster->SetActive(!bOfflinePlane && Pair.Value);
+            if (auto* Raster = Pair.Key.Get(); Raster && Raster->IsActive() != (!bOfflinePlane && !Duplicate && Pair.Value))
+                Raster->SetActive(!bOfflinePlane && !Duplicate && Pair.Value);
     }
     LogLayerState();
 }

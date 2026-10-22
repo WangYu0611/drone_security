@@ -5,6 +5,7 @@
 #include "UObject/Object.h"
 #include "Cesium3DTileset.h"
 #include "CesiumRasterOverlayLoadFailureDetails.h"
+#include "Map/MapStartupSettings.h"
 #include "CommandMapInteractionService.generated.h"
 
 UENUM(BlueprintType)
@@ -28,8 +29,10 @@ public:
     void Unbind();
     void SetPathPanel(class USequenceDispatchPanelWidget* Panel);
     UFUNCTION(BlueprintCallable) bool SelectDrone(int32 DroneId);
-    UFUNCTION(BlueprintCallable) bool FocusDrone(int32 DroneId);
+    UFUNCTION(BlueprintCallable) bool FocusDrone(int32 DroneId, bool bFrameClose = false);
     bool FocusFleet(bool WaitForMockFleet=false);
+    bool HasConfiguredStartupView() const { return StartupSettings.bEnabled; }
+    bool ApplyConfiguredStartupView();
     UFUNCTION(BlueprintCallable) bool FocusLocation(const FVector& WorldLocation);
     bool FocusExecutionBounds(const FBox& Bounds);
     UFUNCTION(BlueprintCallable) bool FocusAlertOnMap(int32 AlertId);
@@ -68,6 +71,7 @@ private:
         TWeakObjectPtr<ACesium3DTileset> Actor;
         ETilesetSource OriginalSource = ETilesetSource::FromUrl;
         bool bBasemap = false, bHidden = false, bSuspended = false, bCollision = false;
+        bool bPhotorealistic=false,bDuplicatePhotorealisticSurface=false;
         TMap<TWeakObjectPtr<class UCesiumRasterOverlay>, bool> RasterActivation;
     };
     ECommandMapMode CurrentMapMode = ECommandMapMode::Map2D;
@@ -76,6 +80,8 @@ private:
     TArray<FLayer> Layers;
     bool bWorldInitialized = false;
     bool bModeRequested = false;
+    FMapStartupSettings StartupSettings;
+    bool bPreferPhotorealistic3D=false,bHasPhotorealisticLayer=false;
     FVector ViewFocus = FVector::ZeroVector;
     double ViewDistance = 15000.0;
     float OriginalHitResultTraceDistance = 100000.f;

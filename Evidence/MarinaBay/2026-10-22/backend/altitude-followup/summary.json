@@ -1,0 +1,37 @@
+{
+  "pass": true,
+  "scope": "50 m ellipsoid Mock origin and homes; configuration and owned loopback Backend acceptance only",
+  "origin": {
+    "latitude": 1.2834,
+    "longitude": 103.8585,
+    "ellipsoid_altitude_m": 50
+  },
+  "spacing_m": 2,
+  "checks": {
+    "fixture_policy": {
+      "passed": 6,
+      "expected": 6
+    },
+    "startup_migration": {
+      "passed": 6,
+      "expected": 6
+    },
+    "transport": {
+      "passed": 14,
+      "expected": 14
+    }
+  },
+  "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+  "fixture_sha256": "6f6c5d07c71b19444b0a84e8b8d0c7f8f2c084fce2a9221a45bd7c89b313329c",
+  "legacy_fixture_sha256": "9a86344a90616b184746fd290b018bc982d5d51787b60b4a77214cd2000cf8c7",
+  "beijing_fixture_altitude_m": 30,
+  "legacy_fixture_changed": false,
+  "protected_files_matching": 8,
+  "protected_files_expected": 8,
+  "backend_rebuilt": false,
+  "production_execution_source_changed": false,
+  "launcher_suites_rerun": false,
+  "ue_or_native_acceptance_claimed": false,
+  "previous_evidence": "Parent directory records the initial 30 m run and historical-host followup; their logs remain unchanged.",
+  "source_manifest": "Final source manifest remains the parent task responsibility after final build and QA."
+}

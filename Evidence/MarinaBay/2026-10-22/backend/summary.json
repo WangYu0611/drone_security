@@ -1,0 +1,64 @@
+{
+  "pass": true,
+  "scope": "Configuration, owned loopback Backend and Launcher automation; no UE/native/Google tiles claim",
+  "backend_built": false,
+  "backend_sha256": "67e312730eef6e2d93eb3b044f628a37d76ab2cba7668fd0195c4129abcc879f",
+  "checks": {
+    "fixture_policy": {
+      "passed": 6,
+      "expected": 6,
+      "evidence": "altitude-followup/fixture-policy.log"
+    },
+    "launcher_runtime": {
+      "passed": 10,
+      "expected": 10,
+      "evidence": "historical-host/test_runtime.log"
+    },
+    "launcher_environment": {
+      "passed": 8,
+      "expected": 8
+    },
+    "startup_migration": {
+      "passed": 6,
+      "expected": 6,
+      "evidence": "altitude-followup/startup-migration.json"
+    },
+    "transport": {
+      "passed": 14,
+      "expected": 14,
+      "evidence": "altitude-followup/transport.json"
+    }
+  },
+  "python_compile": {
+    "passed_files": 13
+  },
+  "origin": {
+    "latitude": 1.2834,
+    "longitude": 103.8585,
+    "ellipsoid_altitude_m": 50
+  },
+  "spacing_m": 2,
+  "history_policy": "Synthetic old confirmed positions restored without reset; new owned reset migrates position epoch, preserves custom Home bytes and historical routes. Existing Backend attachment does not reset.",
+  "limitations": [
+    "Historical Beijing routes are preserved, not geographically migrated.",
+    "With startup reset enabled, new execution and return-home use the session baseline even when saved custom Home differs.",
+    "Historical phase-specific scripts outside the updated current QA launchers are not claimed validated.",
+    "No execution logic, safety threshold, user Saved/Stage1 record or private asset changed."
+  ],
+  "historical_host_followup": {
+    "changes": "Only the Beijing online QA host disables MapStartup via client arguments; production Runtime and StartupVisibility remain unchanged.",
+    "source_manifest": "historical-host/source-manifest.json",
+    "initial_source_manifest": "source-manifest.json",
+    "native_or_editor_launched": false
+  },
+  "altitude_followup": {
+    "summary": "altitude-followup/summary.json",
+    "previous_origin": {
+      "latitude": 1.2834,
+      "longitude": 103.8585,
+      "ellipsoid_altitude_m": 30
+    },
+    "old_logs_preserved": true,
+    "launcher_suites_rerun": false
+  }
+}

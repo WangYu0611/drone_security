@@ -90,7 +90,7 @@ public:explicit FP4CommandLive(FAutomationTestBase* T):Test(T){}
 class FP4MapDraft:public IAutomationLatentCommand {
     FAutomationTestBase* Test;int Step=0;double Started=FPlatformTime::Seconds();
     TWeakObjectPtr<UMapMissionRouteWidget> Panel;TWeakObjectPtr<ADronePathActor> Actor;
-    int UndoCount=0,PointCount=0;FString Plan,Mission;int64 Version=0;
+    int UndoCount=0,PointCount=0;FString Plan,Mission;int64 Version=0;bool bRequested2D=false;
 public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
     bool Update() override {
         if(FPlatformTime::Seconds()-Started>75){Test->AddError(TEXT("Map live draft test timeout"));return true;}
@@ -99,6 +99,12 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
         if(!Panel.IsValid()){for(TObjectIterator<UMapMissionRouteWidget> I;I;++I)if(I->GetWorld()==W){Panel=*I;break;}if(!Panel.IsValid())return false;}
         auto* P=Panel.Get();P->Refresh();
         if(Step==0){
+            // The lease deliberately locks a 2D editor. Choose that mode before
+            // acquiring the lock instead of depending on the city startup view.
+            auto* Map=PC->GetCommandScreenManager()->GetMapService();
+            if(!bRequested2D){Map->Enter2DMode();bRequested2D=true;return false;}
+            if(!Map->GetMapCamera() || FMath::Abs(Map->GetMapCamera()->GetActorRotation().Pitch+89.9f)>.05f)return false;
+            Test->TestEqual(TEXT("route lease starts from explicit 2D view"),Map->GetMapMode(),ECommandMapMode::Map2D);
             auto Plans=PlanUI::Object(S->GetPlans(),TEXT("plans"));for(const auto& Entry:Plans->Values)if(PlanUI::Field(Entry.Value->AsObject(),TEXT("name"))==TEXT("P4 UE ROUTE GUARD")){Plan=FString(Entry.Key.ToView());Mission=Entry.Value->AsObject()->GetArrayField(TEXT("mission_ids"))[0]->AsString();}
             if(Plan.IsEmpty()){Test->AddError(TEXT("Route fixture missing"));return true;}
             PC->GetCommandScreenManager()->bFollowSelection=true;PC->GetCommandScreenManager()->bSelectionDirty=true;

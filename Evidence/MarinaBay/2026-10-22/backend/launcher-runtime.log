@@ -1,0 +1,15 @@
+test_ActiveExecutionShutdownWarningPredicate (__main__.LauncherTests.test_ActiveExecutionShutdownWarningPredicate) ... ok
+test_BackendReadiness (__main__.LauncherTests.test_BackendReadiness) ... ok
+test_FleetCompatibilityRejectsHealthyLegacyBackendWithoutTakingOwnership (__main__.LauncherTests.test_FleetCompatibilityRejectsHealthyLegacyBackendWithoutTakingOwnership) ... ok
+test_NewOwnedBackendResetsOnceAndPreservesExistingFixture (__main__.LauncherTests.test_NewOwnedBackendResetsOnceAndPreservesExistingFixture) ... ok
+test_ProcessOwnershipAndSafeShutdown (__main__.LauncherTests.test_ProcessOwnershipAndSafeShutdown) ... ok
+test_RoleArguments (__main__.LauncherTests.test_RoleArguments) ... ok
+test_ShutdownRequiresBackendPersistenceAck (__main__.LauncherTests.test_ShutdownRequiresBackendPersistenceAck) ... ok
+test_SingleInstance (__main__.LauncherTests.test_SingleInstance) ... ok
+test_SingleScreenMultiWindowLayout (__main__.LauncherTests.test_SingleScreenMultiWindowLayout) ... ok
+test_StartupResetLostReplyReusesIdAndRequiresAck (__main__.LauncherTests.test_StartupResetLostReplyReusesIdAndRequiresAck) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 9.165s
+
+OK

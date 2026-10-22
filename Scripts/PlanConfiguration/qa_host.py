@@ -12,6 +12,14 @@ from verify import ROOT, cleanup_owned, isolated_config, sha256, start_owned_bac
 from runtime import ROLES, Runtime, SingleInstance, compatible_snapshot
 
 
+class BeijingQaRuntime(Runtime):
+    """Keep this historic online scene aligned with its Beijing route fixture."""
+    def _spawn(self, role, args, cwd):
+        if role in ROLES:
+            args = [*args, '-ini:Game:[MapStartup]:Enabled=false']
+        return super()._spawn(role, args, cwd)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--http-port', type=int, default=22580)
@@ -27,7 +35,7 @@ def main(argv=None):
     config = isolated_config(args.http_port, args.ws_port, directory)
     folder = ROOT / directory
     folder.mkdir(parents=True)
-    fixture = json.loads((ROOT / 'Backend/mock_execution.json').read_text(encoding='utf-8-sig'))
+    fixture = json.loads((ROOT / config['mock_fixture']).read_text(encoding='utf-8-sig'))
     if fixture.get('simulation') is not True:
         raise RuntimeError('Native QA requires the explicit Mock fixture')
     for uav in fixture['uavs'].values():
@@ -35,11 +43,12 @@ def main(argv=None):
     fixture_path = folder / 'fixture.json'
     write_json(fixture_path, fixture)
     config.update(mock_fixture=str(fixture_path), map='/Game/Level/CesiumWorld', max_fps=30)
-    runtime = Runtime(ROOT, config)
+    runtime = BeijingQaRuntime(ROOT, config)
     commands = folder / 'command.json'
     metadata = {'run': run, 'directory': str(folder), 'commands': str(commands),
                 'http_endpoint': config['http_endpoint'], 'ws_endpoint': config['ws_endpoint'],
                 'map': config['map'], 'fixture_altitude_ellipsoid_m': args.altitude_ellipsoid,
+                'map_startup_enabled': False,
                 'backend': str((ROOT / config['backend_executable']).resolve()),
                 'backend_sha256': sha256(ROOT / config['backend_executable']),
                 'ue_module_sha256': sha256(ROOT / 'Binaries/Win64/UnrealEditor-UE5DroneControl.dll'),

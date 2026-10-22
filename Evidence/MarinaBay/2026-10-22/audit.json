@@ -1,0 +1,139 @@
+{
+  "audited_at_utc": "2026-10-22T08:38:57.063541+00:00",
+  "scope": "Read-only source, configuration, isolation, evidence credential-pattern audit and protected-file hashes; the only repair updates public evidence hash metadata.",
+  "protected_files_expected": 8,
+  "protected_files_matching": 8,
+  "protected_files": [
+    {
+      "path": "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset",
+      "before_sha256": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+      "current_sha256": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/DroneRegistry.json",
+      "before_sha256": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+      "current_sha256": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/Stage1/data/drones.json",
+      "before_sha256": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+      "current_sha256": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/Stage1/data/mock_execution.json",
+      "before_sha256": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+      "current_sha256": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/Stage1/data/operational_context.json",
+      "before_sha256": "1cce598d7c296b74d2b41fb1d2219c66cbde355b8685b0844118abe8493bc27d",
+      "current_sha256": "1cce598d7c296b74d2b41fb1d2219c66cbde355b8685b0844118abe8493bc27d",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/Stage1/data/security_plans.json",
+      "before_sha256": "7c7940e482e412d12d08245fd371733c25d80ff90cdbe722e1d12f9b395b75b9",
+      "current_sha256": "7c7940e482e412d12d08245fd371733c25d80ff90cdbe722e1d12f9b395b75b9",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/Stage1/data/ui_preferences.json",
+      "before_sha256": "057a42f866fd2179c57218daae17da32a0ba45888baccbd38ac9882a1186e3e6",
+      "current_sha256": "057a42f866fd2179c57218daae17da32a0ba45888baccbd38ac9882a1186e3e6",
+      "unchanged": true
+    },
+    {
+      "path": "Saved/Stage1/data/video_view.json",
+      "before_sha256": "d0f68638436d9919bf73f65a9bb6739c17e3d04cb00c9eafd1a0ee51b05d833f",
+      "current_sha256": "d0f68638436d9919bf73f65a9bb6739c17e3d04cb00c9eafd1a0ee51b05d833f",
+      "unchanged": true
+    }
+  ],
+  "private_asset_access": "SHA256 only; no private asset decoding or content inspection.",
+  "registry_isolation": {
+    "source": "Source/UE5DroneControl/DroneOps/Core/DroneRegistrySubsystem.cpp",
+    "load_and_save_share_explicit_cli_override": true,
+    "production_without_override_uses_existing_saved_registry": true,
+    "verification_passes_unique_runtime_registry_copy": true,
+    "override_is_local_cli_input_not_network_input": true
+  },
+  "mock_migration": {
+    "scope": "Synthetic old state and owned loopback Backend processes in unique ignored Saved/MarinaBayQA directories. No user Stage1 record is used or modified by this integration test.",
+    "user_custom_home_and_routes": "Preserved; enabling new owned-session reset uses the new session baseline for future Mock movement/return-home.",
+    "execution_logic_changed_in_this_migration": false
+  },
+  "google_configuration": {
+    "new_credential_in_defaults": false,
+    "authorization_source": "Existing local Cesium connection; private authorization asset hash unchanged.",
+    "map_changes_are_runtime_presentation": true,
+    "paid_plan_or_billing_activated": false
+  },
+  "credential_pattern_scan": {
+    "backend_evidence_text_files": 13,
+    "changed_or_new_source_configuration_files": 33,
+    "unexpected_matches": [],
+    "checks": [
+      "Known credential formats",
+      "Private key headers",
+      "URL authentication query or userinfo patterns",
+      "Non-redacted credential fields in backend evidence",
+      "User-profile paths in backend evidence"
+    ],
+    "scope_limit": "Pattern scan and manual review of changed configuration; no scan or publication of private asset contents."
+  },
+  "saved_files_in_changed_or_untracked_git_set": [],
+  "resolved_findings": [
+    {
+      "category": "Evidence hash integrity",
+      "cause": "The original public_sha256 hashed LF text before Windows write_text saved CRLF bytes. All six differences were exactly explained by CRLF-to-LF normalization.",
+      "repair": "Recomputed six public_sha256 values from existing disk bytes. No test log, result content or outcome changed.",
+      "fixed_files": [
+        {
+          "path": "Evidence/MarinaBay/2026-10-22/backend/fixture-policy.log",
+          "previous_lf_text_sha256": "dfb733c910b4ebae3e2834bd6179c9e3bf51e8e5344f4a503f5da78143f39ec1",
+          "actual_file_sha256": "fd42b555b38ef8b9f426e7e63028cfce043d838f3209238c964aea51f34884ec"
+        },
+        {
+          "path": "Evidence/MarinaBay/2026-10-22/backend/launcher-runtime.log",
+          "previous_lf_text_sha256": "760d1b52be66660e403ce38c1b20fe9f7a459e39db9b50f630cdafa045b24267",
+          "actual_file_sha256": "a91e817edc86ca6b4509f726a389eb352b8275002fd3658752d2a0730608d1df"
+        },
+        {
+          "path": "Evidence/MarinaBay/2026-10-22/backend/launcher-environment.log",
+          "previous_lf_text_sha256": "cd0c6263d5c3b2f8c7221df7ca4ef4e1cd76b0a680f560c57c9af2a5c3cf6437",
+          "actual_file_sha256": "21c8666ffa79c526a3b24ee652b603bdfcdadf2ea42f7e85d538634d0299e082"
+        },
+        {
+          "path": "Evidence/MarinaBay/2026-10-22/backend/startup-migration.json",
+          "previous_lf_text_sha256": "fd80c8f9139525791a200a8028a90236a02ccfd3a75fc918770b5e9d1ed46b56",
+          "actual_file_sha256": "a27b9dd1ad4c0084dafa94e689f8d14b6c142f2e11114f729b086d0850e3bb41"
+        },
+        {
+          "path": "Evidence/MarinaBay/2026-10-22/backend/transport.log",
+          "previous_lf_text_sha256": "4c85ee6fed367ea5e545ddc132a1ad17e43fe3b85cab2068862eecbe55545027",
+          "actual_file_sha256": "a039659f7612610db8b726ebe3a837fa28d0b6bcc78f80f317db908cb6fd5a44"
+        },
+        {
+          "path": "Evidence/MarinaBay/2026-10-22/backend/transport.json",
+          "previous_lf_text_sha256": "09ed812ed0d5c66a2166352fb6b885c156a201b3252ae685ce836a7e590adeec",
+          "actual_file_sha256": "fa9e09e618751d2b7e01ec51c1ebb70c5796da204fbc6f9bac5f7c168257aeb9"
+        }
+      ],
+      "public_hashes_now_match_disk": true
+    }
+  ],
+  "remaining_blocking_findings": [],
+  "validation_boundary": {
+    "this_audit_runs_tests": false,
+    "this_audit_runs_editor": false,
+    "this_audit_proves_ue_pass": false,
+    "this_audit_proves_native_ui_pass": false,
+    "final_build_and_visual_verification": "Parent task responsibility; separate evidence required.",
+    "final_source_manifest": "Deferred until final build and QA freeze."
+  },
+  "git_write_operations": false
+}

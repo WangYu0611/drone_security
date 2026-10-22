@@ -35,6 +35,25 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "HAL/FileManager.h"
+#include "Map/MapStartupSettings.h"
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMapStartupSettingsValidation,"DroneOps.Map.StartupSettings",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FMapStartupSettingsValidation::RunTest(const FString& Parameters)
+{
+    FMapStartupSettings Settings;
+    Settings.LongitudeLatitudeHeight=FVector(103.8585,1.2834,30.);
+    TestTrue(TEXT("Marina Bay overview is a valid presentation configuration"),Settings.IsValid());
+    Settings.LongitudeLatitudeHeight.X=181.;
+    TestFalse(TEXT("Invalid longitude cannot move the georeference"),Settings.IsValid());
+    Settings.LongitudeLatitudeHeight=FVector::ZeroVector;
+    TestTrue(TEXT("Zero-degree explicit menu origin remains valid"),Settings.IsValid());
+    Settings.ViewDistanceMeters=0.;
+    TestFalse(TEXT("Zero camera distance cannot replace the existing view"),Settings.IsValid());
+    Settings.ViewDistanceMeters=1200.;Settings.PitchDegrees=0.;
+    TestFalse(TEXT("Horizontal camera cannot become the configured ground overview"),Settings.IsValid());
+    return true;
+}
 
 DEFINE_LATENT_AUTOMATION_COMMAND(FA2StartPIE);
 bool FA2StartPIE::Update()
@@ -67,7 +86,10 @@ public:
             Network = PC->GetGameInstance()->GetSubsystem<UDroneNetworkManager>();
             Store = PC->GetGameInstance()->GetSubsystem<UCommandAlertStore>();
             if (!Registry || !Network || !Store) { Test->AddError(TEXT("A2 business services missing")); return true; }
-            Test->TestEqual(TEXT("default is 2D"), Map->GetMapMode(), ECommandMapMode::Map2D);
+            // This regression exercises the 2D workflow regardless of the
+            // configured city startup mode, which has its own production-map test.
+            ClickMode(TEXT("map2d"));
+            Test->TestEqual(TEXT("explicit 2D toolbar mode"), Map->GetMapMode(), ECommandMapMode::Map2D);
             Test->TestTrue(TEXT("2D camera exists"), Map->GetMapCamera() != nullptr);
             bool bActiveBasemap = false;
             for (TActorIterator<ACesium3DTileset> It(World); It; ++It)
@@ -77,7 +99,7 @@ public:
                 for (const auto* Raster : Rasters)
                     if (Raster->IonAssetID == 2 && Raster->IsActive()) bActiveBasemap = true;
             }
-            Test->TestTrue(TEXT("default online basemap auto activation survives early mode initialization"), bActiveBasemap);
+            Test->TestTrue(TEXT("2D restores online basemap auto activation after startup"), bActiveBasemap);
             OldSelection = Registry->GetMultiSelectedDrones(); OldPrimary = Registry->GetPrimarySelectedDrone();
             WasIsolated = Network->IsStrictLocalPreviewIsolation(); Network->SetStrictLocalPreviewIsolation(true);
             FDroneDescriptor Desc; Desc.DroneId = 9011; Desc.Name = TEXT("A2 REGRESSION FIXTURE");

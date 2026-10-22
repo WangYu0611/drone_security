@@ -1,0 +1,43 @@
+{
+  "simulation": true,
+  "default_speed_mps": 8.0,
+  "startup_formation": {
+    "origin": {
+      "latitude": 39.9807,
+      "longitude": 116.34703,
+      "altitude": 30.0
+    },
+    "spacing_m": 2.0,
+    "direction": "east"
+  },
+  "uavs": {
+    "UAV-01": {
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34702999999999,
+        "altitude": 30.0
+      }
+    },
+    "UAV-02": {
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34706,
+        "altitude": 30.0
+      }
+    },
+    "UAV-03": {
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34709,
+        "altitude": 30.0
+      }
+    },
+    "UAV-04": {
+      "home_position": {
+        "latitude": 39.9807,
+        "longitude": 116.34711999999999,
+        "altitude": 30.0
+      }
+    }
+  }
+}

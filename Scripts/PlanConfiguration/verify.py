@@ -24,6 +24,20 @@ DEFAULT_TESTS = {
     'DroneOps.PlanConfiguration.MapControls': 'Map',
 }
 
+PRODUCTION_MOCK_FIXTURE = 'Backend/mock_execution.json'
+BEIJING_MOCK_FIXTURE = 'Backend/tests/fixtures/mock_execution_beijing.json'
+
+
+def production_map_test(test):
+    return test == 'DroneOps.Map.StartupVisibility' or test.startswith('DroneOps.Map.MarinaBay')
+
+
+def mock_fixture_for_test(test, reset_mock_startup=False):
+    # Offline route regressions intentionally retain their Beijing coordinates.
+    # Production startup/reset acceptance must exercise the shipped default.
+    return (PRODUCTION_MOCK_FIXTURE if reset_mock_startup or production_map_test(test)
+            else BEIJING_MOCK_FIXTURE)
+
 
 def write_json(path, value):
     path = Path(path)
@@ -40,7 +54,7 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def isolated_config(http_port, ws_port, directory):
+def isolated_config(http_port, ws_port, directory, *, mock_fixture=BEIJING_MOCK_FIXTURE):
     if not (1024 <= http_port <= 65535 and 1024 <= ws_port <= 65535 and http_port != ws_port):
         raise ValueError('HTTP/WS must be different unprivileged ports')
     config = load_config(ROOT)
@@ -53,7 +67,7 @@ def isolated_config(http_port, ws_port, directory):
         raise RuntimeError('The normal Launcher configuration does not resolve an Unreal Editor')
     config.update(http_endpoint=f'http://127.0.0.1:{http_port}',
                   ws_endpoint=f'ws://127.0.0.1:{ws_port}/ws',
-                  runtime_directory=directory, mock_fixture='Backend/mock_execution.json',
+                  runtime_directory=directory, mock_fixture=mock_fixture,
                   mock_reset_on_start=False)
     return config
 
@@ -139,7 +153,7 @@ def main(argv=None):
     parser.add_argument('--null-rhi', action='store_true', help='Explicit component-only run; never native evidence')
     parser.add_argument('--startup-state', type=Path,
                         help='Read-only source of saved JSON state for the production startup visibility test')
-    parser.add_argument('--reset-mock-startup', action='store_true',
+    parser.add_argument('--reset-mock-startup', '--mock-startup-reset', action='store_true',
                         help='Use the Launcher Mock formation reset before this isolated run')
     args = parser.parse_args(argv)
     if args.timeout < 1:
@@ -182,8 +196,10 @@ def main(argv=None):
             result = {'test': test, 'role': role, 'pass': False}
             try:
                 config = isolated_config(args.http_port, args.ws_port,
-                                         f'Saved/PlanConfiguration-verify-{run}-{number}')
+                                         f'Saved/PlanConfiguration-verify-{run}-{number}',
+                                         mock_fixture=mock_fixture_for_test(test, args.reset_mock_startup))
                 config['mock_reset_on_start'] = args.reset_mock_startup
+                result['mock_fixture'] = config['mock_fixture']
                 metadata['backend'] = str((ROOT / config['backend_executable']).resolve())
                 metadata['backend_sha256'] = sha256(metadata['backend'])
                 write_json(out / 'run.json', metadata)
@@ -240,7 +256,7 @@ def main(argv=None):
                             subprocess.run(['node', str(ROOT / fixture_script)],
                                            cwd=ROOT, env=fixture_env, stdout=log, stderr=subprocess.STDOUT,
                                            timeout=180, check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
-                production_map = test == 'DroneOps.Map.StartupVisibility'
+                production_map = production_map_test(test)
                 map_arguments = ([config['map']] if production_map
                                  else ['/Game/Tests/P55OfflineMap', '-P55OfflineVisualQA'])
                 command = [config['ue_executable'], str(ROOT / config['project']), *map_arguments,

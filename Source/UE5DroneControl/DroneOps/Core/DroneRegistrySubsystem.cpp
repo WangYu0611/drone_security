@@ -19,8 +19,9 @@ namespace
 FString GetDroneRegistrySavePath()
 {
 	FString IsolatedPath;
-	if (FParse::Param(FCommandLine::Get(), TEXT("P55OfflineVisualQA")) &&
-		FParse::Value(FCommandLine::Get(), TEXT("AutomationRegistryFile="), IsolatedPath) && !IsolatedPath.IsEmpty())
+	// Production-map rendering QA also needs its own registry; isolation must
+	// not require the offline map flag, which changes the map being verified.
+	if (FParse::Value(FCommandLine::Get(), TEXT("AutomationRegistryFile="), IsolatedPath) && !IsolatedPath.IsEmpty())
 		return FPaths::ConvertRelativePathToFull(IsolatedPath);
 	return FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("DroneRegistry.json"));
 }

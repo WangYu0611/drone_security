@@ -21,7 +21,7 @@ tests = sys.argv[1:] or ['DroneOps.Fleet.SurfaceHeight', 'DroneOps.Fleet.Terrain
 results = []
 for index, name in enumerate(tests):
     config = load_config(root)
-    config.update(http_endpoint='http://127.0.0.1:22380', ws_endpoint='ws://127.0.0.1:22381/ws',
+    config.update(mock_fixture='Backend/tests/fixtures/mock_execution_beijing.json', mock_reset_on_start=False, http_endpoint='http://127.0.0.1:22380', ws_endpoint='ws://127.0.0.1:22381/ws',
                   runtime_directory=f'Saved/FleetTerrainHeight-verify-{run}-{index}')
     runtime = Runtime(root, config)
     report = out / name

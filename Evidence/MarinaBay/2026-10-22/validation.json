@@ -1,0 +1,134 @@
+{
+  "feature_acceptance": "PASS",
+  "ue_checks": {
+    "discovered": 8,
+    "completed": 8,
+    "passed": 7,
+    "failed": 1
+  },
+  "all_regressions_passed": false,
+  "startup_run": "Evidence/PlanConfiguration/verification-1792660008815356200",
+  "regression_run": "Evidence/PlanConfiguration/verification-1792658599392659200",
+  "known_failure": "a2-fixture-diagnostic.json",
+  "google_startup": {
+    "wait_seconds": 7.2792927995324135,
+    "layers": [
+      {
+        "ion_asset_id": 2275207,
+        "source": 0,
+        "hidden": false,
+        "suspended": false,
+        "collision": true,
+        "show_credits": true,
+        "maximum_screen_space_error": 4,
+        "load_progress": 100,
+        "loaded_static_meshes": 1024,
+        "visible_static_meshes": 574,
+        "recently_rendered_static_meshes": 566
+      },
+      {
+        "ion_asset_id": 96188,
+        "source": 2,
+        "hidden": true,
+        "suspended": true,
+        "collision": false,
+        "show_credits": false,
+        "maximum_screen_space_error": 16,
+        "load_progress": 0,
+        "loaded_static_meshes": 0,
+        "visible_static_meshes": 0,
+        "recently_rendered_static_meshes": 0
+      },
+      {
+        "ion_asset_id": 1,
+        "source": 2,
+        "hidden": true,
+        "suspended": true,
+        "collision": false,
+        "show_credits": false,
+        "maximum_screen_space_error": 16,
+        "load_progress": 0,
+        "loaded_static_meshes": 0,
+        "visible_static_meshes": 0,
+        "recently_rendered_static_meshes": 0
+      }
+    ],
+    "google_render_ready": true,
+    "google_minimum_load_progress": 100,
+    "google_detail_stable_seconds": 3.382719401270151,
+    "google_detail_stable_frames": 203,
+    "google_detail_ready": true,
+    "google_load_timeout": false,
+    "google_actors": 1,
+    "google_loaded_meshes": 1024,
+    "google_visible_meshes": 574,
+    "google_recently_rendered_meshes": 566,
+    "duplicate_visible_meshes": 0,
+    "duplicate_recently_rendered_meshes": 0
+  },
+  "google_mode_restore": {
+    "wait_seconds": 4.621611997485161,
+    "layers": [
+      {
+        "ion_asset_id": 2275207,
+        "source": 0,
+        "hidden": false,
+        "suspended": false,
+        "collision": true,
+        "show_credits": true,
+        "maximum_screen_space_error": 4,
+        "load_progress": 100,
+        "loaded_static_meshes": 1024,
+        "visible_static_meshes": 574,
+        "recently_rendered_static_meshes": 566
+      },
+      {
+        "ion_asset_id": 96188,
+        "source": 2,
+        "hidden": true,
+        "suspended": true,
+        "collision": false,
+        "show_credits": false,
+        "maximum_screen_space_error": 16,
+        "load_progress": 0,
+        "loaded_static_meshes": 0,
+        "visible_static_meshes": 0,
+        "recently_rendered_static_meshes": 0
+      },
+      {
+        "ion_asset_id": 1,
+        "source": 2,
+        "hidden": true,
+        "suspended": true,
+        "collision": false,
+        "show_credits": false,
+        "maximum_screen_space_error": 16,
+        "load_progress": 87.1212158203125,
+        "loaded_static_meshes": 105,
+        "visible_static_meshes": 0,
+        "recently_rendered_static_meshes": 0
+      }
+    ],
+    "google_render_ready": true,
+    "google_minimum_load_progress": 100,
+    "google_detail_stable_seconds": 1.003915399312973,
+    "google_detail_stable_frames": 61,
+    "google_detail_ready": true,
+    "google_load_timeout": false,
+    "google_actors": 1,
+    "google_loaded_meshes": 1024,
+    "google_visible_meshes": 574,
+    "google_recently_rendered_meshes": 566,
+    "duplicate_visible_meshes": 0,
+    "duplicate_recently_rendered_meshes": 0
+  },
+  "native": "native/result.json",
+  "backend": "backend/altitude-followup/summary.json",
+  "protected_files_unchanged": 8,
+  "history": [
+    "Earlier captures revealed hidden attribution and framing/height issues; final screenshots and native checks supersede them.",
+    "First native trial had one Cesium ConnectionError; raw logs remain in Saved/MarinaBay/native-1792657659555845200.",
+    "The ray-tracing resident-memory warning was initially misidentified as texture pressure. Fully streamed desktop views later exceeded the 1536 MB and 2048 MB trial texture pools. Final settings use a bounded 3072 MB pool and allow unreferenced RT LOD eviction without suppressing diagnostics."
+  ],
+  "boundary": "Owned loopback Mock Backend, online Google tiles, RHI automation and separate OS mouse observations; no physical aircraft validation."
+}

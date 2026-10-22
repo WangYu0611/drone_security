@@ -1,0 +1,67 @@
+{
+  "pass": true,
+  "date": "2026-10-22",
+  "boundary": "OS mouse actions on Launcher -game Map client; isolated loopback Mock Backend; online Google tiles; no physical aircraft validation.",
+  "runtime": "Saved/MarinaBay/native-1792660085625470100",
+  "actions": [
+    {
+      "at": "2026-10-22T09:08:42.621Z",
+      "action": "Maximize Map window"
+    },
+    {
+      "at": "2026-10-22T09:08:50.533Z",
+      "action": "Switch language to Chinese"
+    },
+    {
+      "at": "2026-10-22T09:09:41.014Z",
+      "action": "Read native streaming diagnostic in English"
+    },
+    {
+      "at": "2026-10-22T09:10:01.950Z",
+      "action": "Return interface to Chinese"
+    },
+    {
+      "at": "2026-10-22T09:10:18.805Z",
+      "action": "Switch to 2D with toolbar"
+    },
+    {
+      "at": "2026-10-22T09:10:34.970Z",
+      "action": "Restore 3D with toolbar"
+    },
+    {
+      "at": "2026-10-22T09:11:03.543Z",
+      "action": "Locate entire Mock fleet with no selection"
+    },
+    {
+      "at": "2026-10-22T09:11:33.068Z",
+      "action": "Select UAV-01 by clicking its map icon"
+    },
+    {
+      "at": "2026-10-22T09:11:41.115Z",
+      "action": "Left-drag a box around all four Mock UAV icons"
+    }
+  ],
+  "observed": [
+    "Marina Bay and Marina Bay Sands visible in the initial 3D city view",
+    "Four Mock UAV labels visible; Google and Cesium credits visible above HUD",
+    "2D top-down raster and restored Google 3D respond to toolbar clicks",
+    "Locate reveals four separate icons at the fixed 2 m formation",
+    "Native icon click selects UAV-01 and selection-synchronized text appears",
+    "Native left-drag selects four UAVs with selection-synchronized text"
+  ],
+  "screenshots": [
+    "01-city.png",
+    "02-two-dimensional.png",
+    "03-locate.png",
+    "04-selected-one.png",
+    "05-selected-four.png"
+  ],
+  "warnings": [
+    "Small texture-budget warning remains in maximized city view around language switches; no warning-free or all-hardware performance claim. It was absent in the final near-view screenshots."
+  ],
+  "not_tested": [
+    "Physical flight",
+    "Native right-click move execution in this run",
+    "Commercial license entitlement or remaining account quota"
+  ]
+}

@@ -16,6 +16,38 @@
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "TimerManager.h"
+#include "CesiumCreditSystem.h"
+#include "Blueprint/GameViewportSubsystem.h"
+#include "Blueprint/UserWidget.h"
+#include "EngineUtils.h"
+#include "UObject/UnrealType.h"
+
+namespace {
+void KeepCesiumAttributionVisible(UWorld* World)
+{
+    if(!World)return;
+    auto* Viewport=UGameViewportSubsystem::Get();
+    // The plugin's public actor exposes its widget as a reflected property; the
+    // concrete widget class is private to CesiumRuntime. Retain that real widget
+    // and its live provider credits rather than duplicating their contents.
+    const auto* Property=FindFProperty<FObjectPropertyBase>(ACesiumCreditSystem::StaticClass(),TEXT("CreditsWidget"));
+    if(!Viewport || !Property)return;
+    for(TActorIterator<ACesiumCreditSystem> It(World);It;++It)
+    {
+        auto* Widget=Cast<UUserWidget>(Property->GetObjectPropertyValue_InContainer(*It));
+        if(!Widget || !Widget->IsInViewport())continue;
+        auto WidgetSlot=Viewport->GetWidgetSlot(Widget);
+        if(WidgetSlot.ZOrder<40)
+        {
+            // SetWidgetSlot changes only the child canvas slot in UE 5.8, not
+            // the outer viewport overlay. Reattach the same official widget
+            // above the Figma shell (30), retaining its live credits and images.
+            Widget->RemoveFromParent();
+            Widget->AddToViewport(40);
+        }
+    }
+}
+}
 
 EDroneClientRole UCommandScreenManager::ResolveClientRole()
 {
@@ -56,6 +88,9 @@ void UCommandScreenManager::Initialize(ADroneOpsPlayerController* Owner)
         MapService = ClientRole == EDroneClientRole::Map && GameMode ? GameMode->GetCommandMapService() : nullptr;
         if (!MapService) MapService = NewObject<UCommandMapInteractionService>(this);
         MapService->Initialize(Owner);
+        // The city's initial overview is a presentation choice, not a selection
+        // change. Later hydration/selection ACKs must not take that view away.
+        if(MapService->HasConfiguredStartupView())bFollowSelection=false;
     }
     if (Registry.IsValid())
     {
@@ -165,9 +200,19 @@ void UCommandScreenManager::Refresh()
 void UCommandScreenManager::RefreshFromTimer()
 {
     Refresh();
+    if(ClientRole==EDroneClientRole::Map && Controller.IsValid())KeepCesiumAttributionVisible(Controller->GetWorld());
     // DroneRegistered can run inside a REST batch before its positions arrive.
     // Frame only on the coalesced timer, after the accepted snapshot is ready.
     if (!bInitialMapFocusPending || !MapService || !Controller.IsValid()) return;
+    if(MapService->HasConfiguredStartupView())
+    {
+        if(MapService->ApplyConfiguredStartupView())
+        {
+            bInitialMapFocusPending=false;
+            bSelectionDirty=false;
+        }
+        return;
+    }
     const auto* Sync=Controller->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     if (!Sync || !Sync->IsHydrated()) return;
     const double Now=FPlatformTime::Seconds();

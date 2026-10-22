@@ -1332,6 +1332,19 @@ void ADroneOpsGameMode::ApplyPendingGeoreferenceOrigin()
 			continue;
 		}
 
+		// Map startup may already have applied the explicit menu origin before
+		// Cesium construction. Keep that settled origin and let normal BeginPlay
+		// spawn receivers, without scheduling a redundant georeference transition.
+		if (FMath::IsNearlyEqual(Georeference->GetOriginLatitude(), Lat, 1.e-9)
+			&& FMath::IsNearlyEqual(Georeference->GetOriginLongitude(), Lon, 1.e-9)
+			&& FMath::IsNearlyEqual(Georeference->GetOriginHeight(), Alt, 1.e-3))
+		{
+			PrefetchLocalRasterTilesAround(Lat, Lon);
+			EnsureOfflineCesiumSunSky(Lat, Lon);
+			CreateOfflineRasterPlaneAround(Lat, Lon, Alt);
+			return;
+		}
+
 		// Bind update event next tick to skip Cesium's own initialization broadcast.
 		bPendingSpawnAfterGeoreferenceUpdate = true;
 		GetWorld()->GetTimerManager().SetTimerForNextTick([this, Georeference, Lat, Lon, Alt]()
