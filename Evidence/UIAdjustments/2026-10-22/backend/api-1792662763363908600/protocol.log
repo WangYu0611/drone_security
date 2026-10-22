@@ -1,0 +1,8 @@
+{"seed":{"plan_id":"plan-3","mission_id":"mission-4","deployment_id":"deployment-7"},"executions_started":0}
+PASS same ID / task / route survives edit-save-review-redeploy; old deployment unchanged
+PASS scheduled task blocks editing and deletion until explicit cancellation
+PASS actual Mock execution blocks deletion; abort remains independent
+PASS explicit copy is separate; configuration and route-edit leases block deletion
+PASS name / content / document version changes invalidate frozen delete consent
+PASS deleting unselected plan preserves other plan/context/video; duplicate delete is safe
+PASS current deletion clears only plan/task context; stale context patch cannot revive deleted IDs; history remains

@@ -492,7 +492,9 @@ TEST_F(ConfigurationWorkflow, DueScheduleWaitsForConfigurationThenRevalidates) {
     const auto file=std::filesystem::temp_directory_path()/("configuration-schedule-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
     {std::ofstream out(file);out<<boost::json::serialize(state);}
     SecurityPlanStore restored(file.string());restored.configureMock(state.at("mock_execution").as_object());
-    restored.transact({{"action","begin_configuration"},{"instance_id","Command-config"},{"plan_id",p}},uavs,"QA",[](const O&){});
+    // A scheduled plan cannot itself enter editing. A separate new-plan
+    // configuration still pauses the global scheduler until configuration ends.
+    restored.transact({{"action","begin_configuration"},{"instance_id","Command-config"},{"plan_id",""}},uavs,"QA",[](const O&){});
     restored.tickExecutions(1,uavs,[](const O&){});
     const auto waiting=restored.snapshot();for(const auto& e:waiting.at("executions").as_object()){EXPECT_EQ(e.value().as_object().at("state"),"SCHEDULED");EXPECT_EQ(e.value().as_object().at("scheduled_start_epoch"),0.);}
     restored.transact({{"action","end_configuration"},{"instance_id","Command-config"}},uavs,"QA",[](const O&){});

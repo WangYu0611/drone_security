@@ -1,0 +1,63 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandMapInteractionService.cpp, CommandScreenManager.cpp, DroneOpsGameMode.cpp, DroneRegistrySubsystem.cpp, MapDronePresentation.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, MapStartupSettings.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, Stage1HeaderWidget.cpp, CommandMapModeTest.cpp, FleetControlTest.cpp, FleetPanelVisibilityTest.cpp, MapDronePresentationTest.cpp, MapStartupVisibilityTest.cpp, P4WorkflowTest.cpp, PlanConfigurationTests.cpp, PlanMissionActionsTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 24 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 21.27 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/24] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[2/24] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[3/24] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/24] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[5/24] Compile [x64] FigmaMapTest.cpp [NoUba]
+[6/24] Compile [x64] FleetControlTest.cpp [NoUba]
+[7/24] Compile [x64] FleetPanelVisibilityTest.cpp [NoUba]
+[8/24] Compile [x64] FleetTerrainTest.cpp [NoUba]
+[9/24] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[10/24] Compile [x64] MapExtractionTest.cpp [NoUba]
+[11/24] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[12/24] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[13/24] Compile [x64] MapShellWidget.cpp [NoUba]
+[14/24] Compile [x64] MapStartupVisibilityTest.cpp [NoUba]
+[15/24] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,52): error C3312: ￕￒﾲﾻﾵﾽ￀￠￐ￍ "const FArrangedChildren" ﾵￄ﾿￉ﾵ￷ￓￃ "begin" ﾺﾯￊ�
+    if(Path.IsValid())for(const auto& Arranged:Path.Widgets)if(Arranged.Widget==Cached)return true;
+                                                   ^
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,52): error C3312: ￕￒﾲﾻﾵﾽ￀￠￐ￍ "const FArrangedChildren" ﾵￄ﾿￉ﾵ￷ￓￃ "end" ﾺﾯￊ�
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,39): error C2530: ﾡﾰArrangedﾡﾱ: ﾱ￘￐￫ﾳ￵ￊﾼﾻﾯￒ�ￓￃ
+    if(Path.IsValid())for(const auto& Arranged:Path.Widgets)if(Arranged.Widget==Cached)return true;
+                                      ^
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,39): error C3531: ﾡﾰArrangedﾡﾱ: ￀￠￐ￍﾰ￼ﾺﾬﾡﾰautoﾡﾱﾵￄﾷ￻ﾺￅﾱ￘￐￫ﾾ￟ￓ￐ﾳ￵ￊﾼￖﾵ￉￨ﾶﾨￏ￮
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,47): error C2143: ￓ￯ﾷﾨﾴ￭ￎ￳: ￈ﾱ￉￙ﾡﾰ;ﾡﾱ(ￔￚﾡﾰ:ﾡﾱﾵￄￇﾰￃ￦)
+    if(Path.IsValid())for(const auto& Arranged:Path.Widgets)if(Arranged.Widget==Cached)return true;
+                                              ^
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,60): error C2143: ￓ￯ﾷﾨﾴ￭ￎ￳: ￈ﾱ￉￙ﾡﾰ;ﾡﾱ(ￔￚﾡﾰ)ﾡﾱﾵￄￇﾰￃ￦)
+    if(Path.IsValid())for(const auto& Arranged:Path.Widgets)if(Arranged.Widget==Cached)return true;
+                                                           ^
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,52): error C2451: ￀￠￐ￍￎﾪﾡﾰconst FArrangedChildrenﾡﾱﾵￄￌ￵ﾼ￾ﾱ￭ﾴ￯ￊﾽￎ￞￐ﾧ
+    if(Path.IsValid())for(const auto& Arranged:Path.Widgets)if(Arranged.Widget==Cached)return true;
+                                                   ^
+Source\UE5DroneControl\Tests\PlanConfigurationTests.cpp(70,52): note: ￃﾻￓ￐﾿￉ￓￃￓￚￖﾴ￐￐ﾸￃￗﾪﾻﾻﾵￄￓￃﾻﾧﾶﾨￒ￥ﾵￄￗﾪﾻﾻￔￋￋ￣ﾷ￻ﾣﾬﾻ￲ￕ￟ￎ￞ﾷﾨﾵ￷ￓￃﾸￃￔￋￋ￣ﾷ￻
+[16/24] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[17/24] Compile [x64] PlanMissionActionsTest.cpp [NoUba]
+[18/24] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[19/24] Compile [x64] SecurityPlanWorkspacePresentation.cpp [NoUba]
+[20/24] Compile [x64] ProductText.cpp [NoUba]
+[21/24] Compile [x64] VideoClientTest.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 143.82 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 149.01 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 20.6kb

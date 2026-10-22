@@ -1,0 +1,50 @@
+Note: Google Test filter = PlanLifecycle.*:P4Workflow.*
+[==========] Running 19 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 13 tests from P4Workflow
+[ RUN      ] P4Workflow.RevisionValidationReviewInvalidation
+[       OK ] P4Workflow.RevisionValidationReviewInvalidation (0 ms)
+[ RUN      ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable
+[       OK ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable (1 ms)
+[ RUN      ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains
+[       OK ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains (0 ms)
+[ RUN      ] P4Workflow.OwnerRevisionAndDiscard
+[       OK ] P4Workflow.OwnerRevisionAndDiscard (0 ms)
+[ RUN      ] P4Workflow.OwnerDiscardSurvivesHeartbeatButSaveStillRequiresCurrentVersion
+[       OK ] P4Workflow.OwnerDiscardSurvivesHeartbeatButSaveStillRequiresCurrentVersion (0 ms)
+[ RUN      ] P4Workflow.HeartbeatStaleDiscardCannotCrossLeaseIdentityOrUseFutureVersion
+[       OK ] P4Workflow.HeartbeatStaleDiscardCannotCrossLeaseIdentityOrUseFutureVersion (0 ms)
+[ RUN      ] P4Workflow.HeartbeatStaleDiscardStillRejectsExpiredLease
+[       OK ] P4Workflow.HeartbeatStaleDiscardStillRejectsExpiredLease (8 ms)
+[ RUN      ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation
+[       OK ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation (0 ms)
+[ RUN      ] P4Workflow.PublisherFailureRetainsCompleteDeploymentState
+[       OK ] P4Workflow.PublisherFailureRetainsCompleteDeploymentState (0 ms)
+[ RUN      ] P4Workflow.WorkflowCreateHasAtomicDefaultTask
+[       OK ] P4Workflow.WorkflowCreateHasAtomicDefaultTask (0 ms)
+[ RUN      ] P4Workflow.WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute
+[       OK ] P4Workflow.WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute (0 ms)
+[ RUN      ] P4Workflow.WorkflowFinishOwnerAndInvalidSaveAreAtomic
+[       OK ] P4Workflow.WorkflowFinishOwnerAndInvalidSaveAreAtomic (0 ms)
+[ RUN      ] P4Workflow.WorkflowDraftCopyAndDeleteDoNotChangeOriginal
+[       OK ] P4Workflow.WorkflowDraftCopyAndDeleteDoNotChangeOriginal (0 ms)
+[----------] 13 tests from P4Workflow (17 ms total)
+
+[----------] 6 tests from PlanLifecycle
+[ RUN      ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity
+[       OK ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity (1 ms)
+[ RUN      ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision
+[       OK ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision (1 ms)
+[ RUN      ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision
+[       OK ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision (0 ms)
+[ RUN      ] PlanLifecycle.DeleteBlocksConfigurationAndRouteEditAtomically
+[       OK ] PlanLifecycle.DeleteBlocksConfigurationAndRouteEditAtomically (0 ms)
+[ RUN      ] PlanLifecycle.DeleteAndReopenRejectEveryNonterminalExecutionIncludingScheduled
+[       OK ] PlanLifecycle.DeleteAndReopenRejectEveryNonterminalExecutionIncludingScheduled (101 ms)
+[ RUN      ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment
+[       OK ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment (10 ms)
+[----------] 6 tests from PlanLifecycle (115 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 2 test suites ran. (132 ms total)
+[  PASSED  ] 19 tests.

@@ -1,0 +1,192 @@
+{
+  "tests": 6,
+  "failures": 5,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-10-22T17:31:01Z",
+  "time": "0.11s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "PlanLifecycle",
+      "tests": 6,
+      "failures": 5,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:31:01Z",
+      "time": "0.11s",
+      "testsuite": [
+        {
+          "name": "EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 168,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:31:01Z",
+          "time": "0.001s",
+          "classname": "PlanLifecycle",
+          "failures": [
+            {
+              "failure": "unknown file\nC++ exception with description \"Deployed plan is read-only\" thrown in the test body.\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "ReopenRequiresOwnedLeaseAndCurrentRevision",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 183,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:31:01Z",
+          "time": "0.001s",
+          "classname": "PlanLifecycle",
+          "failures": [
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:21\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  code\n    Which is: \"CONFIGURATION_REQUIRED\"\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:21\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  code\n    Which is: \"CONTENT_REVISION_CONFLICT\"\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteReadyPlanRequiresExactNameAndRevision",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 189,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:31:01Z",
+          "time": "0s",
+          "classname": "PlanLifecycle",
+          "failures": [
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:21\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  code\n    Which is: \"DELETE_CONFIRMATION_REQUIRED\"\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:21\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  code\n    Which is: \"CONTENT_REVISION_CONFLICT\"\n",
+              "type": ""
+            },
+            {
+              "failure": "unknown file\nC++ exception with description \"Only drafts may be deleted\" thrown in the test body.\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "DeleteBlocksConfigurationAndRouteEditAtomically",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 197,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:31:01Z",
+          "time": "0s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "DeleteAndReopenRejectEveryNonterminalExecutionIncludingScheduled",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 202,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:31:01Z",
+          "time": "0.098s",
+          "classname": "PlanLifecycle",
+          "failures": [
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nSCHEDULED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nSCHEDULED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nCREATED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nCREATED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nPREFLIGHT\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nPREFLIGHT\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nSTARTING\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nSTARTING\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nSTART_REQUESTED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nSTART_REQUESTED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nWAITING_ACK\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nWAITING_ACK\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nEXECUTING\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nEXECUTING\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nPAUSED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nPAUSED\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:211\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nRETURNING\n",
+              "type": ""
+            },
+            {
+              "failure": "Backend\\tests\\test_p4_workflow.cpp:215\nExpected equality of these values:\n  e.code\n    Which is: \"PLAN_DEPLOYED\"\n  \"PLAN_EXECUTING\"\nRETURNING\n",
+              "type": ""
+            }
+          ]
+        },
+        {
+          "name": "DeletePreservesRealTerminalExecutionAndImmutableDeployment",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 219,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:31:01Z",
+          "time": "0.007s",
+          "classname": "PlanLifecycle",
+          "failures": [
+            {
+              "failure": "unknown file\nC++ exception with description \"Only drafts may be deleted\" thrown in the test body.\n",
+              "type": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -345,6 +345,15 @@ class FMapStartupVisibility : public IAutomationLatentCommand
         Test->TestTrue(TEXT("Production startup screenshot saved"),
             FFileHelper::SaveArrayToFile(Png,*(Out/(FString(Name)+TEXT(".png")))));
     }
+    bool RenderedModel(UMapFleetInteractionWidget* Fleet,int32 Id) const
+    {
+        AActor* Actor=Fleet->GetDisplayedModelActor(Id);
+        if(!IsValid(Actor) || Actor->IsHidden())return false;
+        TArray<UMeshComponent*> Meshes;Actor->GetComponents(Meshes);
+        for(const auto* Mesh:Meshes)
+            if(IsValid(Mesh) && Mesh->IsVisible() && !Mesh->bHiddenInGame && Mesh->WasRecentlyRendered(.5f))return true;
+        return false;
+    }
     TSharedRef<FJsonObject> Observe(UWorld* World,ADroneOpsPlayerController* PC,
         UMapShellWidget* Shell,UCommandMapInteractionService* Map,UDroneRegistrySubsystem* Registry,
         UOperationalContextSubsystem* Sync,const TCHAR* Name,bool AssertVisibility)
@@ -389,6 +398,8 @@ class FMapStartupVisibility : public IAutomationLatentCommand
         {
             auto D=MakeShared<FJsonObject>();Drones.Add(MakeShared<FJsonValueObject>(D));D->SetNumberField(TEXT("id"),Id);
             D->SetBoolField(TEXT("painted"),Fleet->PaintedDroneIds.Contains(Id));
+            D->SetBoolField(TEXT("model_presentation"),Fleet->IsModelPresentation(Id));
+            D->SetBoolField(TEXT("model_recently_rendered"),RenderedModel(Fleet,Id));
             FDroneTelemetrySnapshot Telemetry;const bool HasTelemetry=Registry->GetTelemetry(Id,Telemetry);
             D->SetBoolField(TEXT("telemetry_present"),HasTelemetry);
             D->SetStringField(TEXT("telemetry_source"),Telemetry.TelemetrySource);
@@ -440,8 +451,13 @@ class FMapStartupVisibility : public IAutomationLatentCommand
             // desktop/window transform. NativePaint records IDs only immediately
             // before the actual symbol draw, after its clipping/hit guards.
             for(int32 Id=1;Id<=4;++Id)
-                Test->TestTrue(*FString::Printf(TEXT("%s: UAV %d actually submitted for symbol drawing"),Name,Id),
-                    Fleet->PaintedDroneIds.Contains(Id));
+            {
+                const bool Model=Fleet->IsModelPresentation(Id);
+                Test->TestTrue(*FString::Printf(TEXT("%s: UAV %d has an actually drawn icon or recently rendered visible model"),Name,Id),
+                    Model?RenderedModel(Fleet,Id):Fleet->PaintedDroneIds.Contains(Id));
+                Test->TestFalse(*FString::Printf(TEXT("%s: UAV %d model is not covered by the opaque icon"),Name,Id),
+                    Model && Fleet->PaintedDroneIds.Contains(Id));
+            }
             Test->TestEqual(*FString::Printf(TEXT("%s: four accepted Mock positions"),Name),ValidPositions,4);
             if(Phase==0)
             {
@@ -622,6 +638,32 @@ public:
             Test->TestTrue(TEXT("Original selection restore requested"),Sync->SetLocalSelection(InitialPrimary,InitialSelection));
             Phase=5;ActionAt=Now;return false;
         }
+        if(Phase==8)
+        {
+            const bool Model=Fleet->IsModelPresentation(LocateId) && RenderedModel(Fleet,LocateId);
+            if((Now-ActionAt<3. || !Model) && Now-ActionAt<15.)return false;
+            Test->TestTrue(TEXT("Maximum user zoom shows an actual recently rendered aircraft model"),Model);
+            Test->TestFalse(TEXT("Near aircraft model has no opaque map icon on top"),Fleet->PaintedDroneIds.Contains(LocateId));
+            Report->SetBoolField(TEXT("near_model_rendered"),Model);
+            Report->SetNumberField(TEXT("near_model_camera_distance_cm"),Map->ActualDistance);
+            Capture(TEXT("04-near-aircraft-model"));Save();
+            Test->TestTrue(TEXT("Return to the configured city overview is accepted"),Map->ApplyConfiguredStartupView());
+            Phase=9;ActionAt=Now;return false;
+        }
+        if(Phase==9)
+        {
+            if(Now-ActionAt<3.)return false;
+            for(int32 Id=1;Id<=4;++Id)
+            {
+                Test->TestFalse(TEXT("Zooming back out removes model presentation"),Fleet->IsModelPresentation(Id));
+                Test->TestTrue(TEXT("Zooming back out restores an actually painted aircraft icon"),Fleet->PaintedDroneIds.Contains(Id));
+            }
+            Test->TestEqual(TEXT("Zoom transitions preserve explicit video target"),Video(Sync),InitialVideo);
+            Test->TestEqual(TEXT("Zoom transitions preserve primary selection"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
+            Test->TestTrue(TEXT("Zoom transitions preserve group selection"),Registry->GetMultiSelectedDrones()==InitialSelection);
+            Report->SetBoolField(TEXT("far_icons_restored"),Fleet->PaintedDroneIds.Num()==4);
+            Capture(TEXT("05-far-icons-restored"));Save();return true;
+        }
         const bool Restored=Registry->GetPrimarySelectedDrone()==InitialPrimary && Registry->GetMultiSelectedDrones()==InitialSelection;
         if(!Restored && Now-ActionAt<12.)return false;
         Test->TestEqual(TEXT("Post-click primary selection restored"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
@@ -629,7 +671,8 @@ public:
         Test->TestEqual(TEXT("All startup, Locate and selection actions preserve explicit video target"),Video(Sync),InitialVideo);
         Report->SetBoolField(TEXT("selection_preserved"),Registry->GetPrimarySelectedDrone()==InitialPrimary && Registry->GetMultiSelectedDrones()==InitialSelection);
         Report->SetBoolField(TEXT("video_preserved"),Video(Sync)==InitialVideo);
-        Save();return true;
+        Test->TestTrue(TEXT("Near model check focuses the accepted aircraft position"),Map->FocusDrone(LocateId,true));
+        Map->ZoomView(100);Phase=8;ActionAt=Now;Save();return false;
     }
 };
 

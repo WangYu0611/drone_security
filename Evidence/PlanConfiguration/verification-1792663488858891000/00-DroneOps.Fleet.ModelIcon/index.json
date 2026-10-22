@@ -1,0 +1,59 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_8ce79d8b8717>",
+			"instanceName": "<UE_INSTANCE_fb4b1191f85b>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.22-10.05.19",
+	"succeeded": 2,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.048311896622180939,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "ModelIconPolicy",
+			"fullTestPath": "DroneOps.Fleet.ModelIconPolicy",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_8ce79d8b8717>"
+			],
+			"duration": 0.015455897897481918,
+			"dateTime": "2026.10.22-10.05.19",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ModelIconVisibility",
+			"fullTestPath": "DroneOps.Fleet.ModelIconVisibility",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_8ce79d8b8717>"
+			],
+			"duration": 0.03285599872469902,
+			"dateTime": "2026.10.22-10.05.19",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

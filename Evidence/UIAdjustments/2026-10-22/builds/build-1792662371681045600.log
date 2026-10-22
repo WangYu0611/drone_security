@@ -1,0 +1,57 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (source file added)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandMapInteractionService.cpp, CommandScreenManager.cpp, DroneOpsGameMode.cpp, DroneRegistrySubsystem.cpp, MapDronePresentation.cpp, MapFleetInteractionWidget.cpp, MapShellWidget.cpp, MapStartupSettings.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, Stage1HeaderWidget.cpp, CommandMapModeTest.cpp, FleetControlTest.cpp, FleetPanelVisibilityTest.cpp, MapDronePresentationTest.cpp, MapStartupVisibilityTest.cpp, P4WorkflowTest.cpp, PlanMissionActionsTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 27 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 21.33 GB/33.9 GB committed
+  UBA Storage capacity 40 GB
+[1/27] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[2/27] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[3/27] Compile [x64] CommandShellTasks.cpp [NoUba]
+[4/27] Compile [x64] CommandShellWidget.cpp [NoUba]
+[5/27] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[6/27] Compile [x64] FigmaCommandTest.cpp [NoUba]
+[7/27] Compile [x64] FigmaMapTest.cpp [NoUba]
+[8/27] Compile [x64] FleetControlTest.cpp [NoUba]
+[9/27] Compile [x64] FleetPanelVisibilityTest.cpp [NoUba]
+[10/27] Compile [x64] MapDronePresentation.cpp [NoUba]
+[11/27] Compile [x64] MapDronePresentationTest.cpp [NoUba]
+[12/27] Compile [x64] FleetTerrainTest.cpp [NoUba]
+[13/27] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(271,31): error C2039: "AbsoluteToViewport": ﾲﾻￊￇ "UWidgetLayoutLibrary" ﾵￄﾳ￉ￔﾱ
+        UWidgetLayoutLibrary::AbsoluteToViewport(this,GetCachedGeometry().LocalToAbsolute(Current),Pixel,Viewport);
+                              ^
+C:\Program Files\Epic Games\UE_5.8\Engine\Source\Runtime\UMG\Public\Blueprint\WidgetLayoutLibrary.h(48,7): note: ﾲￎﾼ￻ﾡﾰUWidgetLayoutLibraryﾡﾱﾵￄ￉￹ￃ￷
+class UWidgetLayoutLibrary : public UBlueprintFunctionLibrary
+      ^
+Source\UE5DroneControl\Map\MapFleetInteractionWidget.cpp(271,31): error C3861: ﾡﾰAbsoluteToViewportﾡﾱ: ￕￒﾲﾻﾵﾽﾱ￪ￊﾶﾷ￻
+        UWidgetLayoutLibrary::AbsoluteToViewport(this,GetCachedGeometry().LocalToAbsolute(Current),Pixel,Viewport);
+                              ^
+[14/27] Compile [x64] MapShellWidget.cpp [NoUba]
+[15/27] Compile [x64] MapStartupVisibilityTest.cpp [NoUba]
+[16/27] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[17/27] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[18/27] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+[19/27] Compile [x64] PlanMissionActionsTest.cpp [NoUba]
+[20/27] Compile [x64] ReservationWidgetTest.cpp [NoUba]
+[21/27] Compile [x64] SecurityPlanWorkspaceConfiguration.cpp [NoUba]
+[22/27] Compile [x64] SecurityPlanWorkspacePresentation.cpp [NoUba]
+[23/27] Compile [x64] SecurityPlanWorkspaceWidget.cpp [NoUba]
+[24/27] Compile [x64] ProductText.cpp [NoUba]
+Total time in Unreal Build Accelerator local executor: 155.57 seconds
+
+Result: Failed (OtherCompilationError)
+Total execution time: 161.83 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 20.8kb

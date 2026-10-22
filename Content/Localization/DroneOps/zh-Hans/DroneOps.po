@@ -1212,8 +1212,8 @@ msgid "Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)"
 msgstr "距离：{0} 米 · 预计：{1} 分钟（估算最低速度 1 米/秒）"
 
 msgctxt "DroneOps,Events.PLAN_DELETED"
-msgid "Draft deleted: {plan_name}"
-msgstr "已删除草稿：{plan_name}"
+msgid "Plan removed; history retained: {plan_name}"
+msgstr "已删除方案并保留历史：{plan_name}"
 
 msgctxt "DroneOps,Workflow.DeleteDraft"
 msgid "Confirm delete draft"
@@ -1596,8 +1596,8 @@ msgid "Closed route requires at least 3 waypoints."
 msgstr "闭合航线至少需要 3 个航点。"
 
 msgctxt "DroneOps,Errors.PLAN_EXECUTING"
-msgid "Cannot move the plan while the mission is running."
-msgstr "任务执行中，无法移动方案。"
+msgid "This plan has active or scheduled tasks. Finish or cancel them before editing, moving or deleting the plan."
+msgstr "此方案有运行中或已排期的任务。请先完成或取消这些任务，再编辑、移动或删除方案。"
 
 msgctxt "DroneOps,Errors.INVALID_TRANSLATION"
 msgid "The route changed. Cancel and retry moving the plan."
@@ -3014,3 +3014,63 @@ msgstr "米/秒 · 0不限速，或0.5–15"
 msgctxt "DroneOps,MapUI.SpeedInvalid"
 msgid "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."
 msgstr "请输入0（不限速）或0.5至15米/秒。"
+
+msgctxt "DroneOps,Plan.CopyExplicit"
+msgid "Copy plan"
+msgstr "复制方案"
+
+msgctxt "DroneOps,Plan.EditExisting"
+msgid "Edit plan"
+msgstr "编辑方案"
+
+msgctxt "DroneOps,Plan.EditDeployedHint"
+msgid "This plan is deployed. Edit this plan to save changes under the same ID, then validate and deploy again. Previous deployments remain in history."
+msgstr "此方案已部署。点击编辑方案可在原方案中保存修改，修改后需重新校验和部署。已有部署快照保留在历史中。"
+
+msgctxt "DroneOps,Plan.Delete.Action"
+msgid "Delete plan"
+msgstr "删除方案"
+
+msgctxt "DroneOps,Plan.Delete.Confirm"
+msgid "Confirm deletion"
+msgstr "确认删除"
+
+msgctxt "DroneOps,Plan.Delete.Refresh"
+msgid "Review latest version"
+msgstr "重新查看最新版本"
+
+msgctxt "DroneOps,Plan.Delete.NameHint"
+msgid "Enter the exact plan name"
+msgstr "输入完整方案名称"
+
+msgctxt "DroneOps,Plan.Delete.Prompt"
+msgid "Delete “{0}” from the plan list? Enter the exact name below to confirm. Current tasks and routes will be archived; deployment and execution history will be retained. Active or scheduled tasks must be finished or cancelled first."
+msgstr "确定从方案列表中删除“{0}”吗？请在下方输入完整方案名称。当前任务和航线将归档，部署与执行历史会保留。有运行中或已排期任务时，需先完成或取消任务。"
+
+msgctxt "DroneOps,Errors.DELETE_CONFIRMATION_REQUIRED"
+msgid "The confirmation name does not match this plan. Review the latest version and enter its exact name again."
+msgstr "确认名称与方案不一致。请重新查看最新版本并输入完整方案名称。"
+
+msgctxt "DroneOps,Errors.CONTENT_REVISION_CONFLICT"
+msgid "The plan changed after you opened this action. Review the latest version and confirm again."
+msgstr "方案内容在打开此操作后已发生变化。请重新查看最新版本并再次确认。"
+
+msgctxt "DroneOps,Errors.CONFIGURATION_REQUIRED"
+msgid "Open this plan for configuration before editing it."
+msgstr "请先进入此方案的配置状态再进行编辑。"
+
+msgctxt "DroneOps,Errors.PLAN_NOT_FOUND"
+msgid "This plan no longer exists. Close this dialog and return to the plan list."
+msgstr "此方案已不存在。请关闭对话框并返回方案列表。"
+
+msgctxt "DroneOps,Errors.PLAN_NOT_DEPLOYED"
+msgid "This plan's deployment state changed. Reload the plan and retry."
+msgstr "此方案的部署状态已变化。请重新打开方案后重试。"
+
+msgctxt "DroneOps,Events.PLAN_REOPENED"
+msgid "Plan {plan_name} reopened for editing"
+msgstr "重新编辑方案：{plan_name}"
+
+msgctxt "DroneOps,FleetUX.ExecutionControls"
+msgid "Execution controls"
+msgstr "执行控制"

@@ -1,0 +1,128 @@
+{
+  "version": 0,
+  "next_id": 1,
+  "plans": {},
+  "missions": {},
+  "paths": {},
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1792664093.947008,
+      "event_type": "MOCK_STARTUP_RESET",
+      "params": {
+        "target_id": ""
+      },
+      "category": "SYSTEM",
+      "target_id": "",
+      "message": "Mock aircraft returned to startup formation",
+      "source": "Launcher"
+    }
+  ],
+  "deployments": {},
+  "edit_sessions": {},
+  "executions": {},
+  "execution_version": 1,
+  "execution_requests": {},
+  "deleted_plans": {},
+  "configuration_session": null,
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8.0,
+    "startup_formation": {
+      "origin": {
+        "latitude": 1.2834,
+        "longitude": 103.8585,
+        "altitude": 50.0
+      },
+      "spacing_m": 2.0,
+      "direction": "east"
+    },
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 1.2834,
+          "longitude": 103.8585,
+          "altitude": 50.0
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 1.2834,
+          "longitude": 103.85851799094532,
+          "altitude": 50.0
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 1.2834,
+          "longitude": 103.85853598189064,
+          "altitude": 50.0
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 1.2834,
+          "longitude": 103.85855397283596,
+          "altitude": 50.0
+        }
+      }
+    },
+    "safety_separation_m": 1.5
+  },
+  "execution_adapter": "Mock",
+  "mock_position_baseline": {
+    "epoch": 1,
+    "reset_at": 1792664093.9470005,
+    "request_id": "14626142-5a84-4b11-88b9-634857a4f84c",
+    "positions": {
+      "UAV-01": {
+        "latitude": 1.2834,
+        "longitude": 103.8585,
+        "altitude": 50.0
+      },
+      "UAV-02": {
+        "latitude": 1.2834,
+        "longitude": 103.85851799094533,
+        "altitude": 50.0
+      },
+      "UAV-03": {
+        "latitude": 1.2834,
+        "longitude": 103.85853598189064,
+        "altitude": 50.0
+      },
+      "UAV-04": {
+        "latitude": 1.2834,
+        "longitude": 103.85855397283596,
+        "altitude": 50.0
+      }
+    },
+    "startup_formation": {
+      "origin": {
+        "latitude": 1.2834,
+        "longitude": 103.8585,
+        "altitude": 50.0
+      },
+      "spacing_m": 2.0,
+      "direction": "east"
+    },
+    "skipped_uav_ids": []
+  },
+  "mock_reset_requests": {
+    "14626142-5a84-4b11-88b9-634857a4f84c": {
+      "request": {
+        "request_id": "14626142-5a84-4b11-88b9-634857a4f84c",
+        "simulation": true,
+        "startup_formation": {
+          "origin": {
+            "latitude": 1.2834,
+            "longitude": 103.8585,
+            "altitude": 50.0
+          },
+          "spacing_m": 2.0,
+          "direction": "east"
+        }
+      },
+      "epoch": 1
+    }
+  }
+}

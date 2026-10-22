@@ -75,7 +75,7 @@ class FPlanMissionActions : public IAutomationLatentCommand {
     FAutomationTestBase* Test;int32 Step=0;double Started=FPlatformTime::Seconds();
     FString Original,First,Second,Copy,CopyFirst,CopySecond,DeploymentsBefore,VideoBefore,Out;
     TSharedRef<FMissionMapPeer> MapPeer=MakeShared<FMissionMapPeer>();double CaptureAt=0;TSet<FString> Captured;
-    int32 ExecutionsBefore=0;
+    int32 ExecutionsBefore=0,PlansBefore=0;double DeleteRevision=0;
     bool Capture(const TCHAR* Name){
         if(FParse::Param(FCommandLine::Get(),TEXT("NullRHI")) || Captured.Contains(Name))return true;
         if(CaptureAt==0){CaptureAt=FPlatformTime::Seconds()+.7;return false;}if(FPlatformTime::Seconds()<CaptureAt)return false;
@@ -103,13 +103,19 @@ public:
         USecurityPlanWorkspaceWidget* P=nullptr;for(TObjectIterator<USecurityPlanWorkspaceWidget> It;It;++It)if(It->GetWorld()==World){P=*It;break;}if(!P)return false;
         P->Refresh();if(P->bPending)return false;const auto State=Sync->GetPlans();
         auto Row=[&](const TCHAR* Action,int32 Index){if(!Test->TestTrue(TEXT("task action row exists"),P->MissionList->MissionActionIds.IsValidIndex(Index)))return false;P->MissionAction(Action,P->MissionList->MissionActionIds[Index]);return true;};
+        auto TypeDeleteName=[&](const FString& Text){
+            // UE5.8 SetText updates the model without broadcasting OnTextChanged.
+            // Deliver the user-input delegate explicitly in this component test.
+            P->DeletePlanNameInput->SetText(User(Text));
+            P->DeletePlanNameInput->OnTextChanged.Broadcast(P->DeletePlanNameInput->GetText());
+        };
         if(Step==0){
             MapPeer->Start();auto* PC=Cast<ADroneOpsPlayerController>(World->GetFirstPlayerController());auto* Manager=PC?PC->GetCommandScreenManager():nullptr;auto* Shell=Manager?Manager->GetShell():nullptr;
             if(Shell){struct FNavigation {FName Action;int32 Index;} Args{TEXT("navigate"),1};Shell->ProcessEvent(Shell->FindFunction(TEXT("Navigate")),&Args);}
             const auto Plans=Object(State,TEXT("plans"));if(Plans)for(const auto& Entry:Plans->Values)if(Field(Entry.Value->AsObject(),TEXT("name"))==TEXT("Mission actions deployed fixture"))Original=Entry.Key;
             const auto Plan=Find(State,TEXT("plans"),Original);if(!Test->TestTrue(TEXT("real deployed two-task fixture exists"),Plan.IsValid() && Plan->GetArrayField(TEXT("mission_ids")).Num()==2))return true;
             First=Plan->GetArrayField(TEXT("mission_ids"))[0]->AsString();Second=Plan->GetArrayField(TEXT("mission_ids"))[1]->AsString();
-            DeploymentsBefore=MissionJson(Object(State,TEXT("deployments")));VideoBefore=MissionJson(Sync->GetVideoView());ExecutionsBefore=Object(State,TEXT("executions"))->Values.Num();
+            DeploymentsBefore=MissionJson(Object(State,TEXT("deployments")));VideoBefore=MissionJson(Sync->GetVideoView());ExecutionsBefore=Object(State,TEXT("executions"))->Values.Num();PlansBefore=Object(State,TEXT("plans"))->Values.Num();
             const FString Before=Field(Sync->GetContext(),TEXT("active_mission_id"));P->OpenMissionExecution(Original,First);
             Test->TestTrue(TEXT("overview task navigation waits for selection ACK"),P->bPending);Test->TestEqual(TEXT("task selection is not optimistic"),Field(Sync->GetContext(),TEXT("active_mission_id")),Before);++Step;return false;
         }
@@ -123,14 +129,15 @@ public:
             if(!Row(TEXT("edit_mission"),1))return true;++Step;return false;
         }
         if(Step==2){
-            if(!Capture(TEXT("02-second-task-version-editor")))return false;
+            if(!Capture(TEXT("02-second-task-original-editor")))return false;
             Copy=P->PlanId;const auto Plan=Find(State,TEXT("plans"),Copy);
-            if(!Test->TestTrue(TEXT("deployed edit creates a separate editable version"),Copy!=Original && Field(Plan,TEXT("status"))==TEXT("DRAFT")))return true;
-            Test->TestEqual(TEXT("new version records its source plan"),Field(Plan,TEXT("source_plan_id")),Original);
+            if(!Test->TestTrue(TEXT("deployed edit reopens the same plan ID as draft"),Copy==Original && Field(Plan,TEXT("status"))==TEXT("DRAFT")))return true;
+            Test->TestEqual(TEXT("editing never adds a plan"),Object(State,TEXT("plans"))->Values.Num(),PlansBefore);
             CopyFirst=Plan->GetArrayField(TEXT("mission_ids"))[0]->AsString();CopySecond=Plan->GetArrayField(TEXT("mission_ids"))[1]->AsString();
-            Test->TestEqual(TEXT("editing second deployed task retains second-task identity after copy"),P->MissionId,CopySecond);Test->TestEqual(TEXT("copied task name is preserved"),P->MissionName->GetText().ToString(),FString(TEXT("South task")));
-            Test->TestTrue(TEXT("copied task editor owns acknowledged lease"),P->CanEditConfiguration() && P->CurrentStep==1);
-            Test->TestEqual(TEXT("copy leaves immutable deployments unchanged"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
+            Test->TestEqual(TEXT("original first task ID is retained"),CopyFirst,First);Test->TestEqual(TEXT("original second task ID is retained"),CopySecond,Second);
+            Test->TestEqual(TEXT("editing second deployed task retains second-task identity"),P->MissionId,Second);Test->TestEqual(TEXT("original task name is preserved"),P->MissionName->GetText().ToString(),FString(TEXT("South task")));
+            Test->TestTrue(TEXT("original task editor owns acknowledged lease"),P->CanEditConfiguration() && P->CurrentStep==1);
+            Test->TestEqual(TEXT("reopening leaves immutable deployments unchanged"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
             P->MissionName->SetText(User(TEXT("South task revised")));if(!Row(TEXT("select_mission"),0))return true;
             Test->TestTrue(TEXT("switching a dirty task asks before leaving"),P->bConfigurationGuard);Test->TestEqual(TEXT("dirty switch leaves Backend selection untouched"),Field(Sync->GetContext(),TEXT("active_mission_id")),CopySecond);
             P->Action(TEXT("guard_keep"),0);Test->TestEqual(TEXT("keep editing retains task input"),P->MissionName->GetText().ToString(),FString(TEXT("South task revised")));
@@ -144,10 +151,27 @@ public:
         }
         if(Step==4){
             Test->TestEqual(TEXT("draft execution entry retains selected second task"),P->MissionId,CopySecond);Test->TestEqual(TEXT("draft execution entry stops at pre-deployment review"),P->CurrentStep,3);
-            Test->TestEqual(TEXT("actual Backend validates the copied plan"),Field(Find(State,TEXT("plans"),Copy),TEXT("status")),FString(TEXT("READY")));
+            Test->TestEqual(TEXT("actual Backend validates the original plan after editing"),Field(Find(State,TEXT("plans"),Original),TEXT("status")),FString(TEXT("READY")));
             Test->TestTrue(TEXT("task rows remain usable during review"),P->MissionList->IsVisible() && P->MissionList->GetIsEnabled());
             Test->TestEqual(TEXT("check does not deploy"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
-            if(!Row(TEXT("edit_mission"),0))return true;++Step;return false;
+            if(!MapPeer->Ready || !Sync->IsRoleOnline(TEXT("Map")))return false;
+            P->Action(TEXT("confirm_deployment"),0);Step=40;return false;
+        }
+        if(Step==40){
+            if(!Test->TestEqual(TEXT("same plan can deploy again through the normal review flow"),Field(Find(State,TEXT("plans"),Original),TEXT("status")),FString(TEXT("DEPLOYED"))))return true;
+            Test->TestEqual(TEXT("saving and redeploying original did not clone a plan"),Object(State,TEXT("plans"))->Values.Num(),PlansBefore);
+            TSharedPtr<FJsonObject> OldDeployments;FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(DeploymentsBefore),OldDeployments);
+            Test->TestEqual(TEXT("redeploy adds exactly one immutable snapshot"),Object(State,TEXT("deployments"))->Values.Num(),OldDeployments->Values.Num()+1);
+            for(const auto& Entry:OldDeployments->Values)Test->TestEqual(TEXT("previous deployment snapshot is unchanged"),MissionJson(Find(State,TEXT("deployments"),FString(Entry.Key.ToView()))),MissionJson(Entry.Value->AsObject()));
+            DeploymentsBefore=MissionJson(Object(State,TEXT("deployments")));
+            P->Action(TEXT("copy_plan"),0);Step=41;return false;
+        }
+        if(Step==41){
+            Copy=P->PlanId;const auto Plan=Find(State,TEXT("plans"),Copy);
+            if(!Test->TestTrue(TEXT("only explicit Copy creates another plan"),Copy!=Original && Field(Plan,TEXT("source_plan_id"))==Original))return true;
+            Test->TestEqual(TEXT("explicit Copy adds exactly one plan"),Object(State,TEXT("plans"))->Values.Num(),PlansBefore+1);
+            CopyFirst=Plan->GetArrayField(TEXT("mission_ids"))[0]->AsString();CopySecond=Plan->GetArrayField(TEXT("mission_ids"))[1]->AsString();
+            if(!Row(TEXT("edit_mission"),0))return true;Step=5;return false;
         }
         if(Step==5){
             Test->TestTrue(TEXT("review edit entry returns to chosen task editor"),P->CurrentStep==1 && P->MissionId==CopyFirst && !P->MissionName->GetIsReadOnly());
@@ -186,9 +210,39 @@ public:
             for(const auto& Entry:Object(State,TEXT("executions"))->Values){const auto Execution=Entry.Value->AsObject();Test->TestEqual(TEXT("Backend execution belongs to selected original plan"),Field(Execution,TEXT("plan_id")),Original);Test->TestEqual(TEXT("Backend execution belongs to second task, never first"),Field(Execution,TEXT("mission_id")),Second);}
             P->Action(TEXT("execution_abort_prompt"),0);P->Action(TEXT("execution_confirm"),0);++Step;return false;
         }
+        if(Step==10){
         if(Field(P->SelectedExecution(State),TEXT("state"))!=TEXT("ABORTED"))return false;
         Test->TestEqual(TEXT("explicit abort cleans up the test execution"),Field(P->SelectedExecution(State),TEXT("state")),FString(TEXT("ABORTED")));
         Test->TestEqual(TEXT("deployed snapshots remain immutable through the complete workflow"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
+        P->RequestPlanDeletion(Copy);Test->TestTrue(TEXT("deletion names the exact chosen plan and blocks navigation"),P->PendingDeletePlan==Copy && P->IsMissionNavigationBlocked());
+        TypeDeleteName(P->PendingDeleteName);Test->TestTrue(TEXT("matching user input immediately enables confirmation"),P->Actions[TEXT("confirm_delete")]->GetIsEnabled());
+        TypeDeleteName(TEXT("Wrong plan"));Test->TestFalse(TEXT("wrong name cannot confirm deletion"),P->Actions[TEXT("confirm_delete")]->GetIsEnabled());P->Action(TEXT("confirm_delete"),0);
+        Test->TestFalse(TEXT("wrong confirmation dispatches no request"),P->bPending);P->Action(TEXT("cancel_delete"),0);
+        Test->TestTrue(TEXT("cancel leaves original and copied plan intact"),Find(State,TEXT("plans"),Original).IsValid() && Find(State,TEXT("plans"),Copy).IsValid());
+        P->RequestPlanDeletion(Copy);TypeDeleteName(P->PendingDeleteName);DeleteRevision=P->PendingDeleteRevision;
+        Step=14;return false;
+        }
+        if(Step==14){
+        // Screenshot retries must only wait; never repeat cancel/reopen/input.
+        if(!Capture(TEXT("04-named-delete-confirmation")))return false;
+        auto Change=MakeShared<FJsonObject>();Change->SetStringField(TEXT("action"),TEXT("update_plan"));Change->SetStringField(TEXT("plan_id"),Copy);Change->SetStringField(TEXT("name"),P->PendingDeleteName);Change->SetStringField(TEXT("description"),TEXT("Changed while confirmation was open"));
+        P->Submit(Change);Step=11;return false;
+        }
+        if(Step==11){
+            Test->TestEqual(TEXT("new snapshots cannot silently replace deletion consent"),P->PendingDeleteRevision,DeleteRevision);
+            P->Action(TEXT("confirm_delete"),0);Test->TestTrue(TEXT("valid name still waits for Backend revision gate"),P->bPending);Step=12;return false;
+        }
+        if(Step==12){
+            Test->TestEqual(TEXT("Backend rejects changed content after confirmation"),P->ErrorCode,FString(TEXT("CONTENT_REVISION_CONFLICT")));
+            Test->TestTrue(TEXT("failed deletion keeps dialog and data"),P->PendingDeletePlan==Copy && Find(State,TEXT("plans"),Copy).IsValid());
+            P->Action(TEXT("refresh_delete"),0);Test->TestTrue(TEXT("refresh requires typing name again"),P->DeletePlanNameInput->GetText().IsEmpty() && !P->Actions[TEXT("confirm_delete")]->GetIsEnabled());
+            TypeDeleteName(P->PendingDeleteName);P->Action(TEXT("confirm_delete"),0);
+            Test->TestTrue(TEXT("deletion stays visible until ACK"),P->bPending && !P->PendingDeletePlan.IsEmpty() && Find(State,TEXT("plans"),Copy).IsValid());Step=13;return false;
+        }
+        Test->TestTrue(TEXT("acknowledged deletion removes only intended plan and closes modal"),!Find(State,TEXT("plans"),Copy) && Find(State,TEXT("plans"),Original) && P->PendingDeletePlan.IsEmpty());
+        Test->TestEqual(TEXT("deleting another plan preserves active plan context"),Field(Sync->GetContext(),TEXT("active_security_plan_id")),Original);
+        Test->TestTrue(TEXT("deleted plan is archived"),Find(State,TEXT("deleted_plans"),Copy).IsValid());
+        Test->TestEqual(TEXT("delete preserves immutable deployment history"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
         Test->TestEqual(TEXT("task selection does not change Video source"),MissionJson(Sync->GetVideoView()),VideoBefore);
         Test->AddInfo(TEXT("Actual Backend ACK and real Command widget flow verified; no native mouse or hardware flight claim."));return true;
     }

@@ -61,6 +61,7 @@ private:
     UPROPERTY() TObjectPtr<class UCommandActionButton> Map3DButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> BoxSelectButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> GroupMoveButton;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> ExecutionControlsButton;
     UPROPERTY() TObjectPtr<class UMapFleetInteractionWidget> FleetInteraction;
     TMap<FString, int32> AircraftIds;
     TArray<FString> AircraftOptions;

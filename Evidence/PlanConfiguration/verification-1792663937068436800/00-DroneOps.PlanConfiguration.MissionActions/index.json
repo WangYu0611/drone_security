@@ -1,0 +1,105 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_d24d32a3886f>",
+			"instanceName": "<UE_INSTANCE_da5a50c5e4b6>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.22-10.12.58",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 12.369316101074219,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "MissionActions",
+			"fullTestPath": "DroneOps.PlanConfiguration.MissionActions",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_d24d32a3886f>"
+			],
+			"duration": 12.369316101074219,
+			"dateTime": "2026.10.22-10.12.46",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Task workflow evidence: Saved/MissionActionsQA/20261022-101246",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.22-10.12.46"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:24882  WebSocketUrl=ws://127.0.0.1:24883/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.22-10.12.46"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.22-10.12.46"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Execution-selection helper checks use a local JSON fixture only; navigation/copy/guards below use actual Backend ACKs.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.22-10.12.55"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Actual Backend ACK and real Command widget flow verified; no native mouse or hardware flight claim.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.22-10.12.58"
+				}
+			],
+			"warnings": 2,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

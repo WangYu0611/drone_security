@@ -303,7 +303,7 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Workflow.EditSpeed"),NSLOCTEXT("DroneOps","Workflow.EditSpeed","Edit speed")},
 {TEXT("Workflow.Waypoint"),NSLOCTEXT("DroneOps","Workflow.Waypoint","Waypoint {0}  ·  Height {1} m  ·  Speed {2} m/s")},
 {TEXT("Workflow.RouteStats"),NSLOCTEXT("DroneOps","Workflow.RouteStats","Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)")},
-{TEXT("Events.PLAN_DELETED"),NSLOCTEXT("DroneOps","Events.PLAN_DELETED","Draft deleted: {plan_name}")},
+{TEXT("Events.PLAN_DELETED"),NSLOCTEXT("DroneOps","Events.PLAN_DELETED","Plan removed; history retained: {plan_name}")},
 {TEXT("Workflow.DeleteDraft"),NSLOCTEXT("DroneOps","Workflow.DeleteDraft","Confirm delete draft")},
 {TEXT("Workflow.Duplicate"),NSLOCTEXT("DroneOps","Workflow.Duplicate","Duplicate")},
 {TEXT("Workflow.SaveExit"),NSLOCTEXT("DroneOps","Workflow.SaveExit","Save and exit")},
@@ -399,7 +399,7 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Geometry.Preview"),NSLOCTEXT("DroneOps","Geometry.Preview","Preview only — confirm position to save.")},
 {TEXT("Geometry.Confirm"),NSLOCTEXT("DroneOps","Geometry.Confirm","Confirm Position")},
 {TEXT("Errors.CLOSED_ROUTE_TOO_SHORT"),NSLOCTEXT("DroneOps","Errors.CLOSED_ROUTE_TOO_SHORT","Closed route requires at least 3 waypoints.")},
-{TEXT("Errors.PLAN_EXECUTING"),NSLOCTEXT("DroneOps","Errors.PLAN_EXECUTING","Cannot move the plan while the mission is running.")},
+{TEXT("Errors.PLAN_EXECUTING"),NSLOCTEXT("DroneOps","Errors.PLAN_EXECUTING","This plan has active or scheduled tasks. Finish or cancel them before editing, moving or deleting the plan.")},
 {TEXT("Errors.INVALID_TRANSLATION"),NSLOCTEXT("DroneOps","Errors.INVALID_TRANSLATION","The route changed. Cancel and retry moving the plan.")},
 {TEXT("Events.PLAN_TRANSLATED"),NSLOCTEXT("DroneOps","Events.PLAN_TRANSLATED","Plan position confirmed")},
 {TEXT("Events.ROUTE_CLOSURE_REACHED"),NSLOCTEXT("DroneOps","Events.ROUTE_CLOSURE_REACHED","Closed route completed once")},
@@ -754,6 +754,21 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("MapUI.DefaultSpeedHint"),NSLOCTEXT("DroneOps","MapUI.DefaultSpeedHint","Used for newly added waypoints.")},
 {TEXT("MapUI.SpeedRange"),NSLOCTEXT("DroneOps","MapUI.SpeedRange","m/s · 0 = unlimited, or 0.5–15")},
 {TEXT("MapUI.SpeedInvalid"),NSLOCTEXT("DroneOps","MapUI.SpeedInvalid","Enter 0 (unlimited) or a speed from 0.5 to 15 m/s.")},
+{TEXT("Plan.CopyExplicit"),NSLOCTEXT("DroneOps","Plan.CopyExplicit","Copy plan")},
+{TEXT("Plan.EditExisting"),NSLOCTEXT("DroneOps","Plan.EditExisting","Edit plan")},
+{TEXT("Plan.EditDeployedHint"),NSLOCTEXT("DroneOps","Plan.EditDeployedHint","This plan is deployed. Edit this plan to save changes under the same ID, then validate and deploy again. Previous deployments remain in history.")},
+{TEXT("Plan.Delete.Action"),NSLOCTEXT("DroneOps","Plan.Delete.Action","Delete plan")},
+{TEXT("Plan.Delete.Confirm"),NSLOCTEXT("DroneOps","Plan.Delete.Confirm","Confirm deletion")},
+{TEXT("Plan.Delete.Refresh"),NSLOCTEXT("DroneOps","Plan.Delete.Refresh","Review latest version")},
+{TEXT("Plan.Delete.NameHint"),NSLOCTEXT("DroneOps","Plan.Delete.NameHint","Enter the exact plan name")},
+{TEXT("Plan.Delete.Prompt"),NSLOCTEXT("DroneOps","Plan.Delete.Prompt","Delete “{0}” from the plan list? Enter the exact name below to confirm. Current tasks and routes will be archived; deployment and execution history will be retained. Active or scheduled tasks must be finished or cancelled first.")},
+{TEXT("Errors.DELETE_CONFIRMATION_REQUIRED"),NSLOCTEXT("DroneOps","Errors.DELETE_CONFIRMATION_REQUIRED","The confirmation name does not match this plan. Review the latest version and enter its exact name again.")},
+{TEXT("Errors.CONTENT_REVISION_CONFLICT"),NSLOCTEXT("DroneOps","Errors.CONTENT_REVISION_CONFLICT","The plan changed after you opened this action. Review the latest version and confirm again.")},
+{TEXT("Errors.CONFIGURATION_REQUIRED"),NSLOCTEXT("DroneOps","Errors.CONFIGURATION_REQUIRED","Open this plan for configuration before editing it.")},
+{TEXT("Errors.PLAN_NOT_FOUND"),NSLOCTEXT("DroneOps","Errors.PLAN_NOT_FOUND","This plan no longer exists. Close this dialog and return to the plan list.")},
+{TEXT("Errors.PLAN_NOT_DEPLOYED"),NSLOCTEXT("DroneOps","Errors.PLAN_NOT_DEPLOYED","This plan's deployment state changed. Reload the plan and retry.")},
+{TEXT("Events.PLAN_REOPENED"),NSLOCTEXT("DroneOps","Events.PLAN_REOPENED","Plan {plan_name} reopened for editing")},
+{TEXT("FleetUX.ExecutionControls"),NSLOCTEXT("DroneOps","FleetUX.ExecutionControls","Execution controls")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1060,7 +1075,7 @@ if(Source==TEXT("Undo"))return Get(TEXT("Workflow.Undo"));
 if(Source==TEXT("Edit speed"))return Get(TEXT("Workflow.EditSpeed"));
 if(Source==TEXT("Waypoint {0}  ·  Height {1} m  ·  Speed {2} m/s"))return Get(TEXT("Workflow.Waypoint"));
 if(Source==TEXT("Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)"))return Get(TEXT("Workflow.RouteStats"));
-if(Source==TEXT("Draft deleted: {plan_name}"))return Get(TEXT("Events.PLAN_DELETED"));
+if(Source==TEXT("Plan removed; history retained: {plan_name}"))return Get(TEXT("Events.PLAN_DELETED"));
 if(Source==TEXT("Confirm delete draft"))return Get(TEXT("Workflow.DeleteDraft"));
 if(Source==TEXT("Duplicate"))return Get(TEXT("Workflow.Duplicate"));
 if(Source==TEXT("Save and exit"))return Get(TEXT("Workflow.SaveExit"));
@@ -1156,7 +1171,7 @@ if(Source==TEXT("Drag the center handle to move all routes."))return Get(TEXT("G
 if(Source==TEXT("Preview only — confirm position to save."))return Get(TEXT("Geometry.Preview"));
 if(Source==TEXT("Confirm Position"))return Get(TEXT("Geometry.Confirm"));
 if(Source==TEXT("Closed route requires at least 3 waypoints."))return Get(TEXT("Errors.CLOSED_ROUTE_TOO_SHORT"));
-if(Source==TEXT("Cannot move the plan while the mission is running."))return Get(TEXT("Errors.PLAN_EXECUTING"));
+if(Source==TEXT("This plan has active or scheduled tasks. Finish or cancel them before editing, moving or deleting the plan."))return Get(TEXT("Errors.PLAN_EXECUTING"));
 if(Source==TEXT("The route changed. Cancel and retry moving the plan."))return Get(TEXT("Errors.INVALID_TRANSLATION"));
 if(Source==TEXT("Plan position confirmed"))return Get(TEXT("Events.PLAN_TRANSLATED"));
 if(Source==TEXT("Closed route completed once"))return Get(TEXT("Events.ROUTE_CLOSURE_REACHED"));
@@ -1511,6 +1526,21 @@ if(Source==TEXT("Default flight speed"))return Get(TEXT("MapUI.DefaultSpeed"));
 if(Source==TEXT("Used for newly added waypoints."))return Get(TEXT("MapUI.DefaultSpeedHint"));
 if(Source==TEXT("m/s · 0 = unlimited, or 0.5–15"))return Get(TEXT("MapUI.SpeedRange"));
 if(Source==TEXT("Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."))return Get(TEXT("MapUI.SpeedInvalid"));
+if(Source==TEXT("Copy plan"))return Get(TEXT("Plan.CopyExplicit"));
+if(Source==TEXT("Edit plan"))return Get(TEXT("Plan.EditExisting"));
+if(Source==TEXT("This plan is deployed. Edit this plan to save changes under the same ID, then validate and deploy again. Previous deployments remain in history."))return Get(TEXT("Plan.EditDeployedHint"));
+if(Source==TEXT("Delete plan"))return Get(TEXT("Plan.Delete.Action"));
+if(Source==TEXT("Confirm deletion"))return Get(TEXT("Plan.Delete.Confirm"));
+if(Source==TEXT("Review latest version"))return Get(TEXT("Plan.Delete.Refresh"));
+if(Source==TEXT("Enter the exact plan name"))return Get(TEXT("Plan.Delete.NameHint"));
+if(Source==TEXT("Delete “{0}” from the plan list? Enter the exact name below to confirm. Current tasks and routes will be archived; deployment and execution history will be retained. Active or scheduled tasks must be finished or cancelled first."))return Get(TEXT("Plan.Delete.Prompt"));
+if(Source==TEXT("The confirmation name does not match this plan. Review the latest version and enter its exact name again."))return Get(TEXT("Errors.DELETE_CONFIRMATION_REQUIRED"));
+if(Source==TEXT("The plan changed after you opened this action. Review the latest version and confirm again."))return Get(TEXT("Errors.CONTENT_REVISION_CONFLICT"));
+if(Source==TEXT("Open this plan for configuration before editing it."))return Get(TEXT("Errors.CONFIGURATION_REQUIRED"));
+if(Source==TEXT("This plan no longer exists. Close this dialog and return to the plan list."))return Get(TEXT("Errors.PLAN_NOT_FOUND"));
+if(Source==TEXT("This plan's deployment state changed. Reload the plan and retry."))return Get(TEXT("Errors.PLAN_NOT_DEPLOYED"));
+if(Source==TEXT("Plan {plan_name} reopened for editing"))return Get(TEXT("Events.PLAN_REOPENED"));
+if(Source==TEXT("Execution controls"))return Get(TEXT("FleetUX.ExecutionControls"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

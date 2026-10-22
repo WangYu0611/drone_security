@@ -10,6 +10,7 @@
 #include "Command/CommandScreenManager.h"
 #include "Command/CommandMapInteractionService.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/SlateBlueprintLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Rendering/DrawElements.h"
@@ -21,6 +22,7 @@
 #include "Map/FigmaMapStyle.h"
 #include "Map/MapLabelPlacement.h"
 #include "Components/MeshComponent.h"
+#include "CollisionQueryParams.h"
 #include "Components/Image.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Fonts/FontMeasure.h"
@@ -51,7 +53,7 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     auto MakeButton=[&](UPanelWidget* Parent,const TCHAR* Name,const TCHAR* Key,bool Primary=false,bool Danger=false){
         auto* B=Button(WidgetTree,Parent,Name,Key);B->OnAction.AddDynamic(this,&UMapFleetInteractionWidget::Action);Buttons.Add(Name,B);FleetPanelStyle::Button(B,Primary,Danger);return B;
     };
-    MapUI::Text(Text(Content,T(TEXT("FleetUX.Title")),24),24,MapUI::PrimaryText,true);Space(Content,12);
+    PanelTitle=Text(Content,T(TEXT("FleetUX.Title")),24);MapUI::Text(PanelTitle,24,MapUI::PrimaryText,true);Space(Content,12);
     auto* StepRow=WidgetTree->ConstructWidget<UHorizontalBox>();Content->AddChild(StepRow);
     for(int I=0;I<3;++I){auto* Card=WidgetTree->ConstructWidget<UBorder>();Card->SetPadding(FMargin(8));
         auto* LayoutSlot=StepRow->AddChildToHorizontalBox(Card);LayoutSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));LayoutSlot->SetPadding(FMargin(I?4:0,0,0,0));
@@ -120,13 +122,29 @@ bool UMapFleetInteractionWidget::IsOverControls(const FVector2D& Screen) const {
 }
 void UMapFleetInteractionWidget::SetMode(EMapFleetMode Value) {
     if(bPending || (Value!=EMapFleetMode::Browse && !IsAvailable()))return;
-    CancelGesture();ClearTarget();Mode=Value;HeightPrimary=0;MessageKey.Empty();ErrorDetails=FText::GetEmpty();bAbortConfirm=false;bShowCoordinates=false;DismissedExecution.Empty();
+    CancelGesture();ClearTarget();Mode=Value;HeightPrimary=0;MessageKey.Empty();ErrorDetails=FText::GetEmpty();bAbortConfirm=false;bShowCoordinates=false;
+    if(Value==EMapFleetMode::Browse)bPanelRequested=false;
+    else if(Value==EMapFleetMode::GroupMove)bPanelRequested=true;
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());PC && PC->GetCommandScreenManager())PC->GetCommandScreenManager()->StopCameraFollow();
     Refresh();
 }
 bool UMapFleetInteractionWidget::CancelMode() {
-    if(bPending || (!OwnsPrimaryInput() && !bHasTarget))return false;
-    const FString Dismiss=ExecutionId;SetMode(EMapFleetMode::Browse);DismissedExecution=Dismiss;Refresh();return true;
+    if(bPending || (!OwnsPrimaryInput() && !bHasTarget && !bPanelRequested))return false;
+    SetMode(EMapFleetMode::Browse);return true;
+}
+bool UMapFleetInteractionWidget::CanShowExecutionControls() const {
+    if(!GetGameInstance() || ManagedGroup.IsEmpty())return false;
+    const auto Group=ExecutionControls::Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),ManagedGroup);
+    TArray<FString> Members;for(int Id:OrderedSelection())Members.Add(FString::Printf(TEXT("UAV-%02d"),Id));Members.Sort();
+    return Group.ActiveCount>0 && Group.Members==Members && Field(ExecutionControls::Representative(Group),TEXT("control_kind"))==TEXT("GROUP_MOVE");
+}
+bool UMapFleetInteractionWidget::ShowExecutionControls() {
+    if(bPending || !CanShowExecutionControls())return false;
+    // Configuration forbids new movement, but an explicit monitor entry must
+    // still reach pause/abort for an existing acknowledged group.
+    CancelGesture();ClearTarget();Mode=EMapFleetMode::Browse;HeightPrimary=0;
+    MessageKey.Empty();ErrorDetails=FText::GetEmpty();bAbortConfirm=false;bShowCoordinates=false;
+    bPanelRequested=true;Refresh();return true;
 }
 TArray<int32> UMapFleetInteractionWidget::OrderedSelection() const {
     return MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>());
@@ -261,6 +279,22 @@ void UMapFleetInteractionWidget::SelectInRectangle(bool Click) {
         if(!Click && FleetSelection::Contains(Start,Current,P))Hits.Add(D.DroneId);
         if(Click && FVector2D::Distance(Current,P)<Closest){Closest=FVector2D::Distance(Current,P);Nearest=D.DroneId;}
     }
+    // At close range the native wings can extend beyond the icon's minimum
+    // hit radius. Accept the actually displayed model's collision hit too.
+    if(Click && GetOwningPlayer() && !DisplayedModelActors.IsEmpty()){
+        FVector2D Pixel,Viewport;
+        USlateBlueprintLibrary::AbsoluteToViewport(this,GetCachedGeometry().LocalToAbsolute(Current),Pixel,Viewport);
+        FCollisionQueryParams Query(SCENE_QUERY_STAT(FleetModelSelection),false);
+        for(const auto& D:R->GetFriendlyDroneDescriptors()){
+            const auto* Display=GetDisplayedModelActor(D.DroneId);
+            for(AActor* Actor:{R->GetReceiverActor(D.DroneId),static_cast<AActor*>(R->GetSenderPawn(D.DroneId))})
+                if(Actor && Actor!=Display)Query.AddIgnoredActor(Actor);
+        }
+        FHitResult Hit;
+        if(GetOwningPlayer()->GetHitResultAtScreenPosition(Pixel,ECC_Visibility,Query,Hit))
+            if(const auto* Mesh=Cast<UMeshComponent>(Hit.GetComponent());Mesh && Mesh->IsVisible() && !Mesh->bHiddenInGame)
+                for(const auto& Item:DisplayedModelActors)if(Item.Value.Get()==Hit.GetActor()){Nearest=Item.Key;break;}
+    }
     if(Click && Nearest>0)Hits.Add(Nearest);
     const auto Selected=FleetSelection::Apply(R->GetMultiSelectedDrones(),Hits,SelectionOperation);
     const int32 Primary=Selected.Contains(R->GetPrimarySelectedDrone())?R->GetPrimarySelectedDrone():Selected.IsEmpty()?0:Selected[0];
@@ -332,10 +366,13 @@ void UMapFleetInteractionWidget::Refresh() {
         && Field(ExecutionControls::Representative(Candidate),TEXT("control_kind"))==TEXT("GROUP_MOVE")){Group=Candidate;break;}
     const auto Latest=ExecutionControls::Representative(Group);ExecutionId=Field(Latest,TEXT("execution_id"));ManagedGroup=Group.Id;const FString State=Group.State;
     const bool Active=Group.ActiveCount>0;if(!Active || (bAbortConfirm && ManagedGroup!=AbortGroup))bAbortConfirm=false;
+    PanelTitle->SetText(T(Active && Mode==EMapFleetMode::Browse?TEXT("FleetUX.ExecutionControls"):TEXT("FleetUX.Title")));
     double RecoveryAltitude=0;const bool BelowSurface=!Active && RecoveryHeight(RecoveryAltitude);
     const bool Mock=Field(S->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock");
     const bool Configuring=PlanConfiguration::Active(S->GetPlans());
-    const bool Show=Configuring?Active:BelowSurface || Mode!=EMapFleetMode::Browse || (Latest && ExecutionId!=DismissedExecution) || !MessageKey.IsEmpty() || !ErrorDetails.IsEmpty();
+    // Selection, live telemetry and execution snapshots update the card's
+    // contents; they never open a card that the operator has not requested.
+    const bool Show=bPanelRequested && (!Configuring || Active);
     Panel->SetVisibility(Show?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     const int Step=Mode==EMapFleetMode::BoxSelect || Selected.IsEmpty()?0:bHasTarget?2:1;
     Steps[0]->GetParent()->SetVisibility(Active || Mode==EMapFleetMode::Browse?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
@@ -439,7 +476,7 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
             TargetHeightChanged(TargetHeightInput->GetText());
         }return;
     }
-    if(Name==TEXT("cancel")){const FString Dismiss=ExecutionId;SetMode(EMapFleetMode::Browse);DismissedExecution=Dismiss;Refresh();return;}
+    if(Name==TEXT("cancel")){SetMode(EMapFleetMode::Browse);return;}
     auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("request_id"),FGuid::NewGuid().ToString());
     if(Name==TEXT("confirm")) {
         ErrorDetails=UnavailableReason();if(!bHasTarget || !ErrorDetails.IsEmpty() || !IsAvailable()){Refresh();return;}
@@ -471,17 +508,35 @@ void UMapFleetInteractionWidget::NativeTick(const FGeometry& G,float Delta) {
         const float Desired=Mode==EMapFleetMode::BoxSelect?460.f:Mode==EMapFleetMode::GroupMove?(bHasTarget?900.f:790.f):bAbortConfirm || ExecutionDetails?510.f:Buttons[TEXT("recover")]->GetVisibility()==ESlateVisibility::Visible?510.f:400.f;
         const FVector2D Size(372,FMath::Min(Available,Desired));
         auto* LayoutSlot=CastChecked<UCanvasPanelSlot>(Panel->Slot);if(!LayoutSlot->GetSize().Equals(Size,.5))LayoutSlot->SetSize(Size);}
-    // The map owns screen-space symbols, independent of map zoom. Preserve the
-    // source components' visibility and restore it when this presentation retires.
+    // Far/2D symbols have a fixed screen size; close 3D views reveal the native
+    // model without changing its transform, collision or selected model type.
     const auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    FVector CameraLocation=FVector::ZeroVector;FRotator CameraRotation;
+    if(GetOwningPlayer())GetOwningPlayer()->GetPlayerViewPoint(CameraLocation,CameraRotation);
+    const auto PreviousModels=MoveTemp(DisplayedModelActors);DisplayedModelActors.Reset();ModelScreenBounds.Reset();
+    ModelVisibility.BeginFrame();
     for(const auto& D:Registry->GetFriendlyDroneDescriptors()){
         if(auto* Receiver=Cast<ARealTimeDroneReceiver>(Registry->GetReceiverActor(D.DroneId));Receiver && Receiver->NameLabelWidgetComponent){
             auto* Label=Receiver->NameLabelWidgetComponent.Get();if(!SuppressedLabels.Contains(Label))SuppressedLabels.Add(Label,Label->IsVisible());Label->SetVisibility(false);}
-        for(AActor* Actor:{Registry->GetReceiverActor(D.DroneId),static_cast<AActor*>(Registry->GetSenderPawn(D.DroneId))})if(Actor){
-            TArray<UMeshComponent*> Meshes;Actor->GetComponents<UMeshComponent>(Meshes);
-            for(auto* Mesh:Meshes){if(!SuppressedMeshes.Contains(Mesh))SuppressedMeshes.Add(Mesh,Mesh->IsVisible());Mesh->SetVisibility(false);}
-        }
+        AActor* Receiver=Registry->GetReceiverActor(D.DroneId);
+        AActor* Sender=Registry->GetSenderPawn(D.DroneId);
+        AActor* Display=Receiver;FBox Bounds(ForceInit);
+        bool Ready=ModelVisibility.ActiveBounds(Display,Bounds);
+        if(!Ready){Display=Sender;Ready=ModelVisibility.ActiveBounds(Display,Bounds);}
+        FBox2D ScreenBounds(ForceInit);FVector2D Anchor;
+        Ready=Ready && Project(D.DroneId,Anchor) && MapDronePresentation::ProjectBounds(GetOwningPlayer(),Bounds,ScreenBounds);
+        const double Diameter=Ready?ScreenBounds.GetSize().GetMax():0.;
+        const double Distance=Ready?FVector::Distance(CameraLocation,Display->GetActorLocation()):MAX_dbl;
+        const bool ShowModel=MapDronePresentation::ShouldShowModel(PreviousModels.Contains(D.DroneId),Is3DView(),Ready,Diameter,Distance);
+        if(ShowModel){DisplayedModelActors.Add(D.DroneId,Display);ModelScreenBounds.Add(D.DroneId,ScreenBounds);}
+        // Suppress the sender mirror even when a valid receiver model is shown.
+        ModelVisibility.SetSuppressed(Receiver,!ShowModel || Receiver!=Display);
+        if(Sender!=Receiver)ModelVisibility.SetSuppressed(Sender,!ShowModel || Sender!=Display);
     }
+    ModelVisibility.EndFrame();
+}
+AActor* UMapFleetInteractionWidget::GetDisplayedModelActor(int32 Id) const {
+    const auto* Actor=DisplayedModelActors.Find(Id);return Actor && Actor->IsValid() && !Actor->Get()->IsHidden()?Actor->Get():nullptr;
 }
 int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeometry& G,const FSlateRect& Clip,FSlateWindowElementList& Out,int32 Layer,const FWidgetStyle& Style,bool Enabled) const {
     const int32 Base=Super::NativePaint(Args,G,Clip,Out,Layer,Style,Enabled);auto* R=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
@@ -499,18 +554,23 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
     {
         TArray<TPair<int32,FVector2D>> Points;for(const auto& D:R->GetFriendlyDroneDescriptors()){FVector2D P;if(Project(D.DroneId,P) && ClearPoint(P))Points.Emplace(D.DroneId,P);}
         Points.Sort([](const auto& A,const auto& B){return FMath::IsNearlyEqual(A.Value.Y,B.Value.Y,1.)?A.Key<B.Key:A.Value.Y<B.Value.Y;});
-        TArray<FBox2D> Placed=ControlBounds;for(const auto& Point:Points)Placed.Add(FBox2D(Point.Value-FVector2D(20),Point.Value+FVector2D(20)));
+        TArray<FBox2D> Placed=ControlBounds;for(const auto& Point:Points){
+            const auto* Bounds=ModelScreenBounds.Find(Point.Key);
+            Placed.Add(Bounds && IsModelPresentation(Point.Key)?*Bounds:FBox2D(Point.Value-FVector2D(20),Point.Value+FVector2D(20)));}
         FBox2D LabelBounds(FVector2D::ZeroVector,G.GetLocalSize());if(Shell){const auto MG=Shell->GetMapViewportGeometry();LabelBounds=FBox2D(Desktop.AbsoluteToLocal(MG.GetAbsolutePosition()),Desktop.AbsoluteToLocal(MG.LocalToAbsolute(MG.GetLocalSize())));}
         const auto Plans=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();
 
         for(const auto& Item:Points){const int Id=Item.Key;const FVector2D P=Item.Value;const bool Primary=Id==R->GetPrimarySelectedDrone(),Selected=R->GetMultiSelectedDrones().Contains(Id);
-            PaintedDroneIds.Add(Id);
             const auto Color=(Primary || Selected)?MapUI::Cyan:MapUI::SecondaryText;
-            const FSlateRoundedBoxBrush MarkerBrush(MapUI::Surface,18.f,Color,2.f);
-            const float Radius=18.f;FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(Radius*2),FSlateLayoutTransform(P-FVector2D(Radius))),&MarkerBrush,ESlateDrawEffect::None,MapUI::Surface);
+            if(!IsModelPresentation(Id)){
+                PaintedDroneIds.Add(Id);
+                const float Radius=MapDronePresentation::IconDiameter*.5;
+                const FSlateRoundedBoxBrush MarkerBrush(MapUI::Surface,Radius,Color,2.f);
+                FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(Radius*2),FSlateLayoutTransform(P-FVector2D(Radius))),&MarkerBrush,ESlateDrawEffect::None,MapUI::Surface);
+                if(MarkerIcon){const auto& Brush=MarkerIcon->GetBrush();const FVector2D IconSize=Brush.ImageSize;
+                    FSlateDrawElement::MakeBox(Out,Base+3,G.ToPaintGeometry(IconSize,FSlateLayoutTransform(P-IconSize*.5)),&Brush,ESlateDrawEffect::None,FLinearColor::White);}
+            }
             if((Primary || Selected) && SelectionMarkerIcon)FSlateDrawElement::MakeBox(Out,Base+2,G.ToPaintGeometry(FVector2D(36),FSlateLayoutTransform(P-FVector2D(18))),&SelectionMarkerIcon->GetBrush(),ESlateDrawEffect::None,FLinearColor::White);
-            if(MarkerIcon){const auto& Brush=MarkerIcon->GetBrush();const FVector2D IconSize=Brush.ImageSize;
-                FSlateDrawElement::MakeBox(Out,Base+3,G.ToPaintGeometry(IconSize,FSlateLayoutTransform(P-IconSize*.5)),&Brush,ESlateDrawEffect::None,FLinearColor::White);}
             FDroneLabelSettings Settings;R->GetDroneLabelSettings(Id,Settings);FDroneDescriptor Descriptor;R->GetDroneDescriptor(Id,Descriptor);
             FString DisplayName=Settings.DisplayName.IsEmpty()?Descriptor.Name:Settings.DisplayName;
             const auto NameFont=FCoreStyle::GetDefaultFontStyle("Bold",FMath::Clamp(Settings.FontSize,8,72));
@@ -564,6 +624,6 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
 }
 void UMapFleetInteractionWidget::NativeDestruct(){
     for(const auto& Item:SuppressedLabels)if(Item.Key.IsValid())Item.Key->SetVisibility(Item.Value);SuppressedLabels.Reset();
-    for(const auto& Item:SuppressedMeshes)if(Item.Key.IsValid())Item.Key->SetVisibility(Item.Value);SuppressedMeshes.Reset();
+    ModelVisibility.RestoreAll();DisplayedModelActors.Reset();ModelScreenBounds.Reset();
     CancelGesture();PreviewRoutes.Reset();Super::NativeDestruct();
 }

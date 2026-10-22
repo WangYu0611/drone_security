@@ -1,0 +1,29 @@
+{
+  "test": "DroneOps.Fleet.ModelIcon",
+  "role": "Map",
+  "pass": false,
+  "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+  "expected": 2,
+  "exit": 0,
+  "discovered": 2,
+  "discovery_log_counts": [
+    2
+  ],
+  "completed": 2,
+  "completed_tests": [
+    "DroneOps.Fleet.ModelIconPolicy",
+    "DroneOps.Fleet.ModelIconVisibility"
+  ],
+  "passed": 2,
+  "warnings": 0,
+  "failed": 0,
+  "not_run": 0,
+  "in_process": 0,
+  "report_tests": [
+    "DroneOps.Fleet.ModelIconPolicy",
+    "DroneOps.Fleet.ModelIconVisibility"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-0",
+  "cleanup_errors": [],
+  "ownership_after_stop": []
+}

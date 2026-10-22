@@ -37,6 +37,7 @@ public:
         if (!state_.contains("execution_version")) state_["execution_version"] = 0;
         if (!state_.contains("execution_requests")) state_["execution_requests"] = Object{};
         if (!state_.contains("deployments")) state_["deployments"] = Object{};
+        if (!state_.contains("deleted_plans")) state_["deleted_plans"] = Object{};
         if (!state_.contains("edit_sessions")) state_["edit_sessions"] = Object{};
         // Client subscriptions are not restored across a Backend restart. A stale
         // configuration owner must not keep movement locked after reconnecting.
@@ -126,7 +127,13 @@ public:
         if(action=="begin_configuration") {
             const auto owner=str(request,"instance_id");
             if(owner.empty())throw PlanError("INVALID_IDENTITY","Configuration owner required");
-            if(!planId.empty())lookup(plans,planId,"PLAN_NOT_FOUND");
+            if(!planId.empty()) {
+                const auto& selected=lookup(plans,planId,"PLAN_NOT_FOUND");
+                // Acquiring the editor lease and checking live/scheduled work is
+                // one atomic operation: a stale client must not leave a lease
+                // behind after a subsequent reopen_plan rejection.
+                if(str(selected,"status")=="DEPLOYED")checkPlanNotExecuting(next,planId);
+            }
             for(const auto& entry:next.at("edit_sessions").as_object()) {
                 const auto& edit=entry.value().as_object();
                 if(str(edit,"plan_id")!=planId || str(edit,"mode")=="MOVE")
@@ -190,14 +197,10 @@ public:
             event(next,"PLAN_COPIED","PLAN",planId,"Plan copied as draft",source);
             event(next,"PLAN_VERSION_CREATED","PLAN",planId,"New plan version created",source);
             bindConfigurationPlan(next,request,planId);
+        } else if(action=="reopen_plan") {
+            reopenPlan(next,request,planId,source);
         } else if(action=="delete_plan") {
-            const auto plan=lookup(plans,planId,"PLAN_NOT_FOUND");
-            if(str(plan,"status")!="DRAFT")throw PlanError("PLAN_DEPLOYED","Only drafts may be deleted");
-            for(const auto& entry:next.at("edit_sessions").as_object())if(str(entry.value().as_object(),"plan_id")==planId)throw PlanError("PLAN_EDIT_IN_PROGRESS","Close route editing first");
-            for(const auto& id:plan.at("mission_ids").as_array()){
-                paths.erase(str(missions.at(id.as_string()).as_object(),"route_id"));missions.erase(id.as_string());
-            }
-            event(next,"PLAN_DELETED","PLAN",planId,"Draft deleted",source);plans.erase(planId);planId.clear();missionId.clear();
+            deletePlan(next,request,planId,source);planId.clear();missionId.clear();
         } else if (action=="begin_plan_move" || action=="move_plan" || action=="cancel_plan_move") {
             movePlan(next,request,planId,source);
         } else {
@@ -453,6 +456,7 @@ private:
            str(session->as_object(),"plan_id").empty())session->as_object()["plan_id"]=plan;
     }
 #include "storage/plan_geometry.inl"
+#include "storage/plan_lifecycle.inl"
 #include "storage/mission_trajectory.inl"
     static bool expire(Object& state,double now) {
         auto& sessions=state.at("edit_sessions").as_object();std::vector<std::string> expired;

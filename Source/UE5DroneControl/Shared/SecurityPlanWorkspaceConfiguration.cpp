@@ -91,21 +91,25 @@ void USecurityPlanWorkspaceWidget::EditMission(const FString& InPlanId,const FSt
     const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();const auto Plan=Find(State,TEXT("plans"),InPlanId);
     if(!Plan)return;
     if(Field(Plan,TEXT("status"))==TEXT("DEPLOYED")){
-        const auto& Ids=Plan->GetArrayField(TEXT("mission_ids"));int32 Ordinal=INDEX_NONE;
-        for(int32 I=0;I<Ids.Num();++I)if(Ids[I]->AsString()==InMissionId){Ordinal=I;break;}
-        if(Ordinal==INDEX_NONE)return;
-        SelectMission(InPlanId,InMissionId,[this,InPlanId,Ordinal]{
-            BeginConfiguration(TEXT(""),[this,InPlanId,Ordinal]{
-                auto Copy=MakeShared<FJsonObject>();Copy->SetStringField(TEXT("action"),TEXT("copy_plan"));Copy->SetStringField(TEXT("plan_id"),InPlanId);
-                Submit(Copy,[this,Ordinal]{
-                    const auto Copied=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanId);
-                    const TArray<TSharedPtr<FJsonValue>>* NewIds=nullptr;
-                    // Backend copy retains ordered mission_ids while allocating new IDs.
-                    if(!Copied || !Copied->TryGetArrayField(TEXT("mission_ids"),NewIds) || !NewIds->IsValidIndex(Ordinal)){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
-                    EditMission(PlanId,(*NewIds)[Ordinal]->AsString());
+        const auto Executions=Object(State,TEXT("executions"));if(Executions)for(const auto& Entry:Executions->Values){
+            const auto Execution=Entry.Value->AsObject();if(Field(Execution,TEXT("plan_id"))!=InPlanId)continue;
+            const FString Status=Field(Execution,TEXT("state"));
+            if(Status!=TEXT("COMPLETED") && Status!=TEXT("ABORTED") && Status!=TEXT("CANCELLED") && Status!=TEXT("FAILED")){
+                ErrorCode=TEXT("PLAN_EXECUTING");ExecutionErrorDetails=FText::GetEmpty();Refresh();return;
+            }
+        }
+        SelectMission(InPlanId,InMissionId,[this,InPlanId,InMissionId]{
+            BeginConfiguration(InPlanId,[this,InPlanId,InMissionId]{
+                const auto Current=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),InPlanId);
+                if(!Current){ErrorCode=TEXT("PLAN_NOT_FOUND");Refresh();return;}
+                auto Reopen=MakeShared<FJsonObject>();Reopen->SetStringField(TEXT("action"),TEXT("reopen_plan"));Reopen->SetStringField(TEXT("plan_id"),InPlanId);
+                Reopen->SetNumberField(TEXT("expected_content_revision"),Current->GetNumberField(TEXT("content_revision")));
+                Submit(Reopen,[this,InPlanId,InMissionId]{
+                    if(PlanId!=InPlanId || MissionId!=InMissionId){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
+                    CurrentStep=1;bExecutionView=false;ExecutionIntent.Empty();Refresh();if(WorkspaceScroll)WorkspaceScroll->ScrollWidgetIntoView(TaskPage,false);
                 });
             });
-        },true);return;
+        });return;
     }
     SelectMission(InPlanId,InMissionId,[this,InPlanId]{
         auto Edit=[this,InPlanId]{
@@ -171,6 +175,7 @@ void USecurityPlanWorkspaceWidget::SaveConfiguration(TFunction<void()> Continue)
     ErrorCode.Empty();ConfigurationSaveQueue.Empty();
     const auto State=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();
     const auto Plan=Find(State,TEXT("plans"),PlanId),Mission=Find(State,TEXT("missions"),MissionId);
+    if(!bCreating && !Plan){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
     auto Request=[&](const TCHAR* Action){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),Action);R->SetStringField(TEXT("plan_id"),PlanId);R->SetStringField(TEXT("mission_id"),MissionId);return R;};
     const FString Name=PlanName->GetText().ToString();
     if(Name.TrimStartAndEnd().IsEmpty()){ErrorCode=TEXT("INVALID_NAME");Refresh();return;}
@@ -216,13 +221,13 @@ void USecurityPlanWorkspaceWidget::RefreshConfiguration() {
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const bool Active=IsConfiguring(),Owner=CanEditConfiguration();
     const auto Plan=Find(Sync->GetPlans(),TEXT("plans"),PlanId);
     const bool Deployed=!bCreating && Field(Plan,TEXT("status"))==TEXT("DEPLOYED");
-    ConfigurationStatus->SetText(T(Deployed?TEXT("Configuration.DeployedReadOnly"):TEXT("Configuration.ReadOnly")));
+    ConfigurationStatus->SetText(T(Deployed?TEXT("Plan.EditDeployedHint"):TEXT("Configuration.ReadOnly")));
     // The shell keeps the current plan/stage and Finish action visible across pages.
     ConfigurationStatus->SetVisibility(!Active && !bList?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     ConfigurationGuard->SetVisibility(bConfigurationGuard?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     const bool Editable=Owner && !Deployed && !bPending && !bConfigurationGuard;
-    Workspace->SetIsEnabled(!bConfigurationGuard);
-    ListPage->SetIsEnabled(!bConfigurationGuard);
+    Workspace->SetIsEnabled(!bConfigurationGuard && PendingDeletePlan.IsEmpty());
+    ListPage->SetIsEnabled(!bConfigurationGuard && PendingDeletePlan.IsEmpty());
     for(auto* Input:{PlanName.Get(),Description.Get(),MissionName.Get(),SpacingInput.Get()})Input->SetIsReadOnly(!Editable);
     AssignmentList->SetIsEnabled(Editable);MissionList->SetIsEnabled(!bPending && !bConfigurationGuard);
     const TSet<FName> EditingActions={TEXT("create_plan"),TEXT("update_plan"),TEXT("add_mission"),TEXT("rename_mission"),TEXT("delete_mission"),TEXT("assign"),TEXT("assign_group"),TEXT("unassign"),TEXT("clear_unavailable"),TEXT("request_map_route_edit"),TEXT("basic_step"),TEXT("task_step"),TEXT("next_task"),TEXT("confirm_deployment")};

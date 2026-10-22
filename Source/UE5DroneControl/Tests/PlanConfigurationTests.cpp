@@ -25,6 +25,10 @@
 #include "Serialization/JsonSerializer.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "Engine/GameViewportClient.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Layout/WidgetPath.h"
+#include "Widgets/SWindow.h"
 
 using namespace PlanUI;
 
@@ -49,6 +53,22 @@ UCommandActionButton* ButtonCaption(UUserWidget* Widget,const FText& Caption) {
         if(Label && Label->GetText().ToString()==Caption.ToString())return Button;
     }
     return nullptr;
+}
+bool EffectiveVisibility(UWidget* Widget) {
+    if(!Widget)return false;
+    for(auto* Ancestor=Widget;Ancestor;Ancestor=Ancestor->GetParent())if(!Ancestor->IsVisible())return false;
+    return true;
+}
+bool SlateReachesControl(UWidget* Widget) {
+    if(!EffectiveVisibility(Widget) || !Widget->GetIsEnabled())return false;
+    auto* Client=Widget->GetWorld()?Widget->GetWorld()->GetGameViewport():nullptr;
+    const auto Window=Client?Client->GetWindow():nullptr;const auto Cached=Widget->GetCachedWidget();
+    const auto& Geometry=Widget->GetCachedGeometry();
+    if(!Window || !Cached || Geometry.GetLocalSize().X<1 || Geometry.GetLocalSize().Y<1)return false;
+    const TArray<TSharedRef<SWindow>> Windows{Window.ToSharedRef()};
+    const auto Path=FSlateApplication::Get().LocateWindowUnderMouse(Geometry.LocalToAbsolute(Geometry.GetLocalSize()*.5),Windows);
+    if(Path.IsValid())for(int32 Index=0;Index<Path.Widgets.Num();++Index)if(Path.Widgets[Index].Widget==Cached)return true;
+    return false;
 }
 
 // This peer is an actual registered/subscribed Command client on the isolated
@@ -249,8 +269,9 @@ class FPlanConfigurationMapControls : public IAutomationLatentCommand {
     FAutomationTestBase* Test;
     TSharedRef<FConfigurationCommandPeer> Peer=MakeShared<FConfigurationCommandPeer>();
     TSharedRef<FMoveReply> MoveReply=MakeShared<FMoveReply>();
-    double Started=0;
+    double Started=0,Next=0;
     int32 Step=0;
+    bool bMonitorOpened=false;
     FString GroupId,VideoBefore;
 public:
     explicit FPlanConfigurationMapControls(FAutomationTestBase* InTest):Test(InTest){}
@@ -259,6 +280,7 @@ public:
         if(Started==0)Started=FPlatformTime::Seconds();Peer->Tick();
         if(FPlatformTime::Seconds()-Started>100){Test->AddError(FString::Printf(TEXT("Map configuration controls timed out at step %d"),Step));return true;}
         if(!Peer->Failure.IsEmpty()){Test->AddError(Peer->Failure);return true;}
+        if(FPlatformTime::Seconds()<Next)return false;
         auto* World=ConfigurationWorld();if(!World)return false;auto* Sync=World->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();if(!Sync->IsHydrated())return false;
         auto* PC=Cast<ADroneOpsPlayerController>(World->GetFirstPlayerController());auto* Manager=PC?PC->GetCommandScreenManager():nullptr;
         auto* Shell=Manager?Manager->GetMapShell():nullptr;auto* Fleet=Shell?Shell->GetFleetInteraction():nullptr;
@@ -289,6 +311,8 @@ public:
             if(!MoveReply->Done)return false;if(!Test->TestTrue(TEXT("Map group fixture has actual Backend ACK"),PlanUI::Error(MoveReply->Reply).IsEmpty()))return true;
             const auto Execution=Find(State,TEXT("executions"),Field(MoveReply->Reply,TEXT("execution_id")));if(!Execution)return false;
             if(Field(Execution,TEXT("state"))!=TEXT("EXECUTING"))return false;GroupId=Field(Execution,TEXT("group_id"));
+            Test->TestTrue(TEXT("Existing group can explicitly open its monitor"),Fleet->ShowExecutionControls());
+            Test->TestTrue(TEXT("Operator can hide the existing execution monitor before configuration"),Fleet->CancelMode());
             Fleet->SetMode(EMapFleetMode::BoxSelect);Test->TestEqual(TEXT("selection mode can be armed before configuration"),Fleet->GetMode(),EMapFleetMode::BoxSelect);
             Peer->Configuration(TEXT("begin_configuration"),Sync->GetPlans());++Step;return false;
         }
@@ -303,8 +327,19 @@ public:
             auto* NewMove=ButtonCaption(Shell,ProductText::Source(TEXT("Fleet move")));
             if(Test->TestNotNull(TEXT("Map fleet toolbar button exists"),NewMove))Test->TestEqual(TEXT("new fleet move button is hidden during configuration"),NewMove->GetVisibility(),ESlateVisibility::Collapsed);
             auto* Pause=ButtonCaption(Fleet,T(TEXT("Execution.Pause")));
-            if(Test->TestNotNull(TEXT("existing group's pause control exists"),Pause))Test->TestTrue(TEXT("pause remains visible and enabled during configuration"),Pause->IsVisible() && Pause->GetIsEnabled());
-            DispatchWidgetAction(Test,Fleet,TEXT("Action"),TEXT("pause"));++Step;return false;
+            if(!Test->TestNotNull(TEXT("existing group's pause control exists"),Pause))return true;
+            if(!bMonitorOpened){
+                Test->TestFalse(TEXT("Configuration does not automatically reopen the hidden fleet card"),EffectiveVisibility(Pause));
+                auto* Monitor=Cast<UCommandActionButton>(Shell->WidgetTree->FindWidget(TEXT("execution_controls")));
+                if(!Test->TestTrue(TEXT("Explicit execution-control entry is actually hit-testable during configuration"),SlateReachesControl(Monitor)))return true;
+                Monitor->OnAction.Broadcast(TEXT("execution_controls"),0);bMonitorOpened=true;Next=FPlatformTime::Seconds()+.3;return false;
+            }
+            Test->TestEqual(TEXT("Explicit execution controls stay in monitor-only Browse mode"),Fleet->GetMode(),EMapFleetMode::Browse);
+            Test->TestTrue(TEXT("Monitor entry never stages a destination"),Fleet->GetPreviewMembers().IsEmpty());
+            if(!Test->TestTrue(TEXT("Pause is visible through every parent and reachable on the rendered Slate path"),SlateReachesControl(Pause)))return true;
+            auto* Abort=ButtonCaption(Fleet,T(TEXT("Execution.Abort")));
+            if(!Test->TestTrue(TEXT("Abort also remains actually reachable during configuration"),SlateReachesControl(Abort)))return true;
+            Pause->OnAction.Broadcast(TEXT("pause"),0);++Step;return false;
         }
         if(Step==5) {
             const auto Group=ExecutionControls::Find(State,GroupId);if(Group.State!=TEXT("PAUSED"))return false;

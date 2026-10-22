@@ -1,5 +1,6 @@
 #include "Shared/SecurityPlanWorkspaceWidget.h"
 #include "Shared/PlanWidgetSupport.h"
+#include "Shared/PlanConfiguration.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/VerticalBoxSlot.h"
@@ -117,6 +118,22 @@ void USecurityPlanWorkspaceWidget::BuildPlanPresentation()
     GuardSlot->SetHorizontalAlignment(HAlign_Center);GuardSlot->SetVerticalAlignment(VAlign_Center);
     for(auto* Child : ConfigurationGuard->GetAllChildren())
         Cast<UVerticalBoxSlot>(Child->Slot)->SetPadding(FMargin(0,8));
+
+    DeletePlanLayer=MakeLayer();
+    auto* DeleteCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(DeleteCard,FigmaUI::Surface,FigmaUI::Outline,12,FMargin(24));
+    auto* DeleteSize=WidgetTree->ConstructWidget<USizeBox>();DeleteSize->SetWidthOverride(590);DeleteSize->SetContent(DeleteCard);
+    auto* DeleteSlot=DeletePlanLayer->AddChildToOverlay(DeleteSize);DeleteSlot->SetHorizontalAlignment(HAlign_Center);DeleteSlot->SetVerticalAlignment(VAlign_Center);
+    DeletePlanContent=WidgetTree->ConstructWidget<UVerticalBox>();DeleteCard->SetContent(DeletePlanContent);
+    FigmaUI::Text(Label(WidgetTree,DeletePlanContent,T(TEXT("Plan.Delete.Action")),28),28,FigmaUI::PrimaryText,true);
+    DeletePlanPrompt=Label(WidgetTree,DeletePlanContent,FText::GetEmpty(),16);FigmaUI::Text(DeletePlanPrompt,16,FigmaUI::Muted);DeletePlanPrompt->SetAutoWrapText(true);
+    Cast<UVerticalBoxSlot>(DeletePlanPrompt->Slot)->SetPadding(FMargin(0,16));
+    DeletePlanNameInput=WidgetTree->ConstructWidget<UEditableTextBox>();FigmaUI::Input(DeletePlanNameInput);DeletePlanNameInput->SetHintText(T(TEXT("Plan.Delete.NameHint")));
+    DeletePlanNameInput->OnTextChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::DeleteConfirmationChanged);DeletePlanContent->AddChild(DeletePlanNameInput);
+    auto* DeleteActions=WidgetTree->ConstructWidget<UHorizontalBox>();DeletePlanContent->AddChildToVerticalBox(DeleteActions)->SetPadding(FMargin(0,24,0,0));
+    for(const TCHAR* Key:{TEXT("cancel_delete"),TEXT("refresh_delete"),TEXT("confirm_delete")}){
+        auto* ActionButton=Actions[Key].Get();ActionButton->RemoveFromParent();DeleteActions->AddChildToHorizontalBox(ActionButton)->SetPadding(FMargin(0,0,10,0));
+    }
+    FigmaUI::Text(Cast<UTextBlock>(Actions[TEXT("confirm_delete")]->GetContent()),14,FLinearColor(FColor(231,102,110)),true);
 }
 
 void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
@@ -126,6 +143,14 @@ void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
     NewPlanLayer->SetVisibility(Creating ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
     NewPlanDialog->SetVisibility(Creating ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
     ConfigurationGuardLayer->SetVisibility(bConfigurationGuard ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    const bool Deleting=!PendingDeletePlan.IsEmpty();
+    DeletePlanLayer->SetVisibility(Deleting?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    DeletePlanPrompt->SetText(FText::Format(T(TEXT("Plan.Delete.Prompt")),User(PendingDeleteName)));
+    DeletePlanNameInput->SetIsReadOnly(bPending);
+    DeleteConfirmationChanged(DeletePlanNameInput->GetText());
+    Actions[TEXT("cancel_delete")]->SetIsEnabled(!bPending);
+    Actions[TEXT("refresh_delete")]->SetVisibility(Deleting && !ErrorCode.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    Actions[TEXT("refresh_delete")]->SetIsEnabled(!bPending);
     NewPlanDialog->SetIsEnabled(!bConfigurationGuard);
     EmptyPlanState->SetVisibility(PlanIds.IsEmpty() && !Creating ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
     if(Creating && BasicPage->GetParent()!=NewPlanContent)
@@ -136,7 +161,7 @@ void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
     {
         BasicPage->RemoveFromParent();BasicPageHost->AddChild(BasicPage);
     }
-    UVerticalBox* ResultParent=bConfigurationGuard?ConfigurationGuard.Get():Creating?NewPlanContent.Get():Content.Get();
+    UVerticalBox* ResultParent=Deleting?DeletePlanContent.Get():bConfigurationGuard?ConfigurationGuard.Get():Creating?NewPlanContent.Get():Content.Get();
     if(Result->GetParent()!=ResultParent){Result->RemoveFromParent();ResultParent->AddChildToVerticalBox(Result)->SetPadding(FMargin(0,8,0,0));}
     FigmaUI::Text(Result,14,ErrorCode.IsEmpty()?FigmaUI::Muted:FLinearColor(FColor(231,102,110)));
     if(!DescriptionEditor->GetText().EqualTo(Description->GetText()))DescriptionEditor->SetText(Description->GetText());
@@ -161,4 +186,33 @@ void USecurityPlanWorkspaceWidget::PlanNameChanged(const FText&)
 void USecurityPlanWorkspaceWidget::DescriptionChanged(const FText& Text)
 {
     if(Description && !Description->GetText().EqualTo(Text))Description->SetText(Text);
+}
+
+void USecurityPlanWorkspaceWidget::RequestPlanDeletion(const FString& Id)
+{
+    if(IsMissionNavigationBlocked() || Id.IsEmpty())return;
+    auto Open=[this,Id]{PendingDeletePlan=Id;RefreshDeleteConfirmation();};
+    // Reuse the save/discard guard and exact owned lease release before deleting.
+    // A different client's lease remains authoritative and is rejected by Backend.
+    if(CanEditConfiguration())RequestFinishConfiguration(Open);
+    else GuardConfigurationChange(Open);
+}
+
+void USecurityPlanWorkspaceWidget::RefreshDeleteConfirmation()
+{
+    if(bPending || PendingDeletePlan.IsEmpty())return;
+    const auto Plan=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PendingDeletePlan);
+    if(!Plan){ErrorCode=TEXT("PLAN_NOT_FOUND");Refresh();return;}
+    // Freeze the reviewed identity and content revision. Refresh is an explicit
+    // action that clears typed consent, never an automatic snapshot replacement.
+    PendingDeleteName=Field(Plan,TEXT("name"));PendingDeleteRevision=Plan->GetNumberField(TEXT("content_revision"));
+    DeletePlanNameInput->SetText(FText::GetEmpty());ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();Refresh();
+}
+
+void USecurityPlanWorkspaceWidget::DeleteConfirmationChanged(const FText& Text)
+{
+    if(!DeletePlanNameInput || !Actions.Contains(TEXT("confirm_delete")))return;
+    Actions[TEXT("confirm_delete")]->SetIsEnabled(!bPending && !PendingDeletePlan.IsEmpty() && !PendingDeleteName.IsEmpty()
+        && Text.ToString()==PendingDeleteName
+        && GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady());
 }

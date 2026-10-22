@@ -1,0 +1,166 @@
+Note: Google Test filter = PlanLifecycle.*:P4Workflow.*:ConfigurationWorkflow.*:P52*:*Reservation*
+[==========] Running 68 tests from 6 test suites.
+[----------] Global test environment set-up.
+[----------] 13 tests from P4Workflow
+[ RUN      ] P4Workflow.RevisionValidationReviewInvalidation
+[       OK ] P4Workflow.RevisionValidationReviewInvalidation (1 ms)
+[ RUN      ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable
+[       OK ] P4Workflow.ReviewRequiredAndDeploymentCopyImmutable (1 ms)
+[ RUN      ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains
+[       OK ] P4Workflow.SessionBlocksReviewDeployAndSaveFailureRetains (1 ms)
+[ RUN      ] P4Workflow.OwnerRevisionAndDiscard
+[       OK ] P4Workflow.OwnerRevisionAndDiscard (0 ms)
+[ RUN      ] P4Workflow.OwnerDiscardSurvivesHeartbeatButSaveStillRequiresCurrentVersion
+[       OK ] P4Workflow.OwnerDiscardSurvivesHeartbeatButSaveStillRequiresCurrentVersion (0 ms)
+[ RUN      ] P4Workflow.HeartbeatStaleDiscardCannotCrossLeaseIdentityOrUseFutureVersion
+[       OK ] P4Workflow.HeartbeatStaleDiscardCannotCrossLeaseIdentityOrUseFutureVersion (1 ms)
+[ RUN      ] P4Workflow.HeartbeatStaleDiscardStillRejectsExpiredLease
+[       OK ] P4Workflow.HeartbeatStaleDiscardStillRejectsExpiredLease (15 ms)
+[ RUN      ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation
+[       OK ] P4Workflow.IndependentViewsNoopValidationAndBusinessIsolation (0 ms)
+[ RUN      ] P4Workflow.PublisherFailureRetainsCompleteDeploymentState
+[       OK ] P4Workflow.PublisherFailureRetainsCompleteDeploymentState (0 ms)
+[ RUN      ] P4Workflow.WorkflowCreateHasAtomicDefaultTask
+[       OK ] P4Workflow.WorkflowCreateHasAtomicDefaultTask (0 ms)
+[ RUN      ] P4Workflow.WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute
+[       OK ] P4Workflow.WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute (0 ms)
+[ RUN      ] P4Workflow.WorkflowFinishOwnerAndInvalidSaveAreAtomic
+[       OK ] P4Workflow.WorkflowFinishOwnerAndInvalidSaveAreAtomic (0 ms)
+[ RUN      ] P4Workflow.WorkflowDraftCopyAndDeleteDoNotChangeOriginal
+[       OK ] P4Workflow.WorkflowDraftCopyAndDeleteDoNotChangeOriginal (0 ms)
+[----------] 13 tests from P4Workflow (24 ms total)
+
+[----------] 8 tests from PlanLifecycle
+[ RUN      ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity
+[       OK ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity (1 ms)
+[ RUN      ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision
+[       OK ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision (1 ms)
+[ RUN      ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision
+[       OK ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision (0 ms)
+[ RUN      ] PlanLifecycle.DeleteBlocksConfigurationAndRouteEditAtomically
+[       OK ] PlanLifecycle.DeleteBlocksConfigurationAndRouteEditAtomically (0 ms)
+[ RUN      ] PlanLifecycle.DeleteAndConfigurationRejectEveryNonterminalExecutionIncludingScheduled
+[       OK ] PlanLifecycle.DeleteAndConfigurationRejectEveryNonterminalExecutionIncludingScheduled (98 ms)
+[ RUN      ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment
+[       OK ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment (12 ms)
+[ RUN      ] PlanLifecycle.ConfirmedDeletionCannotTargetRenamedOrChangedContentAndRetryIsSafe
+[       OK ] PlanLifecycle.ConfirmedDeletionCannotTargetRenamedOrChangedContentAndRetryIsSafe (0 ms)
+[ RUN      ] PlanLifecycle.LifecyclePublisherFailureRollsBackArchiveAndCurrentState
+[       OK ] PlanLifecycle.LifecyclePublisherFailureRollsBackArchiveAndCurrentState (1 ms)
+[----------] 8 tests from PlanLifecycle (116 ms total)
+
+[----------] 27 tests from P52Execution
+[ RUN      ] P52Execution.MockHomeTelemetryIsStableAndDoesNotClaimHardware
+[       OK ] P52Execution.MockHomeTelemetryIsStableAndDoesNotClaimHardware (0 ms)
+[ RUN      ] P52Execution.MockTelemetryRestoresCompletedPositionInsteadOfHome
+[       OK ] P52Execution.MockTelemetryRestoresCompletedPositionInsteadOfHome (14 ms)
+[ RUN      ] P52Execution.MockTelemetryDoesNotMoveForFutureSchedule
+[       OK ] P52Execution.MockTelemetryDoesNotMoveForFutureSchedule (0 ms)
+[ RUN      ] P52Execution.MockTelemetryRejectsMissingInvalidAndRealAdapterPositions
+[       OK ] P52Execution.MockTelemetryRejectsMissingInvalidAndRealAdapterPositions (0 ms)
+[ RUN      ] P52Execution.SingleUavMoveUsesConfirmedPositionAndCompletes
+[       OK ] P52Execution.SingleUavMoveUsesConfirmedPositionAndCompletes (0 ms)
+[ RUN      ] P52Execution.SingleUavMoveRetainsOccupancyAndDomainGuards
+[       OK ] P52Execution.SingleUavMoveRetainsOccupancyAndDomainGuards (0 ms)
+[ RUN      ] P52Execution.SingleUavMoveRetainsPlanReservation
+[       OK ] P52Execution.SingleUavMoveRetainsPlanReservation (1 ms)
+[ RUN      ] P52Execution.CreateAndExplicitStartStateMachine
+[       OK ] P52Execution.CreateAndExplicitStartStateMachine (0 ms)
+[ RUN      ] P52Execution.PauseResumePreservesPosition
+[       OK ] P52Execution.PauseResumePreservesPosition (1 ms)
+[ RUN      ] P52Execution.Completion
+[       OK ] P52Execution.Completion (4 ms)
+[ RUN      ] P52Execution.AbortStops
+[       OK ] P52Execution.AbortStops (1 ms)
+[ RUN      ] P52Execution.ReturnToExplicitHome
+[       OK ] P52Execution.ReturnToExplicitHome (1 ms)
+[ RUN      ] P52Execution.DuplicateAndConflictingStarts
+[       OK ] P52Execution.DuplicateAndConflictingStarts (0 ms)
+[ RUN      ] P52Execution.ImmutableDeploymentRoute
+[       OK ] P52Execution.ImmutableDeploymentRoute (1 ms)
+[ RUN      ] P52Execution.MissingFixtureFailsWithReason
+[       OK ] P52Execution.MissingFixtureFailsWithReason (0 ms)
+[ RUN      ] P52Execution.StaleControlDoesNotMutate
+[       OK ] P52Execution.StaleControlDoesNotMutate (1 ms)
+[ RUN      ] P52Execution.ProgressDoesNotInvalidatePlanVersion
+[       OK ] P52Execution.ProgressDoesNotInvalidatePlanVersion (0 ms)
+[ RUN      ] P52Execution.ShutdownPausesAndResumesReturn
+[       OK ] P52Execution.ShutdownPausesAndResumesReturn (1 ms)
+[ RUN      ] P52Execution.DurableRestartRetainsPositionAndContinues
+[       OK ] P52Execution.DurableRestartRetainsPositionAndContinues (13 ms)
+[ RUN      ] P52Execution.PersistencePublisherFailureIsAtomic
+[       OK ] P52Execution.PersistencePublisherFailureIsAtomic (1 ms)
+[ RUN      ] P52Execution.ReturnCanPauseResumeAndAbort
+[       OK ] P52Execution.ReturnCanPauseResumeAndAbort (3 ms)
+[ RUN      ] P52Execution.PendingStartCanBeAbortedBeforeDispatch
+[       OK ] P52Execution.PendingStartCanBeAbortedBeforeDispatch (1 ms)
+[ RUN      ] P52Execution.StartupResetOrdersNumbersAndKeepsOfflineTelemetry
+[       OK ] P52Execution.StartupResetOrdersNumbersAndKeepsOfflineTelemetry (0 ms)
+[ RUN      ] P52Execution.StartupResetPreservesHistoryAndNewEpochMovementSurvivesReplay
+[       OK ] P52Execution.StartupResetPreservesHistoryAndNewEpochMovementSurvivesReplay (6 ms)
+[ RUN      ] P52Execution.StartupResetDurableBackupRestartAndPublishRollback
+[       OK ] P52Execution.StartupResetDurableBackupRestartAndPublishRollback (31 ms)
+[ RUN      ] P52Execution.StartupResetRejectsInvalidFormationAndRealAdapterAtomically
+[       OK ] P52Execution.StartupResetRejectsInvalidFormationAndRealAdapterAtomically (0 ms)
+[ RUN      ] P52Execution.StartupResetDoesNotRelabelLatestRealExecution
+[       OK ] P52Execution.StartupResetDoesNotRelabelLatestRealExecution (15 ms)
+[----------] 27 tests from P52Execution (108 ms total)
+
+[----------] 1 test from P54Mission
+[ RUN      ] P54Mission.StartupResetAbortsWholeActiveGroupAndReleasesReservations
+[       OK ] P54Mission.StartupResetAbortsWholeActiveGroupAndReleasesReservations (2 ms)
+[----------] 1 test from P54Mission (2 ms total)
+
+[----------] 9 tests from P55Reservation
+[ RUN      ] P55Reservation.Reservation01AssignAndPendingStart
+[       OK ] P55Reservation.Reservation01AssignAndPendingStart (1 ms)
+[ RUN      ] P55Reservation.Reservation02OtherAircraftAndSamePlan
+[       OK ] P55Reservation.Reservation02OtherAircraftAndSamePlan (0 ms)
+[ RUN      ] P55Reservation.Reservation03CompletionReleases
+[       OK ] P55Reservation.Reservation03CompletionReleases (7 ms)
+[ RUN      ] P55Reservation.Reservation04AbortAndFailureRelease
+[       OK ] P55Reservation.Reservation04AbortAndFailureRelease (2 ms)
+[ RUN      ] P55Reservation.Reservation05PausedStillLocked
+[       OK ] P55Reservation.Reservation05PausedStillLocked (1 ms)
+[ RUN      ] P55Reservation.Reservation06ExistingDraftRace
+[       OK ] P55Reservation.Reservation06ExistingDraftRace (1 ms)
+[ RUN      ] P55Reservation.Reservation07ConcurrentStarts
+[       OK ] P55Reservation.Reservation07ConcurrentStarts (2 ms)
+[ RUN      ] P55Reservation.Reservation08RestartRebuild
+[       OK ] P55Reservation.Reservation08RestartRebuild (10 ms)
+[ RUN      ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve
+[       OK ] P55Reservation.ReadyDeployedScheduledAndCancelledDoNotReserve (1 ms)
+[----------] 9 tests from P55Reservation (31 ms total)
+
+[----------] 10 tests from ConfigurationWorkflow
+[ RUN      ] ConfigurationWorkflow.NewConfigurationBindsCreatedPlanAndIsExclusive
+[       OK ] ConfigurationWorkflow.NewConfigurationBindsCreatedPlanAndIsExclusive (0 ms)
+[ RUN      ] ConfigurationWorkflow.CopyBindsNewDraftWithoutChangingDeployedSource
+[       OK ] ConfigurationWorkflow.CopyBindsNewDraftWithoutChangingDeployedSource (0 ms)
+[ RUN      ] ConfigurationWorkflow.SelectedPlanAndRouteLeaseAreProtected
+[       OK ] ConfigurationWorkflow.SelectedPlanAndRouteLeaseAreProtected (0 ms)
+[ RUN      ] ConfigurationWorkflow.NewMovementBlockedButExistingEmergencyControlsRemain
+[       OK ] ConfigurationWorkflow.NewMovementBlockedButExistingEmergencyControlsRemain (5 ms)
+[ RUN      ] ConfigurationWorkflow.FailedDeployRetainsConfigurationSuccessfulDeployEndsIt
+[       OK ] ConfigurationWorkflow.FailedDeployRetainsConfigurationSuccessfulDeployEndsIt (0 ms)
+[ RUN      ] ConfigurationWorkflow.OwnerHeartbeatRenewsLeaseAndRestartClearsOwnership
+[       OK ] ConfigurationWorkflow.OwnerHeartbeatRenewsLeaseAndRestartClearsOwnership (23 ms)
+[ RUN      ] ConfigurationWorkflow.HeartbeatStaleExitSucceedsButCannotReleaseReacquiredLease
+[       OK ] ConfigurationWorkflow.HeartbeatStaleExitSucceedsButCannotReleaseReacquiredLease (0 ms)
+[ RUN      ] ConfigurationWorkflow.HeartbeatStaleExitRequiresSamePlanAndFinishedRouteLease
+[       OK ] ConfigurationWorkflow.HeartbeatStaleExitRequiresSamePlanAndFinishedRouteLease (0 ms)
+[ RUN      ] ConfigurationWorkflow.ExpiredOwnerDoesNotBlockMovementAndHeartbeatPublishesRelease
+[       OK ] ConfigurationWorkflow.ExpiredOwnerDoesNotBlockMovementAndHeartbeatPublishesRelease (20031 ms)
+[ RUN      ] ConfigurationWorkflow.DueScheduleWaitsForConfigurationThenRevalidates
+unknown file: error: C++ exception with description "Finish or cancel this plan's active or scheduled executions first" thrown in the test body.
+
+[  FAILED  ] ConfigurationWorkflow.DueScheduleWaitsForConfigurationThenRevalidates (12 ms)
+[----------] 10 tests from ConfigurationWorkflow (20076 ms total)
+
+[----------] Global test environment tear-down
+[==========] 68 tests from 6 test suites ran. (20360 ms total)
+[  PASSED  ] 67 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] ConfigurationWorkflow.DueScheduleWaitsForConfigurationThenRevalidates
+
+ 1 FAILED TEST

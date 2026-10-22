@@ -1,0 +1,763 @@
+{
+  "tests": 68,
+  "failures": 1,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-10-22T17:46:36Z",
+  "time": "20.36s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "P4Workflow",
+      "tests": 13,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:46:36Z",
+      "time": "0.024s",
+      "testsuite": [
+        {
+          "name": "RevisionValidationReviewInvalidation",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 23,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "ReviewRequiredAndDeploymentCopyImmutable",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 30,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "SessionBlocksReviewDeployAndSaveFailureRetains",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "OwnerRevisionAndDiscard",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "OwnerDiscardSurvivesHeartbeatButSaveStillRequiresCurrentVersion",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 57,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "HeartbeatStaleDiscardCannotCrossLeaseIdentityOrUseFutureVersion",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 67,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "HeartbeatStaleDiscardStillRejectsExpiredLease",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 77,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.015s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "IndependentViewsNoopValidationAndBusinessIsolation",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 88,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "PublisherFailureRetainsCompleteDeploymentState",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 98,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowCreateHasAtomicDefaultTask",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 115,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowSaveRetainsLeaseAndFinishRequiresCleanValidRoute",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 123,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowFinishOwnerAndInvalidSaveAreAtomic",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 138,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        },
+        {
+          "name": "WorkflowDraftCopyAndDeleteDoNotChangeOriginal",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 145,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P4Workflow"
+        }
+      ]
+    },
+    {
+      "name": "PlanLifecycle",
+      "tests": 8,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:46:36Z",
+      "time": "0.116s",
+      "testsuite": [
+        {
+          "name": "EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 169,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "ReopenRequiresOwnedLeaseAndCurrentRevision",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 184,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "DeleteReadyPlanRequiresExactNameAndRevision",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 190,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "DeleteBlocksConfigurationAndRouteEditAtomically",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 198,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "DeleteAndConfigurationRejectEveryNonterminalExecutionIncludingScheduled",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 203,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.098s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "DeletePreservesRealTerminalExecutionAndImmutableDeployment",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 222,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.012s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "ConfirmedDeletionCannotTargetRenamedOrChangedContentAndRetryIsSafe",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 230,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "PlanLifecycle"
+        },
+        {
+          "name": "LifecyclePublisherFailureRollsBackArchiveAndCurrentState",
+          "file": "Backend\\tests\\test_p4_workflow.cpp",
+          "line": 238,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "PlanLifecycle"
+        }
+      ]
+    },
+    {
+      "name": "P52Execution",
+      "tests": 27,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:46:36Z",
+      "time": "0.108s",
+      "testsuite": [
+        {
+          "name": "MockHomeTelemetryIsStableAndDoesNotClaimHardware",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 36,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "MockTelemetryRestoresCompletedPositionInsteadOfHome",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 52,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.014s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "MockTelemetryDoesNotMoveForFutureSchedule",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "MockTelemetryRejectsMissingInvalidAndRealAdapterPositions",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 69,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "SingleUavMoveUsesConfirmedPositionAndCompletes",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 80,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "SingleUavMoveRetainsOccupancyAndDomainGuards",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 92,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "SingleUavMoveRetainsPlanReservation",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 101,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "CreateAndExplicitStartStateMachine",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 106,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "PauseResumePreservesPosition",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 107,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "Completion",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 108,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.004s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "AbortStops",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 109,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ReturnToExplicitHome",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 110,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "DuplicateAndConflictingStarts",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 111,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ImmutableDeploymentRoute",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 112,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "MissingFixtureFailsWithReason",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 113,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StaleControlDoesNotMutate",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 114,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ProgressDoesNotInvalidatePlanVersion",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 115,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ShutdownPausesAndResumesReturn",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 116,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "DurableRestartRetainsPositionAndContinues",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 117,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.013s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "PersistencePublisherFailureIsAtomic",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 118,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "ReturnCanPauseResumeAndAbort",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 515,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.003s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "PendingStartCanBeAbortedBeforeDispatch",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 520,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StartupResetOrdersNumbersAndKeepsOfflineTelemetry",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 530,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StartupResetPreservesHistoryAndNewEpochMovementSurvivesReplay",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 551,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.006s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StartupResetDurableBackupRestartAndPublishRollback",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 593,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.031s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StartupResetRejectsInvalidFormationAndRealAdapterAtomically",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 616,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P52Execution"
+        },
+        {
+          "name": "StartupResetDoesNotRelabelLatestRealExecution",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 628,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.015s",
+          "classname": "P52Execution"
+        }
+      ]
+    },
+    {
+      "name": "P54Mission",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:46:36Z",
+      "time": "0.002s",
+      "testsuite": [
+        {
+          "name": "StartupResetAbortsWholeActiveGroupAndReleasesReservations",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 568,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.002s",
+          "classname": "P54Mission"
+        }
+      ]
+    },
+    {
+      "name": "P55Reservation",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:46:36Z",
+      "time": "0.031s",
+      "testsuite": [
+        {
+          "name": "Reservation01AssignAndPendingStart",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 350,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation02OtherAircraftAndSamePlan",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 354,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation03CompletionReleases",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 358,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.007s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation04AbortAndFailureRelease",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 362,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.002s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation05PausedStillLocked",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 366,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation06ExistingDraftRace",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 369,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation07ConcurrentStarts",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 372,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.002s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "Reservation08RestartRebuild",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 383,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.01s",
+          "classname": "P55Reservation"
+        },
+        {
+          "name": "ReadyDeployedScheduledAndCancelledDoNotReserve",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 390,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.001s",
+          "classname": "P55Reservation"
+        }
+      ]
+    },
+    {
+      "name": "ConfigurationWorkflow",
+      "tests": 10,
+      "failures": 1,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-10-22T17:46:36Z",
+      "time": "20.076s",
+      "testsuite": [
+        {
+          "name": "NewConfigurationBindsCreatedPlanAndIsExclusive",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 404,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "CopyBindsNewDraftWithoutChangingDeployedSource",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 414,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "SelectedPlanAndRouteLeaseAreProtected",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 420,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "NewMovementBlockedButExistingEmergencyControlsRemain",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 434,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.005s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "FailedDeployRetainsConfigurationSuccessfulDeployEndsIt",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 449,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "OwnerHeartbeatRenewsLeaseAndRestartClearsOwnership",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 457,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0.023s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "HeartbeatStaleExitSucceedsButCannotReleaseReacquiredLease",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 467,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "HeartbeatStaleExitRequiresSamePlanAndFinishedRouteLease",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 477,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "0s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "ExpiredOwnerDoesNotBlockMovementAndHeartbeatPublishesRelease",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 484,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:36Z",
+          "time": "20.031s",
+          "classname": "ConfigurationWorkflow"
+        },
+        {
+          "name": "DueScheduleWaitsForConfigurationThenRevalidates",
+          "file": "Backend\\tests\\test_p52_execution.cpp",
+          "line": 489,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-10-22T17:46:56Z",
+          "time": "0.012s",
+          "classname": "ConfigurationWorkflow",
+          "failures": [
+            {
+              "failure": "unknown file\nC++ exception with description \"Finish or cancel this plan's active or scheduled executions first\" thrown in the test body.\n",
+              "type": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

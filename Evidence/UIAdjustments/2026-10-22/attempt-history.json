@@ -1,0 +1,18 @@
+{
+  "notes": {
+    "model_policy_first_runner": "verification-1792663488858891000: 2 discovered, 2 completed, 2 passed, but strict runner rejects non-dot lexical prefix ModelIcon; rerun exact test names, do not relax verifier",
+    "mission_actions_first_failure": "verification-1792662867541676000: SetText does not emulate user OnTextChanged, repeated capture loop reused stale button state; corrected input simulation and separate wait state, all safeguards retained",
+    "builds": "Two compile API/iteration compatibility failures retained before successful final build"
+  },
+  "failed_attempts_preserved": [
+    "baseline-tests.json: expected preimplementation lifecycle failures",
+    "schedule-fixture-failure.json: fixture adapted to new deployed-active gate while retaining schedule assertions",
+    "api-1792662414345730400: millisecond scheduling format rejected; corrected fixture format",
+    "api-1792662685335735800: test-only debug alert unavailable; enabled debug only in owned test config",
+    "build-1792662371681045600: wrong UE AbsoluteToViewport class",
+    "build-1792663276004955600: FArrangedChildren lacks range iterator",
+    "verification-1792662867541676000: wrong-name UI assertion failed due SetText test event simulation",
+    "verification-1792663488858891000: 2 model tests passed but strict dotted-prefix runner rejected lexical prefix"
+  ],
+  "current_acceptance": "See validation.json; no assertions were removed to claim pass."
+}

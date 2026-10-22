@@ -3,6 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Map/PlanRouteVisualSet.h"
 #include "Map/FleetSelection.h"
+#include "Map/MapDronePresentation.h"
 #include "MapFleetInteractionWidget.generated.h"
 
 UENUM()
@@ -15,6 +16,7 @@ class UE5DRONECONTROL_API UMapFleetInteractionWidget : public UUserWidget {
     friend class FFleetMapWorkflow;
     friend class FFleetTerrainWorkflow;
     friend class FMapStartupVisibility;
+    friend class FFleetPanelVisibility;
 public:
     void SetMode(EMapFleetMode Value);
     EMapFleetMode GetMode() const { return Mode; }
@@ -25,22 +27,29 @@ public:
     bool PickDestinationAtScreen(const FVector2D& Screen);
     void CancelGesture();
     bool CancelMode();
+    bool CanShowExecutionControls() const;
+    bool ShowExecutionControls();
     bool OwnsPrimaryInput() const { return Mode!=EMapFleetMode::Browse || bDragging; }
     bool IsDragging() const { return bDragging; }
     bool IsOverControls(const FVector2D& Screen) const;
     bool IsAvailable() const;
     FString GetManagedGroup() const { return ManagedGroup; }
     TArray<int32> GetPreviewMembers() const { return bHasTarget?TargetMembers:TArray<int32>(); }
+    // Presentation intent, not proof of rendering. Native QA also checks the
+    // returned actor's active meshes are visible and recently rendered.
+    AActor* GetDisplayedModelActor(int32 Id) const;
+    bool IsModelPresentation(int32 Id) const { return GetDisplayedModelActor(Id)!=nullptr; }
 protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeTick(const FGeometry&,float) override;
     virtual void NativeDestruct() override;
     virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
-    mutable TArray<int32> PaintedDroneIds;
+    mutable TArray<int32> PaintedDroneIds; // Only icons actually submitted by NativePaint.
     UPROPERTY() TObjectPtr<class UImage> MarkerIcon;
     UPROPERTY() TObjectPtr<class UImage> SelectionMarkerIcon;
     UPROPERTY() TObjectPtr<class UBorder> Panel;
+    UPROPERTY() TObjectPtr<class UTextBlock> PanelTitle;
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     UPROPERTY() TObjectPtr<class UTextBlock> TargetText;
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
@@ -64,6 +73,9 @@ private:
     FleetSelection::EOperation SelectionOperation=FleetSelection::EOperation::Replace;
     bool bDragging=false,bPointerValid=false,bPending=false,bHasTarget=false;
     bool bSelectionPending=false;
+    // The card follows explicit move intent, independently of selection mode,
+    // telemetry warnings or the currently selected execution's lifetime.
+    bool bPanelRequested=false;
     double SelectionRequestedAt=0;
     bool bUpdatingHeight=false,bHadMapMode=false,bWas3D=false;
     bool bAbortConfirm=false,bShowCoordinates=false;
@@ -75,9 +87,11 @@ private:
     FVector TargetGeographic=FVector::ZeroVector; // longitude, latitude, ellipsoid altitude
     TArray<int32> TargetMembers;
     int32 TargetPrimary=0;
-    FString ExecutionId,MessageKey,ManagedGroup,DismissedExecution,AbortGroup;
+    FString ExecutionId,MessageKey,ManagedGroup,AbortGroup;
     TMap<TWeakObjectPtr<class UWidgetComponent>,bool> SuppressedLabels;
-    TMap<TWeakObjectPtr<class UMeshComponent>,bool> SuppressedMeshes;
+    MapDronePresentation::FVisibilityOverride ModelVisibility;
+    TMap<int32,TWeakObjectPtr<AActor>> DisplayedModelActors;
+    TMap<int32,FBox2D> ModelScreenBounds;
     FText ErrorDetails;
     mutable FText CachedTerrainError;
     mutable double NextTerrainCheck=0;

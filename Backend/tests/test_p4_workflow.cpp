@@ -145,7 +145,103 @@ TEST_F(P4Workflow, WorkflowFinishOwnerAndInvalidSaveAreAtomic) {
 TEST_F(P4Workflow, WorkflowDraftCopyAndDeleteDoNotChangeOriginal) {
     const auto before=plan();const auto result=send({{"action","copy_plan"},{"allow_draft",true}});
     const auto id=SecurityPlanStore::str(result,"plan_id");EXPECT_NE(id,p);EXPECT_FALSE(SecurityPlanStore::str(result,"mission_id").empty());
-    EXPECT_EQ(before,plan());send({{"action","delete_plan"},{"plan_id",id}});EXPECT_EQ(before,plan());
+    const auto copied=store.snapshot().at("plans").as_object().at(id).as_object();
+    EXPECT_EQ(before,plan());send({{"action","delete_plan"},{"plan_id",id},{"confirmation_name",copied.at("name")},{"expected_content_revision",copied.at("content_revision")}});EXPECT_EQ(before,plan());
     EXPECT_FALSE(store.snapshot().at("plans").as_object().contains(id));
-    reviewed();send({{"action","deploy"}});error({{"action","delete_plan"}},"PLAN_DEPLOYED");
+    reviewed();send({{"action","deploy"}});error({{"action","delete_plan"}},"DELETE_CONFIRMATION_REQUIRED");
+}
+
+namespace {
+struct PlanLifecycle : P4Workflow {
+    O reopen() { return {{"action","reopen_plan"},{"expected_content_revision",plan().at("content_revision")}}; }
+    O deletion() { return {{"action","delete_plan"},{"confirmation_name",plan().at("name")},{"expected_content_revision",plan().at("content_revision")}}; }
+    void deployed() { reviewed();send({{"action","deploy"}}); }
+    void withExecution(const std::string& status,const std::function<void(SecurityPlanStore&,const O&)>& check) {
+        deployed();auto snapshot=store.snapshot();
+        snapshot.at("executions").as_object()["history-1"]=O{{"execution_id","history-1"},{"plan_id",p},{"mission_id",m},
+            {"state",status},{"simulation",false},{"route_snapshot",route()},{"deployment_id",plan().at("deployment_id")}};
+        const auto file=std::filesystem::temp_directory_path()/("plan-lifecycle-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+        {std::ofstream out(file);out<<boost::json::serialize(snapshot);}
+        SecurityPlanStore restored(file.string());check(restored,restored.snapshot());std::filesystem::remove(file);
+    }
+};
+}
+TEST_F(PlanLifecycle, EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity) {
+    deployed();const auto before=store.snapshot();const auto revision=plan().at("content_revision").to_number<int64_t>();
+    send({{"action","begin_configuration"}});const auto lease=store.snapshot().at("configuration_session");
+    const auto result=send(reopen());EXPECT_EQ(SecurityPlanStore::str(result,"plan_id"),p);EXPECT_EQ(store.snapshot().at("plans").as_object().size(),1u);
+    EXPECT_EQ(plan().at("mission_ids"),before.at("plans").as_object().at(p).as_object().at("mission_ids"));
+    EXPECT_EQ(store.snapshot().at("paths"),before.at("paths"));EXPECT_EQ(store.snapshot().at("deployments"),before.at("deployments"));
+    EXPECT_EQ(store.snapshot().at("configuration_session"),lease);EXPECT_EQ(plan().at("status"),"DRAFT");
+    EXPECT_GT(plan().at("content_revision").to_number<int64_t>(),revision);
+    send({{"action","update_plan"},{"name","Edited original"}});
+    send({{"action","validate"}});send({{"action","review"}});send({{"action","deploy"}});
+    EXPECT_EQ(plan().at("status"),"DEPLOYED");EXPECT_EQ(store.snapshot().at("plans").as_object().size(),1u);
+    EXPECT_EQ(store.snapshot().at("deployments").as_object().size(),2u);
+    const auto oldId=SecurityPlanStore::str(before.at("plans").as_object().at(p).as_object(),"deployment_id");
+    EXPECT_EQ(store.snapshot().at("deployments").as_object().at(oldId),before.at("deployments").as_object().at(oldId));
+}
+TEST_F(PlanLifecycle, ReopenRequiresOwnedLeaseAndCurrentRevision) {
+    deployed();error(reopen(),"CONFIGURATION_REQUIRED");send({{"action","begin_configuration"}});
+    auto wrong=reopen();wrong["instance_id"]="Other";error(wrong,"CONFIGURATION_IN_PROGRESS");
+    auto stale=reopen();stale["expected_content_revision"]=0;error(stale,"CONTENT_REVISION_CONFLICT");
+    auto staleVersion=reopen();staleVersion["expected_version"]=0;error(staleVersion,"VERSION_CONFLICT");
+}
+TEST_F(PlanLifecycle, DeleteReadyPlanRequiresExactNameAndRevision) {
+    ready();auto wrong=deletion();wrong["confirmation_name"]="Other plan";error(wrong,"DELETE_CONFIRMATION_REQUIRED");
+    auto stale=deletion();stale["expected_content_revision"]=0;error(stale,"CONTENT_REVISION_CONFLICT");
+    const auto before=store.snapshot();send(deletion());const auto after=store.snapshot();
+    EXPECT_FALSE(after.at("plans").as_object().contains(p));EXPECT_FALSE(after.at("missions").as_object().contains(m));
+    EXPECT_TRUE(after.at("paths").as_object().empty());
+    EXPECT_EQ(after.at("deleted_plans").as_object().at(p).as_object().at("snapshot").as_object().at("plan"),before.at("plans").as_object().at(p));
+    EXPECT_EQ(after.at("events").as_array().back().as_object().at("params").as_object().at("plan_name"),before.at("plans").as_object().at(p).as_object().at("name"));
+}
+TEST_F(PlanLifecycle, DeleteBlocksConfigurationAndRouteEditAtomically) {
+    begin();error(deletion(),"PLAN_EDIT_IN_PROGRESS");send({{"action","discard_route_edit"},{"edit_session_id",sid}});
+    send({{"action","begin_configuration"}});error(deletion(),"CONFIGURATION_IN_PROGRESS");
+    send({{"action","end_configuration"}});send(deletion());EXPECT_FALSE(store.snapshot().at("plans").as_object().contains(p));
+}
+TEST_F(PlanLifecycle, DeleteAndConfigurationRejectEveryNonterminalExecutionIncludingScheduled) {
+    // A persisted execution fixture verifies the gate without dispatching hardware.
+    const std::vector<std::string> states{"SCHEDULED","CREATED","PREFLIGHT","STARTING","START_REQUESTED","WAITING_ACK","EXECUTING","PAUSED","RETURNING"};
+    deployed();const auto base=store.snapshot();
+    for(const auto& status:states) {
+        auto snapshot=base;snapshot.at("executions").as_object()["busy"]=O{{"execution_id","busy"},{"plan_id",p},{"mission_id",m},{"state",status}};
+        const auto file=std::filesystem::temp_directory_path()/("plan-lifecycle-busy-"+status+"-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+        {std::ofstream out(file);out<<boost::json::serialize(snapshot);}SecurityPlanStore restored(file.string());
+        auto req=deletion();req["plan_id"]=p;req["instance_id"]="Map-1";req["expected_version"]=snapshot.at("version");
+        try{restored.transact(req,uavs,"QA",[](const O&){});FAIL()<<status;}catch(const PlanError& e){EXPECT_EQ(e.code,"PLAN_EXECUTING")<<status;}
+        EXPECT_EQ(restored.snapshot(),snapshot);
+        try{restored.transact({{"action","begin_configuration"},{"plan_id",p},{"instance_id","Map-1"}},uavs,"QA",[](const O&){});FAIL()<<status;}
+        catch(const PlanError& e){EXPECT_EQ(e.code,"PLAN_EXECUTING")<<status;}
+        EXPECT_EQ(restored.snapshot(),snapshot);EXPECT_TRUE(restored.snapshot().at("configuration_session").is_null());
+        auto before=restored.snapshot();req=reopen();req["plan_id"]=p;req["instance_id"]="Map-1";req["expected_version"]=before.at("version");
+        try{restored.transact(req,uavs,"QA",[](const O&){});FAIL()<<status;}catch(const PlanError& e){EXPECT_EQ(e.code,"CONFIGURATION_REQUIRED")<<status;}
+        EXPECT_EQ(restored.snapshot(),before);std::filesystem::remove(file);
+    }
+}
+TEST_F(PlanLifecycle, DeletePreservesRealTerminalExecutionAndImmutableDeployment) {
+    withExecution("COMPLETED",[&](SecurityPlanStore& restored,const O& before){
+        auto request=deletion();request["plan_id"]=p;request["instance_id"]="Map-1";request["expected_version"]=before.at("version");
+        restored.transact(request,uavs,"QA",[](const O&){});auto after=restored.snapshot();
+        EXPECT_EQ(after.at("executions"),before.at("executions"));EXPECT_EQ(after.at("deployments"),before.at("deployments"));
+        EXPECT_FALSE(after.at("plans").as_object().contains(p));EXPECT_TRUE(after.at("deleted_plans").as_object().contains(p));
+    });
+}
+TEST_F(PlanLifecycle, ConfirmedDeletionCannotTargetRenamedOrChangedContentAndRetryIsSafe) {
+    auto consent=deletion();send({{"action","update_plan"},{"name","Changed after confirmation"}});
+    error(consent,"DELETE_CONFIRMATION_REQUIRED");
+    consent=deletion();send({{"action","update_plan"},{"name","Changed after confirmation"},{"description","Different content"}});
+    error(consent,"CONTENT_REVISION_CONFLICT");
+    consent=deletion();send(consent);const auto removed=store.snapshot();
+    error(consent,"PLAN_NOT_FOUND");EXPECT_EQ(removed,store.snapshot());
+}
+TEST_F(PlanLifecycle, LifecyclePublisherFailureRollsBackArchiveAndCurrentState) {
+    const auto before=store.snapshot();auto request=deletion();request["plan_id"]=p;request["expected_version"]=before.at("version");
+    EXPECT_THROW(store.transact(request,uavs,"QA",[](const O&){throw std::runtime_error("publisher rejected");}),std::runtime_error);
+    EXPECT_EQ(before,store.snapshot());
+    deployed();send({{"action","begin_configuration"}});const auto deployedBefore=store.snapshot();
+    request=reopen();request["plan_id"]=p;request["instance_id"]="Map-1";request["expected_version"]=deployedBefore.at("version");
+    EXPECT_THROW(store.transact(request,uavs,"QA",[](const O&){throw std::runtime_error("publisher rejected");}),std::runtime_error);
+    EXPECT_EQ(deployedBefore,store.snapshot());
 }

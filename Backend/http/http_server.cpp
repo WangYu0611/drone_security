@@ -1677,11 +1677,10 @@ boost::json::value HttpServer::UpdateContext(const boost::json::object& body) {
         const auto context=operational_context_.snapshot();
         const auto plan=patch.contains("active_security_plan_id")?get_string(patch,"active_security_plan_id"):get_string(context,"active_security_plan_id");
         security_plans_.checkConfigurationAccess({{"action","select"},{"instance_id",get_string(body,"instance_id")},{"plan_id",plan}});
-        const auto plans=security_plans_.snapshot();const auto* configuration=plans.if_contains("configuration_session");
-        if(configuration && configuration->is_object() && configuration->as_object().at("lease_expires_at").to_number<double>()>OperationalContext::now()) {
-            const auto mission=patch.contains("active_mission_id")?get_string(patch,"active_mission_id"):get_string(context,"active_mission_id");
-            security_plans_.checkSelection(plan,mission);
-        }
+        const auto mission=patch.contains("active_mission_id")?get_string(patch,"active_mission_id"):get_string(context,"active_mission_id");
+        // A delayed legacy context patch must not restore references to a deleted
+        // plan/task after delete_plan has cleared the acknowledged selection.
+        security_plans_.checkSelection(plan,mission);
     }
     try {
         return operational_context_.update(patch, source, [this](const boost::json::object& event) {
@@ -1760,7 +1759,7 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     }
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
-    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
+    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
     const std::set<std::string> mapActions{"execution_group_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     if(role=="Map" && (action=="execution_pause" || action=="execution_resume" || action=="execution_abort")) {
@@ -1802,7 +1801,9 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
         if(d.slot>0)uavs.insert("UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot));
     }
     auto result=security_plans_.transact(body,uavs,source,[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
-    if(action=="create_plan" || action=="add_mission" || action=="copy_plan" || action=="open_plan" || action=="delete_plan") result["context"]=select(get_string(result,"plan_id"),get_string(result,"mission_id"));
+    if(action=="create_plan" || action=="add_mission" || action=="copy_plan" || action=="open_plan") result["context"]=select(get_string(result,"plan_id"),get_string(result,"mission_id"));
+    if(action=="delete_plan" && get_string(operational_context_.snapshot(),"active_security_plan_id")==get_string(body,"plan_id"))
+        result["context"]=select("","");
     if(action=="delete_mission") {
         auto context=operational_context_.snapshot();
         if(get_string(context,"active_mission_id")==get_string(body,"mission_id")) result["context"]=select(get_string(body,"plan_id"),"");

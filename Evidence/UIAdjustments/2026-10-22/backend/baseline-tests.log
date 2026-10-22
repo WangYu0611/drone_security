@@ -1,0 +1,167 @@
+Note: Google Test filter = PlanLifecycle.*
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from PlanLifecycle
+[ RUN      ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity
+unknown file: error: C++ exception with description "Deployed plan is read-only" thrown in the test body.
+
+[  FAILED  ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity (1 ms)
+[ RUN      ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision
+Backend\tests\test_p4_workflow.cpp(21): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  code
+    Which is: "CONFIGURATION_REQUIRED"
+
+Backend\tests\test_p4_workflow.cpp(21): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  code
+    Which is: "CONTENT_REVISION_CONFLICT"
+
+[  FAILED  ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision (1 ms)
+[ RUN      ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision
+Backend\tests\test_p4_workflow.cpp(21): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  code
+    Which is: "DELETE_CONFIRMATION_REQUIRED"
+
+Backend\tests\test_p4_workflow.cpp(21): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  code
+    Which is: "CONTENT_REVISION_CONFLICT"
+
+unknown file: error: C++ exception with description "Only drafts may be deleted" thrown in the test body.
+
+[  FAILED  ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision (0 ms)
+[ RUN      ] PlanLifecycle.DeleteBlocksConfigurationAndRouteEditAtomically
+[       OK ] PlanLifecycle.DeleteBlocksConfigurationAndRouteEditAtomically (0 ms)
+[ RUN      ] PlanLifecycle.DeleteAndReopenRejectEveryNonterminalExecutionIncludingScheduled
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+SCHEDULED
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+SCHEDULED
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+CREATED
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+CREATED
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+PREFLIGHT
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+PREFLIGHT
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+STARTING
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+STARTING
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+START_REQUESTED
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+START_REQUESTED
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+WAITING_ACK
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+WAITING_ACK
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+EXECUTING
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+EXECUTING
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+PAUSED
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+PAUSED
+
+Backend\tests\test_p4_workflow.cpp(211): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+RETURNING
+
+Backend\tests\test_p4_workflow.cpp(215): error: Expected equality of these values:
+  e.code
+    Which is: "PLAN_DEPLOYED"
+  "PLAN_EXECUTING"
+RETURNING
+
+[  FAILED  ] PlanLifecycle.DeleteAndReopenRejectEveryNonterminalExecutionIncludingScheduled (98 ms)
+[ RUN      ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment
+unknown file: error: C++ exception with description "Only drafts may be deleted" thrown in the test body.
+
+[  FAILED  ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment (7 ms)
+[----------] 6 tests from PlanLifecycle (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 1 test.
+[  FAILED  ] 5 tests, listed below:
+[  FAILED  ] PlanLifecycle.EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity
+[  FAILED  ] PlanLifecycle.ReopenRequiresOwnedLeaseAndCurrentRevision
+[  FAILED  ] PlanLifecycle.DeleteReadyPlanRequiresExactNameAndRevision
+[  FAILED  ] PlanLifecycle.DeleteAndReopenRejectEveryNonterminalExecutionIncludingScheduled
+[  FAILED  ] PlanLifecycle.DeletePreservesRealTerminalExecutionAndImmutableDeployment
+
+ 5 FAILED TESTS

@@ -1,0 +1,41 @@
+{
+  "pass": true,
+  "runtime": "Saved/UIAdjustments/native-1792664092771650300",
+  "map_native_checks": [
+    "Chinese UI and Google city map visible",
+    "Locate and wheel zoom display real aircraft meshes",
+    "Clicking UAV-01 model receives singleton Backend selection ACK without opening fleet panel",
+    "Wheel zoom-out restores icons",
+    "Explicit fleet action opens panel; Cancel closes it",
+    "Left drag selects four UAVs after cancellation without reopening panel",
+    "Right-click stages four-aircraft preview; no execution submitted",
+    "Escape clears preview and closes panel"
+  ],
+  "command_native_checks": [
+    "Original deployed plan Edit opens same plan as DRAFT",
+    "Actual keyboard input and Rename task save the new name to mission-2 within plan-1",
+    "Finish configuration returns to a single plan card",
+    "Delete modal is Chinese and names target; empty/wrong name disables confirmation, exact name enables it",
+    "Cancel closes dialog and preserves plan"
+  ],
+  "plan_before": {
+    "id": "plan-1",
+    "status": "DEPLOYED",
+    "mission_id": "mission-2"
+  },
+  "plan_after": {
+    "id": "plan-1",
+    "status": "DRAFT",
+    "mission_id": "mission-2",
+    "mission_name": "Original task revised by mouse QA"
+  },
+  "plan_count_before": 1,
+  "plan_count_after": 1,
+  "old_deployment_unchanged": true,
+  "routes_unchanged": true,
+  "owned_runtime_stopped": true,
+  "remaining_owned_roles": [],
+  "final_native_delete_clicked": false,
+  "delete_execution_evidence": "UE MissionActions plus isolated HTTP/WS and restart suites",
+  "boundary": "OS mouse/keyboard on synthetic Mock data. No physical aircraft flight. Native deletion check canceled after verifying name gating; deletion itself is component/API verified."
+}

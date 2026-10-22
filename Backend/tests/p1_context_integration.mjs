@@ -41,8 +41,11 @@ try {
  assert.equal((await update(command,{active_area_id:'AREA-A',operation_mode:'INVALID'})).status,400);
  assert.equal((await update(video,{active_mission_id:'MISSION-X'})).status,403);
  assert.equal((await api('/api/context')).data.context_version,before);console.log('PASS P1.ValidationAndRolePolicy');
- await update(command,{active_mission_id:'MISSION-2',active_security_plan_id:'PLAN-A',active_area_id:'AREA-B',operation_mode:'MISSION_EXECUTION'});
- await until(()=>clients.every(c=>c.context.active_area_id==='AREA-B'&&c.context.active_mission_id==='MISSION-2'),'all context fields');
+ // P3+ owns plan/task identity; context references must resolve to real records.
+ const created=await api('/api/security-plans','POST',{instance_id:command.instance_id,action:'create_plan',name:'P1 context fixture',default_mission_name:'P1 task',expected_version:(await api('/api/security-plans')).data.version});
+ assert.equal(created.status,200);const {plan_id,mission_id}=created.data;
+ assert.equal((await update(command,{active_mission_id:mission_id,active_security_plan_id:plan_id,active_area_id:'AREA-B',operation_mode:'MISSION_EXECUTION'})).status,200);
+ await until(()=>clients.every(c=>c.context.active_area_id==='AREA-B'&&c.context.active_mission_id===mission_id&&c.context.active_security_plan_id===plan_id),'all context fields');
  console.log('PASS P1.MissionPlanAreaMode');
  map.socket.close();await until(()=>command.events.some(e=>e.type==='client_disconnected'&&e.payload.instance_id===map.instance_id),'disconnect event');
  await update(command,{active_uav_id:'UAV-02'});

@@ -96,6 +96,11 @@ void UMapShellWidget::NativeOnInitialized()
     MakeButton(TEXT("open_video"),ProductText::Get(TEXT("MapUI.ViewVideo")),TEXT("video"),122);
     BoxSelectButton=MakeButton(TEXT("box_select"),ProductText::Source(TEXT("Box select UAVs")),TEXT(""),126);
     GroupMoveButton=MakeButton(TEXT("group_move"),ProductText::Source(TEXT("Fleet move")),TEXT(""),112);
+    ExecutionControlsButton=MakeButton(TEXT("execution_controls"),ProductText::Get(TEXT("FleetUX.ExecutionControls")),TEXT(""),184);
+    // Keep the regular tool row within its existing width. The monitor entry
+    // occupies the free space between the page heading and connection status.
+    auto* ExecutionSize=CastChecked<USizeBox>(ExecutionControlsButton->GetParent());ExecutionSize->RemoveFromParent();
+    MapUI::Place(FigmaChrome,ExecutionSize,FVector2D(520,104),FVector2D(184,40),2);
     // A hidden option model preserves the old selection contract. The visible
     // dropdown is the design's icon/radio list, populated from live Registry IDs.
     Aircraft=WidgetTree->ConstructWidget<UComboBoxString>();Aircraft->OnSelectionChanged.AddDynamic(this,&UMapShellWidget::AircraftSelected);
@@ -145,6 +150,10 @@ void UMapShellWidget::Refresh()
         BoxSelectButton->SetIsEnabled(Available);GroupMoveButton->SetIsEnabled(Available);
         BoxSelectButton->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
         GroupMoveButton->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+        const bool HasExecution=FleetInteraction->CanShowExecutionControls();
+        ExecutionControlsButton->SetVisibility(HasExecution?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+        ExecutionControlsButton->GetParent()->SetVisibility(HasExecution?ESlateVisibility::SelfHitTestInvisible:ESlateVisibility::Collapsed);
+        ExecutionControlsButton->SetIsEnabled(HasExecution);
         MapUI::Button(BoxSelectButton,FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
         MapUI::Button(GroupMoveButton,FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
     }
@@ -255,6 +264,7 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
         else DeviceSelectionError=ProductText::Get(TEXT("Errors.SYNC_FAILED"));Refresh();return;
     }
     if(Action==TEXT("open_video")){const int Id=Manager->GetRegistry()->GetPrimarySelectedDrone();if(Id>0)GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->OpenVideo(FString::Printf(TEXT("UAV-%02d"),Id));return;}
+    if(Action==TEXT("execution_controls")){FleetInteraction->ShowExecutionControls();Refresh();return;}
     if(Action==TEXT("box_select") || Action==TEXT("group_move")){
         const auto Mode=Action==TEXT("box_select")?EMapFleetMode::BoxSelect:EMapFleetMode::GroupMove;
         FleetInteraction->SetMode(FleetInteraction->GetMode()==Mode?EMapFleetMode::Browse:Mode);Refresh();return;

@@ -1,0 +1,108 @@
+{
+  "feature_acceptance": "PASS",
+  "latest_relevant_checks": {
+    "unique_tests": 10,
+    "discovered": 10,
+    "completed": 10,
+    "passed": 10,
+    "failed": 0,
+    "final_binary_tests": 9,
+    "earlier_binary_tests": 1
+  },
+  "test_scope": [
+    {
+      "test": "DroneOps.PlanConfiguration.Workspace",
+      "run": "verification-1792662867541676000",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.MissionActions",
+      "run": "verification-1792663937068436800",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.Fleet.PanelVisibility",
+      "run": "verification-1792663488858891000",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.MapControls",
+      "run": "verification-1792663488858891000",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.Fleet.SinglePointMove",
+      "run": "verification-1792663488858891000",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.Fleet.Reselection",
+      "run": "verification-1792663488858891000",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+      "run": "verification-1792663488858891000",
+      "pass": true,
+      "rendering": "RHI automation"
+    },
+    {
+      "test": "DroneOps.Fleet.ModelIconPolicy",
+      "run": "verification-1792663817332008800",
+      "pass": true,
+      "rendering": "NullRHI component only"
+    },
+    {
+      "test": "DroneOps.Fleet.ModelIconVisibility",
+      "run": "verification-1792663817332008800",
+      "pass": true,
+      "rendering": "NullRHI component only"
+    },
+    {
+      "test": "DroneOps.Map.StartupVisibility",
+      "run": "verification-1792663987639369300",
+      "pass": true,
+      "rendering": "RHI automation"
+    }
+  ],
+  "native": "native/result.json",
+  "backend": {
+    "final_lifecycle_and_P4_tests": {
+      "tests": 21,
+      "passed": 21
+    },
+    "earlier_associated_regressions": {
+      "tests": 68,
+      "passed": 68
+    },
+    "earlier_full_suite": {
+      "tests": 177,
+      "passed": 175,
+      "failed": 2,
+      "known_failures": [
+        "SegmentDistanceTest.Crossing",
+        "AssemblyPlannerTest.ConflictHeightSeparation"
+      ]
+    },
+    "final_protocol": "backend/api-1792662763363908600/verification.json",
+    "context_protocol_checks": 11,
+    "lifecycle_groups": 7,
+    "restart_persistence": "PASS"
+  },
+  "localization": {
+    "resources_generated": true,
+    "native_chinese_verified": true,
+    "last_commandlet_exit": 1,
+    "note": "Known engine GameFeatureData initialization/configuration diagnostics remain; nonzero commandlet is not labeled PASS."
+  },
+  "attempt_history": "attempt-history.json",
+  "protected_files": "protected-files.json",
+  "boundary": "Owned isolated Mock stores only. Final binary: 7 RHI checks and 2 NullRHI policy/visibility checks. Earlier Workspace RHI check retained with its own module hash. Native mouse observations separately recorded; no physical aircraft claim.",
+  "repository_state": "Local changes only; no commit or push in this adjustment turn."
+}

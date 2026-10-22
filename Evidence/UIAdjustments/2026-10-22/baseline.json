@@ -1,0 +1,33 @@
+{
+  "baseline_commit": "d7d2061",
+  "baseline_includes_uncommitted_marina_bay_change": true,
+  "ue_module_sha256": "388e3940601390ceca77ad582ccb72a24f042a90d0ada7124a60807f4807f340",
+  "runtime": "Saved/UIAdjustments/native-1792661319943634200",
+  "native_reproductions": [
+    {
+      "issue": "Near view remains icons",
+      "actions": [
+        "Launch owned Map and Mock Backend",
+        "Click Locate",
+        "Wait for camera to settle"
+      ],
+      "screenshot": "baseline/01-near-icons.png"
+    },
+    {
+      "issue": "Ordinary selection opens fleet move panel",
+      "actions": [
+        "Click UAV-01 icon in near view"
+      ],
+      "screenshot": "baseline/02-selection-opens-fleet.png"
+    }
+  ],
+  "source_causes": {
+    "models": "MapFleetInteractionWidget NativeTick hides meshes unconditionally and NativePaint always paints icon",
+    "panel": "Selection changes mode to BoxSelect; Refresh previously treats non-Browse mode, warnings and matching executions as open intent",
+    "plan_copy": "SecurityPlanWorkspaceConfiguration EditMission DEPLOYED branch submits copy_plan",
+    "delete": "Existing delete action/button are limited to DRAFT; confirmation lacks target name"
+  },
+  "real_user_data_modified": false,
+  "owned_runtime_stopped": true,
+  "boundary": "Mouse observations on isolated Mock session and static source inspection; no physical aircraft."
+}

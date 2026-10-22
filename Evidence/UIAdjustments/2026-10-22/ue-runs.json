@@ -1,0 +1,408 @@
+[
+  {
+    "path": "Evidence/PlanConfiguration/verification-1792662867541676000",
+    "metadata": {
+      "run": "1792662867541676000",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "1609753ee83da0856256cf20d5ff9ea4d1f87db6089d0fafdb140ced8ad42ff9",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "604b7736dad4226dc122da7e8350a167fe71abbeb841e681637f84b70699d060",
+      "ue_module_sha256_after": "1609753ee83da0856256cf20d5ff9ea4d1f87db6089d0fafdb140ced8ad42ff9",
+      "binary_unchanged": true,
+      "pass": false
+    },
+    "results": [
+      {
+        "test": "DroneOps.PlanConfiguration.Workspace",
+        "role": "Command",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.PlanConfiguration.Workspace"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.PlanConfiguration.Workspace"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792662867541676000-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.PlanConfiguration.MissionActions",
+        "role": "Command",
+        "pass": false,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.PlanConfiguration.MissionActions"
+        ],
+        "passed": 0,
+        "warnings": 0,
+        "failed": 1,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.PlanConfiguration.MissionActions"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792662867541676000-1",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    ]
+  },
+  {
+    "path": "Evidence/PlanConfiguration/verification-1792663488858891000",
+    "metadata": {
+      "run": "1792663488858891000",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "604b7736dad4226dc122da7e8350a167fe71abbeb841e681637f84b70699d060",
+      "ue_module_sha256_after": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "binary_unchanged": true,
+      "pass": false
+    },
+    "results": [
+      {
+        "test": "DroneOps.Fleet.ModelIcon",
+        "role": "Map",
+        "pass": false,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 2,
+        "exit": 0,
+        "discovered": 2,
+        "discovery_log_counts": [
+          2
+        ],
+        "completed": 2,
+        "completed_tests": [
+          "DroneOps.Fleet.ModelIconPolicy",
+          "DroneOps.Fleet.ModelIconVisibility"
+        ],
+        "passed": 2,
+        "warnings": 0,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.ModelIconPolicy",
+          "DroneOps.Fleet.ModelIconVisibility"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.PanelVisibility",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.PanelVisibility"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.PanelVisibility"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-1",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.PlanConfiguration.MapControls",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.PlanConfiguration.MapControls"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.PlanConfiguration.MapControls"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-2",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.SinglePointMove",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.SinglePointMove"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.SinglePointMove"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-3",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.Reselection",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.Reselection"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.Reselection"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-4",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.ThreeDimensionalWorkflow"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.ThreeDimensionalWorkflow"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663488858891000-5",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    ]
+  },
+  {
+    "path": "Evidence/PlanConfiguration/verification-1792663817332008800",
+    "metadata": {
+      "run": "1792663817332008800",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "604b7736dad4226dc122da7e8350a167fe71abbeb841e681637f84b70699d060",
+      "ue_module_sha256_after": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "binary_unchanged": true,
+      "pass": true
+    },
+    "results": [
+      {
+        "test": "DroneOps.Fleet.ModelIconPolicy",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.ModelIconPolicy"
+        ],
+        "passed": 1,
+        "warnings": 0,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.ModelIconPolicy"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663817332008800-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.ModelIconVisibility",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.ModelIconVisibility"
+        ],
+        "passed": 1,
+        "warnings": 0,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.ModelIconVisibility"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663817332008800-1",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    ]
+  },
+  {
+    "path": "Evidence/PlanConfiguration/verification-1792663937068436800",
+    "metadata": {
+      "run": "1792663937068436800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "604b7736dad4226dc122da7e8350a167fe71abbeb841e681637f84b70699d060",
+      "ue_module_sha256_after": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "binary_unchanged": true,
+      "pass": true
+    },
+    "results": [
+      {
+        "test": "DroneOps.PlanConfiguration.MissionActions",
+        "role": "Command",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.PlanConfiguration.MissionActions"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.PlanConfiguration.MissionActions"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663937068436800-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    ]
+  },
+  {
+    "path": "Evidence/PlanConfiguration/verification-1792663987639369300",
+    "metadata": {
+      "run": "1792663987639369300",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "mock_startup_reset": true,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "604b7736dad4226dc122da7e8350a167fe71abbeb841e681637f84b70699d060",
+      "ue_module_sha256_after": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+      "binary_unchanged": true,
+      "pass": true
+    },
+    "results": [
+      {
+        "test": "DroneOps.Map.StartupVisibility",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/mock_execution.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Map.StartupVisibility"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Map.StartupVisibility"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792663987639369300-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,144 @@
+{
+  "baseline_commit": "d7d2061b2f3d1ec6f5fa9dbae1b218fb7cba33d8",
+  "includes_preserved_prior_marina_bay_changes": true,
+  "backend_sha256": "604b7736dad4226dc122da7e8350a167fe71abbeb841e681637f84b70699d060",
+  "ue_module_sha256": "0a60e299213201c0c3b1667f96c6c91b408f141fc78b26af26805994eb921b23",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "de02b5ca010063bd1bc79d23625a442f75d85241b1c4a4e4b12e078784cdaaf0"
+    },
+    {
+      "path": "Backend/http/http_server.cpp",
+      "sha256": "81ad42fdcb88a320dba2ae21350ebd7d8a3ddcc37d5eca9b7fc1d5be83827a3a"
+    },
+    {
+      "path": "Backend/storage/plan_lifecycle.inl",
+      "sha256": "ea25d2b2911d5ae582923d523d65f4562a07560ab2d3009fa725802b1fca09d3"
+    },
+    {
+      "path": "Backend/storage/security_plan_store.h",
+      "sha256": "d82aa4776cdc112107fc8d90b51500e78436794bb7be517fa872ad750ec510fd"
+    },
+    {
+      "path": "Backend/tests/p1_context_integration.mjs",
+      "sha256": "1ba5051e1759357cea1334635fad7cb022349bb88b7a589c055f86c827a09bd9"
+    },
+    {
+      "path": "Backend/tests/test_p4_workflow.cpp",
+      "sha256": "a0eeae19645ac85e16189786c65ae98e41c1efe9f694e577ee1c13f289e9a10e"
+    },
+    {
+      "path": "Backend/tests/test_p52_execution.cpp",
+      "sha256": "6da3c0fdb1f5a8a0d5bd38c73751094a56799b43459d93a06ece1ddd8e17f71e"
+    },
+    {
+      "path": "Content/Localization/DroneOps/DroneOps.manifest",
+      "sha256": "84c66ef6269ac3fb8a3cd43e70cd231c8f2c3de214e95e764c552dd8cc8f70d2"
+    },
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.archive",
+      "sha256": "efa1339c02aeaf04193c73e4b4a8f794d5f4a50e9b5e9deb803f936092639319"
+    },
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.locres",
+      "sha256": "0bdd575a59b96f0023c9238cd6131d534ed4254b9966e23c65c9e8a1f0e6e722"
+    },
+    {
+      "path": "Content/Localization/DroneOps/en/DroneOps.po",
+      "sha256": "bbabe77d153b6c6ea7d6bf4c8faa1f8a64e44575f2ffcd71dba28f9b94f8f4a5"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.archive",
+      "sha256": "ac2ff4c80163a65b165b4d7fa6c637f60dd6c67bab09d63e384b79025acc8357"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.locres",
+      "sha256": "01633768c3aae370342542ba442722a5dadba6644f274a28bfa25d978ac79031"
+    },
+    {
+      "path": "Content/Localization/DroneOps/zh-Hans/DroneOps.po",
+      "sha256": "aba1e44cc8e43680044f7c616768de23c6544118b9eaec29e519becd54335e0d"
+    },
+    {
+      "path": "Docs/UIAdjustments.md",
+      "sha256": "64b8becf990f3131a4e15640caf23cf338e878d28f21d471fd45377449389206"
+    },
+    {
+      "path": "Scripts/P4/localization.json",
+      "sha256": "300c2c050e1e662e7a0dc86d03b927ce8c35ef93fab56f032104a5410b267df9"
+    },
+    {
+      "path": "Scripts/PlanConfiguration/plan_lifecycle_api.mjs",
+      "sha256": "4c5ec87b5d3894f51cd151054e299716766c774981a2d12b972c140380c32074"
+    },
+    {
+      "path": "Scripts/PlanConfiguration/plan_lifecycle_verify.py",
+      "sha256": "1a235ea35816f508c6b4993700d0cd3c205daab866a501fdf39c74fbef752007"
+    },
+    {
+      "path": "Source/UE5DroneControl/Map/MapDronePresentation.cpp",
+      "sha256": "9e4f6bd0336cf47429f8041ce39c1e0912eb0af94caa86c9c46387d9f698eebc"
+    },
+    {
+      "path": "Source/UE5DroneControl/Map/MapDronePresentation.h",
+      "sha256": "d90284b7e6e4c8c92b9bb1bed48c4d07bb4ed70cb5121746047281a3f4faaa34"
+    },
+    {
+      "path": "Source/UE5DroneControl/Map/MapFleetInteractionWidget.cpp",
+      "sha256": "a9ca94f42ad55193bb4d57ddc9aa780f4635b94d89cc9db7d5db83e00304aeec"
+    },
+    {
+      "path": "Source/UE5DroneControl/Map/MapFleetInteractionWidget.h",
+      "sha256": "946c541c8105e841c4ec42beb94013039f352737b8eeab6966c43a96d068183b"
+    },
+    {
+      "path": "Source/UE5DroneControl/Map/MapShellWidget.cpp",
+      "sha256": "c4b8db089cdd36f70bac8b6eb9a01a15f861586fb4e4b60a9f397aa6d7b80427"
+    },
+    {
+      "path": "Source/UE5DroneControl/Map/MapShellWidget.h",
+      "sha256": "4a2ca0bc395588ed97d69f821491cf42b5bf70d17ffe651c29bccdc87778d6d8"
+    },
+    {
+      "path": "Source/UE5DroneControl/Shared/ProductText.cpp",
+      "sha256": "38ccc2301a22686f9cedbd5a49e6b8eff9251c361162753c8db23415e7bc3687"
+    },
+    {
+      "path": "Source/UE5DroneControl/Shared/SecurityPlanWorkspaceConfiguration.cpp",
+      "sha256": "285da7060ef9b18e68f7b1b7e3e5de000789667e240a0a5ccb47896e75b891fe"
+    },
+    {
+      "path": "Source/UE5DroneControl/Shared/SecurityPlanWorkspacePresentation.cpp",
+      "sha256": "367741e2504b82c585c0636a364c8a4a4678fb5c7fdf4d1e477eadca26c62d6e"
+    },
+    {
+      "path": "Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.cpp",
+      "sha256": "2d35c1912b7436d875b4e52cac31964b9b9820c428356980558a3b28f2868093"
+    },
+    {
+      "path": "Source/UE5DroneControl/Shared/SecurityPlanWorkspaceWidget.h",
+      "sha256": "55cd11964a78ac0a83ea7319f11391c67e01675fe24397eb04368c9ae11a7046"
+    },
+    {
+      "path": "Source/UE5DroneControl/Tests/FleetPanelVisibilityTest.cpp",
+      "sha256": "84834ebb5b5711f631a027f7a1c961b6af479f039a0cf31248a3a5a87ed28b51"
+    },
+    {
+      "path": "Source/UE5DroneControl/Tests/MapDronePresentationTest.cpp",
+      "sha256": "a2859d038d50ff1a730c4a52e806118f8fcb0e6d9a5ffec8f6a7eb2e62e9eb63"
+    },
+    {
+      "path": "Source/UE5DroneControl/Tests/MapStartupVisibilityTest.cpp",
+      "sha256": "c6296847350447118412a0f7ff3d7c4a585e096f8ee9d6afb31e91a376016e3b"
+    },
+    {
+      "path": "Source/UE5DroneControl/Tests/PlanConfigurationTests.cpp",
+      "sha256": "810af68c926cd60a316edfd4197595680811123ed871f8eee52d0bef3a54f030"
+    },
+    {
+      "path": "Source/UE5DroneControl/Tests/PlanMissionActionsTest.cpp",
+      "sha256": "403bd351b8fb6a9dc535797b6cd6fdc090465aac042c1c1854f6953058d4484c"
+    }
+  ]
+}

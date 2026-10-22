@@ -1,0 +1,18 @@
+{
+  "pass": true,
+  "kind": "isolated protocol and Mock only",
+  "passed": [
+    "same ID / task / route survives edit-save-review-redeploy; old deployment unchanged",
+    "scheduled task blocks editing and deletion until explicit cancellation",
+    "actual Mock execution blocks deletion; abort remains independent",
+    "explicit copy is separate; configuration and route-edit leases block deletion",
+    "name / content / document version changes invalidate frozen delete consent",
+    "deleting unselected plan preserves other plan/context/video; duplicate delete is safe",
+    "current deletion clears only plan/task context; stale context patch cannot revive deleted IDs; history remains"
+  ],
+  "ids": {
+    "plan_id": "plan-3",
+    "mission_id": "mission-4",
+    "deployment_id": "deployment-7"
+  }
+}

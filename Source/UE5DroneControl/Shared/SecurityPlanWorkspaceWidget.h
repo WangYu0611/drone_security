@@ -51,7 +51,7 @@ public:
     void Refresh();
     bool IsConfiguring() const;
     bool IsCreatingPlan() const { return bCreating; }
-    bool IsMissionNavigationBlocked() const { return bPending || bConfigurationGuard; }
+    bool IsMissionNavigationBlocked() const { return bPending || bConfigurationGuard || !PendingDeletePlan.IsEmpty(); }
     bool HasUnsavedChanges() const;
     FText ConfigurationStatusText() const;
     void RequestFinishConfiguration(TFunction<void()> OnFinished = {});
@@ -76,6 +76,10 @@ private:
     UPROPERTY() TObjectPtr<class UBorder> NewPlanDialog;
     UPROPERTY() TObjectPtr<class UOverlay> NewPlanLayer;
     UPROPERTY() TObjectPtr<class UOverlay> ConfigurationGuardLayer;
+    UPROPERTY() TObjectPtr<class UOverlay> DeletePlanLayer;
+    UPROPERTY() TObjectPtr<class UVerticalBox> DeletePlanContent;
+    UPROPERTY() TObjectPtr<class UTextBlock> DeletePlanPrompt;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> DeletePlanNameInput;
     UPROPERTY() TObjectPtr<class UVerticalBox> NewPlanContent;
     UPROPERTY() TObjectPtr<class UVerticalBox> EmptyPlanState;
     UPROPERTY() TObjectPtr<class UScrollBox> WorkspaceScroll;
@@ -86,6 +90,14 @@ private:
     int64 CardsVersion=-1;
     FString LastWorkflow;
     FString PendingDeletePlan;
+    FString PendingDeleteName;
+    double PendingDeleteRevision=-1;
+    TMap<int32,FString> PlanActionTargets;
+    TArray<int32> PlanActionIds;
+    int32 NextPlanActionId=0;
+    void RequestPlanDeletion(const FString& Id);
+    void RefreshDeleteConfirmation();
+    UFUNCTION() void DeleteConfirmationChanged(const FText& Text);
     void ConfirmDeployment();
     UPROPERTY() TObjectPtr<class UVerticalBox> ExecutionPage;
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionSummary;

@@ -1212,8 +1212,8 @@ msgid "Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)"
 msgstr "Distance: {0} m · Estimated: {1} min (minimum estimate speed 1 m/s)"
 
 msgctxt "DroneOps,Events.PLAN_DELETED"
-msgid "Draft deleted: {plan_name}"
-msgstr "Draft deleted: {plan_name}"
+msgid "Plan removed; history retained: {plan_name}"
+msgstr "Plan removed; history retained: {plan_name}"
 
 msgctxt "DroneOps,Workflow.DeleteDraft"
 msgid "Confirm delete draft"
@@ -1596,8 +1596,8 @@ msgid "Closed route requires at least 3 waypoints."
 msgstr "Closed route requires at least 3 waypoints."
 
 msgctxt "DroneOps,Errors.PLAN_EXECUTING"
-msgid "Cannot move the plan while the mission is running."
-msgstr "Cannot move the plan while the mission is running."
+msgid "This plan has active or scheduled tasks. Finish or cancel them before editing, moving or deleting the plan."
+msgstr "This plan has active or scheduled tasks. Finish or cancel them before editing, moving or deleting the plan."
 
 msgctxt "DroneOps,Errors.INVALID_TRANSLATION"
 msgid "The route changed. Cancel and retry moving the plan."
@@ -3014,3 +3014,63 @@ msgstr "m/s · 0 = unlimited, or 0.5–15"
 msgctxt "DroneOps,MapUI.SpeedInvalid"
 msgid "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."
 msgstr "Enter 0 (unlimited) or a speed from 0.5 to 15 m/s."
+
+msgctxt "DroneOps,Plan.CopyExplicit"
+msgid "Copy plan"
+msgstr "Copy plan"
+
+msgctxt "DroneOps,Plan.EditExisting"
+msgid "Edit plan"
+msgstr "Edit plan"
+
+msgctxt "DroneOps,Plan.EditDeployedHint"
+msgid "This plan is deployed. Edit this plan to save changes under the same ID, then validate and deploy again. Previous deployments remain in history."
+msgstr "This plan is deployed. Edit this plan to save changes under the same ID, then validate and deploy again. Previous deployments remain in history."
+
+msgctxt "DroneOps,Plan.Delete.Action"
+msgid "Delete plan"
+msgstr "Delete plan"
+
+msgctxt "DroneOps,Plan.Delete.Confirm"
+msgid "Confirm deletion"
+msgstr "Confirm deletion"
+
+msgctxt "DroneOps,Plan.Delete.Refresh"
+msgid "Review latest version"
+msgstr "Review latest version"
+
+msgctxt "DroneOps,Plan.Delete.NameHint"
+msgid "Enter the exact plan name"
+msgstr "Enter the exact plan name"
+
+msgctxt "DroneOps,Plan.Delete.Prompt"
+msgid "Delete “{0}” from the plan list? Enter the exact name below to confirm. Current tasks and routes will be archived; deployment and execution history will be retained. Active or scheduled tasks must be finished or cancelled first."
+msgstr "Delete “{0}” from the plan list? Enter the exact name below to confirm. Current tasks and routes will be archived; deployment and execution history will be retained. Active or scheduled tasks must be finished or cancelled first."
+
+msgctxt "DroneOps,Errors.DELETE_CONFIRMATION_REQUIRED"
+msgid "The confirmation name does not match this plan. Review the latest version and enter its exact name again."
+msgstr "The confirmation name does not match this plan. Review the latest version and enter its exact name again."
+
+msgctxt "DroneOps,Errors.CONTENT_REVISION_CONFLICT"
+msgid "The plan changed after you opened this action. Review the latest version and confirm again."
+msgstr "The plan changed after you opened this action. Review the latest version and confirm again."
+
+msgctxt "DroneOps,Errors.CONFIGURATION_REQUIRED"
+msgid "Open this plan for configuration before editing it."
+msgstr "Open this plan for configuration before editing it."
+
+msgctxt "DroneOps,Errors.PLAN_NOT_FOUND"
+msgid "This plan no longer exists. Close this dialog and return to the plan list."
+msgstr "This plan no longer exists. Close this dialog and return to the plan list."
+
+msgctxt "DroneOps,Errors.PLAN_NOT_DEPLOYED"
+msgid "This plan's deployment state changed. Reload the plan and retry."
+msgstr "This plan's deployment state changed. Reload the plan and retry."
+
+msgctxt "DroneOps,Events.PLAN_REOPENED"
+msgid "Plan {plan_name} reopened for editing"
+msgstr "Plan {plan_name} reopened for editing"
+
+msgctxt "DroneOps,FleetUX.ExecutionControls"
+msgid "Execution controls"
+msgstr "Execution controls"
