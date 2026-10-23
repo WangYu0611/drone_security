@@ -1,15 +1,15 @@
-# Marina Bay startup map
+# Marina Bay / The Meadow startup map
 
-The Map client opens a 3D overview of the Marina Bay waterfront, west of Marina Bay Sands. The Command overview keeps its independent 2D map and follows the accepted Mock aircraft positions in Singapore.
+The current Map startup is centered on a grass location inside The Meadow at Gardens by the Bay. The Command overview keeps its independent 2D map and follows the accepted Mock aircraft positions in Singapore.
 
-- WGS84 origin: latitude `1.2834`, longitude `103.8585`, ellipsoid height `50 m`.
-- Initial camera: `2400 m` distance, pitch `-50` degrees, yaw `-35` degrees. The wider view keeps the Marina Bay Sands roof below the application header.
-- Mock UAVs: numeric identifier order, eastward at `2 m` spacing. Each new Launcher-owned Mock Backend session resets eligible aircraft; attaching to an existing Backend or restarting only a client preserves positions.
-- **Locate** still brings the selected aircraft or the whole fleet into a close view for selection. The city overview does not promise separate screen footprints for aircraft only 2 m apart.
+- WGS84 origin: latitude `1.279445`, longitude `103.862188`, ellipsoid height `15 m`.
+- Initial camera: `2400 m` distance, pitch `-50` degrees, yaw `-35` degrees. Locate provides the close fleet view.
+- Mock UAVs: numeric identifier order, eastward at `3 m` spacing. Each new Launcher-owned Mock Backend session resets eligible aircraft; attaching to an existing Backend or restarting only a client preserves positions.
+- **Locate** still brings the selected aircraft or the whole fleet into a close view for selection. The city overview does not promise separate screen footprints for aircraft only 3 m apart.
 
-Presentation defaults live in `[MapStartup]` and `[CommandMap]` in `Config/DefaultGame.ini`; the corresponding simulation origin and default homes are in `Backend/mock_execution.json`. Explicit main-menu coordinates take precedence over the presentation default. Existing plans, routes, deployment snapshots and custom Home files are not translated to another country. Height is relative to the WGS84 ellipsoid, not above terrain or a building.
+Presentation defaults live in `[MapStartup]` and `[CommandMap]` in `Config/DefaultGame.ini`; the corresponding simulation origin and default homes are in `Backend/mock_execution.json`. Explicit main-menu coordinates take precedence over the presentation default. Existing plans, routes, deployment snapshots and custom Home files are not relocated when the startup default changes. Height is relative to the WGS84 ellipsoid, not above terrain or a building.
 
-The initial Mock height is 50 m because the detailed Google mesh places the waterfront mall roof above the earlier 30 m baseline. This is a simulation placement, not a surveyed clearance guarantee.
+The grass center was chosen in the native map. The official The Meadow pin is approximately 55 m north, near a path, so it was not used directly. The `15 m` ellipsoid height is a near-ground display value for the currently loaded Google mesh. It does not perform automatic terrain snapping and is not a surveyed physical elevation or a guaranteed clearance. Existing historical plans and routes are not moved to the grass location.
 
 ## Online 3D source
 
@@ -27,11 +27,17 @@ Google Maps API-key access is a separate billing route; its allowances must not 
 
 [Google's coverage table](https://developers.google.com/maps/coverage) lists Singapore as supported for 3D tiles. That is country-level coverage, not a guarantee for every Marina Bay building. Runtime validation must show actual streamed geometry and the visible waterfront/landmarks; merely creating a tileset actor is insufficient.
 
-## Validation
+## Validation for the grass location — 2026-10-23
+
+The [grass startup acceptance](../Evidence/GrassStartup/20261023/acceptance.json) records the new position, 15 m height and 3 m formation. Configuration policy and isolated Backend migration checks passed 12/12, covering natural startup, explicit reset, preserved historical routes and custom Home files. Native Windows Locate displayed all four aircraft over the open grass; terrain sampling records their actual model and surface heights separately.
+
+The rebuilt RHI startup test discovered and completed 1 test, with 0 passed and 1 failed. New origin, height, 3 m spacing, Locate, selection/video acknowledgement and near-model checks passed; four initial/restored 99-percent Google-detail assertions failed amid tile connection timeouts. The complete failed result is retained rather than classified as a pass. Native grass inspection used the existing local proxy through a process-only launch argument; shared and system proxy settings were not changed. The earlier waterfront screenshots and 50 m acceptance below do not establish validation of these new defaults.
+
+## Historical validation — 2026-10-22
 
 `DroneOps.Map.StartupVisibility` uses the production CesiumWorld with an isolated Mock Backend. It checks the city startup view, actual Google meshes, repeated telemetry not replacing the camera, 2D/3D source switching, and explicit Locate followed by individual selection of all four UAVs. Rendering automation and native mouse-driven checks are recorded separately. Previous Beijing-only regression fixtures remain explicit and isolated from the new production defaults.
 
-The final startup rendering check passed with the 50 m origin, 2400 m overview and 3072 MB texture pool. The relevant UE set discovered and completed 8 tests: 7 passed and 1 failed. `DroneOps.Command.A2MapMode` retains its failed result: its older fixture enters editing before the selection ACK and does not provide an accepted position for its alert aircraft. The call-chain comparison is static; the old binary was not rerun. See `Evidence/MarinaBay/2026-10-22/a2-fixture-diagnostic.json`.
+For the former waterfront configuration, the final startup rendering check passed with the 50 m origin, 2400 m overview and 3072 MB texture pool. The relevant UE set discovered and completed 8 tests: 7 passed and 1 failed. `DroneOps.Command.A2MapMode` retains its failed result: its older fixture enters editing before the selection ACK and does not provide an accepted position for its alert aircraft. The call-chain comparison is static; the old binary was not rerun. See `Evidence/MarinaBay/2026-10-22/a2-fixture-diagnostic.json`.
 
 Separate native mouse checks passed for the initial landmark view, language selection, 2D/3D switching, Locate, single-icon selection and four-aircraft box selection. The final near view had no visible streaming warning; a small warning remained in the wide city view. Native move execution and physical flight were not part of this check. Final screenshots, build metadata, backend checks and protected-file hashes are recorded in `Evidence/MarinaBay/2026-10-22/validation.json` and its companion artifacts.
 

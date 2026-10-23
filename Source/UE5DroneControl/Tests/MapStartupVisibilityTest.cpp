@@ -235,11 +235,11 @@ class FMapStartupVisibility : public IAutomationLatentCommand
         {
             ++Georeferences;auto Origin=MakeShared<FJsonObject>();Origins.Add(MakeShared<FJsonValueObject>(Origin));
             const FVector Geographic=It->GetOriginLongitudeLatitudeHeight();Vector(Origin,TEXT("longitude_latitude_ellipsoid_m"),Geographic);
-            CorrectOrigin=CorrectOrigin && FMath::IsNearlyEqual(Geographic.X,103.8585,1.e-6)
-                && FMath::IsNearlyEqual(Geographic.Y,1.2834,1.e-6) && FMath::IsNearlyEqual(Geographic.Z,50.,.01);
+            CorrectOrigin=CorrectOrigin && FMath::IsNearlyEqual(Geographic.X,103.862188,1.e-6)
+                && FMath::IsNearlyEqual(Geographic.Y,1.279445,1.e-6) && FMath::IsNearlyEqual(Geographic.Z,15.,.01);
         }
         Report->SetArrayField(TEXT("cesium_georeferences"),Origins);
-        Test->TestTrue(TEXT("Actual Cesium georeference is Marina Bay 103.8585 / 1.2834 / ellipsoid 50 m"),Georeferences>0 && CorrectOrigin);
+        Test->TestTrue(TEXT("Actual Cesium georeference is The Meadow 103.862188 / 1.279445 / ellipsoid 15 m"),Georeferences>0 && CorrectOrigin);
         Test->TestTrue(TEXT("Configured city overview target distance is 2400 m"),FMath::IsNearlyEqual(Map->ViewDistance,240000.,1.));
         Test->TestTrue(TEXT("Settled city overview actual camera distance is at least 2000 m"),Map->ActualDistance>=200000.);
         Test->TestTrue(TEXT("Hydrated fleet refresh did not replace the city overview with a close fleet fit"),
@@ -253,7 +253,7 @@ class FMapStartupVisibility : public IAutomationLatentCommand
         auto* Coordinates=Registry->GetCoordinateService().GetObject();
         if(Coordinates && ICoordinateService::Execute_IsCoordinateSystemReady(Coordinates))
             Test->TestTrue(TEXT("City overview focuses the configured Singapore geographic anchor"),
-                Map->ViewFocus.Equals(ICoordinateService::Execute_GeographicToWorld(Coordinates,1.2834,103.8585,50.),100.));
+                Map->ViewFocus.Equals(ICoordinateService::Execute_GeographicToWorld(Coordinates,1.279445,103.862188,15.),100.));
     }
 
     static void Vector(const TSharedRef<FJsonObject>& Json,const TCHAR* Name,const FVector& Value)
@@ -292,15 +292,15 @@ class FMapStartupVisibility : public IAutomationLatentCommand
             Test->TestTrue(*FString::Printf(TEXT("Reset UAV %d uses the new baseline, not historical execution"),Id),
                 Valid && HasReset && G.Equals(FVector(Lon,Lat,Alt),.000001));
             if(Id==1)
-                Test->TestTrue(TEXT("Production Mock formation starts at Marina Bay, ellipsoid 50 m"),
-                    Valid && FMath::IsNearlyEqual(G.X,103.8585,1.e-6) && FMath::IsNearlyEqual(G.Y,1.2834,1.e-6)
-                    && FMath::IsNearlyEqual(G.Z,50.,.01));
+                Test->TestTrue(TEXT("Production Mock formation starts at The Meadow, ellipsoid 15 m"),
+                    Valid && FMath::IsNearlyEqual(G.X,103.862188,1.e-6) && FMath::IsNearlyEqual(G.Y,1.279445,1.e-6)
+                    && FMath::IsNearlyEqual(G.Z,15.,.01));
             if(Id>1 && Valid)
             {
                 constexpr double MetresPerDegree=6371000.*3.14159265358979323846/180.;
                 const double EastMetres=(G.X-Previous.X)*MetresPerDegree*FMath::Cos(FMath::DegreesToRadians(G.Y));
-                Test->TestTrue(*FString::Printf(TEXT("UAV %d follows numeric ID order east at 2 m spacing"),Id),
-                    FMath::IsNearlyEqual(EastMetres,2.,.005) && FMath::Abs(G.Y-Previous.Y)<1.e-8 && FMath::Abs(G.Z-Previous.Z)<.01);
+                Test->TestTrue(*FString::Printf(TEXT("UAV %d follows numeric ID order east at 3 m spacing"),Id),
+                    FMath::IsNearlyEqual(EastMetres,3.,.005) && FMath::Abs(G.Y-Previous.Y)<1.e-8 && FMath::Abs(G.Z-Previous.Z)<.01);
             }
             Previous=G;
         }
@@ -485,7 +485,7 @@ public:
         Out=FPaths::ProjectSavedDir()/TEXT("MapStartupQA")/FDateTime::UtcNow().ToString(TEXT("%Y%m%d-%H%M%S"));
         IFileManager::Get().MakeDirectory(*Out,true);
         Report->SetStringField(TEXT("evidence_boundary"),TEXT("Production CesiumWorld RHI, actual Slate hit geometry, component Locate and left-click ACK; isolated Mock Backend; no OS mouse or physical flight verification"));
-        Report->SetStringField(TEXT("startup_acceptance"),TEXT("Untouched Singapore city overview with rendered Google meshes; overlapping 2 m fleet symbols are allowed only in this initial overview. Explicit Locate and empty-selection Fit retain separate 36 logical pixel hit footprints."));
+        Report->SetStringField(TEXT("startup_acceptance"),TEXT("Untouched Singapore city overview with rendered Google meshes; overlapping 3 m fleet symbols are allowed only in this initial overview. Explicit Locate and empty-selection Fit retain separate 36 logical pixel hit footprints."));
         Report->SetNumberField(TEXT("requested_window_width"),1280);Report->SetNumberField(TEXT("requested_window_height"),800);
         Test->AddInfo(TEXT("Startup evidence: ")+Out);
     }
@@ -517,7 +517,7 @@ public:
             if(Ready && ReadyAt==0)ReadyAt=Now;
             if(!Ready)ReadyAt=0;
             // Wait through several hydrated refreshes before judging automatic
-            // framing. A 2 m formation intentionally overlaps at the city scale.
+            // framing. A 3 m formation intentionally overlaps at the city scale.
             if(Ready && Now-ReadyAt>=3.)
             {
                 if(OverviewObservedAt==0)OverviewObservedAt=Now;

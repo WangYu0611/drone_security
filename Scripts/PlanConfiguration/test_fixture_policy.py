@@ -47,9 +47,9 @@ class FixturePolicyTests(unittest.TestCase):
 
     def test_shipped_homes_match_marina_bay_reset_formation(self):
         fixture = json.loads((ROOT / PRODUCTION_MOCK_FIXTURE).read_text(encoding='utf-8'))
-        origin = {'latitude': 1.2834, 'longitude': 103.8585, 'altitude': 50.0}
+        origin = {'latitude': 1.279445, 'longitude': 103.862188, 'altitude': 15.0}
         self.assertEqual(fixture['startup_formation'],
-                         {'origin': origin, 'spacing_m': 2.0, 'direction': 'east'})
+                         {'origin': origin, 'spacing_m': 3.0, 'direction': 'east'})
         self.assertTrue(fixture['simulation'])
         self.assertEqual(sorted(fixture['uavs']), ['UAV-01', 'UAV-02', 'UAV-03', 'UAV-04'])
         scale = 6371000.0 * math.pi / 180.0 * math.cos(math.radians(origin['latitude']))
@@ -58,7 +58,7 @@ class FixturePolicyTests(unittest.TestCase):
             self.assertEqual(home['latitude'], origin['latitude'])
             self.assertEqual(home['altitude'], origin['altitude'])
             self.assertAlmostEqual((home['longitude'] - origin['longitude']) * scale,
-                                   index * 2.0, places=7)
+                                   index * 3.0, places=7)
 
     def test_beijing_geometry_is_an_independent_fixture(self):
         fixture = json.loads((ROOT / BEIJING_MOCK_FIXTURE).read_text(encoding='utf-8'))

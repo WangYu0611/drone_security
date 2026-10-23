@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'Launcher'))
 from runtime import Runtime, api
 
-EXPECTED_ORIGIN = {'latitude': 1.2834, 'longitude': 103.8585, 'altitude': 50.0}
+EXPECTED_ORIGIN = {'latitude': 1.279445, 'longitude': 103.862188, 'altitude': 15.0}
 
 
 def write_json(path, value):
@@ -102,19 +102,20 @@ def main():
             assert abs(drone['gps_lat'] - home['latitude']) < 1e-9
             assert abs(drone['gps_lon'] - home['longitude']) < 1e-9
             assert abs(drone['gps_alt'] - home['altitude']) < 1e-9
-            assert abs((drone['gps_lon'] - origin['longitude']) * scale - index * 2.0) < 1e-6
+            assert abs((drone['gps_lon'] - origin['longitude']) * scale - index * 3.0) < 1e-6
             assert drone['status'] == 'offline' and drone['simulation'] is True
             assert drone['telemetry_source'] == expected_source
 
     try:
-        assert fixture['startup_formation']['origin'] == EXPECTED_ORIGIN
+        assert fixture['startup_formation'] == {
+            'origin': EXPECTED_ORIGIN, 'spacing_m': 3.0, 'direction': 'east'}
         assert all(uav['home_position']['altitude'] == EXPECTED_ORIGIN['altitude']
                    for uav in fixture['uavs'].values())
         current = runtime(out / 'fresh', False)
         start_owned(current)
         assert_formation(current, 'mock_home')
         assert 'mock_position_baseline' not in state(current)
-        check('Fresh natural startup uses Singapore homes at numbered 2 m spacing without hardware Online')
+        check('Fresh natural startup uses Singapore homes at numbered 3 m spacing without hardware Online')
         stop_owned(current)
         current = None
 
