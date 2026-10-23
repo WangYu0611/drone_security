@@ -18,6 +18,7 @@ class UE5DRONECONTROL_API UCommandMapInteractionService : public UObject
 {
     GENERATED_BODY()
     friend class FP54MapControls;
+    friend class FP4MapDraft;
     friend class FMapPointerInput;
     friend class FRouteEditCameraLockTest;
     friend class FFleetMapWorkflow;

@@ -165,7 +165,7 @@ void UVideoShellWidget::BuildPresentation()
     Place(DesignCanvas,Key(TEXT("VideoUI.ModelDisclaimer"),9,false,Muted),39,709,244,16);
     PrimaryPanel=Panel(303,157,816,432);
     Heading=Key(TEXT("VideoUI.Primary"),20,true);Place(DesignCanvas,Heading,322,166,260,27);
-    Status=MakeText(TEXT(""),11);Status->SetJustification(ETextJustify::Right);Place(DesignCanvas,Status,650,171,265,20);
+    Status=MakeText(TEXT(""),11);Status->SetJustification(ETextJustify::Right);Status->SetAutoWrapText(true);Place(DesignCanvas,Status,650,169,265,28);
     Place(DesignCanvas,Key(TEXT("VideoUI.Current"),13),941,171,83,20);
     auto MakeTarget=[&](float X){
         auto* BadgeBox=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(BadgeBox,Badge,FLinearColor::Transparent,6,FMargin(0));
@@ -272,7 +272,7 @@ void UVideoShellWidget::UpdateFeed(UVideoFeedButton* Button)
     FDroneDescriptor Descriptor;const bool Assigned=Registry->GetDroneDescriptor(Button->DroneId,Descriptor) && !Descriptor.bIsEnemyTarget;
     const bool Selected=Assigned && Button->DroneId==DisplayedDroneId;FeedStyle(Button,Selected);
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    Button->SetIsEnabled(Assigned && !bStopped && (!Sync->IsEnabled() || Sync->IsReady()));
+    Button->SetIsEnabled(Assigned && !bStopped && (!Sync->IsEnabled() || (Sync->IsReady() && !Sync->IsVideoSwitchPending())));
     Button->Label->SetText(Assigned?FText::AsCultureInvariant(FString::Printf(TEXT("UAV-%02d"),Button->DroneId)):ProductText::Get(TEXT("VideoUI.Reserved")));
     FDroneTelemetrySnapshot Telemetry;const bool HasTelemetry=Assigned && Registry->GetTelemetry(Button->DroneId,Telemetry);
     const TCHAR* State=!HasTelemetry?TEXT("VideoUI.NA"):Telemetry.Availability==EDroneAvailability::Online?TEXT("Fleet.Online"):Telemetry.Availability==EDroneAvailability::Lost?TEXT("Fleet.Lost"):TEXT("Fleet.Offline");
@@ -312,9 +312,8 @@ void UVideoShellWidget::UpdatePresentation()
     NetworkValue->SetText(ProductText::Get(Sync->IsReady()?TEXT("Common.Online"):TEXT("Common.Offline")));NetworkValue->SetToolTipText(FText::AsCultureInvariant(Sync->GetStatusText()));
     FString Active;if(Sync->GetContext())Sync->GetContext()->TryGetStringField(TEXT("active_uav_id"),Active);
     SystemHeader->SetText(FText::Format(ProductText::Get(TEXT("VideoUI.ActiveSelection")),Active.IsEmpty()?ProductText::Get(TEXT("VideoUI.NA")):FText::AsCultureInvariant(Active)));
-    if(!Sync->ViewSyncError.IsEmpty())SystemHeader->SetText(ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError));
     SystemHeader->SetToolTipText(SystemHeader->GetText());
-    SetActiveButton->SetIsEnabled(!bStopped && DisplayedDroneId>0 && Sync->IsReady());SetActiveButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.SetActiveHint")));
+    SetActiveButton->SetIsEnabled(!bStopped && DisplayedDroneId>0 && Sync->IsReady() && !Sync->IsVideoSwitchPending());SetActiveButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.SetActiveHint")));
     for(auto B:UnsupportedButtons)B->SetToolTipText(ProductText::Get(TEXT("VideoUI.Unsupported")));
     // AlertStore contains received Backend/session events. Do not manufacture AI detections.
     const auto Alerts=GetGameInstance()->GetSubsystem<UCommandAlertStore>()->GetAlerts();

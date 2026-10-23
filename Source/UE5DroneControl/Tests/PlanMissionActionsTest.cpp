@@ -136,6 +136,16 @@ public:
             if(!Test->TestEqual(TEXT("overview navigation selects requested first task exactly"),P->MissionId,First))return true;
             Test->TestTrue(TEXT("open execution opens details without a start intent"),P->bExecutionView && P->ExecutionIntent.IsEmpty());
             Test->TestTrue(TEXT("deployed tasks remain visible outside the editor step"),P->MissionList->GetParent()==P->Workspace && P->MissionList->IsVisible());CheckSelectionHelper(P);
+            const auto TaskActions=P->MissionList->MissionActionIds,PlanActions=P->PlanActionIds;
+            auto* FirstTaskCard=Cast<UPanelWidget>(P->MissionList->GetRootWidget())->GetChildAt(2);auto* FirstPlanCard=P->PlanCards->GetChildAt(0);
+            auto ButtonOf=[](UWidget* Card,int32 RowIndex){auto* Border=Cast<UBorder>(Card);auto* Body=Border?Cast<UPanelWidget>(Border->GetContent()):nullptr;auto* Row=Body?Cast<UPanelWidget>(Body->GetChildAt(RowIndex)):nullptr;return Row?Cast<UCommandActionButton>(Row->GetChildAt(0)):nullptr;};
+            auto* TaskButton=ButtonOf(FirstTaskCard,3);auto* PlanButton=ButtonOf(FirstPlanCard,2);
+            Test->TestNotNull(TEXT("Task card has a real action button"),TaskButton);Test->TestNotNull(TEXT("Plan card has a real action button"),PlanButton);
+            auto Heartbeat=MakeShared<FJsonObject>(*State);Heartbeat->SetNumberField(TEXT("version"),State->GetNumberField(TEXT("version"))+1);
+            auto Lease=MakeShared<FJsonObject>();Lease->SetNumberField(TEXT("last_seen_at"),FDateTime::UtcNow().ToUnixTimestamp());Heartbeat->SetObjectField(TEXT("configuration_session"),Lease);
+            P->MissionList->Refresh(Heartbeat,Find(Heartbeat,TEXT("plans"),Original),First);P->RefreshPlanCards(Heartbeat);
+            Test->TestTrue(TEXT("heartbeat keeps task action identities and pressed button objects"),P->MissionList->MissionActionIds==TaskActions && Cast<UPanelWidget>(P->MissionList->GetRootWidget())->GetChildAt(2)==FirstTaskCard && ButtonOf(FirstTaskCard,3)==TaskButton);
+            Test->TestTrue(TEXT("heartbeat keeps plan action identities and pressed button objects"),P->PlanActionIds==PlanActions && P->PlanCards->GetChildAt(0)==FirstPlanCard && ButtonOf(FirstPlanCard,2)==PlanButton);
             const int32 Stale=P->MissionList->MissionActionIds[0];P->MissionList->Refresh(State,Find(State,TEXT("plans"),Original),Second);
             P->MissionAction(TEXT("select_mission"),Stale);Test->TestFalse(TEXT("stale row generation is ignored instead of retargeting"),P->bPending);P->Refresh();
             if(!Row(TEXT("edit_mission"),1))return true;++Step;return false;

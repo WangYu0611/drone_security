@@ -2148,16 +2148,16 @@ msgid "No aircraft selected"
 msgstr "No aircraft selected"
 
 msgctxt "DroneOps,FleetUX.SelectHint"
-msgid "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles."
-msgstr "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles."
+msgid "Click an aircraft, or use 'Box select UAVs'."
+msgstr "Click an aircraft, or use 'Box select UAVs'."
 
 msgctxt "DroneOps,FleetUX.SelectionReady"
 msgid "Selection ready. Right-click the map to preview a move."
 msgstr "Selection ready. Right-click the map to preview a move."
 
 msgctxt "DroneOps,FleetUX.PickHint"
-msgid "Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging."
-msgstr "Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging."
+msgid "Right-click the map to choose a destination."
+msgstr "Right-click the map to choose a destination."
 
 msgctxt "DroneOps,FleetUX.ReviewHint"
 msgid "Review height and formation."
@@ -3114,3 +3114,59 @@ msgstr "Aircraft selected, but video switching was not confirmed. Try again."
 msgctxt "DroneOps,MapShell.VideoSelectionPending"
 msgid "Confirming aircraft selection and video view..."
 msgstr "Confirming aircraft selection and video view..."
+
+msgctxt "DroneOps,FleetUX.SelectionHelp"
+msgid "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles. Right-click the map to preview a destination, then review and confirm."
+msgstr "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles. Right-click the map to preview a destination, then review and confirm."
+
+msgctxt "DroneOps,Execution.StartMembersReady"
+msgid "All assigned aircraft are configured. Availability and route separation will be checked again before starting."
+msgstr "All assigned aircraft are configured. Availability and route separation will be checked again before starting."
+
+msgctxt "DroneOps,Execution.StartMemberUnavailable"
+msgid "{0} is unavailable. Reconnect or configure this aircraft before starting."
+msgstr "{0} is unavailable. Reconnect or configure this aircraft before starting."
+
+msgctxt "DroneOps,Execution.StartMemberBusy"
+msgid "{0} is in use by {1} ({2}). Wait for that execution to finish, or stop or cancel it first."
+msgstr "{0} is in use by {1} ({2}). Wait for that execution to finish, or stop or cancel it first."
+
+msgctxt "DroneOps,VideoUI.Switching"
+msgid "Switching to {0}…"
+msgstr "Switching to {0}…"
+
+msgctxt "DroneOps,VideoUI.ConnectingHint"
+msgid "Connecting to video. Please wait."
+msgstr "Connecting to video. Please wait."
+
+msgctxt "DroneOps,VideoUI.FailedHint"
+msgid "Video is unavailable. Select Retry to reconnect."
+msgstr "Video is unavailable. Select Retry to reconnect."
+
+msgctxt "DroneOps,VideoUI.PausedHint"
+msgid "Video is paused or ended. Use the player controls to continue."
+msgstr "Video is paused or ended. Use the player controls to continue."
+
+msgctxt "DroneOps,Errors.VIDEO_SWITCH_FAILED"
+msgid "Video switch was not confirmed. Select the source again."
+msgstr "Video switch was not confirmed. Select the source again."
+
+msgctxt "DroneOps,Errors.VIDEO_SWITCH_INTERRUPTED"
+msgid "Connection interrupted. Video switch was not confirmed."
+msgstr "Connection interrupted. Video switch was not confirmed."
+
+msgctxt "DroneOps,Errors.VIDEO_SWITCH_OFFLINE"
+msgid "Reconnect before switching video."
+msgstr "Reconnect before switching video."
+
+msgctxt "DroneOps,Errors.LANGUAGE_CHANGE_FAILED"
+msgid "Language change was not confirmed. Please try again."
+msgstr "Language change was not confirmed. Please try again."
+
+msgctxt "DroneOps,Errors.LANGUAGE_CHANGE_INTERRUPTED"
+msgid "Connection interrupted. Language change was not confirmed."
+msgstr "Connection interrupted. Language change was not confirmed."
+
+msgctxt "DroneOps,Errors.LANGUAGE_CHANGE_OFFLINE"
+msgid "Reconnect before changing language."
+msgstr "Reconnect before changing language."

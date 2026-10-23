@@ -498,7 +498,7 @@ void ADroneOpsPlayerController::Tick(float DeltaTime)
 		// 剔除已失效的选中航点（可能被删除/路径重建），并同步主选中。
 		PruneInvalidSelection();
 
-		if (bEditDraggingWaypoint)
+		if (bEditDraggingWaypoint || bPlanarWaypointDrag)
 		{
 			UpdateDraggedEditWaypoint();
 		}
@@ -3695,17 +3695,23 @@ bool ADroneOpsPlayerController::TryBeginMapWaypointBodyDrag(const FVector2D& Mou
     SetEditSelectedWaypoint(Body);SetEditActiveAxis(EGizmoAxis::None);
     PlanarHeight=Body->GetActorLocation().Z;
     PlanarCursor=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);
-    bPlanarWaypointDrag=true;bEditDraggingWaypoint=true;
-    SetIgnoreLookInput(true);SetIgnoreMoveInput(true);
-    CaptureMoveUndoStart();BeginDeferredUpdateForSelection();
+    // A press selects the point. Natural click jitter must not edit its
+    // coordinates or create an undo transaction.
+    PlanarPressScreen=Mouse;PlanarDragThreshold=CommandScreenManager->GetMapService()->GetDragThreshold();
+    bPlanarWaypointDrag=true;bEditDraggingWaypoint=false;
     return true;
 }
 
 void ADroneOpsPlayerController::UpdateMapWaypointBodyDrag(const FVector2D& Mouse)
 {
-    if(!bPlanarWaypointDrag || !CanInteractWithEditWaypoint(EditSelectedWaypoint))return;
+    if(!bPlanarWaypointDrag || !CanInteractWithEditWaypoint(EditSelectedWaypoint) || Mouse.ContainsNaN())return;
+    if(!bEditDraggingWaypoint && FVector2D::Distance(Mouse,PlanarPressScreen)<=PlanarDragThreshold)return;
     FVector Origin,Direction;
     if(DeprojectScreenPositionToWorld(Mouse.X,Mouse.Y,Origin,Direction) && FMath::Abs(Direction.Z)>.001){
+        if(!bEditDraggingWaypoint){
+            bEditDraggingWaypoint=true;SetIgnoreLookInput(true);SetIgnoreMoveInput(true);
+            CaptureMoveUndoStart();BeginDeferredUpdateForSelection();
+        }
         const FVector Position=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);
         const FVector Delta=Position-PlanarCursor;PlanarCursor=Position;
         MoveSelectionAlongAxis(EGizmoAxis::X,Delta.X);MoveSelectionAlongAxis(EGizmoAxis::Y,Delta.Y);
@@ -3799,7 +3805,10 @@ void ADroneOpsPlayerController::HandleEditModePressed()
         if(EditActiveAxis==EGizmoAxis::None){
             if(!bMissionPathMode)return;
             FVector Origin,Direction;if(!DeprojectMousePositionToWorld(Origin,Direction) || FMath::Abs(Direction.Z)<.001)return;
-            PlanarHeight=HitWaypoint->GetActorLocation().Z;PlanarCursor=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);bPlanarWaypointDrag=true;
+            if(!GetMousePosition(PlanarPressScreen.X,PlanarPressScreen.Y))return;
+            PlanarHeight=HitWaypoint->GetActorLocation().Z;PlanarCursor=Origin+Direction*((PlanarHeight-Origin.Z)/Direction.Z);
+            PlanarDragThreshold=IsCommandMapViewActive()?CommandScreenManager->GetMapService()->GetDragThreshold():5.f;
+            bPlanarWaypointDrag=true;bEditDraggingWaypoint=false;return;
         }
 
 		bEditDraggingWaypoint = true;

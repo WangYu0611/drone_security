@@ -56,7 +56,7 @@ void UOperationalContextSubsystem::Initialize(FSubsystemCollectionBase& Collecti
     }), 0.25f);
 }
 void UOperationalContextSubsystem::Deinitialize() {
-    bStopped = true; ++Generation; bEnabled = false; CancelPendingLocalSelection();
+    bStopped = true; ++Generation; bEnabled = false; CancelPendingLocalSelection(); CancelPendingViewRequests(false);
     FTSTicker::GetCoreTicker().RemoveTicker(TickHandle);
     if (Socket) {
         Socket->OnConnected().Clear(); Socket->OnConnectionError().Clear(); Socket->OnClosed().Clear(); Socket->OnMessage().Clear();
@@ -80,6 +80,7 @@ void UOperationalContextSubsystem::Request(const FString& Verb, const FString& P
     if (!Req->ProcessRequest()) Complete(nullptr);
 }
 void UOperationalContextSubsystem::Connect() {
+    CancelPendingViewRequests(true);
     LastMessage = FPlatformTime::Seconds(); bConnecting = true; State = TEXT("RECONNECTING"); const int32 Attempt = ++Generation;
     auto Identity = MakeShared<FJsonObject>();
     Identity->SetStringField(TEXT("client_id"), ClientId); Identity->SetStringField(TEXT("client_role"), Role);
@@ -106,6 +107,7 @@ void UOperationalContextSubsystem::OpenSocket(int32 Attempt) {
     Socket->Connect();
 }
 void UOperationalContextSubsystem::Offline() {
+    CancelPendingViewRequests(true);
     if(bMapSelectionPending)ViewSyncError=TEXT("MAP_VIDEO_SYNC_FAILED");
     CancelPendingLocalSelection();
     if (auto* Events=GetGameInstance()->GetSubsystem<UOperationalEventStore>()) Events->ProjectConnectivity(false);
@@ -134,8 +136,8 @@ void UOperationalContextSubsystem::Receive(const FString& Message) {
     }
     if (Type == TEXT("context_subscribed")) {
         Request(TEXT("GET"),TEXT("/api/security-plans"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyPlans(Reply);bPlansHydrated=true;});
-        Request(TEXT("GET"),TEXT("/api/ui-preferences"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyUIPreferences(Reply);bLanguageHydrated=true;});
-        Request(TEXT("GET"),TEXT("/api/video-view"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyVideoView(Reply);bVideoHydrated=true;});
+        Request(TEXT("GET"),TEXT("/api/ui-preferences"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyUIPreferences(Reply);bLanguageHydrated=true;ReconcileLanguageFeedback();});
+        Request(TEXT("GET"),TEXT("/api/video-view"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyVideoView(Reply);bVideoHydrated=true;ReconcileVideoFeedback();});
     }
     if (Type == TEXT("alert")) {
         FString Id, AlertType; double DroneId = 0;
@@ -260,9 +262,10 @@ bool UOperationalContextSubsystem::SetLocalSelection(int32 Id, const TArray<int3
     return true;
 }
 bool UOperationalContextSubsystem::SetMapSelection(int32 Id,const TArray<int32>& Multi,int32 ClickedId) {
-    if(Role!=TEXT("Map") || !IsHydrated() || bMapSelectionPending)return false;
+    if(Role!=TEXT("Map") || !IsHydrated() || bMapSelectionPending || bVideoSwitchPending)return false;
     auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     if(ClickedId<=0 || !Registry->IsDroneRegistered(ClickedId))return false;
+    ++VideoSwitchSerial; // A prior ordinary-video callback cannot overwrite this Map operation.
     const int64 Serial=++SelectionSerial;
     const FString Target=FString::Printf(TEXT("UAV-%02d"),ClickedId);
     auto Patch=MakeShared<FJsonObject>();
@@ -307,7 +310,9 @@ bool UOperationalContextSubsystem::SelectAlert(const FString& AlertId, int32 Dro
 FString UOperationalContextSubsystem::GetStatusText() const {
     FString Id; if (Context) Context->TryGetStringField(TEXT("active_uav_id"), Id);
     const FString Status=FText::Format(ProductText::Get(TEXT("Common.Sync")),ProductText::Source(IsReady()?TEXT("ONLINE"):TEXT("OFFLINE")),ProductText::Source(State),FText::AsCultureInvariant(Id),FText::AsNumber(Version)).ToString();
-    return ViewSyncError.IsEmpty()?Status:Status+TEXT(" | ")+ProductText::Get(TEXT("Errors.")+ViewSyncError).ToString();
+    FString Feedback=Status;
+    for(const auto& Error:{ViewSyncError,LanguageSyncError})if(!Error.IsEmpty())Feedback+=TEXT(" | ")+ProductText::Get(TEXT("Errors.")+Error).ToString();
+    return Feedback;
 }
 
 void UOperationalContextSubsystem::ApplyPlans(const TSharedPtr<FJsonObject>& Incoming) {
@@ -397,24 +402,77 @@ bool UOperationalContextSubsystem::ApplyUIPreferences(const TSharedPtr<FJsonObje
     if(!NewDomainVersion(Incoming,UIPreferences,TEXT("ui_preferences_version")))return false;
     FString Language;if(!Incoming->TryGetStringField(TEXT("language"),Language) || (Language!=TEXT("en") && Language!=TEXT("zh-Hans")))return false;
     UIPreferences=Incoming;GetGameInstance()->GetSubsystem<UUILanguageSubsystem>()->ApplyConfirmed(Language);
-    OnUIPreferencesChanged.Broadcast(Incoming);return true;
+    ReconcileLanguageFeedback();OnUIPreferencesChanged.Broadcast(Incoming);return true;
 }
 bool UOperationalContextSubsystem::ApplyVideoView(const TSharedPtr<FJsonObject>& Incoming) {
     if(!NewDomainVersion(Incoming,VideoView,TEXT("video_view_version")))return false;
     const auto V=Incoming->TryGetField(TEXT("video_target_uav_id"));if(!V || (V->Type!=EJson::Null && V->Type!=EJson::String))return false;
-    VideoView=Incoming;OnVideoViewChanged.Broadcast(Incoming);return true;
+    VideoView=Incoming;ReconcileVideoFeedback();OnVideoViewChanged.Broadcast(Incoming);return true;
+}
+void UOperationalContextSubsystem::CancelPendingViewRequests(bool ReportFailure) {
+    // Request intentionally drops callbacks from an older connection generation.
+    // Release its UI gates here instead of waiting for callbacks that cannot run.
+    ++VideoSwitchSerial;++LanguageChangeSerial;
+    if(ReportFailure && bVideoSwitchPending)ViewSyncError=TEXT("VIDEO_SWITCH_INTERRUPTED");
+    if(ReportFailure && bLanguageChangePending)LanguageSyncError=TEXT("LANGUAGE_CHANGE_INTERRUPTED");
+    bVideoSwitchPending=bLanguageChangePending=false;
+}
+void UOperationalContextSubsystem::ReconcileVideoFeedback() {
+    if(bVideoSwitchPending || !IsReady() || !bVideoHydrated || !ViewSyncError.StartsWith(TEXT("VIDEO_SWITCH_")))return;
+    if(ViewSyncError==TEXT("VIDEO_SWITCH_OFFLINE") || (VideoView && PlanUI::Field(VideoView,TEXT("video_target_uav_id"))==RequestedVideoTarget))
+        ViewSyncError.Empty();
+}
+void UOperationalContextSubsystem::ReconcileLanguageFeedback() {
+    if(bLanguageChangePending || !IsReady() || !bLanguageHydrated)return;
+    if(LanguageSyncError==TEXT("LANGUAGE_CHANGE_OFFLINE") || (UIPreferences && PlanUI::Field(UIPreferences,TEXT("language"))==RequestedLanguage))
+        LanguageSyncError.Empty();
+}
+void UOperationalContextSubsystem::CompleteLanguageChange(int64 Serial,const TSharedPtr<FJsonObject>& Reply) {
+    if(Serial!=LanguageChangeSerial || !bLanguageChangePending)return;
+    bLanguageChangePending=false;
+    double VersionNumber=-1;
+    const bool Accepted=Reply && Reply->TryGetNumberField(TEXT("ui_preferences_version"),VersionNumber)
+        && FMath::IsFinite(VersionNumber) && VersionNumber>=0 && VersionNumber==FMath::FloorToDouble(VersionNumber)
+        && PlanUI::Field(Reply,TEXT("language"))==RequestedLanguage;
+    LanguageSyncError=Accepted?TEXT(""):TEXT("LANGUAGE_CHANGE_FAILED");
+    if(Accepted)ApplyUIPreferences(Reply);
+    // The WS snapshot may have confirmed the change before the HTTP reply was lost.
+    ReconcileLanguageFeedback();
+}
+void UOperationalContextSubsystem::CompleteVideoSwitch(int64 Serial,const TSharedPtr<FJsonObject>& Reply) {
+    if(Serial!=VideoSwitchSerial || !bVideoSwitchPending)return;
+    bVideoSwitchPending=false;
+    double VersionNumber=-1;
+    const auto Target=Reply?Reply->TryGetField(TEXT("video_target_uav_id")):nullptr;
+    const bool Accepted=Reply && Reply->TryGetNumberField(TEXT("video_view_version"),VersionNumber)
+        && FMath::IsFinite(VersionNumber) && VersionNumber>=0 && VersionNumber==FMath::FloorToDouble(VersionNumber)
+        && Target && (Target->Type==EJson::Null || Target->Type==EJson::String)
+        && PlanUI::Field(Reply,TEXT("video_target_uav_id"))==RequestedVideoTarget;
+    ViewSyncError=Accepted?TEXT(""):TEXT("VIDEO_SWITCH_FAILED");
+    // The acknowledged target can be older than a subsequent remote selection.
+    // ApplyVideoView keeps the higher authoritative version, never local intent.
+    if(Accepted)ApplyVideoView(Reply);
+    // Reconcile after releasing pending, including a lost HTTP reply after WS confirmation.
+    ReconcileVideoFeedback();
 }
 bool UOperationalContextSubsystem::SetLanguage(const FString& Language) {
-    if(!IsReady()){ViewSyncError=TEXT("SYNC_OFFLINE");return false;}
+    if(bLanguageChangePending)return false;
+    RequestedLanguage=Language;
+    if(!IsReady()){LanguageSyncError=TEXT("LANGUAGE_CHANGE_OFFLINE");return false;}
+    const int64 Serial=++LanguageChangeSerial;
+    bLanguageChangePending=true;LanguageSyncError.Empty();
     auto Body=MakeShared<FJsonObject>();Body->SetStringField(TEXT("instance_id"),InstanceId);Body->SetStringField(TEXT("language"),Language);
-    Request(TEXT("PATCH"),TEXT("/api/ui-preferences"),Body,[this](TSharedPtr<FJsonObject> R){ViewSyncError=R && R->HasField(TEXT("ui_preferences_version"))?TEXT(""):TEXT("SYNC_FAILED");ApplyUIPreferences(R);});return true;
+    Request(TEXT("PATCH"),TEXT("/api/ui-preferences"),Body,[this,Serial](TSharedPtr<FJsonObject> R){CompleteLanguageChange(Serial,R);});return true;
 }
 bool UOperationalContextSubsystem::OpenVideo(const FString& UAV) {
-    if(bMapSelectionPending)return false;
-    if(!IsReady()){ViewSyncError=TEXT("SYNC_OFFLINE");return false;}
+    if(bMapSelectionPending || bVideoSwitchPending)return false;
+    RequestedVideoTarget=UAV;
+    if(!IsReady()){ViewSyncError=TEXT("VIDEO_SWITCH_OFFLINE");return false;}
+    const int64 Serial=++VideoSwitchSerial;
+    bVideoSwitchPending=true;ViewSyncError.Empty();
     auto Body=MakeShared<FJsonObject>();Body->SetStringField(TEXT("instance_id"),InstanceId);
     if(UAV.IsEmpty())Body->SetField(TEXT("video_target_uav_id"),MakeShared<FJsonValueNull>());else Body->SetStringField(TEXT("video_target_uav_id"),UAV);
-    Request(TEXT("PATCH"),TEXT("/api/video-view"),Body,[this](TSharedPtr<FJsonObject> R){ViewSyncError=R && R->HasField(TEXT("video_view_version"))?TEXT(""):TEXT("SYNC_FAILED");ApplyVideoView(R);});return true;
+    Request(TEXT("PATCH"),TEXT("/api/video-view"),Body,[this,Serial](TSharedPtr<FJsonObject> R){CompleteVideoSwitch(Serial,R);});return true;
 }
 
 bool UOperationalContextSubsystem::IsRoleOnline(const FString& ClientRole) const {

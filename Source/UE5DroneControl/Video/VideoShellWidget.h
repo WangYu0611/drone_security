@@ -90,7 +90,7 @@ private:
     FString SourceUrl, MediaState = TEXT("OFFLINE"), ProbeToken;
     int32 DisplayedDroneId = 0, Generation = 0, Width = 0, Height = 0;
     double LastProbe = 0, LastProgress = 0, LastSample = 0, LastMediaTime = -1, LastFrames = -1, Fps = -1;
-    bool bStopped = false, bPageReady = false;
+    bool bStopped = false, bPageReady = false, bHasDecodedFrame = false;
     bool bFollowTarget = false;
     int32 LocalSourceId = 0;
     UPROPERTY() TObjectPtr<class UButton> FollowButton;

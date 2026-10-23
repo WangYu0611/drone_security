@@ -45,6 +45,10 @@ public:
     FString GetInstanceId() const { return InstanceId; }
     bool SetLanguage(const FString& Language);
     bool OpenVideo(const FString& UAV);
+    bool IsVideoSwitchPending() const { return bVideoSwitchPending; }
+    FString GetPendingVideoTarget() const { return bVideoSwitchPending ? RequestedVideoTarget : FString(); }
+    bool IsLanguageChangePending() const { return bLanguageChangePending; }
+    FString GetLanguageSyncError() const { return LanguageSyncError; }
     bool ApplyUIPreferences(const TSharedPtr<FJsonObject>& Incoming);
     bool ApplyVideoView(const TSharedPtr<FJsonObject>& Incoming);
     FOperationalContextChanged OnUIPreferencesChanged, OnVideoViewChanged, OnMapRouteEditRequested;
@@ -55,6 +59,15 @@ public:
 
 
 private:
+    friend class FVideoRequestFeedbackTest;
+    bool bVideoSwitchPending = false, bLanguageChangePending = false;
+    int64 VideoSwitchSerial = 0, LanguageChangeSerial = 0;
+    FString RequestedVideoTarget, RequestedLanguage, LanguageSyncError;
+    void CancelPendingViewRequests(bool ReportFailure);
+    void CompleteVideoSwitch(int64 Serial, const TSharedPtr<FJsonObject>& Reply);
+    void CompleteLanguageChange(int64 Serial, const TSharedPtr<FJsonObject>& Reply);
+    void ReconcileVideoFeedback();
+    void ReconcileLanguageFeedback();
     bool bEnabled = false, bApplying = false, bFollowGlobalSelection = true;
     bool bStopped = false, bConnecting = false;
     bool bPlansHydrated=false, bLanguageHydrated=false, bVideoHydrated=false;

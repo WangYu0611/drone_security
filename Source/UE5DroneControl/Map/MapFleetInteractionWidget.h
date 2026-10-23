@@ -18,6 +18,7 @@ class UE5DRONECONTROL_API UMapFleetInteractionWidget : public UUserWidget {
     friend class FFleetTerrainWorkflow;
     friend class FMapStartupVisibility;
     friend class FFleetPanelVisibility;
+    friend class FMapFleetCardLayout;
 public:
     void SetMode(EMapFleetMode Value);
     EMapFleetMode GetMode() const { return Mode; }

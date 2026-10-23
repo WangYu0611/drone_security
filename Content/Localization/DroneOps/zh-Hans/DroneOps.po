@@ -2148,16 +2148,16 @@ msgid "No aircraft selected"
 msgstr "尚未选择无人机"
 
 msgctxt "DroneOps,FleetUX.SelectHint"
-msgid "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles."
-msgstr "单击无人机选中；点击“框选无人机”后才能拖框选择。Shift 添加，Ctrl 切换选择。"
+msgid "Click an aircraft, or use 'Box select UAVs'."
+msgstr "单击选机，或点击“框选无人机”。"
 
 msgctxt "DroneOps,FleetUX.SelectionReady"
 msgid "Selection ready. Right-click the map to preview a move."
 msgstr "选择已就绪，右击地图预览移动。"
 
 msgctxt "DroneOps,FleetUX.PickHint"
-msgid "Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging."
-msgstr "右击地图选择目的地；单击无人机可重新选择，点击“框选无人机”后才能拖框选择。"
+msgid "Right-click the map to choose a destination."
+msgstr "右击地图选择目的地。"
 
 msgctxt "DroneOps,FleetUX.ReviewHint"
 msgid "Review height and formation."
@@ -3114,3 +3114,59 @@ msgstr "无人机已选中，但视频切换未确认，请重试。"
 msgctxt "DroneOps,MapShell.VideoSelectionPending"
 msgid "Confirming aircraft selection and video view..."
 msgstr "正在确认无人机选择和视频画面…"
+
+msgctxt "DroneOps,FleetUX.SelectionHelp"
+msgid "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles. Right-click the map to preview a destination, then review and confirm."
+msgstr "单击无人机选中。点击“框选无人机”后才能拖框选择；Shift 添加，Ctrl 切换选择。右击地图预览目的地，检查后确认。"
+
+msgctxt "DroneOps,Execution.StartMembersReady"
+msgid "All assigned aircraft are configured. Availability and route separation will be checked again before starting."
+msgstr "已确认全部分配无人机的配置。启动前仍会检查实时可用性与航线间距。"
+
+msgctxt "DroneOps,Execution.StartMemberUnavailable"
+msgid "{0} is unavailable. Reconnect or configure this aircraft before starting."
+msgstr "{0} 当前不可用，请先恢复连接或完成该无人机的配置。"
+
+msgctxt "DroneOps,Execution.StartMemberBusy"
+msgid "{0} is in use by {1} ({2}). Wait for that execution to finish, or stop or cancel it first."
+msgstr "{0} 正由 {1} 使用（{2}）。请等待该任务结束，或先终止、取消该任务。"
+
+msgctxt "DroneOps,VideoUI.Switching"
+msgid "Switching to {0}…"
+msgstr "正在切换至 {0}…"
+
+msgctxt "DroneOps,VideoUI.ConnectingHint"
+msgid "Connecting to video. Please wait."
+msgstr "正在连接视频，请稍候。"
+
+msgctxt "DroneOps,VideoUI.FailedHint"
+msgid "Video is unavailable. Select Retry to reconnect."
+msgstr "视频暂不可用，请点击“重试”重新连接。"
+
+msgctxt "DroneOps,VideoUI.PausedHint"
+msgid "Video is paused or ended. Use the player controls to continue."
+msgstr "视频已暂停或结束，可使用播放器控件继续播放。"
+
+msgctxt "DroneOps,Errors.VIDEO_SWITCH_FAILED"
+msgid "Video switch was not confirmed. Select the source again."
+msgstr "视频切换未确认，请重新选择视频源。"
+
+msgctxt "DroneOps,Errors.VIDEO_SWITCH_INTERRUPTED"
+msgid "Connection interrupted. Video switch was not confirmed."
+msgstr "连接已中断，视频切换未确认。"
+
+msgctxt "DroneOps,Errors.VIDEO_SWITCH_OFFLINE"
+msgid "Reconnect before switching video."
+msgstr "连接恢复后可切换视频。"
+
+msgctxt "DroneOps,Errors.LANGUAGE_CHANGE_FAILED"
+msgid "Language change was not confirmed. Please try again."
+msgstr "语言切换未确认，请重试。"
+
+msgctxt "DroneOps,Errors.LANGUAGE_CHANGE_INTERRUPTED"
+msgid "Connection interrupted. Language change was not confirmed."
+msgstr "连接已中断，语言切换未确认。"
+
+msgctxt "DroneOps,Errors.LANGUAGE_CHANGE_OFFLINE"
+msgid "Reconnect before changing language."
+msgstr "连接恢复后可切换语言。"

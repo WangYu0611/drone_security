@@ -1,0 +1,437 @@
+{
+  "scope": "Plan, Map and Video interaction review with isolated Mock data",
+  "baseline_commit": "68436d3f34a3f9f79938a6d799f0c13a198dcda1",
+  "final_ue_module_sha256": "dc3ff03d25cf069345ef51574999b041f879f98feea8189234e273c1e5e0974f",
+  "changes": [
+    "Stable task and plan buttons across lease heartbeats",
+    "Readiness and owner conflicts checked for every assigned aircraft",
+    "Fresh schedule defaults and correct reservation draft ownership",
+    "Readable wrapped movement card with concise next-step instructions",
+    "Waypoint click jitter does not edit routes; Escape rolls back gestures",
+    "Video switch pending feedback and duplicate request guard",
+    "Media pause, resume stall, failure and retry guidance",
+    "Independent language/video errors reconciled against confirmed snapshots"
+  ],
+  "build_attempts": [
+    {
+      "attempt": 1,
+      "exit": 6,
+      "reason": "New test used ToSharedRef on TSharedRef; corrected",
+      "log_sha256": "8d02cee1f35d0f51641e23facdbc401ee2c37320292b3c0c9a17a9d0471c845a"
+    },
+    {
+      "attempt": 2,
+      "exit": 0,
+      "log_sha256": "90b27c25d8212969328607cb382cbc3d8eab394037e52ecfeb6ad4755f282078"
+    },
+    {
+      "attempt": 3,
+      "exit": 0,
+      "log_sha256": "b6a134abb9c567a49e2c867d8dfbae2fb99440bfad0f47f167cc8fb50118fac3"
+    }
+  ],
+  "initial_regression": [
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792767269724912500",
+      "source_summary_sha256": "f9ef8a9b3ec6b19354b8ec8263bffd269c9c5270b14de085e3a1d1696a33428b",
+      "ue_module_sha256": "5f1dde4f1736806b4fcf77f83768875223eff1d8f9ccb1f8f7912da22ea5ccff",
+      "binary_unchanged": true,
+      "rendering": "NullRHI component only",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.PlanConfiguration.StartReadiness",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.ScheduleDraft",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.DeploymentIntent",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792767365666795300",
+      "source_summary_sha256": "f6891d9155d63e4bf94dddb3f58276211e6e4dbd2bc9067a970aa01bf8c3b4a2",
+      "ue_module_sha256": "5f1dde4f1736806b4fcf77f83768875223eff1d8f9ccb1f8f7912da22ea5ccff",
+      "binary_unchanged": true,
+      "rendering": "RHI automation",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.PlanConfiguration.MissionActions",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.PlanConfiguration.Workspace",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.P55.ReservationWidgets",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792767526504119000",
+      "source_summary_sha256": "4a8d9371f4a68e2e69c45ff8a0beb6ac91e2cc2087c8e15aec5f19112af27904",
+      "ue_module_sha256": "5f1dde4f1736806b4fcf77f83768875223eff1d8f9ccb1f8f7912da22ea5ccff",
+      "binary_unchanged": true,
+      "rendering": "RHI automation",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Map.InteractionUX.CardLayout",
+          "expected": 2,
+          "discovered": 2,
+          "completed": 2,
+          "passed": 2,
+          "failed": 0,
+          "warnings": 2,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.Fleet.PanelVisibility",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792767690642258600",
+      "source_summary_sha256": "3c31b05e7faf527c782b1be2fa7be963f04b320704003dad3c36d51234962321",
+      "ue_module_sha256": "5f1dde4f1736806b4fcf77f83768875223eff1d8f9ccb1f8f7912da22ea5ccff",
+      "binary_unchanged": true,
+      "rendering": "NullRHI component only",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Map.SelectionVideoAck",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.Fleet.ManualTakeover",
+          "expected": 4,
+          "discovered": 4,
+          "completed": 4,
+          "passed": 4,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792767753208061100",
+      "source_summary_sha256": "441eee3fdd96aac543eff9e73eab3ae63eb49f32f0bdb07d4b14b22c7bb6c9df",
+      "ue_module_sha256": "5f1dde4f1736806b4fcf77f83768875223eff1d8f9ccb1f8f7912da22ea5ccff",
+      "binary_unchanged": true,
+      "rendering": "NullRHI component only",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Video.RequestFeedback",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792767783877643900",
+      "source_summary_sha256": "134bfbb7b6cb9c9f624ab823ae35d4ee2c9cec02c5472a1ae544a605403da3e9",
+      "ue_module_sha256": "5f1dde4f1736806b4fcf77f83768875223eff1d8f9ccb1f8f7912da22ea5ccff",
+      "binary_unchanged": true,
+      "rendering": "RHI automation",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Figma.VideoPresentation",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.P4.VideoTarget.ExplicitSelectionAndBrowserIsolation",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "final_sync_regression": [
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792768155871531100",
+      "source_summary_sha256": "bdce92e76d2221778d9c49bfe212f64384bd6ceacf755578b0bf4fa41f04555f",
+      "ue_module_sha256": "dc3ff03d25cf069345ef51574999b041f879f98feea8189234e273c1e5e0974f",
+      "binary_unchanged": true,
+      "rendering": "NullRHI component only",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Video.RequestFeedback",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.Map.SelectionVideoAck",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "source": "Evidence/PlanConfiguration/verification-1792768315639029200",
+      "source_summary_sha256": "5877b11977e5be0e325f7fe7822a9ceee09b7ab5ce7fcf7198dc70b9e8ef75e3",
+      "ue_module_sha256": "dc3ff03d25cf069345ef51574999b041f879f98feea8189234e273c1e5e0974f",
+      "binary_unchanged": true,
+      "rendering": "RHI automation",
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Figma.VideoPresentation",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.P4.VideoTarget.ExplicitSelectionAndBrowserIsolation",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1,
+          "not_run": 0,
+          "exit": 0,
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "verification_note": "18 initial checks passed. After the final callback reconciliation change, the four affected video/Map synchronization checks were repeated on the final binary. Native checks below used the final binary.",
+  "localization": {
+    "gather_steps_exit": 0,
+    "editor_exit": 1,
+    "diagnostic": "Existing GameFeatureData asset-manager configuration errors",
+    "log_sha256": "07f12666cdc7900ea33d8413d67b7b8c6253b9f0e5a8bdfa5cb5772e7827022e"
+  },
+  "native": {
+    "scope": "Final-build native mouse review, fresh isolated Mock Backend and offline map",
+    "checks": [
+      {
+        "name": "Chinese empty-selection move card",
+        "pass": true,
+        "evidence": "after-map-empty-move-zh.jpg",
+        "observed": "Concise instruction and selection text do not overlap; disabled destination action and Cancel are visible."
+      },
+      {
+        "name": "English empty and selected move card",
+        "pass": true,
+        "evidence": [
+          "after-map-empty-move-en.jpg",
+          "after-map-selected-en.jpg"
+        ],
+        "observed": "Instructions wrap cleanly; selecting UAV-01 updates the next step to destination selection."
+      },
+      {
+        "name": "Escape from movement card",
+        "pass": true,
+        "observed": "Card closes and UAV-01 remains selected; no movement was submitted."
+      },
+      {
+        "name": "Open existing plan and finish configuration",
+        "pass": true,
+        "evidence": "after-command-return-list.jpg",
+        "observed": "Open Plan enters configuration; Finish Configuration returns to the list. The separate Return to Configuration control correctly keeps the configuration view."
+      },
+      {
+        "name": "Video no-frames failure and retry",
+        "pass": true,
+        "evidence": [
+          "after-video-no-frames.jpg",
+          "after-video-retrying.jpg"
+        ],
+        "observed": "about:blank fixture stalls and displays Retry guidance; native Retry click restores connecting/waiting feedback."
+      },
+      {
+        "name": "Video explicit source selection",
+        "pass": true,
+        "observed": "Native Video click changes the acknowledged target to UAV-02 and displays No Source for its empty URL."
+      },
+      {
+        "name": "Map click updates Video target",
+        "pass": true,
+        "evidence": "after-video-map-selection.jpg",
+        "observed": "Native Map click selects UAV-03; Video main target updates from UAV-02 to UAV-03."
+      }
+    ],
+    "ue_module_sha256": "dc3ff03d25cf069345ef51574999b041f879f98feea8189234e273c1e5e0974f",
+    "not_native_verified": [
+      "Waypoint jitter and drag Escape: production pointer entry-point automation only",
+      "Busy multi-aircraft start and schedule draft changes: component/ACK automation",
+      "Decoded playback pause/resume: synthetic browser probes only"
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "after-command-return-list.jpg",
+      "sha256": "6e2f608fc127748e8e4fbbc2853bb8cf7e39d3e26b3aecbd7ac9be17cf5aa1ba"
+    },
+    {
+      "path": "after-map-empty-move-en.jpg",
+      "sha256": "417970dabfaa7de2b9290e8080380c8756393bb1782af22776f35866edcf1e4f"
+    },
+    {
+      "path": "after-map-empty-move-zh.jpg",
+      "sha256": "b7875c9639b3f07713b92f6c00385cf2fb42be7cdc71e4492f963cb1a481a559"
+    },
+    {
+      "path": "after-map-selected-en.jpg",
+      "sha256": "beaf59ce66fa47b26a0146db9f2259464d56879a3c26d8ff8612575c8db39337"
+    },
+    {
+      "path": "after-video-map-selection.jpg",
+      "sha256": "0ed13d8ef9546f11d90f9bd8f57b679cad83b37741c679f8cb8071d1eea03367"
+    },
+    {
+      "path": "after-video-no-frames.jpg",
+      "sha256": "3a182fceab52cacacf423e3942593a8aaa9adfef45c349ab298fb943c675a878"
+    },
+    {
+      "path": "after-video-retrying.jpg",
+      "sha256": "4663bb774b2dce1b8ab2251463305f9e50122c088bd82095e4cca416b8adba0b"
+    },
+    {
+      "path": "before-map-empty-move.jpg",
+      "sha256": "bd84998e739ed22fc0eb8eb914037c1585fc30ac28e6ac7a5e41b014d01e68ca"
+    }
+  ],
+  "limitations": [
+    "Isolated Mock/offline-map evidence, no physical UAV flight or real camera decoding claim",
+    "Synthetic media probes verify presentation state; native video check uses a no-frames about:blank source",
+    "Existing Backend geometry failures were not rerun or changed",
+    "Automation warnings include offline-level receiver absence and configuration diagnostics"
+  ]
+}

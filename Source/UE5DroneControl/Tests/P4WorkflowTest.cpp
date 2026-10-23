@@ -21,6 +21,8 @@
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
 #include "Widgets/SViewport.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Framework/Application/IInputProcessor.h"
 #include "Internationalization/Internationalization.h"
 #include "Serialization/JsonSerializer.h"
 #include "Shared/PlanWidgetSupport.h"
@@ -160,15 +162,33 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
             PendingGround();PC->CompleteMapGroundClick({102,101},true);
             Test->TestEqual(TEXT("microdrag remains a click and adds exactly one waypoint"),Path->Waypoints.Num(),OriginalCount+1);
             PC->UndoMissionRouteEdit();PC->SetEditSelectedWaypoint(Path->GetWaypointHandleActors()[SelectedIndex]);P->Refresh();
+            auto* InputMap=PC->GetCommandScreenManager()->GetMapService();
+            if(!Test->TestTrue(TEXT("Route editor has the production pointer processor"),InputMap->PointerInput.IsValid()))return true;
+            auto Escape=[&](){return InputMap->PointerInput->HandleKeyDownEvent(FSlateApplication::Get(),FKeyEvent(EKeys::Escape,FModifierKeysState(),0,false,0,0));};
+            PendingGround();
+            Test->TestTrue(TEXT("Escape is handled by the pending ground gesture before UI focus"),Escape());
+            PC->CompleteMapGroundClick({100,100},true);
+            Test->TestEqual(TEXT("A delayed release after Escape cannot add a ground waypoint"),Path->Waypoints.Num(),OriginalCount);
             FVector2D BodyScreen;
             auto* Camera=PC->GetViewTarget();
             const auto BeforePointDrag=Camera->GetActorTransform();
             Test->TestTrue(TEXT("waypoint body projects to screen"),PC->ProjectWorldLocationToScreen(BeforeHeight,BodyScreen));
+            const auto BeforeClickGeometry=P->Fingerprint();const int BeforeClickUndo=PC->EditUndoStack.Num();
+            Test->TestTrue(TEXT("Waypoint click selects without starting a move transaction"),PC->TryBeginMapWaypointBodyDrag(BodyScreen));
+            Test->TestFalse(TEXT("Pointer press alone is not a waypoint edit"),PC->bEditDraggingWaypoint);
+            PC->UpdateMapWaypointBodyDrag(BodyScreen+FVector2D(2,1));PC->HandleEditModeReleased();
+            Test->TestTrue(TEXT("Micro-jitter preserves selected point and coordinates"),PC->EditSelectedWaypoint==Path->GetWaypointHandleActors()[SelectedIndex] && Path->GetWaypointWorldLocation(SelectedIndex).Equals(BeforeHeight,.001));
+            Test->TestEqual(TEXT("Micro-jitter leaves draft geometry unchanged"),P->Fingerprint(),BeforeClickGeometry);
+            Test->TestEqual(TEXT("Micro-jitter creates no undo entry"),PC->EditUndoStack.Num(),BeforeClickUndo);
             Test->TestTrue(TEXT("Map body drag takes precedence over coincident gizmo axes"),PC->TryBeginMapWaypointBodyDrag(BodyScreen));
             PC->bNativeMapWaypointDrag=true;
             const FVector NativeStart=PC->EditSelectedWaypoint->GetActorLocation();
             PC->UpdateDraggedEditWaypoint();
             Test->TestTrue(TEXT("native point gesture does not reread stale polled mouse position"),PC->EditSelectedWaypoint->GetActorLocation()==NativeStart);
+            PC->UpdateMapWaypointBodyDrag(BodyScreen+FVector2D(30,20));
+            Test->TestTrue(TEXT("Movement past threshold starts exactly one waypoint transaction"),PC->bEditDraggingWaypoint && !PC->PendingMoveUndoItems.IsEmpty());
+            PC->UpdateMapWaypointBodyDrag(BodyScreen);
+            Test->TestTrue(TEXT("Returning to the press position does not turn the drag into a click"),PC->bEditDraggingWaypoint);
             PC->UpdateMapWaypointBodyDrag(BodyScreen+FVector2D(30,20));
             // Movement is presented by the handle during the gesture; the
             // existing deferred path update commits canonical data on release.
@@ -180,6 +200,15 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
             Test->TestTrue(TEXT("point drag does not pan camera"),Camera->GetActorTransform().Equals(BeforePointDrag,.0001));
             Test->TestTrue(TEXT("point planar drag preserves world height"),FMath::Abs(Path->GetWaypointWorldLocation(SelectedIndex).Z-BeforeHeight.Z)<.01);
             Path->UpdateWaypoint(SelectedIndex,BeforeHeight);
+            const auto BeforeEscapeGeometry=P->Fingerprint();const int BeforeEscapeUndo=PC->EditUndoStack.Num();
+            Test->TestTrue(TEXT("A second waypoint drag can be armed"),PC->TryBeginMapWaypointBodyDrag(BodyScreen));
+            PC->bNativeMapWaypointDrag=true;PC->UpdateMapWaypointBodyDrag(BodyScreen+FVector2D(20,15));
+            Test->TestTrue(TEXT("Escape consumes the active waypoint edit before other UI"),Escape());
+            Test->TestFalse(TEXT("Escape retires both armed and active waypoint movement"),PC->bPlanarWaypointDrag || PC->bEditDraggingWaypoint || PC->bNativeMapWaypointDrag);
+            PC->UpdateMapWaypointBodyDrag(BodyScreen+FVector2D(60,30));PC->HandleEditModeReleased();
+            Test->TestEqual(TEXT("Escape and delayed release preserve original route geometry"),P->Fingerprint(),BeforeEscapeGeometry);
+            Test->TestEqual(TEXT("Cancelled drag creates no undo entry"),PC->EditUndoStack.Num(),BeforeEscapeUndo);
+            Test->TestTrue(TEXT("Escape preserves the manually chosen route-edit camera"),Camera->GetActorTransform().Equals(BeforePointDrag,.0001));
             P->AltitudeInput->SetText(PlanUI::User(TEXT("120")));P->HoverInput->SetText(PlanUI::User(TEXT("-5")));
             Test->TestFalse(TEXT("negative hover rejected by inspector"),P->ApplyParameters());
             Test->TestTrue(TEXT("invalid form leaves geometry unchanged"),Path->GetWaypointWorldLocation(SelectedIndex).Equals(BeforeHeight,.001));

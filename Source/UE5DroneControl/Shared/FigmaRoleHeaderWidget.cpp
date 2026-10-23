@@ -60,7 +60,7 @@ void UFigmaRoleHeaderWidget::NativeOnInitialized() {
         auto* TS=Health->AddChildToHorizontalBox(Text);TS->SetVerticalAlignment(VAlign_Center);TS->SetPadding(FMargin(0,0,20,0));
     }
     Feedback=Label(FText::GetEmpty(),12);FigmaUI::Text(Feedback,12,FigmaUI::Critical);
-    Feedback->SetJustification(ETextJustify::Right);Place(Root,Feedback,{1070,65},{340,24});
+    Feedback->SetJustification(ETextJustify::Right);Feedback->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);Place(Root,Feedback,{1070,65},{340,24});
     SetVisibility(ESlateVisibility::SelfHitTestInvisible);
     Refresh();
 }
@@ -90,10 +90,15 @@ void UFigmaRoleHeaderWidget::Refresh() {
     }
     FString Language=TEXT("en");
     if(Sync->GetUIPreferences())Sync->GetUIPreferences()->TryGetStringField(TEXT("language"),Language);
-    ChineseButton->SetIsEnabled(Sync->IsReady());EnglishButton->SetIsEnabled(Sync->IsReady());
+    ChineseButton->SetIsEnabled(Sync->IsReady() && !Sync->IsLanguageChangePending());EnglishButton->SetIsEnabled(Sync->IsReady() && !Sync->IsLanguageChangePending());
     FigmaUI::Button(ChineseButton,Language==TEXT("zh-Hans"),true);
     FigmaUI::Button(EnglishButton,Language==TEXT("en"),true);
-    Feedback->SetText(Sync->ViewSyncError.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError));
+    // Video owns video feedback beside its main player; the header owns language.
+    const FString Error=!Sync->GetLanguageSyncError().IsEmpty()?Sync->GetLanguageSyncError():Role==EDroneClientRole::Video?FString():Sync->ViewSyncError;
+    Feedback->SetText(Sync->IsLanguageChangePending()?ProductText::Get(TEXT("Common.Waiting")):
+        Role!=EDroneClientRole::Video && Sync->IsVideoSwitchPending()?FText::Format(ProductText::Get(TEXT("VideoUI.Switching")),FText::AsCultureInvariant(Sync->GetPendingVideoTarget())):
+        Error.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+Error));
+    Feedback->SetToolTipText(Feedback->GetText());
 }
 void UFigmaRoleHeaderWidget::Chinese() {
     if(auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>())Sync->SetLanguage(TEXT("zh-Hans"));

@@ -537,9 +537,9 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("FleetUX.Level"),NSLOCTEXT("DroneOps","FleetUX.Level","Current {0} m · keep height")},
 {TEXT("FleetUX.Selected"),NSLOCTEXT("DroneOps","FleetUX.Selected","{0} aircraft · anchor {1}")},
 {TEXT("FleetUX.EmptySelection"),NSLOCTEXT("DroneOps","FleetUX.EmptySelection","No aircraft selected")},
-{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles.")},
+{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Click an aircraft, or use 'Box select UAVs'.")},
 {TEXT("FleetUX.SelectionReady"),NSLOCTEXT("DroneOps","FleetUX.SelectionReady","Selection ready. Right-click the map to preview a move.")},
-{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging.")},
+{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Right-click the map to choose a destination.")},
 {TEXT("FleetUX.ReviewHint"),NSLOCTEXT("DroneOps","FleetUX.ReviewHint","Review height and formation.")},
 {TEXT("FleetUX.RunningHint"),NSLOCTEXT("DroneOps","FleetUX.RunningHint","The group moves together. Control it here.")},
 {TEXT("FleetUX.FinishedHint"),NSLOCTEXT("DroneOps","FleetUX.FinishedHint","Movement ended. You can choose a new target.")},
@@ -779,6 +779,20 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Errors.VIDEO_SELECTION_STALE"),NSLOCTEXT("DroneOps","Errors.VIDEO_SELECTION_STALE","Map selection changed. Click the aircraft again.")},
 {TEXT("Errors.MAP_VIDEO_SYNC_FAILED"),NSLOCTEXT("DroneOps","Errors.MAP_VIDEO_SYNC_FAILED","Aircraft selected, but video switching was not confirmed. Try again.")},
 {TEXT("MapShell.VideoSelectionPending"),NSLOCTEXT("DroneOps","MapShell.VideoSelectionPending","Confirming aircraft selection and video view...")},
+{TEXT("FleetUX.SelectionHelp"),NSLOCTEXT("DroneOps","FleetUX.SelectionHelp","Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles. Right-click the map to preview a destination, then review and confirm.")},
+{TEXT("Execution.StartMembersReady"),NSLOCTEXT("DroneOps","Execution.StartMembersReady","All assigned aircraft are configured. Availability and route separation will be checked again before starting.")},
+{TEXT("Execution.StartMemberUnavailable"),NSLOCTEXT("DroneOps","Execution.StartMemberUnavailable","{0} is unavailable. Reconnect or configure this aircraft before starting.")},
+{TEXT("Execution.StartMemberBusy"),NSLOCTEXT("DroneOps","Execution.StartMemberBusy","{0} is in use by {1} ({2}). Wait for that execution to finish, or stop or cancel it first.")},
+{TEXT("VideoUI.Switching"),NSLOCTEXT("DroneOps","VideoUI.Switching","Switching to {0}…")},
+{TEXT("VideoUI.ConnectingHint"),NSLOCTEXT("DroneOps","VideoUI.ConnectingHint","Connecting to video. Please wait.")},
+{TEXT("VideoUI.FailedHint"),NSLOCTEXT("DroneOps","VideoUI.FailedHint","Video is unavailable. Select Retry to reconnect.")},
+{TEXT("VideoUI.PausedHint"),NSLOCTEXT("DroneOps","VideoUI.PausedHint","Video is paused or ended. Use the player controls to continue.")},
+{TEXT("Errors.VIDEO_SWITCH_FAILED"),NSLOCTEXT("DroneOps","Errors.VIDEO_SWITCH_FAILED","Video switch was not confirmed. Select the source again.")},
+{TEXT("Errors.VIDEO_SWITCH_INTERRUPTED"),NSLOCTEXT("DroneOps","Errors.VIDEO_SWITCH_INTERRUPTED","Connection interrupted. Video switch was not confirmed.")},
+{TEXT("Errors.VIDEO_SWITCH_OFFLINE"),NSLOCTEXT("DroneOps","Errors.VIDEO_SWITCH_OFFLINE","Reconnect before switching video.")},
+{TEXT("Errors.LANGUAGE_CHANGE_FAILED"),NSLOCTEXT("DroneOps","Errors.LANGUAGE_CHANGE_FAILED","Language change was not confirmed. Please try again.")},
+{TEXT("Errors.LANGUAGE_CHANGE_INTERRUPTED"),NSLOCTEXT("DroneOps","Errors.LANGUAGE_CHANGE_INTERRUPTED","Connection interrupted. Language change was not confirmed.")},
+{TEXT("Errors.LANGUAGE_CHANGE_OFFLINE"),NSLOCTEXT("DroneOps","Errors.LANGUAGE_CHANGE_OFFLINE","Reconnect before changing language.")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1319,9 +1333,9 @@ if(Source==TEXT("Current {0} m · descend {1} m"))return Get(TEXT("FleetUX.Desce
 if(Source==TEXT("Current {0} m · keep height"))return Get(TEXT("FleetUX.Level"));
 if(Source==TEXT("{0} aircraft · anchor {1}"))return Get(TEXT("FleetUX.Selected"));
 if(Source==TEXT("No aircraft selected"))return Get(TEXT("FleetUX.EmptySelection"));
-if(Source==TEXT("Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles."))return Get(TEXT("FleetUX.SelectHint"));
+if(Source==TEXT("Click an aircraft, or use 'Box select UAVs'."))return Get(TEXT("FleetUX.SelectHint"));
 if(Source==TEXT("Selection ready. Right-click the map to preview a move."))return Get(TEXT("FleetUX.SelectionReady"));
-if(Source==TEXT("Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging."))return Get(TEXT("FleetUX.PickHint"));
+if(Source==TEXT("Right-click the map to choose a destination."))return Get(TEXT("FleetUX.PickHint"));
 if(Source==TEXT("Review height and formation."))return Get(TEXT("FleetUX.ReviewHint"));
 if(Source==TEXT("The group moves together. Control it here."))return Get(TEXT("FleetUX.RunningHint"));
 if(Source==TEXT("Movement ended. You can choose a new target."))return Get(TEXT("FleetUX.FinishedHint"));
@@ -1561,6 +1575,20 @@ if(Source==TEXT("Takeover state could not be saved. Movement was stopped; inspec
 if(Source==TEXT("Map selection changed. Click the aircraft again."))return Get(TEXT("Errors.VIDEO_SELECTION_STALE"));
 if(Source==TEXT("Aircraft selected, but video switching was not confirmed. Try again."))return Get(TEXT("Errors.MAP_VIDEO_SYNC_FAILED"));
 if(Source==TEXT("Confirming aircraft selection and video view..."))return Get(TEXT("MapShell.VideoSelectionPending"));
+if(Source==TEXT("Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles. Right-click the map to preview a destination, then review and confirm."))return Get(TEXT("FleetUX.SelectionHelp"));
+if(Source==TEXT("All assigned aircraft are configured. Availability and route separation will be checked again before starting."))return Get(TEXT("Execution.StartMembersReady"));
+if(Source==TEXT("{0} is unavailable. Reconnect or configure this aircraft before starting."))return Get(TEXT("Execution.StartMemberUnavailable"));
+if(Source==TEXT("{0} is in use by {1} ({2}). Wait for that execution to finish, or stop or cancel it first."))return Get(TEXT("Execution.StartMemberBusy"));
+if(Source==TEXT("Switching to {0}…"))return Get(TEXT("VideoUI.Switching"));
+if(Source==TEXT("Connecting to video. Please wait."))return Get(TEXT("VideoUI.ConnectingHint"));
+if(Source==TEXT("Video is unavailable. Select Retry to reconnect."))return Get(TEXT("VideoUI.FailedHint"));
+if(Source==TEXT("Video is paused or ended. Use the player controls to continue."))return Get(TEXT("VideoUI.PausedHint"));
+if(Source==TEXT("Video switch was not confirmed. Select the source again."))return Get(TEXT("Errors.VIDEO_SWITCH_FAILED"));
+if(Source==TEXT("Connection interrupted. Video switch was not confirmed."))return Get(TEXT("Errors.VIDEO_SWITCH_INTERRUPTED"));
+if(Source==TEXT("Reconnect before switching video."))return Get(TEXT("Errors.VIDEO_SWITCH_OFFLINE"));
+if(Source==TEXT("Language change was not confirmed. Please try again."))return Get(TEXT("Errors.LANGUAGE_CHANGE_FAILED"));
+if(Source==TEXT("Connection interrupted. Language change was not confirmed."))return Get(TEXT("Errors.LANGUAGE_CHANGE_INTERRUPTED"));
+if(Source==TEXT("Reconnect before changing language."))return Get(TEXT("Errors.LANGUAGE_CHANGE_OFFLINE"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

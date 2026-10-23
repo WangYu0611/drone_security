@@ -26,7 +26,7 @@ public:
 protected:virtual void NativeOnInitialized() override;
 private:
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
-    int64 Version=-1;FString PlanId,SelectedId,ExecutionSignature;
+    FString PlanId,SelectedId,VisibleSignature;
     int32 NextActionId=0;
     TMap<int32,FString> ActionTargets;
     UFUNCTION() void Action(FName Name,int32 Id){OnAction.Broadcast(Name,Id);}
@@ -47,6 +47,8 @@ class UE5DRONECONTROL_API USecurityPlanWorkspaceWidget:public UUserWidget {
     friend class FPlanConfigurationWorkspace;
     friend class FFigmaCommandChecks;
     friend class FPlanMissionActions;
+    friend class FPlanStartReadinessUxTest;
+    friend class FPlanScheduleDraftUxTest;
 public:
     void Refresh();
     bool IsConfiguring() const;
@@ -88,7 +90,8 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> BasicHeading;
     bool bList=true,bCreating=false,bInitializedSelection=false;
     int32 CurrentStep=1;
-    int64 CardsVersion=-1;
+    FString CardsSignature;
+    void RefreshPlanCards(const TSharedPtr<FJsonObject>& State);
     FString LastWorkflow;
     FString PendingDeletePlan;
     FString PendingDeleteName;
@@ -107,6 +110,10 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionHistory;
     UPROPERTY() TObjectPtr<class UProgressBar> ExecutionProgress;
     FString ExecutionId,ExecutionIntent,StartRequestId;
+    FString ScheduleExecutionId,ScheduleAcceptedAt,ScheduleLoadedText;
+    void ResetStartSchedule(const FDateTime& LocalNow);
+    void RefreshScheduleInput(const TSharedPtr<FJsonObject>& Execution);
+    static TArray<FText> ExecutionStartBlockers(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Mission,const TArray<FString>& AvailableUavs);
     bool bExecutionView=false;
     void RefreshExecution(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan);
     void ExecutionAction(FName Name);

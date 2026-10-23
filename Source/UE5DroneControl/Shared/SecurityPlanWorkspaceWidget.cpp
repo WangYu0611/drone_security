@@ -19,6 +19,8 @@
 #endif
 using namespace PlanUI;
 namespace {
+// Length prefixes keep user-entered names from colliding with signature separators.
+void AddVisibleKey(FString& Key,const FString& Value){Key+=FString::FromInt(Value.Len())+TEXT(":")+Value;}
 TArray<FText> ValidationIssueLines(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan){
     TArray<FText> Lines;const auto Validation=Object(Plan,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues=nullptr;
     if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();const auto Params=Object(I,TEXT("params"));
@@ -55,12 +57,19 @@ bool UPlanMissionListWidget::ResolveAction(int32 Id,FString& OutPlan,FString& Ou
     const auto* Target=ActionTargets.Find(Id);if(!Target)return false;OutPlan=PlanId;OutMission=*Target;return true;
 }
 void UPlanMissionListWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan,const FString& SelectedMission){
-    const int64 NewVersion=State?State->GetNumberField(TEXT("version")):-1;const auto NewPlan=Field(Plan,TEXT("id"));
-    FString NewExecutionSignature;const TArray<TSharedPtr<FJsonValue>>* Tasks=nullptr;
-    if(Plan && Plan->TryGetArrayField(TEXT("mission_ids"),Tasks))for(const auto& Id:*Tasks){const auto E=MissionExecution(State,NewPlan,Id->AsString());NewExecutionSignature+=Field(E,TEXT("execution_id"))+TEXT(":")+Field(E,TEXT("state"))+TEXT(";");}
-    // Position/progress ticks must not replace buttons while a pointer is down.
-    if(NewVersion==Version && NewPlan==PlanId && ExecutionSignature==NewExecutionSignature && SelectedId==SelectedMission)return;
-    Version=NewVersion;ExecutionSignature=NewExecutionSignature;PlanId=NewPlan;SelectedId=SelectedMission;Content->ClearChildren();MissionIds.Empty();MissionActionIds.Empty();ActionTargets.Empty();
+    const auto NewPlan=Field(Plan,TEXT("id"));FString NewSignature;
+    AddVisibleKey(NewSignature,NewPlan);AddVisibleKey(NewSignature,Field(Plan,TEXT("status")));AddVisibleKey(NewSignature,SelectedMission);
+    const TArray<TSharedPtr<FJsonValue>>* Tasks=nullptr;
+    if(Plan && Plan->TryGetArrayField(TEXT("mission_ids"),Tasks))for(const auto& Id:*Tasks){
+        const auto M=Find(State,TEXT("missions"),Id->AsString()),R=Find(State,TEXT("paths"),Field(M,TEXT("route_id"))),E=MissionExecution(State,NewPlan,Id->AsString());
+        const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
+        for(const auto& Value:{Id->AsString(),Field(M,TEXT("name")),Field(M,TEXT("status")),AssignedUAVs(M),Field(E,TEXT("execution_id")),Field(E,TEXT("state"))})AddVisibleKey(NewSignature,Value);
+        AddVisibleKey(NewSignature,FString::FromInt(R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0));
+    }
+    // Lease heartbeats and position ticks must not replace a pressed/focused button.
+    // A visible row or selection change still retires every old action generation.
+    if(VisibleSignature==NewSignature)return;
+    VisibleSignature=NewSignature;PlanId=NewPlan;SelectedId=SelectedMission;Content->ClearChildren();MissionIds.Empty();MissionActionIds.Empty();ActionTargets.Empty();
     FigmaUI::Text(Label(WidgetTree,Content,T(TEXT("Plan.Tasks.Title")),22),22,FigmaUI::PrimaryText,true);
     FigmaUI::Text(Label(WidgetTree,Content,T(TEXT("Plan.Tasks.Hint")),14),14,FigmaUI::Muted);
     const TArray<TSharedPtr<FJsonValue>>* Ids;if(!Plan || !Plan->TryGetArrayField(TEXT("mission_ids"),Ids) || Ids->IsEmpty()){Label(WidgetTree,Content,T(TEXT("Plan.NoMissions")));return;}
@@ -192,7 +201,7 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     ExecutionPage=Page();ExecutionMode=Label(WidgetTree,ExecutionPage,T(TEXT("Execution.Simulation")),18);
     ExecutionSummary=Label(WidgetTree,ExecutionPage,FText::GetEmpty(),22);
     ScheduleEnabled=WidgetTree->ConstructWidget<UCheckBox>();ExecutionPage->AddChild(ScheduleEnabled);Label(WidgetTree,ScheduleEnabled,T(TEXT("Schedule.Enable")),16);
-    ScheduleInput=Input(ExecutionPage,TEXT("Schedule.LocalTime"));ScheduleInput->SetText(User((FDateTime::Now()+FTimespan::FromMinutes(2)).ToString(TEXT("%Y-%m-%dT%H:%M:%S"))));
+    ScheduleInput=Input(ExecutionPage,TEXT("Schedule.LocalTime"));
     Add(ExecutionPage,TEXT("execution_start_now"),TEXT("Schedule.StartNow"));Add(ExecutionPage,TEXT("execution_reschedule"),TEXT("Schedule.Reschedule"));Add(ExecutionPage,TEXT("execution_cancel_schedule"),TEXT("Schedule.Cancel"));
     ExecutionProgress=WidgetTree->ConstructWidget<UProgressBar>();ExecutionPage->AddChild(ExecutionProgress);
     ExecutionPrompt=Label(WidgetTree,ExecutionPage,FText::GetEmpty(),16);
@@ -289,21 +298,8 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     const auto Route=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
     const int Count=Route && Route->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
     RouteStatus->SetText(FText::Format(T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Workflow.MapEditingStatus"):TEXT("Workflow.MapOfflineStatus")),User(Field(P,TEXT("name"))),User(Field(M,TEXT("name"))),User(AssignedUAVs(M)),FText::AsNumber(Count)));
-    const int64 Version=State?State->GetNumberField(TEXT("version")):-1;
     Show(TEXT("edit_plan"),Deployed);Show(TEXT("delete_plan_prompt"),P.IsValid() && !bCreating);
-    if(Version!=CardsVersion){CardsVersion=Version;PlanCards->ClearChildren();PlanActionTargets.Empty();PlanActionIds.Empty();
-        for(int I=0;I<PlanIds.Num();++I){const auto Card=Find(State,TEXT("plans"),PlanIds[I]);
-            const int32 ActionId=++NextPlanActionId;PlanActionTargets.Add(ActionId,PlanIds[I]);PlanActionIds.Add(ActionId);
-            auto* CardPanel=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(CardPanel,FigmaUI::Inset,FigmaUI::Outline,9,FMargin(20));PlanCards->AddChildToVerticalBox(CardPanel)->SetPadding(FMargin(16,16,16,0));
-            auto* CardContent=WidgetTree->ConstructWidget<UVerticalBox>();CardPanel->SetContent(CardContent);
-            FigmaUI::Text(Label(WidgetTree,CardContent,User(Field(Card,TEXT("name"))),22),22,FigmaUI::PrimaryText,true);
-            auto* CardSummary=Label(WidgetTree,CardContent,FText::Format(T(TEXT("Workflow.PlanCard")),ProductText::Get(TEXT("Plan.")+Field(Card,TEXT("status"))),FText::AsNumber(Card->GetArrayField(TEXT("mission_ids")).Num()),FText::AsDateTime(FDateTime::FromUnixTimestamp(Card->GetNumberField(TEXT("updated_at"))))));FigmaUI::Text(CardSummary,14,FigmaUI::Muted);Cast<UVerticalBoxSlot>(CardSummary->Slot)->SetPadding(FMargin(0,9));
-            auto* CardActions=WidgetTree->ConstructWidget<UHorizontalBox>();CardContent->AddChild(CardActions);
-            auto* B=Button(WidgetTree,CardActions,TEXT("open_card"),TEXT("Workflow.OpenPlan"),ActionId);B->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);FigmaUI::Button(B,true);
-            auto* CopyButton=Button(WidgetTree,CardActions,TEXT("copy_card"),TEXT("Plan.CopyExplicit"),ActionId);CopyButton->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);FigmaUI::Button(CopyButton);Cast<UHorizontalBoxSlot>(CopyButton->Slot)->SetPadding(FMargin(10,0));
-            auto* DeleteButton=Button(WidgetTree,CardActions,TEXT("delete_card"),TEXT("Plan.Delete.Action"),ActionId);DeleteButton->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);FigmaUI::Button(DeleteButton);
-        }
-    }
+    RefreshPlanCards(State);
     TArray<FText> Lines{P?ProductText::Get(TEXT("Plan.")+Status):T(TEXT("Plan.NoPlan"))};const auto V=Object(P,TEXT("validation"));if(V)Lines.Add(FText::Format(T(TEXT("Plan.Counts")),FText::AsNumber(V->GetNumberField(TEXT("mission_count"))),FText::AsNumber(V->GetNumberField(TEXT("assigned_count"))),FText::AsNumber(V->GetNumberField(TEXT("routes_ready")))));
     if(Deployed && ExecutionUI::Latest(State,PlanId))Lines[0]=T(TEXT("Workflow.DeploymentSuccess"));
     Summary->SetText(FText::Join(User(TEXT("\n")),Lines));
@@ -318,6 +314,29 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     Result->SetText(bPending?T(TEXT("Common.Waiting")):ErrorCode.IsEmpty()?FText::GetEmpty():!ExecutionErrorDetails.IsEmpty()?ExecutionErrorDetails:ProductText::Get(TEXT("Errors.")+ErrorCode));
     Result->SetVisibility(Result->GetText().IsEmpty()?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
 }
+void USecurityPlanWorkspaceWidget::RefreshPlanCards(const TSharedPtr<FJsonObject>& State){
+    FString NewSignature;
+    for(const auto& Id:PlanIds){const auto Card=Find(State,TEXT("plans"),Id);const TArray<TSharedPtr<FJsonValue>>* Missions=nullptr;double Updated=0;
+        if(Card)Card->TryGetNumberField(TEXT("updated_at"),Updated);
+        for(const auto& Value:{Id,Field(Card,TEXT("name")),Field(Card,TEXT("status"))})AddVisibleKey(NewSignature,Value);
+        AddVisibleKey(NewSignature,FString::FromInt(Card && Card->TryGetArrayField(TEXT("mission_ids"),Missions)?Missions->Num():0));
+        AddVisibleKey(NewSignature,LexToString(Updated));
+    }
+    if(NewSignature!=CardsSignature){CardsSignature=NewSignature;PlanCards->ClearChildren();PlanActionTargets.Empty();PlanActionIds.Empty();
+        for(int I=0;I<PlanIds.Num();++I){const auto Card=Find(State,TEXT("plans"),PlanIds[I]);
+            const int32 ActionId=++NextPlanActionId;PlanActionTargets.Add(ActionId,PlanIds[I]);PlanActionIds.Add(ActionId);
+            auto* CardPanel=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(CardPanel,FigmaUI::Inset,FigmaUI::Outline,9,FMargin(20));PlanCards->AddChildToVerticalBox(CardPanel)->SetPadding(FMargin(16,16,16,0));
+            auto* CardContent=WidgetTree->ConstructWidget<UVerticalBox>();CardPanel->SetContent(CardContent);
+            FigmaUI::Text(Label(WidgetTree,CardContent,User(Field(Card,TEXT("name"))),22),22,FigmaUI::PrimaryText,true);
+            auto* CardSummary=Label(WidgetTree,CardContent,FText::Format(T(TEXT("Workflow.PlanCard")),ProductText::Get(TEXT("Plan.")+Field(Card,TEXT("status"))),FText::AsNumber(Card->GetArrayField(TEXT("mission_ids")).Num()),FText::AsDateTime(FDateTime::FromUnixTimestamp(Card->GetNumberField(TEXT("updated_at"))))));FigmaUI::Text(CardSummary,14,FigmaUI::Muted);Cast<UVerticalBoxSlot>(CardSummary->Slot)->SetPadding(FMargin(0,9));
+            auto* CardActions=WidgetTree->ConstructWidget<UHorizontalBox>();CardContent->AddChild(CardActions);
+            auto* B=Button(WidgetTree,CardActions,TEXT("open_card"),TEXT("Workflow.OpenPlan"),ActionId);B->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);FigmaUI::Button(B,true);
+            auto* CopyButton=Button(WidgetTree,CardActions,TEXT("copy_card"),TEXT("Plan.CopyExplicit"),ActionId);CopyButton->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);FigmaUI::Button(CopyButton);Cast<UHorizontalBoxSlot>(CopyButton->Slot)->SetPadding(FMargin(10,0));
+            auto* DeleteButton=Button(WidgetTree,CardActions,TEXT("delete_card"),TEXT("Plan.Delete.Action"),ActionId);DeleteButton->OnAction.AddDynamic(this,&USecurityPlanWorkspaceWidget::Action);FigmaUI::Button(DeleteButton);
+        }
+    }
+}
+
 void USecurityPlanWorkspaceWidget::Submit(const TSharedRef<FJsonObject>& R,TFunction<void()> OnSuccess){
     if(bPending)return;bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
     if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(R,[Weak,OnSuccess](TSharedPtr<FJsonObject> Reply){if(!Weak.IsValid())return;Weak->bPending=false;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);if(Weak->ErrorCode.IsEmpty()){Weak->bCreating=false;Weak->bList=Field(Weak->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetContext(),TEXT("active_security_plan_id")).IsEmpty();}Weak->Refresh();if(Weak->ErrorCode.IsEmpty() && OnSuccess)OnSuccess();})){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");Refresh();}
@@ -457,6 +476,7 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     ExecutionMode->SetText(T(Real?TEXT("Execution.Real"):TEXT("Execution.Simulation")));
     const auto StateName=Field(E,TEXT("state"));
     const bool Scheduled=StateName==TEXT("SCHEDULED");
+    if(Scheduled && ExecutionIntent.IsEmpty())RefreshScheduleInput(E);
     Show(TEXT("execution_start_now"),Scheduled);Show(TEXT("execution_reschedule"),Scheduled);Show(TEXT("execution_cancel_schedule"),Scheduled);
     ScheduleEnabled->SetVisibility(ExecutionIntent==TEXT("start")?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     ScheduleInput->SetVisibility((ExecutionIntent==TEXT("start") && ScheduleEnabled->IsChecked()) || Scheduled?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
@@ -472,7 +492,7 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;const int Count=R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
         Lines.Add(T(TEXT("Execution.StartConfirm")));Lines.Add(User(Field(P,TEXT("name"))));Lines.Add(User(Field(M,TEXT("name"))));Lines.Add(User(AssignedUAVs(M)));
         Lines.Add(FText::Format(T(TEXT("Map.Count")),FText::AsNumber(Count)));
-        const auto Config=Object(State,TEXT("mock_execution"));const auto Fixture=Find(Config,TEXT("uavs"),Field(M,TEXT("assigned_uav_id")));
+        const auto Config=Object(State,TEXT("mock_execution"));
         auto From=ExecutionUI::MockPosition(State,Field(M,TEXT("assigned_uav_id")));
         int32 FromId=0;LexTryParseString(FromId,*Field(M,TEXT("assigned_uav_id")).Mid(4));FDroneTelemetrySnapshot FromTelemetry;
         if(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetTelemetry(FromId,FromTelemetry) && FromTelemetry.TelemetrySource==TEXT("received")){
@@ -484,11 +504,11 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         bool Closed=false;if(R)R->TryGetBoolField(TEXT("bClosedLoop"),Closed);
         if(Closed && From && Points && Points->Num()>2 && Config){const auto Point=(*Points)[0]->AsObject();const double Y=(Point->GetNumberField(TEXT("latitude"))-From->GetNumberField(TEXT("latitude")))*PI/180.*6371000.,X=(Point->GetNumberField(TEXT("longitude"))-From->GetNumberField(TEXT("longitude")))*PI/180.*6371000.*FMath::Cos((Point->GetNumberField(TEXT("latitude"))+From->GetNumberField(TEXT("latitude")))*.5*PI/180.),Z=Point->GetNumberField(TEXT("altitude"))-From->GetNumberField(TEXT("altitude"));const double D=FMath::Sqrt(X*X+Y*Y+Z*Z),Speed=From->GetNumberField(TEXT("segmentSpeed"));Distance+=D;Seconds+=D/(Speed>0?Speed:Config->GetNumberField(TEXT("default_speed_mps")));}
         Lines.Add(Real?T(TEXT("Execution.RealEstimate")):FText::Format(T(TEXT("Execution.Estimate")),FText::AsNumber(FMath::RoundToInt(Distance)),FText::AsNumber(FMath::RoundToInt(Seconds))));
-        Lines.Add(T(Fixture?(Real?TEXT("Execution.RealAvailable"):TEXT("Execution.MockAvailable")):(Real?TEXT("Errors.REAL_UAV_UNAVAILABLE"):TEXT("Errors.MOCK_UAV_UNAVAILABLE"))));Lines.Add(T(Real?TEXT("Execution.RealCheck"):TEXT("Execution.MockCheck")));
-        bool Conflict=false;const auto All=Object(State,TEXT("executions"));if(All)for(const auto& It:All->Values)if(ExecutionUI::Active(It.Value->AsObject()) && Field(It.Value->AsObject(),TEXT("uav_id"))==Field(M,TEXT("assigned_uav_id")))Conflict=true;
-        Lines.Add(T(Conflict?TEXT("Errors.EXECUTION_CONFLICT"):TEXT("Execution.NoConflict")));
+        const auto StartBlockers=ExecutionStartBlockers(State,M,UavIds);
+        if(StartBlockers.IsEmpty())Lines.Add(T(TEXT("Execution.StartMembersReady")));else Lines.Append(StartBlockers);
+        Lines.Add(T(Real?TEXT("Execution.RealCheck"):TEXT("Execution.MockCheck")));
         Lines.Add(T(TEXT("Execution.DeploymentValid")));
-        Actions[TEXT("execution_confirm")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Count>=2 && Fixture.IsValid() && UavIds.Contains(Field(M,TEXT("assigned_uav_id"))) && !Conflict);
+        Actions[TEXT("execution_confirm")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Count>=2 && StartBlockers.IsEmpty());
         Lines.Add(FText::Format(T(TEXT("Workflow.Readiness")),T(Sync->IsReady()?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
     }else if(Prompt)Lines.Add(ProductText::Get((Real?TEXT("Execution.Real."):TEXT("Execution."))+ExecutionIntent+TEXT("Confirm")));
     else if(E){
@@ -503,10 +523,48 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     if(All)for(const auto& Entry:All->Values){const auto Item=Entry.Value->AsObject();if(Field(Item,TEXT("plan_id"))==PlanId && Field(Item,TEXT("mission_id"))==MissionId)Lines.Add(FText::Format(User(TEXT("{0}  {1}  {2}")),User(Field(Item,TEXT("execution_id"))),ProductText::Get(TEXT("Execution.")+Field(Item,TEXT("state"))),FText::AsDateTime(FDateTime::FromUnixTimestamp(Item->GetNumberField(TEXT("created_at"))))));}
     ExecutionHistory->SetText(FText::Join(User(TEXT("\n")),Lines));
 }
+TArray<FText> USecurityPlanWorkspaceWidget::ExecutionStartBlockers(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Mission,const TArray<FString>& AvailableUavs){
+    TArray<FString> Members;const TArray<TSharedPtr<FJsonValue>>* Values=nullptr;
+    if(Mission && Mission->TryGetArrayField(TEXT("assigned_uav_ids"),Values)){for(const auto& V:*Values)Members.AddUnique(V->AsString());}
+    else if(!Field(Mission,TEXT("assigned_uav_id")).IsEmpty())Members.Add(Field(Mission,TEXT("assigned_uav_id")));
+    TArray<FText> Blockers;if(Members.IsEmpty()){Blockers.Add(T(TEXT("Errors.NO_UAV_ASSIGNED")));return Blockers;}
+    const auto Config=Object(State,TEXT("mock_execution")),Executions=Object(State,TEXT("executions"));
+    for(const auto& Uav:Members){
+        if(!AvailableUavs.Contains(Uav) || !Find(Config,TEXT("uavs"),Uav))Blockers.Add(FText::Format(T(TEXT("Execution.StartMemberUnavailable")),User(Uav)));
+        if(Executions)for(const auto& Item:Executions->Values){const auto E=Item.Value->AsObject();
+            if(Field(E,TEXT("uav_id"))!=Uav || !ExecutionUI::Active(E))continue;
+            const auto PlanName=Field(E,TEXT("plan_name")),MissionName=Field(E,TEXT("mission_name"));
+            const FText Owner=PlanName.IsEmpty() && MissionName.IsEmpty()?T(TEXT("Group.Owner")):User(PlanName.IsEmpty()?MissionName:MissionName.IsEmpty()?PlanName:PlanName+TEXT(" / ")+MissionName);
+            Blockers.Add(FText::Format(T(TEXT("Execution.StartMemberBusy")),User(Uav),Owner,ProductText::Get(TEXT("Execution.")+Field(E,TEXT("state")))));
+        }
+    }return Blockers;
+}
+void USecurityPlanWorkspaceWidget::ResetStartSchedule(const FDateTime& LocalNow){
+    ScheduleExecutionId.Empty();ScheduleAcceptedAt.Empty();
+    ScheduleLoadedText=(LocalNow+FTimespan::FromMinutes(2)).ToString(TEXT("%Y-%m-%dT%H:%M:%S"));ScheduleInput->SetText(User(ScheduleLoadedText));
+}
+void USecurityPlanWorkspaceWidget::RefreshScheduleInput(const TSharedPtr<FJsonObject>& Execution){
+    if(Field(Execution,TEXT("state"))!=TEXT("SCHEDULED"))return;
+    const auto Id=Field(Execution,TEXT("execution_id")),At=Field(Execution,TEXT("scheduled_start_at"));
+    const bool NewExecution=Id!=ScheduleExecutionId;
+    if(!NewExecution && (At==ScheduleAcceptedAt || ScheduleInput->GetText().ToString()!=ScheduleLoadedText))return;
+    FDateTime UTC;if(!FDateTime::ParseIso8601(*At,UTC))return;
+    FDateTime Local=UTC;
+#if PLATFORM_WINDOWS
+    // Use the scheduled date's timezone/DST rules, mirroring the submit conversion.
+    SYSTEMTIME Universal{};Universal.wYear=UTC.GetYear();Universal.wMonth=UTC.GetMonth();Universal.wDay=UTC.GetDay();Universal.wHour=UTC.GetHour();Universal.wMinute=UTC.GetMinute();Universal.wSecond=UTC.GetSecond();SYSTEMTIME Civil{};
+    if(!::SystemTimeToTzSpecificLocalTime(nullptr,&Universal,&Civil))return;
+    Local=FDateTime(Civil.wYear,Civil.wMonth,Civil.wDay,Civil.wHour,Civil.wMinute,Civil.wSecond);
+#else
+    Local=UTC+(FDateTime::Now()-FDateTime::UtcNow());
+#endif
+    ScheduleExecutionId=Id;ScheduleAcceptedAt=At;ScheduleLoadedText=Local.ToString(TEXT("%Y-%m-%dT%H:%M:%S"));ScheduleInput->SetText(User(ScheduleLoadedText));
+}
+
 void USecurityPlanWorkspaceWidget::ExecutionAction(FName Name){
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto E=SelectedExecution(Sync->GetPlans());
     if(bPending)return;
-    if(Name==TEXT("execution_start_prompt")){bExecutionView=true;ExecutionIntent=TEXT("start");StartRequestId=FGuid::NewGuid().ToString();Refresh();return;}
+    if(Name==TEXT("execution_start_prompt")){bExecutionView=true;ExecutionIntent=TEXT("start");StartRequestId=FGuid::NewGuid().ToString();ResetStartSchedule(FDateTime::Now());Refresh();return;}
     if(Name==TEXT("execution_open")){bExecutionView=true;ExecutionIntent.Empty();Refresh();return;}
     if(Name==TEXT("execution_details")){bExecutionView=false;Refresh();return;}
     if(Name==TEXT("execution_cancel")){ExecutionIntent.Empty();bExecutionView=ExecutionUI::Active(E);Refresh();return;}

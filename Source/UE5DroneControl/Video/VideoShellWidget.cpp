@@ -78,7 +78,10 @@ void UVideoShellWidget::Refresh()
     UpdateFeeds();
     UpdatePresentation();
     const double Now = FPlatformTime::Seconds();
-    if (!SourceUrl.IsEmpty() && Now - LastProgress > 10) MediaState = bPageReady ? TEXT("STALLED / NO FRAMES") : TEXT("OFFLINE / LOAD FAILED");
+    const bool WaitingForProgress=MediaState==TEXT("CONNECTING") || MediaState==TEXT("RETRYING")
+        || MediaState==TEXT("PAGE READY / WAITING VIDEO") || MediaState==TEXT("PLAYING");
+    if (!SourceUrl.IsEmpty() && WaitingForProgress && Now - LastProgress > 10)
+        MediaState = bPageReady ? TEXT("STALLED / NO FRAMES") : TEXT("OFFLINE / LOAD FAILED");
     if (bPageReady && Now - LastProbe >= 0.5)
     {
         LastProbe = Now;
@@ -99,7 +102,7 @@ void UVideoShellWidget::SetSource(int32 Id, const FString& Url)
         if (FeedSlot != INDEX_NONE) SecondaryIds[FeedSlot] = DisplayedDroneId;
     }
     ++Generation; DisplayedDroneId = Id; SourceUrl = Url;
-    bPageReady = false; Width = Height = 0; Fps = -1; LastMediaTime = LastFrames = -1; LastSample = LastProbe = 0;
+    bPageReady = false; bHasDecodedFrame = false; Width = Height = 0; Fps = -1; LastMediaTime = LastFrames = -1; LastSample = LastProbe = 0;
     LastProgress = FPlatformTime::Seconds();
     MediaState = Id<=0?TEXT("NO TARGET"):Url.IsEmpty()?TEXT("NO SOURCE"):TEXT("CONNECTING");
     // LoadURL replaces the old document and its peer connection in the single browser.
@@ -130,6 +133,7 @@ void UVideoShellWidget::ConsoleMessage(const FString& Message, const FString& So
         || !Data->TryGetNumberField(TEXT("w"), W) || !Data->TryGetNumberField(TEXT("h"), H)
         || !Data->TryGetBoolField(TEXT("p"), Paused) || !Data->TryGetBoolField(TEXT("e"), Error)) return;
     const double Now = FPlatformTime::Seconds();
+    if(W>0 && H>0 && (Frames>0 || T>0))bHasDecodedFrame=true;
     const bool Progress = !Paused && !Error && W > 0 && H > 0 && LastSample > 0
         && (Frames >= 0 ? Frames > LastFrames : T != LastMediaTime);
     if (Progress)
@@ -140,7 +144,14 @@ void UVideoShellWidget::ConsoleMessage(const FString& Message, const FString& So
         Fps = Frames >= 0 && LastFrames >= 0 ? (Frames - LastFrames) / FMath::Max(SampleTime - LastSample, 0.01) : -1;
     }
     else if (Error) MediaState = TEXT("OFFLINE / MEDIA ERROR");
-    else if (Paused && T >= 0) MediaState = TEXT("PAUSED / ENDED");
+    else if (Paused && T >= 0 && bHasDecodedFrame) MediaState = TEXT("PAUSED / ENDED");
+    else if (!Paused && MediaState == TEXT("PAUSED / ENDED"))
+    {
+        // Resume can precede the next decoded frame. Start a fresh wait once;
+        // repeated unchanged probes must not postpone the stall watchdog.
+        MediaState = TEXT("PAGE READY / WAITING VIDEO");
+        LastProgress = Now;
+    }
     Width = FMath::Clamp(W, 0.0, 16384.0); Height = FMath::Clamp(H, 0.0, 16384.0);
     LastSample = SampleTime; LastMediaTime = T; LastFrames = Frames;
     UpdateLabels();
@@ -149,24 +160,35 @@ void UVideoShellWidget::ConsoleMessage(const FString& Message, const FString& So
 void UVideoShellWidget::UpdateLabels()
 {
     if (!Status || !Details) return;
-    Status->SetText(ProductText::Source(MediaState));
-    Status->SetColorAndOpacity(FSlateColor(MediaState == TEXT("PLAYING") ? FLinearColor(0.2f, 0.9f, 0.55f) : FLinearColor(1, 0.7f, 0.3f)));
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    const bool Switching=Sync && Sync->IsVideoSwitchPending();
+    const FString SwitchError=Sync?Sync->ViewSyncError:FString();
+    const FText Feedback=Switching?FText::Format(ProductText::Get(TEXT("VideoUI.Switching")),FText::AsCultureInvariant(Sync->GetPendingVideoTarget()))
+        :!SwitchError.IsEmpty()?ProductText::Get(TEXT("Errors.")+SwitchError):ProductText::Source(MediaState);
+    Status->SetText(Feedback);Status->SetToolTipText(Feedback);
+    Status->SetColorAndOpacity(FSlateColor(!Switching && SwitchError.IsEmpty() && MediaState == TEXT("PLAYING") ? FLinearColor(0.2f, 0.9f, 0.55f) : FLinearColor(1, 0.7f, 0.3f)));
     const FString Resolution = Width > 0 ? FString::Printf(TEXT("%d x %d"), Width, Height) : TEXT("N/A");
     const FString Rate = Fps >= 0 && MediaState == TEXT("PLAYING") ? FString::Printf(TEXT("%.0f measured"), Fps) : TEXT("N/A");
     Details->SetText(FText::Format(ProductText::Get(TEXT("Video.Details")),FText::AsCultureInvariant(DisplayedDroneId>0?FString::Printf(TEXT("UAV-%02d"),DisplayedDroneId):TEXT("")),FText::AsCultureInvariant(Resolution),FText::AsCultureInvariant(Rate),ProductText::Source(MediaState)));
-    Retry->SetIsEnabled(!bStopped && !SourceUrl.IsEmpty());
+    Retry->SetIsEnabled(!bStopped && !Switching && !SourceUrl.IsEmpty());
     RetryIcon->SetVisibility(Retry->GetIsEnabled()?ESlateVisibility::Collapsed:ESlateVisibility::HitTestInvisible);
     RetryReadyIcon->SetVisibility(Retry->GetIsEnabled()?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
     FigmaUI::Text(RetryCaption,12,Retry->GetIsEnabled()?FigmaUI::PrimaryText:FLinearColor(FColor(120,126,147)),true);
     Browser->SetVisibility(SourceUrl.IsEmpty() ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-    // Keep the old document/frame covered until the selected source decodes frames.
-    MediaCover->SetVisibility(MediaState == TEXT("PLAYING") ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+    // Keep a newly selected source covered until it decodes. A paused confirmed
+    // source retains its frame and visible browser playback controls.
+    const bool Paused=MediaState==TEXT("PAUSED / ENDED");
+    const bool ShowFrame=bHasDecodedFrame && (MediaState==TEXT("PLAYING") || Paused);
+    MediaCover->SetVisibility(ShowFrame?ESlateVisibility::Collapsed:ESlateVisibility::HitTestInvisible);
     EmptyVideo->SetText(DisplayedDroneId<=0?ProductText::Get(TEXT("VideoUI.NoTarget")):ProductText::Source(SourceUrl.IsEmpty()?TEXT("NO SOURCE"):*MediaState));
-    EmptyHint->SetText(ProductText::Get(DisplayedDroneId<=0?TEXT("VideoUI.SelectSource"):SourceUrl.IsEmpty()?TEXT("VideoUI.ConfigureSource"):TEXT("VideoUI.WaitingFrames")));
-    if(Retry->GetIsEnabled())Retry->SetToolTipText(ProductText::Get(TEXT("VideoUI.RetryHint")));else Retry->SetToolTipText(ProductText::Get(TEXT("VideoUI.RetryUnavailable")));
+    const bool Failed=MediaState==TEXT("STALLED / NO FRAMES") || MediaState==TEXT("OFFLINE / LOAD FAILED") || MediaState==TEXT("OFFLINE / MEDIA ERROR");
+    EmptyHint->SetText(ProductText::Get(DisplayedDroneId<=0?TEXT("VideoUI.SelectSource"):SourceUrl.IsEmpty()?TEXT("VideoUI.ConfigureSource"):
+        Failed?TEXT("VideoUI.FailedHint"):Paused?TEXT("VideoUI.PausedHint"):TEXT("VideoUI.ConnectingHint")));
+    if(Paused && !Switching && SwitchError.IsEmpty())Status->SetToolTipText(ProductText::Get(TEXT("VideoUI.PausedHint")));
+    Retry->SetToolTipText(Switching?Feedback:ProductText::Get(Retry->GetIsEnabled()?TEXT("VideoUI.RetryHint"):TEXT("VideoUI.RetryUnavailable")));
 }
 
-void UVideoShellWidget::RetrySource() { if (!bStopped && Browser && !SourceUrl.IsEmpty()) { SetSource(DisplayedDroneId, SourceUrl); MediaState=TEXT("RETRYING"); UpdateLabels(); } }
+void UVideoShellWidget::RetrySource() { if (!bStopped && Browser && !SourceUrl.IsEmpty() && !GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsVideoSwitchPending()) { SetSource(DisplayedDroneId, SourceUrl); MediaState=TEXT("RETRYING"); UpdateLabels(); } }
 void UVideoShellWidget::Shutdown()
 {
     if (bStopped) return;

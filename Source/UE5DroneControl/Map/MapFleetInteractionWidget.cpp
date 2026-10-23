@@ -48,7 +48,11 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     Panel=WidgetTree->ConstructWidget<UBorder>();FleetPanelStyle::Card(Panel);
     auto* Chrome=MapUI::Chrome(WidgetTree,Canvas);MapUI::Place(Chrome,Panel,FVector2D(1024,230),FVector2D(372,548));
     auto* Content=WidgetTree->ConstructWidget<UVerticalBox>();Panel->SetContent(Content);
-    auto Text=[&](UPanelWidget* Parent,const FText& Value,int Size,const FLinearColor& Color=MapUI::PrimaryText){auto* W=Label(WidgetTree,Parent,Value,Size);MapUI::Text(W,Size,Color);return W;};
+    // Chrome has a stable logical width even when the window is scaled down.
+    // Explicit wrapping lets the scroll body measure multiline labels before
+    // arranging the next row, instead of relying on last frame's wrap width.
+    constexpr float PreviewTextWidth=292.f;
+    auto Text=[&](UPanelWidget* Parent,const FText& Value,int Size,const FLinearColor& Color=MapUI::PrimaryText,float Width=316.f){auto* W=Label(WidgetTree,Parent,Value,Size);MapUI::Text(W,Size,Color);W->SetAutoWrapText(false);W->SetWrapTextAt(Width);return W;};
     auto Space=[&](UPanelWidget* Parent,float Height){auto* S=WidgetTree->ConstructWidget<USizeBox>();S->SetHeightOverride(Height);Parent->AddChild(S);};
     auto MakeButton=[&](UPanelWidget* Parent,const TCHAR* Name,const TCHAR* Key,bool Primary=false,bool Danger=false){
         auto* B=Button(WidgetTree,Parent,Name,Key);B->OnAction.AddDynamic(this,&UMapFleetInteractionWidget::Action);Buttons.Add(Name,B);FleetPanelStyle::Button(B,Primary,Danger);return B;
@@ -87,14 +91,14 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     TargetHeightInput->SetToolTip(HeightTip);Space(HeightControls,12);
     TargetCard=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(TargetCard,MapUI::Background);TargetCard->SetPadding(FMargin(12));Body->AddChild(TargetCard);
     auto* TargetBody=WidgetTree->ConstructWidget<UVerticalBox>();TargetCard->SetContent(TargetBody);
-    Text(TargetBody,T(TEXT("FleetUX.Preview")),15,MapUI::Cyan);Space(TargetBody,8);TravelText=Text(TargetBody,FText::GetEmpty(),20);
-    Text(TargetBody,T(TEXT("FleetUX.Formation")),14,MapUI::SecondaryText);Space(TargetBody,8);
+    Text(TargetBody,T(TEXT("FleetUX.Preview")),15,MapUI::Cyan,PreviewTextWidth);Space(TargetBody,8);TravelText=Text(TargetBody,FText::GetEmpty(),20,MapUI::PrimaryText,PreviewTextWidth);
+    Text(TargetBody,T(TEXT("FleetUX.Formation")),14,MapUI::SecondaryText,PreviewTextWidth);Space(TargetBody,8);
     MakeButton(TargetBody,TEXT("details"),TEXT("FleetUX.Coordinates"));
-    TargetText=Text(TargetBody,FText::GetEmpty(),13,MapUI::SecondaryText);
+    TargetText=Text(TargetBody,FText::GetEmpty(),13,MapUI::SecondaryText,PreviewTextWidth);
     ProgressBox=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(ProgressBox);StateText=Text(ProgressBox,FText::GetEmpty(),19);
     Space(ProgressBox,10);auto* ProgressHeight=WidgetTree->ConstructWidget<USizeBox>();ProgressHeight->SetHeightOverride(8);ProgressBox->AddChild(ProgressHeight);
     Progress=WidgetTree->ConstructWidget<UProgressBar>();Progress->SetFillColorAndOpacity(MapUI::Cyan);ProgressHeight->SetContent(Progress);Space(ProgressBox,14);
-    TakeoverWarning=Text(Content,T(TEXT("Takeover.Warning")),14,MapUI::Warning);TakeoverWarning->SetAutoWrapText(true);
+    TakeoverWarning=Text(Content,T(TEXT("Takeover.Warning")),14,MapUI::Warning);
     Space(Content,10);Result=Text(Content,FText::GetEmpty(),15,MapUI::SecondaryText);Space(Content,10);
     for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("recover"),TEXT("FleetTerrain.Recover")},{TEXT("next"),TEXT("FleetUX.Next")},{TEXT("again"),TEXT("FleetUX.Again")},{TEXT("confirm"),TEXT("Fleet.Confirm")},{TEXT("pause"),TEXT("Execution.Pause")},{TEXT("resume"),TEXT("Execution.Resume")}}){
         auto* B=MakeButton(Content,*P.Key,*P.Value,true);CastChecked<UVerticalBoxSlot>(B->Slot)->SetPadding(FMargin(0,0,0,6));
@@ -403,6 +407,7 @@ void UMapFleetInteractionWidget::Refresh() {
         StepLabels[I]->SetText(T(*FString::Printf(TEXT("FleetUX.Step%d"),I+1)));StepLabels[I]->SetColorAndOpacity(I<=Step?MapUI::Cyan:MapUI::SecondaryText);}
     Summary->SetText(T(Active?TEXT("FleetUX.RunningHint"):BelowSurface?TEXT("FleetTerrain.SourceBelow"):Selected.IsEmpty()?TEXT("FleetUX.SelectHint"):Mode==EMapFleetMode::BoxSelect?TEXT("FleetUX.SelectionReady"):
         Mode==EMapFleetMode::GroupMove?(bHasTarget?TEXT("FleetUX.ReviewHint"):TEXT("FleetUX.PickHint")):TEXT("FleetUX.FinishedHint")));
+    Summary->SetToolTipText(!Active && Mode!=EMapFleetMode::Browse && !bHasTarget?T(TEXT("FleetUX.SelectionHelp")):FText::GetEmpty());
     SelectionText->SetText(Selected.IsEmpty()?T(TEXT("FleetUX.EmptySelection")):FText::Format(T(TEXT("FleetUX.Selected")),FText::AsNumber(Selected.Num()),User(FString::Printf(TEXT("UAV-%02d"),Selected[0]))));
     SelectionText->SetVisibility(Mode!=EMapFleetMode::Browse || Active?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     TArray<FString> Ids;for(int Id:Selected)Ids.Add(FString::Printf(TEXT("UAV-%02d"),Id));SelectionText->SetToolTipText(User(FString::Join(Ids,TEXT(", "))));

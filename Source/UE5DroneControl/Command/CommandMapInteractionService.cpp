@@ -80,7 +80,7 @@ class FMapPointerInput final : public IInputProcessor
         Local=Geometry.AbsoluteToLocal(Screen)*FVector2D(W/Size.X,H/Size.Y);return true;
     }
     void CancelWaypoint(){
-        if((bWaypointDrag || bGroundClick) && Service.IsValid() && Service->Controller.IsValid())Service->Controller->CancelMissionGesture();
+        if(Service.IsValid() && Service->Controller.IsValid())Service->Controller->CancelMissionGesture();
         bWaypointDrag=false;bGroundClick=false;
     }
 public:
@@ -173,6 +173,13 @@ public:
     }
     bool HandleKeyDownEvent(FSlateApplication&,const FKeyEvent& E) override {
         if(E.GetKey()!=EKeys::Escape)return false;
+        const auto* PC=Service.IsValid()?Service->Controller.Get():nullptr;
+        // The active editor gesture owns Escape even when an older, hidden
+        // fleet card or a text field still has presentation/keyboard focus.
+        if(bWaypointDrag || bGroundClick || (PC && PC->bMissionPathMode
+            && (PC->bPendingWaypointAdd || PC->bPlanarWaypointDrag || PC->bEditDraggingWaypoint))){
+            CancelWaypoint();if(Service.IsValid())Service->CancelPointer();return true;
+        }
         const bool HadPointer=Service.IsValid() && Service->GestureButton.IsValid();
         if(Service.IsValid())Service->CancelPointer();
         if(auto* F=Fleet();F && F->CancelMode()){bFleetGesture=false;return true;}return HadPointer;
