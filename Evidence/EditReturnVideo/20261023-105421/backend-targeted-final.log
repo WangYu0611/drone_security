@@ -1,0 +1,30 @@
+Note: Google Test filter = PlanLifecycle.ConflictingReeditCanExitCorrectAndRedeploySamePlan:GuardedDeployment.*
+[==========] Running 9 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from PlanLifecycle
+[ RUN      ] PlanLifecycle.ConflictingReeditCanExitCorrectAndRedeploySamePlan
+[       OK ] PlanLifecycle.ConflictingReeditCanExitCorrectAndRedeploySamePlan (10 ms)
+[----------] 1 test from PlanLifecycle (10 ms total)
+
+[----------] 8 tests from GuardedDeployment
+[ RUN      ] GuardedDeployment.HeartbeatBetweenAllThreeStagesPreservesConfirmedPlan
+[       OK ] GuardedDeployment.HeartbeatBetweenAllThreeStagesPreservesConfirmedPlan (2 ms)
+[ RUN      ] GuardedDeployment.GuardsRejectMismatchEvenAtCurrentGlobalVersion
+[       OK ] GuardedDeployment.GuardsRejectMismatchEvenAtCurrentGlobalVersion (7 ms)
+[ RUN      ] GuardedDeployment.StaleContentAndPlanStateCannotBeReconfirmed
+[       OK ] GuardedDeployment.StaleContentAndPlanStateCannotBeReconfirmed (3 ms)
+[ RUN      ] GuardedDeployment.ReacquiredAndMissingLeaseCannotUseOldGuard
+[       OK ] GuardedDeployment.ReacquiredAndMissingLeaseCannotUseOldGuard (1 ms)
+[ RUN      ] GuardedDeployment.LegacyAndIncompleteGuardsKeepStrictVersions
+[       OK ] GuardedDeployment.LegacyAndIncompleteGuardsKeepStrictVersions (5 ms)
+[ RUN      ] GuardedDeployment.FutureAndPreLeaseVersionsRejected
+[       OK ] GuardedDeployment.FutureAndPreLeaseVersionsRejected (3 ms)
+[ RUN      ] GuardedDeployment.HeartbeatAllowanceStillChecksRouteLeaseAndReadiness
+[       OK ] GuardedDeployment.HeartbeatAllowanceStillChecksRouteLeaseAndReadiness (3 ms)
+[ RUN      ] GuardedDeployment.WorkflowOnlyChangesInvalidatePlanGuardButNoopsDoNot
+[       OK ] GuardedDeployment.WorkflowOnlyChangesInvalidatePlanGuardButNoopsDoNot (2 ms)
+[----------] 8 tests from GuardedDeployment (29 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 2 test suites ran. (40 ms total)
+[  PASSED  ] 9 tests.

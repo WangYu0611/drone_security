@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="9" failures="0" disabled="0" errors="0" time="0.04" timestamp="2026-10-23T11:39:03.685" name="AllTests">
+  <testsuite name="PlanLifecycle" tests="1" failures="0" disabled="0" skipped="0" errors="0" time="0.01" timestamp="2026-10-23T11:39:03.685">
+    <testcase name="ConflictingReeditCanExitCorrectAndRedeploySamePlan" file="Backend\tests\test_p4_workflow.cpp" line="184" status="run" result="completed" time="0.01" timestamp="2026-10-23T11:39:03.685" classname="PlanLifecycle" />
+  </testsuite>
+  <testsuite name="GuardedDeployment" tests="8" failures="0" disabled="0" skipped="0" errors="0" time="0.029" timestamp="2026-10-23T11:39:03.695">
+    <testcase name="HeartbeatBetweenAllThreeStagesPreservesConfirmedPlan" file="Backend\tests\test_p4_workflow.cpp" line="300" status="run" result="completed" time="0.002" timestamp="2026-10-23T11:39:03.695" classname="GuardedDeployment" />
+    <testcase name="GuardsRejectMismatchEvenAtCurrentGlobalVersion" file="Backend\tests\test_p4_workflow.cpp" line="314" status="run" result="completed" time="0.007" timestamp="2026-10-23T11:39:03.698" classname="GuardedDeployment" />
+    <testcase name="StaleContentAndPlanStateCannotBeReconfirmed" file="Backend\tests\test_p4_workflow.cpp" line="327" status="run" result="completed" time="0.003" timestamp="2026-10-23T11:39:03.705" classname="GuardedDeployment" />
+    <testcase name="ReacquiredAndMissingLeaseCannotUseOldGuard" file="Backend\tests\test_p4_workflow.cpp" line="336" status="run" result="completed" time="0.001" timestamp="2026-10-23T11:39:03.708" classname="GuardedDeployment" />
+    <testcase name="LegacyAndIncompleteGuardsKeepStrictVersions" file="Backend\tests\test_p4_workflow.cpp" line="343" status="run" result="completed" time="0.005" timestamp="2026-10-23T11:39:03.710" classname="GuardedDeployment" />
+    <testcase name="FutureAndPreLeaseVersionsRejected" file="Backend\tests\test_p4_workflow.cpp" line="358" status="run" result="completed" time="0.003" timestamp="2026-10-23T11:39:03.716" classname="GuardedDeployment" />
+    <testcase name="HeartbeatAllowanceStillChecksRouteLeaseAndReadiness" file="Backend\tests\test_p4_workflow.cpp" line="365" status="run" result="completed" time="0.003" timestamp="2026-10-23T11:39:03.719" classname="GuardedDeployment" />
+    <testcase name="WorkflowOnlyChangesInvalidatePlanGuardButNoopsDoNot" file="Backend\tests\test_p4_workflow.cpp" line="375" status="run" result="completed" time="0.002" timestamp="2026-10-23T11:39:03.722" classname="GuardedDeployment" />
+  </testsuite>
+</testsuites>

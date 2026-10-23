@@ -1,0 +1,94 @@
+{
+  "at_unix_s": 1792729606.0363846,
+  "request": "Default UAVs on open grass, initial spacing 3 m",
+  "production_fixture": {
+    "origin": {
+      "latitude": 1.279445,
+      "longitude": 103.862188,
+      "altitude": 15.0
+    },
+    "spacing_m": 3.0,
+    "direction": "east"
+  },
+  "location_source": {
+    "official_venue": "https://www.gardensbythebay.com.sg/en/book-a-venue/venues/the-meadow.html",
+    "official_map": "https://www.gardensbythebay.com.sg/en/plan-your-visit/gardens-map.html",
+    "official_pin": {
+      "latitude": 1.2799386,
+      "longitude": 103.8622174
+    },
+    "chosen_lawn": "Native right-click preview, no move submitted: latitude 1.279445 longitude 103.862188, about 55 m south inside flat lawn"
+  },
+  "hashes": {
+    "Backend\\mock_execution.json": "3b5b8b6488f6557fe75592a16175fd7e51f7167b1a4c4c33f3e50740324a1b69",
+    "Config\\DefaultGame.ini": "144dd5b7e3cedc24eb93c00806a40f1bce5dd75ad59d3e3d2498f0a931e58a13",
+    "Binaries\\Win64\\UnrealEditor-UE5DroneControl.dll": "b791c3a5641fad194a795bfebc588238ffa3ad3faee59f0f076bd0d453ba713e",
+    "Backend\\build\\Release\\DroneBackend.exe": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b"
+  },
+  "build": {
+    "exit_code": 0,
+    "result": "Succeeded",
+    "log": "build.log"
+  },
+  "fixture_policy": {
+    "completed": 6,
+    "passed": 6,
+    "log": "fixture-policy.log"
+  },
+  "backend_migration": {
+    "completed": 6,
+    "passed": 6,
+    "result": "startup-migration.json"
+  },
+  "rhi": {
+    "run": "1792729169469080600",
+    "rendering": "RHI automation",
+    "ue_module_sha256": "b791c3a5641fad194a795bfebc588238ffa3ad3faee59f0f076bd0d453ba713e",
+    "mock_startup_reset": true,
+    "backend": "Backend\\build\\Release\\DroneBackend.exe",
+    "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+    "ue_module_sha256_after": "b791c3a5641fad194a795bfebc588238ffa3ad3faee59f0f076bd0d453ba713e",
+    "binary_unchanged": true,
+    "pass": false
+  },
+  "normal_startup": {
+    "http": "http://127.0.0.1:19880",
+    "adjacent_east_m": [
+      3.0000000002933542,
+      3.0000000002933542,
+      2.9999999987135735
+    ],
+    "drones": "normal-drones.json"
+  },
+  "native": {
+    "pass": true,
+    "scope": "Final built game clients, actual Windows Locate click, online Google grass surface, owned Launcher Mock session",
+    "image": "native-close-final.png",
+    "surface": "native-surface-final.json",
+    "earlier_isolated_check": {
+      "image": "native-close.png",
+      "surface": "native-surface.json",
+      "camera_distance_override_m": 350,
+      "binary": "3252b5018f905fcffe3ca60e3784953abc7a55e9ecc14993c0b53efdc2a8e59d"
+    }
+  },
+  "network": {
+    "initial_failure": "Unproxied online tiles timed out over local fake IPv6 DNS; no coordinates accepted from coarse or missing surface",
+    "successful_native_trial": "Per-process -httpproxy=127.0.0.1:7897 using existing local listener; no global/shared proxy configuration changed"
+  },
+  "boundary": "Mock initialization and visualization; not physical flight. Height is fixed ellipsoid 15 m, not dynamic terrain snapping.",
+  "cleanup": [
+    {
+      "errors": [],
+      "owned": []
+    },
+    {
+      "errors": [],
+      "owned": []
+    },
+    {
+      "errors": [],
+      "owned": []
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_0c2b7c46f693>",
+			"instanceName": "<UE_INSTANCE_f7de9647cf26>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.23-01.30.08",
+	"succeeded": 4,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 1.914354681968689,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "Eligibility",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.Eligibility",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_0c2b7c46f693>"
+			],
+			"duration": 0.016104400157928467,
+			"dateTime": "2026.10.23-01.30.06",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "Localization",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.Localization",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_0c2b7c46f693>"
+			],
+			"duration": 1.8672996759414673,
+			"dateTime": "2026.10.23-01.30.06",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "PreviewAndRequest",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_0c2b7c46f693>"
+			],
+			"duration": 0.015523999929428101,
+			"dateTime": "2026.10.23-01.30.08",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteOwnership",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.RouteOwnership",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_0c2b7c46f693>"
+			],
+			"duration": 0.015426602214574814,
+			"dateTime": "2026.10.23-01.30.08",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

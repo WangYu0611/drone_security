@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="13" failures="0" disabled="0" errors="0" time="0.064" timestamp="2026-10-23T09:25:51.699" name="AllTests">
+  <testsuite name="P54RealAdapter" tests="4" failures="0" disabled="0" skipped="0" errors="0" time="0.03" timestamp="2026-10-23T09:25:51.699">
+    <testcase name="ManualTakeoverClearsOldTargetAndOnlyDispatchesNewExecution" file="Backend\tests\test_p52_execution.cpp" line="732" status="run" result="completed" time="0.002" timestamp="2026-10-23T09:25:51.699" classname="P54RealAdapter" />
+    <testcase name="ManualTakeoverHoldFailureIsDurableIdempotentAndNeverDispatchesMove" file="Backend\tests\test_p52_execution.cpp" line="746" status="run" result="completed" time="0.012" timestamp="2026-10-23T09:25:51.702" classname="P54RealAdapter" />
+    <testcase name="ManualTakeoverPublicationFailureKeepsDurableIntentAndDoesNotHoldAgain" file="Backend\tests\test_p52_execution.cpp" line="774" status="run" result="completed" time="0.001" timestamp="2026-10-23T09:25:51.715" classname="P54RealAdapter" />
+    <testcase name="ManualTakeoverPersistenceFailureCannotResumeOldController" file="Backend\tests\test_p52_execution.cpp" line="785" status="run" result="completed" time="0.013" timestamp="2026-10-23T09:25:51.716" classname="P54RealAdapter" />
+  </testsuite>
+  <testsuite name="ManualTakeover" tests="9" failures="0" disabled="0" skipped="0" errors="0" time="0.033" timestamp="2026-10-23T09:25:51.730">
+    <testcase name="SingleAircraftMovesWithoutRestartingItsDeployedRoute" file="Backend\tests\test_p52_execution.cpp" line="658" status="run" result="completed" time="0.003" timestamp="2026-10-23T09:25:51.730" classname="ManualTakeover" />
+    <testcase name="OtherGroupMemberContinuesAndOldGroupControlsCannotControlTakeover" file="Backend\tests\test_p52_execution.cpp" line="674" status="run" result="completed" time="0.006" timestamp="2026-10-23T09:25:51.733" classname="ManualTakeover" />
+    <testcase name="DuplicateRequestIsIdempotentAndCannotRetarget" file="Backend\tests\test_p52_execution.cpp" line="687" status="run" result="completed" time="0.001" timestamp="2026-10-23T09:25:51.739" classname="ManualTakeover" />
+    <testcase name="StaleWrongMissingAndAmbiguousTargetsLeaveMissionUnchanged" file="Backend\tests\test_p52_execution.cpp" line="692" status="run" result="completed" time="0.003" timestamp="2026-10-23T09:25:51.741" classname="ManualTakeover" />
+    <testcase name="CollisionAndUnavailableAircraftRejectBeforeStoppingMission" file="Backend\tests\test_p52_execution.cpp" line="702" status="run" result="completed" time="0.002" timestamp="2026-10-23T09:25:51.745" classname="ManualTakeover" />
+    <testcase name="OrdinaryMoveCannotBypassOccupancyAndPendingMissionCannotBeTakenOver" file="Backend\tests\test_p52_execution.cpp" line="708" status="run" result="completed" time="0.002" timestamp="2026-10-23T09:25:51.747" classname="ManualTakeover" />
+    <testcase name="ConfigurationLockRejectsNewTakeoverMovement" file="Backend\tests\test_p52_execution.cpp" line="715" status="run" result="completed" time="0.001" timestamp="2026-10-23T09:25:51.750" classname="ManualTakeover" />
+    <testcase name="PublicationAndRestartKeepOneAtomicOwnershipChange" file="Backend\tests\test_p52_execution.cpp" line="718" status="run" result="completed" time="0.01" timestamp="2026-10-23T09:25:51.751" classname="ManualTakeover" />
+    <testcase name="RealHoldFailureRetainsExistingGroupSafetyFailureRule" file="Backend\tests\test_p52_execution.cpp" line="762" status="run" result="completed" time="0.001" timestamp="2026-10-23T09:25:51.761" classname="ManualTakeover" />
+  </testsuite>
+</testsuites>

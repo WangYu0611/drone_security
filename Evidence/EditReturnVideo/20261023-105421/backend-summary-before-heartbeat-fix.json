@@ -1,0 +1,56 @@
+{
+  "recorded_at_utc": "2026-10-23T03:15:22.750581+00:00",
+  "evidence_kind": "Backend gtest; no native UI or physical flight claim",
+  "binary": "Backend\\build\\Release\\DroneBackend_tests.exe",
+  "binary_sha256_before": "55b6b53ca33afcd68bb3fb6d8ec3ad245df99c91c4302cda6da98cf12d42b7d8",
+  "binary_sha256_after": "55b6b53ca33afcd68bb3fb6d8ec3ad245df99c91c4302cda6da98cf12d42b7d8",
+  "binary_unchanged": true,
+  "targeted": {
+    "tests": 1,
+    "completed": 1,
+    "passed": 1,
+    "failures": 0,
+    "disabled": 0,
+    "errors": 0,
+    "skipped": 0,
+    "time_seconds": 0.005,
+    "exit_code": 0,
+    "failing_tests": [],
+    "failure_assertions": 0,
+    "xml": "backend-targeted.xml",
+    "log": "backend-targeted.log"
+  },
+  "full": {
+    "tests": 191,
+    "completed": 191,
+    "passed": 189,
+    "failures": 2,
+    "disabled": 0,
+    "errors": 0,
+    "skipped": 0,
+    "time_seconds": 20.743,
+    "exit_code": 1,
+    "failing_tests": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ],
+    "failure_assertions": 3,
+    "xml": "backend-full.xml",
+    "log": "backend-full.log"
+  },
+  "known_baseline_failures": [
+    "SegmentDistanceTest.Crossing",
+    "AssemblyPlannerTest.ConflictHeightSeparation"
+  ],
+  "unexpected_failures": [],
+  "baseline_evidence": "Evidence/ManualTakeover/backend/summary.json",
+  "build_attempts": {
+    "initial_failure": "backend-build-attempt-1.log; new test compared boost::json::value to std::string; fixed by explicit as_string conversion without changing assertion",
+    "successful_build": "backend-build-attempt-2.log; built by root before this test run"
+  },
+  "notes": [
+    "Each test command ran once; no failed test attempt was overwritten.",
+    "191 completed; 189 passed; 2 existing geometry failures. This is not an all-green suite.",
+    "No rebuild, production source edit, running-client operation, or user Saved/Stage1 data modification performed by this test runner."
+  ]
+}

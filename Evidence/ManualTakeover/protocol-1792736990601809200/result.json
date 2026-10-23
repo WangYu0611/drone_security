@@ -1,0 +1,27 @@
+{
+  "pass": true,
+  "synthetic": true,
+  "evidence_kind": "HTTP/WS with isolated Mock backend",
+  "native_verified": false,
+  "real_hardware_verified": false,
+  "passed": [
+    "Four-UAV task is deployed without automatically starting",
+    "Scheduled deployment rejects takeover without changing execution state",
+    "Single-UAV selection is shared over WS and does not change the Video target",
+    "Ordinary movement cannot steal the assigned UAV and Video cannot request takeover",
+    "Stale version, missing version, mismatched UAV and multi-UAV takeover fail atomically",
+    "Invalid coordinates, unsupported range and invalid target radius leave the original task untouched",
+    "A path ending on a paused peer is rejected before aborting the original execution",
+    "Configuration mode blocks takeover without changing the existing paused task",
+    "Map takeover aborts only the selected member and starts one independent move at its acknowledged position",
+    "Retrying the same request returns the same move; changed content cannot reuse its request ID",
+    "Command, Map and Video receive a committed WS snapshot with source termination and new movement together",
+    "Resuming the old group cannot resume the new paused movement or revive the taken-over source",
+    "Manual movement completes at its target while the other mission members keep progressing",
+    "Command can take over a paused deployed member without changing its paused peers",
+    "A manual movement and a terminal original execution cannot be taken over as deployed tasks",
+    "Old-group abort remains isolated; manual controls release occupancy without rewriting deployed routes or Video"
+  ],
+  "passed_count": 16,
+  "failure": null
+}

@@ -1,0 +1,22 @@
+{
+  "scope": "owned loopback Backend; synthetic old state; no UE or hardware",
+  "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+  "fixture_sha256": "3b5b8b6488f6557fe75592a16175fd7e51f7167b1a4c4c33f3e50740324a1b69",
+  "legacy_fixture_sha256": "9a86344a90616b184746fd290b018bc982d5d51787b60b4a77214cd2000cf8c7",
+  "expected_origin": {
+    "latitude": 1.279445,
+    "longitude": 103.862188,
+    "altitude": 15.0
+  },
+  "passed": [
+    "Fresh natural startup uses Singapore homes at numbered 3 m spacing without hardware Online",
+    "Reset-disabled restart preserves the prior confirmed Beijing execution position",
+    "Owned new startup 1 migrates to Singapore, preserving custom Home, old routes and complete backup",
+    "Attaching an existing Backend does not reset or replace its state",
+    "Owned new startup 2 migrates to Singapore, preserving custom Home, old routes and complete backup",
+    "Validation left the shipped fixture and existing Backend binary unchanged"
+  ],
+  "pass": true,
+  "passed_count": 6,
+  "expected_count": 6
+}

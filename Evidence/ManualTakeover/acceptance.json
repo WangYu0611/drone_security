@@ -1,0 +1,226 @@
+{
+  "recorded_at": "2026-10-23T02:25:46.140058+00:00",
+  "feature_acceptance": true,
+  "full_backend_suite_all_green": false,
+  "backend": {
+    "real_hardware_verified": false,
+    "full": {
+      "errors": 0,
+      "failed": 2,
+      "discovered": 190,
+      "failure_names": [
+        "SegmentDistanceTest.Crossing",
+        "AssemblyPlannerTest.ConflictHeightSeparation"
+      ],
+      "completed": 190
+    },
+    "targeted": {
+      "errors": 0,
+      "failed": 0,
+      "discovered": 13,
+      "failure_names": [],
+      "completed": 13
+    },
+    "initial_attempt": "The first sandbox run hit temporary-file atomic-replace restrictions and gtest Unicode output-path limitations. A restart fixture also replayed a request missing helper-added plan/mission fields. The fixture was corrected to replay the identical request. All 13 target tests passed with normal Windows permissions and ASCII output paths; no assertions were removed.",
+    "native_verified": false,
+    "baseline_evidence": "Evidence/UIInteraction/2026-10-20/backend/baseline/result.xml",
+    "binaries": {
+      "DroneBackend": "E2D678F52E08C2648301764BE2B9C930242AB40F42AFA1875C0B9E7F3E901881",
+      "DroneBackend_tests": "3C3E55F7B1290A9B5B99BC64613B74701C2F020152B56AB5951A0E10D4DA63B4"
+    }
+  },
+  "protocol": {
+    "run": "1792718590193182400",
+    "pass": true,
+    "synthetic": true,
+    "native_verified": false,
+    "real_hardware_verified": false,
+    "backend": "Backend\\build\\Release\\DroneBackend.exe",
+    "backend_sha256": "e2d678f52e08c2648301764be2b9c930242ab40f42afa1875c0b9e7f3e901881",
+    "fixture_sha256": "60e74372e1359263d27b28c5168cc119ac0220b6baa3e7d07988e69c30fb0aaf",
+    "expected_checks": 16,
+    "http_endpoint": "http://127.0.0.1:22782",
+    "ws_endpoint": "ws://127.0.0.1:22783/ws",
+    "owned_backend": {
+      "role": "Backend",
+      "pid": 118660,
+      "start_time": 1792718590.8777733,
+      "executable": "Backend\\build\\Release\\DroneBackend.exe",
+      "owned": true,
+      "exit_code": null
+    },
+    "runtime_directory": "Saved\\ManualTakeover-1792718590193182400",
+    "exit_code": 0,
+    "completed_checks": 16,
+    "ownership_after_stop": [],
+    "cleanup_errors": [],
+    "backend_sha256_after": "e2d678f52e08c2648301764be2b9c930242ab40f42afa1875c0b9e7f3e901881",
+    "binary_unchanged": true
+  },
+  "ue": [
+    {
+      "test": "DroneOps.Fleet.ManualTakeover",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 4,
+      "exit": 0,
+      "discovered": 4,
+      "discovery_log_counts": [
+        4
+      ],
+      "completed": 4,
+      "completed_tests": [
+        "DroneOps.Fleet.ManualTakeover.Eligibility",
+        "DroneOps.Fleet.ManualTakeover.Localization",
+        "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+        "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+      ],
+      "passed": 4,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Fleet.ManualTakeover.Eligibility",
+        "DroneOps.Fleet.ManualTakeover.Localization",
+        "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+        "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792718963789705900-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Fleet.Presentation",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Fleet.Presentation"
+      ],
+      "passed": 1,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Fleet.Presentation"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792718963789705900-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Command.SinglePointMove",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Command.SinglePointMove"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Command.SinglePointMove"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792720034743545200-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Fleet.Workflow",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Fleet.Workflow"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Fleet.Workflow"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792720049204670200-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    }
+  ],
+  "ue_evidence": [
+    "Evidence/PlanConfiguration/verification-1792718963789705900/summary.json",
+    "Evidence/PlanConfiguration/verification-1792720034743545200/summary.json",
+    "Evidence/PlanConfiguration/verification-1792720049204670200/summary.json"
+  ],
+  "native": {
+    "native_ui": "Computer Use mouse clicks in Chinese Map client",
+    "fixture": "API-created deployed Mock mission, restarted after first fixture completed during app authorization wait",
+    "real_hardware_verified": false,
+    "source": "execution-10",
+    "continuing_peer": "execution-11",
+    "movement": "execution-13",
+    "peer_final_state": "COMPLETED",
+    "verification_history": [
+      "Initial final-state assertion expected peer still EXECUTING; peer had naturally COMPLETED its original route by evidence review. Immediate and paused continuity assertions remain mandatory."
+    ],
+    "checks": [
+      "selected executing UAV-01",
+      "right-click destination preview",
+      "explicit Chinese takeover consequence and confirmation",
+      "source aborted and new independent move",
+      "UAV-02 continues original task",
+      "native pause and resume of manual move",
+      "movement reaches chosen target",
+      "original task remains aborted"
+    ],
+    "limitations": [
+      "Command takeover native flow not replayed",
+      "no physical aircraft tested"
+    ],
+    "pass": true
+  },
+  "native_cleanup": {
+    "errors": [],
+    "owned": []
+  },
+  "native_evidence": "native-1792718959342115200/ui/acceptance.json",
+  "binaries": {
+    "Backend/build/Release/DroneBackend.exe": "e2d678f52e08c2648301764be2b9c930242ab40f42afa1875c0b9e7f3e901881",
+    "Binaries/Win64/UnrealEditor-UE5DroneControl.dll": "3bc4ef6edc4fa4840a6e28e662f889697d6d0816dcfb14041e587c0a218ce44d"
+  },
+  "build": "Final UE Editor build succeeded with all four added automation tests included.",
+  "localization": "Corrected GatherText run completed its steps with GatherText exit 0 and generated en/zh resources; process exit 1 retained existing GameFeatureData startup errors. Culture-switching localization automation and native Chinese Map UI passed.",
+  "limitations": [
+    "Mock native evidence only; no real aircraft tested.",
+    "Command takeover native flow not replayed; Command ordinary movement RHI regression passed.",
+    "Native mission preparation/deployment/start used API fixture; actual selection, target choice, confirmation, pause and resume used mouse UI.",
+    "Two known baseline geometry failures remain in full Backend suite.",
+    "Each existing RHI regression has one known fixture/startup warning."
+  ]
+}

@@ -1,0 +1,2328 @@
+[
+  {
+    "at": "2026-10-23T01:29:20.645Z",
+    "path": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "client_id": "TAKEOVER-QA-Command",
+      "client_role": "Command",
+      "hostname": "ISOLATED-MOCK",
+      "app_version": "ManualTakeover"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "TAKEOVER-QA-Command",
+      "client_role": "Command",
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "hostname": "ISOLATED-MOCK",
+      "app_version": "ManualTakeover",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 1
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.710Z",
+    "path": "/api/context/clients",
+    "method": "POST",
+    "body": {
+      "instance_id": "26c80f6d-141e-4bba-91aa-3bb3b44edd3d",
+      "client_id": "TAKEOVER-QA-Map",
+      "client_role": "Map",
+      "hostname": "ISOLATED-MOCK",
+      "app_version": "ManualTakeover"
+    },
+    "status": 200,
+    "data": {
+      "client_id": "TAKEOVER-QA-Map",
+      "client_role": "Map",
+      "instance_id": "26c80f6d-141e-4bba-91aa-3bb3b44edd3d",
+      "hostname": "ISOLATED-MOCK",
+      "app_version": "ManualTakeover",
+      "connected_at": null,
+      "last_seen": 0,
+      "hydrated": false,
+      "state": "OFFLINE",
+      "client_version": 3
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.778Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "expected_version": 0,
+      "action": "create_plan",
+      "name": "Manual takeover acceptance",
+      "default_mission_name": "Long formation patrol"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 1,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 1,
+            "review": null,
+            "version": 1,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.7761312,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "NO_UAV_ASSIGNED",
+                  "params": {}
+                },
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 0,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": null,
+            "route_id": null,
+            "status": "DRAFT"
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "context": {
+        "context_version": 1,
+        "active_uav_id": null,
+        "active_alert_id": null,
+        "active_mission_id": "mission-2",
+        "active_security_plan_id": "plan-1",
+        "active_area_id": null,
+        "operation_mode": "MONITOR",
+        "updated_at": 1792718960.7770617,
+        "updated_by": "TAKEOVER-QA-Command"
+      }
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.784Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "expected_version": 1,
+      "action": "assign",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "assigned_uav_ids": [
+        "UAV-01",
+        "UAV-02"
+      ],
+      "formation": "Line",
+      "spacing_m": 2.556129809057955
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 2,
+        "next_id": 3,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 2,
+            "review": null,
+            "version": 2,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.7826724,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": null,
+            "status": "DRAFT",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.793Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "26c80f6d-141e-4bba-91aa-3bb3b44edd3d",
+      "expected_version": 2,
+      "action": "begin_route_edit",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "content_revision": 2
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 3,
+        "next_id": 4,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 2,
+            "review": null,
+            "version": 2,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.7826724,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [
+                {
+                  "mission_id": "mission-2",
+                  "code": "ROUTE_MISSING",
+                  "params": {}
+                }
+              ],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 0,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": null,
+            "status": "DRAFT",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {},
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792718960.7918813,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route editing started",
+            "source": "TAKEOVER-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {
+          "edit-3": {
+            "edit_session_id": "edit-3",
+            "plan_id": "plan-1",
+            "mission_id": "mission-2",
+            "owner_instance_id": "26c80f6d-141e-4bba-91aa-3bb3b44edd3d",
+            "owner_client_id": "TAKEOVER-QA-Map",
+            "base_content_revision": 2,
+            "state": "EDITING",
+            "started_at": 1792718960.791875,
+            "last_seen_at": 1792718960.791875,
+            "lease_expires_at": 1792718980.791875
+          }
+        },
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "edit_session_id": "edit-3"
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.798Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "26c80f6d-141e-4bba-91aa-3bb3b44edd3d",
+      "expected_version": 3,
+      "action": "save_route",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "edit_session_id": "edit-3",
+      "path": {
+        "pathId": 1,
+        "bClosedLoop": false,
+        "waypoints": [
+          {
+            "sequence": 1,
+            "latitude": 39.9807,
+            "longitude": 116.34704500000001,
+            "altitude": 30,
+            "altitude_reference": "Ellipsoid",
+            "segmentSpeed": 2,
+            "waitTime": 0
+          },
+          {
+            "sequence": 2,
+            "latitude": 39.9887,
+            "longitude": 116.34704500000001,
+            "altitude": 30,
+            "altitude_reference": "Ellipsoid",
+            "segmentSpeed": 2,
+            "waitTime": 0
+          }
+        ]
+      }
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 4,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "DRAFT",
+            "content_revision": 3,
+            "review": null,
+            "version": 3,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.7968383,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": false,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 1,
+              "validated_content_revision": null
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-4",
+            "status": "READY",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {
+          "route-4": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9887,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-4",
+            "revision": 1
+          }
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792718960.7918813,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route editing started",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792718960.7968323,
+            "event_type": "ROUTE_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route saved: Long formation patrol",
+            "source": "TAKEOVER-QA-Map"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.803Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "expected_version": 4,
+      "action": "validate",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 5,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "READY",
+            "content_revision": 3,
+            "review": null,
+            "version": 4,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.802086,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 1,
+              "validated_content_revision": 3
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-4",
+            "status": "READY",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {
+          "route-4": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9887,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-4",
+            "revision": 1
+          }
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792718960.7918813,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route editing started",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792718960.7968323,
+            "event_type": "ROUTE_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route saved: Long formation patrol",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 6,
+            "timestamp": 1792718960.8020809,
+            "event_type": "PLAN_VALIDATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Configuration checked",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 7,
+            "timestamp": 1792718960.8020833,
+            "event_type": "PLAN_REVIEW_READY",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Pre-deployment check ready",
+            "source": "TAKEOVER-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.808Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "expected_version": 5,
+      "action": "review",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 6,
+        "next_id": 5,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "READY",
+            "content_revision": 3,
+            "review": {
+              "content_revision": 3,
+              "reviewed_at": 1792718960.807208,
+              "reviewed_by": "TAKEOVER-QA-Command"
+            },
+            "version": 5,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.8072135,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 1,
+              "validated_content_revision": 3
+            }
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-4",
+            "status": "READY",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {
+          "route-4": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9887,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-4",
+            "revision": 1
+          }
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792718960.7918813,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route editing started",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792718960.7968323,
+            "event_type": "ROUTE_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route saved: Long formation patrol",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 6,
+            "timestamp": 1792718960.8020809,
+            "event_type": "PLAN_VALIDATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Configuration checked",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 7,
+            "timestamp": 1792718960.8020833,
+            "event_type": "PLAN_REVIEW_READY",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Pre-deployment check ready",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 8,
+            "timestamp": 1792718960.8072102,
+            "event_type": "PLAN_REVIEWED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Current configuration reviewed",
+            "source": "TAKEOVER-QA-Command"
+          }
+        ],
+        "deployments": {},
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.813Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "expected_version": 6,
+      "action": "deploy",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 7,
+        "next_id": 6,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "DEPLOYED",
+            "content_revision": 3,
+            "review": {
+              "content_revision": 3,
+              "reviewed_at": 1792718960.807208,
+              "reviewed_by": "TAKEOVER-QA-Command"
+            },
+            "version": 6,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.812325,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 1,
+              "validated_content_revision": 3
+            },
+            "deployment_id": "deployment-5"
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-4",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {
+          "route-4": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9887,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-4",
+            "revision": 1
+          }
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792718960.7918813,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route editing started",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792718960.7968323,
+            "event_type": "ROUTE_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route saved: Long formation patrol",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 6,
+            "timestamp": 1792718960.8020809,
+            "event_type": "PLAN_VALIDATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Configuration checked",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 7,
+            "timestamp": 1792718960.8020833,
+            "event_type": "PLAN_REVIEW_READY",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Pre-deployment check ready",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 8,
+            "timestamp": 1792718960.8072102,
+            "event_type": "PLAN_REVIEWED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Current configuration reviewed",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 9,
+            "timestamp": 1792718960.8123171,
+            "event_type": "DEPLOYMENT_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Deployment snapshot created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 10,
+            "timestamp": 1792718960.8123207,
+            "event_type": "PLAN_DEPLOYED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Deployed. Execution has not started.",
+            "source": "TAKEOVER-QA-Command"
+          }
+        ],
+        "deployments": {
+          "deployment-5": {
+            "id": "deployment-5",
+            "plan_id": "plan-1",
+            "content_revision": 3,
+            "deployed_at": 1792718960.8123045,
+            "deployed_by": "TAKEOVER-QA-Command",
+            "reviewed_by": "TAKEOVER-QA-Command",
+            "reviewed_at": 1792718960.807208,
+            "snapshot": {
+              "plan": {
+                "id": "plan-1",
+                "name": "Manual takeover acceptance",
+                "description": "",
+                "status": "DEPLOYED",
+                "content_revision": 3,
+                "review": {
+                  "content_revision": 3,
+                  "reviewed_at": 1792718960.807208,
+                  "reviewed_by": "TAKEOVER-QA-Command"
+                },
+                "version": 5,
+                "created_at": 1792718960.7761312,
+                "updated_at": 1792718960.8072135,
+                "mission_ids": [
+                  "mission-2"
+                ],
+                "workflow_step": "TaskConfig",
+                "validation": {
+                  "ready": true,
+                  "issues": [],
+                  "mission_count": 1,
+                  "assigned_count": 2,
+                  "routes_ready": 1,
+                  "validated_content_revision": 3
+                },
+                "deployment_id": "deployment-5"
+              },
+              "missions": {
+                "mission-2": {
+                  "id": "mission-2",
+                  "plan_id": "plan-1",
+                  "name": "Long formation patrol",
+                  "assigned_uav_id": "UAV-01",
+                  "route_id": "route-4",
+                  "status": "DEPLOYED",
+                  "assigned_uav_ids": [
+                    "UAV-01",
+                    "UAV-02"
+                  ],
+                  "formation": "Line",
+                  "spacing_m": 2.556129809057955
+                }
+              },
+              "paths": {
+                "route-4": {
+                  "pathId": 1,
+                  "bClosedLoop": false,
+                  "waypoints": [
+                    {
+                      "sequence": 1,
+                      "latitude": 39.9807,
+                      "longitude": 116.347045,
+                      "altitude": 30,
+                      "altitude_reference": "Ellipsoid",
+                      "segmentSpeed": 2,
+                      "waitTime": 0
+                    },
+                    {
+                      "sequence": 2,
+                      "latitude": 39.9887,
+                      "longitude": 116.347045,
+                      "altitude": 30,
+                      "altitude_reference": "Ellipsoid",
+                      "segmentSpeed": 2,
+                      "waitTime": 0
+                    }
+                  ],
+                  "closedRoute": false,
+                  "route_id": "route-4",
+                  "revision": 1
+                }
+              }
+            }
+          }
+        },
+        "edit_sessions": {},
+        "executions": {},
+        "execution_version": 0,
+        "execution_requests": {},
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "plan_id": "plan-1",
+      "mission_id": "mission-2"
+    }
+  },
+  {
+    "at": "2026-10-23T01:29:20.819Z",
+    "path": "/api/security-plans",
+    "method": "POST",
+    "body": {
+      "instance_id": "55ff1aa1-458e-4009-bf54-882ec5a13113",
+      "expected_version": 7,
+      "action": "execution_start",
+      "plan_id": "plan-1",
+      "mission_id": "mission-2",
+      "request_id": "eadffc9b-3888-416f-a1f3-0e8478bd269f"
+    },
+    "status": 200,
+    "data": {
+      "state": {
+        "version": 7,
+        "next_id": 9,
+        "plans": {
+          "plan-1": {
+            "id": "plan-1",
+            "name": "Manual takeover acceptance",
+            "description": "",
+            "status": "DEPLOYED",
+            "content_revision": 3,
+            "review": {
+              "content_revision": 3,
+              "reviewed_at": 1792718960.807208,
+              "reviewed_by": "TAKEOVER-QA-Command"
+            },
+            "version": 6,
+            "created_at": 1792718960.7761312,
+            "updated_at": 1792718960.812325,
+            "mission_ids": [
+              "mission-2"
+            ],
+            "workflow_step": "TaskConfig",
+            "validation": {
+              "ready": true,
+              "issues": [],
+              "mission_count": 1,
+              "assigned_count": 2,
+              "routes_ready": 1,
+              "validated_content_revision": 3
+            },
+            "deployment_id": "deployment-5"
+          }
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Long formation patrol",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-4",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 2.556129809057955
+          }
+        },
+        "paths": {
+          "route-4": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9887,
+                "longitude": 116.347045,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 2,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-4",
+            "revision": 1
+          }
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "timestamp": 1792718960.7761385,
+            "event_type": "PLAN_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Security plan created: Manual takeover acceptance",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 2,
+            "timestamp": 1792718960.7761447,
+            "event_type": "MISSION_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": null
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Default task created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 3,
+            "timestamp": 1792718960.7826648,
+            "event_type": "UAV_ASSIGNED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "UAV assignment updated",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 4,
+            "timestamp": 1792718960.7918813,
+            "event_type": "ROUTE_EDIT_STARTED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route editing started",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 5,
+            "timestamp": 1792718960.7968323,
+            "event_type": "ROUTE_CREATED",
+            "params": {
+              "target_id": "mission-2",
+              "mission_name": "Long formation patrol",
+              "uav_id": "UAV-01"
+            },
+            "category": "MISSION",
+            "target_id": "mission-2",
+            "message": "Route saved: Long formation patrol",
+            "source": "TAKEOVER-QA-Map"
+          },
+          {
+            "sequence": 6,
+            "timestamp": 1792718960.8020809,
+            "event_type": "PLAN_VALIDATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Configuration checked",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 7,
+            "timestamp": 1792718960.8020833,
+            "event_type": "PLAN_REVIEW_READY",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Pre-deployment check ready",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 8,
+            "timestamp": 1792718960.8072102,
+            "event_type": "PLAN_REVIEWED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Current configuration reviewed",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 9,
+            "timestamp": 1792718960.8123171,
+            "event_type": "DEPLOYMENT_CREATED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Deployment snapshot created",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 10,
+            "timestamp": 1792718960.8123207,
+            "event_type": "PLAN_DEPLOYED",
+            "params": {
+              "target_id": "plan-1",
+              "plan_name": "Manual takeover acceptance"
+            },
+            "category": "PLAN",
+            "target_id": "plan-1",
+            "message": "Deployed. Execution has not started.",
+            "source": "TAKEOVER-QA-Command"
+          },
+          {
+            "sequence": 11,
+            "timestamp": 1792718960.817664,
+            "event_type": "EXECUTION_CREATED",
+            "params": {
+              "target_id": "execution-7",
+              "uav_id": "UAV-01",
+              "reason": ""
+            },
+            "category": "MISSION",
+            "target_id": "execution-7",
+            "message": "EXECUTION_CREATED",
+            "source": "Mission Controller",
+            "execution_snapshot": {
+              "state": "CREATED",
+              "position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              },
+              "progress": 0,
+              "current_waypoint": 1
+            }
+          },
+          {
+            "sequence": 12,
+            "timestamp": 1792718960.8176823,
+            "event_type": "EXECUTION_CREATED",
+            "params": {
+              "target_id": "execution-8",
+              "uav_id": "UAV-02",
+              "reason": ""
+            },
+            "category": "MISSION",
+            "target_id": "execution-8",
+            "message": "EXECUTION_CREATED",
+            "source": "Mission Controller",
+            "execution_snapshot": {
+              "state": "CREATED",
+              "position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              },
+              "progress": 0,
+              "current_waypoint": 1
+            }
+          }
+        ],
+        "deployments": {
+          "deployment-5": {
+            "id": "deployment-5",
+            "plan_id": "plan-1",
+            "content_revision": 3,
+            "deployed_at": 1792718960.8123045,
+            "deployed_by": "TAKEOVER-QA-Command",
+            "reviewed_by": "TAKEOVER-QA-Command",
+            "reviewed_at": 1792718960.807208,
+            "snapshot": {
+              "plan": {
+                "id": "plan-1",
+                "name": "Manual takeover acceptance",
+                "description": "",
+                "status": "DEPLOYED",
+                "content_revision": 3,
+                "review": {
+                  "content_revision": 3,
+                  "reviewed_at": 1792718960.807208,
+                  "reviewed_by": "TAKEOVER-QA-Command"
+                },
+                "version": 5,
+                "created_at": 1792718960.7761312,
+                "updated_at": 1792718960.8072135,
+                "mission_ids": [
+                  "mission-2"
+                ],
+                "workflow_step": "TaskConfig",
+                "validation": {
+                  "ready": true,
+                  "issues": [],
+                  "mission_count": 1,
+                  "assigned_count": 2,
+                  "routes_ready": 1,
+                  "validated_content_revision": 3
+                },
+                "deployment_id": "deployment-5"
+              },
+              "missions": {
+                "mission-2": {
+                  "id": "mission-2",
+                  "plan_id": "plan-1",
+                  "name": "Long formation patrol",
+                  "assigned_uav_id": "UAV-01",
+                  "route_id": "route-4",
+                  "status": "DEPLOYED",
+                  "assigned_uav_ids": [
+                    "UAV-01",
+                    "UAV-02"
+                  ],
+                  "formation": "Line",
+                  "spacing_m": 2.556129809057955
+                }
+              },
+              "paths": {
+                "route-4": {
+                  "pathId": 1,
+                  "bClosedLoop": false,
+                  "waypoints": [
+                    {
+                      "sequence": 1,
+                      "latitude": 39.9807,
+                      "longitude": 116.347045,
+                      "altitude": 30,
+                      "altitude_reference": "Ellipsoid",
+                      "segmentSpeed": 2,
+                      "waitTime": 0
+                    },
+                    {
+                      "sequence": 2,
+                      "latitude": 39.9887,
+                      "longitude": 116.347045,
+                      "altitude": 30,
+                      "altitude_reference": "Ellipsoid",
+                      "segmentSpeed": 2,
+                      "waitTime": 0
+                    }
+                  ],
+                  "closedRoute": false,
+                  "route_id": "route-4",
+                  "revision": 1
+                }
+              }
+            }
+          }
+        },
+        "edit_sessions": {},
+        "executions": {
+          "execution-7": {
+            "execution_id": "execution-7",
+            "deployment_id": "deployment-5",
+            "plan_id": "plan-1",
+            "mission_id": "mission-2",
+            "route_id": "route-4",
+            "route_revision": 1,
+            "route_snapshot": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.9807,
+                  "longitude": 116.34702999999999,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.9887,
+                  "longitude": 116.34702999999999,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                }
+              ],
+              "closedRoute": false,
+              "route_id": "route-4",
+              "revision": 1,
+              "formation": "Line",
+              "slot_index": 0,
+              "lateral_offset_m": -1.2780649045289776
+            },
+            "plan_name": "Manual takeover acceptance",
+            "mission_name": "Long formation patrol",
+            "uav_id": "UAV-01",
+            "state": "CREATED",
+            "control_version": 0,
+            "current_waypoint": 1,
+            "completed_waypoints": 0,
+            "total_waypoints": 2,
+            "segment_progress": 0,
+            "overall_progress": 0,
+            "progress": 0,
+            "position": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "segment_start": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "default_speed_mps": 8,
+            "distance_m": 889.5594131579778,
+            "estimated_seconds": 444.7797065789889,
+            "distance_travelled_m": 0,
+            "wait_remaining": 0,
+            "elapsed_seconds": 0,
+            "created_at": 1792718960.8176508,
+            "started_at": null,
+            "updated_at": 1792718960.8176508,
+            "completed_at": null,
+            "completion_reason": "",
+            "failure_reason": "",
+            "simulation": true,
+            "adapter": "Mock",
+            "loopMode": "Once",
+            "closure_completed": false,
+            "group_id": "group-6",
+            "plan_route_snapshot": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.9807,
+                  "longitude": 116.347045,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.9887,
+                  "longitude": 116.347045,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                }
+              ],
+              "closedRoute": false,
+              "route_id": "route-4",
+              "revision": 1
+            },
+            "formation": "Line",
+            "safety_separation_m": 1.5
+          },
+          "execution-8": {
+            "execution_id": "execution-8",
+            "deployment_id": "deployment-5",
+            "plan_id": "plan-1",
+            "mission_id": "mission-2",
+            "route_id": "route-4",
+            "route_revision": 1,
+            "route_snapshot": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.9807,
+                  "longitude": 116.34706,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.9887,
+                  "longitude": 116.34706,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                }
+              ],
+              "closedRoute": false,
+              "route_id": "route-4",
+              "revision": 1,
+              "formation": "Line",
+              "slot_index": 1,
+              "lateral_offset_m": 1.2780649045289776
+            },
+            "plan_name": "Manual takeover acceptance",
+            "mission_name": "Long formation patrol",
+            "uav_id": "UAV-02",
+            "state": "CREATED",
+            "control_version": 0,
+            "current_waypoint": 1,
+            "completed_waypoints": 0,
+            "total_waypoints": 2,
+            "segment_progress": 0,
+            "overall_progress": 0,
+            "progress": 0,
+            "position": {
+              "latitude": 39.9807,
+              "longitude": 116.34706,
+              "altitude": 30
+            },
+            "segment_start": {
+              "latitude": 39.9807,
+              "longitude": 116.34706,
+              "altitude": 30
+            },
+            "home_position": {
+              "latitude": 39.9807,
+              "longitude": 116.34706,
+              "altitude": 30
+            },
+            "default_speed_mps": 8,
+            "distance_m": 889.5594131567669,
+            "estimated_seconds": 444.77970657838347,
+            "distance_travelled_m": 0,
+            "wait_remaining": 0,
+            "elapsed_seconds": 0,
+            "created_at": 1792718960.8176734,
+            "started_at": null,
+            "updated_at": 1792718960.8176734,
+            "completed_at": null,
+            "completion_reason": "",
+            "failure_reason": "",
+            "simulation": true,
+            "adapter": "Mock",
+            "loopMode": "Once",
+            "closure_completed": false,
+            "group_id": "group-6",
+            "plan_route_snapshot": {
+              "pathId": 1,
+              "bClosedLoop": false,
+              "waypoints": [
+                {
+                  "sequence": 1,
+                  "latitude": 39.9807,
+                  "longitude": 116.347045,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                },
+                {
+                  "sequence": 2,
+                  "latitude": 39.9887,
+                  "longitude": 116.347045,
+                  "altitude": 30,
+                  "altitude_reference": "Ellipsoid",
+                  "segmentSpeed": 2,
+                  "waitTime": 0
+                }
+              ],
+              "closedRoute": false,
+              "route_id": "route-4",
+              "revision": 1
+            },
+            "formation": "Line",
+            "safety_separation_m": 1.5
+          }
+        },
+        "execution_version": 1,
+        "execution_requests": {
+          "eadffc9b-3888-416f-a1f3-0e8478bd269f": {
+            "request": {
+              "mission_id": "mission-2",
+              "request_id": "eadffc9b-3888-416f-a1f3-0e8478bd269f",
+              "action": "execution_start",
+              "plan_id": "plan-1"
+            },
+            "execution_id": "execution-7"
+          }
+        },
+        "deleted_plans": {},
+        "configuration_session": null,
+        "mock_execution": {
+          "simulation": true,
+          "default_speed_mps": 8,
+          "startup_formation": {
+            "origin": {
+              "latitude": 39.9807,
+              "longitude": 116.34703,
+              "altitude": 30
+            },
+            "spacing_m": 2,
+            "direction": "east"
+          },
+          "uavs": {
+            "UAV-01": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34703,
+                "altitude": 30
+              }
+            },
+            "UAV-02": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34706,
+                "altitude": 30
+              }
+            },
+            "UAV-03": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34709,
+                "altitude": 30
+              }
+            },
+            "UAV-04": {
+              "home_position": {
+                "latitude": 39.9807,
+                "longitude": 116.34712,
+                "altitude": 30
+              }
+            }
+          },
+          "safety_separation_m": 1.5
+        },
+        "execution_adapter": "Mock"
+      },
+      "execution_id": "execution-7"
+    }
+  }
+]

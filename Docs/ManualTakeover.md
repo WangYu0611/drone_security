@@ -35,7 +35,7 @@ Real 适配器先对被接管无人机发送 hold，再允许新移动执行进�
 
 ## 隔离验证
 
-构建正常 Backend 后，在仓库根目录运行。脚本需要 Python 3，以及提供全局 `fetch`、`crypto.randomUUID` 和 `WebSocket` 的 Node.js；本次使用 Node.js `v24.13.0`：
+构建正常 Backend 后，在仓库根目录运行。脚本需要 Python 3.10+，以及提供全局 `fetch`、`crypto.randomUUID` 和 `WebSocket` 的 Node.js；本次使用 Node.js `v24.13.0`：
 
 ```powershell
 python Scripts/ManualTakeover/verify.py

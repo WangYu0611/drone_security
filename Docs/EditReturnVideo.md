@@ -43,7 +43,7 @@ Map 先向 `/api/context` 发出选择请求，在正常 `patch` 外携带该客
 
 ## 独立协议回归
 
-正常构建 Backend 后，在仓库根目录运行。脚本需要 Python 3，以及提供全局 `fetch`、`crypto.randomUUID` 和 `WebSocket` 的 Node.js；本次使用 Node.js `v24.13.0`：
+正常构建 Backend 后，在仓库根目录运行。脚本需要 Python 3.10+，以及提供全局 `fetch`、`crypto.randomUUID` 和 `WebSocket` 的 Node.js；本次使用 Node.js `v24.13.0`：
 
 ```powershell
 python Scripts/EditReturnVideo/verify.py
@@ -68,7 +68,9 @@ python Scripts/EditReturnVideo/verify.py
 
 此结果验证 HTTP / WS 与隔离 Mock 状态，不证明原生按钮可达、鼠标命中、摄像头播放或真实硬件行为。原生界面与 UE 组件结果应单独记录。
 
-## 最终构建与原生验证（2026-10-23）
+## 该功能阶段的构建与原生验证（2026-10-23）
+
+本节“最终”指编辑返回与视频联动阶段完成时的构建。之后按钮框选继续更新 UE 模块；当前发布构建身份及其单独复核见 [发布说明](Delivery-20261023.md)，不将本节 10 项 RHI 结果归到后续构建。
 
 规范 Backend 和 UE Editor 均构建成功，最终二进制身份、各层结果和进程清理记录见 [验收汇总](../Evidence/EditReturnVideo/20261023-105421/acceptance.json)。
 

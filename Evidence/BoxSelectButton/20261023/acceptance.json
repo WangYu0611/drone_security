@@ -1,0 +1,175 @@
+{
+  "at": 1792732880.254641,
+  "request": "Rectangle UAV selection only after explicitly enabling its toolbar button",
+  "build": {
+    "result": "Succeeded",
+    "exit_code": 0,
+    "log": "build.log",
+    "ue_module_sha256": "1c342e8c0bf01110ff5c8b4c29cd57d2d8dd65f05874c6883ec412ca9e9107b5"
+  },
+  "rhi": {
+    "discovered": 4,
+    "completed": 4,
+    "passed": 4,
+    "failed": 0,
+    "tests": [
+      {
+        "test": "DroneOps.Fleet.PanelVisibility",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.PanelVisibility"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.PanelVisibility"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792732385635639200-0",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.Reselection",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.Reselection"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.Reselection"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792732385635639200-1",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Fleet.ThreeDimensionalWorkflow",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Fleet.ThreeDimensionalWorkflow"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Fleet.ThreeDimensionalWorkflow"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792732385635639200-2",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      },
+      {
+        "test": "DroneOps.Figma.MapPresentation",
+        "role": "Map",
+        "pass": true,
+        "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+        "expected": 1,
+        "exit": 0,
+        "discovered": 1,
+        "discovery_log_counts": [
+          1
+        ],
+        "completed": 1,
+        "completed_tests": [
+          "DroneOps.Figma.MapPresentation"
+        ],
+        "passed": 1,
+        "warnings": 1,
+        "failed": 0,
+        "not_run": 0,
+        "in_process": 0,
+        "report_tests": [
+          "DroneOps.Figma.MapPresentation"
+        ],
+        "runtime_directory": "Saved\\PlanConfiguration-verify-1792732385635639200-3",
+        "cleanup_errors": [],
+        "ownership_after_stop": []
+      }
+    ],
+    "run": "Evidence\\PlanConfiguration\\verification-1792732385635639200",
+    "scope": "Rendered offline Map fixtures and isolated owned Mock Backends; direct component/production input-preprocessor calls, not OS mouse evidence"
+  },
+  "native": {
+    "pass": true,
+    "scope": "Final built game clients, real Windows mouse/keyboard, normal owned Launcher Mock session; no flight or new execution",
+    "checks": [
+      "Ordinary blank-map click keeps box-select toolbar off",
+      "Unarmed rectangle drag across all four aircraft keeps empty selection and context version 45",
+      "Explicit toolbar arms rectangle selection; same drag selects all four, context version 46, Video unchanged",
+      "Escape disarms; drag across only UAV-03 preserves four-aircraft selection and version 46",
+      "Ordinary single click UAV-03 keeps box mode off and acknowledges sole UAV-03 selection plus Video target, version 47",
+      "Second toolbar click exits; selection/Video remain UAV-03",
+      "All recorded execution identities/states unchanged"
+    ],
+    "snapshots": [
+      "native-initial.json",
+      "native-click-empty.json",
+      "native-unarmed-drag.json",
+      "native-armed-drag.json",
+      "native-after-escape-drag.json",
+      "native-single-click.json",
+      "native-button-exited.json"
+    ],
+    "environment_note": "Online Google terrain remained unavailable during this gesture check; geographic/terrain correctness is not claimed by these screenshots."
+  },
+  "localization": {
+    "gather_text_exit": 0,
+    "editor_command_exit": 1,
+    "reason": "Existing pre-test GameFeatureData/other plugin initialization errors; generated en/zh resources retained",
+    "log": "localization.log"
+  },
+  "additional_static_fixes": {
+    "shared_drag_threshold": "Fleet and pan use the same configured screen-pixel threshold",
+    "view_switch": "SetMapMode synchronously cancels Fleet gesture before new projection"
+  },
+  "not_automated": [
+    "A dedicated 2px threshold case",
+    "Immediate view-switch cancellation during held pointer"
+  ],
+  "normal_session_left_running": {
+    "http": "http://127.0.0.1:19880",
+    "roles": [
+      "Command",
+      "Map",
+      "Video"
+    ],
+    "map_mode": "Browse, rectangle tool off"
+  },
+  "prior_cleanup": "previous-launcher-cleanup.json"
+}

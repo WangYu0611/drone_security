@@ -1,0 +1,21 @@
+{
+  "role": "Map",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Map",
+    "-P5Instance=dee4a2e7-7255-486a-b740-cbe3043bd50b",
+    "-AutomationRegistryFile=Saved\\PlanConfiguration-verify-1792732385635639200-0\\DroneRegistry.json",
+    "-P1Http=http://127.0.0.1:23018",
+    "-P1Ws=ws://127.0.0.1:23019/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.Fleet.PanelVisibility",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1792732385635639200\\00-DroneOps.Fleet.PanelVisibility",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1792732385635639200\\00-DroneOps.Fleet.PanelVisibility\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1792732385635639200-0"
+}

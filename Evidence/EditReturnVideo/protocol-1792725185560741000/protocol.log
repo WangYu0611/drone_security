@@ -1,0 +1,11 @@
+PASS Two-task plan deploys with immutable history and without starting execution
+PASS Collision validation marks the failing task and plan DRAFT with useful separation details
+PASS Failed review/deploy preserve data; configuration can release and plan selection can return to the list
+PASS Correcting the route redeploys the same plan/task/route IDs and preserves the first deployment snapshot
+PASS Ordinary Command and Map context selection do not implicitly retarget Video
+PASS Acknowledged explicit Map choice updates Video through a guarded request and broadcasts to every role
+PASS Delayed video requests with stale serial or context version preserve the current Video view
+PASS Selection serial rejects stale context/video requests even at the same version; current same-UAV click repairs Video
+PASS A newer same-context click supersedes its old target; stale requests cannot revert it, including modifier clicks
+PASS The same Video identity reconnects, hydrates the current target and receives subsequent Map changes
+PASS Video synchronization and later Command/task selections leave deployments and execution state unchanged

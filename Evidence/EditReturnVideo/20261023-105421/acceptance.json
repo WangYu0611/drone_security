@@ -1,0 +1,358 @@
+{
+  "recorded_at": "2026-10-23T03:49:02.292413+00:00",
+  "backend": {
+    "recorded_at_utc": "2026-10-23T03:40:01.483591+00:00",
+    "evidence_kind": "Backend gtest; no native UI or physical flight claim",
+    "target_filter": "PlanLifecycle.ConflictingReeditCanExitCorrectAndRedeploySamePlan:GuardedDeployment.*",
+    "targeted": {
+      "discovered": 9,
+      "completed": 9,
+      "passed": 9,
+      "failed": 0,
+      "disabled": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "time_seconds": 0.04,
+      "failure_names": [],
+      "xml": "backend-targeted-final.xml",
+      "log": "backend-targeted-final.log"
+    },
+    "full": {
+      "discovered": 199,
+      "completed": 199,
+      "passed": 197,
+      "failed": 2,
+      "disabled": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1,
+      "time_seconds": 21.434,
+      "failure_names": [
+        "SegmentDistanceTest.Crossing",
+        "AssemblyPlannerTest.ConflictHeightSeparation"
+      ],
+      "xml": "backend-full-final.xml",
+      "log": "backend-full-final.log"
+    },
+    "known_baseline_failures": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ],
+    "unexpected_failures": [],
+    "baseline_evidence": "Evidence/EditReturnVideo/20261023-105421/backend-summary.json",
+    "binaries": {
+      "DroneBackend_tests": "Backend\\build\\Release\\DroneBackend_tests.exe",
+      "tests_sha256_before": "291cf38a06c36658d247b2b8a5218960c61f35f739da1d25c5efc4b4870b6a56",
+      "tests_sha256_after": "291cf38a06c36658d247b2b8a5218960c61f35f739da1d25c5efc4b4870b6a56",
+      "tests_unchanged": true,
+      "DroneBackend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b"
+    },
+    "notes": [
+      "Each final command ran once; all earlier XML/log/summary evidence retained.",
+      "Deterministic heartbeat injection occurs before each of validate, review, and deploy in the guarded chain.",
+      "199 completed, 197 passed, two existing geometry failures; not an all-green suite.",
+      "No rebuild, source edits, UE startup or user Saved/Stage1 data changes by this test runner."
+    ]
+  },
+  "protocol": {
+    "run": "1792726708818955700",
+    "pass": true,
+    "synthetic": true,
+    "native_verified": false,
+    "real_hardware_verified": false,
+    "backend": "Backend\\build\\Release\\DroneBackend.exe",
+    "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+    "fixture_sha256": "60e74372e1359263d27b28c5168cc119ac0220b6baa3e7d07988e69c30fb0aaf",
+    "expected_checks": 13,
+    "http_endpoint": "http://127.0.0.1:22994",
+    "ws_endpoint": "ws://127.0.0.1:22995/ws",
+    "owned_backend": {
+      "role": "Backend",
+      "pid": 129592,
+      "start_time": 1792726709.4512382,
+      "executable": "Backend\\build\\Release\\DroneBackend.exe",
+      "owned": true,
+      "exit_code": null
+    },
+    "runtime_directory": "Saved\\EditReturnVideo-1792726708818955700",
+    "exit_code": 0,
+    "completed_checks": 13,
+    "ownership_after_stop": [],
+    "cleanup_errors": [],
+    "backend_sha256_after": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+    "binary_unchanged": true
+  },
+  "protocol_evidence": "Evidence/EditReturnVideo/protocol-1792726708818955700/run.json",
+  "ue": [
+    {
+      "test": "DroneOps.PlanConfiguration.MissionActions",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.MissionActions"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.MissionActions"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726722626697200-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Figma.MapPresentation",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Figma.MapPresentation"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Figma.MapPresentation"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726717122728300-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Map.SelectionVideoAck",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Map.SelectionVideoAck"
+      ],
+      "passed": 1,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Map.SelectionVideoAck"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726717122728300-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Fleet.ManualTakeover",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 4,
+      "exit": 0,
+      "discovered": 4,
+      "discovery_log_counts": [
+        4
+      ],
+      "completed": 4,
+      "completed_tests": [
+        "DroneOps.Fleet.ManualTakeover.Eligibility",
+        "DroneOps.Fleet.ManualTakeover.Localization",
+        "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+        "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+      ],
+      "passed": 4,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Fleet.ManualTakeover.Eligibility",
+        "DroneOps.Fleet.ManualTakeover.Localization",
+        "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+        "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726717122728300-2",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Fleet.Workflow",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Fleet.Workflow"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Fleet.Workflow"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726717122728300-3",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.Workspace",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.Workspace"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.Workspace"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726947021689300-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.DeploymentIntent",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.DeploymentIntent"
+      ],
+      "passed": 1,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.DeploymentIntent"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1792726947021689300-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    }
+  ],
+  "ue_evidence": [
+    "Evidence/PlanConfiguration/verification-1792726722626697200/summary.json",
+    "Evidence/PlanConfiguration/verification-1792726717122728300/summary.json",
+    "Evidence/PlanConfiguration/verification-1792726947021689300/summary.json"
+  ],
+  "native": {
+    "native_ui": "Actual Computer Use mouse input with isolated Mock data",
+    "plan_id": "plan-39",
+    "mission_id": "mission-40",
+    "previous_deployment": "deployment-43",
+    "new_deployment": "deployment-48",
+    "production_data_modified": false,
+    "video_main_target": "UAV-03",
+    "camera_playback_verified": false,
+    "real_hardware_verified": false,
+    "phases": [
+      {
+        "phase": "reproduction",
+        "evidence": [
+          "01-before-nav-stays-in-edit.png",
+          "before-map-video-mismatch.json",
+          "03-before-video-still-uav01.png"
+        ]
+      },
+      {
+        "phase": "intermediate build A7CA3BAC",
+        "passed": [
+          "blocking reason visible",
+          "top navigation returns list",
+          "dirty-save guard and saved return",
+          "device menu and marker selection switch Video"
+        ],
+        "failed": "Native redeploy VERSION_CONFLICT after owner heartbeat; failure screenshot and state retained"
+      },
+      {
+        "phase": "final build 3252B501",
+        "passed": [
+          "same plan redeployed as deployment-48",
+          "old deployment preserved",
+          "no flight execution created",
+          "return deployed plan to list",
+          "Map menu selection UAV-03 switches main Video to UAV-03"
+        ]
+      }
+    ],
+    "checks": [
+      "same plan, task and route identities preserved",
+      "old deployment snapshot preserved",
+      "configuration lease released",
+      "main Video identity follows Map selection"
+    ],
+    "limitations": [
+      "No configured media feeds; native main identity and no-source state verified, not camera playback.",
+      "Dirty-save native replay was on the intermediate build; final build passed Workspace RHI replay and native final deployment/list/video recheck."
+    ],
+    "pass": true
+  },
+  "native_cleanup": {
+    "errors": [],
+    "owned": []
+  },
+  "injected_ue_deployments": 1,
+  "heartbeat_injection_trace": "deploy-heartbeat-trace-1792726722612866300.jsonl",
+  "binaries": {
+    "Backend/build/Release/DroneBackend.exe": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+    "Binaries/Win64/UnrealEditor-UE5DroneControl.dll": "3252b5018f905fcffe3ca60e3784953abc7a55e9ecc14993c0b53efdc2a8e59d"
+  },
+  "localization": "GatherText completed all steps with exit 0; Editor commandlet process exit 1 from existing GameFeatureData startup errors retained in localization logs.",
+  "limitations": [
+    "Native environment uses Mock aircraft with no configured camera feeds; main video identity and no-source state were verified, not camera playback.",
+    "Full Backend suite retains two historical geometry failures. No real hardware flight evidence."
+  ],
+  "pass": true
+}

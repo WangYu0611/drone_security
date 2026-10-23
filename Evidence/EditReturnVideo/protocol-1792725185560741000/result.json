@@ -1,0 +1,22 @@
+{
+  "pass": true,
+  "synthetic": true,
+  "evidence_kind": "HTTP/WS with isolated Mock Backend",
+  "native_verified": false,
+  "real_hardware_verified": false,
+  "passed": [
+    "Two-task plan deploys with immutable history and without starting execution",
+    "Collision validation marks the failing task and plan DRAFT with useful separation details",
+    "Failed review/deploy preserve data; configuration can release and plan selection can return to the list",
+    "Correcting the route redeploys the same plan/task/route IDs and preserves the first deployment snapshot",
+    "Ordinary Command and Map context selection do not implicitly retarget Video",
+    "Acknowledged explicit Map choice updates Video through a guarded request and broadcasts to every role",
+    "Delayed video requests with stale serial or context version preserve the current Video view",
+    "Selection serial rejects stale context/video requests even at the same version; current same-UAV click repairs Video",
+    "A newer same-context click supersedes its old target; stale requests cannot revert it, including modifier clicks",
+    "The same Video identity reconnects, hydrates the current target and receives subsequent Map changes",
+    "Video synchronization and later Command/task selections leave deployments and execution state unchanged"
+  ],
+  "passed_count": 11,
+  "failure": null
+}

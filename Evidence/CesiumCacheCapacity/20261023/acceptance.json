@@ -1,0 +1,42 @@
+{
+  "at": 1792736280.379525,
+  "change": {
+    "previous_max_cache_items": 16384,
+    "max_cache_items": 131072,
+    "capacity_multiplier": 8,
+    "requests_per_cache_prune": 10000,
+    "unsupported_max_cache_bytes_removed": true,
+    "capacity_unit": "HTTP response entries retained after pruning, not bytes"
+  },
+  "validation": {
+    "actual_reflected_cdo": {
+      "scope": "Read-only reflected Cesium CDO in fresh commandlet, no map/Backend/cache database access",
+      "class": "/Script/CesiumRuntime.CesiumRuntimeSettings",
+      "object": "/Script/CesiumRuntime.Default__CesiumRuntimeSettings",
+      "max_cache_items": 131072,
+      "requests_per_cache_prune": 10000,
+      "project_dir": "",
+      "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+      "pass": true
+    },
+    "script_assertions_passed": true,
+    "commandlet_exit_code": 1,
+    "commandlet_success": false,
+    "startup_errors": "Existing GameFeatureData asset-manager initialization errors retained in diagnostics.txt",
+    "config_values_not_overridden_on_command_line": true,
+    "cache_database_open_log_seen": false,
+    "performance_benchmark": "Not performed; this verifies capacity configuration, not a measured load-time improvement"
+  },
+  "runtime_application": "Fresh UE processes read the new policy; currently running clients keep their old process-static policy until restarted",
+  "backend_restarted": false,
+  "existing_executions_interrupted": false,
+  "cache_cleared": false,
+  "cache_database_queried": false,
+  "prefetch_or_offline_archive_created": false,
+  "http_expiry_or_cache_control_overridden": false,
+  "gpu_tile_cache_or_quality_changed": false,
+  "plugin_version": "Cesium for Unreal 2.28.0",
+  "ue_module_sha256": "1c342e8c0bf01110ff5c8b4c29cd57d2d8dd65f05874c6883ec412ca9e9107b5",
+  "provider_policy": "https://developers.google.com/maps/documentation/tile/policies",
+  "raw_log_ignored_path": "Saved/CesiumCacheCapacity/verify.log"
+}

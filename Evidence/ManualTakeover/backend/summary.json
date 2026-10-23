@@ -1,0 +1,27 @@
+{
+  "real_hardware_verified": false,
+  "full": {
+    "errors": 0,
+    "failed": 2,
+    "discovered": 190,
+    "failure_names": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ],
+    "completed": 190
+  },
+  "targeted": {
+    "errors": 0,
+    "failed": 0,
+    "discovered": 13,
+    "failure_names": [],
+    "completed": 13
+  },
+  "initial_attempt": "The first sandbox run hit temporary-file atomic-replace restrictions and gtest Unicode output-path limitations. A restart fixture also replayed a request missing helper-added plan/mission fields. The fixture was corrected to replay the identical request. All 13 target tests passed with normal Windows permissions and ASCII output paths; no assertions were removed.",
+  "native_verified": false,
+  "baseline_evidence": "Evidence/UIInteraction/2026-10-20/backend/baseline/result.xml",
+  "binaries": {
+    "DroneBackend": "E2D678F52E08C2648301764BE2B9C930242AB40F42AFA1875C0B9E7F3E901881",
+    "DroneBackend_tests": "3C3E55F7B1290A9B5B99BC64613B74701C2F020152B56AB5951A0E10D4DA63B4"
+  }
+}

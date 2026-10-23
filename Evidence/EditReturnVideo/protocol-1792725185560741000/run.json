@@ -1,0 +1,28 @@
+{
+  "run": "1792725185560741000",
+  "pass": true,
+  "synthetic": true,
+  "native_verified": false,
+  "real_hardware_verified": false,
+  "backend": "Backend\\build\\Release\\DroneBackend.exe",
+  "backend_sha256": "a73a8b6380c8bfe60f93ed622a94e1ef6c96f53b616b6570ccd432efe8d394f7",
+  "fixture_sha256": "60e74372e1359263d27b28c5168cc119ac0220b6baa3e7d07988e69c30fb0aaf",
+  "expected_checks": 11,
+  "http_endpoint": "http://127.0.0.1:22994",
+  "ws_endpoint": "ws://127.0.0.1:22995/ws",
+  "owned_backend": {
+    "role": "Backend",
+    "pid": 112468,
+    "start_time": 1792725186.1916037,
+    "executable": "Backend\\build\\Release\\DroneBackend.exe",
+    "owned": true,
+    "exit_code": null
+  },
+  "runtime_directory": "Saved\\EditReturnVideo-1792725185560741000",
+  "exit_code": 0,
+  "completed_checks": 11,
+  "ownership_after_stop": [],
+  "cleanup_errors": [],
+  "backend_sha256_after": "a73a8b6380c8bfe60f93ed622a94e1ef6c96f53b616b6570ccd432efe8d394f7",
+  "binary_unchanged": true
+}

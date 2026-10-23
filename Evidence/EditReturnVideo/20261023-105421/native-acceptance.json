@@ -1,0 +1,52 @@
+{
+  "native_ui": "Actual Computer Use mouse input with isolated Mock data",
+  "plan_id": "plan-39",
+  "mission_id": "mission-40",
+  "previous_deployment": "deployment-43",
+  "new_deployment": "deployment-48",
+  "production_data_modified": false,
+  "video_main_target": "UAV-03",
+  "camera_playback_verified": false,
+  "real_hardware_verified": false,
+  "phases": [
+    {
+      "phase": "reproduction",
+      "evidence": [
+        "01-before-nav-stays-in-edit.png",
+        "before-map-video-mismatch.json",
+        "03-before-video-still-uav01.png"
+      ]
+    },
+    {
+      "phase": "intermediate build A7CA3BAC",
+      "passed": [
+        "blocking reason visible",
+        "top navigation returns list",
+        "dirty-save guard and saved return",
+        "device menu and marker selection switch Video"
+      ],
+      "failed": "Native redeploy VERSION_CONFLICT after owner heartbeat; failure screenshot and state retained"
+    },
+    {
+      "phase": "final build 3252B501",
+      "passed": [
+        "same plan redeployed as deployment-48",
+        "old deployment preserved",
+        "no flight execution created",
+        "return deployed plan to list",
+        "Map menu selection UAV-03 switches main Video to UAV-03"
+      ]
+    }
+  ],
+  "checks": [
+    "same plan, task and route identities preserved",
+    "old deployment snapshot preserved",
+    "configuration lease released",
+    "main Video identity follows Map selection"
+  ],
+  "limitations": [
+    "No configured media feeds; native main identity and no-source state verified, not camera playback.",
+    "Dirty-save native replay was on the intermediate build; final build passed Workspace RHI replay and native final deployment/list/video recheck."
+  ],
+  "pass": true
+}

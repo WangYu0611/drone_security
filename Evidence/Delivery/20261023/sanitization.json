@@ -1,0 +1,3799 @@
+{
+  "policy_version": 1,
+  "created_at_utc": "20261023T064401.368303Z",
+  "scope": "Git-untracked Evidence files snapshotted immediately before apply",
+  "excluded": [
+    "tracked historical Evidence",
+    "Evidence/Delivery/20261023/sanitization.json",
+    "all files outside Evidence"
+  ],
+  "raw_backup_root": "Saved/Delivery/raw-evidence/20261023T064401.368303Z",
+  "summary": {
+    "mode": "apply",
+    "files": 300,
+    "files_changed": 170,
+    "original_bytes": 28425485,
+    "xml_files": 7,
+    "remaining_secret": 0,
+    "categories": {
+      "account": 50,
+      "account-path": 872,
+      "google-api-key": 192,
+      "jwt": 3,
+      "machine": 55,
+      "machine-id": 53,
+      "machine-network": 72,
+      "repository-path": 2392,
+      "sensitive-url-query": 192,
+      "ue-instance": 127,
+      "ue-session": 52
+    },
+    "image_files": 28,
+    "image_formats": {
+      "JPEG": 28
+    }
+  },
+  "preserved": [
+    "failed evidence",
+    "all lines and line endings",
+    "JSON keys and non-string values",
+    "test result and identity strings",
+    "XML hierarchy, test identities and numeric attributes",
+    "screenshot bytes",
+    "Mock business IDs"
+  ],
+  "image_review": {
+    "count": 28,
+    "status": "VISUALLY_REVIEWED_NO_PRIVATE_INFORMATION",
+    "method": "Direct image inspection; no image editing",
+    "paths": [
+      "Evidence/BoxSelectButton/20261023/before-auto-box.png",
+      "Evidence/BoxSelectButton/20261023/native-armed-selection.png",
+      "Evidence/BoxSelectButton/20261023/native-button-exited.png",
+      "Evidence/BoxSelectButton/20261023/native-default-drag.png",
+      "Evidence/BoxSelectButton/20261023/native-escape-unarmed.png",
+      "Evidence/BoxSelectButton/20261023/native-single-click.png",
+      "Evidence/EditReturnVideo/20261023-105421/01-before-nav-stays-in-edit.png",
+      "Evidence/EditReturnVideo/20261023-105421/02-before-map-selected-uav03.png",
+      "Evidence/EditReturnVideo/20261023-105421/03-before-video-still-uav01.png",
+      "Evidence/EditReturnVideo/20261023-105421/04-after-blocking-reason-visible.png",
+      "Evidence/EditReturnVideo/20261023-105421/05-after-top-nav-returns-list.png",
+      "Evidence/EditReturnVideo/20261023-105421/06-after-unsaved-return-guard.png",
+      "Evidence/EditReturnVideo/20261023-105421/07-after-save-returns-list.png",
+      "Evidence/EditReturnVideo/20261023-105421/08-native-redeploy-version-conflict.png",
+      "Evidence/EditReturnVideo/20261023-105421/09-after-map-selected-uav03.png",
+      "Evidence/EditReturnVideo/20261023-105421/10-after-video-main-uav03.png",
+      "Evidence/EditReturnVideo/20261023-105421/11-after-marker-selected-uav01.png",
+      "Evidence/EditReturnVideo/20261023-105421/12-after-video-main-uav01.png",
+      "Evidence/EditReturnVideo/20261023-105421/13-final-same-plan-redeployed.png",
+      "Evidence/EditReturnVideo/20261023-105421/14-final-deployed-plan-in-list.png",
+      "Evidence/EditReturnVideo/20261023-105421/15-final-map-selected-uav03.png",
+      "Evidence/EditReturnVideo/20261023-105421/16-final-video-main-uav03.png",
+      "Evidence/GrassStartup/20261023/native-close-final.png",
+      "Evidence/GrassStartup/20261023/native-close.png",
+      "Evidence/ManualTakeover/native-1792718959342115200/ui/01-map-takeover-preview.png",
+      "Evidence/ManualTakeover/native-1792718959342115200/ui/02-map-takeover-running.png",
+      "Evidence/ManualTakeover/native-1792718959342115200/ui/03-map-move-paused-peer-running.png",
+      "Evidence/ManualTakeover/native-1792718959342115200/ui/04-map-move-completed.png"
+    ],
+    "actual_formats": {
+      "JPEG": 28
+    },
+    "filename_extensions": {
+      ".png": 28
+    },
+    "metadata_segments_reviewed": {
+      "EXIF_XMP": 0,
+      "IPTC": 0,
+      "JPEG_COMMENT": 0
+    }
+  },
+  "files": [
+    {
+      "path": "Evidence/BoxSelectButton/20261023/acceptance.json",
+      "changed": true,
+      "original_sha256": "7e6409a69d1d1b14da6156d8d36285099cd641ebd4accd23cbdcc599ed59adcb",
+      "public_sha256": "d9bf2f4b91b5307d32879ced2f791fb9b109bfb3fa5ffba1da226d817696704c",
+      "original_bytes": 6093,
+      "public_bytes": 5957,
+      "categories": {
+        "repository-path": 4
+      },
+      "lines": 175,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/BoxSelectButton/20261023/acceptance.json"
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/before-auto-box.png",
+      "changed": false,
+      "original_sha256": "6ac42225be17a5ab34e81a639895959ae36f5b1560f800c52b9e3bcf6fe5e43b",
+      "public_sha256": "6ac42225be17a5ab34e81a639895959ae36f5b1560f800c52b9e3bcf6fe5e43b",
+      "original_bytes": 79465,
+      "public_bytes": 79465,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/build.log",
+      "changed": true,
+      "original_sha256": "93eb41ae4fd47124e39070a6f6948ee9afac91da78d08343d3afea26fb4e80fc",
+      "public_sha256": "b4f7509e4f28d75a60b62cf6d6868d653460f3c09ac12075f12fbdc9eccb29d3",
+      "original_bytes": 3688,
+      "public_bytes": 3549,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 42,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/BoxSelectButton/20261023/build.log"
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/localization.log",
+      "changed": true,
+      "original_sha256": "02b9d98ceadc3f2c66871229004e72be1ca5a98b2178e7806cc88de8e2cc36f7",
+      "public_sha256": "f51765c01d768a6328fc6f3a7d6f7c77dfe2be889867ee8d31ee6176419bcaf9",
+      "original_bytes": 273726,
+      "public_bytes": 272093,
+      "categories": {
+        "account": 1,
+        "account-path": 17,
+        "machine": 2,
+        "machine-id": 2,
+        "machine-network": 1,
+        "repository-path": 46,
+        "ue-session": 2
+      },
+      "lines": 2019,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/BoxSelectButton/20261023/localization.log"
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-after-escape-drag.json",
+      "changed": false,
+      "original_sha256": "2f2d2189dd49a08624e0807a8503701d037a41bf388f77cab112f4a5ef2a99c4",
+      "public_sha256": "2f2d2189dd49a08624e0807a8503701d037a41bf388f77cab112f4a5ef2a99c4",
+      "original_bytes": 4002,
+      "public_bytes": 4002,
+      "categories": {},
+      "lines": 166
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-armed-drag.json",
+      "changed": false,
+      "original_sha256": "f13a90c997c4b5c877b16771f4be37e48a3cf1e5b270aa62de77de0f38a4bd4c",
+      "public_sha256": "f13a90c997c4b5c877b16771f4be37e48a3cf1e5b270aa62de77de0f38a4bd4c",
+      "original_bytes": 4003,
+      "public_bytes": 4003,
+      "categories": {},
+      "lines": 166
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-armed-selection.png",
+      "changed": false,
+      "original_sha256": "d5c8acf903e6469dbc6b1b19438471ab310dfca5b987da7989512bea59687fb7",
+      "public_sha256": "d5c8acf903e6469dbc6b1b19438471ab310dfca5b987da7989512bea59687fb7",
+      "original_bytes": 62800,
+      "public_bytes": 62800,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-button-exited.json",
+      "changed": false,
+      "original_sha256": "5225362449961e84e3e3b9f7e0a90dfac7032647e285f816481a3ffc16a3ff1a",
+      "public_sha256": "5225362449961e84e3e3b9f7e0a90dfac7032647e285f816481a3ffc16a3ff1a",
+      "original_bytes": 3952,
+      "public_bytes": 3952,
+      "categories": {},
+      "lines": 163
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-button-exited.png",
+      "changed": false,
+      "original_sha256": "8c17c38671221a72c74f8d79135ce71ce83f27a43b454b4eb820c19198b91fa2",
+      "public_sha256": "8c17c38671221a72c74f8d79135ce71ce83f27a43b454b4eb820c19198b91fa2",
+      "original_bytes": 62887,
+      "public_bytes": 62887,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-click-empty.json",
+      "changed": false,
+      "original_sha256": "e1968c24754b619a8bf90baee1bf880b0473875692c3ab8e5d5aad9183145056",
+      "public_sha256": "e1968c24754b619a8bf90baee1bf880b0473875692c3ab8e5d5aad9183145056",
+      "original_bytes": 3927,
+      "public_bytes": 3927,
+      "categories": {},
+      "lines": 161
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-default-drag.png",
+      "changed": false,
+      "original_sha256": "ff96a390172e4c577503c5c564fe404e1c04a03d45c49825f1b1b7ccc9f009be",
+      "public_sha256": "ff96a390172e4c577503c5c564fe404e1c04a03d45c49825f1b1b7ccc9f009be",
+      "original_bytes": 62413,
+      "public_bytes": 62413,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-escape-unarmed.png",
+      "changed": false,
+      "original_sha256": "edde786e6a43f2d96d4b4429c806244128af7c1887c2e721af72ec17b55197cc",
+      "public_sha256": "edde786e6a43f2d96d4b4429c806244128af7c1887c2e721af72ec17b55197cc",
+      "original_bytes": 62761,
+      "public_bytes": 62761,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-initial.json",
+      "changed": false,
+      "original_sha256": "8091d0ffa6c4e54f90740b3f6ff808be74440645f384585310b764210661f032",
+      "public_sha256": "8091d0ffa6c4e54f90740b3f6ff808be74440645f384585310b764210661f032",
+      "original_bytes": 3927,
+      "public_bytes": 3927,
+      "categories": {},
+      "lines": 161
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-single-click.json",
+      "changed": false,
+      "original_sha256": "8ec9cacaee5a28759c39d820fa2631dfce969a6eed93ff825d476cbb6152db21",
+      "public_sha256": "8ec9cacaee5a28759c39d820fa2631dfce969a6eed93ff825d476cbb6152db21",
+      "original_bytes": 3951,
+      "public_bytes": 3951,
+      "categories": {},
+      "lines": 163
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-single-click.png",
+      "changed": false,
+      "original_sha256": "c78501b9e9884955f3adfa9218a62cc495f71eb7122435565d5649e25b6340c8",
+      "public_sha256": "c78501b9e9884955f3adfa9218a62cc495f71eb7122435565d5649e25b6340c8",
+      "original_bytes": 62556,
+      "public_bytes": 62556,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/native-unarmed-drag.json",
+      "changed": false,
+      "original_sha256": "f814354708ea5e256cff77c9b4e6e4636a4a0ffaf055b9aa5a42d65ab1f5028f",
+      "public_sha256": "f814354708ea5e256cff77c9b4e6e4636a4a0ffaf055b9aa5a42d65ab1f5028f",
+      "original_bytes": 3927,
+      "public_bytes": 3927,
+      "categories": {},
+      "lines": 161
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/previous-launcher-cleanup.json",
+      "changed": false,
+      "original_sha256": "ee945dac480a18fefe5c4f782b16a6dac74bb025ea38f271aa6d5aca212bc11c",
+      "public_sha256": "ee945dac480a18fefe5c4f782b16a6dac74bb025ea38f271aa6d5aca212bc11c",
+      "original_bytes": 346954,
+      "public_bytes": 346954,
+      "categories": {},
+      "lines": 10278
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/rhi-run.json",
+      "changed": true,
+      "original_sha256": "c86a6902383f1390cbdd79252f208a3ff7e182c62869dd2f5dbea5c18b0ffdda",
+      "public_sha256": "eb9a5c3e108ebf316588b862757cefd5fa81508f779a43ca3a3a62e5b0ea80c7",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/BoxSelectButton/20261023/rhi-run.json"
+    },
+    {
+      "path": "Evidence/BoxSelectButton/20261023/rhi-summary.json",
+      "changed": true,
+      "original_sha256": "de940fc429832f0191b21d660c795ba72031fc5b9c99d576bad01e92b312f472",
+      "public_sha256": "bded37f2ad5d8ba161d465a0e710e824d7bcb21b0959cd0cf04f2c1838c3ebff",
+      "original_bytes": 2886,
+      "public_bytes": 2750,
+      "categories": {
+        "repository-path": 4
+      },
+      "lines": 110,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/BoxSelectButton/20261023/rhi-summary.json"
+    },
+    {
+      "path": "Evidence/CesiumCacheCapacity/20261023/acceptance.json",
+      "changed": true,
+      "original_sha256": "07e7a1041cd2470e7c984fc90958603bdfb94316cde0c551a225ecd66bc41ea2",
+      "public_sha256": "45eb6383d8eff807cf3e2633bd0e75b461c90147510840c878ce73e00820d5ae",
+      "original_bytes": 2023,
+      "public_bytes": 1992,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 42,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/CesiumCacheCapacity/20261023/acceptance.json"
+    },
+    {
+      "path": "Evidence/CesiumCacheCapacity/20261023/diagnostics.txt",
+      "changed": true,
+      "original_sha256": "b0169a582dd575356eeb104fdd06252aa5c99dfe8aadc5c152271a69e280b057",
+      "public_sha256": "ee6796203603853a800ac0058e25a3ec57efbb62c02c8371e6a7ae3ccae6b0a7",
+      "original_bytes": 1340,
+      "public_bytes": 1309,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 5,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/CesiumCacheCapacity/20261023/diagnostics.txt"
+    },
+    {
+      "path": "Evidence/CesiumCacheCapacity/20261023/settings.json",
+      "changed": true,
+      "original_sha256": "8f9933ae23feabdac7dd331d45f32d049987ef80c04e10120f8fb40309e9baed",
+      "public_sha256": "4013858c127bea876b67d9f0f21f8245df8fe2fe12fda99f6c8a88eb9ad9c1cb",
+      "original_bytes": 430,
+      "public_bytes": 399,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 10,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/CesiumCacheCapacity/20261023/settings.json"
+    },
+    {
+      "path": "Evidence/CesiumCacheCapacity/20261023/verify_settings.py",
+      "changed": true,
+      "original_sha256": "f115b7ce9ca60327e769639bfd3b3b9820cd1a1296a6dea0815ec005f823ef47",
+      "public_sha256": "7b46359d9684cd1a2ad6521b78bb7e12ec2f4f09c32b79e11463205e363ff1ac",
+      "original_bytes": 1213,
+      "public_bytes": 1182,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 20,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/CesiumCacheCapacity/20261023/verify_settings.py"
+    },
+    {
+      "path": "Evidence/Delivery/20261023/acceptance.json",
+      "changed": false,
+      "original_sha256": "65e4c0b4cd07e561867c4fc82ed9d8efb95ce994bc50d9de568c1fad73d988de",
+      "public_sha256": "65e4c0b4cd07e561867c4fc82ed9d8efb95ce994bc50d9de568c1fad73d988de",
+      "original_bytes": 2215,
+      "public_bytes": 2215,
+      "categories": {},
+      "lines": 21
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/01-before-nav-stays-in-edit.png",
+      "changed": false,
+      "original_sha256": "973c97123326e74fd2816d037f535b24b0dd72c4106b6cbaac4f4647b288b941",
+      "public_sha256": "973c97123326e74fd2816d037f535b24b0dd72c4106b6cbaac4f4647b288b941",
+      "original_bytes": 41196,
+      "public_bytes": 41196,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/02-before-map-selected-uav03.png",
+      "changed": false,
+      "original_sha256": "179e1234f44bf35c6d7532554b8fbbde941e6d4633616161ee9789cd022afe00",
+      "public_sha256": "179e1234f44bf35c6d7532554b8fbbde941e6d4633616161ee9789cd022afe00",
+      "original_bytes": 62565,
+      "public_bytes": 62565,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/03-before-video-still-uav01.png",
+      "changed": false,
+      "original_sha256": "db0d7ade2af01d6bf3b20b94a769b0eacdd2877e8300a2538f7c395bc5783d46",
+      "public_sha256": "db0d7ade2af01d6bf3b20b94a769b0eacdd2877e8300a2538f7c395bc5783d46",
+      "original_bytes": 58142,
+      "public_bytes": 58142,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/04-after-blocking-reason-visible.png",
+      "changed": false,
+      "original_sha256": "214a2b09a9d7d61f1035b759e0cc3c9482f93e009490796e781770d97256e226",
+      "public_sha256": "214a2b09a9d7d61f1035b759e0cc3c9482f93e009490796e781770d97256e226",
+      "original_bytes": 50528,
+      "public_bytes": 50528,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/05-after-top-nav-returns-list.png",
+      "changed": false,
+      "original_sha256": "8a503f7eb3d005409471d9910f86731b9a3be56281fedcb5017840de3ca284ca",
+      "public_sha256": "8a503f7eb3d005409471d9910f86731b9a3be56281fedcb5017840de3ca284ca",
+      "original_bytes": 32574,
+      "public_bytes": 32574,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/06-after-unsaved-return-guard.png",
+      "changed": false,
+      "original_sha256": "4b63a29845daa7c35dacac5dc27fa1fb3b7fa69900453f1434e00630c802d2f8",
+      "public_sha256": "4b63a29845daa7c35dacac5dc27fa1fb3b7fa69900453f1434e00630c802d2f8",
+      "original_bytes": 49234,
+      "public_bytes": 49234,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/07-after-save-returns-list.png",
+      "changed": false,
+      "original_sha256": "cb8f8e4d73e768bbf78e39183db7dfbc70261cef2bf6b8551c5be15c7fa8a15c",
+      "public_sha256": "cb8f8e4d73e768bbf78e39183db7dfbc70261cef2bf6b8551c5be15c7fa8a15c",
+      "original_bytes": 44518,
+      "public_bytes": 44518,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/08-native-redeploy-version-conflict.png",
+      "changed": false,
+      "original_sha256": "4647845de4bd011971e38d3a8efb1b5df1afe991134e410162f86a92864cc973",
+      "public_sha256": "4647845de4bd011971e38d3a8efb1b5df1afe991134e410162f86a92864cc973",
+      "original_bytes": 71670,
+      "public_bytes": 71670,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/09-after-map-selected-uav03.png",
+      "changed": false,
+      "original_sha256": "d09af5c25dd2bc1b548d059cd30c7e1dcfd4e8a79ceb985b9a3eaca68eaf4a42",
+      "public_sha256": "d09af5c25dd2bc1b548d059cd30c7e1dcfd4e8a79ceb985b9a3eaca68eaf4a42",
+      "original_bytes": 108104,
+      "public_bytes": 108104,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/10-after-video-main-uav03.png",
+      "changed": false,
+      "original_sha256": "f62bac42256d8ea5a8bb9936a4e985dd724d93825f3cde408bc3a068b93316c7",
+      "public_sha256": "f62bac42256d8ea5a8bb9936a4e985dd724d93825f3cde408bc3a068b93316c7",
+      "original_bytes": 58474,
+      "public_bytes": 58474,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/11-after-marker-selected-uav01.png",
+      "changed": false,
+      "original_sha256": "20c41cd46e6488667a27768342eef78237aeeec826991f57808431b7ed5f0324",
+      "public_sha256": "20c41cd46e6488667a27768342eef78237aeeec826991f57808431b7ed5f0324",
+      "original_bytes": 108164,
+      "public_bytes": 108164,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/12-after-video-main-uav01.png",
+      "changed": false,
+      "original_sha256": "95c7cf8a83b648dc0235f44cedfbceb9bfc0b635255023db85a8e1c633ff8a69",
+      "public_sha256": "95c7cf8a83b648dc0235f44cedfbceb9bfc0b635255023db85a8e1c633ff8a69",
+      "original_bytes": 58030,
+      "public_bytes": 58030,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/13-final-same-plan-redeployed.png",
+      "changed": false,
+      "original_sha256": "7def786581d101a02ff9cd84f765083d16b4f957e5a532aa889a77dee83cab18",
+      "public_sha256": "7def786581d101a02ff9cd84f765083d16b4f957e5a532aa889a77dee83cab18",
+      "original_bytes": 53436,
+      "public_bytes": 53436,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/14-final-deployed-plan-in-list.png",
+      "changed": false,
+      "original_sha256": "63b00be54d5e08c4a592bdf3183b7898025b69d3acaf3aa39e025c3d31571638",
+      "public_sha256": "63b00be54d5e08c4a592bdf3183b7898025b69d3acaf3aa39e025c3d31571638",
+      "original_bytes": 32580,
+      "public_bytes": 32580,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/15-final-map-selected-uav03.png",
+      "changed": false,
+      "original_sha256": "cf67922a5ea258c2bc6e5032f11c99b18985d502628a640184771425e421d42a",
+      "public_sha256": "cf67922a5ea258c2bc6e5032f11c99b18985d502628a640184771425e421d42a",
+      "original_bytes": 43904,
+      "public_bytes": 43904,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/16-final-video-main-uav03.png",
+      "changed": false,
+      "original_sha256": "2322a71859e21d3952e233c80d20874b2687933ad1b77cb3ac4506b1b954fa5e",
+      "public_sha256": "2322a71859e21d3952e233c80d20874b2687933ad1b77cb3ac4506b1b954fa5e",
+      "original_bytes": 61389,
+      "public_bytes": 61389,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/acceptance.json",
+      "changed": true,
+      "original_sha256": "69d2126ddc52155de50313ffc7a0d6e6e24c08d8a043418eb73c7bdfc14a710e",
+      "public_sha256": "cfe23a1609cf61a580ce52dfa946fa5c4e47cda0815fa48a27282b21baa64075",
+      "original_bytes": 12583,
+      "public_bytes": 12175,
+      "categories": {
+        "repository-path": 12
+      },
+      "lines": 358,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/acceptance.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-build-attempt-1.log",
+      "changed": true,
+      "original_sha256": "62879a85b2c679ea3bd533eaca895ecf8431fb70fa581788b01af238ed27693e",
+      "public_sha256": "26e6d5a78b33a52d5c17e4c398b7d60bfa73fbc634763766c24aa1398e2cf7b8",
+      "original_bytes": 44539,
+      "public_bytes": 41253,
+      "categories": {
+        "repository-path": 106
+      },
+      "lines": 575,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-build-attempt-1.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-build-attempt-2.log",
+      "changed": true,
+      "original_sha256": "1a7cc033b4eed40c7f1f4335cfdeba887b2706aa0b67ff59efd83bda8652c759",
+      "public_sha256": "a3503b11655aa5847d2af53db3aa80fec844da62e751f2b582427a8161ef16ee",
+      "original_bytes": 193,
+      "public_bytes": 162,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 4,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-build-attempt-2.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-build-heartbeat.log",
+      "changed": true,
+      "original_sha256": "58f0205fdd3defbd675af1bc1792e48c67e77dff46ff255f62c8dcc528d2e58d",
+      "public_sha256": "23edcfa6009a5d4aef4d5ae099f29cd16b213177d6135204b79da0c44c2d54b6",
+      "original_bytes": 484,
+      "public_bytes": 422,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 13,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-build-heartbeat.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-build.log",
+      "changed": true,
+      "original_sha256": "62879a85b2c679ea3bd533eaca895ecf8431fb70fa581788b01af238ed27693e",
+      "public_sha256": "26e6d5a78b33a52d5c17e4c398b7d60bfa73fbc634763766c24aa1398e2cf7b8",
+      "original_bytes": 44539,
+      "public_bytes": 41253,
+      "categories": {
+        "repository-path": 106
+      },
+      "lines": 575,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-build.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-full-before-heartbeat-fix.log",
+      "changed": true,
+      "original_sha256": "1c6392f0d2ba9268c173811ca08781f429f20c0b9403695b6492cc13df6f029b",
+      "public_sha256": "db290ec00cb2a8a96ae1eddd26c4e86cd657a643c62c323df5674531a16ee480",
+      "original_bytes": 29801,
+      "public_bytes": 29708,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 472,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-full-before-heartbeat-fix.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-full-before-heartbeat-fix.xml",
+      "changed": true,
+      "original_sha256": "3d381a1cfa7303bd4e8bce1aaece6df83d2cdce935707a7cc5782f5ed5ad2c05",
+      "public_sha256": "660d4aa8d5cc1fb513d354743db47c9a6415fa738a41f3a6942920aead7efd3e",
+      "original_bytes": 53713,
+      "public_bytes": 47606,
+      "categories": {
+        "repository-path": 197
+      },
+      "lines": 256,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-full-before-heartbeat-fix.xml"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-full-final.log",
+      "changed": true,
+      "original_sha256": "11f8b79af9d2f3146c927f9844413eeb107283ca810e89d2546896902965aed3",
+      "public_sha256": "bd9206737639bff80823368c90f3eebee5c5349350b70d15d4921847e34e8d5c",
+      "original_bytes": 31224,
+      "public_bytes": 31131,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 491,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-full-final.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-full-final.xml",
+      "changed": true,
+      "original_sha256": "57ce5c10c859c4ffcc46123e400b941e7015daddc2edf91d42929414ca98c232",
+      "public_sha256": "13ec8f0a842d91efd45b3d8125e2ad1d715dd47a8613dca921ec78fcf308554b",
+      "original_bytes": 56093,
+      "public_bytes": 49738,
+      "categories": {
+        "repository-path": 205
+      },
+      "lines": 266,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-full-final.xml"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-full.log",
+      "changed": true,
+      "original_sha256": "1c6392f0d2ba9268c173811ca08781f429f20c0b9403695b6492cc13df6f029b",
+      "public_sha256": "db290ec00cb2a8a96ae1eddd26c4e86cd657a643c62c323df5674531a16ee480",
+      "original_bytes": 29801,
+      "public_bytes": 29708,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 472,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-full.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-full.xml",
+      "changed": true,
+      "original_sha256": "3d381a1cfa7303bd4e8bce1aaece6df83d2cdce935707a7cc5782f5ed5ad2c05",
+      "public_sha256": "660d4aa8d5cc1fb513d354743db47c9a6415fa738a41f3a6942920aead7efd3e",
+      "original_bytes": 53713,
+      "public_bytes": 47606,
+      "categories": {
+        "repository-path": 197
+      },
+      "lines": 256,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-full.xml"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-summary-before-heartbeat-fix.json",
+      "changed": true,
+      "original_sha256": "530ab3ff85bcee8a08cd7307caadce999e2cd90947116909510cc704fdbf2c65",
+      "public_sha256": "7a1dd493970f71820747fc2fb549a04e55b9f1fe5c6f1d53f05846d8837ae09d",
+      "original_bytes": 2069,
+      "public_bytes": 2035,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-summary-before-heartbeat-fix.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-summary-final.json",
+      "changed": true,
+      "original_sha256": "d6633edce4b9125cb9c21a9060042bc5d8aa418678182b634e9a2fa2e723714e",
+      "public_sha256": "336c8b3c668e27568e3179379aff0cb46306b8489f4d22005d8a047a7557fcd8",
+      "original_bytes": 2175,
+      "public_bytes": 2107,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-summary-final.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-summary.json",
+      "changed": true,
+      "original_sha256": "530ab3ff85bcee8a08cd7307caadce999e2cd90947116909510cc704fdbf2c65",
+      "public_sha256": "7a1dd493970f71820747fc2fb549a04e55b9f1fe5c6f1d53f05846d8837ae09d",
+      "original_bytes": 2069,
+      "public_bytes": 2035,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-summary.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-targeted-final.log",
+      "changed": false,
+      "original_sha256": "e7d32f02c819e34bbf7dafbbd3f9972a817e014584a32de48c31797dcfa3b3c0",
+      "public_sha256": "e7d32f02c819e34bbf7dafbbd3f9972a817e014584a32de48c31797dcfa3b3c0",
+      "original_bytes": 2014,
+      "public_bytes": 2014,
+      "categories": {},
+      "lines": 30
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-targeted-final.xml",
+      "changed": true,
+      "original_sha256": "f2f7c46e28d6e3a07f6d469b9a7390037d42171bb2cd4daf39b3a4549ef3a993",
+      "public_sha256": "3009873816dd0764ed21e6c19037a9b60b01397d7b1346d6f74f7db8e365e03f",
+      "original_bytes": 2898,
+      "public_bytes": 2619,
+      "categories": {
+        "repository-path": 9
+      },
+      "lines": 16,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-targeted-final.xml"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-targeted.log",
+      "changed": false,
+      "original_sha256": "7350c9f8458c5dd48e7210d6eda0d2f09cf46837e15ba4e3ff97f7413fb654bb",
+      "public_sha256": "7350c9f8458c5dd48e7210d6eda0d2f09cf46837e15ba4e3ff97f7413fb654bb",
+      "original_bytes": 574,
+      "public_bytes": 574,
+      "categories": {},
+      "lines": 11
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/backend-targeted.xml",
+      "changed": true,
+      "original_sha256": "5c257db1db7a05ae033008738f1dac5a6fb5f490fbd124bb9890a08539fafb2e",
+      "public_sha256": "60f09cca1c68b348caac0c88f0dfd96e189e466f49d5781eaa817569e165db4f",
+      "original_bytes": 608,
+      "public_bytes": 577,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 6,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/backend-targeted.xml"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/before-context-clients.json",
+      "changed": false,
+      "original_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "public_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "original_bytes": 6,
+      "public_bytes": 6,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/before-context.json",
+      "changed": false,
+      "original_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "public_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "original_bytes": 6,
+      "public_bytes": 6,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/before-map-video-mismatch.json",
+      "changed": false,
+      "original_sha256": "740bee895d01a29ee496651b4613b18256129546aa100e95f4c31308b48cd29c",
+      "public_sha256": "740bee895d01a29ee496651b4613b18256129546aa100e95f4c31308b48cd29c",
+      "original_bytes": 562,
+      "public_bytes": 562,
+      "categories": {},
+      "lines": 22
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/before-security-plans.json",
+      "changed": false,
+      "original_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "public_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "original_bytes": 6,
+      "public_bytes": 6,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/before-video-view.json",
+      "changed": false,
+      "original_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "public_sha256": "abdfbffecbe18ed94df9829819e596ee285b52a94aa108514452a9121721c789",
+      "original_bytes": 6,
+      "public_bytes": 6,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/cloned-before-native.json",
+      "changed": false,
+      "original_sha256": "29f0d43d93f18d4f1ba025908d6a598a92983523a1690c05e316e5bdeba49cd2",
+      "public_sha256": "29f0d43d93f18d4f1ba025908d6a598a92983523a1690c05e316e5bdeba49cd2",
+      "original_bytes": 208217,
+      "public_bytes": 208217,
+      "categories": {},
+      "lines": 7210
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/deploy-heartbeat-trace-1792726722612866300.jsonl",
+      "changed": false,
+      "original_sha256": "05c989e727dde5df7b73ecac68ad32d7c0fccff2c3df1bbf1b7c6d43f192f19c",
+      "public_sha256": "05c989e727dde5df7b73ecac68ad32d7c0fccff2c3df1bbf1b7c6d43f192f19c",
+      "original_bytes": 16478,
+      "public_bytes": 16478,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/localization-stdio.log",
+      "changed": true,
+      "original_sha256": "0c3e5ebfde6d9be9ff803017f2348c4924704ce12fd46f1a39d9e1cafb9963fb",
+      "public_sha256": "6a8609fa68029450eb785a7c6957e6bba3beedf2352ec562bc9356049b042ffe",
+      "original_bytes": 39512,
+      "public_bytes": 38466,
+      "categories": {
+        "account-path": 12,
+        "machine-id": 1,
+        "repository-path": 30
+      },
+      "lines": 337,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/localization-stdio.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/localization.log",
+      "changed": true,
+      "original_sha256": "53c977f3eb4ef81f303c99caa618d86f1ebe15d3b59c337bff8769c7136761bf",
+      "public_sha256": "ea38caf07e5e6e80cac5839ab92ef65fc04f1bd7d2f4a17d3e5003a3d0390376",
+      "original_bytes": 274156,
+      "public_bytes": 272585,
+      "categories": {
+        "account": 1,
+        "account-path": 17,
+        "machine": 2,
+        "machine-id": 2,
+        "machine-network": 1,
+        "repository-path": 44,
+        "ue-session": 2
+      },
+      "lines": 2019,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/localization.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-acceptance.json",
+      "changed": false,
+      "original_sha256": "7412162f5d3ff90114f61d7ae55f64f1b2466b19fec26f1e9672fc1e9cbfc3fa",
+      "public_sha256": "7412162f5d3ff90114f61d7ae55f64f1b2466b19fec26f1e9672fc1e9cbfc3fa",
+      "original_bytes": 1794,
+      "public_bytes": 1794,
+      "categories": {},
+      "lines": 52
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-after-attempt1-cleanup.json",
+      "changed": false,
+      "original_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "public_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "original_bytes": 27,
+      "public_bytes": 27,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-after-attempt1-host.json",
+      "changed": true,
+      "original_sha256": "28e429b7edc2d89d200ba0e0110fbf92b3256ebf06c680034e55fbf1045acb0c",
+      "public_sha256": "45f1f13ca2fcb1237859d4b7b09cafed4e3ab6e48c59374e970db46f035973f1",
+      "original_bytes": 552,
+      "public_bytes": 450,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 10,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/native-after-attempt1-host.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-after-cleanup.json",
+      "changed": false,
+      "original_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "public_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "original_bytes": 27,
+      "public_bytes": 27,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-after-host.json",
+      "changed": true,
+      "original_sha256": "28e429b7edc2d89d200ba0e0110fbf92b3256ebf06c680034e55fbf1045acb0c",
+      "public_sha256": "45f1f13ca2fcb1237859d4b7b09cafed4e3ab6e48c59374e970db46f035973f1",
+      "original_bytes": 552,
+      "public_bytes": 450,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 10,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/native-after-host.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-after-list-state.json",
+      "changed": false,
+      "original_sha256": "99082112c8c01aaf306c18726a6d16b6f711b02089ca2929609af1631384e0cb",
+      "public_sha256": "99082112c8c01aaf306c18726a6d16b6f711b02089ca2929609af1631384e0cb",
+      "original_bytes": 208564,
+      "public_bytes": 208564,
+      "categories": {},
+      "lines": 7223
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-before-cleanup.json",
+      "changed": false,
+      "original_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "public_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "original_bytes": 27,
+      "public_bytes": 27,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-before-host.json",
+      "changed": true,
+      "original_sha256": "cf633a6644daa1e79d10a973c12298c23816fdfc5d8dbcf96378f5a02e573976",
+      "public_sha256": "da41a921de4ebd51d5e9c44dfc5f0c9adaa1803f8188242d4083b13b1587afc8",
+      "original_bytes": 552,
+      "public_bytes": 450,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 10,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/native-before-host.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-cleanup.json",
+      "changed": false,
+      "original_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "public_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "original_bytes": 27,
+      "public_bytes": 27,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-dropdown-video03.json",
+      "changed": false,
+      "original_sha256": "411308e851c7736dd114d140c419fafb2e5f38349a3c0c778d0d7541a4bb9a3a",
+      "public_sha256": "411308e851c7736dd114d140c419fafb2e5f38349a3c0c778d0d7541a4bb9a3a",
+      "original_bytes": 562,
+      "public_bytes": 562,
+      "categories": {},
+      "lines": 22
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-final-cleanup.json",
+      "changed": false,
+      "original_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "public_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "original_bytes": 27,
+      "public_bytes": 27,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-final-host.json",
+      "changed": true,
+      "original_sha256": "1c3488a75abab3d488bda4e21c09029286eddbab200b7feab59668ca5b97bff2",
+      "public_sha256": "9a7af9f4b6deebe1d26c4ac7c8d6cb675db6f617190896e084f9e684eaf7f764",
+      "original_bytes": 624,
+      "public_bytes": 488,
+      "categories": {
+        "repository-path": 4
+      },
+      "lines": 10,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/native-final-host.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-final-redeployed-state.json",
+      "changed": false,
+      "original_sha256": "777ed1abbcad197966ea954bbfaf8b6d0c85abb696e240e4afa4b54a13c7c3eb",
+      "public_sha256": "777ed1abbcad197966ea954bbfaf8b6d0c85abb696e240e4afa4b54a13c7c3eb",
+      "original_bytes": 221479,
+      "public_bytes": 221479,
+      "categories": {},
+      "lines": 7635
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-final-video03.json",
+      "changed": false,
+      "original_sha256": "24a510075dfc231de5d7c0e7d8dec247e183b2bccbb008843687e019e37f4f6a",
+      "public_sha256": "24a510075dfc231de5d7c0e7d8dec247e183b2bccbb008843687e019e37f4f6a",
+      "original_bytes": 561,
+      "public_bytes": 561,
+      "categories": {},
+      "lines": 22
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-finish-response-state.json",
+      "changed": false,
+      "original_sha256": "ffe5a7f61750e6ca86ab7a17fa86993ef72c1f66a7d94b5b7b17e0eaac46761e",
+      "public_sha256": "ffe5a7f61750e6ca86ab7a17fa86993ef72c1f66a7d94b5b7b17e0eaac46761e",
+      "original_bytes": 208212,
+      "public_bytes": 208212,
+      "categories": {},
+      "lines": 7210
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-host.json",
+      "changed": true,
+      "original_sha256": "cf633a6644daa1e79d10a973c12298c23816fdfc5d8dbcf96378f5a02e573976",
+      "public_sha256": "da41a921de4ebd51d5e9c44dfc5f0c9adaa1803f8188242d4083b13b1587afc8",
+      "original_bytes": 552,
+      "public_bytes": 450,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 10,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/native-host.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-marker-video01.json",
+      "changed": false,
+      "original_sha256": "ae99a99df1c315f2b951e39cd2038ecd14a81b63a380afcf2019e1a19ec059c5",
+      "public_sha256": "ae99a99df1c315f2b951e39cd2038ecd14a81b63a380afcf2019e1a19ec059c5",
+      "original_bytes": 561,
+      "public_bytes": 561,
+      "categories": {},
+      "lines": 22
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-redeploy-version-conflict-state.json",
+      "changed": false,
+      "original_sha256": "26ab4a76a43a85057dd99af5f09cb2ec093e1353296a6630a39c5e86427bb4cb",
+      "public_sha256": "26ab4a76a43a85057dd99af5f09cb2ec093e1353296a6630a39c5e86427bb4cb",
+      "original_bytes": 211458,
+      "public_bytes": 211458,
+      "categories": {},
+      "lines": 7326
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-redeployed-state.json",
+      "changed": false,
+      "original_sha256": "26ab4a76a43a85057dd99af5f09cb2ec093e1353296a6630a39c5e86427bb4cb",
+      "public_sha256": "26ab4a76a43a85057dd99af5f09cb2ec093e1353296a6630a39c5e86427bb4cb",
+      "original_bytes": 211458,
+      "public_bytes": 211458,
+      "categories": {},
+      "lines": 7326
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/native-saved-return-state.json",
+      "changed": false,
+      "original_sha256": "c60ad6411273cbfccc86e84c00f8db9cb0c8c145e6ff2c907731c5945d934aaf",
+      "public_sha256": "c60ad6411273cbfccc86e84c00f8db9cb0c8c145e6ff2c907731c5945d934aaf",
+      "original_bytes": 208939,
+      "public_bytes": 208939,
+      "categories": {},
+      "lines": 7237
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/normal-clients.json",
+      "changed": true,
+      "original_sha256": "e20911a8d7b2ce78686ab167127343f71980b48ee11bbb3abdfe455a2608d29b",
+      "public_sha256": "90f0a6e811c7074fa65a19a8bc54b72795e8615a70772ab36d6ba9d9c3311725",
+      "original_bytes": 1062,
+      "public_bytes": 1077,
+      "categories": {
+        "machine": 3
+      },
+      "lines": 38,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/normal-clients.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/normal-launch.json",
+      "changed": true,
+      "original_sha256": "a241f22c58f506c7edac994081afd9f3f380fe51d8325e2e956a53aa1e660bc7",
+      "public_sha256": "e5e02b4f622d0630b62180d357cee204c084e4fae77aa60cb1d3ca4098605a94",
+      "original_bytes": 210,
+      "public_bytes": 142,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 5,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/normal-launch.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/reproduction-notes.json",
+      "changed": false,
+      "original_sha256": "99d05533f1e047bf66df8a6e57cb8fc9132522b0b3d5bda8328d5ba7001e045c",
+      "public_sha256": "99d05533f1e047bf66df8a6e57cb8fc9132522b0b3d5bda8328d5ba7001e045c",
+      "original_bytes": 328,
+      "public_bytes": 328,
+      "categories": {},
+      "lines": 5
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-build-heartbeat.log",
+      "changed": true,
+      "original_sha256": "3b1bfb09df986930c83d0b83ed8c787c189d1c9151ae055035d69153108296d1",
+      "public_sha256": "3809d85121d3ade777267cd35f86ac8089f966a8508c683233ed7016c2f3d376",
+      "original_bytes": 3016,
+      "public_bytes": 2877,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 32,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-build-heartbeat.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-build.log",
+      "changed": true,
+      "original_sha256": "5ec5cc5ac86effe1a7d43ecde9233ead1f022bbffb7e906acaa889daaf8cef9d",
+      "public_sha256": "fc974e9116d6198d073e5bea5f11be94fb4ed4133448007c9feb0e252a76a206",
+      "original_bytes": 5875,
+      "public_bytes": 5736,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 84,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-build.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-command-tests-final.log",
+      "changed": true,
+      "original_sha256": "ea73ddb3c03142c9c3b43d95ef0edba7050cf6553059158c134e5e4055d01f90",
+      "public_sha256": "6c1eca9a7ccf433c2c7af72d912992a25d3213c506b5a18873097dc66d64a675",
+      "original_bytes": 1301,
+      "public_bytes": 1202,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 3,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-command-tests-final.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-command-tests.log",
+      "changed": true,
+      "original_sha256": "29b41c853122e14977194d9909d5aa4f0d2d3c5c0b84530a11ec7494f0e9e714",
+      "public_sha256": "f3247511ca9f3b2da3ba435683e42f71856b82e4b5102457d473e8f76acb266c",
+      "original_bytes": 1295,
+      "public_bytes": 1196,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 3,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-command-tests.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-deploy-heartbeat-injected.log",
+      "changed": true,
+      "original_sha256": "eff6154374e2fd6bf2b16a44d6ace082feba69686dc1adb5b3825a96ee93483e",
+      "public_sha256": "aa603b139649c47349170f3fad496f741f1331c5b21a45794f18fe472e6d116d",
+      "original_bytes": 885,
+      "public_bytes": 786,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 3,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-deploy-heartbeat-injected.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-map-tests-final.log",
+      "changed": true,
+      "original_sha256": "6d9410780fdf7886df3186d64eb14739dbdb88bea5031b5dcce252d02024022a",
+      "public_sha256": "48255325dbc876bbea4f8b82b4b5da0c1aecc46a712c045bac6782b1bc02bf80",
+      "original_bytes": 2670,
+      "public_bytes": 2503,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 5,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-map-tests-final.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/ue-map-tests.log",
+      "changed": true,
+      "original_sha256": "8b0826cf6b183c08ff8f8701a8f00ba182387654d98c70182b12c57899feb586",
+      "public_sha256": "bee14fc5c83e0d643814865b5c963cdb602201c2337a7a5d94e77e8e871b1fc2",
+      "original_bytes": 2670,
+      "public_bytes": 2503,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 5,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/ue-map-tests.log"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/20261023-105421/verify-deploy-heartbeat.py",
+      "changed": true,
+      "original_sha256": "0f129f67022c0c6806ccc02c8b810e608ec15029baad9d765ac9a70790fcff67",
+      "public_sha256": "9624e039714f305a1fc22a3ae3ec9d2763812bc297f1a26fe99668aeb76d5363",
+      "original_bytes": 5301,
+      "public_bytes": 5271,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 110,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/20261023-105421/verify-deploy-heartbeat.py"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/events.json",
+      "changed": false,
+      "original_sha256": "c911b8fa135ea971a879bacc6e3f0bb9444de0d9e46af6c97f1d5403ee9aa757",
+      "public_sha256": "c911b8fa135ea971a879bacc6e3f0bb9444de0d9e46af6c97f1d5403ee9aa757",
+      "original_bytes": 1073072,
+      "public_bytes": 1073072,
+      "categories": {},
+      "lines": 31473
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/final-state.json",
+      "changed": false,
+      "original_sha256": "ff9424a0386279032302065c00097061702fce05382f2267badb40d7f0c4af02",
+      "public_sha256": "ff9424a0386279032302065c00097061702fce05382f2267badb40d7f0c4af02",
+      "original_bytes": 20803,
+      "public_bytes": 20803,
+      "categories": {},
+      "lines": 757
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/protocol.log",
+      "changed": false,
+      "original_sha256": "acdd75836191c7d1ec1a4dbf1c300b55f29b6530a35c9586053aa51638b8cad9",
+      "public_sha256": "acdd75836191c7d1ec1a4dbf1c300b55f29b6530a35c9586053aa51638b8cad9",
+      "original_bytes": 1133,
+      "public_bytes": 1133,
+      "categories": {},
+      "lines": 11
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/result.json",
+      "changed": false,
+      "original_sha256": "5058ed88cd6789b0ebd0e4ca2c1cf9a7acac49a43e367a5b774e3b6633742b9a",
+      "public_sha256": "5058ed88cd6789b0ebd0e4ca2c1cf9a7acac49a43e367a5b774e3b6633742b9a",
+      "original_bytes": 1373,
+      "public_bytes": 1373,
+      "categories": {},
+      "lines": 22
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/run.json",
+      "changed": true,
+      "original_sha256": "8e0d0291c2faa316d6a63efaa960b700a01754daaec0421708b58d55de497a8c",
+      "public_sha256": "5fa8943344c7e02c3309333fa2990ddf9f24530734f1f11bf6ac93dad5fe452a",
+      "original_bytes": 1110,
+      "public_bytes": 1008,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 28,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/protocol-1792725185560741000/run.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/snapshots.json",
+      "changed": false,
+      "original_sha256": "37ece2a7a498d506ca42367038c764e36c0909d19735a9ef847abb8fc5715f9b",
+      "public_sha256": "37ece2a7a498d506ca42367038c764e36c0909d19735a9ef847abb8fc5715f9b",
+      "original_bytes": 69412,
+      "public_bytes": 69412,
+      "categories": {},
+      "lines": 2395
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792725185560741000/traffic.json",
+      "changed": false,
+      "original_sha256": "c803dde44eeef867a33ef1470f7719238e5a09d3e0d2c192520e79d7dbc67eb5",
+      "public_sha256": "c803dde44eeef867a33ef1470f7719238e5a09d3e0d2c192520e79d7dbc67eb5",
+      "original_bytes": 433611,
+      "public_bytes": 433611,
+      "categories": {},
+      "lines": 13635
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/events.json",
+      "changed": false,
+      "original_sha256": "8c6f08bc9b1a00e04c172480f6def4ea5a33820d1937392488f3f9b031ebdb42",
+      "public_sha256": "8c6f08bc9b1a00e04c172480f6def4ea5a33820d1937392488f3f9b031ebdb42",
+      "original_bytes": 1777304,
+      "public_bytes": 1777304,
+      "categories": {},
+      "lines": 51321
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/final-state.json",
+      "changed": false,
+      "original_sha256": "2064b8909d7ab240f6212ff956429bc580f20efa059e8c756e99abe700bcd3d1",
+      "public_sha256": "2064b8909d7ab240f6212ff956429bc580f20efa059e8c756e99abe700bcd3d1",
+      "original_bytes": 26809,
+      "public_bytes": 26809,
+      "categories": {},
+      "lines": 962
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/protocol.log",
+      "changed": false,
+      "original_sha256": "25b42cd121624dfd630b055c81c68569d2a317a9705476633cfb95f834aecd53",
+      "public_sha256": "25b42cd121624dfd630b055c81c68569d2a317a9705476633cfb95f834aecd53",
+      "original_bytes": 1385,
+      "public_bytes": 1385,
+      "categories": {},
+      "lines": 13
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/result.json",
+      "changed": false,
+      "original_sha256": "b4ebe24226bd88394956a908c7385d08ee0b57055cd2eec90c20488e331066c6",
+      "public_sha256": "b4ebe24226bd88394956a908c7385d08ee0b57055cd2eec90c20488e331066c6",
+      "original_bytes": 1629,
+      "public_bytes": 1629,
+      "categories": {},
+      "lines": 24
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/run.json",
+      "changed": true,
+      "original_sha256": "06bae285692657b654e239281b88b05867f11df97889a3b8534d0c1f2583a5ab",
+      "public_sha256": "4be776bb9f4a6767f737f5064e92c201f02e9a2c0c7c333d02d8769bfc4f064c",
+      "original_bytes": 1110,
+      "public_bytes": 1008,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 28,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/EditReturnVideo/protocol-1792726708818955700/run.json"
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/snapshots.json",
+      "changed": false,
+      "original_sha256": "615a2a1ee6cb4698f351e6a1d31536334c9ff47c256431ffde26034d9d903e42",
+      "public_sha256": "615a2a1ee6cb4698f351e6a1d31536334c9ff47c256431ffde26034d9d903e42",
+      "original_bytes": 317324,
+      "public_bytes": 317324,
+      "categories": {},
+      "lines": 9778
+    },
+    {
+      "path": "Evidence/EditReturnVideo/protocol-1792726708818955700/traffic.json",
+      "changed": false,
+      "original_sha256": "ddf91aad5e76715d42358063f9b9054ab56873e6bcdf34f1acb308a7c628ec37",
+      "public_sha256": "ddf91aad5e76715d42358063f9b9054ab56873e6bcdf34f1acb308a7c628ec37",
+      "original_bytes": 1391617,
+      "public_bytes": 1391617,
+      "categories": {},
+      "lines": 42334
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/acceptance.json",
+      "changed": true,
+      "original_sha256": "9b18457c1b26c221a93ef6f13fd1e8ba574d5713d89ece07f468db936490ed71",
+      "public_sha256": "e9042300a963fb783cc6ac507184ac084c154e5e436118cfaacd2ff3be8b9db5",
+      "original_bytes": 3432,
+      "public_bytes": 3398,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 94,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/GrassStartup/20261023/acceptance.json"
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/build.log",
+      "changed": true,
+      "original_sha256": "70209480db264820943c1b53b9e6c9e21499cb4e3754d4151481e292cb9e84fc",
+      "public_sha256": "2fa4dee77ed92ba64c377c46ba62ece6c58d8cba6a9edc174754b432581ec669",
+      "original_bytes": 2884,
+      "public_bytes": 2745,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 30,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/GrassStartup/20261023/build.log"
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/fixture-policy.log",
+      "changed": false,
+      "original_sha256": "e6bcb27996993f6d08cd9243390c75018d3c3e4dd95624b1e266c4a853c35a3c",
+      "public_sha256": "e6bcb27996993f6d08cd9243390c75018d3c3e4dd95624b1e266c4a853c35a3c",
+      "original_bytes": 1041,
+      "public_bytes": 1041,
+      "categories": {},
+      "lines": 11
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/native-close-final.png",
+      "changed": false,
+      "original_sha256": "e89fe90a8718b538db356826138a964f535fdb8dff33f7317065f00b8eaedc66",
+      "public_sha256": "e89fe90a8718b538db356826138a964f535fdb8dff33f7317065f00b8eaedc66",
+      "original_bytes": 76972,
+      "public_bytes": 76972,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/native-close.png",
+      "changed": false,
+      "original_sha256": "95bf8956faecd9d24124912adff7ae67b25cf42a04bd49da9c558c48b31a4f80",
+      "public_sha256": "95bf8956faecd9d24124912adff7ae67b25cf42a04bd49da9c558c48b31a4f80",
+      "original_bytes": 50659,
+      "public_bytes": 50659,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/native-surface-final.json",
+      "changed": false,
+      "original_sha256": "208d5b02e94a58b584d42f7d25833723339def0f8b1f620bb24e14430acfd626",
+      "public_sha256": "208d5b02e94a58b584d42f7d25833723339def0f8b1f620bb24e14430acfd626",
+      "original_bytes": 994,
+      "public_bytes": 994,
+      "categories": {},
+      "lines": 42
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/native-surface.json",
+      "changed": false,
+      "original_sha256": "208d5b02e94a58b584d42f7d25833723339def0f8b1f620bb24e14430acfd626",
+      "public_sha256": "208d5b02e94a58b584d42f7d25833723339def0f8b1f620bb24e14430acfd626",
+      "original_bytes": 994,
+      "public_bytes": 994,
+      "categories": {},
+      "lines": 42
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/normal-drones.json",
+      "changed": false,
+      "original_sha256": "3f44c65080e7b0d06f718df7c9b781b4b284d8ff6c7c1158582da860414f2c96",
+      "public_sha256": "3f44c65080e7b0d06f718df7c9b781b4b284d8ff6c7c1158582da860414f2c96",
+      "original_bytes": 4595,
+      "public_bytes": 4595,
+      "categories": {},
+      "lines": 194
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/rhi-startup.json",
+      "changed": false,
+      "original_sha256": "4887cc0762e08bad63f1b20249786c7a15f00cb355b1f8872d41c3012223ccd7",
+      "public_sha256": "4887cc0762e08bad63f1b20249786c7a15f00cb355b1f8872d41c3012223ccd7",
+      "original_bytes": 29095,
+      "public_bytes": 29095,
+      "categories": {},
+      "lines": 1305
+    },
+    {
+      "path": "Evidence/GrassStartup/20261023/startup-migration.json",
+      "changed": false,
+      "original_sha256": "2ad6e93304025ab072b1e0abcb8e888732d5f6292c27f54d77da5d4a79897cf8",
+      "public_sha256": "2ad6e93304025ab072b1e0abcb8e888732d5f6292c27f54d77da5d4a79897cf8",
+      "original_bytes": 1102,
+      "public_bytes": 1102,
+      "categories": {},
+      "lines": 22
+    },
+    {
+      "path": "Evidence/ManualTakeover/acceptance.json",
+      "changed": true,
+      "original_sha256": "95301c18ad60d24ec9d42eee3cd1a6d0414f7fdbc332dcb8f0ea291ebfa8a368",
+      "public_sha256": "749785fa40c16da62d5fec6feede15c7fe762ef1cc9ffbd92dbc782979209169",
+      "original_bytes": 8595,
+      "public_bytes": 8357,
+      "categories": {
+        "repository-path": 7
+      },
+      "lines": 226,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/acceptance.json"
+    },
+    {
+      "path": "Evidence/ManualTakeover/backend/first-sandbox-failed.log",
+      "changed": true,
+      "original_sha256": "a6ff92d574d3465835dcad7cca01112853740f639ca336d7c77bfcf97499f429",
+      "public_sha256": "97d456368d5d857ae201213a2873f38df85729f8084d971406ba0dbb4e935608",
+      "original_bytes": 3382,
+      "public_bytes": 3343,
+      "categories": {
+        "account-path": 1,
+        "repository-path": 1
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/backend/first-sandbox-failed.log"
+    },
+    {
+      "path": "Evidence/ManualTakeover/backend/full.log",
+      "changed": true,
+      "original_sha256": "28dd9350cef986d57a3ef24cb39f4c570d89cc2e0941c69e345bf91bbc8637e3",
+      "public_sha256": "fcc0baee07e0ca66ab118c61f14e3376a136ccb4711d455159ed63dd25b2bd6a",
+      "original_bytes": 29629,
+      "public_bytes": 29536,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 470,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/backend/full.log"
+    },
+    {
+      "path": "Evidence/ManualTakeover/backend/full.xml",
+      "changed": true,
+      "original_sha256": "61cf67465b0b00b5d221fab51c0b4782d73e35a517d5206e816d7c13fdc30ab3",
+      "public_sha256": "4688910ff1fdf8fc1c8a7317899bdadd4ec61b9f487402f4f36074c3bdad851f",
+      "original_bytes": 53394,
+      "public_bytes": 47318,
+      "categories": {
+        "repository-path": 196
+      },
+      "lines": 255,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/backend/full.xml"
+    },
+    {
+      "path": "Evidence/ManualTakeover/backend/summary.json",
+      "changed": false,
+      "original_sha256": "aa2b373b07186219cfc8d5bf0ee44bf6070b6b1edd37d2c9a3bc84107b4958ad",
+      "public_sha256": "aa2b373b07186219cfc8d5bf0ee44bf6070b6b1edd37d2c9a3bc84107b4958ad",
+      "original_bytes": 1111,
+      "public_bytes": 1111,
+      "categories": {},
+      "lines": 27
+    },
+    {
+      "path": "Evidence/ManualTakeover/backend/targeted.log",
+      "changed": false,
+      "original_sha256": "6d7eb0f6c6629c3d404eed68220fd27e8d0a1ad06c043b30c2fd1da54c9c9ec2",
+      "public_sha256": "6d7eb0f6c6629c3d404eed68220fd27e8d0a1ad06c043b30c2fd1da54c9c9ec2",
+      "original_bytes": 2856,
+      "public_bytes": 2856,
+      "categories": {},
+      "lines": 38
+    },
+    {
+      "path": "Evidence/ManualTakeover/backend/targeted.xml",
+      "changed": true,
+      "original_sha256": "4dab2d6c8a5734b8b5f49e490e721149fc8201e927a7a89f342f1bf1ca22a469",
+      "public_sha256": "1954f287b4dd1937bae7e10358537cea573d7ba3845314ca1fc747eeebf66449",
+      "original_bytes": 4100,
+      "public_bytes": 3697,
+      "categories": {
+        "repository-path": 13
+      },
+      "lines": 20,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/backend/targeted.xml"
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/Map.log",
+      "changed": true,
+      "original_sha256": "483bc8f7351b87a2c07b45f55dda09faaa6a0ec2a3e0709e04288fc79fb143d9",
+      "public_sha256": "70efa4c71a37ff154c59f256991f7e2f64d0d33596d93fb42cd860e2dda7c5b0",
+      "original_bytes": 2024585,
+      "public_bytes": 2023187,
+      "categories": {
+        "account": 2,
+        "account-path": 11,
+        "machine": 2,
+        "machine-id": 2,
+        "machine-network": 1,
+        "repository-path": 40,
+        "ue-session": 2
+      },
+      "lines": 19465,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/native-1792718959342115200/Map.log"
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/cleanup.json",
+      "changed": false,
+      "original_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "public_sha256": "0112df03f0840d5164d3aa9f86e6433062ad8ddcfdbd55d03f5eadb759ea5e27",
+      "original_bytes": 27,
+      "public_bytes": 27,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/fixture.log",
+      "changed": false,
+      "original_sha256": "fdea5ba115e58dc64574bae4363811707250b7b82b772660ff08b3f54c9ec075",
+      "public_sha256": "fdea5ba115e58dc64574bae4363811707250b7b82b772660ff08b3f54c9ec075",
+      "original_bytes": 929,
+      "public_bytes": 929,
+      "categories": {},
+      "lines": 45
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/fixture/fixture-state.json",
+      "changed": false,
+      "original_sha256": "dee162faef87a4c97af59781927cf4b96f26238d27ece53a757264d2d459c87a",
+      "public_sha256": "dee162faef87a4c97af59781927cf4b96f26238d27ece53a757264d2d459c87a",
+      "original_bytes": 21679,
+      "public_bytes": 21679,
+      "categories": {},
+      "lines": 823
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/fixture/fixture-traffic.json",
+      "changed": false,
+      "original_sha256": "6a6665ebc25482358340c3e84ec0b509626523a70f07ad98abc254ecec15c5d8",
+      "public_sha256": "6a6665ebc25482358340c3e84ec0b509626523a70f07ad98abc254ecec15c5d8",
+      "original_bytes": 71537,
+      "public_bytes": 71537,
+      "categories": {},
+      "lines": 2328
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/fixture/fixture.json",
+      "changed": false,
+      "original_sha256": "1f3a8acfad90a3ef95c9790d67f50ab60c16e72d1d8b5a59b0a7f04fd6a82e0d",
+      "public_sha256": "1f3a8acfad90a3ef95c9790d67f50ab60c16e72d1d8b5a59b0a7f04fd6a82e0d",
+      "original_bytes": 928,
+      "public_bytes": 928,
+      "categories": {},
+      "lines": 45
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/host.json",
+      "changed": true,
+      "original_sha256": "4f82e900cf6ccfc7cc4a961ebf525758b8c2bf53b7128d3e80cf0622b0793bfd",
+      "public_sha256": "6516bad07f536ca0924057c708f7159e90a8a06891d7a3be022ac43c25f585e8",
+      "original_bytes": 422,
+      "public_bytes": 354,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 8,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/native-1792718959342115200/host.json"
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/native-start-state.json",
+      "changed": false,
+      "original_sha256": "84f893d8d662793a873f0ef89b68dd6d327341aa8a5e5bf65a92bf47122ae4c8",
+      "public_sha256": "84f893d8d662793a873f0ef89b68dd6d327341aa8a5e5bf65a92bf47122ae4c8",
+      "original_bytes": 38144,
+      "public_bytes": 38144,
+      "categories": {},
+      "lines": 1438
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/01-map-takeover-preview.png",
+      "changed": false,
+      "original_sha256": "f709087e2a74aeb0c85888d8624f83264c043a2a33bc2d66ec2ba7ccb5fd51b3",
+      "public_sha256": "f709087e2a74aeb0c85888d8624f83264c043a2a33bc2d66ec2ba7ccb5fd51b3",
+      "original_bytes": 65545,
+      "public_bytes": 65545,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/02-map-takeover-running.png",
+      "changed": false,
+      "original_sha256": "110277913b37bde2d7c22d87c470bd0a9d0977a092cc7afee7c4882a1575d1ba",
+      "public_sha256": "110277913b37bde2d7c22d87c470bd0a9d0977a092cc7afee7c4882a1575d1ba",
+      "original_bytes": 57480,
+      "public_bytes": 57480,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/03-map-move-paused-peer-running.png",
+      "changed": false,
+      "original_sha256": "379902b28ff6989280bdc6783cee7f03e5cb726a179c04972cec8853596ce5fb",
+      "public_sha256": "379902b28ff6989280bdc6783cee7f03e5cb726a179c04972cec8853596ce5fb",
+      "original_bytes": 58251,
+      "public_bytes": 58251,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/04-map-move-completed.png",
+      "changed": false,
+      "original_sha256": "d216348ff7134ac02ba91865139148d1b124f443389423ffc07563bb7347e508",
+      "public_sha256": "d216348ff7134ac02ba91865139148d1b124f443389423ffc07563bb7347e508",
+      "original_bytes": 57498,
+      "public_bytes": 57498,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/acceptance.json",
+      "changed": false,
+      "original_sha256": "5c3b7bb83e1fd72b5abb344ad6e6aa1c5447f0a8f01569fc74de90c0ddf040d1",
+      "public_sha256": "5c3b7bb83e1fd72b5abb344ad6e6aa1c5447f0a8f01569fc74de90c0ddf040d1",
+      "original_bytes": 1090,
+      "public_bytes": 1090,
+      "categories": {},
+      "lines": 27
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/after-takeover.json",
+      "changed": false,
+      "original_sha256": "556cfe5e74d31c3350d24641e3afc1427931511f4bbbc861be85ddb202ed8976",
+      "public_sha256": "556cfe5e74d31c3350d24641e3afc1427931511f4bbbc861be85ddb202ed8976",
+      "original_bytes": 47696,
+      "public_bytes": 47696,
+      "categories": {},
+      "lines": 1705
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/before-takeover.json",
+      "changed": false,
+      "original_sha256": "87c6b96e26618e0636e0b6fad104f4b4ce6039248f7cae14243559373445bce8",
+      "public_sha256": "87c6b96e26618e0636e0b6fad104f4b4ce6039248f7cae14243559373445bce8",
+      "original_bytes": 39952,
+      "public_bytes": 39952,
+      "categories": {},
+      "lines": 1440
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/completed-state.json",
+      "changed": false,
+      "original_sha256": "907042b3bfe523f479947192447e419a5276e831d8b31f1d675e42934f25c4ea",
+      "public_sha256": "907042b3bfe523f479947192447e419a5276e831d8b31f1d675e42934f25c4ea",
+      "original_bytes": 52864,
+      "public_bytes": 52864,
+      "categories": {},
+      "lines": 1891
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/paused-state.json",
+      "changed": false,
+      "original_sha256": "e9ea3004a276735ce61561f1a6ad785cec044f34ee69f988c2f3bcc2503b33ce",
+      "public_sha256": "e9ea3004a276735ce61561f1a6ad785cec044f34ee69f988c2f3bcc2503b33ce",
+      "original_bytes": 49340,
+      "public_bytes": 49340,
+      "categories": {},
+      "lines": 1763
+    },
+    {
+      "path": "Evidence/ManualTakeover/native-1792718959342115200/ui/verify_native_state.py",
+      "changed": true,
+      "original_sha256": "29dc02fa4b17466174f49c414fd89ad9127696f277ce249184124582978cce40",
+      "public_sha256": "14e08b50a5fc0608f5ee609409f6205139f75d5598dd5678de21aac79c61ef36",
+      "original_bytes": 3501,
+      "public_bytes": 3462,
+      "categories": {
+        "account-path": 1,
+        "repository-path": 1
+      },
+      "lines": 51,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/native-1792718959342115200/ui/verify_native_state.py"
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/final-state.json",
+      "changed": false,
+      "original_sha256": "27727de87d42edcb879cfb2687f5b4c57c050deb470341f4a0658c2f352ae027",
+      "public_sha256": "27727de87d42edcb879cfb2687f5b4c57c050deb470341f4a0658c2f352ae027",
+      "original_bytes": 86129,
+      "public_bytes": 86129,
+      "categories": {},
+      "lines": 3209
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/protocol.log",
+      "changed": false,
+      "original_sha256": "6770c3683107f4f84c9268a32b023035a6c89433a69605c74deb9e73dad0594d",
+      "public_sha256": "6770c3683107f4f84c9268a32b023035a6c89433a69605c74deb9e73dad0594d",
+      "original_bytes": 1479,
+      "public_bytes": 1479,
+      "categories": {},
+      "lines": 16
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/result.json",
+      "changed": false,
+      "original_sha256": "cea0a459e4ed02aaccfac228276eb2acabcfb160309241704ddb9708a45f6c92",
+      "public_sha256": "cea0a459e4ed02aaccfac228276eb2acabcfb160309241704ddb9708a45f6c92",
+      "original_bytes": 1729,
+      "public_bytes": 1729,
+      "categories": {},
+      "lines": 27
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/run.json",
+      "changed": true,
+      "original_sha256": "371b3d4c145e1a7ef3178d46891af03ab36f8abba9f62bd629b728866c95bc8a",
+      "public_sha256": "3e43263227fe018191ac7c65d8b99f53631ba4ac10e69938498836251d1d31bc",
+      "original_bytes": 1109,
+      "public_bytes": 1007,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 28,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/protocol-1792718590193182400/run.json"
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/snapshots.json",
+      "changed": false,
+      "original_sha256": "4f5896e907396b69f01651079c237fb2fb5e7f217e361dae852fad214b161a50",
+      "public_sha256": "4f5896e907396b69f01651079c237fb2fb5e7f217e361dae852fad214b161a50",
+      "original_bytes": 75592,
+      "public_bytes": 75592,
+      "categories": {},
+      "lines": 2639
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/timeline.json",
+      "changed": false,
+      "original_sha256": "7baa29afd2c4144344e4d639e1355c994f267fd4ce295bb536cb34f80ebdaef1",
+      "public_sha256": "7baa29afd2c4144344e4d639e1355c994f267fd4ce295bb536cb34f80ebdaef1",
+      "original_bytes": 817943,
+      "public_bytes": 817943,
+      "categories": {},
+      "lines": 31817
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792718590193182400/traffic.json",
+      "changed": false,
+      "original_sha256": "76b01ad5069e1130fec77a85946258a35a08b8889c553912f8024c9da66a91ac",
+      "public_sha256": "76b01ad5069e1130fec77a85946258a35a08b8889c553912f8024c9da66a91ac",
+      "original_bytes": 2561529,
+      "public_bytes": 2561529,
+      "categories": {},
+      "lines": 78427
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/final-state.json",
+      "changed": false,
+      "original_sha256": "ba545f4a15def694633cc710062c6107f9ca670597be8f320068c4baae30a7b9",
+      "public_sha256": "ba545f4a15def694633cc710062c6107f9ca670597be8f320068c4baae30a7b9",
+      "original_bytes": 87069,
+      "public_bytes": 87069,
+      "categories": {},
+      "lines": 3234
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/protocol.log",
+      "changed": false,
+      "original_sha256": "6770c3683107f4f84c9268a32b023035a6c89433a69605c74deb9e73dad0594d",
+      "public_sha256": "6770c3683107f4f84c9268a32b023035a6c89433a69605c74deb9e73dad0594d",
+      "original_bytes": 1479,
+      "public_bytes": 1479,
+      "categories": {},
+      "lines": 16
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/result.json",
+      "changed": false,
+      "original_sha256": "cea0a459e4ed02aaccfac228276eb2acabcfb160309241704ddb9708a45f6c92",
+      "public_sha256": "cea0a459e4ed02aaccfac228276eb2acabcfb160309241704ddb9708a45f6c92",
+      "original_bytes": 1729,
+      "public_bytes": 1729,
+      "categories": {},
+      "lines": 27
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/run.json",
+      "changed": true,
+      "original_sha256": "3d0afdb237c41fd1bd331ac661bd00280ba5e33543c80c777d78d76b0146c0eb",
+      "public_sha256": "7464e1cdbe70e438ada722ad6d52a4df40050e8a78ce2e27a150f03fd63c7134",
+      "original_bytes": 1109,
+      "public_bytes": 1007,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 28,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/ManualTakeover/protocol-1792736990601809200/run.json"
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/snapshots.json",
+      "changed": false,
+      "original_sha256": "42ca092c2e9701c9a33202610897a60dd2b23303306cd0d74e9edf87a83943db",
+      "public_sha256": "42ca092c2e9701c9a33202610897a60dd2b23303306cd0d74e9edf87a83943db",
+      "original_bytes": 78801,
+      "public_bytes": 78801,
+      "categories": {},
+      "lines": 2739
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/timeline.json",
+      "changed": false,
+      "original_sha256": "0e7ff0901b17c3c670713dd89a84084618b09bb8e3f3bdd94363e00fad933f48",
+      "public_sha256": "0e7ff0901b17c3c670713dd89a84084618b09bb8e3f3bdd94363e00fad933f48",
+      "original_bytes": 835976,
+      "public_bytes": 835976,
+      "categories": {},
+      "lines": 32174
+    },
+    {
+      "path": "Evidence/ManualTakeover/protocol-1792736990601809200/traffic.json",
+      "changed": false,
+      "original_sha256": "a836538039af6ec64468141195ba20507acaf2e456e2fbe4515a7705fe2350a6",
+      "public_sha256": "a836538039af6ec64468141195ba20507acaf2e456e2fbe4515a7705fe2350a6",
+      "original_bytes": 2584239,
+      "public_bytes": 2584239,
+      "categories": {},
+      "lines": 79002
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/editor.log",
+      "changed": true,
+      "original_sha256": "5d187305cab035cd57cbd3bcbdef5d62f914621013ba13ffc8a5272c5862857a",
+      "public_sha256": "1bc2141fb60f2c3d99dc40b38dfacfd8a8063d88e03c99cbb6c8b3454ca69851",
+      "original_bytes": 320253,
+      "public_bytes": 318825,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2269,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/index.json",
+      "changed": true,
+      "original_sha256": "90862b0f3851e57cfee1939270e6f3d953f499359e44ea57ddf2eee8f3a1f5d8",
+      "public_sha256": "bba72916c57089f38f3f53d89e11fb4151e29cc513239abeeb16d88fd8694a4a",
+      "original_bytes": 2250,
+      "public_bytes": 2240,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 6
+      },
+      "lines": 89,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/invocation.json",
+      "changed": true,
+      "original_sha256": "c546d3b9e735364f65f9766e7ff737562f39875d558ce53443ac3671c9cd4f16",
+      "public_sha256": "a9ab040d1b95962b8134c0d484f3b864386022549a1adc7300c578829eaaf801",
+      "original_bytes": 1158,
+      "public_bytes": 988,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 22,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/result.json",
+      "changed": true,
+      "original_sha256": "b6a81f33104aed54ab579619967efa6e43bf2f6df09872f226e98c2e3506684f",
+      "public_sha256": "7784de8f27bf707aca704974cc2065c050343e06e0ae3331ce66e39452cc7906",
+      "original_bytes": 1001,
+      "public_bytes": 967,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 33,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/00-DroneOps.Fleet.ManualTakeover/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/editor.log",
+      "changed": true,
+      "original_sha256": "cae81702a327cd1e08aa1716cf66a34ae3b36e6959efd4505e62906ec6f355fd",
+      "public_sha256": "cd4353d90eefebb84400034f5e6c2f86b00bb714dac685e47f3d07a6cbd07136",
+      "original_bytes": 309925,
+      "public_bytes": 308528,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2205,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/index.json",
+      "changed": true,
+      "original_sha256": "b2a24d3b328a9ef439b2dd6da975a9ff6cc67d9a6d0463dbce48e18428f5cc90",
+      "public_sha256": "5901c58ebef4f0940adcf7b1a68b6eeac5070f7b428289352b313d0a3690a616",
+      "original_bytes": 1091,
+      "public_bytes": 1099,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/invocation.json",
+      "changed": true,
+      "original_sha256": "cb7031e3c623026f9d17a10c57811ecc5eb615035544fdb73681cdfcb1ab053b",
+      "public_sha256": "e496fa2efdf04c785dd3c56232a2ab57cacb3b39645383a2c40fc95f31042d4c",
+      "original_bytes": 1152,
+      "public_bytes": 982,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 22,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/result.json",
+      "changed": true,
+      "original_sha256": "3489c0cbbd951afd1e6008615dc8ab02625a9cba8ab71c4c42539ee4b21091a2",
+      "public_sha256": "b2897dc240d7df311f75397dfd2c2da12b74e0af42bea1c17519b776230c97ca",
+      "original_bytes": 651,
+      "public_bytes": 617,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/01-DroneOps.Fleet.Presentation/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/run.json",
+      "changed": true,
+      "original_sha256": "e2d2f3be4156767de8e1cfd1efaea6c15865e238fc44510ce86aa1d952bc9c72",
+      "public_sha256": "885fadf3106a2a5a103e5cba14114d69e24fe1a14c34dcb711906840cb1255e8",
+      "original_bytes": 526,
+      "public_bytes": 492,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792718963789705900/summary.json",
+      "changed": true,
+      "original_sha256": "83f266b54ed6709d7e2d09c984dd630f69f52f8e8d46771221c26c463adad4f5",
+      "public_sha256": "fc829dd57a8b9de77139245de2ef5b5eb019eb28210d4dba36d3feb62f2ed34e",
+      "original_bytes": 1781,
+      "public_bytes": 1713,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 62,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792718963789705900/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/editor.log",
+      "changed": true,
+      "original_sha256": "ea50c360775b7bf7cae415d10eba098c97016198dd8cdfccbd8ce8d01a304199",
+      "public_sha256": "c45896dc4b853761cdf84dffbdcb0029f3079ffd4a8536a9179fe3cfa9ae3e45",
+      "original_bytes": 340849,
+      "public_bytes": 339421,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2472,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/index.json",
+      "changed": true,
+      "original_sha256": "9f141a5f2b81bac03aaddb9ff555953f119bdcd4d3f44f7bfc25d49724c9a3f5",
+      "public_sha256": "13097ec59c53f551aff0f43c770d1314ef3a44d8c99ccc7dbe22b6e39cc5c49a",
+      "original_bytes": 1857,
+      "public_bytes": 1865,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 69,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/invocation.json",
+      "changed": true,
+      "original_sha256": "6f5e83ee8d83f66e25e5746c23b746f850d5279af4147ff64eceb2a293419581",
+      "public_sha256": "b6c13cb9e4c47aff229f08e46146679fefd19e15c579b1e9ff9f8dfba5f81cdc",
+      "original_bytes": 1158,
+      "public_bytes": 988,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/result.json",
+      "changed": true,
+      "original_sha256": "02038f01becce34c129aec1b5509e1f37150f427c85f95263790acc5e8c256bb",
+      "public_sha256": "601458d2387a0867e5f89ecb8ea1a11f0bc3981433ac89bc5b536a3291ed64d4",
+      "original_bytes": 670,
+      "public_bytes": 636,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720034743545200/00-DroneOps.Command.SinglePointMove/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/run.json",
+      "changed": true,
+      "original_sha256": "273ef7b0b8f2793f0c5ab4b165b3cd6508ac6fbe616047208ab37a767242da7e",
+      "public_sha256": "714a7d27422cbb2852e2fb4cd8767ab45ea0c3bf02131b91028a966c63d5a13b",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720034743545200/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720034743545200/summary.json",
+      "changed": true,
+      "original_sha256": "7b373baa2daaa062cec6f7b4b39e081da8dd7cbab608e640733b10f63a1d1b5e",
+      "public_sha256": "5e4ee6d1a20899ffd6849a888a15ba774c1aa7bd4c75ed331ef988c06723a881",
+      "original_bytes": 730,
+      "public_bytes": 696,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 29,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720034743545200/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/editor.log",
+      "changed": true,
+      "original_sha256": "766f1d885a661b035e25aa32b88651af2849f245e984edd4ade98ebd255b4118",
+      "public_sha256": "cc915c25079676325eaf8c3fb9f2a38d38cd101e5323e01c7a49e81d812bcf84",
+      "original_bytes": 353378,
+      "public_bytes": 351702,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 43,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2575,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/index.json",
+      "changed": true,
+      "original_sha256": "0bc44e091929935b2d9c84811e549bca261ce61277d42504550b090a9b95bc8d",
+      "public_sha256": "92ea0807f9e1b9d4a691b90ae96fcffdc71b982861d6e46c70110701e2850fc4",
+      "original_bytes": 5567,
+      "public_bytes": 5575,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 201,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/invocation.json",
+      "changed": true,
+      "original_sha256": "92f9a97e94011c0bf625b490332c1965f456a2991376580368d25d4c9ccdc4b0",
+      "public_sha256": "821a69d24b2eea5ed08022c359a96b02066b62df316356467082b1fcf39e5bc5",
+      "original_bytes": 1123,
+      "public_bytes": 953,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/result.json",
+      "changed": true,
+      "original_sha256": "6e120458e985fabc66455c7fa16240e2ddabbb4b6cabe3e4773f39df0fcb810e",
+      "public_sha256": "dc7e1818565ac3b3a79885508052aadfc32f7b4a69fe932a57a7528b195d752c",
+      "original_bytes": 639,
+      "public_bytes": 605,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720049204670200/00-DroneOps.Fleet.Workflow/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/run.json",
+      "changed": true,
+      "original_sha256": "777412aaa5a9ddd7404728a7e98d0339529083ffbfa629104546d365fe3cd390",
+      "public_sha256": "2c79205c259d00fd246407fdfcfb1d46a35482804db7128749b9f4e1e294b6b9",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720049204670200/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792720049204670200/summary.json",
+      "changed": true,
+      "original_sha256": "1d09856ce29cc55b03e353ad349be823709586e98c92d1f592fcfa22dbf59096",
+      "public_sha256": "c87ed237188584fcc26f211a28eaedba00e4936d90ce495e75c6f0b73d1b201b",
+      "original_bytes": 699,
+      "public_bytes": 665,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 29,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792720049204670200/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/editor.log",
+      "changed": true,
+      "original_sha256": "c0fedb9fd3360eaa583e63396cba16084534be8bfbe822dc62a9fd4bb733df3e",
+      "public_sha256": "569290a461a45e08046ccf29eb9b2c89aa55fa0f3b43528a6b117e91b927c575",
+      "original_bytes": 341731,
+      "public_bytes": 340303,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2474,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/index.json",
+      "changed": true,
+      "original_sha256": "aab07a4722de044e2e7efa3d545252acdf706ea08e2a7a61e24c4399fea159cb",
+      "public_sha256": "460abb8878ccf6bd2a722dc560a035ee989cf3092d2b4d58df0a7aeed04d6ae7",
+      "original_bytes": 2226,
+      "public_bytes": 2234,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 81,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/invocation.json",
+      "changed": true,
+      "original_sha256": "060ae5c50106beb29d2ec622fab791131e2ee8ba259b464db1d8b2c4a0e9520f",
+      "public_sha256": "8bbce5f272116d4e0005974001e4f2e5de093c2b20917ea9ec227c796b96deb8",
+      "original_bytes": 1170,
+      "public_bytes": 1000,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/result.json",
+      "changed": true,
+      "original_sha256": "f98d957066ef03c32e5e85c760150191e9ebebe935372fc7873db08fffe13e79",
+      "public_sha256": "f9e3b0baf363fc9c77f060a47b1fc81e2c867bdacf926f0f7481f5d2e4b0179e",
+      "original_bytes": 682,
+      "public_bytes": 648,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/00-DroneOps.PlanConfiguration.Workspace/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/editor.log",
+      "changed": true,
+      "original_sha256": "c1d9fbf9d6d2bcb8e278bacbe2eaf16ec09e454665a505fad6a0526fa30ff6e6",
+      "public_sha256": "355a36850461f261a7d3778a57c44d192f5b221fd4a31649898fcf806d6fdf2b",
+      "original_bytes": 352014,
+      "public_bytes": 350555,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 36,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2557,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/index.json",
+      "changed": true,
+      "original_sha256": "02331bfe20f217d01120820f4463f95939b05f74b9f1d52dcc3423a207d0ccdd",
+      "public_sha256": "7719a409352abde64c5742a4bbedd49150687112a2bd66f9ed6eaefa15010015",
+      "original_bytes": 7331,
+      "public_bytes": 7308,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 249,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/invocation.json",
+      "changed": true,
+      "original_sha256": "bd36a2d68c7eb78dcb5e9bd66d4e567a96c6c2127ef5196f1fbc61ce70607ed1",
+      "public_sha256": "99d7726e21e87377816e77347bc7b2a1dff315e57ba98fca0021b0cfb9933cd6",
+      "original_bytes": 1185,
+      "public_bytes": 1015,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/mission-fixture.log",
+      "changed": false,
+      "original_sha256": "107bce38e59e0dd6f4c275fcd9755bfcc3e179410697f3c2f9e6a905a6496fc4",
+      "public_sha256": "107bce38e59e0dd6f4c275fcd9755bfcc3e179410697f3c2f9e6a905a6496fc4",
+      "original_bytes": 107,
+      "public_bytes": 107,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/result.json",
+      "changed": true,
+      "original_sha256": "46cddeb0e774b132e66a70edcb16a487b47e6c8c99dbbddbfb556c2e06475622",
+      "public_sha256": "faee24067cd97109fa5a342ef152102b2cec17417fa29a090744b1c82a05e5dc",
+      "original_bytes": 697,
+      "public_bytes": 663,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/01-DroneOps.PlanConfiguration.MissionActions/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/run.json",
+      "changed": true,
+      "original_sha256": "ba8cfe496674852ad64d9e20c7a83e0421ffb5d9e1d27d42c0cb9680ff2d0db4",
+      "public_sha256": "c0ab0da09d59f42450434460431ca767ee42ca512b8ed4c03aeb84f47609e821",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725579154327300/summary.json",
+      "changed": true,
+      "original_sha256": "17005e38a8a2bb3a5d23a344e718fb00e40e00d768f92a691b0170896877e5b4",
+      "public_sha256": "a39444b5ed09e70ca97eaa1a3d9addc270bfd72784b0054942e156d40ab274a6",
+      "original_bytes": 1496,
+      "public_bytes": 1428,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725579154327300/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/editor.log",
+      "changed": true,
+      "original_sha256": "5dd964a6a492b0987781ead78634d3317db80a18ebdb946542015b961417c1c9",
+      "public_sha256": "0435a44ca29869cdd4c0aad28af4133bcd371746d21b6cd9873d468f18e6ea47",
+      "original_bytes": 367839,
+      "public_bytes": 366149,
+      "categories": {
+        "account": 2,
+        "account-path": 30,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 45,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2686,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/index.json",
+      "changed": true,
+      "original_sha256": "94d361df359e504588e072de7a8b6d88fcfb01445e6b56c6a9210c66ba2b193a",
+      "public_sha256": "af88a038802ca7d11f0b24de7fd997a7bc6bde497b46d5b04e5252d10cd4cc3f",
+      "original_bytes": 7773,
+      "public_bytes": 7750,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 285,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/invocation.json",
+      "changed": true,
+      "original_sha256": "43dbe714202b29f09bce53515ff4216fbfae388f6b7e79b6b639194cb16a2558",
+      "public_sha256": "20ff974bf1f61836ca66fe3d6d370e66624dca509d7b7dfd414efbb324477b74",
+      "original_bytes": 1144,
+      "public_bytes": 974,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/result.json",
+      "changed": true,
+      "original_sha256": "059087f0d2e40cc0197a988bc24150387962d2a78c725ca0003dd255c722fdc9",
+      "public_sha256": "2b044a5c8c7c497c62eb543dcb7587434ba2a5823a835bd19b954d52d0e764a5",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/00-DroneOps.Figma.MapPresentation/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/editor.log",
+      "changed": true,
+      "original_sha256": "9491decbc8a7768f39a6f55594e35896df20ac705b75712ffd1de56b22575441",
+      "public_sha256": "7a7e7c3115a707313e1a778b7cf5eff3e948b414aac37c7c6be039d405ca0371",
+      "original_bytes": 325230,
+      "public_bytes": 323881,
+      "categories": {
+        "account": 2,
+        "account-path": 30,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2332,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/index.json",
+      "changed": true,
+      "original_sha256": "afe37c498ec181b719183a7f40b9cfd54356e15ec645bfcfb681277069aa53f7",
+      "public_sha256": "9ce97ec6ec9db5e8a2b513def888e54a5bfd0de6dd7d8fe0cb3cba96c9380a04",
+      "original_bytes": 1116,
+      "public_bytes": 1124,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/invocation.json",
+      "changed": true,
+      "original_sha256": "9c0cbf22501cae1ef7d5580e2a923cfd47669a36e2a89129d49d8429cf8cd930",
+      "public_sha256": "e81ccb657eacaf3d2683abb7a55b95d8817f028a6ca4a231769218fec29c2fdd",
+      "original_bytes": 1144,
+      "public_bytes": 974,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/result.json",
+      "changed": true,
+      "original_sha256": "90c045118553a6ad895bdf25264ac5de08daccfbeaef80db848f3502b91759bb",
+      "public_sha256": "115c631121563e7c44dba49df7d02a75850d50640db0e80d92bdcb0fa90ce6ff",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/01-DroneOps.Map.SelectionVideoAck/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/editor.log",
+      "changed": true,
+      "original_sha256": "ff3ac5fb923d97f4e0bd53b9bc4b96979c07d267ed94e8950c557fe9d72ed8c3",
+      "public_sha256": "e4dfd978ed916d1a25f727735132982d5a537ba286e247ebf5f8988cac9f7ab6",
+      "original_bytes": 335790,
+      "public_bytes": 334362,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2393,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/index.json",
+      "changed": true,
+      "original_sha256": "020122bf1feea5e0e92a2621b93f566560710efe69f66b55b36b5af1c3e40d06",
+      "public_sha256": "795b92f9839d136ea7f764b6bc9d3be14d9a5d155de9f7e6ab1a5e8ccb7c5b5e",
+      "original_bytes": 2265,
+      "public_bytes": 2255,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 6
+      },
+      "lines": 89,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/invocation.json",
+      "changed": true,
+      "original_sha256": "b778187dbe8e25f9372e86170b29e88a84ad431f5fd528cf6572ec37a028ad0c",
+      "public_sha256": "a42bd3d7c6e7bedeed896719361b54b7c6978d5af0102c87998c0cb465716e12",
+      "original_bytes": 1141,
+      "public_bytes": 971,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/result.json",
+      "changed": true,
+      "original_sha256": "f457da9f5bb81393ffe6d4e897de2b80e99c2463b5edc9010b43ee2e05e3a1a1",
+      "public_sha256": "0b46f4f46a124e6e4459d6ef21f816df67ae869423cd2066c7807cffa88135df",
+      "original_bytes": 1001,
+      "public_bytes": 967,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 33,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/02-DroneOps.Fleet.ManualTakeover/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/editor.log",
+      "changed": true,
+      "original_sha256": "4503847d6de86e85994848994a099da77fea10d52eac2f36d169821357dce275",
+      "public_sha256": "a598aeb831e764986dd2ee57a272f89bace6942cb4a7540a154ebd4aab13aa46",
+      "original_bytes": 353904,
+      "public_bytes": 352228,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 43,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2584,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/index.json",
+      "changed": true,
+      "original_sha256": "144ba9ebb2cf7b3595e4f374ec3dea75319ef31f0432811688a8761c28b9cd06",
+      "public_sha256": "d6b8034fb7d223559fc2927dbfedb548412b7e2ba1341a81e4d16f1455352679",
+      "original_bytes": 5565,
+      "public_bytes": 5573,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 201,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/invocation.json",
+      "changed": true,
+      "original_sha256": "57e162c7adf026abf01f2527b73be35bb59c65dbab2c2ebcadf731e8f2f9c1db",
+      "public_sha256": "19ddf7b2be315cc8ccd9f13a56e0ab96169f622df44cc002a99de3205d983720",
+      "original_bytes": 1123,
+      "public_bytes": 953,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/result.json",
+      "changed": true,
+      "original_sha256": "214569312fd89aa075fb9bf1917c8bfcd8ec003cfe956aff1803fbe980060385",
+      "public_sha256": "d9fcc49e04824a5460950245bcdcf4fe8e11f8eef73596edd7ac755deae1412b",
+      "original_bytes": 639,
+      "public_bytes": 605,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/03-DroneOps.Fleet.Workflow/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/run.json",
+      "changed": true,
+      "original_sha256": "676ee6aa829685e69f6e5f265d0425cb5873e4c6adf87096238d99c23b0c38ad",
+      "public_sha256": "bdcf744066a0c77400bbf052e26a42ba3196a2432f66be617f7e2aecbf73ea09",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792725587573004200/summary.json",
+      "changed": true,
+      "original_sha256": "1e6cfe7d9730a9297ca3c104fbc05a058f5aaa20e7751855f9ebf8d6940b9f9d",
+      "public_sha256": "1bd56fedf6139a5188681e69bc76d1fc337ab0ee11de990fcab80d2ae10776cd",
+      "original_bytes": 3203,
+      "public_bytes": 3067,
+      "categories": {
+        "repository-path": 4
+      },
+      "lines": 116,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792725587573004200/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/editor.log",
+      "changed": true,
+      "original_sha256": "fa4f05b75e500c6e8cad9796c9798bf1a74827b959fbbf4c493b9438b9d05ae9",
+      "public_sha256": "5c4b2a84b6357cf9512d5c524dec9f46e4ce9db5595181714d418ad8571b8c54",
+      "original_bytes": 367753,
+      "public_bytes": 366015,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 45,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2681,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/index.json",
+      "changed": true,
+      "original_sha256": "4e56bf2f8b898deb1c56744fb1053d28e2b40d8bae0f02228ae00103d427e5a8",
+      "public_sha256": "fb7648f1befd5570a84e67ba9c6ff20ba2ae541feace7f8ef766e050d55087d5",
+      "original_bytes": 7422,
+      "public_bytes": 7399,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 273,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/invocation.json",
+      "changed": true,
+      "original_sha256": "e6c3042fd387e482f4513c2307b419702c1ad38fc939b2323febe024bad53c7b",
+      "public_sha256": "192ec9ce3caecbd05597a76f0b7036f0d5017cd534c9e0b1ba888c73d4853ddf",
+      "original_bytes": 1144,
+      "public_bytes": 974,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/result.json",
+      "changed": true,
+      "original_sha256": "b47ccc6c378213ec2f49cd4315d1e094305a01313d05524fa72492d5420d7d8d",
+      "public_sha256": "8fffcdbad1280f336d79dc641520962235b44cce6485968580fad20c40c94c4b",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/00-DroneOps.Figma.MapPresentation/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/editor.log",
+      "changed": true,
+      "original_sha256": "129e0bb5255b91bdf3a0de9686112a44f0f6fe1355d5472b9a3f525a37d1c780",
+      "public_sha256": "31229707776dd720be7fc3307ea557c5484ce1a8eaccddaaac07dadec52b2df5",
+      "original_bytes": 325360,
+      "public_bytes": 323963,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2329,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/index.json",
+      "changed": true,
+      "original_sha256": "f3947dfc61e0882b3443e1a622195eb7013c4e628fff01b31a9253bd0fad234a",
+      "public_sha256": "9981fc828559088969d19a7e2f21df4c98ec193f7bcfe283ec87d5fdc679098d",
+      "original_bytes": 1116,
+      "public_bytes": 1124,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/invocation.json",
+      "changed": true,
+      "original_sha256": "167480a01efabf13e2d48c450b48cb5fba872bf9e9189d5b0d498b23ef050a2c",
+      "public_sha256": "be85488bf98c8f58af856415f660f281fffc83663280d5d5bd32c1fab1620cc6",
+      "original_bytes": 1144,
+      "public_bytes": 974,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/result.json",
+      "changed": true,
+      "original_sha256": "58c14121ba95a11de6667d34b4fcca9b0e76b4aedd4f80047c2888d8a8b0a7fb",
+      "public_sha256": "418d23acc5320799d8cbaac1bfe9a00009a9b1f0a54bd7e89264be9d397db7ea",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/01-DroneOps.Map.SelectionVideoAck/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/editor.log",
+      "changed": true,
+      "original_sha256": "46bb33064c7bfc87170e15a83fef5a86b1975aa8a468ec8160c14520b2e87a88",
+      "public_sha256": "4362a76fa886e92f9a321eb77281b548fa381a2170db0c8bb89e9342e9412b19",
+      "original_bytes": 335178,
+      "public_bytes": 333750,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2387,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/index.json",
+      "changed": true,
+      "original_sha256": "c7f260ab59125755936a2f1b3d9ba8f6ba9489331694e215fa20cb7fc27b9b8f",
+      "public_sha256": "0b40ca7a7561f033b89a22b255163a31f21010e8bc1cee40fbbc1c07cdf1438d",
+      "original_bytes": 2267,
+      "public_bytes": 2257,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 6
+      },
+      "lines": 89,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/invocation.json",
+      "changed": true,
+      "original_sha256": "5c7d1f67fd2aa5b71e02194a784ebdb4b66fd1056a349fe96dbdbd3993d831d3",
+      "public_sha256": "dd47ed88d046f997a688856fa2e2025e2497e8b27729f9b71d19759084c06a80",
+      "original_bytes": 1141,
+      "public_bytes": 971,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/result.json",
+      "changed": true,
+      "original_sha256": "50e9efbd85c36ac89391a0c1390e1db31e6a7e3e1652ff03ba285c6ac2464f14",
+      "public_sha256": "39a3e485a2b27bf1ca9f70d43c983431b5ff739d7a69aaa150884a3af9fdcd40",
+      "original_bytes": 1001,
+      "public_bytes": 967,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 33,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/02-DroneOps.Fleet.ManualTakeover/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/editor.log",
+      "changed": true,
+      "original_sha256": "bf4b15aa4895dedfdde1b541d857ef7716b579bb87a00ecb3f342cafcf0a3d60",
+      "public_sha256": "7886eed57480d76b62e9796509397fc67b87f5fb47cdbf64bf6a6c684bcd14e0",
+      "original_bytes": 353843,
+      "public_bytes": 352167,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 43,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2584,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/index.json",
+      "changed": true,
+      "original_sha256": "f317afc57b2a7cca6e78b78887eac2c5592cfbe950208a4bf14a8602fe32dbf3",
+      "public_sha256": "2b409129b3033424bc9733c9af6aaaad2af463fd043a10532bdbb9060f02d834",
+      "original_bytes": 5565,
+      "public_bytes": 5573,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 201,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/invocation.json",
+      "changed": true,
+      "original_sha256": "24a7bd6a1bba49f9e7621aa7c9254fccbb5b084affc3905fe73b3ed7698f8d21",
+      "public_sha256": "9cdf2d20b508819ddfb223b170bba27f12fe03e7aa2f267345471704081e462e",
+      "original_bytes": 1123,
+      "public_bytes": 953,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/result.json",
+      "changed": true,
+      "original_sha256": "12b67603175db915b1b9538fa996f757b4981284dd3c6470a51701a4456a7710",
+      "public_sha256": "8c7fa21a02870046bc055e59d68c5b19c1f53e11f6e466620d6f82b84cc6bae4",
+      "original_bytes": 639,
+      "public_bytes": 605,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/03-DroneOps.Fleet.Workflow/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/run.json",
+      "changed": true,
+      "original_sha256": "33bf9c219d53a4d74459d596ddde96bb24579eeb0957350c4bd38d668d64583f",
+      "public_sha256": "0763df64988cb9a3f93d169df7487626affe842ced76812c628138bdbb5294cc",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726717122728300/summary.json",
+      "changed": true,
+      "original_sha256": "ed5df2445dcd265a0f2b10c27aca06e3c839893a6e21fad6cd21fab491041ac2",
+      "public_sha256": "ea151d60308c9637e611147f4dc4374c2967efa32ab9b44347091f9b51ea2665",
+      "original_bytes": 3203,
+      "public_bytes": 3067,
+      "categories": {
+        "repository-path": 4
+      },
+      "lines": 116,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726717122728300/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/editor.log",
+      "changed": true,
+      "original_sha256": "8ce2d1e25240190ed2524629202128a6b54029b533e77187b07987ead1968712",
+      "public_sha256": "fd8dc8dc024148ad46af43f69a6bd384f0012f7af6b979d3fd73aea2cdabcb1b",
+      "original_bytes": 352358,
+      "public_bytes": 350947,
+      "categories": {
+        "account": 2,
+        "account-path": 30,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 36,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2568,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/index.json",
+      "changed": true,
+      "original_sha256": "ed35ef41bfd14b9a6b183b819b055509330bf0a4a75204c1446e3dc93fd1ccc5",
+      "public_sha256": "1675499b4ff397bd97ebe540adab586d2f0c784b0ceeace6a948d623da9ebcb9",
+      "original_bytes": 7333,
+      "public_bytes": 7310,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 249,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/invocation.json",
+      "changed": true,
+      "original_sha256": "7d277bcfddfcccbdb01231e196c77d52aa48635312c42ebb5efca4d7fc33eca2",
+      "public_sha256": "795f2422d6fd2eba91e699446218d0d8f6c9a078974b3852bff0f45efa94aa5d",
+      "original_bytes": 1185,
+      "public_bytes": 1015,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/mission-fixture.log",
+      "changed": false,
+      "original_sha256": "107bce38e59e0dd6f4c275fcd9755bfcc3e179410697f3c2f9e6a905a6496fc4",
+      "public_sha256": "107bce38e59e0dd6f4c275fcd9755bfcc3e179410697f3c2f9e6a905a6496fc4",
+      "original_bytes": 107,
+      "public_bytes": 107,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/result.json",
+      "changed": true,
+      "original_sha256": "9e48a75f4f2e2d2066d0858693f0432fbdcc020164700195b219b82a4fe492f5",
+      "public_sha256": "23d80f16f0d9deba79137922d64c33ebbd0038aa7c247f8b40df281b84d74f8e",
+      "original_bytes": 697,
+      "public_bytes": 663,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726722626697200/00-DroneOps.PlanConfiguration.MissionActions/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/run.json",
+      "changed": true,
+      "original_sha256": "7719121e21ea778bb29ecccf0cbff1d7a8ba1ecd1805c7970ef2723642c85cca",
+      "public_sha256": "b76051b2a01aa9a6de2e7901aadd7fc4ca1d608c60e50b46236b82028248c413",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726722626697200/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726722626697200/summary.json",
+      "changed": true,
+      "original_sha256": "b93f4bb2f9d9f851048b08777eff089984eee65f959de8a1ed364b22ba446836",
+      "public_sha256": "4fc25d04b8f92621dfe7d5eae8714f3842e37d797de6dacac4794383bb2d915f",
+      "original_bytes": 757,
+      "public_bytes": 723,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 29,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726722626697200/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/editor.log",
+      "changed": true,
+      "original_sha256": "82394fcc4161c055f88ab0c740817725ed5b0cb187ca08a083d49563dcb0ae90",
+      "public_sha256": "0b4a94f21986412c11066d5d12195f8870bde2e4fc3ab4ae2a85676494559420",
+      "original_bytes": 340882,
+      "public_bytes": 339454,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2469,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/index.json",
+      "changed": true,
+      "original_sha256": "e9dc56d567553ae55447434e7951d47ca932c4c673d58408e5a24a2cc0fa15ed",
+      "public_sha256": "48382142e3158a340d4547db91115fa8edd164219ae243d16bf5cd08a50335c4",
+      "original_bytes": 2226,
+      "public_bytes": 2234,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 81,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/invocation.json",
+      "changed": true,
+      "original_sha256": "94e13cbc71f95fcfec0804408a65eb4db235f2a32b3d7bb68c1fbdcd333d62f7",
+      "public_sha256": "4bcc380742613773a7b31eb9d360e884caa621f4074bad83143cbbda6f48ffb9",
+      "original_bytes": 1170,
+      "public_bytes": 1000,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/result.json",
+      "changed": true,
+      "original_sha256": "84651adbaf538ec5aa7650b35b150913ba50719ea66df5ee247a1a7f010dd0db",
+      "public_sha256": "671a3d3b6c641e27fbc71c81681f7f26e0b35b8569e3043c1a30c81faa366ba9",
+      "original_bytes": 682,
+      "public_bytes": 648,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/00-DroneOps.PlanConfiguration.Workspace/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/editor.log",
+      "changed": true,
+      "original_sha256": "b4f2015967c5e7fa934f4d9251cc3ab0aa676c458de98b69f793cd15edad7145",
+      "public_sha256": "4a05d1f092b5025f70a11b4887050afe4adf61d5117348ec6b7e50aece9bcbeb",
+      "original_bytes": 325200,
+      "public_bytes": 323803,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2323,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/index.json",
+      "changed": true,
+      "original_sha256": "ef67031a25dd667763b0f3f1dc0cadfb633cf30ade6d4a5016250bf6c69ca099",
+      "public_sha256": "314f5e65e3cfeb90af10b8f13241579e2a2514c18f6b3305d2c49f5cd5a6c8b0",
+      "original_bytes": 1128,
+      "public_bytes": 1136,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/invocation.json",
+      "changed": true,
+      "original_sha256": "d39089be0cab72904b362fc4b105c8a56b7a2a777d73cc9f55ff5074c2ab2ec9",
+      "public_sha256": "a4de8fb17611e199dbafa6b72c72f93166743741d3f5ab519f81a09977950179",
+      "original_bytes": 1191,
+      "public_bytes": 1021,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/result.json",
+      "changed": true,
+      "original_sha256": "78f1bf4c3e4795d8ce780e8d62d1a8b016ccfb6c8fd02ddcc7227621ad6c8182",
+      "public_sha256": "d5fabb5f9f4db701c89a39c1d9961fff320497e0f9be13bc7aa542439c9c9a43",
+      "original_bytes": 703,
+      "public_bytes": 669,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/01-DroneOps.PlanConfiguration.DeploymentIntent/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/run.json",
+      "changed": true,
+      "original_sha256": "5dccd9e62ebba92ffdc3448ed3da0e8a83ca8695cf002941f38407e1fb1dba92",
+      "public_sha256": "4084030ff33d14e815b2ed6a346d49989ee001142c04c3ed49d9ca3ffed0ef87",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792726947021689300/summary.json",
+      "changed": true,
+      "original_sha256": "b70d31c3270d59f1f91d067c900852a3c6d773b75888ce1e25d05f8f289f80cb",
+      "public_sha256": "59c5a5a6c87f1b3e1c95c4b611728f4cd2031c6e6b9d7d2871f8e90fd47ce676",
+      "original_bytes": 1502,
+      "public_bytes": 1434,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792726947021689300/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/editor.log",
+      "changed": true,
+      "original_sha256": "0838d57662530d09497e5a98e82956208cfb84352b6f047ace2d2aeff8cead90",
+      "public_sha256": "94f374dc347e61a433b99c465563756610594195c8b23eb4af5ee4233c876703",
+      "original_bytes": 607595,
+      "public_bytes": 602876,
+      "categories": {
+        "account": 2,
+        "account-path": 37,
+        "google-api-key": 128,
+        "jwt": 2,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 48,
+        "sensitive-url-query": 128,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 4206,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/index.json",
+      "changed": true,
+      "original_sha256": "09c19dea842f3bbb46d2c021609eb6912da2c1fc213ad7ab7bf62a3fee32e894",
+      "public_sha256": "19d2986c31cd6eace549d22c8a1e2f93fa2e70d15ba9e5ae417722a6380e9f90",
+      "original_bytes": 234562,
+      "public_bytes": 232963,
+      "categories": {
+        "google-api-key": 64,
+        "jwt": 1,
+        "machine": 1,
+        "repository-path": 5,
+        "sensitive-url-query": 64,
+        "ue-instance": 3
+      },
+      "lines": 7185,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/invocation.json",
+      "changed": true,
+      "original_sha256": "c8ac6ed1faea3cc84094d407a8a3ec495f058affe470ab010b6db066841c6ca8",
+      "public_sha256": "15761e4d8a834c9500bbe8284e38c3ee540285d30bc07dbeaedc5bfad882c241",
+      "original_bytes": 1114,
+      "public_bytes": 944,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 20,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/result.json",
+      "changed": true,
+      "original_sha256": "ec64bc8cb1741a5c40e220b606f092b03645080143c8945c971a8749a5779cea",
+      "public_sha256": "29057932586b105a0638269533883aae6153ae284ee342270dafe1c2728e3fb1",
+      "original_bytes": 638,
+      "public_bytes": 604,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792729169469080600/00-DroneOps.Map.StartupVisibility/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/run.json",
+      "changed": true,
+      "original_sha256": "40126eedda117e51ca5156b37c61080f5cc178c93e43fdd6d7cdfa542949c532",
+      "public_sha256": "3c029f81bc42042892aaaa4608376a9c2558812217b240d5df63c5c1446c0b65",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792729169469080600/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792729169469080600/summary.json",
+      "changed": true,
+      "original_sha256": "7b95d223b6dfe5f59a4069f4ffe4c16dd0ee0813343f0b755313ecb7984cbb2f",
+      "public_sha256": "539e50744d2a25c80cdc21fd72e20acdc0a8a42facbe38687143c0dc7945e7d3",
+      "original_bytes": 698,
+      "public_bytes": 664,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 29,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792729169469080600/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/editor.log",
+      "changed": true,
+      "original_sha256": "a5002c1a9aed744b56a2de17fc7d7136acc0f29bf82ae7850bed925e6f10a2cc",
+      "public_sha256": "81ad55bf4c4fb21f0b8fd9014e38b4edeadad9527fb89193acf6253ddd5b8a8a",
+      "original_bytes": 357672,
+      "public_bytes": 355996,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 43,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2613,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/index.json",
+      "changed": true,
+      "original_sha256": "743bf6de67dd136732a47b4a7f29253ff4698740f581839d391017a977f97f0e",
+      "public_sha256": "97cf73b238b38f051a4f8169f4732a7adddea9f24037d6f03572c13a41c93c57",
+      "original_bytes": 5974,
+      "public_bytes": 5982,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 213,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/invocation.json",
+      "changed": true,
+      "original_sha256": "b766adf585b807f99d01cefc6dbe7e9d5bdf3843cd7e4cdb11cc8b54edb92bd9",
+      "public_sha256": "9ffddd0828b3e447deb350c58555407622ae42b9b4c5078416279d6b839bfe57",
+      "original_bytes": 1144,
+      "public_bytes": 974,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/result.json",
+      "changed": true,
+      "original_sha256": "b7e6ab58ddfc8cbdcce6958fc98d4a7e2a41ed187ea7e142e752ae496a5b05e0",
+      "public_sha256": "8a858250c65641776ae69e50837c5f98c0bd60dcd140c9c9b8768620f7052f61",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/00-DroneOps.Fleet.PanelVisibility/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/editor.log",
+      "changed": true,
+      "original_sha256": "e352ea84e0a0c172b018dc617459c00d2ea0c25a343bbbe3f169345208e3d67e",
+      "public_sha256": "2c4d4d6850b2ed95fbe7066fb0d40a450700b463e76d9e668932d2bebd799e52",
+      "original_bytes": 361348,
+      "public_bytes": 359641,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 44,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2656,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/index.json",
+      "changed": true,
+      "original_sha256": "f36ce9dbeb247c04c07a3429fa7d43b8b4427b123def1092945759017bea49ae",
+      "public_sha256": "9789067e79f87602def3ce54dfb8793a6779b166b4d209fdb0738b9c3fd2adfd",
+      "original_bytes": 7955,
+      "public_bytes": 7932,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 285,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/invocation.json",
+      "changed": true,
+      "original_sha256": "b865fc3dae6d6e55a65f8603d9def793a6f0a47dcdceea4e9d441747ac5bbe7a",
+      "public_sha256": "84956ee93685f0c2045ecc25be18b6f3c2ea28e788719f0fea207c16516315a8",
+      "original_bytes": 1132,
+      "public_bytes": 962,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/result.json",
+      "changed": true,
+      "original_sha256": "03adcb75a99ef01d259b48483c635c6ff3f48c7c1707d18b46ba700cc7bbc205",
+      "public_sha256": "b8f6b0ddf3e82c9dc28230d6dee39a4fc60bcc453e68099e62def12d86bf9da1",
+      "original_bytes": 648,
+      "public_bytes": 614,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/01-DroneOps.Fleet.Reselection/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/editor.log",
+      "changed": true,
+      "original_sha256": "8b7ff1b2c058083d3f545c2c0306806db13a353d97422c73f5a0a76201d83247",
+      "public_sha256": "dadd0cd1769e11966f432d4e58b7c3224bacb622891e78582e835215f5949334",
+      "original_bytes": 355298,
+      "public_bytes": 353591,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 44,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2589,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/index.json",
+      "changed": true,
+      "original_sha256": "7c0959e5d80924415c19847e1105b3c1f8ca2b4fc5b24ce7262991531df47a65",
+      "public_sha256": "4e6fb51cff8defb8da6d0a03e3553b44ec029e929b88bf7bf4d89ce8aba04681",
+      "original_bytes": 6919,
+      "public_bytes": 6896,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 249,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/invocation.json",
+      "changed": true,
+      "original_sha256": "bdb2009068ef825c5967b7abfdc303123f26f0e84fa4acc326f0150a7e3550aa",
+      "public_sha256": "22d940655f77360c4d0b5c2768c28388abc8e2ec464a2da70dd582c75a9df155",
+      "original_bytes": 1171,
+      "public_bytes": 1001,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/result.json",
+      "changed": true,
+      "original_sha256": "37aaf1c94efe71165a97b4978d1df7a0b2eba7942d84eb84a56e5ec4c02e2d6b",
+      "public_sha256": "1a44b9852c9616a6af5f9875b77e9407ced97795c650cc11b3b2aa5aa45862bc",
+      "original_bytes": 687,
+      "public_bytes": 653,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/02-DroneOps.Fleet.ThreeDimensionalWorkflow/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/editor.log",
+      "changed": true,
+      "original_sha256": "c32b09c91960025bf992f7f693c18031d1fc2c27a624f01841d4775b3486b4fd",
+      "public_sha256": "9cf257f527c59500ab6763de8050b7677cfa84f1191f918a78f0cc8476cce6bf",
+      "original_bytes": 367083,
+      "public_bytes": 365345,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 45,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2678,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/index.json",
+      "changed": true,
+      "original_sha256": "031fac6ba7b19e45a99afc7b47196cb64d1f2ec922492ad8d8be0125f3644ba5",
+      "public_sha256": "7cb273e012ba7944e4550b89aa8acde5ca02e1ff6262e4f9107047b67bf7a254",
+      "original_bytes": 7773,
+      "public_bytes": 7750,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 285,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/invocation.json",
+      "changed": true,
+      "original_sha256": "9cd5f371b3169240d0d8458e7c5326d3c2fa1e985edfa581c53a5c5422619de3",
+      "public_sha256": "d405d7e04421e2aaea6aea10990911b5a304feb03c8636553b12755ba336394a",
+      "original_bytes": 1144,
+      "public_bytes": 974,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/result.json",
+      "changed": true,
+      "original_sha256": "c8047b5cd9787c06cd38b5d31bdcd508e3b6f187b2974edcecf975df32e7c832",
+      "public_sha256": "83876609ef586edc7f85970c65a9cc3a6fcde1a02f4dd83aae6688feba80044b",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/03-DroneOps.Figma.MapPresentation/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/run.json",
+      "changed": true,
+      "original_sha256": "c86a6902383f1390cbdd79252f208a3ff7e182c62869dd2f5dbea5c18b0ffdda",
+      "public_sha256": "eb9a5c3e108ebf316588b862757cefd5fa81508f779a43ca3a3a62e5b0ea80c7",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792732385635639200/summary.json",
+      "changed": true,
+      "original_sha256": "de940fc429832f0191b21d660c795ba72031fc5b9c99d576bad01e92b312f472",
+      "public_sha256": "bded37f2ad5d8ba161d465a0e710e824d7bcb21b0959cd0cf04f2c1838c3ebff",
+      "original_bytes": 2886,
+      "public_bytes": 2750,
+      "categories": {
+        "repository-path": 4
+      },
+      "lines": 110,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792732385635639200/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/editor.log",
+      "changed": true,
+      "original_sha256": "cebff6229d6e7d13229eb449bd84508d1a7a9a702dfb6f4fa8659291ea70774e",
+      "public_sha256": "748ae29d825bf261d023d331bc2252008645fc37074190dced11f136392ef3f3",
+      "original_bytes": 315952,
+      "public_bytes": 314572,
+      "categories": {
+        "account": 2,
+        "account-path": 30,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 35,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2246,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/index.json",
+      "changed": true,
+      "original_sha256": "948c47c8a2623d12e856b5c0d4c06d7b40ce23a8fa2b3e549537ef0d80905cd0",
+      "public_sha256": "5cc5900224fc28464b7f2ae78105455430a77946542ca86452ed9d2667321bea",
+      "original_bytes": 2251,
+      "public_bytes": 2241,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 6
+      },
+      "lines": 89,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/invocation.json",
+      "changed": true,
+      "original_sha256": "c783bdebecb96332584edb9f890eed75c2b8e756373c820dca91c9821a49eacb",
+      "public_sha256": "61581ec603228c83c96d3223a65e1fd155595c8f95f774a1697a0e44870b45f8",
+      "original_bytes": 1158,
+      "public_bytes": 988,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 22,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/result.json",
+      "changed": true,
+      "original_sha256": "22645138dfd1a4fc4a9d9776943cc64c6445ec753a16eba50e13b10e1de202e5",
+      "public_sha256": "374747f982afcb26483ef225f270a8c5dbacb5f1fbe88c170710b9a2f89f2848",
+      "original_bytes": 1001,
+      "public_bytes": 967,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 33,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792737024785819000/00-DroneOps.Fleet.ManualTakeover/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/run.json",
+      "changed": true,
+      "original_sha256": "3212899ba2e2d9b14349eb9585b824e512fae67641f3c777442854299f3f51c0",
+      "public_sha256": "f04b1f0bcd624caea16421effc2f9d4478f40f8ec8965efc027239eaaa84e248",
+      "original_bytes": 526,
+      "public_bytes": 492,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792737024785819000/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1792737024785819000/summary.json",
+      "changed": true,
+      "original_sha256": "adb42c5bddc95a2ec2c987180dcae2adaf3a0cc4d3dd7dc3bd996e92b610f5c3",
+      "public_sha256": "9208dacbc5a587c0d865abfac4e1b9d921ea2f70ae7fc017c9e35755313cd90f",
+      "original_bytes": 1073,
+      "public_bytes": 1039,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 35,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261023T064401.368303Z/Evidence/PlanConfiguration/verification-1792737024785819000/summary.json"
+    }
+  ]
+}

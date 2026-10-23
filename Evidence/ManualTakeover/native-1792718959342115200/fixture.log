@@ -1,0 +1,45 @@
+{
+  "plan": "plan-1",
+  "mission": "mission-2",
+  "members": [
+    "UAV-01",
+    "UAV-02"
+  ],
+  "route": {
+    "pathId": 1,
+    "bClosedLoop": false,
+    "waypoints": [
+      {
+        "sequence": 1,
+        "latitude": 39.9807,
+        "longitude": 116.34704500000001,
+        "altitude": 30,
+        "altitude_reference": "Ellipsoid",
+        "segmentSpeed": 2,
+        "waitTime": 0
+      },
+      {
+        "sequence": 2,
+        "latitude": 39.9887,
+        "longitude": 116.34704500000001,
+        "altitude": 30,
+        "altitude_reference": "Ellipsoid",
+        "segmentSpeed": 2,
+        "waitTime": 0
+      }
+    ]
+  },
+  "ids": {
+    "plan_id": "plan-1",
+    "mission_id": "mission-2"
+  },
+  "execution": "execution-7",
+  "group": "group-6",
+  "executions": {
+    "UAV-01": "execution-7",
+    "UAV-02": "execution-8"
+  },
+  "synthetic_preparation": true,
+  "native_verified": false,
+  "backend_left_running": true
+}

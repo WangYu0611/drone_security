@@ -1,0 +1,89 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_a42ef8bf6203>",
+			"instanceName": "<UE_INSTANCE_80bf4f12c482>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.23-03.22.11",
+	"succeeded": 4,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 1.6891028881072998,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "Eligibility",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.Eligibility",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_a42ef8bf6203>"
+			],
+			"duration": 0.016685798764228821,
+			"dateTime": "2026.10.23-03.22.09",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "Localization",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.Localization",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_a42ef8bf6203>"
+			],
+			"duration": 1.54559326171875,
+			"dateTime": "2026.10.23-03.22.09",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "PreviewAndRequest",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_a42ef8bf6203>"
+			],
+			"duration": 0.11134299635887146,
+			"dateTime": "2026.10.23-03.22.11",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RouteOwnership",
+			"fullTestPath": "DroneOps.Fleet.ManualTakeover.RouteOwnership",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_a42ef8bf6203>"
+			],
+			"duration": 0.015480697154998779,
+			"dateTime": "2026.10.23-03.22.11",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

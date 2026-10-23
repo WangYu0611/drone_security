@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-23",
+  "repository": "https://github.com/WangYu0611/drone_security.git",
+  "base_commit": "4ca4f18",
+  "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+  "ue_module_sha256": "1c342e8c0bf01110ff5c8b4c29cd57d2d8dd65f05874c6883ec412ca9e9107b5",
+  "backend_suite": {"discovered": 199, "completed": 199, "passed": 197, "failed": 2, "known_failure_names": ["SegmentDistanceTest.Crossing", "AssemblyPlannerTest.ConflictHeightSeparation"], "evidence": "Evidence/EditReturnVideo/20261023-105421/acceptance.json"},
+  "manual_takeover_protocol": {"expected": 16, "completed": 16, "passed": 16, "pass": true, "evidence": "Evidence/ManualTakeover/protocol-1792736990601809200/run.json"},
+  "edit_return_video_protocol": {"expected": 13, "completed": 13, "passed": 13, "pass": true, "evidence": "Evidence/EditReturnVideo/protocol-1792726708818955700/run.json"},
+  "box_selection_rhi": {"discovered": 4, "completed": 4, "passed": 4, "failed": 0, "evidence": "Evidence/BoxSelectButton/20261023/acceptance.json"},
+  "manual_takeover_components": {"rendering": "NullRHI", "discovered": 4, "completed": 4, "passed": 4, "failed": 0, "warnings": 0, "evidence": "Evidence/PlanConfiguration/verification-1792737024785819000/run.json"},
+  "grass_startup": {"configuration_and_backend_checks_passed": 12, "rhi_completed": 1, "rhi_passed": 0, "rhi_failed": 1, "limitation": "Google tile timeouts retained; no 99 percent loading acceptance", "evidence": "Evidence/GrassStartup/20261023/acceptance.json"},
+  "cache": {"max_cache_items": 131072, "previous_max_cache_items": 16384, "requests_per_cache_prune": 10000, "reflected_assertions_passed": true, "commandlet_exit_code": 1, "commandlet_success": false, "benchmark_performed": false, "evidence": "Evidence/CesiumCacheCapacity/20261023/acceptance.json"},
+  "backend_restarted_for_delivery": false,
+  "cache_database_accessed_for_delivery": false,
+  "all_checks_green": false,
+  "real_hardware_verified": false,
+  "real_camera_playback_verified": false,
+  "excluded_local_changes": [".vsconfig", "UE5DroneControl.sln", "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset"],
+  "documentation": "Docs/Delivery-20261023.md"
+}

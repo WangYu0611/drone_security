@@ -1,0 +1,757 @@
+{
+  "version": 24,
+  "next_id": 12,
+  "plans": {
+    "plan-1": {
+      "id": "plan-1",
+      "name": "Edit return and redeploy regression",
+      "description": "",
+      "status": "DEPLOYED",
+      "content_revision": 9,
+      "review": {
+        "content_revision": 9,
+        "reviewed_at": 1792725187.2760568,
+        "reviewed_by": "TAKEOVER-QA-Command"
+      },
+      "version": 16,
+      "created_at": 1792725187.0997472,
+      "updated_at": 1792725187.2819383,
+      "mission_ids": [
+        "mission-2",
+        "mission-3"
+      ],
+      "workflow_step": "TaskConfig",
+      "deployment": null,
+      "previous_deployment_id": "deployment-8",
+      "validation": {
+        "ready": true,
+        "issues": [],
+        "mission_count": 2,
+        "assigned_count": 3,
+        "routes_ready": 2,
+        "validated_content_revision": 9
+      },
+      "deployment_id": "deployment-11"
+    }
+  },
+  "missions": {
+    "mission-2": {
+      "id": "mission-2",
+      "plan_id": "plan-1",
+      "name": "Formation task",
+      "assigned_uav_id": "UAV-01",
+      "route_id": "route-5",
+      "status": "DEPLOYED",
+      "assigned_uav_ids": [
+        "UAV-01",
+        "UAV-02"
+      ],
+      "formation": "Line",
+      "spacing_m": 19.59699520600652
+    },
+    "mission-3": {
+      "id": "mission-3",
+      "plan_id": "plan-1",
+      "name": "Independent safe task",
+      "assigned_uav_id": "UAV-04",
+      "route_id": "route-7",
+      "status": "DEPLOYED",
+      "assigned_uav_ids": [
+        "UAV-04"
+      ],
+      "formation": "Line",
+      "spacing_m": 3
+    }
+  },
+  "paths": {
+    "route-5": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.9807,
+          "longitude": 116.347145,
+          "altitude": 30,
+          "altitude_reference": "Ellipsoid",
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.9811,
+          "longitude": 116.347145,
+          "altitude": 30,
+          "altitude_reference": "Ellipsoid",
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-5",
+      "revision": 3
+    },
+    "route-7": {
+      "pathId": 1,
+      "bClosedLoop": false,
+      "waypoints": [
+        {
+          "sequence": 1,
+          "latitude": 39.9807,
+          "longitude": 116.34772,
+          "altitude": 30,
+          "altitude_reference": "Ellipsoid",
+          "segmentSpeed": 5,
+          "waitTime": 0
+        },
+        {
+          "sequence": 2,
+          "latitude": 39.981,
+          "longitude": 116.34772,
+          "altitude": 30,
+          "altitude_reference": "Ellipsoid",
+          "segmentSpeed": 5,
+          "waitTime": 0
+        }
+      ],
+      "closedRoute": false,
+      "route_id": "route-7",
+      "revision": 1
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1792725187.0997562,
+      "event_type": "PLAN_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Security plan created: Edit return and redeploy regression",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1792725187.0997696,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Default task created",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1792725187.1095846,
+      "event_type": "MISSION_CREATED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Independent safe task",
+        "uav_id": null
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Mission created: Independent safe task",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1792725187.118416,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "UAV assignment updated",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1792725187.1244984,
+      "event_type": "UAV_ASSIGNED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Independent safe task",
+        "uav_id": "UAV-04"
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "UAV assignment updated",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1792725187.1332452,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1792725187.1391575,
+      "event_type": "ROUTE_CREATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Formation task",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1792725187.1471567,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Independent safe task",
+        "uav_id": "UAV-04"
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Route editing started",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1792725187.153064,
+      "event_type": "ROUTE_CREATED",
+      "params": {
+        "target_id": "mission-3",
+        "mission_name": "Independent safe task",
+        "uav_id": "UAV-04"
+      },
+      "category": "MISSION",
+      "target_id": "mission-3",
+      "message": "Route saved: Independent safe task",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 10,
+      "timestamp": 1792725187.1585884,
+      "event_type": "PLAN_VALIDATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Configuration checked",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 11,
+      "timestamp": 1792725187.158591,
+      "event_type": "PLAN_REVIEW_READY",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Pre-deployment check ready",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 12,
+      "timestamp": 1792725187.1642883,
+      "event_type": "PLAN_REVIEWED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Current configuration reviewed",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 13,
+      "timestamp": 1792725187.170812,
+      "event_type": "DEPLOYMENT_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Deployment snapshot created",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 14,
+      "timestamp": 1792725187.170816,
+      "event_type": "PLAN_DEPLOYED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Deployed. Execution has not started.",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 15,
+      "timestamp": 1792725187.1865597,
+      "event_type": "PLAN_REOPENED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Existing plan reopened for editing",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 16,
+      "timestamp": 1792725187.1948507,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 17,
+      "timestamp": 1792725187.2000172,
+      "event_type": "ROUTE_UPDATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Formation task",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 18,
+      "timestamp": 1792725187.2058182,
+      "event_type": "PLAN_VALIDATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Configuration checked",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 19,
+      "timestamp": 1792725187.2483625,
+      "event_type": "ROUTE_EDIT_STARTED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route editing started",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 20,
+      "timestamp": 1792725187.2553504,
+      "event_type": "ROUTE_UPDATED",
+      "params": {
+        "target_id": "mission-2",
+        "mission_name": "Formation task",
+        "uav_id": "UAV-01"
+      },
+      "category": "MISSION",
+      "target_id": "mission-2",
+      "message": "Route saved: Formation task",
+      "source": "TAKEOVER-QA-Map"
+    },
+    {
+      "sequence": 21,
+      "timestamp": 1792725187.2665448,
+      "event_type": "PLAN_VALIDATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Configuration checked",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 22,
+      "timestamp": 1792725187.2665482,
+      "event_type": "PLAN_REVIEW_READY",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Pre-deployment check ready",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 23,
+      "timestamp": 1792725187.276059,
+      "event_type": "PLAN_REVIEWED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Current configuration reviewed",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 24,
+      "timestamp": 1792725187.2819316,
+      "event_type": "DEPLOYMENT_CREATED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Deployment snapshot created",
+      "source": "TAKEOVER-QA-Command"
+    },
+    {
+      "sequence": 25,
+      "timestamp": 1792725187.2819345,
+      "event_type": "PLAN_DEPLOYED",
+      "params": {
+        "target_id": "plan-1",
+        "plan_name": "Edit return and redeploy regression"
+      },
+      "category": "PLAN",
+      "target_id": "plan-1",
+      "message": "Deployed. Execution has not started.",
+      "source": "TAKEOVER-QA-Command"
+    }
+  ],
+  "deployments": {
+    "deployment-8": {
+      "id": "deployment-8",
+      "plan_id": "plan-1",
+      "content_revision": 6,
+      "deployed_at": 1792725187.1707966,
+      "deployed_by": "TAKEOVER-QA-Command",
+      "reviewed_by": "TAKEOVER-QA-Command",
+      "reviewed_at": 1792725187.1642864,
+      "snapshot": {
+        "plan": {
+          "id": "plan-1",
+          "name": "Edit return and redeploy regression",
+          "description": "",
+          "status": "DEPLOYED",
+          "content_revision": 6,
+          "review": {
+            "content_revision": 6,
+            "reviewed_at": 1792725187.1642864,
+            "reviewed_by": "TAKEOVER-QA-Command"
+          },
+          "version": 8,
+          "created_at": 1792725187.0997472,
+          "updated_at": 1792725187.164292,
+          "mission_ids": [
+            "mission-2",
+            "mission-3"
+          ],
+          "workflow_step": "TaskConfig",
+          "validation": {
+            "ready": true,
+            "issues": [],
+            "mission_count": 2,
+            "assigned_count": 3,
+            "routes_ready": 2,
+            "validated_content_revision": 6
+          },
+          "deployment_id": "deployment-8"
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Formation task",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-5",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 19.59699520600652
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Independent safe task",
+            "assigned_uav_id": "UAV-04",
+            "route_id": "route-7",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-04"
+            ],
+            "formation": "Line",
+            "spacing_m": 3
+          }
+        },
+        "paths": {
+          "route-5": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347145,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.981,
+                "longitude": 116.347145,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-5",
+            "revision": 1
+          },
+          "route-7": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.34772,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.981,
+                "longitude": 116.34772,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-7",
+            "revision": 1
+          }
+        }
+      }
+    },
+    "deployment-11": {
+      "id": "deployment-11",
+      "plan_id": "plan-1",
+      "content_revision": 9,
+      "deployed_at": 1792725187.2819228,
+      "deployed_by": "TAKEOVER-QA-Command",
+      "reviewed_by": "TAKEOVER-QA-Command",
+      "reviewed_at": 1792725187.2760568,
+      "snapshot": {
+        "plan": {
+          "id": "plan-1",
+          "name": "Edit return and redeploy regression",
+          "description": "",
+          "status": "DEPLOYED",
+          "content_revision": 9,
+          "review": {
+            "content_revision": 9,
+            "reviewed_at": 1792725187.2760568,
+            "reviewed_by": "TAKEOVER-QA-Command"
+          },
+          "version": 15,
+          "created_at": 1792725187.0997472,
+          "updated_at": 1792725187.276062,
+          "mission_ids": [
+            "mission-2",
+            "mission-3"
+          ],
+          "workflow_step": "TaskConfig",
+          "deployment": null,
+          "previous_deployment_id": "deployment-8",
+          "validation": {
+            "ready": true,
+            "issues": [],
+            "mission_count": 2,
+            "assigned_count": 3,
+            "routes_ready": 2,
+            "validated_content_revision": 9
+          },
+          "deployment_id": "deployment-11"
+        },
+        "missions": {
+          "mission-2": {
+            "id": "mission-2",
+            "plan_id": "plan-1",
+            "name": "Formation task",
+            "assigned_uav_id": "UAV-01",
+            "route_id": "route-5",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-01",
+              "UAV-02"
+            ],
+            "formation": "Line",
+            "spacing_m": 19.59699520600652
+          },
+          "mission-3": {
+            "id": "mission-3",
+            "plan_id": "plan-1",
+            "name": "Independent safe task",
+            "assigned_uav_id": "UAV-04",
+            "route_id": "route-7",
+            "status": "DEPLOYED",
+            "assigned_uav_ids": [
+              "UAV-04"
+            ],
+            "formation": "Line",
+            "spacing_m": 3
+          }
+        },
+        "paths": {
+          "route-5": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.347145,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.9811,
+                "longitude": 116.347145,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-5",
+            "revision": 3
+          },
+          "route-7": {
+            "pathId": 1,
+            "bClosedLoop": false,
+            "waypoints": [
+              {
+                "sequence": 1,
+                "latitude": 39.9807,
+                "longitude": 116.34772,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              },
+              {
+                "sequence": 2,
+                "latitude": 39.981,
+                "longitude": 116.34772,
+                "altitude": 30,
+                "altitude_reference": "Ellipsoid",
+                "segmentSpeed": 5,
+                "waitTime": 0
+              }
+            ],
+            "closedRoute": false,
+            "route_id": "route-7",
+            "revision": 1
+          }
+        }
+      }
+    }
+  },
+  "edit_sessions": {},
+  "executions": {},
+  "execution_version": 0,
+  "execution_requests": {},
+  "deleted_plans": {},
+  "configuration_session": null,
+  "mock_execution": {
+    "simulation": true,
+    "default_speed_mps": 8,
+    "safety_separation_m": 1.5,
+    "uavs": {
+      "UAV-01": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34703,
+          "altitude": 30
+        }
+      },
+      "UAV-02": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34726,
+          "altitude": 30
+        }
+      },
+      "UAV-03": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34749,
+          "altitude": 30
+        }
+      },
+      "UAV-04": {
+        "home_position": {
+          "latitude": 39.9807,
+          "longitude": 116.34772,
+          "altitude": 30
+        }
+      }
+    }
+  },
+  "execution_adapter": "Mock"
+}

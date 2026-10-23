@@ -1,0 +1,56 @@
+{
+  "recorded_at_utc": "2026-10-23T03:40:01.483591+00:00",
+  "evidence_kind": "Backend gtest; no native UI or physical flight claim",
+  "target_filter": "PlanLifecycle.ConflictingReeditCanExitCorrectAndRedeploySamePlan:GuardedDeployment.*",
+  "targeted": {
+    "discovered": 9,
+    "completed": 9,
+    "passed": 9,
+    "failed": 0,
+    "disabled": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "time_seconds": 0.04,
+    "failure_names": [],
+    "xml": "backend-targeted-final.xml",
+    "log": "backend-targeted-final.log"
+  },
+  "full": {
+    "discovered": 199,
+    "completed": 199,
+    "passed": 197,
+    "failed": 2,
+    "disabled": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 1,
+    "time_seconds": 21.434,
+    "failure_names": [
+      "SegmentDistanceTest.Crossing",
+      "AssemblyPlannerTest.ConflictHeightSeparation"
+    ],
+    "xml": "backend-full-final.xml",
+    "log": "backend-full-final.log"
+  },
+  "known_baseline_failures": [
+    "SegmentDistanceTest.Crossing",
+    "AssemblyPlannerTest.ConflictHeightSeparation"
+  ],
+  "unexpected_failures": [],
+  "baseline_evidence": "Evidence/EditReturnVideo/20261023-105421/backend-summary.json",
+  "binaries": {
+    "DroneBackend_tests": "Backend\\build\\Release\\DroneBackend_tests.exe",
+    "tests_sha256_before": "291cf38a06c36658d247b2b8a5218960c61f35f739da1d25c5efc4b4870b6a56",
+    "tests_sha256_after": "291cf38a06c36658d247b2b8a5218960c61f35f739da1d25c5efc4b4870b6a56",
+    "tests_unchanged": true,
+    "DroneBackend": "Backend\\build\\Release\\DroneBackend.exe",
+    "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b"
+  },
+  "notes": [
+    "Each final command ran once; all earlier XML/log/summary evidence retained.",
+    "Deterministic heartbeat injection occurs before each of validate, review, and deploy in the guarded chain.",
+    "199 completed, 197 passed, two existing geometry failures; not an all-green suite.",
+    "No rebuild, source edits, UE startup or user Saved/Stage1 data changes by this test runner."
+  ]
+}

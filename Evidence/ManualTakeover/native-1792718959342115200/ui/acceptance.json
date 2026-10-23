@@ -1,0 +1,27 @@
+{
+  "native_ui": "Computer Use mouse clicks in Chinese Map client",
+  "fixture": "API-created deployed Mock mission, restarted after first fixture completed during app authorization wait",
+  "real_hardware_verified": false,
+  "source": "execution-10",
+  "continuing_peer": "execution-11",
+  "movement": "execution-13",
+  "peer_final_state": "COMPLETED",
+  "verification_history": [
+    "Initial final-state assertion expected peer still EXECUTING; peer had naturally COMPLETED its original route by evidence review. Immediate and paused continuity assertions remain mandatory."
+  ],
+  "checks": [
+    "selected executing UAV-01",
+    "right-click destination preview",
+    "explicit Chinese takeover consequence and confirmation",
+    "source aborted and new independent move",
+    "UAV-02 continues original task",
+    "native pause and resume of manual move",
+    "movement reaches chosen target",
+    "original task remains aborted"
+  ],
+  "limitations": [
+    "Command takeover native flow not replayed",
+    "no physical aircraft tested"
+  ],
+  "pass": true
+}

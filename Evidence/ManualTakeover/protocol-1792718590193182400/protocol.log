@@ -1,0 +1,16 @@
+PASS Four-UAV task is deployed without automatically starting
+PASS Scheduled deployment rejects takeover without changing execution state
+PASS Single-UAV selection is shared over WS and does not change the Video target
+PASS Ordinary movement cannot steal the assigned UAV and Video cannot request takeover
+PASS Stale version, missing version, mismatched UAV and multi-UAV takeover fail atomically
+PASS Invalid coordinates, unsupported range and invalid target radius leave the original task untouched
+PASS A path ending on a paused peer is rejected before aborting the original execution
+PASS Configuration mode blocks takeover without changing the existing paused task
+PASS Map takeover aborts only the selected member and starts one independent move at its acknowledged position
+PASS Retrying the same request returns the same move; changed content cannot reuse its request ID
+PASS Command, Map and Video receive a committed WS snapshot with source termination and new movement together
+PASS Resuming the old group cannot resume the new paused movement or revive the taken-over source
+PASS Manual movement completes at its target while the other mission members keep progressing
+PASS Command can take over a paused deployed member without changing its paused peers
+PASS A manual movement and a terminal original execution cannot be taken over as deployed tasks
+PASS Old-group abort remains isolated; manual controls release occupancy without rewriting deployed routes or Video

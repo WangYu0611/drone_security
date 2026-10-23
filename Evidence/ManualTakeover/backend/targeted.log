@@ -1,0 +1,38 @@
+Note: Google Test filter = ManualTakeover.*:P54RealAdapter.ManualTakeover*
+[==========] Running 13 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 4 tests from P54RealAdapter
+[ RUN      ] P54RealAdapter.ManualTakeoverClearsOldTargetAndOnlyDispatchesNewExecution
+[       OK ] P54RealAdapter.ManualTakeoverClearsOldTargetAndOnlyDispatchesNewExecution (2 ms)
+[ RUN      ] P54RealAdapter.ManualTakeoverHoldFailureIsDurableIdempotentAndNeverDispatchesMove
+[       OK ] P54RealAdapter.ManualTakeoverHoldFailureIsDurableIdempotentAndNeverDispatchesMove (12 ms)
+[ RUN      ] P54RealAdapter.ManualTakeoverPublicationFailureKeepsDurableIntentAndDoesNotHoldAgain
+[       OK ] P54RealAdapter.ManualTakeoverPublicationFailureKeepsDurableIntentAndDoesNotHoldAgain (1 ms)
+[ RUN      ] P54RealAdapter.ManualTakeoverPersistenceFailureCannotResumeOldController
+[       OK ] P54RealAdapter.ManualTakeoverPersistenceFailureCannotResumeOldController (13 ms)
+[----------] 4 tests from P54RealAdapter (30 ms total)
+
+[----------] 9 tests from ManualTakeover
+[ RUN      ] ManualTakeover.SingleAircraftMovesWithoutRestartingItsDeployedRoute
+[       OK ] ManualTakeover.SingleAircraftMovesWithoutRestartingItsDeployedRoute (3 ms)
+[ RUN      ] ManualTakeover.OtherGroupMemberContinuesAndOldGroupControlsCannotControlTakeover
+[       OK ] ManualTakeover.OtherGroupMemberContinuesAndOldGroupControlsCannotControlTakeover (6 ms)
+[ RUN      ] ManualTakeover.DuplicateRequestIsIdempotentAndCannotRetarget
+[       OK ] ManualTakeover.DuplicateRequestIsIdempotentAndCannotRetarget (1 ms)
+[ RUN      ] ManualTakeover.StaleWrongMissingAndAmbiguousTargetsLeaveMissionUnchanged
+[       OK ] ManualTakeover.StaleWrongMissingAndAmbiguousTargetsLeaveMissionUnchanged (3 ms)
+[ RUN      ] ManualTakeover.CollisionAndUnavailableAircraftRejectBeforeStoppingMission
+[       OK ] ManualTakeover.CollisionAndUnavailableAircraftRejectBeforeStoppingMission (2 ms)
+[ RUN      ] ManualTakeover.OrdinaryMoveCannotBypassOccupancyAndPendingMissionCannotBeTakenOver
+[       OK ] ManualTakeover.OrdinaryMoveCannotBypassOccupancyAndPendingMissionCannotBeTakenOver (2 ms)
+[ RUN      ] ManualTakeover.ConfigurationLockRejectsNewTakeoverMovement
+[       OK ] ManualTakeover.ConfigurationLockRejectsNewTakeoverMovement (1 ms)
+[ RUN      ] ManualTakeover.PublicationAndRestartKeepOneAtomicOwnershipChange
+[       OK ] ManualTakeover.PublicationAndRestartKeepOneAtomicOwnershipChange (10 ms)
+[ RUN      ] ManualTakeover.RealHoldFailureRetainsExistingGroupSafetyFailureRule
+[       OK ] ManualTakeover.RealHoldFailureRetainsExistingGroupSafetyFailureRule (1 ms)
+[----------] 9 tests from ManualTakeover (33 ms total)
+
+[----------] Global test environment tear-down
+[==========] 13 tests from 2 test suites ran. (64 ms total)
+[  PASSED  ] 13 tests.
