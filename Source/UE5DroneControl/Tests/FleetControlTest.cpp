@@ -123,6 +123,80 @@ class FFleetMapWorkflow:public IAutomationLatentCommand {
             if(Empty){Result=Local;return true;}
         }return false;
     }
+    bool UnarmedDragChecks(UMapShellWidget* Shell,UMapFleetInteractionWidget* Fleet) {
+        auto* Map=MapService(Fleet);auto* Sync=Fleet->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        auto* Registry=Fleet->GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+        if(!Test->TestTrue(TEXT("Unarmed drag uses the actual map input processor"),Map && Map->PointerInput.IsValid()))return false;
+        if(!Test->TestTrue(TEXT("Unarmed drag starts outside explicit box-select mode"),Fleet->GetMode()!=EMapFleetMode::BoxSelect))return false;
+        FVector2D StartLocal=FVector2D::ZeroVector;
+        if(!Test->TestTrue(TEXT("Unarmed drag has unobstructed rendered map geometry"),BlankMapPoint(Shell,Fleet,StartLocal)))return false;
+        const FVector2D EndLocal=StartLocal+FVector2D(24,12);
+        if(!Test->TestTrue(TEXT("Unarmed drag endpoint reaches the Slate viewport"),MapPointAvailable(Shell,Fleet,EndLocal)))return false;
+        const auto& Geometry=Fleet->GetCachedGeometry();const auto Start=Geometry.LocalToAbsolute(StartLocal),End=Geometry.LocalToAbsolute(EndLocal);
+        if(!Test->TestTrue(TEXT("Pointer preprocessor regression requires its owned QA window active and unobstructed"),Map->CanUsePointer(Start) && Map->CanUsePointer(End)))return false;
+        const auto Mode=Fleet->GetMode();const auto Selection=Registry->GetMultiSelectedDrones();const int Primary=Registry->GetPrimarySelectedDrone();
+        const int64 Version=Sync->GetVersion();const bool HasTarget=Fleet->bHasTarget;const auto Target=Fleet->TargetGeographic;
+        const auto Members=Fleet->TargetMembers;const int TargetPrimary=Fleet->TargetPrimary,Routes=Fleet->PreviewRoutes.Num();
+        TArray<ADronePathActor*> PreviewActors;for(int Id:Members)PreviewActors.Add(Fleet->PreviewRoutes.Find(FString::FromInt(Id)));
+        const FVector Focus=Map->ViewFocus;const float Yaw=Map->ViewYaw,Pitch=Map->View3DPitch;
+        const TSet<FKey> Pressed{EKeys::LeftMouseButton},Released;
+        auto& App=FSlateApplication::Get();
+        auto Check=[&](){
+            Test->TestFalse(TEXT("Unarmed drag never requests a Backend selection"),Fleet->bSelectionPending || Sync->IsMapSelectionPending());
+            Test->TestEqual(TEXT("Unarmed drag preserves Backend context version"),Sync->GetVersion(),Version);
+            Test->TestTrue(TEXT("Unarmed drag preserves accepted selection and primary"),Registry->GetMultiSelectedDrones()==Selection && Registry->GetPrimarySelectedDrone()==Primary);
+            Test->TestEqual(TEXT("Unarmed drag cannot enable box selection or leave movement mode"),Fleet->GetMode(),Mode);
+            Test->TestEqual(TEXT("Unarmed press/move/release retains existing target presence"),Fleet->bHasTarget,HasTarget);
+            Test->TestTrue(TEXT("Unarmed drag preserves target coordinates and preview members"),Fleet->TargetGeographic.Equals(Target,.000001) && Fleet->TargetMembers==Members && Fleet->TargetPrimary==TargetPrimary);
+            Test->TestEqual(TEXT("Unarmed drag preserves preview route count"),Fleet->PreviewRoutes.Num(),Routes);
+            for(int I=0;I<Members.Num();++I)Test->TestTrue(TEXT("Unarmed drag retains the same preview actors"),Fleet->PreviewRoutes.Find(FString::FromInt(Members[I]))==PreviewActors[I]);
+            Test->TestFalse(TEXT("Unarmed drag never submits a movement"),Fleet->bPending);
+        };
+        auto Gesture=[&](const FVector2D& A,const FVector2D& B,bool ReturnToStart,const FModifierKeysState& Modifiers=FModifierKeysState()){
+            Test->TestTrue(TEXT("Map preprocessor consumes ordinary left press"),Map->PointerInput->HandleMouseButtonDownEvent(App,FPointerEvent(0,A,A,Pressed,EKeys::LeftMouseButton,0,Modifiers)));Check();
+            Map->PointerInput->HandleMouseMoveEvent(App,FPointerEvent(0,B,A,Pressed,EKeys::Invalid,0,Modifiers));Check();
+            if(!View3D && !Modifiers.IsShiftDown())Test->TestFalse(TEXT("Unarmed 2D left drag pans the map"),Map->ViewFocus.Equals(Focus,.01));
+            if(View3D)Test->TestTrue(TEXT("Unarmed 3D left drag leaves pan to the existing camera buttons"),Map->ViewFocus.Equals(Focus,.01));
+            if(ReturnToStart)Map->PointerInput->HandleMouseMoveEvent(App,FPointerEvent(0,A,B,Pressed,EKeys::Invalid,0,Modifiers));
+            const FVector2D Finish=ReturnToStart?A:B;
+            Map->PointerInput->HandleMouseButtonUpEvent(App,FPointerEvent(0,Finish,Finish,Released,EKeys::LeftMouseButton,0,Modifiers));Check();
+            Test->TestFalse(TEXT("Left release retires the map and fleet pointer owners"),Map->GestureButton.IsValid() || Fleet->IsDragging());
+        };
+        Gesture(Start,End,false);
+        // Restore the camera via input before another frame, retaining settled
+        // rendered geometry. A second drag returns to its press point and must
+        // still be recognized as a drag rather than a blank-map selection click.
+        Map->PointerInput->HandleMouseButtonDownEvent(App,FPointerEvent(0,End,End,Pressed,EKeys::LeftMouseButton,0,FModifierKeysState()));
+        Map->PointerInput->HandleMouseMoveEvent(App,FPointerEvent(0,Start,End,Pressed,EKeys::Invalid,0,FModifierKeysState()));
+        Map->PointerInput->HandleMouseButtonUpEvent(App,FPointerEvent(0,Start,Start,Released,EKeys::LeftMouseButton,0,FModifierKeysState()));Check();
+        Gesture(Start,End,true);
+        Gesture(Start,End,true,FModifierKeysState(true,false,false,false,false,false,false,false,false));
+        Gesture(Start,End,true,FModifierKeysState(false,false,true,false,false,false,false,false,false));
+        Test->TestTrue(TEXT("Inverse and round-trip drags restore the pan target"),Map->ViewFocus.Equals(Focus,.01));
+        Test->TestTrue(TEXT("Left drag does not replace 3D right-button orbit"),FMath::IsNearlyEqual(Map->ViewYaw,Yaw,.01f) && FMath::IsNearlyEqual(Map->View3DPitch,Pitch,.01f));
+        return true;
+    }
+    bool BoxSelectExitChecks(UMapShellWidget* Shell,UMapFleetInteractionWidget* Fleet) {
+        auto* Map=MapService(Fleet);auto* Sync=Fleet->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        const int64 Version=Sync->GetVersion();FVector2D Local=FVector2D::ZeroVector;
+        if(!BlankMapPoint(Shell,Fleet,Local) || !ToolbarAction(Shell,TEXT("box_select")))return false;
+        Test->TestEqual(TEXT("Only the explicit box-select toolbar arms rectangle selection"),Fleet->GetMode(),EMapFleetMode::BoxSelect);
+        const auto A=Fleet->GetCachedGeometry().LocalToAbsolute(Local),B=Fleet->GetCachedGeometry().LocalToAbsolute(Local+FVector2D(20,10));
+        if(!Test->TestTrue(TEXT("Cancelled box gesture reaches the owned active map window"),Map->CanUsePointer(A) && Map->CanUsePointer(B)))return false;
+        const TSet<FKey> Pressed{EKeys::LeftMouseButton},Released;auto& App=FSlateApplication::Get();
+        Map->PointerInput->HandleMouseButtonDownEvent(App,FPointerEvent(0,A,A,Pressed,EKeys::LeftMouseButton,0,FModifierKeysState()));
+        Map->PointerInput->HandleMouseMoveEvent(App,FPointerEvent(0,B,A,Pressed,EKeys::Invalid,0,FModifierKeysState()));
+        Test->TestTrue(TEXT("Toolbar-armed box tracks an active drag"),Fleet->IsDragging());
+        Test->TestTrue(TEXT("Native input Escape cancels an in-progress box gesture"),Map->PointerInput->HandleKeyDownEvent(App,FKeyEvent(EKeys::Escape,FModifierKeysState(),0,false,0,0)));
+        Map->PointerInput->HandleMouseButtonUpEvent(App,FPointerEvent(0,B,B,Released,EKeys::LeftMouseButton,0,FModifierKeysState()));
+        Test->TestEqual(TEXT("Escape returns box selection to Browse"),Fleet->GetMode(),EMapFleetMode::Browse);
+        Test->TestFalse(TEXT("Delayed release after Escape cannot submit selection"),Fleet->bSelectionPending || Sync->IsMapSelectionPending());
+        Test->TestEqual(TEXT("Cancelled box never changes Backend context"),Sync->GetVersion(),Version);
+        if(!UnarmedDragChecks(Shell,Fleet))return false;
+        if(!ToolbarAction(Shell,TEXT("box_select")) || !ToolbarAction(Shell,TEXT("box_select")))return false;
+        Test->TestEqual(TEXT("Second toolbar click exits explicit box selection"),Fleet->GetMode(),EMapFleetMode::Browse);
+        return UnarmedDragChecks(Shell,Fleet);
+    }
     bool RightClick(UMapShellWidget* Shell,UMapFleetInteractionWidget* Fleet,const FVector2D& Local) {
         if(!Test->TestTrue(TEXT("Right-click destination reaches the rendered map and Slate viewport"),MapPointAvailable(Shell,Fleet,Local))){
             Capture(TEXT("right-click-hit-path-failure"));return false;
@@ -193,15 +267,15 @@ class FFleetMapWorkflow:public IAutomationLatentCommand {
             if(Clear){Begin=A;End=B;Found=true;break;}
         }
         if(!Test->TestTrue(TEXT("Post-move box endpoints and drag path reach the rendered map, not an overlay"),Found)){Capture(TEXT("reselection-hit-path-failure"));return false;}
+        Test->TestEqual(TEXT("Reselection requires the explicit box-select toolbar"),Fleet->GetMode(),EMapFleetMode::BoxSelect);
         const auto& Geometry=Fleet->GetCachedGeometry();
-        if(!Test->TestTrue(TEXT("Post-move group-move mode accepts drag press"),Fleet->BeginPointer(Geometry.LocalToAbsolute(Begin),false,false)))return false;
+        if(!Test->TestTrue(TEXT("Toolbar-armed box mode accepts drag press"),Fleet->BeginPointer(Geometry.LocalToAbsolute(Begin),false,false)))return false;
         const FVector2D Middle=(Begin+End)*.5;
         Fleet->MovePointer(Geometry.LocalToAbsolute(Middle),MapPointAvailable(Shell,Fleet,Middle));
         Fleet->EndPointer(Geometry.LocalToAbsolute(End),MapPointAvailable(Shell,Fleet,End));
-        // This is the user's exact regression: group_move, then drag. It must
-        // issue a real selection request, rather than silently ignoring the drag.
+        // Only a real box-select toolbar action authorizes this rectangle.
         const bool Requested=Test->TestTrue(TEXT("Left drag after the toolbar action requests UAV reselection"),Fleet->bSelectionPending);
-        Test->TestEqual(TEXT("Selection drag leaves destination-picking mode"),Fleet->GetMode(),EMapFleetMode::BoxSelect);
+        Test->TestEqual(TEXT("Explicit rectangle selection stays in box-select mode"),Fleet->GetMode(),EMapFleetMode::BoxSelect);
         Test->TestFalse(TEXT("Selection drag never stages a move destination"),Fleet->bHasTarget);
         if(!Requested)Capture(TEXT("reselection-no-request-failure"));
         return Requested;
@@ -252,6 +326,7 @@ class FFleetMapWorkflow:public IAutomationLatentCommand {
             ++Step;return false;
         }
         if(Step==11){
+            if(!UnarmedDragChecks(Shell,Fleet) || !ToolbarAction(Shell,TEXT("box_select")))return true;
             if(!ReselectByRenderedBox(Shell,Fleet,{1}))return true;
             Test->TestEqual(TEXT("Selection request does not optimistically replace the accepted four UAVs"),Registry->GetMultiSelectedDrones().Num(),4);
             ++Step;Next=FPlatformTime::Seconds()+.1;return false;
@@ -298,9 +373,12 @@ class FFleetMapWorkflow:public IAutomationLatentCommand {
             Capture(TEXT("reselection-second-move-completed"));
             if(!ArmToolbar(TEXT("group_move")))return true;++Step;return false;
         }
-        if(Step==20){if(!ReselectByRenderedBox(Shell,Fleet,{2}))return true;++Step;return false;}
+        if(Step==20){
+            if(!UnarmedDragChecks(Shell,Fleet) || !ToolbarAction(Shell,TEXT("box_select")))return true;
+            if(!ReselectByRenderedBox(Shell,Fleet,{2}))return true;++Step;return false;
+        }
         if(Step==21){
-            if(!Test->TestTrue(TEXT("COMPLETED fleet allows group-move plus drag to select another UAV after ACK"),SelectionIs({2})))return true;
+            if(!Test->TestTrue(TEXT("COMPLETED fleet permits another UAV only after explicit box-select and ACK"),SelectionIs({2})))return true;
             CheckVideo();if(!ConfirmFreshSingle(2,BeforeExecutions+5))return true;++Step;return false;
         }
         if(Step==23){
@@ -355,9 +433,10 @@ public:
             for(int Id=1;Id<=MemberCount;++Id){FVector2D P;if(!F->Project(Id,P))return false;Min.X=FMath::Min(Min.X,P.X);Min.Y=FMath::Min(Min.Y,P.Y);Max.X=FMath::Max(Max.X,P.X);Max.Y=FMath::Max(Max.Y,P.Y);}
             FJsonSerializer::Serialize(S->GetVideoView().ToSharedRef(),TJsonWriterFactory<>::Create(&VideoBefore));
             CameraBefore=Manager->GetMapService()->GetMapCamera()->GetActorLocation();
-            F->SetMode(EMapFleetMode::BoxSelect);
+            F->SetMode(EMapFleetMode::Browse);
+            if(!UnarmedDragChecks(Shell,F) || !BoxSelectExitChecks(Shell,F) || !ToolbarAction(Shell,TEXT("box_select")))return true;
             if(MemberCount==1)S->SetLocalSelection(1,{1});
-            else {const auto& G=F->GetCachedGeometry();Test->TestTrue(TEXT("native event entry accepts box gesture"),F->BeginPointer(G.LocalToAbsolute(Max+FVector2D(10,10)),false,false));
+            else {const auto& G=F->GetCachedGeometry();Test->TestTrue(TEXT("toolbar-armed pointer entry accepts box gesture"),F->BeginPointer(G.LocalToAbsolute(Max+FVector2D(10,10)),false,false));
                 F->EndPointer(G.LocalToAbsolute(Min-FVector2D(10,10)),true);}
             TargetLocal=(Min+Max)*.5+FVector2D(-240,140);
             ++Step;return false;
@@ -365,7 +444,7 @@ public:
         if(Step==1) {
             if(R->GetMultiSelectedDrones().Num()!=MemberCount || (MemberCount==1 && R->GetPrimarySelectedDrone()!=1) || F->bSelectionPending)return false;
             Test->TestTrue(TEXT("box selection leaves map camera unchanged"),Manager->GetMapService()->GetMapCamera()->GetActorLocation().Equals(CameraBefore,.01));
-            FString Video;FJsonSerializer::Serialize(S->GetVideoView().ToSharedRef(),TJsonWriterFactory<>::Create(&Video));Test->TestEqual(TEXT("selection never retargets Video"),Video,VideoBefore);
+            FString Video;FJsonSerializer::Serialize(S->GetVideoView().ToSharedRef(),TJsonWriterFactory<>::Create(&Video));Test->TestEqual(TEXT("box selection and generic selection preserve explicit Video target"),Video,VideoBefore);
             Capture(TEXT("01-selected-fixed-size-symbols"));
             if(!RightDragAndEditLockChecks(Shell,F))return true;
             BeforeExecutions=All->Values.Num();Test->TestTrue(TEXT("selection ACK enables guided next step"),F->Buttons[TEXT("next")]->GetIsEnabled());F->Action(TEXT("next"),0);
@@ -376,6 +455,7 @@ public:
             if(!RightClick(Shell,F,TargetLocal))return true;
             Test->TestFalse(TEXT("Right-click preview never submits before explicit confirmation"),F->bPending);
             Test->TestEqual(TEXT("Right-click preview leaves Backend execution count unchanged"),All->Values.Num(),BeforeExecutions);
+            if(!UnarmedDragChecks(Shell,F))return true;
             if(View3D){const FVector Horizontal=F->TargetGeographic;const double StartHeight=Horizontal.Z;
                 for(const auto& Bad:TArray<FString>{TEXT("nan"),TEXT("1e308"),FString::SanitizeFloat(StartHeight+10001.)}){
                     F->TargetHeightInput->SetText(User(Bad));F->TargetHeightInput->OnTextChanged.Broadcast(F->TargetHeightInput->GetText());F->Action(TEXT("confirm"),0);

@@ -92,6 +92,7 @@ public:
         const auto action = str(request, "action");
         if (action.rfind("execution_",0)==0) return executionRequest(request,uavs,source,publish);
         checkConfigurationRequest(next,request);
+        const bool guardedDeployment=checkDeploymentRequestGuard(next,request);
         if(action=="begin_configuration")if(const auto* current=activeConfiguration(next)) {
             if(str(*current,"owner_instance_id")!=str(request,"instance_id") || str(*current,"plan_id")!=str(request,"plan_id"))configurationConflict(*current);
             return {{"state",state_},{"plan_id",str(*current,"plan_id")},{"mission_id",str(request,"mission_id")}};
@@ -106,7 +107,11 @@ public:
                 // a stale document snapshot must not trap an unsaved local draft.
                 if(!v->is_number() || v->to_number<int64_t>()>currentVersion)
                     throw PlanError("VERSION_CONFLICT", "Plan data changed; reload and retry");
-                if(action=="discard_route_edit") {
+                if(guardedDeployment) {
+                    // Explicit plan/content/lease guards fence the confirmed work.
+                    // Lease renewal advances only the document version; every
+                    // deployment stage still runs its current safety checks below.
+                } else if(action=="discard_route_edit") {
                     const auto& session=ownedSession(next,request,str(request,"plan_id"),str(request,"mission_id"));
                     if(str(session,"mode")=="MOVE")throw PlanError("EDIT_SESSION_CONFLICT","Finish plan movement first");
                 } else if(action=="end_configuration") {
@@ -208,6 +213,7 @@ public:
             if (str(plan,"status") == "DEPLOYED") throw PlanError("PLAN_DEPLOYED", "Deployed plan is read-only");
             auto& ids = plan.at("mission_ids").as_array();
             const auto revision=plan.at("content_revision").to_number<int64_t>();
+            const auto previousWorkflow=str(plan,"workflow_step"),previousWorkflowMission=str(plan,"workflow_mission_id");
             const bool sessionAction=action=="begin_route_edit" || action=="mark_route_dirty" || action=="discard_route_edit" || action=="finish_route_edit" || action=="set_workflow_step";
             if(action=="review" || action=="deploy") {
                 for(const auto& entry:next.at("edit_sessions").as_object()) {
@@ -374,8 +380,9 @@ public:
             if (action != "validate" && action != "review" && action != "deploy" && !sessionAction) {
                 plan["status"]="DRAFT";plan["content_revision"]=revision+1;plan["review"]=nullptr;plan.erase("validation");
             }
-            if(!sessionAction)plan["version"] = plan.at("version").to_number<int64_t>() + 1;
-            if(!sessionAction)plan["updated_at"] = OperationalContext::now();
+            const bool workflowChanged=sessionAction && (str(plan,"workflow_step")!=previousWorkflow || str(plan,"workflow_mission_id")!=previousWorkflowMission);
+            if(!sessionAction || workflowChanged)plan["version"] = plan.at("version").to_number<int64_t>() + 1;
+            if(!sessionAction || workflowChanged)plan["updated_at"] = OperationalContext::now();
         }
         // Summaries and mission readiness are always computed by Backend.
         for (auto& item : plans) {
@@ -433,10 +440,36 @@ private:
         throw PlanError("CONFIGURATION_IN_PROGRESS","Finish the active plan configuration first",
             {{"owner_instance_id",session.at("owner_instance_id")},{"owner_client_id",session.at("owner_client_id")},{"plan_id",session.at("plan_id")}});
     }
+    static bool checkDeploymentRequestGuard(const Object& state,const Object& request) {
+        const auto action=str(request,"action");
+        if(action!="validate" && action!="review" && action!="deploy")return false;
+        const char* keys[]={"expected_content_revision","expected_plan_version","configuration_acquired_version"};
+        bool explicitGuard=false;for(const auto* key:keys)explicitGuard|=request.contains(key);
+        if(!explicitGuard)return false; // Legacy requests retain strict document-version checks.
+        for(const auto* key:keys)if(!request.contains(key) || !request.at(key).is_number())
+            throw PlanError("VERSION_CONFLICT","Complete deployment guards are required");
+        const auto* expected=request.if_contains("expected_version");
+        const auto* lease=activeConfiguration(state);
+        const auto* acquired=lease?lease->if_contains("acquired_version"):nullptr;
+        if(!expected || !expected->is_number() || !lease || !acquired || !acquired->is_number() ||
+           str(*lease,"owner_instance_id")!=str(request,"instance_id") || str(*lease,"plan_id")!=str(request,"plan_id") ||
+           request.at("configuration_acquired_version").to_number<double>()!=acquired->to_number<double>() ||
+           expected->to_number<double>()<acquired->to_number<double>() ||
+           expected->to_number<double>()>state.at("version").to_number<double>() ||
+           expected->to_number<double>()!=std::floor(expected->to_number<double>()))
+            throw PlanError("VERSION_CONFLICT","Configuration lease or document version changed");
+        const auto* plan=state.at("plans").as_object().if_contains(str(request,"plan_id"));
+        if(!plan || !plan->is_object())throw PlanError("PLAN_NOT_FOUND","Unknown plan");
+        if(request.at("expected_content_revision").to_number<double>()!=plan->as_object().at("content_revision").to_number<double>())
+            throw PlanError("CONTENT_REVISION_CONFLICT","Confirmed plan contents changed");
+        if(request.at("expected_plan_version").to_number<double>()!=plan->as_object().at("version").to_number<double>())
+            throw PlanError("VERSION_CONFLICT","Confirmed plan state changed");
+        return true;
+    }
     static void checkConfigurationRequest(const Object& state,const Object& request) {
         const auto* session=activeConfiguration(state);if(!session)return;
         const auto action=str(request,"action");
-        if(action=="execution_group_move" || action=="execution_start" || action=="execution_start_now" ||
+        if(action=="execution_group_move" || action=="execution_takeover_move" || action=="execution_start" || action=="execution_start_now" ||
            action=="begin_plan_move" || action=="request_map_plan_move" || action=="move_plan")configurationConflict(*session);
         // Existing execution controls are independent of the plan being configured.
         if(action.rfind("execution_",0)==0 || action=="begin_configuration")return;
@@ -533,7 +566,6 @@ private:
         if (ids.empty()) issue("","NO_MISSIONS");
         for (const auto& mid : ids) {
             auto& m=s.at("missions").as_object().at(mid.as_string()).as_object();
-            const auto before=issues.size();
             const auto u=str(m,"assigned_uav_id"), r=str(m,"route_id");
             const std::string key(mid.as_string());
             const auto members=assignment(m);
@@ -551,7 +583,6 @@ private:
                     if(path->as_object().at("waypoints").as_array().size()<2) issue(key,"ROUTE_TOO_SHORT"); else ++routes;
                 } catch (const PlanError&) { issue(key,"INVALID_WAYPOINT"); }
             }
-            if (str(m,"status")!="DEPLOYED") m["status"] = issues.size()==before ? "READY" : "DRAFT";
         }
         // Readiness includes the actual generated multi-UAV trajectories. A failed
         // check carries business-readable pair and distance parameters to clients.
@@ -560,6 +591,13 @@ private:
             const auto* route=s.at("paths").as_object().if_contains(str(m,"route_id"));if(!route)continue;
             try{checkTrajectories(s,formationRoutes(m,route->as_object()));}
             catch(const PlanError& ex){issues.emplace_back(Object{{"mission_id",mid},{"code",ex.code},{"params",ex.params}});}
+        }
+        // A task is ready only after every check, including generated trajectories.
+        // Keep unaffected tasks ready so the operator can identify what needs fixing.
+        std::set<std::string> blocked;
+        for(const auto& value:issues)blocked.insert(str(value.as_object(),"mission_id"));
+        for(const auto& mid:ids){auto& m=s.at("missions").as_object().at(mid.as_string()).as_object();
+            if(str(m,"status")!="DEPLOYED")m["status"]=blocked.count(std::string(mid.as_string()))?"DRAFT":"READY";
         }
         return {{"ready",issues.empty()},{"issues",issues},{"mission_count",ids.size()},{"assigned_count",assigned},{"routes_ready",routes}};
     }

@@ -73,6 +73,7 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> Steps;
     UPROPERTY() TObjectPtr<class UTextBlock> RouteStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> ReviewHeading;
+    UPROPERTY() TObjectPtr<class UTextBlock> DeploymentBlockers;
     UPROPERTY() TObjectPtr<class UBorder> NewPlanDialog;
     UPROPERTY() TObjectPtr<class UOverlay> NewPlanLayer;
     UPROPERTY() TObjectPtr<class UOverlay> ConfigurationGuardLayer;

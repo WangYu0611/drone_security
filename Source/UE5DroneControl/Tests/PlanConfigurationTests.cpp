@@ -238,7 +238,8 @@ public:
             Test->TestEqual(TEXT("viewing alarms preserves unsaved input"),P->Description->GetText().ToString(),FString(TEXT("Keep while viewing alarms")));
             Test->TestTrue(TEXT("alarm viewing does not release configuration"),PlanConfiguration::IsOwner(Sync->GetPlans(),Sync->GetInstanceId()));
             Test->TestFalse(TEXT("alarm viewing does not send a plan mutation"),P->bPending);
-            P->RequestFinishConfiguration();Test->TestTrue(TEXT("saved plan dirty leave also guards"),P->bConfigurationGuard);
+            Test->TestTrue(TEXT("editor exposes an explicit return-to-list entry during configuration"),P->Actions[TEXT("back_list")]->IsVisible());
+            P->Action(TEXT("back_list"),0);Test->TestTrue(TEXT("saved plan dirty leave also guards"),P->bConfigurationGuard);
             P->Action(TEXT("guard_discard"),0);++Step;return false;
         }
         if(Step==5) {
@@ -250,8 +251,13 @@ public:
         if(Step==6) {
             if(!Test->TestTrue(TEXT("existing plan resumes authoritative configuration"),P->CanEditConfiguration()))return true;
             P->PlanName->SetText(User(TEXT("Configuration saved on exit")));P->Description->SetText(User(TEXT("Confirmed before releasing lease")));
-            P->RequestFinishConfiguration();Test->TestTrue(TEXT("save-and-leave starts from an explicit dirty guard"),P->bConfigurationGuard);
-            P->Action(TEXT("guard_save"),0);++Step;return false;
+            DispatchWidgetAction(Test,Shell,TEXT("Navigate"),TEXT("navigate"),1);
+            Test->TestTrue(TEXT("Plans navigation starts from the existing dirty guard"),P->bConfigurationGuard);
+            Test->TestTrue(TEXT("Plans navigation preserves the lease until a decision"),PlanConfiguration::IsOwner(Sync->GetPlans(),Sync->GetInstanceId()));
+            P->Action(TEXT("guard_keep"),0);Test->TestFalse(TEXT("keep editing cancels top-navigation return"),P->bList);
+            DispatchWidgetAction(Test,Shell,TEXT("Navigate"),TEXT("navigate"),1);
+            P->Action(TEXT("guard_save"),0);
+            Test->TestTrue(TEXT("save and return keeps editor visible until Backend ACK"),P->bPending && !P->bList);++Step;return false;
         }
         const auto Plan=Find(State,TEXT("plans"),PlanId);
         Test->TestEqual(TEXT("save-and-leave persists edited name"),Field(Plan,TEXT("name")),FString(TEXT("Configuration saved on exit")));

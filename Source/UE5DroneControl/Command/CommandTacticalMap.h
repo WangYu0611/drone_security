@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Map/MapMoveIntent.h"
 #include "CommandTacticalMap.generated.h"
 
 /** Independent 2D raster view over the existing Registry. No scene or camera replication. */
@@ -45,6 +46,7 @@ private:
     TArray<int32> RequestedSelection,MoveMembers;
     int32 RequestedPrimary=0;
     FVector MoveTarget=FVector::ZeroVector;
+    MapMove::FTakeoverIntent MoveTakeover;
     FText MoveMessage;
     FString MoveErrorCode;
     bool PickMoveTarget(const FVector2D& Local);

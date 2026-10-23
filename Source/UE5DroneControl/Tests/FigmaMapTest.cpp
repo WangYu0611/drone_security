@@ -59,6 +59,7 @@ class FFigmaMapChecks : public IAutomationLatentCommand
     TArray<int32> GroupSelection;
     double Started=FPlatformTime::Seconds(),Next=0;
     FString Out,VideoBefore;
+    int64 NoOpSelectionVersion=-1;
     FVector2D InitialFramePixels=FVector2D::ZeroVector,OriginalWindowSize=FVector2D::ZeroVector;
     TWeakPtr<SWindow> Window;
 
@@ -174,12 +175,16 @@ public:
             for(const auto& Descriptor:Registry->GetFriendlyDroneDescriptors())if(Descriptor.DroneId!=Before){SelectedId=Descriptor.DroneId;break;}
             Shell->ActionRequested(TEXT("choose_aircraft"),SelectedId);
             Test->TestEqual(TEXT("Device choice does not optimistically mutate selection"),Registry->GetPrimarySelectedDrone(),Before);
+            Test->TestEqual(TEXT("Device choice does not optimistically retarget Video"),VideoJson(Sync),VideoBefore);
+            Test->TestTrue(TEXT("Map selection and video share a pending transaction"),Sync->IsMapSelectionPending());
+            Test->TestFalse(TEXT("A competing Map entry cannot overtake the device request"),Sync->SetMapSelection(Before,{Before},Before));
         }
         else if(Step==3)
         {
             if(Registry->GetPrimarySelectedDrone()!=SelectedId || Shell->IsDeviceSelectionPending())return false;
             Test->TestFalse(TEXT("ACK closes device dropdown"),Shell->DroneDropdown->IsVisible());
-            Test->TestEqual(TEXT("Map selection preserves exact VideoView"),VideoJson(Sync),VideoBefore);
+            Test->TestEqual(TEXT("Map dropdown switches Video only after full selection and video ACK"),Sync->GetVideoView()->GetStringField(TEXT("video_target_uav_id")),FString::Printf(TEXT("UAV-%02d"),SelectedId));
+            VideoBefore=VideoJson(Sync);
             for(const auto& Descriptor:Registry->GetFriendlyDroneDescriptors())GroupSelection.Add(Descriptor.DroneId);
             GroupSelection.Sort();
             if(!Test->TestTrue(TEXT("Same-primary device regression has UAV 1 and multiple registered aircraft"),GroupSelection.Contains(1) && GroupSelection.Num()>1))return true;
@@ -214,16 +219,47 @@ public:
             Test->TestFalse(TEXT("Singleton ACK releases the device selection guard"),Shell->IsDeviceSelectionPending());
             Test->TestTrue(TEXT("Singleton ACK contains only the explicitly chosen primary"),Registry->GetMultiSelectedDrones()==TArray<int32>{1});
             Test->TestTrue(TEXT("Singleton ACK does not silently generate a move preview"),Shell->GetFleetInteraction()->GetPreviewMembers().IsEmpty());
-            Test->TestEqual(TEXT("Same-primary singleton ACK preserves exact VideoView"),VideoJson(Sync),VideoBefore);
-            Shell->Map3DButton->OnClicked.Broadcast();
+            Test->TestEqual(TEXT("Same-primary singleton ACK switches Video to the clicked aircraft"),Sync->GetVideoView()->GetStringField(TEXT("video_target_uav_id")),FString(TEXT("UAV-01")));
+            Test->TestTrue(TEXT("Explicit Video action can select a different source"),Sync->OpenVideo(TEXT("UAV-02")));
         }
         else if(Step==6)
+        {
+            if(Sync->GetVideoView()->GetStringField(TEXT("video_target_uav_id"))!=TEXT("UAV-02"))return false;
+            VideoBefore=VideoJson(Sync);NoOpSelectionVersion=Sync->GetVersion();
+            Shell->ActionRequested(TEXT("choose_aircraft"),1);
+            Test->TestTrue(TEXT("Clicking the already-selected singleton still waits for Video ACK"),Sync->IsMapSelectionPending());
+            Test->TestEqual(TEXT("No-op selection click preserves Video until ACK"),VideoJson(Sync),VideoBefore);
+            Test->TestFalse(TEXT("Map geometry input cannot race the pending dropdown video phase"),Shell->GetFleetInteraction()->BeginPointer(Center(Shell->MapFrame),false,false));
+        }
+        else if(Step==7)
+        {
+            if(Sync->IsMapSelectionPending() || Shell->IsDeviceSelectionPending())return false;
+            Test->TestEqual(TEXT("No-op selection retains its context version"),Sync->GetVersion(),NoOpSelectionVersion);
+            Test->TestEqual(TEXT("No-op selection still restores clicked Video target"),Sync->GetVideoView()->GetStringField(TEXT("video_target_uav_id")),FString(TEXT("UAV-01")));
+            Test->TestTrue(TEXT("Shift-click semantics submit clicked target separately from primary"),Sync->SetMapSelection(1,{1,2},2));
+        }
+        else if(Step==8)
+        {
+            if(Sync->IsMapSelectionPending())return false;
+            Test->TestEqual(TEXT("Shift-click retains the old primary"),Registry->GetPrimarySelectedDrone(),1);
+            Test->TestTrue(TEXT("Shift-click retains the accepted full group"),Registry->GetMultiSelectedDrones()==TArray<int32>{1,2});
+            Test->TestEqual(TEXT("Shift-click video follows the clicked secondary aircraft"),Sync->GetVideoView()->GetStringField(TEXT("video_target_uav_id")),FString(TEXT("UAV-02")));
+            Test->TestTrue(TEXT("Ctrl-click semantics can remove the clicked video target from selection"),Sync->SetMapSelection(1,{1},2));
+        }
+        else if(Step==9)
+        {
+            if(Sync->IsMapSelectionPending())return false;
+            Test->TestTrue(TEXT("Ctrl-click resulting selection is authoritative"),Registry->GetMultiSelectedDrones()==TArray<int32>{1});
+            Test->TestEqual(TEXT("Ctrl-click Video follows the actual hit even after deselection"),Sync->GetVideoView()->GetStringField(TEXT("video_target_uav_id")),FString(TEXT("UAV-02")));
+            VideoBefore=VideoJson(Sync);Shell->Map3DButton->OnClicked.Broadcast();
+        }
+        else if(Step==10)
         {
             Test->TestEqual(TEXT("3D button reaches existing map service"),Manager->GetMapService()->GetMapMode(),ECommandMapMode::Map3D);
             Boundaries(Shell,TEXT("3D layout"));Capture(TEXT("03-3d"));
             Shell->Map2DButton->OnClicked.Broadcast();Shell->RouteButton->OnClicked.Broadcast();
         }
-        else if(Step==7)
+        else if(Step==11)
         {
             Test->TestTrue(TEXT("Mission route action opens existing route panel"),Shell->PlanPanel->IsEditorEnabled() && Shell->PlanPanel->IsVisible());
             Test->TestFalse(TEXT("Route sidebar cannot click through"),Shell->IsPointOverMap(Center(Shell->PlanPanel)));
@@ -235,7 +271,7 @@ public:
             Window=OwnedWindow;OriginalWindowSize=OwnedWindow->GetClientSizeInScreen();
             OwnedWindow->Resize(FVector2D(1120.,840.));
         }
-        else if(Step==8)
+        else if(Step==12)
         {
             const FVector2D Resized=PixelSize(Shell->MapFrame);
             if(Resized.Equals(InitialFramePixels,2.))return false;

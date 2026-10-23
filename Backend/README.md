@@ -455,6 +455,8 @@ python tools\simulate_telemetry.py --register --transport udp --drones 1 --hz 10
 
 ## 13. 相关文档
 
+- `MANUAL_TAKEOVER.md`：执行中单架无人机的原子手动接管、移动协议和失败边界。
+
 - `../Docs/接口与通讯数据规范.md`：HTTP、WebSocket、UDP JSON/YAML 字段定义。
 - `../Docs/坐标系转换说明.md`：NED、UE5、GPS、Cesium 与上电原点。
 - `../Docs/架构设计.md`：系统分层、时序与职责边界。

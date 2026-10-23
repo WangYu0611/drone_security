@@ -105,10 +105,10 @@ void UCommandTacticalMap::MarkerClicked(FName,int32 Id){
     bSelectionPending=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLocalSelection(RequestedPrimary,Members);
     if(!bSelectionPending)MoveMessage=PlanUI::T(TEXT("Errors.SYNC_OFFLINE"));
 }
-void UCommandTacticalMap::ClearMoveTarget(){bHasMoveTarget=false;MoveMembers.Empty();}
+void UCommandTacticalMap::ClearMoveTarget(){bHasMoveTarget=false;MoveMembers.Empty();MoveTakeover={};}
 FText UCommandTacticalMap::MoveUnavailable() const {
     if(bSelectionPending)return PlanUI::T(TEXT("Fleet.SelectionPending"));
-    return MapMove::Unavailable(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>(),GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(),MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()));
+    return MapMove::Unavailable(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>(),GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(),MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()),true);
 }
 bool UCommandTacticalMap::PickMoveTarget(const FVector2D& Local){
     if(bMovePending)return false;
@@ -121,19 +121,25 @@ bool UCommandTacticalMap::PickMoveTarget(const FVector2D& Local){
     const double North=FMath::DegreesToRadians(Geo.Y-Anchor.Y)*6371000.;
     const double East=FMath::DegreesToRadians(FMath::UnwindDegrees(Geo.X-Anchor.X))*6371000.*FMath::Cos(FMath::DegreesToRadians((Geo.Y+Anchor.Y)*.5));
     if(FVector2D(North,East).Size()>10000.){MoveMessage=PlanUI::T(TEXT("Errors.TRAJECTORY_DOMAIN_UNSUPPORTED"));return false;}
-    MoveTarget=FVector(Geo.X,Geo.Y,Anchor.Z);MoveMembers=Members;bHasMoveTarget=true;bFollow=false;MoveMessage=FText::GetEmpty();return true;
+    MoveTarget=FVector(Geo.X,Geo.Y,Anchor.Z);MoveMembers=Members;MoveTakeover=MapMove::CaptureTakeover(Sync->GetPlans(),Members);bHasMoveTarget=true;bFollow=false;MoveMessage=FText::GetEmpty();return true;
 }
 void UCommandTacticalMap::MoveAction(FName Action,int32){
     if(bMovePending)return;
     if(Action==TEXT("cancel_move")){ClearMoveTarget();MoveMessage=FText::GetEmpty();Refresh();return;}
     if(Action!=TEXT("confirm_move"))return;
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    if(bHasMoveTarget && !MapMove::PreviewIsCurrent(Sync->GetPlans(),MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()),MoveTakeover)){
+        ClearMoveTarget();MoveMessage=PlanUI::T(TEXT("Takeover.SourceChanged"));Refresh();return;
+    }
     MoveMessage=MoveUnavailable();
     if(!bHasMoveTarget || !MoveMessage.IsEmpty()){Refresh();return;}
     if(MoveMembers!=MapMove::Selection(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>())){
         ClearMoveTarget();MoveMessage=PlanUI::T(TEXT("Fleet.SelectionChanged"));Refresh();return;
     }
+    const auto Request=MapMove::PreviewRequest(Sync->GetPlans(),MoveMembers,MoveTarget,MoveTakeover);
+    if(!Request){ClearMoveTarget();MoveMessage=PlanUI::T(TEXT("Takeover.SourceChanged"));Refresh();return;}
     bMovePending=true;MoveErrorCode.Empty();const auto Weak=TWeakObjectPtr<UCommandTacticalMap>(this);
-    if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SubmitPlan(MapMove::Request(MoveMembers,MoveTarget),[Weak](TSharedPtr<FJsonObject> Reply){
+    if(!Sync->SubmitPlan(Request.ToSharedRef(),[Weak](TSharedPtr<FJsonObject> Reply){
         if(!Weak.IsValid())return;auto* Self=Weak.Get();Self->bMovePending=false;
         const FString Code=PlanUI::Error(Reply);Self->MoveErrorCode=Code;Self->MoveMessage=Code.IsEmpty()?PlanUI::T(TEXT("FleetUX.Accepted")):PlanUI::T(*(TEXT("Errors.")+Code));
         const FText Reservation=PlanUI::ReservationError(Reply);if(!Reservation.IsEmpty())Self->MoveMessage=Reservation;
@@ -153,11 +159,15 @@ void UCommandTacticalMap::AddMoveControls(const FVector2D& Size){
     const auto Unavailable=MoveUnavailable();
     if(bMovePending)Text=T(TEXT("Common.Waiting"));else if(!MoveMessage.IsEmpty())Text=MoveMessage;else if(bSelectionPending)Text=Unavailable;
     Hint->SetText(Text);Body->AddChildToVerticalBox(Hint);
+    if(bHasMoveTarget && MoveTakeover.IsSet()){
+        auto* Warning=WidgetTree->ConstructWidget<UTextBlock>();Warning->SetText(T(TEXT("Takeover.Warning")));Warning->SetAutoWrapText(true);
+        FigmaUI::Text(Warning,14,FigmaUI::Warning);Body->AddChildToVerticalBox(Warning)->SetPadding(FMargin(0,8,0,0));
+    }
     if(bHasMoveTarget){
         auto* Actions=WidgetTree->ConstructWidget<UHorizontalBox>();Body->AddChildToVerticalBox(Actions)->SetPadding(FMargin(0,8,0,0));
         for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("confirm_move"),TEXT("MapMove.Confirm")},{TEXT("cancel_move"),TEXT("Common.Cancel")}}){
             auto* B=WidgetTree->ConstructWidget<UCommandActionButton>();B->Configure(FName(*P.Key));B->OnAction.AddDynamic(this,&UCommandTacticalMap::MoveAction);FigmaUI::Button(B,P.Key==TEXT("confirm_move"),true);
-            auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(T(*P.Value));FigmaUI::Text(L,14);B->SetContent(L);B->SetIsEnabled(!bMovePending && (P.Key!=TEXT("confirm_move") || Unavailable.IsEmpty()));
+            auto* L=WidgetTree->ConstructWidget<UTextBlock>();L->SetText(T(P.Key==TEXT("confirm_move") && MoveTakeover.IsSet()?TEXT("Takeover.Confirm"):*P.Value));FigmaUI::Text(L,14);B->SetContent(L);B->SetIsEnabled(!bMovePending && (P.Key!=TEXT("confirm_move") || Unavailable.IsEmpty()));
             auto* Layout=Actions->AddChildToHorizontalBox(B);Layout->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Layout->SetPadding(FMargin(0,0,8,0));
         }
         if(!Unavailable.IsEmpty() && !bMovePending){auto* Reason=WidgetTree->ConstructWidget<UTextBlock>();Reason->SetText(Unavailable);Reason->SetAutoWrapText(true);FigmaUI::Text(Reason,13,FigmaUI::Warning);Body->AddChildToVerticalBox(Reason);}
@@ -178,6 +188,9 @@ void UCommandTacticalMap::Refresh()
         bSelectionPending=false;MoveMessage=PlanUI::T(TEXT("Errors.SYNC_FAILED"));
     }
     if(bHasMoveTarget && MapMove::Selection(Registry)!=MoveMembers){ClearMoveTarget();MoveMessage=PlanUI::T(TEXT("Fleet.SelectionChanged"));}
+    if(bHasMoveTarget && !bMovePending && !MapMove::PreviewIsCurrent(Sync->GetPlans(),MapMove::Selection(Registry),MoveTakeover)){
+        ClearMoveTarget();if(MoveErrorCode.IsEmpty())MoveMessage=PlanUI::T(TEXT("Takeover.SourceChanged"));
+    }
     const auto Drones=Registry->GetFriendlyDroneDescriptors();
     if(!bCentered) for(const auto& D:Drones)
     {

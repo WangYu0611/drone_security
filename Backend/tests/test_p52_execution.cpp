@@ -645,4 +645,162 @@ TEST_F(P52Execution, StartupResetDoesNotRelabelLatestRealExecution) {
     std::filesystem::remove(history);std::filesystem::remove(file);std::filesystem::remove(folder);
 }
 
+// Manual takeover changes one aircraft's runtime ownership in a single transaction.
+struct ManualTakeover:P54Mission {
+    O takeover(const char* key="takeover") {
+        const auto original=exec();auto target=original.at("position").as_object();target["altitude"]=target.at("altitude").to_number<double>()+20.;
+        return {{"action","execution_takeover_move"},{"request_id",key},{"execution_id",execution},
+            {"plan_id",p},{"mission_id",m},
+            {"uav_id",original.at("uav_id")},{"control_version",original.at("control_version")},{"target",target}};
+    }
+    void multiRunning(){multi();start();tick();tick();tick();tick(.1);}
+};
+TEST_F(ManualTakeover, SingleAircraftMovesWithoutRestartingItsDeployedRoute) {
+    running();tick(1);const auto original=exec();const auto sourceId=execution;const auto request=takeover();
+    const auto reply=send(request);const auto movedId=SecurityPlanStore::str(reply,"execution_id");
+    auto all=executions();ASSERT_EQ(all.size(),2u);EXPECT_NE(movedId,sourceId);
+    const auto stopped=all.at(sourceId).as_object(),moved=all.at(movedId).as_object();
+    EXPECT_EQ(stopped.at("state"),"ABORTED");EXPECT_EQ(stopped.at("completion_reason"),"MANUAL_TAKEOVER");
+    EXPECT_EQ(stopped.at("route_snapshot"),original.at("route_snapshot"));EXPECT_EQ(stopped.at("progress"),original.at("progress"));
+    EXPECT_EQ(SecurityPlanStore::str(stopped,"takeover_execution_id"),movedId);EXPECT_EQ(SecurityPlanStore::str(moved,"source_execution_id"),sourceId);
+    EXPECT_EQ(SecurityPlanStore::str(moved,"source_plan_id"),p);EXPECT_EQ(SecurityPlanStore::str(moved,"source_mission_id"),m);
+    EXPECT_EQ(moved.at("source_deployment_id"),original.at("deployment_id"));
+    EXPECT_EQ(moved.at("control_kind"),"GROUP_MOVE");EXPECT_NE(moved.at("group_id"),original.at("group_id"));
+    EXPECT_EQ(moved.at("position"),original.at("position"));EXPECT_EQ(plan().at("status"),"DEPLOYED");
+    for(int i=0;i<30;++i)tick(1);
+    all=executions();EXPECT_EQ(all.at(sourceId),stopped);EXPECT_EQ(all.at(movedId).as_object().at("state"),"COMPLETED");
+    EXPECT_EQ(all.at(movedId).as_object().at("position"),request.at("target"));
+}
+TEST_F(ManualTakeover, OtherGroupMemberContinuesAndOldGroupControlsCannotControlTakeover) {
+    multiRunning();const auto before=executions();const auto sourceId=execution;std::string otherId;
+    for(const auto& e:before)if(std::string(e.key())!=sourceId)otherId=std::string(e.key());
+    ASSERT_FALSE(otherId.empty());const auto movedId=SecurityPlanStore::str(send(takeover()),"execution_id");
+    EXPECT_EQ(executions().at(otherId),before.at(otherId));
+    tick(1);EXPECT_NE(executions().at(otherId).as_object().at("position"),before.at(otherId).as_object().at("position"));
+    const auto moving=executions().at(movedId);execution=otherId;control("execution_pause","old-pause");
+    EXPECT_EQ(executions().at(movedId),moving);control("execution_resume","old-resume");EXPECT_EQ(executions().at(movedId),moving);
+    control("execution_abort","old-abort");EXPECT_EQ(executions().at(movedId),moving);
+    for(int i=0;i<30;++i)tick(1);
+    EXPECT_EQ(executions().at(movedId).as_object().at("state"),"COMPLETED");
+    EXPECT_EQ(executions().at(sourceId).as_object().at("completion_reason"),"MANUAL_TAKEOVER");
+}
+TEST_F(ManualTakeover, DuplicateRequestIsIdempotentAndCannotRetarget) {
+    running();const auto request=takeover();const auto first=send(request),snapshot=store.snapshot();
+    EXPECT_EQ(send(request).at("execution_id"),first.at("execution_id"));EXPECT_EQ(store.snapshot(),snapshot);
+    auto altered=request;altered.at("target").as_object()["altitude"]=90.;error(altered,"REQUEST_ID_REUSED");
+}
+TEST_F(ManualTakeover, StaleWrongMissingAndAmbiguousTargetsLeaveMissionUnchanged) {
+    running();auto request=takeover();request["control_version"]=-1;error(request,"EXECUTION_STALE");
+    request=takeover();request.erase("control_version");error(request,"EXECUTION_STALE");
+    request=takeover();request["uav_id"]="UAV-02";error(request,"EXECUTION_UAV_MISMATCH");
+    request=takeover();request.erase("uav_id");error(request,"EXECUTION_UAV_MISMATCH");
+    request=takeover();request["assigned_uav_ids"]=A{"UAV-01","UAV-02"};error(request,"INVALID_UAV");
+    request=takeover();request.at("target").as_object().erase("altitude");error(request,"INVALID_WAYPOINT");
+    request=takeover();request["target_area_radius_m"]="large";error(request,"INVALID_SEPARATION");
+    request=takeover();request["target_area_radius_m"]=0;error(request,"INVALID_SEPARATION");
+}
+TEST_F(ManualTakeover, CollisionAndUnavailableAircraftRejectBeforeStoppingMission) {
+    multiRunning();control("execution_pause","pause-for-collision");auto request=takeover();
+    for(const auto& e:executions())if(std::string(e.key())!=execution)request["target"]=e.value().as_object().at("position");
+    error(request,"TRAJECTORY_CONFLICT");
+    uavs.erase(SecurityPlanStore::str(exec(),"uav_id"));error(takeover(),"MOCK_UAV_UNAVAILABLE");
+}
+TEST_F(ManualTakeover, OrdinaryMoveCannotBypassOccupancyAndPendingMissionCannotBeTakenOver) {
+    deployed();start();error(takeover(),"EXECUTION_STATE_INVALID");tick();tick();tick();
+    error({{"action","execution_group_move"},{"request_id","ordinary-move"},{"assigned_uav_ids",A{"UAV-01"}},
+        {"target",O{{"latitude",39.},{"longitude",116.},{"altitude",80.}}}},"DRONE_ACTIVE_PLAN_CONFLICT");
+    const auto movedId=SecurityPlanStore::str(send(takeover()),"execution_id");execution=movedId;
+    tick();tick();tick();error(takeover("takeover-manual"),"EXECUTION_STATE_INVALID");
+}
+TEST_F(ManualTakeover, ConfigurationLockRejectsNewTakeoverMovement) {
+    running();send({{"action","begin_configuration"},{"plan_id",""}});error(takeover(),"CONFIGURATION_IN_PROGRESS");
+}
+TEST_F(ManualTakeover, PublicationAndRestartKeepOneAtomicOwnershipChange) {
+    running();const auto request=takeover(),before=store.snapshot();int publications=0;
+    EXPECT_THROW(store.transact(request,uavs,"Map",[&](const O& message){
+        ++publications;const auto& all=message.at("payload").as_object().at("executions").as_object();
+        EXPECT_EQ(all.size(),2u);EXPECT_EQ(all.at(execution).as_object().at("state"),"ABORTED");
+        throw std::runtime_error("test-publisher-failure");}),std::runtime_error);
+    EXPECT_EQ(publications,1);EXPECT_EQ(store.snapshot(),before);
+    const auto reply=send(request),snapshot=store.snapshot();
+    const auto file=std::filesystem::temp_directory_path()/("takeover-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(snapshot);}
+    SecurityPlanStore restored(file.string());restored.configureMock(snapshot.at("mock_execution").as_object());
+    EXPECT_EQ(restored.transact(request,uavs,"Map",[](const O&){}).at("execution_id"),reply.at("execution_id"));
+    EXPECT_EQ(restored.snapshot(),snapshot);std::filesystem::remove(file);
+}
+TEST_F(P54RealAdapter, ManualTakeoverClearsOldTargetAndOnlyDispatchesNewExecution) {
+    live();tick(1);tick(1);const auto original=execution;std::vector<std::string> sentIds;
+    // Reconfigure a transport recorder with the same measured position, then resume.
+    auto recorder=std::make_shared<security_mission::RealAdapter>([&](const std::string&){return measured;},
+        [&](const std::string&){return measured;},[&](const security_mission::Command& c){sentIds.push_back(c.execution_id);return true;},
+        [&](const std::string&){++held;return true;});
+    store.configureAdapter(store.snapshot().at("mock_execution").as_object(),recorder);
+    O r{{"action","execution_takeover_move"},{"request_id","real-takeover"},{"execution_id",original},{"uav_id","UAV-01"},
+        {"control_version",exec().at("control_version")},{"target",O{{"latitude",39.},{"longitude",116.},{"altitude",80.}}}};
+    const auto movedId=SecurityPlanStore::str(send(r),"execution_id");EXPECT_EQ(held,1);EXPECT_TRUE(sentIds.empty());
+    for(int i=0;i<8;++i)tick(1);
+    ASSERT_FALSE(sentIds.empty());for(const auto& id:sentIds)EXPECT_EQ(id,movedId);
+    EXPECT_EQ(exec().at("state"),"ABORTED");EXPECT_EQ(store.snapshot().at("executions").as_object().at(movedId).as_object().at("completed_waypoints"),1);
+}
+TEST_F(P54RealAdapter, ManualTakeoverHoldFailureIsDurableIdempotentAndNeverDispatchesMove) {
+    live();tick(1);tick(1);const int before=sent;holds=false;
+    O r{{"action","execution_takeover_move"},{"request_id","failed-takeover"},{"execution_id",execution},{"uav_id","UAV-01"},{"plan_id",p},{"mission_id",m},
+        {"control_version",exec().at("control_version")},{"target",O{{"latitude",39.},{"longitude",116.},{"altitude",80.}}}};
+    try{send(r);FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"REAL_HOLD_REJECTED");}
+    EXPECT_EQ(held,1);const auto failed=store.snapshot();ASSERT_EQ(failed.at("executions").as_object().size(),2u);
+    for(const auto& e:failed.at("executions").as_object()){
+        EXPECT_EQ(e.value().as_object().at("state"),"FAILED");EXPECT_EQ(e.value().as_object().at("failure_reason"),"REAL_HOLD_REJECTED");}
+    error(r,"REAL_HOLD_REJECTED");EXPECT_EQ(held,1);
+    for(int i=0;i<10;++i)tick(1);EXPECT_EQ(sent,before);EXPECT_EQ(store.snapshot(),failed);
+    const auto file=std::filesystem::temp_directory_path()/("takeover-failed-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(failed);}
+    SecurityPlanStore restored(file.string());restored.configureAdapter(failed.at("mock_execution").as_object(),real());
+    try{restored.transact(r,uavs,"QA",[](const O&){});FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"REAL_HOLD_REJECTED");}
+    restored.tickExecutions(1,uavs,[](const O&){});EXPECT_EQ(sent,before);std::filesystem::remove(file);
+}
+TEST_F(ManualTakeover, RealHoldFailureRetainsExistingGroupSafetyFailureRule) {
+    multi();const auto cfg=store.snapshot().at("mock_execution").as_object();std::set<std::string> held;int sent=0;
+    auto observe=[cfg](const std::string& uid){const auto& p=cfg.at("uavs").as_object().at(uid).as_object().at("home_position").as_object();
+        return security_mission::Position{p.at("latitude").to_number<double>(),p.at("longitude").to_number<double>(),p.at("altitude").to_number<double>()};};
+    store.configureAdapter(cfg,std::make_shared<security_mission::RealAdapter>(observe,observe,
+        [&](const security_mission::Command&){++sent;return true;},[&](const std::string& uid){held.insert(uid);return uid!="UAV-01";}));
+    start();tick();tick();tick();for(const auto& e:executions())if(SecurityPlanStore::str(e.value().as_object(),"uav_id")=="UAV-01")execution=std::string(e.key());
+    try{send(takeover());FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"REAL_HOLD_REJECTED");}
+    tick(1);EXPECT_EQ(held.size(),2u);for(const auto& e:executions())EXPECT_EQ(e.value().as_object().at("state"),"FAILED");
+    const int after=sent;tick(1);EXPECT_EQ(sent,after);
+}
+
+TEST_F(P54RealAdapter, ManualTakeoverPublicationFailureKeepsDurableIntentAndDoesNotHoldAgain) {
+    live();tick(1);const auto sourceId=execution;int publications=0;
+    O r{{"action","execution_takeover_move"},{"request_id","takeover-publication-failure"},{"execution_id",sourceId},{"uav_id","UAV-01"},
+        {"control_version",exec().at("control_version")},{"target",O{{"latitude",39.},{"longitude",116.},{"altitude",80.}}}};
+    O reply;EXPECT_NO_THROW(reply=store.transact(r,uavs,"Map",[&](const O& message){
+        ++publications;EXPECT_EQ(message.at("payload").as_object().at("executions").as_object().at(sourceId).as_object().at("state"),"ABORTED");
+        throw std::runtime_error("WS disconnected");}));
+    EXPECT_EQ(publications,1);EXPECT_EQ(held,1);const auto snapshot=store.snapshot();
+    EXPECT_EQ(store.transact(r,uavs,"Map",[](const O&){}).at("execution_id"),reply.at("execution_id"));
+    EXPECT_EQ(store.snapshot(),snapshot);EXPECT_EQ(held,1);
+}
+TEST_F(P54RealAdapter, ManualTakeoverPersistenceFailureCannotResumeOldController) {
+    live();tick(1);tick(1);const auto sourceId=execution;const int before=sent;
+    const auto file=std::filesystem::temp_directory_path()/("takeover-persist-failure-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    {std::ofstream out(file);out<<boost::json::serialize(store.snapshot());}
+    SecurityPlanStore persistent(file.string());persistent.configureAdapter(store.snapshot().at("mock_execution").as_object(),real());
+    const auto ready=persistent.snapshot();
+    O r{{"action","execution_takeover_move"},{"request_id","takeover-persistence-failure"},{"execution_id",sourceId},{"uav_id","UAV-01"},
+        {"control_version",ready.at("executions").as_object().at(sourceId).as_object().at("control_version")},
+        {"target",O{{"latitude",39.},{"longitude",116.},{"altitude",80.}}}};
+    // A directory occupying the atomic-replace destination injects a durable-write
+    // failure after hold without altering permissions or any production data.
+    std::filesystem::remove(file);std::filesystem::create_directory(file);
+    try{persistent.transact(r,uavs,"Map",[](const O&){});FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"REAL_TAKEOVER_PERSIST_FAILED");}
+    EXPECT_EQ(held,1);const auto failed=persistent.snapshot();ASSERT_EQ(failed.at("executions").as_object().size(),2u);
+    for(const auto& item:failed.at("executions").as_object()){
+        EXPECT_EQ(item.value().as_object().at("state"),"FAILED");EXPECT_EQ(item.value().as_object().at("failure_reason"),"REAL_TAKEOVER_PERSIST_FAILED");}
+    try{persistent.transact(r,uavs,"Map",[](const O&){});FAIL();}catch(const PlanError& e){EXPECT_EQ(e.code,"REAL_TAKEOVER_PERSIST_FAILED");}
+    EXPECT_EQ(held,1);persistent.tickExecutions(1,uavs,[](const O&){});EXPECT_EQ(sent,before);
+    std::filesystem::remove(file);std::filesystem::remove(file.string()+".tmp");
+}
+
 }

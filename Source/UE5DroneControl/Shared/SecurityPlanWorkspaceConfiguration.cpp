@@ -140,7 +140,7 @@ void USecurityPlanWorkspaceWidget::PrepareMissionExecution(const FString& InPlan
 }
 
 void USecurityPlanWorkspaceWidget::RequestFinishConfiguration(TFunction<void()> OnFinished) {
-    if(bPending)return;
+    if(IsMissionNavigationBlocked())return;
     AfterConfigurationFinish=MoveTemp(OnFinished);
     GuardConfigurationChange([this]{FinishConfiguration();});
 }
@@ -148,7 +148,8 @@ void USecurityPlanWorkspaceWidget::RequestFinishConfiguration(TFunction<void()> 
 void USecurityPlanWorkspaceWidget::FinishConfiguration() {
     if(bPending)return;
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    if(!PlanConfiguration::Active(Sync->GetPlans())){
+    if(!PlanConfiguration::IsOwner(Sync->GetPlans(),Sync->GetInstanceId())){
+        // Returning from a read-only view must not release another client's lease.
         bCreating=false;bList=true;auto Continue=MoveTemp(AfterConfigurationFinish);if(Continue)Continue();Refresh();return;
     }
     bPending=true;auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("end_configuration"));
@@ -238,6 +239,6 @@ void USecurityPlanWorkspaceWidget::RefreshConfiguration() {
     Actions[TEXT("request_map_plan_move")]->SetVisibility(Active?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
     if(Active)for(const TCHAR* Key:{TEXT("execution_start_prompt"),TEXT("execution_start_now"),TEXT("execution_reschedule")})Actions[Key]->SetVisibility(ESlateVisibility::Collapsed);
     // The persistent shell controls expose pause/abort without selecting another plan.
-    if(auto* Caption=Cast<UTextBlock>(Actions[TEXT("back_list")]->GetContent()))Caption->SetText(T(Active?TEXT("Configuration.Finish"):TEXT("Workflow.BackPlans")));
-    Actions[TEXT("back_list")]->SetVisibility(Active?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+    if(auto* Caption=Cast<UTextBlock>(Actions[TEXT("back_list")]->GetContent()))Caption->SetText(T(TEXT("Workflow.BackPlans")));
+    Actions[TEXT("back_list")]->SetVisibility(ESlateVisibility::Visible);
 }

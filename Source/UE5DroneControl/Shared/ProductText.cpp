@@ -493,7 +493,7 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Fleet.Browse"),NSLOCTEXT("DroneOps","Fleet.Browse","Return to browse / Esc")},
 {TEXT("Fleet.BoxHint"),NSLOCTEXT("DroneOps","Fleet.BoxHint","Drag a box. Shift adds, Ctrl toggles. Click empty space to clear.")},
 {TEXT("Fleet.MoveHint"),NSLOCTEXT("DroneOps","Fleet.MoveHint","Click a target, review the routes, then confirm. The primary UAV is the formation anchor.")},
-{TEXT("Fleet.BrowseHint"),NSLOCTEXT("DroneOps","Fleet.BrowseHint","Browse the map. Shift + drag also adds UAVs to the selection.")},
+{TEXT("Fleet.BrowseHint"),NSLOCTEXT("DroneOps","Fleet.BrowseHint","Click an aircraft to select it. To drag a selection box, first click 'Box select UAVs'.")},
 {TEXT("Fleet.Target"),NSLOCTEXT("DroneOps","Fleet.Target","Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved.")},
 {TEXT("Fleet.Execution"),NSLOCTEXT("DroneOps","Fleet.Execution","Fleet execution: {0}")},
 {TEXT("Fleet.SelectTwo"),NSLOCTEXT("DroneOps","Fleet.SelectTwo","Box select at least two UAVs first.")},
@@ -537,9 +537,9 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("FleetUX.Level"),NSLOCTEXT("DroneOps","FleetUX.Level","Current {0} m · keep height")},
 {TEXT("FleetUX.Selected"),NSLOCTEXT("DroneOps","FleetUX.Selected","{0} aircraft · anchor {1}")},
 {TEXT("FleetUX.EmptySelection"),NSLOCTEXT("DroneOps","FleetUX.EmptySelection","No aircraft selected")},
-{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Left-click an aircraft or drag to select. Shift adds; Ctrl toggles.")},
+{TEXT("FleetUX.SelectHint"),NSLOCTEXT("DroneOps","FleetUX.SelectHint","Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles.")},
 {TEXT("FleetUX.SelectionReady"),NSLOCTEXT("DroneOps","FleetUX.SelectionReady","Selection ready. Right-click the map to preview a move.")},
-{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Right-click a destination. Left-drag to change aircraft.")},
+{TEXT("FleetUX.PickHint"),NSLOCTEXT("DroneOps","FleetUX.PickHint","Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging.")},
 {TEXT("FleetUX.ReviewHint"),NSLOCTEXT("DroneOps","FleetUX.ReviewHint","Review height and formation.")},
 {TEXT("FleetUX.RunningHint"),NSLOCTEXT("DroneOps","FleetUX.RunningHint","The group moves together. Control it here.")},
 {TEXT("FleetUX.FinishedHint"),NSLOCTEXT("DroneOps","FleetUX.FinishedHint","Movement ended. You can choose a new target.")},
@@ -747,8 +747,8 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("MapUI.CurrentDevice"),NSLOCTEXT("DroneOps","MapUI.CurrentDevice","Current device")},
 {TEXT("MapUI.SelectDevice"),NSLOCTEXT("DroneOps","MapUI.SelectDevice","Select a device")},
 {TEXT("MapUI.CameraHint"),NSLOCTEXT("DroneOps","MapUI.CameraHint","Middle: pan · Right: orbit · Wheel: zoom")},
-{TEXT("MapUI.FleetPointerHint"),NSLOCTEXT("DroneOps","MapUI.FleetPointerHint","Left: select · Right-click: target · Middle: pan")},
-{TEXT("MapUI.FleetPointerHelp"),NSLOCTEXT("DroneOps","MapUI.FleetPointerHelp","Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom.")},
+{TEXT("MapUI.FleetPointerHint"),NSLOCTEXT("DroneOps","MapUI.FleetPointerHint","Left: select + Video · Right-click: target · Middle: pan")},
+{TEXT("MapUI.FleetPointerHelp"),NSLOCTEXT("DroneOps","MapUI.FleetPointerHelp","Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom. Clicking an aircraft also switches the main Video view to it; box selection keeps the current video.")},
 {TEXT("MapUI.RouteEditor"),NSLOCTEXT("DroneOps","MapUI.RouteEditor","Route editor")},
 {TEXT("MapUI.DefaultSpeed"),NSLOCTEXT("DroneOps","MapUI.DefaultSpeed","Default flight speed")},
 {TEXT("MapUI.DefaultSpeedHint"),NSLOCTEXT("DroneOps","MapUI.DefaultSpeedHint","Used for newly added waypoints.")},
@@ -769,6 +769,16 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Errors.PLAN_NOT_DEPLOYED"),NSLOCTEXT("DroneOps","Errors.PLAN_NOT_DEPLOYED","This plan's deployment state changed. Reload the plan and retry.")},
 {TEXT("Events.PLAN_REOPENED"),NSLOCTEXT("DroneOps","Events.PLAN_REOPENED","Plan {plan_name} reopened for editing")},
 {TEXT("FleetUX.ExecutionControls"),NSLOCTEXT("DroneOps","FleetUX.ExecutionControls","Execution controls")},
+{TEXT("Takeover.MoveTitle"),NSLOCTEXT("DroneOps","Takeover.MoveTitle","Manual takeover movement")},
+{TEXT("Takeover.Confirm"),NSLOCTEXT("DroneOps","Takeover.Confirm","Take over and move")},
+{TEXT("Takeover.Warning"),NSLOCTEXT("DroneOps","Takeover.Warning","This will end this aircraft's current task. Other aircraft will continue; the original task will not resume automatically.")},
+{TEXT("Takeover.SourceChanged"),NSLOCTEXT("DroneOps","Takeover.SourceChanged","The current task or control state changed. Select the destination again and confirm.")},
+{TEXT("Errors.EXECUTION_UAV_MISMATCH"),NSLOCTEXT("DroneOps","Errors.EXECUTION_UAV_MISMATCH","The task does not belong to the selected aircraft. Refresh the selection and retry.")},
+{TEXT("Events.MISSION_MANUALLY_TAKEN_OVER"),NSLOCTEXT("DroneOps","Events.MISSION_MANUALLY_TAKEN_OVER","Task ended for manual takeover movement")},
+{TEXT("Errors.REAL_TAKEOVER_PERSIST_FAILED"),NSLOCTEXT("DroneOps","Errors.REAL_TAKEOVER_PERSIST_FAILED","Takeover state could not be saved. Movement was stopped; inspect the aircraft and Backend before retrying.")},
+{TEXT("Errors.VIDEO_SELECTION_STALE"),NSLOCTEXT("DroneOps","Errors.VIDEO_SELECTION_STALE","Map selection changed. Click the aircraft again.")},
+{TEXT("Errors.MAP_VIDEO_SYNC_FAILED"),NSLOCTEXT("DroneOps","Errors.MAP_VIDEO_SYNC_FAILED","Aircraft selected, but video switching was not confirmed. Try again.")},
+{TEXT("MapShell.VideoSelectionPending"),NSLOCTEXT("DroneOps","MapShell.VideoSelectionPending","Confirming aircraft selection and video view...")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1265,7 +1275,7 @@ if(Source==TEXT("Confirm fleet move"))return Get(TEXT("Fleet.Confirm"));
 if(Source==TEXT("Return to browse / Esc"))return Get(TEXT("Fleet.Browse"));
 if(Source==TEXT("Drag a box. Shift adds, Ctrl toggles. Click empty space to clear."))return Get(TEXT("Fleet.BoxHint"));
 if(Source==TEXT("Click a target, review the routes, then confirm. The primary UAV is the formation anchor."))return Get(TEXT("Fleet.MoveHint"));
-if(Source==TEXT("Browse the map. Shift + drag also adds UAVs to the selection."))return Get(TEXT("Fleet.BrowseHint"));
+if(Source==TEXT("Click an aircraft to select it. To drag a selection box, first click 'Box select UAVs'."))return Get(TEXT("Fleet.BrowseHint"));
 if(Source==TEXT("Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved."))return Get(TEXT("Fleet.Target"));
 if(Source==TEXT("Fleet execution: {0}"))return Get(TEXT("Fleet.Execution"));
 if(Source==TEXT("Box select at least two UAVs first."))return Get(TEXT("Fleet.SelectTwo"));
@@ -1309,9 +1319,9 @@ if(Source==TEXT("Current {0} m · descend {1} m"))return Get(TEXT("FleetUX.Desce
 if(Source==TEXT("Current {0} m · keep height"))return Get(TEXT("FleetUX.Level"));
 if(Source==TEXT("{0} aircraft · anchor {1}"))return Get(TEXT("FleetUX.Selected"));
 if(Source==TEXT("No aircraft selected"))return Get(TEXT("FleetUX.EmptySelection"));
-if(Source==TEXT("Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."))return Get(TEXT("FleetUX.SelectHint"));
+if(Source==TEXT("Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles."))return Get(TEXT("FleetUX.SelectHint"));
 if(Source==TEXT("Selection ready. Right-click the map to preview a move."))return Get(TEXT("FleetUX.SelectionReady"));
-if(Source==TEXT("Right-click a destination. Left-drag to change aircraft."))return Get(TEXT("FleetUX.PickHint"));
+if(Source==TEXT("Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging."))return Get(TEXT("FleetUX.PickHint"));
 if(Source==TEXT("Review height and formation."))return Get(TEXT("FleetUX.ReviewHint"));
 if(Source==TEXT("The group moves together. Control it here."))return Get(TEXT("FleetUX.RunningHint"));
 if(Source==TEXT("Movement ended. You can choose a new target."))return Get(TEXT("FleetUX.FinishedHint"));
@@ -1519,8 +1529,8 @@ if(Source==TEXT("View video"))return Get(TEXT("MapUI.ViewVideo"));
 if(Source==TEXT("Current device"))return Get(TEXT("MapUI.CurrentDevice"));
 if(Source==TEXT("Select a device"))return Get(TEXT("MapUI.SelectDevice"));
 if(Source==TEXT("Middle: pan · Right: orbit · Wheel: zoom"))return Get(TEXT("MapUI.CameraHint"));
-if(Source==TEXT("Left: select · Right-click: target · Middle: pan"))return Get(TEXT("MapUI.FleetPointerHint"));
-if(Source==TEXT("Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom."))return Get(TEXT("MapUI.FleetPointerHelp"));
+if(Source==TEXT("Left: select + Video · Right-click: target · Middle: pan"))return Get(TEXT("MapUI.FleetPointerHint"));
+if(Source==TEXT("Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom. Clicking an aircraft also switches the main Video view to it; box selection keeps the current video."))return Get(TEXT("MapUI.FleetPointerHelp"));
 if(Source==TEXT("Route editor"))return Get(TEXT("MapUI.RouteEditor"));
 if(Source==TEXT("Default flight speed"))return Get(TEXT("MapUI.DefaultSpeed"));
 if(Source==TEXT("Used for newly added waypoints."))return Get(TEXT("MapUI.DefaultSpeedHint"));
@@ -1541,6 +1551,16 @@ if(Source==TEXT("This plan no longer exists. Close this dialog and return to the
 if(Source==TEXT("This plan's deployment state changed. Reload the plan and retry."))return Get(TEXT("Errors.PLAN_NOT_DEPLOYED"));
 if(Source==TEXT("Plan {plan_name} reopened for editing"))return Get(TEXT("Events.PLAN_REOPENED"));
 if(Source==TEXT("Execution controls"))return Get(TEXT("FleetUX.ExecutionControls"));
+if(Source==TEXT("Manual takeover movement"))return Get(TEXT("Takeover.MoveTitle"));
+if(Source==TEXT("Take over and move"))return Get(TEXT("Takeover.Confirm"));
+if(Source==TEXT("This will end this aircraft's current task. Other aircraft will continue; the original task will not resume automatically."))return Get(TEXT("Takeover.Warning"));
+if(Source==TEXT("The current task or control state changed. Select the destination again and confirm."))return Get(TEXT("Takeover.SourceChanged"));
+if(Source==TEXT("The task does not belong to the selected aircraft. Refresh the selection and retry."))return Get(TEXT("Errors.EXECUTION_UAV_MISMATCH"));
+if(Source==TEXT("Task ended for manual takeover movement"))return Get(TEXT("Events.MISSION_MANUALLY_TAKEN_OVER"));
+if(Source==TEXT("Takeover state could not be saved. Movement was stopped; inspect the aircraft and Backend before retrying."))return Get(TEXT("Errors.REAL_TAKEOVER_PERSIST_FAILED"));
+if(Source==TEXT("Map selection changed. Click the aircraft again."))return Get(TEXT("Errors.VIDEO_SELECTION_STALE"));
+if(Source==TEXT("Aircraft selected, but video switching was not confirmed. Try again."))return Get(TEXT("Errors.MAP_VIDEO_SYNC_FAILED"));
+if(Source==TEXT("Confirming aircraft selection and video view..."))return Get(TEXT("MapShell.VideoSelectionPending"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));
@@ -1602,5 +1622,9 @@ if(Source==TEXT("纯本地预演：后端刷新已禁用"))return Get(TEXT("Flee
 if(Source==TEXT("纯本地预演模式：已禁止请求后端 refresh"))return Get(TEXT("Fleet.Local"));
 if(Source==TEXT("PRIMARY / 主选中"))return Get(TEXT("Fleet.Primary"));
 if(Source==TEXT("MULTI / 多选中"))return Get(TEXT("Fleet.Multi"));
+if(Source==TEXT("Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."))return Get(TEXT("FleetUX.SelectHint"));
+if(Source==TEXT("Right-click a destination. Left-drag to change aircraft."))return Get(TEXT("FleetUX.PickHint"));
+if(Source==TEXT("Browse the map. Shift + drag also adds UAVs to the selection."))return Get(TEXT("Fleet.BrowseHint"));
+if(Source==TEXT("Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom. Clicking an aircraft also switches the main Video view to it; box selection keeps the current video."))return Get(TEXT("MapUI.FleetPointerHelp"));
 return FText::AsCultureInvariant(Source);
 }

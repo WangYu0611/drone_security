@@ -5,6 +5,7 @@
 #include "Shared/SecurityPlanWorkspaceWidget.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/PlanConfiguration.h"
+#include "Shared/DeploymentConfirmation.h"
 #include "Command/CommandScreenManager.h"
 #include "Command/CommandShellWidget.h"
 #include "DroneOps/Control/DroneOpsPlayerController.h"
@@ -38,6 +39,16 @@ FString MissionJson(const TSharedPtr<FJsonObject>& Value){FString Text;if(Value)
 struct FMissionMapPeer : TSharedFromThis<FMissionMapPeer> {
     FString Id=FGuid::NewGuid().ToString(),Http,Ws,Failure;bool Ready=false,Hydrated=false;double LastPing=0;FHttpRequestPtr Request;TSharedPtr<IWebSocket> Socket;
     TArray<FHttpRequestPtr> HydrationRequests;TMap<FString,TSharedPtr<FJsonObject>> Snapshots;
+    bool PlanDone=false;TSharedPtr<FJsonObject> PlanReply;
+    void PlanAction(const TSharedRef<FJsonObject>& Body,const TSharedPtr<FJsonObject>& State){
+        PlanDone=false;PlanReply.Reset();Body->SetStringField(TEXT("instance_id"),Id);Body->SetNumberField(TEXT("expected_version"),State->GetNumberField(TEXT("version")));
+        Request=FHttpModule::Get().CreateRequest();Request->SetURL(Http+TEXT("/api/security-plans"));Request->SetVerb(TEXT("POST"));Request->SetHeader(TEXT("Content-Type"),TEXT("application/json"));Request->SetContentAsString(MissionJson(Body));Request->SetTimeout(10);
+        const TWeakPtr<FMissionMapPeer> Weak=AsShared();Request->OnProcessRequestComplete().BindLambda([Weak](FHttpRequestPtr,FHttpResponsePtr Reply,bool Success){if(auto Self=Weak.Pin()){
+            Self->PlanDone=true;
+            if(!Success || !Reply || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Reply->GetContentAsString()),Self->PlanReply) || Reply->GetResponseCode()!=200)
+                Self->Failure=TEXT("Synthetic Map route action failed: ")+(Reply?Reply->GetContentAsString():TEXT("missing response"));
+        }});if(!Request->ProcessRequest())Failure=TEXT("Could not queue synthetic Map route action");
+    }
     void Hydrate(){
         const TWeakPtr<FMissionMapPeer> Weak=AsShared();
         for(const FString Path:{TEXT("/api/security-plans"),TEXT("/api/ui-preferences"),TEXT("/api/video-view")}){
@@ -76,6 +87,7 @@ class FPlanMissionActions : public IAutomationLatentCommand {
     FString Original,First,Second,Copy,CopyFirst,CopySecond,DeploymentsBefore,VideoBefore,Out;
     TSharedRef<FMissionMapPeer> MapPeer=MakeShared<FMissionMapPeer>();double CaptureAt=0;TSet<FString> Captured;
     int32 ExecutionsBefore=0,PlansBefore=0;double DeleteRevision=0;
+    DeploymentConfirmation::FIntent ConfirmedDeployment;
     bool Capture(const TCHAR* Name){
         if(FParse::Param(FCommandLine::Get(),TEXT("NullRHI")) || Captured.Contains(Name))return true;
         if(CaptureAt==0){CaptureAt=FPlatformTime::Seconds()+.7;return false;}if(FPlatformTime::Seconds()<CaptureAt)return false;
@@ -155,6 +167,49 @@ public:
             Test->TestTrue(TEXT("task rows remain usable during review"),P->MissionList->IsVisible() && P->MissionList->GetIsEnabled());
             Test->TestEqual(TEXT("check does not deploy"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
             if(!MapPeer->Ready || !Sync->IsRoleOnline(TEXT("Map")))return false;
+            // The synthetic Map follows the real route lease protocol; Command
+            // cannot assign PreDeployReview directly or impersonate a Map editor.
+            auto Begin=MakeShared<FJsonObject>();Begin->SetStringField(TEXT("action"),TEXT("begin_route_edit"));Begin->SetStringField(TEXT("plan_id"),Original);Begin->SetStringField(TEXT("mission_id"),Second);
+            Begin->SetNumberField(TEXT("content_revision"),Find(State,TEXT("plans"),Original)->GetNumberField(TEXT("content_revision")));Begin->SetBoolField(TEXT("workflow"),true);
+            MapPeer->PlanAction(Begin,State);Step=28;return false;
+        }
+        if(Step==28){
+            if(!MapPeer->PlanDone)return false;
+            const auto Acknowledged=Object(MapPeer->PlanReply,TEXT("state"));if(!Acknowledged || State->GetNumberField(TEXT("version"))<Acknowledged->GetNumberField(TEXT("version")))return false;
+            auto Finish=MakeShared<FJsonObject>();Finish->SetStringField(TEXT("action"),TEXT("finish_route_edit"));Finish->SetStringField(TEXT("plan_id"),Original);Finish->SetStringField(TEXT("mission_id"),Second);Finish->SetStringField(TEXT("edit_session_id"),Field(MapPeer->PlanReply,TEXT("edit_session_id")));
+            MapPeer->PlanAction(Finish,State);Step=29;return false;
+        }
+        if(Step==29){
+            if(!MapPeer->PlanDone || Field(Find(State,TEXT("plans"),Original),TEXT("workflow_step"))!=TEXT("PreDeployReview"))return false;
+            Step=30;return false;
+        }
+        if(Step==30){
+            Test->TestEqual(TEXT("review workflow is acknowledged before returning"),Field(Find(State,TEXT("plans"),Original),TEXT("workflow_step")),FString(TEXT("PreDeployReview")));
+            Test->TestTrue(TEXT("review retains the explicit return-to-list action"),P->Actions[TEXT("back_list")]->IsVisible());
+            P->Action(TEXT("back_list"),0);
+            Test->TestTrue(TEXT("return from review awaits lease-release ACK"),P->bPending && !P->bList);Step=31;return false;
+        }
+        if(Step==31){
+            Test->TestTrue(TEXT("return from review reaches the list after lease release"),P->bList && !PlanConfiguration::Active(State));
+            // Rebuilding the local workflow cache must not override explicit list navigation.
+            P->LastWorkflow.Empty();P->Refresh();
+            Test->TestTrue(TEXT("authoritative PreDeployReview refresh cannot reopen the closed editor"),P->bList);
+            Test->TestEqual(TEXT("leaving review does not deploy or clone"),MissionJson(Object(State,TEXT("deployments"))),DeploymentsBefore);
+            P->EditMission(Original,Second);Step=32;return false;
+        }
+        if(Step==32){
+            Test->TestTrue(TEXT("same draft reopens for the exact task with an acknowledged lease"),!P->bList && P->PlanId==Original && P->MissionId==Second && P->CanEditConfiguration());
+            P->PrepareMissionExecution(Original,Second);Step=33;return false;
+        }
+        if(Step==33){
+            Test->TestEqual(TEXT("reopened draft passes normal validation before redeployment"),Field(Find(State,TEXT("plans"),Original),TEXT("status")),FString(TEXT("READY")));
+            if(!MapPeer->Ready || !Sync->IsRoleOnline(TEXT("Map")))return false;
+            Test->TestFalse(TEXT("valid online review has no deployment blocker"),P->DeploymentBlockers->IsVisible());
+            ConfirmedDeployment=DeploymentConfirmation::Capture(State,Original,Sync->GetInstanceId());
+            const auto Validate=ConfirmedDeployment.Request(TEXT("validate"),State);
+            if(!Test->TestTrue(TEXT("Production confirmation freezes complete plan/content/lease guards"),Validate.IsValid()))return true;
+            Test->TestEqual(TEXT("Confirmation guards the acknowledged plan version"),Validate->GetNumberField(TEXT("expected_plan_version")),Find(State,TEXT("plans"),Original)->GetNumberField(TEXT("version")));
+            Test->TestEqual(TEXT("Confirmation guards the exact acquired lease"),Validate->GetNumberField(TEXT("configuration_acquired_version")),PlanConfiguration::Session(State)->GetNumberField(TEXT("acquired_version")));
             P->Action(TEXT("confirm_deployment"),0);Step=40;return false;
         }
         if(Step==40){
@@ -162,6 +217,10 @@ public:
             Test->TestEqual(TEXT("saving and redeploying original did not clone a plan"),Object(State,TEXT("plans"))->Values.Num(),PlansBefore);
             TSharedPtr<FJsonObject> OldDeployments;FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(DeploymentsBefore),OldDeployments);
             Test->TestEqual(TEXT("redeploy adds exactly one immutable snapshot"),Object(State,TEXT("deployments"))->Values.Num(),OldDeployments->Values.Num()+1);
+            const auto Deployment=Find(State,TEXT("deployments"),Field(Find(State,TEXT("plans"),Original),TEXT("deployment_id")));
+            if(!Test->TestTrue(TEXT("Redeployed plan resolves its immutable deployment snapshot"),Deployment.IsValid()))return true;
+            Test->TestEqual(TEXT("Three-stage deployment retains the plan frozen at confirmation"),Field(Deployment,TEXT("plan_id")),ConfirmedDeployment.PlanId);
+            Test->TestEqual(TEXT("Three-stage deployment retains the exact confirmed content revision"),Deployment->GetNumberField(TEXT("content_revision")),ConfirmedDeployment.ContentRevision);
             for(const auto& Entry:OldDeployments->Values)Test->TestEqual(TEXT("previous deployment snapshot is unchanged"),MissionJson(Find(State,TEXT("deployments"),FString(Entry.Key.ToView()))),MissionJson(Entry.Value->AsObject()));
             DeploymentsBefore=MissionJson(Object(State,TEXT("deployments")));
             P->Action(TEXT("copy_plan"),0);Step=41;return false;

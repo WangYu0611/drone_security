@@ -1972,8 +1972,8 @@ msgid "Click a target, review the routes, then confirm. The primary UAV is the f
 msgstr "点击目标，检查预览航线后确认。主选无人机作为队形锚点。"
 
 msgctxt "DroneOps,Fleet.BrowseHint"
-msgid "Browse the map. Shift + drag also adds UAVs to the selection."
-msgstr "浏览地图。也可按住 Shift 拖动追加框选。"
+msgid "Click an aircraft to select it. To drag a selection box, first click 'Box select UAVs'."
+msgstr "单击无人机选中；如需拖框选择，请先点击“框选无人机”。"
 
 msgctxt "DroneOps,Fleet.Target"
 msgid "Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved."
@@ -2148,16 +2148,16 @@ msgid "No aircraft selected"
 msgstr "尚未选择无人机"
 
 msgctxt "DroneOps,FleetUX.SelectHint"
-msgid "Left-click an aircraft or drag to select. Shift adds; Ctrl toggles."
-msgstr "左键点选或拖框选择无人机；Shift 添加，Ctrl 切换多选。"
+msgid "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles."
+msgstr "单击无人机选中；点击“框选无人机”后才能拖框选择。Shift 添加，Ctrl 切换选择。"
 
 msgctxt "DroneOps,FleetUX.SelectionReady"
 msgid "Selection ready. Right-click the map to preview a move."
 msgstr "选择已就绪，右击地图预览移动。"
 
 msgctxt "DroneOps,FleetUX.PickHint"
-msgid "Right-click a destination. Left-drag to change aircraft."
-msgstr "右击地图选择目的地；左键拖框可重新选择无人机。"
+msgid "Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging."
+msgstr "右击地图选择目的地；单击无人机可重新选择，点击“框选无人机”后才能拖框选择。"
 
 msgctxt "DroneOps,FleetUX.ReviewHint"
 msgid "Review height and formation."
@@ -2988,12 +2988,12 @@ msgid "Middle: pan · Right: orbit · Wheel: zoom"
 msgstr "中键平移 · 右键旋转 · 滚轮缩放"
 
 msgctxt "DroneOps,MapUI.FleetPointerHint"
-msgid "Left: select · Right-click: target · Middle: pan"
-msgstr "左键框选 · 右击选点 · 中键平移"
+msgid "Left: select + Video · Right-click: target · Middle: pan"
+msgstr "左键选机并切视频 · 右键选点 · 中键平移"
 
 msgctxt "DroneOps,MapUI.FleetPointerHelp"
-msgid "Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom."
-msgstr "左键点选或框选无人机；右键单击预览目的地，确认后执行。中键拖动平移；右键拖动在 2D 中平移、3D 中旋转；滚轮缩放。"
+msgid "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom. Clicking an aircraft also switches the main Video view to it; box selection keeps the current video."
+msgstr "单击无人机选中；点击“框选无人机”后才能拖框选择。右键单击预览目的地，确认后执行。中键拖动平移；右键拖动在 2D 中平移、3D 中旋转；滚轮缩放。点击无人机也会将 Video 主画面切换至该机；框选不切换视频。"
 
 msgctxt "DroneOps,MapUI.RouteEditor"
 msgid "Route editor"
@@ -3074,3 +3074,43 @@ msgstr "重新编辑方案：{plan_name}"
 msgctxt "DroneOps,FleetUX.ExecutionControls"
 msgid "Execution controls"
 msgstr "执行控制"
+
+msgctxt "DroneOps,Takeover.MoveTitle"
+msgid "Manual takeover movement"
+msgstr "手动接管移动"
+
+msgctxt "DroneOps,Takeover.Confirm"
+msgid "Take over and move"
+msgstr "接管并移动"
+
+msgctxt "DroneOps,Takeover.Warning"
+msgid "This will end this aircraft's current task. Other aircraft will continue; the original task will not resume automatically."
+msgstr "将终止这架无人机的当前任务，其他无人机继续；原任务不会自动恢复。"
+
+msgctxt "DroneOps,Takeover.SourceChanged"
+msgid "The current task or control state changed. Select the destination again and confirm."
+msgstr "当前任务或控制状态已变化，请重新选择目的地并确认。"
+
+msgctxt "DroneOps,Errors.EXECUTION_UAV_MISMATCH"
+msgid "The task does not belong to the selected aircraft. Refresh the selection and retry."
+msgstr "当前任务不属于选中的无人机，请刷新选择后重试。"
+
+msgctxt "DroneOps,Events.MISSION_MANUALLY_TAKEN_OVER"
+msgid "Task ended for manual takeover movement"
+msgstr "原任务已终止，交由手动接管移动"
+
+msgctxt "DroneOps,Errors.REAL_TAKEOVER_PERSIST_FAILED"
+msgid "Takeover state could not be saved. Movement was stopped; inspect the aircraft and Backend before retrying."
+msgstr "接管状态保存失败，移动已停止；请检查无人机及后端后再操作。"
+
+msgctxt "DroneOps,Errors.VIDEO_SELECTION_STALE"
+msgid "Map selection changed. Click the aircraft again."
+msgstr "地图选择已变化，请重新点击目标无人机。"
+
+msgctxt "DroneOps,Errors.MAP_VIDEO_SYNC_FAILED"
+msgid "Aircraft selected, but video switching was not confirmed. Try again."
+msgstr "无人机已选中，但视频切换未确认，请重试。"
+
+msgctxt "DroneOps,MapShell.VideoSelectionPending"
+msgid "Confirming aircraft selection and video view..."
+msgstr "正在确认无人机选择和视频画面…"

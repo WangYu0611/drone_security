@@ -173,7 +173,7 @@ private:
         e["state"]=state;e["updated_at"]=OperationalContext::now();e["control_version"]=number(e,"control_version")+1;
         executionEvent(doc,e,type);
     }
-    void commitExecutions(Object& next,const std::function<void(const Object&)>& publish) {
+    void commitExecutions(Object& next,const std::function<void(const Object&)>& publish,const std::string& takeoverRequest={}) {
         if(!adapter_->simulation())for(auto& item:next.at("executions").as_object()){
             auto& e=item.value().as_object();const auto status=str(e,"state");
             const auto* previous=state_.at("executions").as_object().if_contains(item.key());
@@ -185,8 +185,38 @@ private:
                 if(!held){e["failure_reason"]="REAL_HOLD_REJECTED";e["state"]="FAILED";}
             }
         }
+        if(!takeoverRequest.empty()) {
+            auto& request=next.at("execution_requests").as_object().at(takeoverRequest).as_object();
+            auto& moved=next.at("executions").as_object().at(str(request,"execution_id")).as_object();
+            auto& source=next.at("executions").as_object().at(str(moved,"source_execution_id")).as_object();
+            if(str(source,"failure_reason")=="REAL_HOLD_REJECTED") {
+                // The old transport target was not safely replaced. Persist both terminal
+                // states before reporting failure; no future tick may dispatch the move.
+                transition(next,source,"FAILED","MISSION_FAILED");
+                moved["failure_reason"]="REAL_HOLD_REJECTED";moved["completed_at"]=OperationalContext::now();
+                transition(next,moved,"FAILED","MISSION_FAILED");
+                request["error_code"]="REAL_HOLD_REJECTED";
+                request["error_message"]="Manual takeover could not hold the selected aircraft; no movement was started";
+            }
+        }
         next["execution_version"]=state_.at("execution_version").to_number<int64_t>()+1;
-        persist(next);
+        try {persist(next);} catch(...) {
+            if(adapter_->simulation() || takeoverRequest.empty())throw;
+            // Hold has already touched the real transport. Never leave the old
+            // in-memory controller running when durable replacement fails.
+            auto& request=next.at("execution_requests").as_object().at(takeoverRequest).as_object();
+            auto& moved=next.at("executions").as_object().at(str(request,"execution_id")).as_object();
+            auto& source=next.at("executions").as_object().at(str(moved,"source_execution_id")).as_object();
+            for(auto* e:{&source,&moved}) {
+                (*e)["failure_reason"]="REAL_TAKEOVER_PERSIST_FAILED";(*e)["completed_at"]=OperationalContext::now();
+                transition(next,*e,"FAILED","MISSION_FAILED");
+            }
+            request["error_code"]="REAL_TAKEOVER_PERSIST_FAILED";
+            request["error_message"]="Manual takeover could not save its state; movement stopped and operator review is required";
+            state_.swap(next);
+            try{publish(Object{{"type","SecurityPlansChanged"},{"payload",state_}});}catch(...){}
+            throw PlanError("REAL_TAKEOVER_PERSIST_FAILED","Manual takeover could not save its state; movement stopped and operator review is required");
+        }
         try {publish(Object{{"type","SecurityPlansChanged"},{"payload",next}});}catch(...){if(adapter_->simulation()){persist(state_);throw;}}
         state_.swap(next);
     }
@@ -217,12 +247,36 @@ private:
         auto& requests=state_.at("execution_requests").as_object();
         if(auto* old=requests.if_contains(key)) {
             if(old->as_object().at("request")!=identity)throw PlanError("REQUEST_ID_REUSED","Request id has different content");
+            if(!str(old->as_object(),"error_code").empty())throw PlanError(str(old->as_object(),"error_code"),str(old->as_object(),"error_message"));
             return {{"state",state_},{"execution_id",old->as_object().at("execution_id")}};
         }
         checkConfigurationRequest(state_,r);
         auto next=state_;auto& all=next.at("executions").as_object();auto id=str(r,"execution_id");
-        if(action=="execution_group_move") {
-            const auto members=assignment(r);if(members.empty())throw PlanError("INVALID_UAV","Select at least one UAV");
+        if(action=="execution_group_move" || action=="execution_takeover_move") {
+            const bool takeover=action=="execution_takeover_move";
+            const auto sourceId=takeover?id:std::string{};
+            Array members;
+            if(takeover) {
+                auto& source=lookup(all,sourceId,"EXECUTION_NOT_FOUND");
+                const auto uid=str(r,"uav_id");
+                if(uid.empty() || uid!=str(source,"uav_id"))throw PlanError("EXECUTION_UAV_MISMATCH","Selected UAV does not own this execution");
+                const auto* version=r.if_contains("control_version");
+                if(!version || !version->is_number() || version->to_number<double>()!=number(source,"control_version"))throw PlanError("EXECUTION_STALE","Execution state changed; retry");
+                const auto status=str(source,"state");
+                if(str(source,"plan_id").empty() || str(source,"deployment_id").empty() ||
+                   (status!="EXECUTING" && status!="RETURNING" && status!="PAUSED"))
+                    throw PlanError("EXECUTION_STATE_INVALID","Only an active deployed mission can be manually taken over");
+                if(source.at("simulation").as_bool()!=adapter_->simulation())throw PlanError("ADAPTER_MODE_MISMATCH","Execution adapter changed");
+                if(r.contains("assigned_uav_ids") || r.contains("assigned_uav_id"))
+                    throw PlanError("INVALID_UAV","Manual takeover accepts exactly one explicit UAV");
+                members.emplace_back(uid);
+                // Change only this local transaction copy before trajectory checks. An
+                // invalid target leaves the running mission and transport untouched.
+                source["completed_at"]=OperationalContext::now();source["completion_reason"]="MANUAL_TAKEOVER";
+                source["failure_reason"]="";transition(next,source,"ABORTED","MISSION_MANUALLY_TAKEN_OVER");
+                id.clear();
+            } else members=assignment(r);
+            if(members.empty())throw PlanError("INVALID_UAV","Select at least one UAV");
             std::set<std::string> unique;
             for(const auto& v:members){const std::string uid(v.as_string());if(!unique.insert(uid).second || !uavs.count(uid) || !mock_.at("uavs").as_object().contains(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Selected UAV is unavailable");
                 checkReservation(next,"",uid);
@@ -234,6 +288,7 @@ private:
             const auto anchor=currentPosition(next,std::string(members.front().as_string()));
             if(distance(anchor,target)>10000.)throw PlanError("TRAJECTORY_DOMAIN_UNSUPPORTED","Group move is limited to 10 km");
             const auto* area=r.if_contains("target_area_radius_m");
+            if(area && !area->is_number())throw PlanError("INVALID_SEPARATION","Target area radius must be a number");
             const double radius=area && area->is_number()?area->to_number<double>():10000.;
             if(!std::isfinite(radius) || radius<=0)throw PlanError("INVALID_SEPARATION","Target area radius must be positive");
             Object routes;bool needsPacking=false;
@@ -257,7 +312,15 @@ private:
             }
             checkTrajectories(next,routes);const auto group=allocate(next,"group-");
             for(const auto& member:routes){const std::string uid(member.key());const auto eid=createRuntimeExecution(next,member.value().as_object(),Object{{"name","Group Move"}},Object{{"name","Group Move"}},uid,"","","","");
-                auto& e=all.at(eid).as_object();e["group_id"]=group;e["control_kind"]="GROUP_MOVE";e["formation"]=needsPacking?"Line":"RelativeOffset";e["safety_separation_m"]=safetySeparation();executionEvent(next,e,"EXECUTION_CREATED");if(id.empty())id=eid;}
+                auto& e=all.at(eid).as_object();e["group_id"]=group;e["control_kind"]="GROUP_MOVE";e["formation"]=needsPacking?"Line":"RelativeOffset";e["safety_separation_m"]=safetySeparation();
+                if(takeover) {
+                    auto& source=all.at(sourceId).as_object();
+                    e["source_execution_id"]=sourceId;e["source_plan_id"]=source.at("plan_id");
+                    e["source_mission_id"]=source.at("mission_id");e["source_deployment_id"]=source.at("deployment_id");
+                    e["plan_name"]="Manual Takeover";e["mission_name"]="Manual Move";
+                    source["takeover_execution_id"]=eid;
+                }
+                executionEvent(next,e,"EXECUTION_CREATED");if(id.empty())id=eid;}
         } else if(action=="execution_start") {
             const auto pid=str(r,"plan_id"),mid=str(r,"mission_id");
             const auto& plan=lookup(next.at("plans").as_object(),pid,"PLAN_NOT_FOUND");
@@ -342,7 +405,10 @@ private:
             }
         }
         next.at("execution_requests").as_object()[key]=Object{{"request",identity},{"execution_id",id}};
-        commitExecutions(next,publish);return {{"state",state_},{"execution_id",id}};
+        commitExecutions(next,publish,action=="execution_takeover_move"?key:std::string{});
+        const auto& result=state_.at("execution_requests").as_object().at(key).as_object();
+        if(!str(result,"error_code").empty())throw PlanError(str(result,"error_code"),str(result,"error_message"));
+        return {{"state",state_},{"execution_id",id}};
     }
     void advanceExecution(Object& doc,Object& e,double dt) {
         const bool returning=str(e,"state")=="RETURNING";auto& points=e.at("route_snapshot").as_object().at("waypoints").as_array();

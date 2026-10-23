@@ -41,11 +41,14 @@ inline TSharedPtr<FJsonObject> Latest(const TSharedPtr<FJsonObject>& State,const
 inline TArray<TSharedPtr<FJsonObject>> RouteOwners(const TSharedPtr<FJsonObject>& State,const FString& SelectedPlan){
     TArray<TSharedPtr<FJsonObject>> Result;const auto All=PlanUI::Object(State,TEXT("executions"));if(!All)return Result;
     TMap<FString,TSharedPtr<FJsonObject>> LatestByMission;
+    auto Retired=[](const TSharedPtr<FJsonObject>& E){return PlanUI::Field(E,TEXT("completion_reason"))==TEXT("MANUAL_TAKEOVER");};
     auto Key=[](const TSharedPtr<FJsonObject>& E){const FString P=PlanUI::Field(E,TEXT("plan_id")),M=PlanUI::Field(E,TEXT("mission_id"));
         // Free fleet moves have no Mission. Show each UAV's latest acknowledged
         // move instead of accumulating every historic route on the map.
         if(P.IsEmpty() && PlanUI::Field(E,TEXT("control_kind"))==TEXT("GROUP_MOVE"))return TEXT("fleet/")+PlanUI::Field(E,TEXT("uav_id"));
         return P.IsEmpty() || M.IsEmpty()?PlanUI::Field(E,TEXT("execution_id")):P+TEXT("/")+M;};
+    // Retired members participate in newest-owner selection, so an older
+    // completed mission group cannot reappear after every member is taken over.
     for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(!E)continue;
         const FString P=PlanUI::Field(E,TEXT("plan_id"));if(!Active(E) && P!=SelectedPlan)continue;
         const auto Plan=PlanUI::Find(State,TEXT("plans"),P);
@@ -53,10 +56,20 @@ inline TArray<TSharedPtr<FJsonObject>> RouteOwners(const TSharedPtr<FJsonObject>
         const FString K=Key(E);auto& Old=LatestByMission.FindOrAdd(K);
         if(!Old || (Active(E) && !Active(Old)) || (Active(E)==Active(Old) && E->GetNumberField(TEXT("created_at"))>Old->GetNumberField(TEXT("created_at"))))Old=E;
     }
-    for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(!E)continue;const auto* Latest=LatestByMission.Find(Key(E));if(!Latest)continue;
+    for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();if(!E || Retired(E))continue;const auto* Latest=LatestByMission.Find(Key(E));if(!Latest)continue;
         const FString Group=PlanUI::Field(*Latest,TEXT("group_id"));
         if(E==*Latest || (!Group.IsEmpty() && PlanUI::Field(E,TEXT("group_id"))==Group))Result.Add(E);
     }return Result;
+}
+inline bool RetiredMissionOwnsRoute(const TSharedPtr<FJsonObject>& State,const FString& Plan,const FString& Mission) {
+    const auto Current=PlanUI::Find(State,TEXT("plans"),Plan),All=PlanUI::Object(State,TEXT("executions"));
+    if(!Current || !All)return false;
+    const auto Deployment=PlanUI::Field(Current,TEXT("deployment_id"));if(Deployment.IsEmpty())return false;
+    for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();
+        if(PlanUI::Field(E,TEXT("plan_id"))==Plan && PlanUI::Field(E,TEXT("mission_id"))==Mission
+            && PlanUI::Field(E,TEXT("completion_reason"))==TEXT("MANUAL_TAKEOVER")
+            && PlanUI::Field(E,TEXT("deployment_id"))==Deployment)return true;
+    }return false;
 }
 inline FText Summary(const TSharedPtr<FJsonObject>& E) {
     if(!E)return ProductText::Get(TEXT("Execution.None"));

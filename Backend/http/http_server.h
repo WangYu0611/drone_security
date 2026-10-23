@@ -172,6 +172,9 @@ private:
     std::thread plan_lease_thread_;
     boost::json::value ViewRequest(const boost::json::object& body,bool language);
     std::mutex plan_requests_mutex_;
+    struct MapSelectionIntent { int64_t serial=0, context_version=-1; std::string target; bool consumed=false; };
+    // Access only while holding plan_requests_mutex_. Instances are process-unique.
+    std::unordered_map<std::string,MapSelectionIntent> map_selection_intents_;
     // Once received telemetry exists, link/GPS loss never restores Mock home.
     // Serialize source arbitration and broadcasts to preserve source ordering.
     std::mutex telemetry_source_mutex_;

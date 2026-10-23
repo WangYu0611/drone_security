@@ -4,6 +4,7 @@
 #include "Map/PlanRouteVisualSet.h"
 #include "Map/FleetSelection.h"
 #include "Map/MapDronePresentation.h"
+#include "Map/MapMoveIntent.h"
 #include "MapFleetInteractionWidget.generated.h"
 
 UENUM()
@@ -31,6 +32,7 @@ public:
     bool ShowExecutionControls();
     bool OwnsPrimaryInput() const { return Mode!=EMapFleetMode::Browse || bDragging; }
     bool IsDragging() const { return bDragging; }
+    bool IsSelectionPending() const { return bSelectionPending; }
     bool IsOverControls(const FVector2D& Screen) const;
     bool IsAvailable() const;
     FString GetManagedGroup() const { return ManagedGroup; }
@@ -54,6 +56,7 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> TargetText;
     UPROPERTY() TObjectPtr<class UTextBlock> Result;
     UPROPERTY() TObjectPtr<class UTextBlock> SelectionText;
+    UPROPERTY() TObjectPtr<class UTextBlock> TakeoverWarning;
     UPROPERTY() TObjectPtr<class UTextBlock> HeightDeltaText;
     UPROPERTY() TObjectPtr<class UTextBlock> HeightLabel;
     UPROPERTY() TObjectPtr<class UTextBlock> TerrainInfo;
@@ -71,8 +74,8 @@ private:
     UPROPERTY() TMap<FName,TObjectPtr<class UCommandActionButton>> Buttons;
     EMapFleetMode Mode=EMapFleetMode::Browse;
     FleetSelection::EOperation SelectionOperation=FleetSelection::EOperation::Replace;
-    bool bDragging=false,bPointerValid=false,bPending=false,bHasTarget=false;
-    bool bSelectionPending=false;
+    bool bDragging=false,bPointerValid=false,bPointerMoved=false,bPending=false,bHasTarget=false;
+    bool bSelectionPending=false,bSelectionVideoPending=false;
     // The card follows explicit move intent, independently of selection mode,
     // telemetry warnings or the currently selected execution's lifetime.
     bool bPanelRequested=false;
@@ -84,9 +87,14 @@ private:
     TArray<int32> RequestedSelection;
     int32 RequestedPrimary=0;
     FVector2D Start=FVector2D::ZeroVector,Current=FVector2D::ZeroVector;
+    FVector2D PointerStartScreen=FVector2D::ZeroVector;
+    float PointerDragThreshold=5.f;
     FVector TargetGeographic=FVector::ZeroVector; // longitude, latitude, ellipsoid altitude
     TArray<int32> TargetMembers;
     int32 TargetPrimary=0;
+    MapMove::FTakeoverIntent TargetTakeover;
+    FVector TakeoverPreviewOrigin=FVector::ZeroVector;
+    double NextTakeoverPreviewUpdate=0;
     FString ExecutionId,MessageKey,ManagedGroup,AbortGroup;
     TMap<TWeakObjectPtr<class UWidgetComponent>,bool> SuppressedLabels;
     MapDronePresentation::FVisibilityOverride ModelVisibility;

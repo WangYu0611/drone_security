@@ -181,6 +181,46 @@ TEST_F(PlanLifecycle, EditingDeployedPlanKeepsPlanMissionRouteAndHistoryIdentity
     const auto oldId=SecurityPlanStore::str(before.at("plans").as_object().at(p).as_object(),"deployment_id");
     EXPECT_EQ(store.snapshot().at("deployments").as_object().at(oldId),before.at("deployments").as_object().at(oldId));
 }
+TEST_F(PlanLifecycle, ConflictingReeditCanExitCorrectAndRedeploySamePlan) {
+    store.configureMock({{"default_speed_mps",5.},{"safety_separation_m",1.5},{"uavs",O{
+        {"UAV-01",O{{"home_position",O{{"latitude",39.},{"longitude",115.9999},{"altitude",60.}}}}},
+        {"UAV-02",O{{"home_position",O{{"latitude",39.},{"longitude",116.0001},{"altitude",60.}}}}}}}});
+    send({{"action","assign"},{"assigned_uav_ids",A{"UAV-01","UAV-02"}},{"spacing_m",4.}});
+    auto safe=route();safe.at("waypoints").as_array()[1].as_object()["longitude"]=116.;
+    begin();send({{"action","save_route"},{"edit_session_id",sid},{"path",safe}});
+    send({{"action","validate"}});ASSERT_EQ(plan().at("status"),"READY");
+    send({{"action","review"}});send({{"action","deploy"}});
+    const auto deployedState=store.snapshot();const auto oldDeployment=plan().at("deployment_id");
+    const auto routeId=deployedState.at("missions").as_object().at(m).as_object().at("route_id");
+    send({{"action","begin_configuration"}});send(reopen());
+    // Reversing the route reverses the line slots: both approaches now cross.
+    auto crossing=safe;crossing.at("waypoints").as_array()[1].as_object()["latitude"]=38.999;
+    begin(true);send({{"action","save_route"},{"edit_session_id",sid},{"path",crossing},{"keep_editing",true}});
+    send({{"action","finish_route_edit"},{"edit_session_id",sid}});send({{"action","validate"}});
+    ASSERT_EQ(plan().at("status"),"DRAFT");EXPECT_EQ(plan().at("workflow_step"),"PreDeployReview");
+    EXPECT_EQ(store.snapshot().at("missions").as_object().at(m).as_object().at("status"),"DRAFT");
+    const auto validation=plan().at("validation").as_object();EXPECT_FALSE(validation.at("ready").as_bool());
+    ASSERT_EQ(validation.at("issues").as_array().size(),1u);
+    const auto issue=validation.at("issues").as_array()[0].as_object();
+    EXPECT_EQ(std::string(issue.at("mission_id").as_string()),m);EXPECT_EQ(issue.at("code"),"TRAJECTORY_CONFLICT");
+    const auto params=issue.at("params").as_object();EXPECT_EQ(params.at("uav_a"),"UAV-01");EXPECT_EQ(params.at("uav_b"),"UAV-02");
+    EXPECT_LT(params.at("minimum_separation_m").to_number<double>(),params.at("required_separation_m").to_number<double>());
+    error({{"action","review"}},"PLAN_NOT_READY");error({{"action","deploy"}},"PLAN_NOT_READY");
+    const auto blocked=store.snapshot();send({{"action","end_configuration"}});
+    EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());
+    EXPECT_EQ(store.snapshot().at("paths"),blocked.at("paths"));EXPECT_EQ(store.snapshot().at("deployments"),deployedState.at("deployments"));
+    send({{"action","begin_configuration"}});begin(true);
+    send({{"action","save_route"},{"edit_session_id",sid},{"path",safe},{"keep_editing",true}});
+    send({{"action","finish_route_edit"},{"edit_session_id",sid}});send({{"action","validate"}});
+    ASSERT_EQ(plan().at("status"),"READY");EXPECT_EQ(store.snapshot().at("missions").as_object().at(m).as_object().at("status"),"READY");
+    send({{"action","review"}});send({{"action","deploy"}});const auto after=store.snapshot();
+    EXPECT_EQ(plan().at("status"),"DEPLOYED");EXPECT_EQ(after.at("plans").as_object().size(),1u);
+    EXPECT_EQ(plan().at("mission_ids"),deployedState.at("plans").as_object().at(p).as_object().at("mission_ids"));
+    EXPECT_EQ(after.at("missions").as_object().at(m).as_object().at("route_id"),routeId);
+    EXPECT_EQ(after.at("deployments").as_object().size(),2u);EXPECT_NE(plan().at("deployment_id"),oldDeployment);
+    EXPECT_EQ(after.at("deployments").as_object().at(oldDeployment.as_string()),deployedState.at("deployments").as_object().at(oldDeployment.as_string()));
+    EXPECT_TRUE(after.at("configuration_session").is_null());EXPECT_TRUE(after.at("executions").as_object().empty());
+}
 TEST_F(PlanLifecycle, ReopenRequiresOwnedLeaseAndCurrentRevision) {
     deployed();error(reopen(),"CONFIGURATION_REQUIRED");send({{"action","begin_configuration"}});
     auto wrong=reopen();wrong["instance_id"]="Other";error(wrong,"CONFIGURATION_IN_PROGRESS");
@@ -244,4 +284,104 @@ TEST_F(PlanLifecycle, LifecyclePublisherFailureRollsBackArchiveAndCurrentState) 
     request=reopen();request["plan_id"]=p;request["instance_id"]="Map-1";request["expected_version"]=deployedBefore.at("version");
     EXPECT_THROW(store.transact(request,uavs,"QA",[](const O&){throw std::runtime_error("publisher rejected");}),std::runtime_error);
     EXPECT_EQ(deployedBefore,store.snapshot());
+}
+
+namespace {
+struct GuardedDeployment : P4Workflow {
+    void SetUp() override {P4Workflow::SetUp();ready();send({{"action","begin_configuration"}});send({{"action","review"}});}
+    O guarded(const char* action) {
+        const auto state=store.snapshot();const auto chosen=plan();
+        return {{"action",action},{"expected_version",state.at("version")},{"expected_plan_version",chosen.at("version")},
+            {"expected_content_revision",chosen.at("content_revision")},
+            {"configuration_acquired_version",state.at("configuration_session").as_object().at("acquired_version")}};
+    }
+};
+}
+TEST_F(GuardedDeployment, HeartbeatBetweenAllThreeStagesPreservesConfirmedPlan) {
+    const auto revision=plan().at("content_revision");const auto lease=store.snapshot().at("configuration_session").as_object().at("acquired_version");
+    for(const auto* action:{"validate","review","deploy"}){
+        auto request=guarded(action);const auto expectedPlan=plan().at("version");
+        store.heartbeat("Map-1",[](const O&){});
+        EXPECT_GT(store.snapshot().at("version").to_number<int64_t>(),request.at("expected_version").to_number<int64_t>());
+        EXPECT_EQ(plan().at("version"),expectedPlan);EXPECT_EQ(request.at("configuration_acquired_version"),lease);
+        const auto reply=send(request);EXPECT_EQ(reply.at("state"),store.snapshot());
+        EXPECT_EQ(plan().at("content_revision"),revision);
+        EXPECT_EQ(plan().at("version").to_number<int64_t>(),expectedPlan.to_number<int64_t>()+1);
+    }
+    EXPECT_EQ(plan().at("status"),"DEPLOYED");EXPECT_EQ(store.snapshot().at("deployments").as_object().size(),1u);
+    EXPECT_TRUE(store.snapshot().at("configuration_session").is_null());EXPECT_TRUE(store.snapshot().at("executions").as_object().empty());
+}
+TEST_F(GuardedDeployment, GuardsRejectMismatchEvenAtCurrentGlobalVersion) {
+    for(const auto* action:{"validate","review","deploy"}){
+        auto bad=guarded(action);bad["expected_content_revision"]=plan().at("content_revision").to_number<int64_t>()-1;
+        error(bad,"CONTENT_REVISION_CONFLICT");
+        bad=guarded(action);bad["expected_plan_version"]=plan().at("version").to_number<int64_t>()-1;error(bad,"VERSION_CONFLICT");
+        bad=guarded(action);bad["configuration_acquired_version"]=0;error(bad,"VERSION_CONFLICT");
+        bad=guarded(action);bad["instance_id"]="Other";error(bad,"CONFIGURATION_IN_PROGRESS");
+        bad=guarded(action);bad["plan_id"]="another-plan";error(bad,"CONFIGURATION_IN_PROGRESS");
+        for(const auto* key:{"expected_content_revision","expected_plan_version","configuration_acquired_version"}){
+            bad=guarded(action);bad[key]="wrong-type";error(bad,"VERSION_CONFLICT");
+        }
+    }
+}
+TEST_F(GuardedDeployment, StaleContentAndPlanStateCannotBeReconfirmed) {
+    for(const auto* action:{"validate","review","deploy"}){
+        auto old=guarded(action);send({{"action","rename_mission"},{"name","Edited after confirmation"}});
+        old["expected_version"]=store.snapshot().at("version");old["expected_plan_version"]=plan().at("version");
+        error(old,"CONTENT_REVISION_CONFLICT");
+        old=guarded(action);send({{"action","validate"}});old["expected_version"]=store.snapshot().at("version");
+        error(old,"VERSION_CONFLICT");
+    }
+}
+TEST_F(GuardedDeployment, ReacquiredAndMissingLeaseCannotUseOldGuard) {
+    std::vector<O> requests;for(const auto* action:{"validate","review","deploy"})requests.push_back(guarded(action));
+    send({{"action","end_configuration"}});
+    for(auto request:requests){request["expected_version"]=store.snapshot().at("version");error(request,"VERSION_CONFLICT");}
+    send({{"action","begin_configuration"}});
+    for(auto request:requests){request["expected_version"]=store.snapshot().at("version");error(request,"VERSION_CONFLICT");}
+}
+TEST_F(GuardedDeployment, LegacyAndIncompleteGuardsKeepStrictVersions) {
+    for(const auto* action:{"validate","review","deploy"}){
+        const auto stale=store.snapshot().at("version");store.heartbeat("Map-1",[](const O&){});
+        error({{"action",action},{"expected_version",stale}},"VERSION_CONFLICT");
+        for(const auto* key:{"expected_content_revision","expected_plan_version","configuration_acquired_version"}){
+            auto incomplete=guarded(action);incomplete.erase(key);error(incomplete,"VERSION_CONFLICT");
+        }
+        auto missingVersion=guarded(action);missingVersion.erase("expected_version");
+        // Bypass send's default expected_version so the protocol omission is real.
+        missingVersion["plan_id"]=p;missingVersion["instance_id"]="Map-1";
+        const auto before=store.snapshot();
+        try{store.transact(missingVersion,uavs,"QA",[](const O&){});FAIL()<<action;}
+        catch(const PlanError& e){EXPECT_EQ(e.code,"VERSION_CONFLICT");}EXPECT_EQ(store.snapshot(),before);
+    }
+}
+TEST_F(GuardedDeployment, FutureAndPreLeaseVersionsRejected) {
+    for(const auto* action:{"validate","review","deploy"}){
+        auto bad=guarded(action);bad["expected_version"]=store.snapshot().at("version").to_number<int64_t>()+1;error(bad,"VERSION_CONFLICT");
+        bad=guarded(action);bad["expected_version"]=bad.at("configuration_acquired_version").to_number<int64_t>()-1;error(bad,"VERSION_CONFLICT");
+        bad=guarded(action);bad["expected_version"]=store.snapshot().at("version").to_number<double>()-.5;error(bad,"VERSION_CONFLICT");
+    }
+}
+TEST_F(GuardedDeployment, HeartbeatAllowanceStillChecksRouteLeaseAndReadiness) {
+    begin();
+    for(const auto* action:{"review","deploy"}){auto request=guarded(action);store.heartbeat("Map-1",[](const O&){});error(request,"PLAN_EDIT_IN_PROGRESS");}
+    send({{"action","discard_route_edit"},{"edit_session_id",sid}});send({{"action","assign"},{"assigned_uav_ids",A{}}});
+    auto check=guarded("validate");store.heartbeat("Map-1",[](const O&){});send(check);
+    EXPECT_EQ(plan().at("status"),"DRAFT");EXPECT_FALSE(plan().at("validation").as_object().at("ready").as_bool());
+    for(const auto* action:{"review","deploy"}){auto request=guarded(action);store.heartbeat("Map-1",[](const O&){});error(request,"PLAN_NOT_READY");}
+    EXPECT_TRUE(store.snapshot().at("deployments").as_object().empty());
+}
+
+TEST_F(GuardedDeployment, WorkflowOnlyChangesInvalidatePlanGuardButNoopsDoNot) {
+    std::vector<O> requests;for(const auto* action:{"validate","review","deploy"})requests.push_back(guarded(action));
+    const auto revision=plan().at("content_revision");const auto version=plan().at("version").to_number<int64_t>();
+    send({{"action","set_workflow_step"},{"workflow_step","BasicInfo"}});
+    EXPECT_EQ(plan().at("content_revision"),revision);EXPECT_EQ(plan().at("version").to_number<int64_t>(),version+1);
+    for(auto request:requests){request["expected_version"]=store.snapshot().at("version");error(request,"VERSION_CONFLICT");}
+    const auto unchanged=plan();send({{"action","set_workflow_step"},{"workflow_step","BasicInfo"}});
+    EXPECT_EQ(plan().at("version"),unchanged.at("version"));EXPECT_EQ(plan().at("updated_at"),unchanged.at("updated_at"));
+    begin(true);const auto editingVersion=plan().at("version");send({{"action","mark_route_dirty"},{"edit_session_id",sid}});
+    EXPECT_EQ(plan().at("version"),editingVersion);EXPECT_EQ(plan().at("content_revision"),revision);
+    send({{"action","discard_route_edit"},{"edit_session_id",sid}});
+    EXPECT_EQ(plan().at("version").to_number<int64_t>(),editingVersion.to_number<int64_t>()+1);
 }

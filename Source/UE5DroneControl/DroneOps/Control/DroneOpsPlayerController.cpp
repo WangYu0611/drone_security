@@ -973,6 +973,9 @@ void ADroneOpsPlayerController::SendVideoKeyboardTarget()
 void ADroneOpsPlayerController::OnPrimaryClick()
 {
     if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
+        // The Map Slate pointer handler owns selection. Keep the legacy Shift
+        // rectangle path out of Map browsing while retaining waypoint editing.
+        if(!bPathEditMode)return;
         const auto* Fleet=CommandScreenManager->GetMapShell()->GetFleetInteraction();
         if(Fleet && Fleet->OwnsPrimaryInput())return;
         auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
@@ -1082,6 +1085,9 @@ void ADroneOpsPlayerController::OnPrimaryClick()
 
 void ADroneOpsPlayerController::OnPrimaryReleased()
 {
+    if(CommandScreenManager && CommandScreenManager->GetMapShell() && !bPathEditMode) {
+        bIsBoxSelecting=false;bIsBoxSelectingBP=false;NotifyBoxSelectHide();return;
+    }
     if(CommandScreenManager && CommandScreenManager->GetMapShell()) {
         auto* Move=CommandScreenManager->GetMapShell()->GetMovePanel();
         if(Move && Move->IsMoving()){return;}
@@ -1103,6 +1109,10 @@ void ADroneOpsPlayerController::OnPrimaryReleased()
 
 void ADroneOpsPlayerController::FinishBoxSelectIfPending()
 {
+	if(CommandScreenManager && CommandScreenManager->GetMapShell() && !bPathEditMode)
+	{
+		bIsBoxSelecting=false;bIsBoxSelectingBP=false;NotifyBoxSelectHide();return;
+	}
 	if (!bIsBoxSelecting)
 	{
 		return;

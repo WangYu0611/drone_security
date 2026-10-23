@@ -70,7 +70,7 @@ class FMapStartupVisibility : public IAutomationLatentCommand
     bool WaitingForClick=false;
     TArray<int32> InitialSelection;
     TWeakObjectPtr<UUserWidget> InitialCreditsWidget;
-    FString Out,InitialVideo;
+    FString Out,InitialVideo,AfterClickVideo;
     TSharedRef<FJsonObject> Report=MakeShared<FJsonObject>();
 
     struct FTilesState
@@ -615,13 +615,15 @@ public:
         }
         if(Phase==4)
         {
-            Test->TestEqual(TEXT("Independent aircraft clicks never switch video"),Video(Sync),InitialVideo);
+
             if(WaitingForClick)
             {
-                const bool Ack=Registry->GetPrimarySelectedDrone()==ClickId && Registry->GetMultiSelectedDrones()==TArray<int32>{ClickId};
+                const bool Ack=!Sync->IsMapSelectionPending() && Registry->GetPrimarySelectedDrone()==ClickId && Registry->GetMultiSelectedDrones()==TArray<int32>{ClickId}
+                    && PlanUI::Field(Sync->GetVideoView(),TEXT("video_target_uav_id"))==FString::Printf(TEXT("UAV-%02d"),ClickId);
                 if(!Ack && Now-ActionAt<12.)return false;
                 Test->TestTrue(*FString::Printf(TEXT("Independent UAV %d click acknowledged as exactly that aircraft"),ClickId),Ack);
-                WaitingForClick=false;++ClickId;Fleet->Refresh();
+                Test->TestEqual(TEXT("Explicit geometry click switches Video to the actual hit"),PlanUI::Field(Sync->GetVideoView(),TEXT("video_target_uav_id")),FString::Printf(TEXT("UAV-%02d"),ClickId));
+                AfterClickVideo=Video(Sync);WaitingForClick=false;++ClickId;Fleet->Refresh();
             }
             if(ClickId<=4)
             {
@@ -633,7 +635,10 @@ public:
                 const bool Began=Fleet->BeginPointer(Screen,false,false);
                 Test->TestTrue(TEXT("Aircraft left click begins through production fleet input"),Began);
                 if(!Began){++ClickId;return false;}
-                Fleet->EndPointer(Screen,true);WaitingForClick=true;ActionAt=Now;return false;
+                const auto BeforeClickVideo=Video(Sync);
+                Fleet->EndPointer(Screen,true);
+                Test->TestEqual(TEXT("Geometry click cannot optimistically replace the Video snapshot"),Video(Sync),BeforeClickVideo);
+                WaitingForClick=true;ActionAt=Now;return false;
             }
             Test->TestTrue(TEXT("Original selection restore requested"),Sync->SetLocalSelection(InitialPrimary,InitialSelection));
             Phase=5;ActionAt=Now;return false;
@@ -658,7 +663,7 @@ public:
                 Test->TestFalse(TEXT("Zooming back out removes model presentation"),Fleet->IsModelPresentation(Id));
                 Test->TestTrue(TEXT("Zooming back out restores an actually painted aircraft icon"),Fleet->PaintedDroneIds.Contains(Id));
             }
-            Test->TestEqual(TEXT("Zoom transitions preserve explicit video target"),Video(Sync),InitialVideo);
+            Test->TestEqual(TEXT("Zoom transitions preserve the last clicked video target"),Video(Sync),AfterClickVideo);
             Test->TestEqual(TEXT("Zoom transitions preserve primary selection"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
             Test->TestTrue(TEXT("Zoom transitions preserve group selection"),Registry->GetMultiSelectedDrones()==InitialSelection);
             Report->SetBoolField(TEXT("far_icons_restored"),Fleet->PaintedDroneIds.Num()==4);
@@ -668,9 +673,9 @@ public:
         if(!Restored && Now-ActionAt<12.)return false;
         Test->TestEqual(TEXT("Post-click primary selection restored"),Registry->GetPrimarySelectedDrone(),InitialPrimary);
         Test->TestTrue(TEXT("Post-click group selection restored"),Registry->GetMultiSelectedDrones()==InitialSelection);
-        Test->TestEqual(TEXT("All startup, Locate and selection actions preserve explicit video target"),Video(Sync),InitialVideo);
+        Test->TestEqual(TEXT("Generic selection restore preserves the last clicked video target"),Video(Sync),AfterClickVideo);
         Report->SetBoolField(TEXT("selection_preserved"),Registry->GetPrimarySelectedDrone()==InitialPrimary && Registry->GetMultiSelectedDrones()==InitialSelection);
-        Report->SetBoolField(TEXT("video_preserved"),Video(Sync)==InitialVideo);
+        Report->SetBoolField(TEXT("map_click_video_followed"),!AfterClickVideo.IsEmpty() && Video(Sync)==AfterClickVideo);
         Test->TestTrue(TEXT("Near model check focuses the accepted aircraft position"),Map->FocusDrone(LocateId,true));
         Map->ZoomView(100);Phase=8;ActionAt=Now;Save();return false;
     }

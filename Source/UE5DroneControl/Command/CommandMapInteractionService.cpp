@@ -98,10 +98,13 @@ public:
         if((bWaypointDrag || bGroundClick) && E.GetEffectingButton()!=EKeys::LeftMouseButton)return true;
         if(E.GetEffectingButton()==EKeys::LeftMouseButton && Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()))
             if(auto* F=Fleet();F && F->IsAvailable()){
-                // Selection owns left input even while an ACK is pending.
-                // A refused selection must not fall through to legacy panning.
+                // Fleet input owns ordinary clicks and explicitly armed box
+                // selection. Never fall through to legacy Shift-box selection.
                 Service->CancelPointer();F->CancelGesture();
-                bFleetGesture=F->BeginPointer(E.GetScreenSpacePosition(),E.IsShiftDown(),E.IsControlDown());return true;
+                bFleetGesture=F->BeginPointer(E.GetScreenSpacePosition(),E.IsShiftDown(),E.IsControlDown());
+                if(bFleetGesture && F->GetMode()!=EMapFleetMode::BoxSelect)
+                    Service->BeginPointer(EKeys::LeftMouseButton,E.GetScreenSpacePosition(),true,E.IsShiftDown());
+                return true;
             }
         if(bFleetGesture){if(auto* F=Fleet())F->CancelGesture();bFleetGesture=false;}
         if(Service.IsValid() && E.GetEffectingButton()==EKeys::LeftMouseButton
@@ -119,7 +122,12 @@ public:
         return false;
     }
     bool HandleMouseMoveEvent(FSlateApplication&,const FPointerEvent& E) override {
-        if(bFleetGesture){if(auto* F=Fleet())F->MovePointer(E.GetScreenSpacePosition(),Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()));return true;}
+        if(bFleetGesture){
+            const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition());
+            if(auto* F=Fleet())F->MovePointer(E.GetScreenSpacePosition(),Over);
+            if(Service.IsValid())Service->MovePointer(E.GetScreenSpacePosition(),Over);
+            return true;
+        }
         if(bGroundClick){
             FVector2D Position;
             const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position);
@@ -135,7 +143,12 @@ public:
         return false;
     }
     bool HandleMouseButtonUpEvent(FSlateApplication&,const FPointerEvent& E) override {
-        if(bFleetGesture && E.GetEffectingButton()==EKeys::LeftMouseButton){if(auto* F=Fleet())F->EndPointer(E.GetScreenSpacePosition(),Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()));bFleetGesture=false;return true;}
+        if(bFleetGesture && E.GetEffectingButton()==EKeys::LeftMouseButton){
+            const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition());
+            if(Service.IsValid())Service->EndPointer(EKeys::LeftMouseButton,E.GetScreenSpacePosition(),Over);
+            if(auto* F=Fleet())F->EndPointer(E.GetScreenSpacePosition(),Over);
+            bFleetGesture=false;return true;
+        }
         if(bGroundClick && E.GetEffectingButton()==EKeys::LeftMouseButton){
             FVector2D Position;
             const bool Over=Service.IsValid() && Service->CanUsePointer(E.GetScreenSpacePosition()) && WaypointPosition(E.GetScreenSpacePosition(),Position);
@@ -538,6 +551,9 @@ void UCommandMapInteractionService::SetMapMode(ECommandMapMode Mode)
     bModeRequested = true;
     if (CurrentMapMode == Mode) { ApplyPendingMapMode(); return; }
     CancelPointer(); bZoomAnchored=false;
+    if(Controller.IsValid())
+        if(auto* Manager=Controller->GetCommandScreenManager();Manager && Manager->GetMapShell())
+            if(auto* Fleet=Manager->GetMapShell()->GetFleetInteraction())Fleet->CancelGesture();
     CurrentMapMode = Mode;
     ApplyPendingMapMode();
     OnMapModeChanged.Broadcast(CurrentMapMode);

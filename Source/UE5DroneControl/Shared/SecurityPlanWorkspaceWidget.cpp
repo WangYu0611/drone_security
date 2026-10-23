@@ -2,6 +2,7 @@
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/ExecutionPresentation.h"
 #include "Shared/PlanConfiguration.h"
+#include "Shared/DeploymentConfirmation.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/ProgressBar.h"
 #include "Components/CheckBox.h"
@@ -18,6 +19,16 @@
 #endif
 using namespace PlanUI;
 namespace {
+TArray<FText> ValidationIssueLines(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan){
+    TArray<FText> Lines;const auto Validation=Object(Plan,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues=nullptr;
+    if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();const auto Params=Object(I,TEXT("params"));
+        const FString MissionName=Field(Find(State,TEXT("missions"),Field(I,TEXT("mission_id"))),TEXT("name"));
+        Lines.Add(MissionName.IsEmpty()?ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code"))):FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(MissionName),ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code")))));
+        if(Params && Params->HasField(TEXT("minimum_separation_m")) && Params->HasField(TEXT("required_separation_m")))
+            Lines.Add(FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m")))));
+    }
+    return Lines;
+}
 TSharedPtr<FJsonObject> MissionExecution(const TSharedPtr<FJsonObject>& State,const FString& Plan,const FString& Mission){
     // A later execution in another task must never replace this task's controls.
     TSharedPtr<FJsonObject> Result;const auto All=Object(State,TEXT("executions"));
@@ -86,10 +97,7 @@ void UPlanReviewWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TShar
 
     }
     Lines.Add(T(TEXT("Workflow.CheckInformation")));
-    Lines.Add(T(TEXT("Plan.Blocking")));const auto Validation=Object(Plan,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues;
-    if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();const auto Params=Object(I,TEXT("params"));
-        if(Params && Params->HasField(TEXT("minimum_separation_m")))Lines.Add(FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m")))));
-        Lines.Add(FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(Field(Find(State,TEXT("missions"),Field(I,TEXT("mission_id"))),TEXT("name"))),ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code")))));}
+    Lines.Add(T(TEXT("Plan.Blocking")));Lines.Append(ValidationIssueLines(State,Plan));
     Lines.Add(T(TEXT("Plan.Warnings")));Lines.Add(T(TEXT("Plan.ReviewNotice")));if(Field(Plan,TEXT("status"))==TEXT("DEPLOYED") && !ExecutionUI::Latest(State,Field(Plan,TEXT("id"))))Lines.Add(T(TEXT("Workflow.DeploymentNotice")));
     const auto Deployment=Find(State,TEXT("deployments"),Field(Plan,TEXT("deployment_id")));
     if(Deployment){Lines.Add(T(TEXT("Plan.Deployment")));Lines.Add(User(Field(Deployment,TEXT("id"))));Lines.Add(FText::AsDateTime(FDateTime::FromUnixTimestamp(Deployment->GetNumberField(TEXT("deployed_at")))));}
@@ -172,6 +180,8 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     Label(WidgetTree,RoutePage,T(TEXT("Workflow.RouteEditing")),20);RouteStatus=Label(WidgetTree,RoutePage,FText::GetEmpty(),16);
     Add(RoutePage,TEXT("retry_map"),TEXT("Workflow.ReturnMap"));
     ReviewHeading=Label(WidgetTree,ReviewPage,T(TEXT("Workflow.PreDeployReview")),20);
+    DeploymentBlockers=Label(WidgetTree,ReviewPage,FText::GetEmpty(),16);
+    DeploymentBlockers->SetColorAndOpacity(CommandTheme::Warning);
     Add(ReviewPage,TEXT("confirm_deployment"),TEXT("Execution.Deploy"));
     Add(ReviewPage,TEXT("execution_start_prompt"),TEXT("Execution.Start"));
     Add(ReviewPage,TEXT("execution_open"),TEXT("Execution.Open"));
@@ -252,7 +262,9 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     Review->Refresh(State,P);MissionList->Refresh(State,P,MissionId);
     if(!bInitializedSelection && Sync->IsHydrated()){bInitializedSelection=true;bList=!P;}
     const FString Workflow=Field(P,TEXT("workflow_step"));
-    if(LastWorkflow!=PlanId+Workflow){if(Workflow==TEXT("PreDeployReview"))bList=false;LastWorkflow=PlanId+Workflow;CurrentStep=Workflow==TEXT("BasicInfo")?0:Workflow==TEXT("RouteEditing")?2:Workflow==TEXT("PreDeployReview")?3:1;}
+    // Backend workflow updates choose the editor step, not whether an explicitly
+    // closed editor should reopen over the plan list.
+    if(LastWorkflow!=PlanId+Workflow){LastWorkflow=PlanId+Workflow;CurrentStep=Workflow==TEXT("BasicInfo")?0:Workflow==TEXT("RouteEditing")?2:Workflow==TEXT("PreDeployReview")?3:1;}
     if(Deployed)CurrentStep=4;
     if(bCreating)CurrentStep=0;
     auto Visible=[](UWidget* W,bool Yes){W->SetVisibility(Yes?ESlateVisibility::Visible:ESlateVisibility::Collapsed);};
@@ -266,6 +278,13 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     Actions[TEXT("request_map_route_edit")]->SetIsEnabled(!bPending && Sync->IsReady() && P && !Deployed && !Field(M,TEXT("assigned_uav_id")).IsEmpty());
     const auto Validation=Object(P,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues=nullptr;
     const bool Complete=Validation && Validation->TryGetArrayField(TEXT("issues"),Issues) && Issues->IsEmpty();
+    TArray<FText> Blockers=ValidationIssueLines(State,P);
+    if(!Complete && Blockers.IsEmpty())Blockers.Add(T(TEXT("Errors.PLAN_NOT_READY")));
+    if(!Sync->IsReady() || !Sync->IsRoleOnline(TEXT("Map")))Blockers.Add(FText::Format(T(TEXT("Workflow.Readiness")),T(Sync->IsReady()?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
+    if(!CanEditConfiguration())Blockers.Add(T(TEXT("Configuration.ReadOnly")));
+    if(!Blockers.IsEmpty())Blockers.Insert(T(TEXT("Plan.Blocking")),0);
+    DeploymentBlockers->SetText(FText::Join(User(TEXT("\n")),Blockers));
+    DeploymentBlockers->SetVisibility(!Deployed && !Blockers.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     Show(TEXT("confirm_deployment"),!Deployed);Actions[TEXT("confirm_deployment")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Complete);
     const auto Route=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
     const int Count=Route && Route->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
@@ -382,21 +401,35 @@ void USecurityPlanWorkspaceWidget::Action(FName Name,int32 Index){
 
 void USecurityPlanWorkspaceWidget::ConfirmDeployment(){
     if(bPending)return;
-    bPending=true;ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();
+    ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
-    auto Check=MakeShared<FJsonObject>();Check->SetStringField(TEXT("action"),TEXT("validate"));Check->SetStringField(TEXT("plan_id"),PlanId);
-    if(!Sync->SubmitPlan(Check,[Weak,Sync](TSharedPtr<FJsonObject> Reply){
+    const auto Initial=Sync->GetPlans();
+    const auto Intent=DeploymentConfirmation::Capture(Initial,PlanId,Sync->GetInstanceId());
+    const auto Check=Intent.Request(TEXT("validate"),Initial);
+    if(!Check || Field(Sync->GetContext(),TEXT("active_security_plan_id"))!=Intent.PlanId){ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Refresh();return;}
+    bPending=true;const auto Weak=TWeakObjectPtr<USecurityPlanWorkspaceWidget>(this);
+    auto StillConfirmed=[Weak,Sync,Intent]{
+        return Weak.IsValid() && Weak->PlanId==Intent.PlanId
+            && Field(Sync->GetContext(),TEXT("active_security_plan_id"))==Intent.PlanId && Intent.Matches(Sync->GetPlans());
+    };
+    if(!Sync->SubmitPlan(Check.ToSharedRef(),[Weak,Sync,Intent,StillConfirmed](TSharedPtr<FJsonObject> Reply){
         if(!Weak.IsValid())return;Weak->ErrorCode=PlanUI::Error(Reply);Weak->ExecutionErrorDetails=ReservationError(Reply);
-        const auto P=Find(Sync->GetPlans(),TEXT("plans"),Weak->PlanId);
+        if(Weak->ErrorCode.IsEmpty() && !StillConfirmed())Weak->ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");
+        const auto Acknowledged=Object(Reply,TEXT("state")),P=Find(Acknowledged,TEXT("plans"),Intent.PlanId);
         if(!Weak->ErrorCode.IsEmpty() || Field(P,TEXT("status"))!=TEXT("READY")){Weak->bPending=false;Weak->Refresh();return;}
-        auto ReviewRequest=MakeShared<FJsonObject>();ReviewRequest->SetStringField(TEXT("action"),TEXT("review"));ReviewRequest->SetStringField(TEXT("plan_id"),Weak->PlanId);
-        if(!Sync->SubmitPlan(ReviewRequest,[Weak,Sync](TSharedPtr<FJsonObject> ReviewedReply){
+        // Only this stage's ACK supplies the next expected plan/document
+        // versions. A later heartbeat snapshot is checked, never substituted.
+        const auto ReviewRequest=Intent.Request(TEXT("review"),Acknowledged);
+        if(!ReviewRequest){Weak->bPending=false;Weak->ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Weak->Refresh();return;}
+        if(!Sync->SubmitPlan(ReviewRequest.ToSharedRef(),[Weak,Intent,StillConfirmed](TSharedPtr<FJsonObject> ReviewedReply){
             if(!Weak.IsValid())return;Weak->ErrorCode=PlanUI::Error(ReviewedReply);Weak->ExecutionErrorDetails=ReservationError(ReviewedReply);Weak->bPending=false;
+            if(Weak->ErrorCode.IsEmpty() && !StillConfirmed())Weak->ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");
             if(!Weak->ErrorCode.IsEmpty()){Weak->Refresh();return;}
-            auto Deploy=MakeShared<FJsonObject>();Deploy->SetStringField(TEXT("action"),TEXT("deploy"));Deploy->SetStringField(TEXT("plan_id"),Weak->PlanId);Weak->Submit(Deploy);
-        })){Weak->bPending=false;Weak->ErrorCode=TEXT("SYNC_OFFLINE");}
-    })){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");}
+            const auto Deploy=Intent.Request(TEXT("deploy"),Object(ReviewedReply,TEXT("state")));
+            if(!Deploy){Weak->ErrorCode=TEXT("CONFIGURATION_CONTEXT_CHANGED");Weak->Refresh();return;}
+            Weak->Submit(Deploy.ToSharedRef());
+        })){Weak->bPending=false;Weak->ErrorCode=TEXT("SYNC_OFFLINE");Weak->Refresh();}
+    })){bPending=false;ErrorCode=TEXT("SYNC_OFFLINE");Refresh();}
 }
 
 void UPlanUAVOptionWidget::NativeOnInitialized(){Super::NativeOnInitialized();Caption=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(Caption,16,CommandTheme::PrimaryText);WidgetTree->RootWidget=Caption;}

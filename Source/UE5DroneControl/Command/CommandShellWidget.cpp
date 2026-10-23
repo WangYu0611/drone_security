@@ -451,6 +451,9 @@ void UCommandShellWidget::Navigate(FName Action,int32 Index){
     if(Action==TEXT("follow_situation") && SituationMap){SituationMap->ToggleFollow();return;}
     auto* Plan=CenterPanel?CenterPanel->GetPlanWorkspace():nullptr;
     const bool Configuring=Plan && Plan->IsConfiguring();
+    // The Plans navigation means the list, even when its page is already active.
+    // The workspace owns the unsaved-change guard and waits for lease-release ACK.
+    if(Action==TEXT("navigate") && Index==1 && Plan)Plan->RequestFinishConfiguration();
     if(Action==TEXT("configuration_return")){if(Plan)Plan->FocusConfiguration();Index=1;}
     if(Action==TEXT("configuration_finish")){if(Plan)Plan->RequestFinishConfiguration();Index=1;}
     if(Configuring && Index==2){if(Plan)Plan->FocusConfiguration();Index=1;}

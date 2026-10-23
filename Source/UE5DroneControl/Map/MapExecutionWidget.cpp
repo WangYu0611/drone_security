@@ -161,15 +161,20 @@ void UMapExecutionWidget::SetManagedFleetGroup(const FString& Group,const TArray
 }
 
 bool UMapExecutionWidget::IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const {
-    if(Field(E,TEXT("control_kind"))==TEXT("GROUP_MOVE") && !ExecutionUI::Active(E) && FleetPreviewUavs.Contains(Field(E,TEXT("uav_id"))))return true;
+    // An explicit move preview owns this UAV's route until cancellation/ACK,
+    // including a deployed mission being reviewed for takeover.
+    if(FleetPreviewUavs.Contains(Field(E,TEXT("uav_id"))))return true;
     return !SuppressedPlan.IsEmpty() && Field(E,TEXT("plan_id"))==SuppressedPlan
         && (bPlanMoving || Field(E,TEXT("mission_id"))==SuppressedMission);
 }
 bool UMapExecutionWidget::OwnsMission(const FString& Plan,const FString& Mission) const {
     for(const auto& E:RenderedExecutions)if(Field(E,TEXT("plan_id"))==Plan && Field(E,TEXT("mission_id"))==Mission){
         const auto* P=VisualRoutes.Find(Field(E,TEXT("execution_id")));
-        if(IsValid(P) && !P->IsHidden())return true;
-    }return false;
+        if(FleetPreviewUavs.Contains(Field(E,TEXT("uav_id"))) || (IsValid(P) && !P->IsHidden()))return true;
+    }
+    // A retired execution still owns the decision to hide the original task's
+    // route. Do not resurrect the saved route when its only UAV was taken over.
+    return ExecutionUI::RetiredMissionOwnsRoute(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),Plan,Mission);
 }
 
 bool UMapExecutionWidget::IsOverControls(const FVector2D& Screen) const {return IsVisible() && SummaryPanel && SummaryPanel->IsVisible() && SummaryPanel->GetCachedGeometry().IsUnderLocation(Screen);}

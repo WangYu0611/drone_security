@@ -1,5 +1,6 @@
 #pragma once
 #include "Shared/ExecutionPresentation.h"
+#include "Map/MapMoveIntent.h"
 #include "Shared/PlanConfiguration.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 
@@ -38,14 +39,45 @@ inline bool Position(const UDroneRegistrySubsystem* Registry,const TSharedPtr<FJ
     Geographic=FVector(Lon,Lat,Alt);
     return !Geographic.ContainsNaN() && FMath::Abs(Lon)<=180 && FMath::Abs(Lat)<=85.05112878;
 }
-inline FText Unavailable(const UDroneRegistrySubsystem* Registry,UOperationalContextSubsystem* Sync,const TArray<int32>& Members){
+inline TSharedPtr<FJsonObject> TakeoverSource(const TSharedPtr<FJsonObject>& State,const TArray<int32>& Members){
+    using namespace PlanUI;
+    if(Members.Num()!=1)return nullptr;
+    TSharedPtr<FJsonObject> Source;const auto All=Object(State,TEXT("executions"));
+    if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();
+        if(!E || Field(E,TEXT("uav_id"))!=UAV(Members[0]))continue;
+        const auto Status=Field(E,TEXT("state"));
+        if(Status!=TEXT("CREATED") && Status!=TEXT("PREFLIGHT") && Status!=TEXT("STARTING") && Status!=TEXT("START_REQUESTED")
+            && Status!=TEXT("WAITING_ACK") && Status!=TEXT("EXECUTING") && Status!=TEXT("PAUSED") && Status!=TEXT("RETURNING"))continue;
+        // Inconsistent ownership cannot authorize a takeover of either record.
+        if(Source)return nullptr;Source=E;
+    }
+    const auto Status=Field(Source,TEXT("state"));int64 Version=0;
+    if(!Source || (Status!=TEXT("EXECUTING") && Status!=TEXT("PAUSED") && Status!=TEXT("RETURNING"))
+        || Field(Source,TEXT("execution_id")).IsEmpty() || Field(Source,TEXT("plan_id")).IsEmpty()
+        || Field(Source,TEXT("deployment_id")).IsEmpty() || Field(Source,TEXT("control_kind"))==TEXT("GROUP_MOVE")
+        || !Source->TryGetNumberField(TEXT("control_version"),Version) || Version<1)return nullptr;
+    return Source;
+}
+inline FTakeoverIntent CaptureTakeover(const TSharedPtr<FJsonObject>& State,const TArray<int32>& Members){
+    FTakeoverIntent Intent;
+    if(const auto E=TakeoverSource(State,Members)){
+        Intent.ExecutionId=PlanUI::Field(E,TEXT("execution_id"));Intent.UavId=PlanUI::Field(E,TEXT("uav_id"));
+        E->TryGetNumberField(TEXT("control_version"),Intent.ControlVersion);
+    }return Intent;
+}
+inline bool PreviewIsCurrent(const TSharedPtr<FJsonObject>& State,const TArray<int32>& Members,const FTakeoverIntent& Intent){
+    const auto Current=CaptureTakeover(State,Members);
+    return Current.ExecutionId==Intent.ExecutionId && Current.UavId==Intent.UavId && Current.ControlVersion==Intent.ControlVersion;
+}
+inline FText Unavailable(const UDroneRegistrySubsystem* Registry,UOperationalContextSubsystem* Sync,const TArray<int32>& Members,bool AllowTakeover=false){
     using namespace PlanUI;
     if(PlanConfiguration::Active(Sync->GetPlans()))return T(TEXT("Configuration.MoveBlocked"));
     if(!Sync->IsReady() || !Sync->IsHydrated())return T(TEXT("Errors.SYNC_OFFLINE"));
     if(Members.IsEmpty())return T(TEXT("MapMove.SelectAircraft"));
+    const auto Takeover=AllowTakeover?TakeoverSource(Sync->GetPlans(),Members):nullptr;
     for(int32 Id:Members){FDroneDescriptor Descriptor;
         if(!Registry->GetDroneDescriptor(Id,Descriptor) || Descriptor.bIsEnemyTarget)return T(TEXT("Errors.INVALID_UAV"));
-        if(const auto Owner=UAVReservation(Sync->GetPlans(),TEXT(""),UAV(Id)))
+        if(const auto Owner=UAVReservation(Sync->GetPlans(),TEXT(""),UAV(Id));Owner && Owner!=Takeover)
             return FText::Format(T(TEXT("Fleet.Occupied")),User(UAV(Id)),Field(Owner,TEXT("control_kind"))==TEXT("GROUP_MOVE")?T(TEXT("MapMove.Title")):User(Field(Owner,TEXT("plan_name"))));
         FVector P;if(!Position(Registry,Sync->GetPlans(),Id,P,true))return FText::Format(T(TEXT("Fleet.TelemetryRequired")),User(UAV(Id)));
     }return FText::GetEmpty();
@@ -56,5 +88,18 @@ inline TSharedRef<FJsonObject> Request(const TArray<int32>& Members,const FVecto
     TArray<TSharedPtr<FJsonValue>> Ids;for(int32 Id:Members)Ids.Add(MakeShared<FJsonValueString>(UAV(Id)));R->SetArrayField(TEXT("assigned_uav_ids"),Ids);
     auto P=MakeShared<FJsonObject>();P->SetNumberField(TEXT("longitude"),Target.X);P->SetNumberField(TEXT("latitude"),Target.Y);P->SetNumberField(TEXT("altitude"),Target.Z);R->SetObjectField(TEXT("target"),P);
     R->SetNumberField(TEXT("target_area_radius_m"),10000.);return R;
+}
+inline TSharedPtr<FJsonObject> PreviewRequest(const TSharedPtr<FJsonObject>& State,const TArray<int32>& Members,const FVector& Target,const FTakeoverIntent& Intent){
+    if(Members.IsEmpty() || !PreviewIsCurrent(State,Members,Intent))return nullptr;
+    // The unoccupied path stays closed to active tasks, including mixed or
+    // multi-selection requests that have no eligible singleton takeover source.
+    if(!Intent.IsSet())for(int Id:Members)if(PlanUI::UAVReservation(State,TEXT(""),UAV(Id)))return nullptr;
+    auto R=Request(Members,Target);
+    if(Intent.IsSet()){
+        R->SetStringField(TEXT("action"),TEXT("execution_takeover_move"));
+        R->RemoveField(TEXT("assigned_uav_ids"));
+        R->SetStringField(TEXT("execution_id"),Intent.ExecutionId);R->SetStringField(TEXT("uav_id"),Intent.UavId);
+        R->SetNumberField(TEXT("control_version"),Intent.ControlVersion);
+    }return R;
 }
 }

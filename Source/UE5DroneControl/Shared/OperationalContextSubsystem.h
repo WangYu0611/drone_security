@@ -21,7 +21,11 @@ public:
     bool IsReady() const { return State == TEXT("CONNECTED"); }
     bool SetActiveUAV(int32 Id);
     bool SetLocalSelection(int32 Id, const TArray<int32>& Multi);
-    void CancelPendingLocalSelection() { ++SelectionSerial; }
+    // Only explicit Map hits call this: the clicked video target may differ
+    // from the resulting primary/members after Shift or Ctrl selection.
+    bool SetMapSelection(int32 Id, const TArray<int32>& Multi, int32 ClickedId);
+    bool IsMapSelectionPending() const { return bMapSelectionPending; }
+    void CancelPendingLocalSelection() { ++SelectionSerial; bMapSelectionPending=false; }
     bool SelectAlert(const FString& AlertId, int32 DroneId);
     bool UpdateContext(const TSharedRef<FJsonObject>& Patch);
     bool ApplyContext(const TSharedPtr<FJsonObject>& Incoming);
@@ -56,7 +60,8 @@ private:
     bool bPlansHydrated=false, bLanguageHydrated=false, bVideoHydrated=false;
     int64 Version = -1;
     int32 Generation = 0;
-    int32 SelectionSerial = 0;
+    int64 SelectionSerial = 0;
+    bool bMapSelectionPending = false;
     FString Role, InstanceId, ClientId, HttpUrl, WsUrl, State = TEXT("DISCONNECTED");
     TSharedPtr<FJsonObject> Context;
     TSharedPtr<FJsonObject> Plans;
@@ -70,5 +75,5 @@ private:
     void Receive(const FString& Message);
     void ApplySelection();
     void Request(const FString& Verb, const FString& Path, const TSharedPtr<FJsonObject>& Body,
-        TFunction<void(TSharedPtr<FJsonObject>)> Complete);
+        TFunction<void(TSharedPtr<FJsonObject>)> Complete, bool IncludeErrors=false);
 };

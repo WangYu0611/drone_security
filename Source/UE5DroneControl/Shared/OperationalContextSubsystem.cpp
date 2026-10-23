@@ -1,5 +1,6 @@
 #include "Shared/OperationalContextSubsystem.h"
 #include "Shared/ExecutionPresentation.h"
+#include "Shared/MapSelectionVideo.h"
 #include "RealTimeDroneReceiver.h"
 #include "DroneOps/Core/ICoordinateService.h"
 #include "Shared/ProductText.h"
@@ -55,7 +56,7 @@ void UOperationalContextSubsystem::Initialize(FSubsystemCollectionBase& Collecti
     }), 0.25f);
 }
 void UOperationalContextSubsystem::Deinitialize() {
-    bStopped = true; ++Generation; bEnabled = false;
+    bStopped = true; ++Generation; bEnabled = false; CancelPendingLocalSelection();
     FTSTicker::GetCoreTicker().RemoveTicker(TickHandle);
     if (Socket) {
         Socket->OnConnected().Clear(); Socket->OnConnectionError().Clear(); Socket->OnClosed().Clear(); Socket->OnMessage().Clear();
@@ -64,15 +65,15 @@ void UOperationalContextSubsystem::Deinitialize() {
     Super::Deinitialize();
 }
 void UOperationalContextSubsystem::Request(const FString& Verb, const FString& Path, const TSharedPtr<FJsonObject>& Body,
-    TFunction<void(TSharedPtr<FJsonObject>)> Complete) {
+    TFunction<void(TSharedPtr<FJsonObject>)> Complete, bool IncludeErrors) {
     auto Req = FHttpModule::Get().CreateRequest(); Req->SetURL(HttpUrl + Path); Req->SetVerb(Verb); Req->SetTimeout(5);
     Req->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
     if (Body) Req->SetContentAsString(Encode(Body.ToSharedRef()));
     const int32 Attempt = Generation;
-    Req->OnProcessRequestComplete().BindWeakLambda(this, [this, Attempt, Complete](FHttpRequestPtr, FHttpResponsePtr Response, bool Ok) {
+    Req->OnProcessRequestComplete().BindWeakLambda(this, [this, Attempt, Complete, IncludeErrors](FHttpRequestPtr, FHttpResponsePtr Response, bool Ok) {
         if (bStopped || Generation != Attempt) return;
         TSharedPtr<FJsonObject> Json;
-        if (Ok && Response && Response->GetResponseCode() >= 200 && Response->GetResponseCode() < 300)
+        if (Ok && Response && (IncludeErrors || (Response->GetResponseCode() >= 200 && Response->GetResponseCode() < 300)))
             FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Response->GetContentAsString()), Json);
         Complete(Json);
     });
@@ -105,6 +106,8 @@ void UOperationalContextSubsystem::OpenSocket(int32 Attempt) {
     Socket->Connect();
 }
 void UOperationalContextSubsystem::Offline() {
+    if(bMapSelectionPending)ViewSyncError=TEXT("MAP_VIDEO_SYNC_FAILED");
+    CancelPendingLocalSelection();
     if (auto* Events=GetGameInstance()->GetSubsystem<UOperationalEventStore>()) Events->ProjectConnectivity(false);
     ++Generation; bPlansHydrated=bLanguageHydrated=bVideoHydrated=false; Clients.Empty(); bConnecting = false; State = TEXT("DISCONNECTED"); NextAttempt = FPlatformTime::Seconds() + 2;
     if (Socket) {
@@ -216,7 +219,10 @@ void UOperationalContextSubsystem::ApplySelection() {
 }
 bool UOperationalContextSubsystem::UpdateContext(const TSharedRef<FJsonObject>& Patch) {
     if (!IsReady()) return false;
-    if (Patch->HasField(TEXT("active_uav_id"))) ++SelectionSerial;
+    if (Patch->HasField(TEXT("active_uav_id")) || Patch->HasField(TEXT("selected_uav_ids"))) {
+        if(bMapSelectionPending)return false;
+        ++SelectionSerial;
+    }
     auto Body = MakeShared<FJsonObject>(); Body->SetStringField(TEXT("instance_id"), InstanceId); Body->SetObjectField(TEXT("patch"), Patch);
     Request(TEXT("PATCH"), TEXT("/api/context"), Body, [this](TSharedPtr<FJsonObject> Reply) {
         if (Reply) ApplyContext(Reply); else Offline();
@@ -232,7 +238,8 @@ bool UOperationalContextSubsystem::SetActiveUAV(int32 Id) {
 bool UOperationalContextSubsystem::SetLocalSelection(int32 Id, const TArray<int32>& Multi) {
     UE_LOG(LogTemp, Log, TEXT("[P1][%s] SetActiveUAV UAV-%02d"), *Role, Id);
     if (!IsReady()) return false;
-    const int32 Serial = ++SelectionSerial;
+    if(bMapSelectionPending)return false;
+    const int64 Serial = ++SelectionSerial;
     auto Patch = MakeShared<FJsonObject>();
     if (Id > 0) Patch->SetStringField(TEXT("active_uav_id"), FString::Printf(TEXT("UAV-%02d"), Id));
     else Patch->SetField(TEXT("active_uav_id"), MakeShared<FJsonValueNull>());
@@ -250,6 +257,46 @@ bool UOperationalContextSubsystem::SetLocalSelection(int32 Id, const TArray<int3
         TGuardValue<bool> Guard(bApplying, true);
         Registry->SetMultiSelectedDrones(Multi);
     });
+    return true;
+}
+bool UOperationalContextSubsystem::SetMapSelection(int32 Id,const TArray<int32>& Multi,int32 ClickedId) {
+    if(Role!=TEXT("Map") || !IsHydrated() || bMapSelectionPending)return false;
+    auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    if(ClickedId<=0 || !Registry->IsDroneRegistered(ClickedId))return false;
+    const int64 Serial=++SelectionSerial;
+    const FString Target=FString::Printf(TEXT("UAV-%02d"),ClickedId);
+    auto Patch=MakeShared<FJsonObject>();
+    if(Id>0)Patch->SetStringField(TEXT("active_uav_id"),FString::Printf(TEXT("UAV-%02d"),Id));
+    else Patch->SetField(TEXT("active_uav_id"),MakeShared<FJsonValueNull>());
+    TArray<TSharedPtr<FJsonValue>> Members;
+    for(int32 N:Multi)Members.Add(MakeShared<FJsonValueString>(FString::Printf(TEXT("UAV-%02d"),N)));
+    Patch->SetArrayField(TEXT("selected_uav_ids"),Members);
+    auto Body=MakeShared<FJsonObject>();Body->SetStringField(TEXT("instance_id"),InstanceId);Body->SetObjectField(TEXT("patch"),Patch);
+    Body->SetNumberField(TEXT("map_selection_serial"),Serial);Body->SetStringField(TEXT("map_video_target_uav_id"),Target);
+    bMapSelectionPending=true;ViewSyncError.Empty();
+    Request(TEXT("PATCH"),TEXT("/api/context"),Body,[this,Serial,Id,Multi,Target](TSharedPtr<FJsonObject> Reply){
+        if(Serial!=SelectionSerial)return;
+        ApplyContext(Reply);
+        // The full accepted selection must match, including same-primary
+        // group -> singleton and no-op clicks. Never use local intent as ACK.
+        if(!MapSelectionVideo::SelectionAckMatches(Reply,Version,Id,Multi)
+            || !MapSelectionVideo::SelectionAckMatches(Context,Version,Id,Multi)) {
+            bMapSelectionPending=false;
+            ViewSyncError=PlanUI::Field(Reply,TEXT("code"))==TEXT("VIDEO_SELECTION_STALE")?TEXT("VIDEO_SELECTION_STALE"):TEXT("MAP_VIDEO_SYNC_FAILED");
+            if(!Reply)Offline();return;
+        }
+        auto Video=MakeShared<FJsonObject>();Video->SetStringField(TEXT("instance_id"),InstanceId);
+        Video->SetStringField(TEXT("video_target_uav_id"),Target);
+        Video->SetNumberField(TEXT("expected_context_version"),Version);Video->SetNumberField(TEXT("map_selection_serial"),Serial);
+        Request(TEXT("PATCH"),TEXT("/api/video-view"),Video,[this,Serial,Target](TSharedPtr<FJsonObject> Ack){
+            if(Serial!=SelectionSerial)return;
+            bMapSelectionPending=false;
+            const bool Accepted=Ack && Ack->HasTypedField<EJson::Number>(TEXT("video_view_version")) && PlanUI::Field(Ack,TEXT("video_target_uav_id"))==Target;
+            ViewSyncError=Accepted?TEXT(""):PlanUI::Field(Ack,TEXT("code"))==TEXT("VIDEO_SELECTION_STALE")?TEXT("VIDEO_SELECTION_STALE"):TEXT("MAP_VIDEO_SYNC_FAILED");
+            // A newer WebSocket snapshot always wins over an older HTTP ACK.
+            if(Accepted)ApplyVideoView(Ack);
+        },true);
+    },true);
     return true;
 }
 bool UOperationalContextSubsystem::SelectAlert(const FString& AlertId, int32 DroneId) {
@@ -363,6 +410,7 @@ bool UOperationalContextSubsystem::SetLanguage(const FString& Language) {
     Request(TEXT("PATCH"),TEXT("/api/ui-preferences"),Body,[this](TSharedPtr<FJsonObject> R){ViewSyncError=R && R->HasField(TEXT("ui_preferences_version"))?TEXT(""):TEXT("SYNC_FAILED");ApplyUIPreferences(R);});return true;
 }
 bool UOperationalContextSubsystem::OpenVideo(const FString& UAV) {
+    if(bMapSelectionPending)return false;
     if(!IsReady()){ViewSyncError=TEXT("SYNC_OFFLINE");return false;}
     auto Body=MakeShared<FJsonObject>();Body->SetStringField(TEXT("instance_id"),InstanceId);
     if(UAV.IsEmpty())Body->SetField(TEXT("video_target_uav_id"),MakeShared<FJsonValueNull>());else Body->SetStringField(TEXT("video_target_uav_id"),UAV);

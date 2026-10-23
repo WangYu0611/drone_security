@@ -181,11 +181,14 @@ void UMapShellWidget::Refresh()
     else if (Aircraft->GetSelectedOption() != Selected) Aircraft->SetSelectedOption(Selected);
     bRefreshing = false;
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    if(bDeviceSelectionPending && Registry->GetPrimarySelectedDrone()==PendingDevice && Registry->GetMultiSelectedDrones()==TArray<int32>{PendingDevice}){bDeviceSelectionPending=false;DeviceSelectionError=FText::GetEmpty();}
-    if(bDeviceSelectionPending && (!Sync->IsReady() || FPlatformTime::Seconds()-DeviceSelectionRequestedAt>10.)){
+    if(bDeviceSelectionPending && !Sync->IsMapSelectionPending() && !Sync->ViewSyncError.IsEmpty()) {
+        bDeviceSelectionPending=false;DeviceSelectionError=ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError);
+    }
+    if(bDeviceSelectionPending && !Sync->IsMapSelectionPending() && Registry->GetPrimarySelectedDrone()==PendingDevice && Registry->GetMultiSelectedDrones()==TArray<int32>{PendingDevice}){bDeviceSelectionPending=false;DeviceSelectionError=Sync->ViewSyncError.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError);}
+    if(bDeviceSelectionPending && (!Sync->IsReady() || FPlatformTime::Seconds()-DeviceSelectionRequestedAt>12.)){
         bDeviceSelectionPending=false;DeviceSelectionError=ProductText::Get(TEXT("Errors.SYNC_FAILED"));}
-    DeviceCaption->SetText(bDeviceSelectionPending?ProductText::Get(TEXT("Fleet.SelectionPending")):Selected.IsEmpty()?ProductText::Get(TEXT("MapUI.SelectDevice")):FText::AsCultureInvariant(Selected));
-    DeviceButton->SetIsEnabled(!Configuring && !bDeviceSelectionPending);
+    DeviceCaption->SetText((bDeviceSelectionPending || Sync->IsMapSelectionPending())?ProductText::Get(TEXT("MapShell.VideoSelectionPending")):Selected.IsEmpty()?ProductText::Get(TEXT("MapUI.SelectDevice")):FText::AsCultureInvariant(Selected));
+    DeviceButton->SetIsEnabled(!Configuring && !bDeviceSelectionPending && !Sync->IsMapSelectionPending());
     if(Configuring)bDropdownOpen=false;
     DroneDropdown->SetVisibility(bDropdownOpen?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     RefreshDeviceMenu();
@@ -213,6 +216,7 @@ void UMapShellWidget::Refresh()
         Status->SetText(ProductText::Get(!Sync->IsReady()?TEXT("FleetUX.SyncWaiting"):PlanUI::Field(Sync->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock")?TEXT("FleetUX.SyncMock"):TEXT("FleetUX.SyncReady")));
         Status->SetColorAndOpacity(Sync->IsReady()?MapUI::Online:MapUI::Warning);
     }
+    if(!Sync->ViewSyncError.IsEmpty()){Status->SetText(ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError));Status->SetColorAndOpacity(MapUI::Warning);}
     if(!DeviceSelectionError.IsEmpty()){Status->SetText(DeviceSelectionError);Status->SetColorAndOpacity(MapUI::Warning);}
 }
 void UMapShellWidget::AircraftSelected(FString Item, ESelectInfo::Type Type)
@@ -258,8 +262,8 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
     if(Action==TEXT("devices")){bDropdownOpen=!bDropdownOpen;Refresh();return;}
     if(Action==TEXT("choose_aircraft")){
         auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-        if(bDeviceSelectionPending || PlanConfiguration::Active(Sync->GetPlans()) || !Manager->GetRegistry()->IsDroneRegistered(ItemId))return;
-        const bool Accepted=Sync->IsEnabled()?Sync->SetLocalSelection(ItemId,{ItemId}):Manager->GetMapService()->SelectDrone(ItemId);
+        if(bDeviceSelectionPending || Sync->IsMapSelectionPending() || (FleetInteraction && FleetInteraction->IsSelectionPending()) || PlanConfiguration::Active(Sync->GetPlans()) || !Manager->GetRegistry()->IsDroneRegistered(ItemId))return;
+        const bool Accepted=Sync->IsEnabled()?Sync->SetMapSelection(ItemId,{ItemId},ItemId):Manager->GetMapService()->SelectDrone(ItemId);
         if(Accepted){DeviceSelectionError=FText::GetEmpty();PendingDevice=ItemId;bDeviceSelectionPending=Sync->IsEnabled();DeviceSelectionRequestedAt=FPlatformTime::Seconds();bDropdownOpen=false;}
         else DeviceSelectionError=ProductText::Get(TEXT("Errors.SYNC_FAILED"));Refresh();return;
     }

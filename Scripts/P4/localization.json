@@ -1968,8 +1968,8 @@
     "点击目标，检查预览航线后确认。主选无人机作为队形锚点。"
   ],
   "Fleet.BrowseHint": [
-    "Browse the map. Shift + drag also adds UAVs to the selection.",
-    "浏览地图。也可按住 Shift 拖动追加框选。"
+    "Click an aircraft to select it. To drag a selection box, first click 'Box select UAVs'.",
+    "单击无人机选中；如需拖框选择，请先点击“框选无人机”。"
   ],
   "Fleet.Target": [
     "Target: {0}, {1}\nAnchor ellipsoid height: {2} m. Relative positions and heights are preserved.",
@@ -2144,16 +2144,16 @@
     "尚未选择无人机"
   ],
   "FleetUX.SelectHint": [
-    "Left-click an aircraft or drag to select. Shift adds; Ctrl toggles.",
-    "左键点选或拖框选择无人机；Shift 添加，Ctrl 切换多选。"
+    "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Shift adds; Ctrl toggles.",
+    "单击无人机选中；点击“框选无人机”后才能拖框选择。Shift 添加，Ctrl 切换选择。"
   ],
   "FleetUX.SelectionReady": [
     "Selection ready. Right-click the map to preview a move.",
     "选择已就绪，右击地图预览移动。"
   ],
   "FleetUX.PickHint": [
-    "Right-click a destination. Left-drag to change aircraft.",
-    "右击地图选择目的地；左键拖框可重新选择无人机。"
+    "Right-click a destination. Click an aircraft to change selection, or click 'Box select UAVs' before dragging.",
+    "右击地图选择目的地；单击无人机可重新选择，点击“框选无人机”后才能拖框选择。"
   ],
   "FleetUX.ReviewHint": [
     "Review height and formation.",
@@ -2984,12 +2984,12 @@
     "中键平移 · 右键旋转 · 滚轮缩放"
   ],
   "MapUI.FleetPointerHint": [
-    "Left: select · Right-click: target · Middle: pan",
-    "左键框选 · 右击选点 · 中键平移"
+    "Left: select + Video · Right-click: target · Middle: pan",
+    "左键选机并切视频 · 右键选点 · 中键平移"
   ],
   "MapUI.FleetPointerHelp": [
-    "Left-click or drag: select aircraft. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom.",
-    "左键点选或框选无人机；右键单击预览目的地，确认后执行。中键拖动平移；右键拖动在 2D 中平移、3D 中旋转；滚轮缩放。"
+    "Click an aircraft to select it. Click 'Box select UAVs' before dragging to select. Right-click: preview destination, then confirm. Middle-drag: pan. Right-drag: pan in 2D, orbit in 3D. Wheel: zoom. Clicking an aircraft also switches the main Video view to it; box selection keeps the current video.",
+    "单击无人机选中；点击“框选无人机”后才能拖框选择。右键单击预览目的地，确认后执行。中键拖动平移；右键拖动在 2D 中平移、3D 中旋转；滚轮缩放。点击无人机也会将 Video 主画面切换至该机；框选不切换视频。"
   ],
   "MapUI.RouteEditor": [
     "Route editor",
@@ -3070,5 +3070,45 @@
   "FleetUX.ExecutionControls": [
     "Execution controls",
     "执行控制"
+  ],
+  "Takeover.MoveTitle": [
+    "Manual takeover movement",
+    "手动接管移动"
+  ],
+  "Takeover.Confirm": [
+    "Take over and move",
+    "接管并移动"
+  ],
+  "Takeover.Warning": [
+    "This will end this aircraft's current task. Other aircraft will continue; the original task will not resume automatically.",
+    "将终止这架无人机的当前任务，其他无人机继续；原任务不会自动恢复。"
+  ],
+  "Takeover.SourceChanged": [
+    "The current task or control state changed. Select the destination again and confirm.",
+    "当前任务或控制状态已变化，请重新选择目的地并确认。"
+  ],
+  "Errors.EXECUTION_UAV_MISMATCH": [
+    "The task does not belong to the selected aircraft. Refresh the selection and retry.",
+    "当前任务不属于选中的无人机，请刷新选择后重试。"
+  ],
+  "Events.MISSION_MANUALLY_TAKEN_OVER": [
+    "Task ended for manual takeover movement",
+    "原任务已终止，交由手动接管移动"
+  ],
+  "Errors.REAL_TAKEOVER_PERSIST_FAILED": [
+    "Takeover state could not be saved. Movement was stopped; inspect the aircraft and Backend before retrying.",
+    "接管状态保存失败，移动已停止；请检查无人机及后端后再操作。"
+  ],
+  "Errors.VIDEO_SELECTION_STALE": [
+    "Map selection changed. Click the aircraft again.",
+    "地图选择已变化，请重新点击目标无人机。"
+  ],
+  "Errors.MAP_VIDEO_SYNC_FAILED": [
+    "Aircraft selected, but video switching was not confirmed. Try again.",
+    "无人机已选中，但视频切换未确认，请重试。"
+  ],
+  "MapShell.VideoSelectionPending": [
+    "Confirming aircraft selection and video view...",
+    "正在确认无人机选择和视频画面…"
   ]
 }

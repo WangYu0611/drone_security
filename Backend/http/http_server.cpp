@@ -448,7 +448,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
             if(method=="GET")return MakeResponse(req,200,json_stringify(language?ui_preferences_.snapshot():video_view_.snapshot()));
             if(method=="PATCH") {
                 try {return MakeResponse(req,200,json_stringify(ViewRequest(require_object(body,"body"),language)));}
-                catch(const PlanError& e){return MakeResponse(req,400,json_stringify(boost::json::object{{"code",e.code},{"params",e.params},{"message",e.what()}}));}
+                catch(const PlanError& e){return MakeResponse(req,e.code=="VIDEO_SELECTION_STALE"?409:400,json_stringify(boost::json::object{{"code",e.code},{"params",e.params},{"message",e.what()}}));}
             }
         }
         if(method=="POST" && path=="/api/mock-executions/reset") {
@@ -1673,6 +1673,21 @@ boost::json::value HttpServer::UpdateContext(const boost::json::object& body) {
     const auto& patch = item->as_object();
     if (role != "Command") for (const auto& field : patch)
         if (field.key() != "active_uav_id" && field.key() != "selected_uav_ids") throw ApiError(403, "only Command may update this field");
+    const auto instance=get_string(body,"instance_id");
+    const auto* serial_value=body.if_contains("map_selection_serial");
+    const bool map_click=serial_value || body.contains("map_video_target_uav_id");
+    int64_t map_serial=0;std::string map_target;
+    if(map_click) {
+        if(role!="Map")throw ApiError(403,"only Map may submit a map selection intent");
+        if(!serial_value || !serial_value->is_int64() || serial_value->as_int64()<=0 || serial_value->as_int64()>9007199254740991LL
+            || !patch.contains("active_uav_id") || !patch.contains("selected_uav_ids"))throw ApiError(400,"complete map selection intent required");
+        map_serial=serial_value->as_int64();map_target=get_string(body,"map_video_target_uav_id");
+        const auto previous=map_selection_intents_.find(instance);
+        if(previous!=map_selection_intents_.end() && map_serial<=previous->second.serial)throw PlanError("VIDEO_SELECTION_STALE","Map selection was superseded");
+        std::lock_guard<std::mutex> records(records_mutex_);bool registered=false;
+        for(const auto& d:drone_records_)if(d.slot>0 && map_target=="UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot)){registered=true;break;}
+        if(!registered)throw PlanError("INVALID_VIDEO_TARGET","Map click target must be a registered aircraft");
+    }
     if(patch.contains("active_security_plan_id") || patch.contains("active_mission_id")) {
         const auto context=operational_context_.snapshot();
         const auto plan=patch.contains("active_security_plan_id")?get_string(patch,"active_security_plan_id"):get_string(context,"active_security_plan_id");
@@ -1683,10 +1698,16 @@ boost::json::value HttpServer::UpdateContext(const boost::json::object& body) {
         security_plans_.checkSelection(plan,mission);
     }
     try {
-        return operational_context_.update(patch, source, [this](const boost::json::object& event) {
+        auto accepted=operational_context_.update(patch, source, [this](const boost::json::object& event) {
             spdlog::debug("[P1][Backend] Context v{}", event.at("version").to_number<int64_t>());
             ws_manager_.broadcast(json_stringify(event));
         });
+        if(map_click)map_selection_intents_[instance]={map_serial,accepted.at("context_version").to_number<int64_t>(),map_target,false};
+        else if(patch.contains("active_uav_id") || patch.contains("selected_uav_ids")) {
+            const auto previous=map_selection_intents_.find(instance);
+            if(previous!=map_selection_intents_.end())previous->second.consumed=true;
+        }
+        return accepted;
     } catch (const std::invalid_argument& e) { throw ApiError(400, e.what()); }
 }
 bool HttpServer::HandleContextMessage(const boost::json::object& body, const std::shared_ptr<WsSession>& session) {
@@ -1759,8 +1780,8 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     }
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
-    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
-    const std::set<std::string> mapActions{"execution_group_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
+    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_takeover_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
+    const std::set<std::string> mapActions{"execution_group_move","execution_takeover_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     if(role=="Map" && (action=="execution_pause" || action=="execution_resume" || action=="execution_abort")) {
         const auto state=security_plans_.snapshot();const auto* execution=state.at("executions").as_object().if_contains(get_string(body,"execution_id"));
@@ -1812,11 +1833,29 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
 }
 
 boost::json::value HttpServer::ViewRequest(const boost::json::object& body,bool language) {
-    std::string source;
-    {std::lock_guard<std::mutex> lock(context_clients_mutex_);auto it=context_clients_.find(get_string(body,"instance_id"));
-        if(it==context_clients_.end() || it->second.at("state")!="ONLINE")throw ApiError(409,"client not subscribed");source=get_string(it->second,"client_id");}
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    std::string source,role;const auto instance=get_string(body,"instance_id");
+    {std::lock_guard<std::mutex> lock(context_clients_mutex_);auto it=context_clients_.find(instance);
+        if(it==context_clients_.end() || it->second.at("state")!="ONLINE")throw ApiError(409,"client not subscribed");
+        source=get_string(it->second,"client_id");role=get_string(it->second,"client_role");}
+    const bool guarded=body.contains("expected_context_version") || body.contains("map_selection_serial");
+    MapSelectionIntent* intent=nullptr;
+    if(guarded) {
+        if(language || role!="Map")throw ApiError(403,"only Map may complete a map video selection");
+        const auto* expected=body.if_contains("expected_context_version");const auto* serial=body.if_contains("map_selection_serial");
+        if(!expected || !expected->is_int64() || expected->as_int64()<0 || !serial || !serial->is_int64() || serial->as_int64()<=0)
+            throw ApiError(400,"complete map video guard required");
+        const auto found=map_selection_intents_.find(instance);
+        if(found==map_selection_intents_.end() || found->second.consumed || found->second.serial!=serial->as_int64()
+            || found->second.context_version!=expected->as_int64() || found->second.target!=get_string(body,"video_target_uav_id")
+            || operational_context_.snapshot().at("context_version")!=*expected)
+            throw PlanError("VIDEO_SELECTION_STALE","Map selection changed before video switching was confirmed");
+        intent=&found->second;
+    }
     std::lock_guard<std::mutex> records(records_mutex_);std::set<std::string> uavs;
     for(const auto& d:drone_records_)if(d.slot>0)uavs.insert("UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot));
     auto publish=[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));};
-    return language?ui_preferences_.update(body,uavs,source,publish):video_view_.update(body,uavs,source,publish);
+    auto accepted=language?ui_preferences_.update(body,uavs,source,publish):video_view_.update(body,uavs,source,publish);
+    if(intent)intent->consumed=true;
+    return accepted;
 }

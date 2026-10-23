@@ -94,6 +94,7 @@ void UMapFleetInteractionWidget::NativeOnInitialized() {
     ProgressBox=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(ProgressBox);StateText=Text(ProgressBox,FText::GetEmpty(),19);
     Space(ProgressBox,10);auto* ProgressHeight=WidgetTree->ConstructWidget<USizeBox>();ProgressHeight->SetHeightOverride(8);ProgressBox->AddChild(ProgressHeight);
     Progress=WidgetTree->ConstructWidget<UProgressBar>();Progress->SetFillColorAndOpacity(MapUI::Cyan);ProgressHeight->SetContent(Progress);Space(ProgressBox,14);
+    TakeoverWarning=Text(Content,T(TEXT("Takeover.Warning")),14,MapUI::Warning);TakeoverWarning->SetAutoWrapText(true);
     Space(Content,10);Result=Text(Content,FText::GetEmpty(),15,MapUI::SecondaryText);Space(Content,10);
     for(const auto& P:TArray<TPair<FString,FString>>{{TEXT("recover"),TEXT("FleetTerrain.Recover")},{TEXT("next"),TEXT("FleetUX.Next")},{TEXT("again"),TEXT("FleetUX.Again")},{TEXT("confirm"),TEXT("Fleet.Confirm")},{TEXT("pause"),TEXT("Execution.Pause")},{TEXT("resume"),TEXT("Execution.Resume")}}){
         auto* B=MakeButton(Content,*P.Key,*P.Value,true);CastChecked<UVerticalBoxSlot>(B->Slot)->SetPadding(FMargin(0,0,0,6));
@@ -240,26 +241,31 @@ void UMapFleetInteractionWidget::HeightSliderChanged(float Value) {
     TargetHeightChanged(TargetHeightInput->GetText());
 }
 bool UMapFleetInteractionWidget::BeginPointer(const FVector2D& Screen,bool Shift,bool Control) {
-    if(!IsAvailable() || bPending || bSelectionPending)return false;
+    if(!IsAvailable() || bPending || bSelectionPending || GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsMapSelectionPending())return false;
     const auto* SelectionPC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());const auto* SelectionShell=SelectionPC && SelectionPC->GetCommandScreenManager()?SelectionPC->GetCommandScreenManager()->GetMapShell():nullptr;
     if(SelectionShell && SelectionShell->IsDeviceSelectionPending())return false;
     if(!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady())return false;
     if(SelectionPC && SelectionPC->GetCommandScreenManager())SelectionPC->GetCommandScreenManager()->CancelStartupFraming();
-    // Left gestures always select, including after a move ACK or while the
-    // destination card is open. Selection never implicitly creates a target.
-    CancelGesture();ClearTarget();Start=Current=GetCachedGeometry().AbsoluteToLocal(Screen);bDragging=true;bPointerValid=true;
+    // Track ordinary clicks without arming rectangle selection or discarding a
+    // move preview. Only the explicit BoxSelect mode authorizes drag selection.
+    CancelGesture();Start=Current=GetCachedGeometry().AbsoluteToLocal(Screen);bDragging=true;bPointerValid=true;
+    PointerStartScreen=Screen;
+    const auto* Map=SelectionPC && SelectionPC->GetCommandScreenManager()?SelectionPC->GetCommandScreenManager()->GetMapService():nullptr;
+    PointerDragThreshold=Map?Map->GetDragThreshold():5.f;
     SelectionOperation=Control?FleetSelection::EOperation::Toggle:Shift?FleetSelection::EOperation::Add:FleetSelection::EOperation::Replace;
     return true;
 }
 void UMapFleetInteractionWidget::MovePointer(const FVector2D& Screen,bool OverMap) {
     if(!bDragging)return;
     if(!OverMap || !IsAvailable()){CancelGesture();return;}
-    Current=GetCachedGeometry().AbsoluteToLocal(Screen);InvalidateLayoutAndVolatility();
+    Current=GetCachedGeometry().AbsoluteToLocal(Screen);
+    bPointerMoved|=FVector2D::Distance(PointerStartScreen,Screen)>PointerDragThreshold;InvalidateLayoutAndVolatility();
 }
 void UMapFleetInteractionWidget::EndPointer(const FVector2D& Screen,bool OverMap) {
     if(!bDragging)return;MovePointer(Screen,OverMap);if(!bDragging || !bPointerValid)return;
-    bDragging=false;const bool Click=FVector2D::Distance(Start,Current)<=5.;
-    SetMode(EMapFleetMode::BoxSelect);
+    bDragging=false;const bool Click=!bPointerMoved;
+    if(!Click && Mode!=EMapFleetMode::BoxSelect){CancelGesture();return;}
+    ClearTarget();
     SelectInRectangle(Click);
     Refresh();
 }
@@ -272,7 +278,7 @@ bool UMapFleetInteractionWidget::PickDestinationAtScreen(const FVector2D& Screen
     if(Mode!=EMapFleetMode::GroupMove)SetMode(EMapFleetMode::GroupMove);
     const bool Picked=PickTarget(GetCachedGeometry().AbsoluteToLocal(Screen));Refresh();return Picked;
 }
-void UMapFleetInteractionWidget::CancelGesture() { bDragging=false;bPointerValid=false;InvalidateLayoutAndVolatility(); }
+void UMapFleetInteractionWidget::CancelGesture() { bDragging=false;bPointerValid=false;bPointerMoved=false;InvalidateLayoutAndVolatility(); }
 void UMapFleetInteractionWidget::SelectInRectangle(bool Click) {
     auto* R=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();TArray<int32> Hits;float Closest=24.f;int32 Nearest=0;
     for(const auto& D:R->GetFriendlyDroneDescriptors()) {FVector2D P;if(!Project(D.DroneId,P))continue;
@@ -301,10 +307,13 @@ void UMapFleetInteractionWidget::SelectInRectangle(bool Click) {
     ClearTarget();MessageKey=TEXT("Fleet.SelectionPending");
     RequestedSelection=Selected;RequestedPrimary=Primary;
     SelectionRequestedAt=FPlatformTime::Seconds();
-    bSelectionPending=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->SetLocalSelection(Primary,Selected);
+    auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    bSelectionVideoPending=Click && Nearest>0;
+    bSelectionPending=bSelectionVideoPending?Sync->SetMapSelection(Primary,Selected,Nearest):Sync->SetLocalSelection(Primary,Selected);
+    if(Click && Nearest>0 && bSelectionPending)MessageKey=TEXT("MapShell.VideoSelectionPending");
     if(!bSelectionPending)MessageKey=TEXT("Errors.SYNC_OFFLINE");
 }
-void UMapFleetInteractionWidget::ClearTarget() { bHasTarget=false;bRecoveryPreview=false;NextTerrainCheck=0;TargetMembers.Empty();TargetPrimary=0;PreviewRoutes.Reset(); }
+void UMapFleetInteractionWidget::ClearTarget() { bHasTarget=false;bRecoveryPreview=false;NextTerrainCheck=0;TargetMembers.Empty();TargetPrimary=0;TargetTakeover={};NextTakeoverPreviewUpdate=0;PreviewRoutes.Reset(); }
 bool UMapFleetInteractionWidget::PickTarget(const FVector2D& Local) {
     ClearTarget();ErrorDetails=UnavailableReason();if(!ErrorDetails.IsEmpty())return false;
     const auto Members=OrderedSelection();FVector Anchor;if(Members.IsEmpty() || !Telemetry(Members[0],Anchor))return false;
@@ -319,12 +328,14 @@ bool UMapFleetInteractionWidget::PickTarget(const FVector2D& Local) {
     if(Geo.ContainsNaN()){MessageKey=TEXT("Map.InvalidPosition");return false;}
     TargetGeographic=FVector(Geo.X,Geo.Y,Height);TargetMembers=Members;TargetPrimary=Members[0];bHasTarget=true;
     if(!TargetHeight(Height)){ClearTarget();MessageKey=TEXT("Errors.TERRAIN_REQUIRED");return false;}TargetGeographic.Z=Height;
+    TargetTakeover=MapMove::CaptureTakeover(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),Members);
     MessageKey=TEXT("FleetUX.PreviewOnly");BuildPreview();return true;
 }
 void UMapFleetInteractionWidget::BuildPreview() {
     NextTerrainCheck=0;
     auto* Coordinates=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();FVector Anchor;
     if(!Coordinates || TargetMembers.IsEmpty() || !Telemetry(TargetMembers[0],Anchor))return;
+    if(TargetTakeover.IsSet()){TakeoverPreviewOrigin=Anchor;NextTakeoverPreviewUpdate=FPlatformTime::Seconds()+.2;}
     double Speed=0;const auto Config=Object(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("mock_execution"));
     if(Config)Config->TryGetNumberField(TEXT("default_speed_mps"),Speed);
     TSet<FString> Live;
@@ -337,10 +348,11 @@ void UMapFleetInteractionWidget::BuildPreview() {
     PreviewRoutes.Retain(Live);
 }
 FText UMapFleetInteractionWidget::UnavailableReason() const {
+    if(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsMapSelectionPending())return T(TEXT("MapShell.VideoSelectionPending"));
     if(bSelectionPending)return T(TEXT("Fleet.SelectionPending"));
     const auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());const auto* Shell=PC && PC->GetCommandScreenManager()?PC->GetCommandScreenManager()->GetMapShell():nullptr;
     if(Shell && Shell->IsDeviceSelectionPending())return T(TEXT("Fleet.SelectionPending"));
-    return MapMove::Unavailable(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>(),GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(),OrderedSelection());
+    return MapMove::Unavailable(GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>(),GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>(),OrderedSelection(),true);
 }
 void UMapFleetInteractionWidget::Refresh() {
     if(!Summary)return;
@@ -349,24 +361,35 @@ void UMapFleetInteractionWidget::Refresh() {
     bHadMapMode=true;bWas3D=View3D;
     if(!IsAvailable() && Mode!=EMapFleetMode::Browse && !bPending){CancelGesture();ClearTarget();Mode=EMapFleetMode::Browse;bAbortConfirm=false;}
     const auto Selected=OrderedSelection();
-    if(Mode==EMapFleetMode::GroupMove && Selected.IsEmpty() && !bSelectionPending){CancelGesture();ClearTarget();Mode=EMapFleetMode::BoxSelect;HeightPrimary=0;}
+    if(Mode==EMapFleetMode::GroupMove && Selected.IsEmpty() && !bSelectionPending){ClearTarget();HeightPrimary=0;}
     if(Mode==EMapFleetMode::GroupMove && View3D && !Selected.IsEmpty() && HeightPrimary!=Selected[0])ResetHeight();
     auto Accepted=Selected;Accepted.Sort();
-    if(bSelectionPending && Accepted==RequestedSelection && GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetPrimarySelectedDrone()==RequestedPrimary) {
-        bSelectionPending=false;if(MessageKey==TEXT("Fleet.SelectionPending"))MessageKey=TEXT("Fleet.SelectionReady");
+    auto* SelectionSync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    if(bSelectionPending && bSelectionVideoPending && !SelectionSync->IsMapSelectionPending() && !SelectionSync->ViewSyncError.IsEmpty()) {
+        bSelectionPending=false;MessageKey=TEXT("Errors.")+SelectionSync->ViewSyncError;
     }
-    if(bSelectionPending && (!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady() || FPlatformTime::Seconds()-SelectionRequestedAt>10.)){
+    if(bSelectionPending && !SelectionSync->IsMapSelectionPending() && Accepted==RequestedSelection && GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetPrimarySelectedDrone()==RequestedPrimary) {
+        bSelectionPending=false;
+        if(!SelectionSync->ViewSyncError.IsEmpty())MessageKey=TEXT("Errors.")+SelectionSync->ViewSyncError;
+        else if(MessageKey==TEXT("Fleet.SelectionPending") || MessageKey==TEXT("MapShell.VideoSelectionPending"))MessageKey=TEXT("Fleet.SelectionReady");
+    }
+    if(bSelectionPending && (!GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady() || FPlatformTime::Seconds()-SelectionRequestedAt>12.)){
         bSelectionPending=false;MessageKey=TEXT("Errors.SYNC_FAILED");
     }
     if(bHasTarget && (Selected!=TargetMembers || Selected.IsEmpty() || Selected[0]!=TargetPrimary)){ClearTarget();MessageKey=TEXT("Fleet.SelectionChanged");}
     auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();const auto All=Object(S->GetPlans(),TEXT("executions"));
+    if(bHasTarget && !bPending && !MapMove::PreviewIsCurrent(S->GetPlans(),Selected,TargetTakeover)){
+        ClearTarget();if(!MessageKey.StartsWith(TEXT("Errors.")))MessageKey=TEXT("Takeover.SourceChanged");
+    }
+    const bool TakingOver=MapMove::CaptureTakeover(S->GetPlans(),Selected).IsSet();
     TArray<FString> SelectedIds;for(int Id:Selected)SelectedIds.Add(FString::Printf(TEXT("UAV-%02d"),Id));SelectedIds.Sort();
     ExecutionControls::FGroup Group;
     for(const auto& Candidate:ExecutionControls::Groups(S->GetPlans(),false))if(Candidate.Members==SelectedIds
         && Field(ExecutionControls::Representative(Candidate),TEXT("control_kind"))==TEXT("GROUP_MOVE")){Group=Candidate;break;}
     const auto Latest=ExecutionControls::Representative(Group);ExecutionId=Field(Latest,TEXT("execution_id"));ManagedGroup=Group.Id;const FString State=Group.State;
     const bool Active=Group.ActiveCount>0;if(!Active || (bAbortConfirm && ManagedGroup!=AbortGroup))bAbortConfirm=false;
-    PanelTitle->SetText(T(Active && Mode==EMapFleetMode::Browse?TEXT("FleetUX.ExecutionControls"):TEXT("FleetUX.Title")));
+    PanelTitle->SetText(T(TakingOver && Mode!=EMapFleetMode::Browse?TEXT("Takeover.MoveTitle"):Active && Mode==EMapFleetMode::Browse?TEXT("FleetUX.ExecutionControls"):TEXT("FleetUX.Title")));
+    TakeoverWarning->SetVisibility(TakingOver && Mode!=EMapFleetMode::Browse?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     double RecoveryAltitude=0;const bool BelowSurface=!Active && RecoveryHeight(RecoveryAltitude);
     const bool Mock=Field(S->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock");
     const bool Configuring=PlanConfiguration::Active(S->GetPlans());
@@ -378,7 +401,7 @@ void UMapFleetInteractionWidget::Refresh() {
     Steps[0]->GetParent()->SetVisibility(Active || Mode==EMapFleetMode::Browse?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
     for(int I=0;I<Steps.Num();++I){MapUI::Panel(Steps[I],I==Step?MapUI::Selected:MapUI::Background,I<=Step?MapUI::Cyan:MapUI::Border);
         StepLabels[I]->SetText(T(*FString::Printf(TEXT("FleetUX.Step%d"),I+1)));StepLabels[I]->SetColorAndOpacity(I<=Step?MapUI::Cyan:MapUI::SecondaryText);}
-    Summary->SetText(T(Active?TEXT("FleetUX.RunningHint"):BelowSurface?TEXT("FleetTerrain.SourceBelow"):Mode==EMapFleetMode::BoxSelect?(!Selected.IsEmpty()?TEXT("FleetUX.SelectionReady"):TEXT("FleetUX.SelectHint")):
+    Summary->SetText(T(Active?TEXT("FleetUX.RunningHint"):BelowSurface?TEXT("FleetTerrain.SourceBelow"):Selected.IsEmpty()?TEXT("FleetUX.SelectHint"):Mode==EMapFleetMode::BoxSelect?TEXT("FleetUX.SelectionReady"):
         Mode==EMapFleetMode::GroupMove?(bHasTarget?TEXT("FleetUX.ReviewHint"):TEXT("FleetUX.PickHint")):TEXT("FleetUX.FinishedHint")));
     SelectionText->SetText(Selected.IsEmpty()?T(TEXT("FleetUX.EmptySelection")):FText::Format(T(TEXT("FleetUX.Selected")),FText::AsNumber(Selected.Num()),User(FString::Printf(TEXT("UAV-%02d"),Selected[0]))));
     SelectionText->SetVisibility(Mode!=EMapFleetMode::Browse || Active?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
@@ -386,6 +409,12 @@ void UMapFleetInteractionWidget::Refresh() {
     const FText Unavailable=UnavailableReason();if(bHasTarget && !Unavailable.IsEmpty())ClearTarget();
     double Height=0;const bool HeightValid=Active || !View3D || Mode!=EMapFleetMode::GroupMove || Selected.IsEmpty() || TargetHeight(Height);
     if(bHasTarget && View3D && HeightValid && FMath::Abs(TargetGeographic.Z-Height)>.01){TargetGeographic.Z=Height;BuildPreview();}
+    // The task keeps running until confirmation. Refresh only the source end
+    // from accepted telemetry; destination and source/version intent stay frozen.
+    if(bHasTarget && TargetTakeover.IsSet() && !bPending && FPlatformTime::Seconds()>=NextTakeoverPreviewUpdate){
+        NextTakeoverPreviewUpdate=FPlatformTime::Seconds()+.2;FVector Source;
+        if(Telemetry(TargetPrimary,Source) && !Source.Equals(TakeoverPreviewOrigin,1.e-7))BuildPreview();
+    }
     const FText SurfaceError=TerrainError();
     HeightControls->SetVisibility(Mode==EMapFleetMode::GroupMove && View3D && !Selected.IsEmpty() && !Active?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     FVector Anchor=FVector::ZeroVector;const bool HasAnchor=!Selected.IsEmpty() && Telemetry(Selected[0],Anchor);
@@ -429,7 +458,7 @@ void UMapFleetInteractionWidget::Refresh() {
         CastChecked<UTextBlock>(Buttons[Name]->GetContent())->SetColorAndOpacity(Buttons[Name]->GetIsEnabled()?MapUI::Background:MapUI::SecondaryText);
     for(auto Name:{TEXT("height_up"),TEXT("height_down"),TEXT("height_current")})Buttons[Name]->SetIsEnabled(!bPending && !Active && !Selected.IsEmpty() && HasAnchor);
     auto Caption=[&](const TCHAR* Name,const FText& Value){CastChecked<UTextBlock>(Buttons[Name]->GetContent())->SetText(Value);};
-    Caption(TEXT("confirm"),bHasTarget?FText::Format(T(TEXT("FleetUX.Confirm")),FText::AsNumber(Selected.Num())):T(TEXT("FleetUX.NeedTarget")));
+    Caption(TEXT("confirm"),bHasTarget?(TargetTakeover.IsSet()?T(TEXT("Takeover.Confirm")):FText::Format(T(TEXT("FleetUX.Confirm")),FText::AsNumber(Selected.Num()))):T(TEXT("FleetUX.NeedTarget")));
     Caption(TEXT("cancel"),T(Mode==EMapFleetMode::Browse?TEXT("FleetUX.Hide"):TEXT("FleetUX.Exit")));
     Caption(TEXT("details"),T(bShowCoordinates?TEXT("FleetUX.HideCoordinates"):TEXT("FleetUX.Coordinates")));
     const bool Blocked=!HeightValid || !SurfaceError.IsEmpty() || !ErrorDetails.IsEmpty() || (!Unavailable.IsEmpty() && (Mode!=EMapFleetMode::Browse || Latest) && !Active);
@@ -451,6 +480,7 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
         double Safe=0;if(!RecoveryHeight(Safe) || !UnavailableReason().IsEmpty() || !IsAvailable()
             || Field(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("execution_adapter"))!=TEXT("Mock"))return;
         SetMode(EMapFleetMode::GroupMove);TargetMembers=OrderedSelection();TargetPrimary=TargetMembers[0];
+        TargetTakeover=MapMove::CaptureTakeover(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TargetMembers);
         FVector Anchor;Telemetry(TargetPrimary,Anchor);TargetGeographic=Anchor;TargetGeographic.Z=Safe;bHasTarget=true;bRecoveryPreview=true;
         {TGuardValue<bool> Guard(bUpdatingHeight,true);TargetHeightInput->SetText(User(FString::SanitizeFloat(InputHeight(Safe,Anchor))));}
         MessageKey=TEXT("FleetTerrain.RecoveryPreview");BuildPreview();Refresh();Action(TEXT("fit_preview"),0);return;
@@ -479,12 +509,16 @@ void UMapFleetInteractionWidget::Action(FName Name,int32) {
     if(Name==TEXT("cancel")){SetMode(EMapFleetMode::Browse);return;}
     auto* S=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("request_id"),FGuid::NewGuid().ToString());
     if(Name==TEXT("confirm")) {
+        if(bHasTarget && !MapMove::PreviewIsCurrent(S->GetPlans(),OrderedSelection(),TargetTakeover)){
+            ClearTarget();MessageKey=TEXT("Takeover.SourceChanged");ErrorDetails=FText::GetEmpty();Refresh();return;
+        }
         ErrorDetails=UnavailableReason();if(!bHasTarget || !ErrorDetails.IsEmpty() || !IsAvailable()){Refresh();return;}
         double Height=0;if(!TargetHeight(Height)){MessageKey=TEXT("Fleet3D.InvalidHeight");Refresh();return;}
         TargetGeographic.Z=Height;
         ErrorDetails=TerrainError(true);if(!ErrorDetails.IsEmpty()){Refresh();return;}
         if(OrderedSelection()!=TargetMembers){ClearTarget();MessageKey=TEXT("Fleet.SelectionChanged");Refresh();return;}
-        R=MapMove::Request(TargetMembers,TargetGeographic);
+        const auto Request=MapMove::PreviewRequest(S->GetPlans(),TargetMembers,TargetGeographic,TargetTakeover);
+        if(!Request){ClearTarget();MessageKey=TEXT("Takeover.SourceChanged");Refresh();return;}R=Request.ToSharedRef();
     } else {
         if(!S->IsReady() || !S->IsHydrated()){MessageKey=TEXT("Errors.SYNC_OFFLINE");Refresh();return;}
         const auto Group=ExecutionControls::Find(S->GetPlans(),ManagedGroup);TArray<FString> SelectedIds;
@@ -597,7 +631,7 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
             FSlateDrawElement::MakeText(Out,Base+3,G.ToPaintGeometry(LabelSize,FSlateLayoutTransform(Label+FVector2D(9,NameSize.Y+7))),Caption,CaptionFont,ESlateDrawEffect::None,CaptionColor);
         }
     }
-    if(bDragging){const FVector2D Min(FMath::Min(Start.X,Current.X),FMath::Min(Start.Y,Current.Y)),Max(FMath::Max(Start.X,Current.X),FMath::Max(Start.Y,Current.Y));
+    if(bDragging && Mode==EMapFleetMode::BoxSelect){const FVector2D Min(FMath::Min(Start.X,Current.X),FMath::Min(Start.Y,Current.Y)),Max(FMath::Max(Start.X,Current.X),FMath::Max(Start.Y,Current.Y));
         FSlateDrawElement::MakeBox(Out,Base+1,G.ToPaintGeometry(Max-Min,FSlateLayoutTransform(Min)),FCoreStyle::Get().GetBrush("WhiteBrush"),ESlateDrawEffect::None,MapUI::Cyan.CopyWithNewOpacity(.1f));Rect(Start,Current,MapUI::Cyan);}
     if(bHasTarget){auto* Coordinates=R->GetCoordinateService().GetObject();FVector Anchor;
         if(Coordinates && Telemetry(TargetPrimary,Anchor)){
