@@ -1,9 +1,18 @@
 # UE5DroneControl 文档入口
 
-> 当前代码基线：UE 5.7 + C++17 `Backend` + Jetson/PX4 外部桥接。
-> 本页只提供导航和最小启动信息；协议、坐标和职责以链接文档及源码为准。
+> 当前主流程：UE 5.8 + C++17 `Backend` + Command / Map / Video，Stage 1 Mock 模拟。
+> 2026-10-28 核对使用入口；协议、坐标和职责以对应源码为准。Jetson/PX4 与真实视频属于另行配置、验收的链路。
 
-## 先读这几份
+## 使用入口
+
+1. [Windows 首次运行与配置](First-Run-Windows.md)：依赖、编译、Cesium 授权、代理和常见故障。
+2. [使用与演示手册](Stage1/Stage1-Demo-Runbook.md)：方案创建/编辑/部署、Map 选机与框选、Mock 执行、接管移动、视频联动、关闭与恢复。
+3. [Launcher 说明](../Launcher/README.md)：端口、本地配置、窗口管理和启动重置规则。
+4. [地图启动与缓存](MarinaBayStartup.md)、[方案配置流程](PLAN-Configuration-Workflow.md)、[单机接管](ManualTakeover.md)：专项说明及证据边界。
+
+从仓库根目录先运行 `SetupDroneSecurity.cmd` 编译，配置地图服务，再用 `CheckDroneSecurity.cmd` 检查和 `DroneSecurityLauncher.cmd` 启动。正常 Launcher 使用 **19880/19881**、`Saved/Stage1/data`，无需启动下面的独立后端。默认新建自有 Mock Backend 会执行编队重置；活动执行与预约的处理见使用手册。
+
+## 开发者参考
 
 1. [项目现状基线](PROJECT_FACTS.md)：从当前源码、配置和运行边界整理出的事实快照。
 2. [系统架构](架构设计.md)：UE、后端、Jetson、PX4、MediaMTX 的职责和时序。
@@ -21,7 +30,7 @@
 | `SequenceDiagrams.md` | 当前通信与任务时序图 |
 | `UE5DroneControl需求文档.md` | 需求/完成情况/待验收项，不能替代代码事实 |
 | `UE项目代码学习计划.md` | 面向新维护者的阅读路线 |
-| `UE编译故障排查.md` | UE 5.7 + VS2022 编译排障 |
+| `UE编译故障排查.md` | 编译排障参考；旧版本示例以当前 UE 5.8 和首次运行指南为准 |
 | `Cesium离线地图需求技术文档阅读清单.md` | 离线瓦片/3D Tiles 的专题资料和待验证项 |
 | `MediaMTX/README.md` | WebRTC/RTSP 视频演示与部署说明 |
 | `MediaMTX/室内室外录制测试手册.md` | 视频录制专项测试手册 |
@@ -29,9 +38,9 @@
 
 部分旧的专项文档可能随工作区分支被删除或保留为历史资料。若文档中的 `BackEnd`、24 字节控制包、旧 Python bridge 与当前代码冲突，以 `PROJECT_FACTS.md` 和源码为准。
 
-## 当前最小本地联调
+## 传统独立后端联调（开发用途）
 
-从仓库根目录启动后端：
+以下使用 `Backend/config.yaml` 的 8080/8081，区别于普通 Launcher 的 19880/19881。从仓库根目录启动后端：
 
 ```powershell
 cmake --build Backend\build --config Release --target DroneBackend

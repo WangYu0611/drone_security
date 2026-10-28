@@ -1,8 +1,8 @@
 # UE5DroneControl
 
-## P5.3 / 新电脑首次运行
+## 首次运行与使用手册
 
-> **当前请使用 Git + Git LFS 克隆，不要用 Code → Download ZIP 启动项目。** 已实测 GitHub ZIP 中 CesiumWorld.umap 只有 130 字节、CesiumIonSaaS.uasset 只有 129 字节，均为 LFS 占位文本，无法由 Unreal 加载。
+> **请使用 Git + Git LFS 克隆项目。** 2026-09-22 对当时 GitHub ZIP 的实测发现 CesiumWorld.umap 和 CesiumIonSaaS.uasset 是 LFS 占位文本，不能由 Unreal 加载；该历史检查不能保证后来生成的 ZIP 内容。首次运行按下面的克隆流程获取完整资源。
 >
 > ```powershell
 > git lfs install
@@ -12,7 +12,7 @@
 > ```
 > 克隆目录必须是新的空目录；保留旧工程中的个人修改。下载资源后先运行 `CheckDroneSecurity.cmd`，再首次编译。
 
-已加入闭合航线、安保方案整体移动与闭环 Mock 执行。完整交付边界见 [P5.3 说明](Docs/TASK-P5.3-PlanGeometryClosure.md)。
+当前主流程包括安保方案编辑与部署、闭合航线、方案整体移动、Mock 执行，以及执行中单机接管移动。日常操作见 [使用与演示手册](Docs/Stage1/Stage1-Demo-Runbook.md)，配置与排障见 [Windows 首次运行指南](Docs/First-Run-Windows.md)。
 
 **新电脑必须额外安装 Cesium for Unreal 到 UE 5.8**，并通过 Git LFS 下载资源。只安装 UE 和 VS 尚不足以运行。
 
@@ -23,13 +23,17 @@
 
 启动器自动定位 UE，本地路径覆盖写入 `Launcher/config.local.json`。Stage 1 默认端口是 **19880/19881**；下方 8080/8081 属于传统独立后端流程。
 
+2026-10-28 手册核对：默认在线 3D 地图位于新加坡 The Meadow 草地，Mock 编队间距为 3 米；Cesium 磁盘请求缓存上限为 131,072 条，不能代替完整离线三维数据。普通单机 Mock 演示无需配置 Jetson、ROS/PX4 或 MediaMTX；播放视频时才需要有效视频源。地图授权和网络条件见首次运行指南。
+
+正常 Launcher 每次新建自有 Mock Backend 会执行启动重置：符合重置条件的活动 Mock 执行终止、预约取消并恢复编队；历史记录与已有路线保留。仅重启客户端或复用已有 Backend 不触发这项重置。需要保留执行状态时，按使用手册在本地配置设置 `mock_reset_on_start=false`，关闭后重开并不会自动继续已暂停任务。
+
 UE5DroneControl 是一个基于 Unreal Engine 5.8、Cesium 和 C++17 后端的无人机安保指挥、三维态势展示与任务模拟演示项目。当前 Stage 1 采用 Command（指挥端）、Map（地图端）和 Video（视频端）三个独立客户端，由 DroneBackend 统一管理业务状态，并通过 HTTP / WebSocket 同步。
 
 当前已实现安保方案创建、任务与无人机分配、地图航线编辑、方案部署、显式开始任务，以及 Mock 执行监控、暂停、继续、模拟返航和终止的业务闭环。部署只激活配置，任务执行需单独开始；当前执行能力属于 Mock / Simulation，不代表真实无人机飞行。
 
 仓库保留 Jetson/PX4 控制与遥测接口，以及 MediaMTX RTSP / WebRTC 视频链路实现。它们尚未作为当前 Stage 1 主流程完成真机端到端复验；当前视频演示以布局和视频目标切换为主，实际播放需另行配置并验证视频源。
 
-本文是仓库级入口。当前功能范围、数据接口和演示步骤以 [Stage 1 功能审计](Docs/Stage1/Stage1-Feature-Audit.md)、[汇报摘要](Docs/Stage1/Stage1-Presentation-Summary.md)、[演示手册](Docs/Stage1/Stage1-Demo-Runbook.md)及对应源码为依据；下文保留的传统控制与机载链路说明需结合这些文档区分当前主流程和历史能力。
+本文是仓库级入口。现行操作以 [使用与演示手册](Docs/Stage1/Stage1-Demo-Runbook.md)、[方案配置流程](Docs/PLAN-Configuration-Workflow.md)及源码为准。[Stage 1 功能审计](Docs/Stage1/Stage1-Feature-Audit.md)和[汇报摘要](Docs/Stage1/Stage1-Presentation-Summary.md)保留 2026-09-20 的历史范围；后续交互变化见[接管说明](Docs/ManualTakeover.md)、[地图启动说明](Docs/MarinaBayStartup.md)和[交互验收](Evidence/InteractionUX/20261023/acceptance.json)。下文传统控制与机载链路不是普通 Mock 演示的安装步骤。
 
 > 当前工程基线：Windows + Unreal Engine 5.8（工程关联与已保存运行日志一致）+ Visual Studio 2022 / MSVC 工具链 + C++17 后端。
 >
@@ -56,6 +60,8 @@ UE 不拥有后端注册表、GPS 上电锚点、NED 控制目标或飞控执行
 视频是独立链路：Jetson 或 FFmpeg 发布 RTSP，MediaMTX 转成 WebRTC 浏览器页面，UE WebBrowser 加载该页面。视频可播放不代表控制链路健康，控制链路健康也不代表视频可播放。
 
 ## 2. 总体架构
+
+下图端口对应直接使用 `Backend/config.yaml` 的传统独立联调。正常 Launcher 的三个客户端由启动参数连接 `19880/19881`，数据位于 `Saved/Stage1/data`。
 
 ```text
 ┌──────────────────────────── Windows / UE5 ────────────────────────────┐
@@ -89,7 +95,7 @@ Jetson/FFmpeg ── RTSP :8554 ──► MediaMTX ── WebRTC :8889 ──►
 ```text
 UE5DroneControl/
 ├─ UE5DroneControl.uproject       UE5 工程入口
-├─ Config/                        UE 默认连接、代理和项目配置
+├─ Config/                        UE 默认连接和项目配置；代理按本机设置
 ├─ Content/                       关卡、蓝图、Cesium 和游戏资产
 ├─ Source/UE5DroneControl/        UE C++ 模块
 │  ├─ DroneOps/Network/            HTTP、WebSocket、网络管理器
@@ -128,13 +134,13 @@ UE5DroneControl/
 | Visual Studio 2022 | UE Editor 和后端编译 |
 | CMake + vcpkg | Backend 配置、Boost/yaml-cpp/JSON/spdlog/GTest |
 | PowerShell | 工具脚本和启动流程 |
-| Python 3 | mock UE、模拟遥测、协议测试 |
+| Python 3.10+（含 Tk） | Stage 1 启动器；其他 Python 工具按各自依赖安装 |
 | Node.js + `wscat` | 可选，手工 WebSocket 调试 |
 | Jetson ROS 2/PX4/MicroXRCE | 真实机载链路，不能由本地 Python 依赖替代 |
 
 后端依赖以 `Backend/vcpkg.json` 为准，包括 Boost System/JSON/Beast、yaml-cpp、nlohmann-json、spdlog 和 GoogleTest。根目录 `requirements.txt` 是历史/辅助 Python 依赖集合，不是完整 Jetson 环境安装器。
 
-环境检测脚本会生成本地 `.env.local`，不会替代依赖安装：
+普通 Stage 1 使用 `CheckDroneSecurity.cmd` 和 `SetupDroneSecurity.cmd`。下面的历史辅助环境脚本会生成本地 `.env.local`，不会替代依赖安装，也不是启动器读取本地配置的入口：
 
 ```powershell
 .\setup_environment.ps1 `
@@ -146,10 +152,12 @@ UE5DroneControl/
 
 ## 5. 编译与启动
 
+普通使用从本文顶部的首次运行流程启动。以下保留后端开发与独立联调命令，使用 `8080/8081`；不要与 Launcher 的 `19880/19881` 混用。
+
 ### 5.1 编译后端
 
 ```powershell
-cd D:\RedAlert\UE5DroneControl
+cd C:\Projects\drone_security
 .\Backend\build_simple.bat
 ```
 
@@ -199,7 +207,7 @@ PollIntervalSec=3.0
 GeoidSeparationMeters=0.0
 ```
 
-外场只修改配置中的后端地址，不要在 C++ 中硬编码新地址。`Config/DefaultEngine.ini` 的 `127.0.0.1:7890` 是当前机器的在线 HTTP 代理值，换机器必须复核；本机后端和 WebSocket 应保持直连。
+独立联调修改配置中的后端地址，不要在 C++ 中硬编码地址。共享 `Config/DefaultEngine.ini` 没有固定代理；需要代理时使用本机配置，具体步骤见 [地图服务与网络设置](Docs/First-Run-Windows.md#4-设置地图服务)。本机后端和 WebSocket 应保持直连。普通 Launcher 会用其配置覆盖上面的 HTTP/WS 默认地址。
 
 ## 6. 后端配置和端口
 
@@ -384,7 +392,7 @@ curl.exe http://127.0.0.1:8080/api/debug/heartbeat/1
 
 建议阅读顺序：
 
-1. [项目事实基线](Docs/PROJECT_FACTS.md)
+1. [使用与演示手册](Docs/Stage1/Stage1-Demo-Runbook.md)、[首次运行与配置](Docs/First-Run-Windows.md)、[项目事实基线](Docs/PROJECT_FACTS.md)
 2. [系统架构设计](Docs/架构设计.md)
 3. [接口与通讯数据规范](Docs/接口与通讯数据规范.md)
 4. [坐标系转换说明](Docs/坐标系转换说明.md)

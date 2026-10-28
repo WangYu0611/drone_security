@@ -1,17 +1,19 @@
 # 项目现状基线（代码核对版）
 
-> 审计日期：2026-09-09
-> 适用仓库：`D:/RedAlert/UE5DroneControl`
+> 基础接口审计日期：2026-09-09；运行入口、引擎和代理说明于 2026-10-28 核对更新。
+> 适用仓库：`https://github.com/WangYu0611/drone_security`；本机权威目录为 `D:/CodexPublish/drone_security`。
 > 事实优先级：当前源码与配置 > 可执行测试/运行日志 > 本目录其他说明文档。
 > 本文件只记录已在仓库中找到实现或配置依据的事实；“待验证”不等于“已完成”。
 
+现行 Stage 1 用户流程见[使用手册](Stage1/Stage1-Demo-Runbook.md)与[首次运行指南](First-Run-Windows.md)。下文基础接口与传统独立后端说明不是所有后续方案、部署和执行 API 的完整清单。普通 Launcher 使用 `19880/19881` 和 `Saved/Stage1/data`，会覆盖下文独立联调的 `8080/8081` 默认值。
+
 ## 1. 当前技术基线
 
-- UE 工程：Unreal Engine 5.7，工程关联见 `UE5DroneControl.uproject`，Target Rules 使用 UE 5.7 的 Include Order/Build Settings。
+- UE 工程：Unreal Engine 5.8，工程关联见 `UE5DroneControl.uproject`，Target Rules 使用 `EngineIncludeOrderVersion.Unreal5_8`。
 - UE 模块：`Source/UE5DroneControl/`，核心运行时网络入口是 `UDroneNetworkManager`（`UGameInstanceSubsystem`）。
 - 后端：`Backend/`，C++17/CMake，进程名通常为 `DroneBackend.exe`。
 - 后端入口：`Backend/main.cpp`；装配顺序为配置加载、UDP 发送/接收、心跳、`DroneManager`、`AssemblyController`、`ExecutionEngine`、HTTP/WS 服务。
-- Jetson/PX4 桥接脚本不在本仓库的 `Backend/` 或 `Source/` 中；真实飞控验证必须使用与当前 JSON v1/YAML 协议匹配的外部 Jetson 版本。
+- Jetson/PX4 桥接与协议辅助脚本位于 `Jetson/`；真实飞控验证必须在机载环境使用与当前 JSON v1/YAML 协议匹配的版本。
 - 当前仓库包含 `Backend/data/drones.json` 示例注册数据，但它是运行时持久化文件，不是无人机真实在线证明。
 
 ## 2. 当前运行拓扑
@@ -72,7 +74,7 @@ UE5
 - 注册表轮询：3 秒
 - 地理目标高程修正：`GeoidSeparationMeters=0.0`
 
-`Config/DefaultEngine.ini` 当前在线 HTTP 代理为 `127.0.0.1:7890`，并把 `127.0.0.1/localhost/::1` 列入直连。代理端口是本机环境事实，换机器必须重新确认。
+共享 `Config/DefaultEngine.ini` 没有固定 HTTP 代理，仅把 `127.0.0.1/localhost/::1` 列入直连。需要代理时按[首次运行指南](First-Run-Windows.md#4-设置地图服务)设置本机覆盖；Launcher 不会自动探测或添加代理启动参数。
 
 ### 3.3 MediaMTX
 
