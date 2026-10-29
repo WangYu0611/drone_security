@@ -16,6 +16,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
+#include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "WebBrowser.h"
@@ -62,6 +63,34 @@ class FFigmaVideoChecks : public IAutomationLatentCommand
     FString Target(UOperationalContextSubsystem* Sync)
     {
         FString Value;if(Sync->GetVideoView())Sync->GetVideoView()->TryGetStringField(TEXT("video_target_uav_id"),Value);return Value;
+    }
+    void CheckBottomControls(UVideoShellWidget* Shell,UOperationalContextSubsystem* Sync,const TCHAR* Phase)
+    {
+        if(!Test->TestNotNull(TEXT("latest Video design includes manual takeover affordance"),Shell->TakeoverButton.Get()))return;
+        Test->TestTrue(*FString::Printf(TEXT("%s keeps takeover affordance visible"),Phase),Shell->TakeoverButton->IsVisible());
+        Test->TestFalse(TEXT("Video cannot enable flight/execution takeover"),Shell->TakeoverButton->GetIsEnabled());
+        Test->TestFalse(TEXT("Video takeover has no unprivileged request or fake handoff delegate"),Shell->TakeoverButton->OnClicked.IsBound());
+        Test->TestEqual(TEXT("Video takeover tooltip explains supported Map/Command workflow"),Shell->TakeoverButton->GetToolTipText().ToString(),ProductText::Get(TEXT("VideoUI.TakeoverHint")).ToString());
+        FString Language;if(Sync->GetUIPreferences())Sync->GetUIPreferences()->TryGetStringField(TEXT("language"),Language);
+        Test->TestTrue(TEXT("takeover guidance loads the compiled language resource"),Shell->TakeoverButton->GetToolTipText().ToString().Contains(Language==TEXT("en")?TEXT("Map or Command"):TEXT("战术地图")));
+        const int64 ContextVersion=Sync->GetVersion();const FString VideoTarget=Target(Sync);const int MediaGeneration=Shell->GetBrowserGeneration();
+        Shell->TakeoverButton->OnClicked.Broadcast();
+        Test->TestEqual(TEXT("disabled takeover cannot change acknowledged selection"),Sync->GetVersion(),ContextVersion);
+        Test->TestEqual(TEXT("disabled takeover cannot change video target"),Target(Sync),VideoTarget);
+        Test->TestEqual(TEXT("disabled takeover does not recreate/reload player"),Shell->GetBrowserGeneration(),MediaGeneration);
+        if(FParse::Param(FCommandLine::Get(),TEXT("NullRHI")))return;
+        auto Left=[](const UWidget* W){return W->GetCachedGeometry().GetAbsolutePosition().X;};
+        auto Right=[](const UWidget* W){const auto& G=W->GetCachedGeometry();return G.LocalToAbsolute(G.GetLocalSize()).X;};
+        Test->TestTrue(TEXT("set-active action does not overlap takeover button"),Right(Shell->SetActiveButton)<=Left(Shell->TakeoverButton));
+        Test->TestTrue(TEXT("takeover button does not overlap current-selection feedback"),Right(Shell->TakeoverButton)<=Left(Shell->SystemHeader));
+        Test->TestTrue(TEXT("current-selection feedback does not overlap retry"),Right(Shell->SystemHeader)<=Left(Shell->Retry));
+        for(const TCHAR* Name:{TEXT("VideoDetectionDivider"),TEXT("VideoSystemDivider"),TEXT("VideoModeDivider")}){
+            const auto* Rule=Cast<USizeBox>(Shell->WidgetTree->FindWidget(FName(Name)));
+            if(Test->TestNotNull(TEXT("original divider has an explicit raster allocation"),Rule)){
+                const auto Size=Rule->GetContent()->GetCachedGeometry().GetLocalSize();
+                Test->TestTrue(TEXT("original divider image allocates at least one logical pixel in each dimension"),Size.X>=1 && Size.Y>=1);
+            }
+        }
     }
 public:
     explicit FFigmaVideoChecks(FAutomationTestBase* T):Test(T)
@@ -180,23 +209,27 @@ public:
             Generation=Shell->GetBrowserGeneration();Shell->SetViewMode(6);Next=Now+1.5;++Step;return false;
         }
         if(Step==4){
+            CheckBottomControls(Shell,Sync,TEXT("six-slot layout"));
             Capture(TEXT("01-six-slots"));Shell->SetViewMode(4);
             Test->TestEqual(TEXT("four layout hides fourth secondary"),Shell->GetSecondaryButton(3)->GetVisibility(),ESlateVisibility::Collapsed);
             Next=Now+1.5;++Step;return false;
         }
         if(Step==5){
+            CheckBottomControls(Shell,Sync,TEXT("four-slot layout"));
             Capture(TEXT("02-four-slots"));Shell->SetViewMode(1);
             Test->TestEqual(TEXT("focus collapses secondary container"),Shell->SecondaryArea->GetVisibility(),ESlateVisibility::Collapsed);
             Test->TestEqual(TEXT("focus reclaims primary panel height"),Cast<UCanvasPanelSlot>(Shell->PrimaryPanel->Slot)->GetSize().Y,574.);
             Next=Now+1.5;++Step;return false;
         }
         if(Step==6){
+            CheckBottomControls(Shell,Sync,TEXT("focus layout"));
             Capture(TEXT("03-focus"));Sync->SetLanguage(TEXT("en"));Next=Now+1.5;++Step;return false;
         }
         if(Step==7){
             FString Language;if(Sync->GetUIPreferences())Sync->GetUIPreferences()->TryGetStringField(TEXT("language"),Language);if(Language!=TEXT("en"))return false;
             Test->TestTrue(TEXT("language and layouts retain Browser object"),Shell->GetBrowser()==Browser.Get());
             Test->TestEqual(TEXT("language and layouts retain media generation"),Shell->GetBrowserGeneration(),Generation);
+            CheckBottomControls(Shell,Sync,TEXT("English focus layout"));
             Capture(TEXT("04-focus-english"));
             const int PreviousAlerts=GI->GetSubsystem<UCommandAlertStore>()->GetUnhandledCount();
             AlertId=GI->GetSubsystem<UCommandAlertStore>()->AddAlert(First,TEXT("test"),TEXT("Automation received alert fixture"));

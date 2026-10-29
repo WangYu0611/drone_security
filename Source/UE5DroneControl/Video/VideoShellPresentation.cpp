@@ -68,6 +68,13 @@ UImage* Asset(UWidgetTree* Tree,const TCHAR* File,FVector2D Native,FVector2D Req
     const auto Size=Native*FMath::Min(Requested.X/Native.X,Requested.Y/Native.Y);
     Copy.SetImageSize(FVector2f(Size));Image->SetBrush(Copy);Image->SetDesiredSizeOverride(Size);return Image;
 }
+USizeBox* Divider(UWidgetTree* Tree,FName Name,const TCHAR* File,FVector2D Native,float Width)
+{
+    // Slate's vector cache rounds effective raster dimensions to integers.
+    // Give the original thin SVG a nonzero image allocation at normal DPI.
+    auto* Box=Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass(),Name);Box->SetWidthOverride(Width);Box->SetHeightOverride(1);
+    Box->SetContent(Asset(Tree,File,Native,{Width,1}));return Box;
+}
 UWidget* ReserveIcon(UWidgetTree* Tree)
 {
     auto* Canvas=Tree->ConstructWidget<UCanvasPanel>();
@@ -195,7 +202,7 @@ void UVideoShellWidget::BuildPresentation()
     // The AI target badge is above its panel in z-order, and never claims detection results.
     Cast<UCanvasPanelSlot>(DetectionTarget->GetParent()->Slot)->SetZOrder(1);
     Place(DesignCanvas,Key(TEXT("VideoUI.Detection"),20,true),1146,166,164,27);
-    Place(DesignCanvas,Asset(WidgetTree,TEXT("be4b8.svg"),{3089.016,5},{253,.41}),1144,200,253,.41f);
+    Place(DesignCanvas,Divider(WidgetTree,TEXT("VideoDetectionDivider"),TEXT("be4b8.svg"),{3089.016,5},253),1144,200,253,1);
     const TCHAR* Categories[]={TEXT("VideoUI.People"),TEXT("VideoUI.Vehicles"),TEXT("VideoUI.Drones"),TEXT("VideoUI.Behavior"),TEXT("VideoUI.Other")};
     for(int I=0;I<5;++I){Place(DesignCanvas,Key(Categories[I],14),1146,208+27.4f*I,195,22);auto* Value=MakeText(TEXT("--"),14);Value->SetJustification(ETextJustify::Right);Place(DesignCanvas,Value,1350,208+27.4f*I,46,22);}
     Panel(1131,367,277,179);Place(DesignCanvas,Key(TEXT("VideoUI.Alerts"),20,true),1146,374,245,27);
@@ -208,7 +215,7 @@ void UVideoShellWidget::BuildPresentation()
     auto* EmptySlot=AlertsOverlay->AddChildToOverlay(EmptyAlert);EmptySlot->SetHorizontalAlignment(HAlign_Center);EmptySlot->SetVerticalAlignment(VAlign_Center);
     auto* AlertScroll=WidgetTree->ConstructWidget<UScrollBox>();AlertScroll->SetScrollbarThickness({2,2});Fill(AlertsOverlay,AlertScroll);AlertRows=WidgetTree->ConstructWidget<UVerticalBox>();AlertScroll->AddChild(AlertRows);
     Panel(1131,563,277,168);Place(DesignCanvas,Key(TEXT("VideoUI.System"),20,true),1146,573,245,27);
-    Place(DesignCanvas,Asset(WidgetTree,TEXT("be4b8.svg"),{3089.016,5},{253,.41}),1145,607,253,.41f);
+    Place(DesignCanvas,Divider(WidgetTree,TEXT("VideoSystemDivider"),TEXT("be4b8.svg"),{3089.016,5},253),1145,607,253,1);
     const TCHAR* Metrics[]={TEXT("VideoUI.Online"),TEXT("VideoUI.AI"),TEXT("VideoUI.Storage"),TEXT("VideoUI.Network")};
     for(int I=0;I<4;++I){Place(DesignCanvas,Key(Metrics[I],14),1146,618+27.4f*I,140,22);
         auto* Value=I==0||I==3?MakeText(TEXT(""),13):Key(I==1?TEXT("VideoUI.NotConnected"):TEXT("VideoUI.Unavailable"),13,false,Muted);
@@ -218,11 +225,20 @@ void UVideoShellWidget::BuildPresentation()
     for(int I=0;I<3;++I){auto* Button=WidgetTree->ConstructWidget<UButton>();Button->SetContent(Key(ModesKeys[I],14));ModeButtons.Add(Button);
         Modes->AddChildToHorizontalBox(Button)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));}
     ModeButtons[0]->OnClicked.AddDynamic(this,&UVideoShellWidget::ViewFour);ModeButtons[1]->OnClicked.AddDynamic(this,&UVideoShellWidget::ViewSix);ModeButtons[2]->OnClicked.AddDynamic(this,&UVideoShellWidget::ViewFocus);
-    auto* Divider=Asset(WidgetTree,TEXT("326dd.svg"),{315.129,7},{26,.58});Divider->SetRenderTransformAngle(-90);Place(DesignCanvas,Divider,334,768,26,.58f);
+    auto* ModesDivider=Divider(WidgetTree,TEXT("VideoModeDivider"),TEXT("326dd.svg"),{315.129,7},26);ModesDivider->SetRenderTransformPivot(FVector2D(.5));ModesDivider->SetRenderTransformAngle(-90);Place(DesignCanvas,ModesDivider,334,768,26,1);
     // Existing explicit video-to-selection action remains available without changing source semantics.
     SetActiveButton=WidgetTree->ConstructWidget<UButton>();SetActiveButton->SetContent(Key(TEXT("VideoUI.SetActive"),12));ToolStyle(SetActiveButton);
-    SetActiveButton->OnClicked.AddDynamic(this,&UVideoShellWidget::PublishActive);Place(DesignCanvas,SetActiveButton,369,750,164,40);
-    SystemHeader=MakeText(TEXT(""),11);FigmaUI::Text(SystemHeader,11,Muted);Place(DesignCanvas,SystemHeader,548,759,275,22);
+    SetActiveButton->OnClicked.AddDynamic(this,&UVideoShellWidget::PublishActive);Place(DesignCanvas,SetActiveButton,369,750,147,40);
+    // Figma 2586:120. Video remains a viewing role; no execution or cross-client
+    // takeover request is bound to this affordance. Map/Command own confirmation.
+    TakeoverButton=WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(),TEXT("VideoManualTakeover"));ToolStyle(TakeoverButton);
+    auto* TakeoverRow=WidgetTree->ConstructWidget<UHorizontalBox>();TakeoverButton->SetContent(TakeoverRow);
+    auto* TakeoverIcon=Asset(WidgetTree,TEXT("../Refresh20261029/8494e.svg"),{249,249},{20.4,20.4});TakeoverIcon->SetColorAndOpacity(Dim);
+    TakeoverRow->AddChildToHorizontalBox(TakeoverIcon)->SetVerticalAlignment(VAlign_Center);
+    auto* TakeoverCaption=Key(TEXT("Takeover.Action"),14,false,Dim);auto* TakeoverCaptionSlot=TakeoverRow->AddChildToHorizontalBox(TakeoverCaption);TakeoverCaptionSlot->SetVerticalAlignment(VAlign_Center);TakeoverCaptionSlot->SetPadding(FMargin(8,0,0,0));
+    auto* TakeoverContent=CastChecked<UButtonSlot>(TakeoverRow->Slot);TakeoverContent->SetHorizontalAlignment(HAlign_Center);TakeoverContent->SetVerticalAlignment(VAlign_Center);
+    TakeoverButton->SetIsEnabled(false);TakeoverButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.TakeoverHint")));Place(DesignCanvas,TakeoverButton,529.3f,749.8f,120.8f,40.05f);
+    SystemHeader=MakeText(TEXT(""),11);FigmaUI::Text(SystemHeader,11,Muted);SystemHeader->SetClipping(EWidgetClipping::ClipToBounds);Place(DesignCanvas,SystemHeader,663,759,160,22);
     const TCHAR* Names[]={TEXT("VideoUI.Retry"),TEXT("VideoUI.Record"),TEXT("VideoUI.Playback"),TEXT("VideoUI.Screenshot"),TEXT("VideoUI.Filter")};
     const TCHAR* Icons[]={TEXT("a9033.svg"),TEXT("85010.svg"),TEXT("7b89e.svg"),TEXT("a03b0.svg"),TEXT("15368.svg")};
     const int Sizes[]={224,225,225,227,220};
@@ -314,6 +330,7 @@ void UVideoShellWidget::UpdatePresentation()
     SystemHeader->SetText(FText::Format(ProductText::Get(TEXT("VideoUI.ActiveSelection")),Active.IsEmpty()?ProductText::Get(TEXT("VideoUI.NA")):FText::AsCultureInvariant(Active)));
     SystemHeader->SetToolTipText(SystemHeader->GetText());
     SetActiveButton->SetIsEnabled(!bStopped && DisplayedDroneId>0 && Sync->IsReady() && !Sync->IsVideoSwitchPending());SetActiveButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.SetActiveHint")));
+    TakeoverButton->SetIsEnabled(false);TakeoverButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.TakeoverHint")));
     for(auto B:UnsupportedButtons)B->SetToolTipText(ProductText::Get(TEXT("VideoUI.Unsupported")));
     // AlertStore contains received Backend/session events. Do not manufacture AI detections.
     const auto Alerts=GetGameInstance()->GetSubsystem<UCommandAlertStore>()->GetAlerts();

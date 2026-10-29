@@ -80,6 +80,7 @@ private:
     UPROPERTY() TObjectPtr<class UVerticalBox> AlertRows;
     UPROPERTY() TObjectPtr<class UWidget> AlertEmpty;
     UPROPERTY() TObjectPtr<class UButton> SetActiveButton;
+    UPROPERTY() TObjectPtr<class UButton> TakeoverButton;
     UPROPERTY() TArray<TObjectPtr<class UButton>> UnsupportedButtons;
     UPROPERTY() TArray<TObjectPtr<class UTextBlock>> StaticLabels;
     TArray<FString> StaticKeys;
