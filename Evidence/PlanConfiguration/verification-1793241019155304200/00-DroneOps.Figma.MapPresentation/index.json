@@ -1,0 +1,1425 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_4193edaf0f97>",
+			"instanceName": "<UE_INSTANCE_2859aae03a0f>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.29-02.31.14",
+	"succeeded": 0,
+	"succeededWithWarnings": 0,
+	"failed": 1,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 26.467693328857422,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "MapPresentation",
+			"fullTestPath": "DroneOps.Figma.MapPresentation",
+			"tags": [],
+			"state": "Fail",
+			"deviceInstance": [
+				"<UE_INSTANCE_4193edaf0f97>"
+			],
+			"duration": 26.467693328857422,
+			"dateTime": "2026.10.29-02.30.47",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map evidence: Saved/FigmaMapQA/20261029-023047",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.47"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device unregistered from world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.47"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogStreaming: FlushAsyncLoading(380): 1 QueuedPackages, 0 AsyncPackages",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device (ID: 1) registered with world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogEditorAutomationTests: P55OfflineMap took 0.197 to load.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:22982  WebSocketUrl=ws://127.0.0.1:22983/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Creating Audio Device:                 Id: 2, Scope: Unique, Realtime: True",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: bUseRenderScheduler set to true.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Audio Mixer Platform Settings:",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tSample Rate:\t\t\t\t\t\t  48000",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tCallback Buffer Frame Size Requested: 1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tCallback Buffer Frame Size To Use:\t  1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tNumber of buffers to queue:\t\t\t  1",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tMax Channels (voices):\t\t\t\t  32",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: \tNumber of Async Source Workers:\t\t  4",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: AudioDevice MaxSources: 32",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Spatialization Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Reverb Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Occlusion Plugin: None (built-in).",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: Refreshing FWindowsMMDeviceCache",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Console', Device='扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Console', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Multimedia', Device='扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Multimedia', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Render Role='Communications', Device='扬声器 (ToDesk Virtual Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioEnumeration: FWindowsMMDeviceCache: Default Capture Role='Communications', Device='麦克风 (Realtek(R) Audio Codec with THX Spatial Audio)'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher started.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Initializing audio mixer using platform API: 'WASAPIMixer'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher initial state: Audiosrv=RUNNING, AudioEndpointBuilder=RUNNING",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FAudioMixerWasapiRenderStream::InitializeHardware audio mixer requested num channels: 2, Wasapi render stream hardware supports num channels: 2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FAudioMixerWasapiRenderStream::InitializeHardware succeeded with sample rate: 48000, buffer period: 1024",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: FAudioMixerWasapi initialized: SampleRate=48000 NumChannels=2 NumDirectOutChannels=0 bIsAggregateDevice=0 StreamParams.Num()=1",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Using Audio Hardware Device 扬声器 (Realtek(R) Audio Codec with THX Spatial Audio)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Initializing Sound Submixes...",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Creating Master Submix 'MasterSubmixDefault'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Creating Master Submix 'MasterReverbSubmixDefault'",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=2",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudio: Audio Device (ID: 2) registered with world 'P55OfflineMap'.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [CommandMap] Google Photorealistic 3D Tiles (ion asset 2275207) is absent. Existing layers retained; Google loading is not available.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTextureFormatOodle: Oodle Texture loading DLL: oo2tex_win64_2.9.5.dll",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSkinnedAsset: Waiting for skinned assets to be ready 0/1 (SK_Drone_Scavenger) ...",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: === DroneOpsPlayerController::BeginPlay CALLED ===",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogViewport: Viewport MouseLockMode Changed, LockOnCapture -> DoNotLock",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogViewport: Viewport MouseCaptureMode Changed, CapturePermanently_IncludingInitialMouseDown -> CaptureDuringMouseDown",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face 'F:\\Perforce\\Releases\\4.24\\Engine\\Content\\Slate\\Fonts\\DroidSansFallback.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogTextureFormatOodle: Oodle Texture loading DLL: oo2tex_win64_2.9.14.dll",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../Content/Slate/Fonts/Roboto-Bold.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.002289 seconds to synchronously load lazily loaded font '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' (7610K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogCsvProfiler: Metadata set : systemresolution.resx=\"1920\"",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogCsvProfiler: Metadata set : systemresolution.resy=\"1080\"",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.48"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Flushing composite font cache on Game thread. Clearing 2 entries in composite font map and 9 entries in font face map.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.000230 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' (155K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Slate/Fonts/DroidSansFallback.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.001230 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/DroidSansFallback.ttf' (3848K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Slate/Fonts/DroidSansFallback.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Slate/Fonts/DroidSansFallback.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Slate/Fonts/DroidSansMono.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.000169 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/DroidSansMono.ttf' (77K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Slate/Fonts/DroidSansMono.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Slate/Fonts/DroidSansMono.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.002535 seconds to synchronously load lazily loaded font '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' (7610K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Editor/Slate/Fonts/NotoColorEmoji.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Slate/Fonts/Roboto-Italic.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.000215 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Italic.ttf' (157K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Slate/Fonts/Roboto-Italic.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Slate/Fonts/Roboto-Italic.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Synchronously lazy loading font file '../../../Engine/Content/Slate/Fonts/Roboto-Bold.ttf' with subface index 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Took 0.000125 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Bold.ttf' (160K) on Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Freetype font face in memory successfully created with synchronously loaded raw font file '../../../Engine/Content/Slate/Fonts/Roboto-Bold.ttf' subface 0 in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../../Engine/Content/Slate/Fonts/Roboto-Bold.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogSlate: Font face '../../Content/Slate/Fonts/Roboto-Regular.ttf' subface index 0 successfully added to font face map in Game thread.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.56"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '2D and 3D captions retain readable allocated width' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "Source\\UE5DroneControl\\Tests\\FigmaMapTest.cpp",
+					"lineNumber": 172,
+					"timestamp": "2026.10.29-02.30.57"
+				},
+				{
+					"event":
+					{
+						"type": "Error",
+						"message": "Expected '2D and 3D captions retain readable allocated width' to be true.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "Source\\UE5DroneControl\\Tests\\FigmaMapTest.cpp",
+					"lineNumber": 172,
+					"timestamp": "2026.10.29-02.30.57"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 01-main 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.57"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 02-dropdown 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.30.59"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: invalid HTTP response code received. URL: https://www.google.com/generate_204, HTTP code: 0, content length: 0, actual payload size: 0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 0 (Hostname 127.0.0.1 was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 1 (  Trying 127.0.0.1:7897...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 2 (CONNECT tunnel: HTTP/1.1 negotiated)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 3 (allocate connect buffer)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 4 (Establish HTTP proxy tunnel to www.google.com:443)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 5 (CONNECT phase completed)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 6 (CONNECT tunnel established, response 200)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 7 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 8 (TLSv1.3 (OUT), TLS handshake, Client hello (1):)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 9 (TLS connect error: error:00000000:lib(0):func(0):reason(0))",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 10 (OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.google.com:443 )",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600: libcurl info message cache 11 (closing connection #30)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 00000163BD7EB600 GET https://www.google.com/generate_204 completed with reason 'ConnectionError' after 0.07s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.10"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 03-3d 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.11"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 04-route 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.12"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Resize geometry 1840.0x765.3 -> 1073.3x446.4; widget actions/RHI only, no native mouse or flight claim.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.14"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogPlayLevel: Shutting down PIE online subsystems",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.14"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixer: FAudioMixerWasapi::StopAudioStream() InstanceID=2, StreamState=4",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.14"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "LogAudioMixerWasapi: FWasapiServiceWatcher stopped.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.31.14"
+				}
+			],
+			"warnings": 28,
+			"errors": 2,
+			"artifacts": []
+		}
+	]
+}

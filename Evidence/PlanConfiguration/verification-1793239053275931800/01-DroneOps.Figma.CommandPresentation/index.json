@@ -1,0 +1,189 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_99e0f8d89410>",
+			"instanceName": "<UE_INSTANCE_978efbaa60eb>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.29-01.59.25",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 27.967382431030273,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CommandPresentation",
+			"fullTestPath": "DroneOps.Figma.CommandPresentation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_99e0f8d89410>"
+			],
+			"duration": 27.967382431030273,
+			"dateTime": "2026.10.29-01.58.57",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Figma evidence: Saved/FigmaQA/20261029-015857",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.58.57"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:22982  WebSocketUrl=ws://127.0.0.1:22983/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.58.57"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.58.57"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 01-overview 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.07"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 02-devices 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.08"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 03-alerts 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.10"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 04-logs 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.11"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 05-plans 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 06-new-plan 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.14"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 07-fleet 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.17"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 08-label 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.19"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 09-fleet-en 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-01.59.22"
+				}
+			],
+			"warnings": 2,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

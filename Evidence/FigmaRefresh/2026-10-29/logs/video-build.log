@@ -1,0 +1,41 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA -MaxParallelActions=2
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 2 actions based on MaxProcessorCount override
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandShellFigma.cpp, CommandShellTasks.cpp, FigmaCommandStyle.cpp, FigmaMapStyle.cpp, MapShellWidget.cpp, ProductText.cpp, SecurityPlanWorkspaceConfiguration.cpp, SecurityPlanWorkspacePresentation.cpp, SecurityPlanWorkspaceWidget.cpp, Stage1HeaderWidget.cpp, FigmaCommandTest.cpp, FigmaMapTest.cpp, FigmaVideoTest.cpp, ManualTakeoverTest.cpp, PlanMissionActionsTest.cpp, VideoShellPresentation.cpp, VideoShellWidget.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 14 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 23.63 GB/36.4 GB committed
+  UBA Storage capacity 40 GB
+[1/14] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[2/14] Compile [x64] CommandScreenManager.cpp [NoUba]
+[3/14] Compile [x64] FigmaVideoTest.cpp [NoUba]
+[4/14] Compile [x64] OperationalContextTest.cpp [NoUba]
+[5/14] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[6/14] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[7/14] Compile [x64] SecurityPlanTest.cpp [NoUba]
+[8/14] Compile [x64] VideoClientTest.cpp [NoUba]
+[9/14] Compile [x64] VideoShellPresentation.cpp [NoUba]
+[10/14] Compile [x64] ProductText.cpp [NoUba]
+[11/14] Compile [x64] VideoShellWidget.cpp [NoUba]
+[12/14] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[13/14] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[14/14] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 83.61 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 90.11 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 12.5kb

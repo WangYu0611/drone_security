@@ -1,0 +1,81 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_302ff8033011>",
+			"instanceName": "<UE_INSTANCE_a4a61be73384>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.29-02.01.00",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 8.6168451309204102,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "Workspace",
+			"fullTestPath": "DroneOps.PlanConfiguration.Workspace",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_302ff8033011>"
+			],
+			"duration": 8.6168451309204102,
+			"dateTime": "2026.10.29-02.00.51",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:22982  WebSocketUrl=ws://127.0.0.1:22983/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.00.51"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.00.51"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Real Command widget and Backend ACK coverage; reflected actions are component evidence, not native mouse acceptance.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.01.00"
+				}
+			],
+			"warnings": 2,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

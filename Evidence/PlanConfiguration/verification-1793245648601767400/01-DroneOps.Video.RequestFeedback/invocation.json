@@ -1,0 +1,21 @@
+{
+  "role": "Video",
+  "arguments": [
+    "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+    "UE5DroneControl.uproject",
+    "/Game/Tests/P55OfflineMap",
+    "-P55OfflineVisualQA",
+    "-ClientRole=Video",
+    "-P5Instance=ade3557d-9d1b-436c-a6f0-93e57f6ef321",
+    "-AutomationRegistryFile=Saved\\PlanConfiguration-verify-1793245648601767400-1\\DroneRegistry.json",
+    "-P1Http=http://127.0.0.1:23082",
+    "-P1Ws=ws://127.0.0.1:23083/ws",
+    "-unattended",
+    "-nosplash",
+    "-ExecCmds=Automation RunTests DroneOps.Video.RequestFeedback",
+    "-TestExit=Automation Test Queue Empty",
+    "-ReportExportPath=Evidence\\PlanConfiguration\\verification-1793245648601767400\\01-DroneOps.Video.RequestFeedback",
+    "-abslog=Evidence\\PlanConfiguration\\verification-1793245648601767400\\01-DroneOps.Video.RequestFeedback\\editor.log"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1793245648601767400-1"
+}

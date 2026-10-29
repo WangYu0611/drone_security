@@ -1,0 +1,33 @@
+{
+  "test": "DroneOps.Fleet.ManualTakeover",
+  "role": "Map",
+  "pass": true,
+  "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+  "expected": 4,
+  "exit": 0,
+  "discovered": 4,
+  "discovery_log_counts": [
+    4
+  ],
+  "completed": 4,
+  "completed_tests": [
+    "DroneOps.Fleet.ManualTakeover.Eligibility",
+    "DroneOps.Fleet.ManualTakeover.Localization",
+    "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+    "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+  ],
+  "passed": 4,
+  "warnings": 0,
+  "failed": 0,
+  "not_run": 0,
+  "in_process": 0,
+  "report_tests": [
+    "DroneOps.Fleet.ManualTakeover.Eligibility",
+    "DroneOps.Fleet.ManualTakeover.Localization",
+    "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+    "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+  ],
+  "runtime_directory": "Saved\\PlanConfiguration-verify-1793239334971601900-0",
+  "cleanup_errors": [],
+  "ownership_after_stop": []
+}

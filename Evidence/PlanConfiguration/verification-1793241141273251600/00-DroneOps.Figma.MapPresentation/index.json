@@ -1,0 +1,453 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_8a5813ad5819>",
+			"instanceName": "<UE_INSTANCE_28187c9973eb>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.29-02.33.16",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 26.474813461303711,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "MapPresentation",
+			"fullTestPath": "DroneOps.Figma.MapPresentation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_8a5813ad5819>"
+			],
+			"duration": 26.474813461303711,
+			"dateTime": "2026.10.29-02.32.49",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map evidence: Saved/FigmaMapQA/20261029-023249",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.49"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:22982  WebSocketUrl=ws://127.0.0.1:22983/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [CommandMap] Google Photorealistic 3D Tiles (ion asset 2275207) is absent. Existing layers retained; Google loading is not available.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: CesiumCoordinateService: North is NOT aligned with UE5 +X at Georeference origin! NED→UE linear formula (North→X) may be inaccurate. Check Georeference orientation.",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 192.168.2.81:1111",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: ✅ UDP Socket Created! Sending to 127.0.0.1:8889",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: === DroneOpsPlayerController::BeginPlay CALLED ===",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.50"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 01-main 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.32.59"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 02-dropdown 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.01"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: invalid HTTP response code received. URL: https://www.google.com/generate_204, HTTP code: 0, content length: 0, actual payload size: 0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 0 (Hostname 127.0.0.1 was found in DNS cache)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 1 (  Trying 127.0.0.1:7897...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 2 (CONNECT tunnel: HTTP/1.1 negotiated)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 3 (allocate connect buffer)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 4 (Establish HTTP proxy tunnel to www.google.com:443)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 5 (CONNECT phase completed)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 6 (CONNECT tunnel established, response 200)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 7 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 8 (TLSv1.3 (OUT), TLS handshake, Client hello (1):)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 9 (TLS connect error: error:00000000:lib(0):func(0):reason(0))",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 10 (OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.google.com:443 )",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500: libcurl info message cache 11 (closing connection #30)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogHttp: 000001FF2F95F500 GET https://www.google.com/generate_204 completed with reason 'ConnectionError' after 0.06s",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.12"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 03-3d 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.13"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Map screenshot 04-route 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.14"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Resize geometry 1840.0x765.3 -> 1073.3x446.4; widget actions/RHI only, no native mouse or flight claim.",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.29-02.33.16"
+				}
+			],
+			"warnings": 28,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

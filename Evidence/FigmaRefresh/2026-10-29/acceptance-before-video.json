@@ -1,0 +1,404 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "repository": "",
+  "baseline": "b77e74f239100880a8dd6abc4e690453210740d6",
+  "figma": {
+    "fileKey": "NcGzq4onhsQHsJFAe0JBJe",
+    "frames": {
+      "overview": "2522:144",
+      "plan_detail": "2579:112",
+      "map": "2527:1192",
+      "video_reviewed": "2540:435"
+    },
+    "source_retrieved_live": true
+  },
+  "pass": true,
+  "unique_checks": 9,
+  "discovered": 9,
+  "completed": 9,
+  "passed": 9,
+  "failed": 0,
+  "checks": [
+    {
+      "test": "DroneOps.Figma.CommandPresentation",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Figma.CommandPresentation"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Figma.CommandPresentation"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793239053275931800-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "run": "verification-1793239053275931800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "binary_unchanged": true
+    },
+    {
+      "test": "DroneOps.Figma.ActiveTaskOverview",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Figma.ActiveTaskOverview"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Figma.ActiveTaskOverview"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793239053275931800-2",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "run": "verification-1793239053275931800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "binary_unchanged": true
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.Workspace",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.Workspace"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.Workspace"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793239053275931800-3",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "run": "verification-1793239053275931800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "binary_unchanged": true
+    },
+    {
+      "test": "DroneOps.PlanConfiguration.MissionActions",
+      "role": "Command",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.PlanConfiguration.MissionActions"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.PlanConfiguration.MissionActions"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793239664926516800-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "run": "verification-1793239664926516800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "3c8c7318ac657ccbf575ee76ed03429fe973d56036df0c5ce6d91c3a879f96bd",
+      "binary_unchanged": true
+    },
+    {
+      "test": "DroneOps.Figma.MapPresentation",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Figma.MapPresentation"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Figma.MapPresentation"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793241141273251600-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "run": "verification-1793241141273251600",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "a50a630a6158836454dfe09d0b1e6a18b202f4684f85d41d3b162be4aa53c947",
+      "binary_unchanged": true
+    },
+    {
+      "test": "DroneOps.Fleet.ManualTakeover",
+      "role": "Map",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 4,
+      "exit": 0,
+      "discovered": 4,
+      "discovery_log_counts": [
+        4
+      ],
+      "completed": 4,
+      "completed_tests": [
+        "DroneOps.Fleet.ManualTakeover.Eligibility",
+        "DroneOps.Fleet.ManualTakeover.Localization",
+        "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+        "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+      ],
+      "passed": 4,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Fleet.ManualTakeover.Eligibility",
+        "DroneOps.Fleet.ManualTakeover.Localization",
+        "DroneOps.Fleet.ManualTakeover.PreviewAndRequest",
+        "DroneOps.Fleet.ManualTakeover.RouteOwnership"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793239334971601900-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": [],
+      "run": "verification-1793239334971601900",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "binary_unchanged": true
+    }
+  ],
+  "runs": {
+    "overview": {
+      "path": "Evidence/PlanConfiguration/verification-1793239053275931800",
+      "run": "1793239053275931800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+      "ue_module_sha256_after": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "binary_unchanged": true,
+      "pass": true
+    },
+    "detail": {
+      "path": "Evidence/PlanConfiguration/verification-1793239664926516800",
+      "run": "1793239664926516800",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "3c8c7318ac657ccbf575ee76ed03429fe973d56036df0c5ce6d91c3a879f96bd",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+      "ue_module_sha256_after": "3c8c7318ac657ccbf575ee76ed03429fe973d56036df0c5ce6d91c3a879f96bd",
+      "binary_unchanged": true,
+      "pass": true
+    },
+    "map": {
+      "path": "Evidence/PlanConfiguration/verification-1793241141273251600",
+      "run": "1793241141273251600",
+      "rendering": "RHI automation",
+      "ue_module_sha256": "a50a630a6158836454dfe09d0b1e6a18b202f4684f85d41d3b162be4aa53c947",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+      "ue_module_sha256_after": "a50a630a6158836454dfe09d0b1e6a18b202f4684f85d41d3b162be4aa53c947",
+      "binary_unchanged": true,
+      "pass": true
+    },
+    "takeover": {
+      "path": "Evidence/PlanConfiguration/verification-1793239334971601900",
+      "run": "1793239334971601900",
+      "rendering": "NullRHI component only",
+      "ue_module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "mock_startup_reset": false,
+      "backend": "Backend\\build\\Release\\DroneBackend.exe",
+      "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+      "ue_module_sha256_after": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "binary_unchanged": true,
+      "pass": true
+    }
+  },
+  "final_module_sha256": "a50a630a6158836454dfe09d0b1e6a18b202f4684f85d41d3b162be4aa53c947",
+  "builds": [
+    {
+      "log": "logs/build.log",
+      "pass": false
+    },
+    {
+      "log": "logs/build-2.log",
+      "pass": true
+    },
+    {
+      "log": "logs/build-3.log",
+      "pass": true
+    },
+    {
+      "log": "logs/build-4.log",
+      "pass": true
+    },
+    {
+      "log": "logs/build-5.log",
+      "pass": true
+    },
+    {
+      "log": "logs/build-6.log",
+      "pass": true
+    },
+    {
+      "log": "logs/build-7.log",
+      "pass": true
+    }
+  ],
+  "validation_scope": "Latest passing result for each distinct check; module hashes and source scopes retained per run. Final Map build rechecks Map; latest detail build rechecks MissionActions. Other Command and pure takeover sources were unchanged after their passing runs.",
+  "preserved_failures": [
+    {
+      "kind": "compile",
+      "log": "logs/build.log",
+      "reason": "Local Navigation variable shadowed UWidget member; renamed before successful builds."
+    },
+    {
+      "kind": "rendered Map regression",
+      "run": "Evidence/PlanConfiguration/verification-1793241019155304200",
+      "result": [
+        {
+          "test": "DroneOps.Figma.MapPresentation",
+          "role": "Map",
+          "pass": false,
+          "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+          "expected": 1,
+          "exit": 0,
+          "discovered": 1,
+          "discovery_log_counts": [
+            1
+          ],
+          "completed": 1,
+          "completed_tests": [
+            "DroneOps.Figma.MapPresentation"
+          ],
+          "passed": 0,
+          "warnings": 0,
+          "failed": 1,
+          "not_run": 0,
+          "in_process": 0,
+          "report_tests": [
+            "DroneOps.Figma.MapPresentation"
+          ],
+          "runtime_directory": "Saved\\PlanConfiguration-verify-1793241019155304200-0",
+          "cleanup_errors": [],
+          "ownership_after_stop": []
+        }
+      ],
+      "reason": "New readable-caption width assertion found Refresh restored normal rather than compact padding; fixed production style and retained assertion."
+    }
+  ],
+  "localization": {
+    "internal_exit": 0,
+    "process_exit": 1,
+    "both_locres_generated": true,
+    "diagnostic": "Existing GameFeatureData Asset Manager configuration error",
+    "log": "localization-diagnostics.txt",
+    "compiled_new_toolbar_text_test_passed": true
+  },
+  "assets": {
+    "count": 12,
+    "pass": true,
+    "manifest": "Content/UI/Figma/Refresh20261029/asset-manifest.json"
+  },
+  "user_files": {
+    "baseline_scope": "Before automated verification; these files were excluded from implementation edits.",
+    "checked": 6,
+    "unchanged": true,
+    "changed": [],
+    "before": "protected-before-verification.json",
+    "after": "protected-after-verification.json"
+  },
+  "screenshots": [
+    "screenshots/command-overview.png",
+    "screenshots/map-3d.png",
+    "screenshots/map-dropdown.png",
+    "screenshots/map-main.png",
+    "screenshots/map-route.png",
+    "screenshots/overview-active-tasks.png",
+    "screenshots/plan-detail-en.png",
+    "screenshots/plan-detail-zh.png"
+  ],
+  "limitations": [
+    "Rendered/component automation with isolated Mock Backend and synthetic Map peer.",
+    "NOT NATIVE VERIFIED: real mouse workflow, physical aircraft, live camera media, online Cesium tiles.",
+    "Manual takeover toolbar eligibility is checked; positive native takeover confirmation is not claimed."
+  ],
+  "owned_process_cleanup": true,
+  "preview_index": "preview.md",
+  "page_previews": [
+    {
+      "page": "overview",
+      "title": "指挥中心 · 总览",
+      "screenshot": "screenshots/command-overview.png",
+      "source": "Saved/FigmaQA/20261029-015857/01-overview.png",
+      "run": "verification-1793239053275931800",
+      "module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895"
+    },
+    {
+      "page": "plan_detail",
+      "title": "安保方案 · 详情",
+      "screenshot": "screenshots/plan-detail-zh.png",
+      "source": "Saved/MissionActionsQA/20261029-020814/05-deployed-plan-detail.png",
+      "run": "verification-1793239664926516800",
+      "module_sha256": "3c8c7318ac657ccbf575ee76ed03429fe973d56036df0c5ce6d91c3a879f96bd"
+    },
+    {
+      "page": "map",
+      "title": "战术地图 · 地图作业",
+      "screenshot": "screenshots/map-main.png",
+      "source": "Saved/FigmaMapQA/20261029-023249/01-main.png",
+      "run": "verification-1793241141273251600",
+      "module_sha256": "a50a630a6158836454dfe09d0b1e6a18b202f4684f85d41d3b162be4aa53c947"
+    }
+  ],
+  "preview_integrity_audit": "preview-audit.json"
+}

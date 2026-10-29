@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-29",
+  "reference": "User-provided Video Intelligence screenshot and live Figma frame2540:435, manual takeover node2586:120/icon2586:123",
+  "before_run": "Evidence/PlanConfiguration/verification-1793245250551472300",
+  "run": "1793245648601767400",
+  "rendering": "RHI automation",
+  "ue_module_sha256": "d1debf0395837fd639a4adb293855324764e7bd93418f7f7f9d09b61eaed66cd",
+  "mock_startup_reset": false,
+  "backend": "Backend\\build\\Release\\DroneBackend.exe",
+  "backend_sha256": "51158bffa028adc9004b2f6846ca325f5a10ff66784bde2bfd9bf51645e51e5b",
+  "ue_module_sha256_after": "d1debf0395837fd639a4adb293855324764e7bd93418f7f7f9d09b61eaed66cd",
+  "binary_unchanged": true,
+  "pass": true,
+  "checks": [
+    {
+      "test": "DroneOps.Figma.VideoPresentation",
+      "role": "Video",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Figma.VideoPresentation"
+      ],
+      "passed": 1,
+      "warnings": 1,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Figma.VideoPresentation"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793245648601767400-0",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    },
+    {
+      "test": "DroneOps.Video.RequestFeedback",
+      "role": "Video",
+      "pass": true,
+      "mock_fixture": "Backend/tests/fixtures/mock_execution_beijing.json",
+      "expected": 1,
+      "exit": 0,
+      "discovered": 1,
+      "discovery_log_counts": [
+        1
+      ],
+      "completed": 1,
+      "completed_tests": [
+        "DroneOps.Video.RequestFeedback"
+      ],
+      "passed": 1,
+      "warnings": 0,
+      "failed": 0,
+      "not_run": 0,
+      "in_process": 0,
+      "report_tests": [
+        "DroneOps.Video.RequestFeedback"
+      ],
+      "runtime_directory": "Saved\\PlanConfiguration-verify-1793245648601767400-1",
+      "cleanup_errors": [],
+      "ownership_after_stop": []
+    }
+  ],
+  "captures": [
+    {
+      "file": "screenshots/video-six.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/01-six-slots.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "0faff933ec5dc07046eef556bf6c7b944dc9dbd2a36c98a97301c2cccd7a08bf",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-four.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/02-four-slots.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "34afd21e77d3238bdcd8cd1f7cb1705b69df3795d6d57c2eee6698c7bc8d83ec",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-focus.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/03-focus.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "cd6aa74aff274ed8681552b9034649c6b77f59b3504b5511584a5d59bf0fe94d",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-focus-en.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/04-focus-english.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "8b1d8b669f42421e8ddc8f744cd3d3092cad7f100c92f33552688af38dbb6b15",
+      "source_matches": true
+    }
+  ],
+  "source_hashes": {
+    "Source/UE5DroneControl/Video/VideoShellPresentation.cpp": "a0969524c00fe0818667ddcdb398aa424e5537863989235d9f4289e83ec165f8",
+    "Source/UE5DroneControl/Video/VideoShellWidget.h": "7d2d598e4c786126f3f298ac5a2b45720c119fdbd0224701beaf03d26248970e",
+    "Source/UE5DroneControl/Tests/FigmaVideoTest.cpp": "72a0fc54307b0ee1bfdaaecb41c1ad3098760f0dfa591293fa808c7876ccf7bf",
+    "Source/UE5DroneControl/Shared/ProductText.cpp": "0dadd2d8eee1e2f79dbcfd0d9afc73d8aa8e3e312ca91591910d6be55e93dc60",
+    "Scripts/P4/localization.json": "aa53007e51fa79a343307b88bce792db28de144bf57eb2b4f0a08e31c747ddad"
+  },
+  "changes": [
+    "Added original manual-takeover icon/label with explicit disabled state and localized Map/Command guidance.",
+    "Moved current-selection feedback and retained set-active action without overlap.",
+    "Retained original SVG dividers with at least one logical pixel of allocated image geometry."
+  ],
+  "permission_boundary": "Video does not send execution_takeover_move or invent a Map handoff; Backend continues to restrict execution actions to Command/Map.",
+  "visual_review_pass": true,
+  "user_files_unchanged": true,
+  "limitations": [
+    "UE RHI rendered/component automation on isolated Mock.",
+    "about:blank and synthetic media probes do not prove decoded real-camera playback.",
+    "NOT NATIVE VERIFIED: mouse workflow and physical takeover."
+  ]
+}

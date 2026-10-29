@@ -1,0 +1,182 @@
+{
+  "date": "2026-10-29",
+  "issue": "Previous user-facing preview opened only plan detail; all three changed pages already had rendered acceptance captures.",
+  "new_capture_run": true,
+  "verification": "Screenshot SHA-256 matches original Saved captures; current DLL matches acceptance. Source freshness was assessed from capture lineage and modification times, without historical per-source byte hashes.",
+  "current_module_sha256": "d1debf0395837fd639a4adb293855324764e7bd93418f7f7f9d09b61eaed66cd",
+  "current_binary_matches_acceptance": true,
+  "pages": [
+    {
+      "id": "overview",
+      "title": "指挥中心 · 总览",
+      "file": "screenshots/command-overview.png",
+      "source": "Saved/FigmaQA/20261029-015857/01-overview.png",
+      "test": "DroneOps.Figma.CommandPresentation",
+      "changes": "四项统计下方显示当前任务与当前方案，地图和最近事件对齐。",
+      "bytes": 792481,
+      "sha256": "ed51f06cda530f28d77e38e28d8581b60ce94d7f29540bdc9493706b793a12c7",
+      "source_sha256": "ed51f06cda530f28d77e38e28d8581b60ce94d7f29540bdc9493706b793a12c7",
+      "source_matches": true,
+      "run": "verification-1793239053275931800",
+      "module_sha256": "d3efa9f8000b551ad14f2abba47479d182bd4e92f9840b575cf8c2cf090cf895",
+      "rendering": "RHI automation"
+    },
+    {
+      "id": "plan_detail",
+      "title": "安保方案 · 详情",
+      "file": "screenshots/plan-detail-zh.png",
+      "source": "Saved/MissionActionsQA/20261029-020814/05-deployed-plan-detail.png",
+      "test": "DroneOps.PlanConfiguration.MissionActions",
+      "changes": "左侧五步流程、任务操作；右侧部署信息、指标与记录。",
+      "bytes": 293399,
+      "sha256": "c030d6006d32b5044a7f27af3da700921d8f4fdd77a2b2547b1acd2693de7a8a",
+      "source_sha256": "c030d6006d32b5044a7f27af3da700921d8f4fdd77a2b2547b1acd2693de7a8a",
+      "source_matches": true,
+      "run": "verification-1793239664926516800",
+      "module_sha256": "3c8c7318ac657ccbf575ee76ed03429fe973d56036df0c5ce6d91c3a879f96bd",
+      "rendering": "RHI automation"
+    },
+    {
+      "id": "map",
+      "title": "战术地图 · 地图作业",
+      "file": "screenshots/map-main.png",
+      "source": "Saved/FigmaMapQA/20261029-023249/01-main.png",
+      "test": "DroneOps.Figma.MapPresentation",
+      "changes": "框选、集群移动图标、手动接管入口与设备选择器。",
+      "bytes": 1071069,
+      "sha256": "a1cd89e419a52b92b5856ab859dbd6d49a0c1d1f612e02091753c6a76b210b80",
+      "source_sha256": "a1cd89e419a52b92b5856ab859dbd6d49a0c1d1f612e02091753c6a76b210b80",
+      "source_matches": true,
+      "run": "verification-1793241141273251600",
+      "module_sha256": "a50a630a6158836454dfe09d0b1e6a18b202f4684f85d41d3b162be4aa53c947",
+      "rendering": "RHI automation"
+    },
+    {
+      "id": "video",
+      "title": "视频情报 · 六格布局",
+      "file": "screenshots/video-six.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/01-six-slots.png",
+      "source_matches": true,
+      "module_sha256": "d1debf0395837fd639a4adb293855324764e7bd93418f7f7f9d09b61eaed66cd",
+      "run": "verification-1793245648601767400",
+      "rendering": "RHI automation"
+    }
+  ],
+  "pass": true,
+  "all_screenshots": [
+    {
+      "file": "screenshots/command-overview.png",
+      "source": "Saved/FigmaQA/20261029-015857/01-overview.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 792481,
+      "sha256": "ed51f06cda530f28d77e38e28d8581b60ce94d7f29540bdc9493706b793a12c7",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/overview-active-tasks.png",
+      "source": "Saved/UIFollowupQA/20261029-020003/01-overview-active-tasks.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 664729,
+      "sha256": "9f89972df9d87accea3eb9e3a3949fa7432c5cb727b82c864903ae2a95689aac",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/plan-detail-zh.png",
+      "source": "Saved/MissionActionsQA/20261029-020814/05-deployed-plan-detail.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 293399,
+      "sha256": "c030d6006d32b5044a7f27af3da700921d8f4fdd77a2b2547b1acd2693de7a8a",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/plan-detail-en.png",
+      "source": "Saved/MissionActionsQA/20261029-020814/06-deployed-plan-detail-en.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 247990,
+      "sha256": "1cbeb126dd7b380c22b4a9afa0d44afc059b3937b5dc1564e69aab57c4050076",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/map-main.png",
+      "source": "Saved/FigmaMapQA/20261029-023249/01-main.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 1071069,
+      "sha256": "a1cd89e419a52b92b5856ab859dbd6d49a0c1d1f612e02091753c6a76b210b80",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/map-dropdown.png",
+      "source": "Saved/FigmaMapQA/20261029-023249/02-dropdown.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 996398,
+      "sha256": "cc342c4c6df4d0bca9d46030e2d911fd785e99c9bba900d90331a953d5285ab7",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/map-3d.png",
+      "source": "Saved/FigmaMapQA/20261029-023249/03-3d.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 1038334,
+      "sha256": "55d2cb01ab13ef5ce712ac3f6360f814f6cc0148a42856941ea4d84caaee66d5",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/map-route.png",
+      "source": "Saved/FigmaMapQA/20261029-023249/04-route.png",
+      "width": 1920,
+      "height": 1083,
+      "bytes": 858833,
+      "sha256": "b26dee001022ecb71be173ad1be1e5c7493b721eec645d64fff9823e6bb7eb6a",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-six.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/01-six-slots.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "0faff933ec5dc07046eef556bf6c7b944dc9dbd2a36c98a97301c2cccd7a08bf",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-four.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/02-four-slots.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "34afd21e77d3238bdcd8cd1f7cb1705b69df3795d6d57c2eee6698c7bc8d83ec",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-focus.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/03-focus.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "cd6aa74aff274ed8681552b9034649c6b77f59b3504b5511584a5d59bf0fe94d",
+      "source_matches": true
+    },
+    {
+      "file": "screenshots/video-focus-en.png",
+      "source": "Saved/FigmaVideoQA/20261029-034801/04-focus-english.png",
+      "width": 1920,
+      "height": 1083,
+      "sha256": "8b1d8b669f42421e8ddc8f744cd3d3092cad7f100c92f33552688af38dbb6b15",
+      "source_matches": true
+    }
+  ],
+  "all_screenshots_match": true,
+  "capture_scope": {
+    "existing_pages": [
+      "overview",
+      "plan_detail",
+      "map"
+    ],
+    "new_video_capture": true,
+    "video_run": "verification-1793245648601767400"
+  }
+}
