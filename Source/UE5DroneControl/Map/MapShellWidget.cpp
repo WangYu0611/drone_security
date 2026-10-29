@@ -16,6 +16,7 @@
 #include "Map/MapMissionRouteWidget.h"
 #include "Map/MapPlanMoveWidget.h"
 #include "Map/MapFleetInteractionWidget.h"
+#include "Map/MapMoveSupport.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Engine/GameInstance.h"
 #include "Command/CommandScreenManager.h"
@@ -83,10 +84,10 @@ void UMapShellWidget::NativeOnInitialized()
     auto* Tools=WidgetTree->ConstructWidget<UHorizontalBox>();Toolbar->SetContent(Tools);
     auto MakeButton=[&](const TCHAR* Name,const FText& Caption,const TCHAR* Icon,float Width){
         auto* B=WidgetTree->ConstructWidget<UCommandActionButton>(UCommandActionButton::StaticClass(),FName(Name));B->Configure(Name);B->OnAction.AddDynamic(this,&UMapShellWidget::ActionRequested);MapUI::Button(B,false,true);
-        auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();B->SetContent(Row);
+        auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();B->SetContent(Row);auto* ContentSlot=CastChecked<UButtonSlot>(Row->Slot);ContentSlot->SetHorizontalAlignment(HAlign_Fill);ContentSlot->SetVerticalAlignment(VAlign_Center);
         if(Icon && *Icon){auto* I=MapUI::Icon(WidgetTree,Icon,FVector2D(22));auto* IS=Row->AddChildToHorizontalBox(I);IS->SetVerticalAlignment(VAlign_Center);IS->SetPadding(FMargin(0,0,8,0));if(FString(Name)==TEXT("security_plan"))RouteButtonIcon=I;}
-        auto* L=Label(Caption,14,true);L->SetJustification(ETextJustify::Center);auto* LS=Row->AddChildToHorizontalBox(L);LS->SetSize(FSlateChildSize(ESlateSizeRule::Fill));LS->SetVerticalAlignment(VAlign_Center);
-        if(!Icon || !*Icon){L->RemoveFromParent();B->SetContent(L);}
+        auto* L=Label(Caption,14,true);L->SetJustification(ETextJustify::Center);L->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);L->SetClipping(EWidgetClipping::ClipToBounds);B->SetToolTipText(Caption);auto* LS=Row->AddChildToHorizontalBox(L);LS->SetSize(FSlateChildSize(ESlateSizeRule::Fill));LS->SetVerticalAlignment(VAlign_Center);
+        if(!Icon || !*Icon){L->RemoveFromParent();B->SetContent(L);L->SetClipping(EWidgetClipping::Inherit);L->SetTextOverflowPolicy(ETextOverflowPolicy::Clip);auto* CaptionSlot=CastChecked<UButtonSlot>(L->Slot);CaptionSlot->SetHorizontalAlignment(HAlign_Fill);CaptionSlot->SetVerticalAlignment(VAlign_Center);}
         auto* Size=WidgetTree->ConstructWidget<USizeBox>();Size->SetWidthOverride(Width);Size->SetHeightOverride(40);Size->SetContent(B);Tools->AddChildToHorizontalBox(Size)->SetPadding(FMargin(0,0,10,0));return B;
     };
     Map2DButton=MakeButton(TEXT("map2d"),PlanUI::User(TEXT("2D")),TEXT(""),58);Map3DButton=MakeButton(TEXT("map3d"),PlanUI::User(TEXT("3D")),TEXT(""),58);
@@ -94,8 +95,8 @@ void UMapShellWidget::NativeOnInitialized()
     MakeButton(TEXT("focus"),ProductText::Source(TEXT("Locate")),TEXT("locate"),96);
     RouteButton=MakeButton(TEXT("security_plan"),ProductText::Get(TEXT("MapUI.MissionRoute")),TEXT("route"),122);
     MakeButton(TEXT("open_video"),ProductText::Get(TEXT("MapUI.ViewVideo")),TEXT("video"),122);
-    BoxSelectButton=MakeButton(TEXT("box_select"),ProductText::Source(TEXT("Box select UAVs")),TEXT(""),126);
-    GroupMoveButton=MakeButton(TEXT("group_move"),ProductText::Source(TEXT("Fleet move")),TEXT(""),112);
+    BoxSelectButton=MakeButton(TEXT("box_select"),ProductText::Get(TEXT("MapUI.BoxSelect")),TEXT("box-select"),134);
+    GroupMoveButton=MakeButton(TEXT("group_move"),ProductText::Source(TEXT("Fleet move")),TEXT("fleet-move"),122);
     ExecutionControlsButton=MakeButton(TEXT("execution_controls"),ProductText::Get(TEXT("FleetUX.ExecutionControls")),TEXT(""),184);
     // Keep the regular tool row within its existing width. The monitor entry
     // occupies the free space between the page heading and connection status.
@@ -104,14 +105,16 @@ void UMapShellWidget::NativeOnInitialized()
     // A hidden option model preserves the old selection contract. The visible
     // dropdown is the design's icon/radio list, populated from live Registry IDs.
     Aircraft=WidgetTree->ConstructWidget<UComboBoxString>();Aircraft->OnSelectionChanged.AddDynamic(this,&UMapShellWidget::AircraftSelected);
-    auto* DeviceLabel=Label(ProductText::Get(TEXT("MapUI.CurrentDevice")),13);MapUI::Place(FigmaChrome,DeviceLabel,FVector2D(1047,169),FVector2D(95,24));DeviceLabel->SetJustification(ETextJustify::Right);
+    TakeoverButton=MakeButton(TEXT("manual_takeover"),ProductText::Get(TEXT("Takeover.Action")),TEXT("takeover"),124);
+    auto* TakeoverSize=CastChecked<USizeBox>(TakeoverButton->GetParent());TakeoverSize->RemoveFromParent();
+    MapUI::Place(FigmaChrome,TakeoverSize,FVector2D(968,157),FVector2D(124,40),2);
     DeviceButton=WidgetTree->ConstructWidget<UCommandActionButton>();DeviceButton->Configure(TEXT("devices"));DeviceButton->OnAction.AddDynamic(this,&UMapShellWidget::ActionRequested);MapUI::Button(DeviceButton,false,true);
-    auto* DeviceRow=WidgetTree->ConstructWidget<UHorizontalBox>();DeviceButton->SetContent(DeviceRow);DeviceCaption=Label(FText::GetEmpty(),14,true);auto* DC=DeviceRow->AddChildToHorizontalBox(DeviceCaption);DC->SetSize(FSlateChildSize(ESlateSizeRule::Fill));DC->SetVerticalAlignment(VAlign_Center);
+    auto* DeviceRow=WidgetTree->ConstructWidget<UHorizontalBox>();DeviceButton->SetContent(DeviceRow);DeviceCaption=Label(FText::GetEmpty(),14,true);DeviceCaption->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);DeviceCaption->SetClipping(EWidgetClipping::ClipToBounds);auto* DC=DeviceRow->AddChildToHorizontalBox(DeviceCaption);DC->SetSize(FSlateChildSize(ESlateSizeRule::Fill));DC->SetVerticalAlignment(VAlign_Center);
     auto* Arrow=MapUI::Icon(WidgetTree,TEXT("chevron"),FVector2D(10,7));DeviceRow->AddChildToHorizontalBox(Arrow)->SetVerticalAlignment(VAlign_Center);
-    MapUI::Place(FigmaChrome,DeviceButton,FVector2D(1148,157),FVector2D(250,44),12);
+    MapUI::Place(FigmaChrome,DeviceButton,FVector2D(1107,157),FVector2D(301,44),12);
     DroneDropdown=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(DroneDropdown,FigmaUI::Surface,FigmaUI::Outline,8,FMargin(6));DroneDropdown->SetVisibility(ESlateVisibility::Collapsed);
     auto* DropScroll=WidgetTree->ConstructWidget<UScrollBox>();DroneDropdown->SetContent(DropScroll);DroneOptions=WidgetTree->ConstructWidget<UVerticalBox>();DropScroll->AddChild(DroneOptions);
-    MapUI::Place(FigmaChrome,DroneDropdown,FVector2D(1148,204),FVector2D(250,224),30);
+    MapUI::Place(FigmaChrome,DroneDropdown,FVector2D(1107,204),FVector2D(301,224),30);
     ZoomControls=WidgetTree->ConstructWidget<UVerticalBox>();MapUI::Place(FigmaChrome,ZoomControls,FVector2D(45,707),FVector2D(32,70),4);
     for(const auto& Entry:TArray<TPair<FString,FString>>{{TEXT("zoom_in"),TEXT("plus")},{TEXT("zoom_out"),TEXT("minus")}}){
         auto* B=WidgetTree->ConstructWidget<UCommandActionButton>();B->Configure(FName(*Entry.Key));B->OnAction.AddDynamic(this,&UMapShellWidget::ActionRequested);MapUI::Button(B,false,true);
@@ -154,8 +157,8 @@ void UMapShellWidget::Refresh()
         ExecutionControlsButton->SetVisibility(HasExecution?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
         ExecutionControlsButton->GetParent()->SetVisibility(HasExecution?ESlateVisibility::SelfHitTestInvisible:ESlateVisibility::Collapsed);
         ExecutionControlsButton->SetIsEnabled(HasExecution);
-        MapUI::Button(BoxSelectButton,FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
-        MapUI::Button(GroupMoveButton,FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
+        MapUI::Button(BoxSelectButton,FleetInteraction->GetMode()==EMapFleetMode::BoxSelect,true);
+        MapUI::Button(GroupMoveButton,FleetInteraction->GetMode()==EMapFleetMode::GroupMove,true);
     }
     RefreshMapLegend(GetWorld(),RouteLegend,RouteLegendText);
     if (!Manager.IsValid() || !Manager->GetRegistry() || !Status) return;
@@ -187,7 +190,27 @@ void UMapShellWidget::Refresh()
     if(bDeviceSelectionPending && !Sync->IsMapSelectionPending() && Registry->GetPrimarySelectedDrone()==PendingDevice && Registry->GetMultiSelectedDrones()==TArray<int32>{PendingDevice}){bDeviceSelectionPending=false;DeviceSelectionError=Sync->ViewSyncError.IsEmpty()?FText::GetEmpty():ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError);}
     if(bDeviceSelectionPending && (!Sync->IsReady() || FPlatformTime::Seconds()-DeviceSelectionRequestedAt>12.)){
         bDeviceSelectionPending=false;DeviceSelectionError=ProductText::Get(TEXT("Errors.SYNC_FAILED"));}
-    DeviceCaption->SetText((bDeviceSelectionPending || Sync->IsMapSelectionPending())?ProductText::Get(TEXT("MapShell.VideoSelectionPending")):Selected.IsEmpty()?ProductText::Get(TEXT("MapUI.SelectDevice")):FText::AsCultureInvariant(Selected));
+    DeviceCaption->SetText((bDeviceSelectionPending || Sync->IsMapSelectionPending())?ProductText::Get(TEXT("MapShell.VideoSelectionPending")):Selected.IsEmpty()?ProductText::Get(TEXT("MapUI.SelectDevice")):FText::Format(PlanUI::User(TEXT("{0}  {1}")),ProductText::Get(TEXT("MapUI.CurrentDevice")),PlanUI::User(Selected)));
+    DeviceButton->SetToolTipText(DeviceCaption->GetText());
+    const auto TakeoverMembers=MapMove::Selection(Registry);
+    const bool HasTakeoverSource=MapMove::CaptureTakeover(Sync->GetPlans(),TakeoverMembers).IsSet();
+    const FText TakeoverUnavailable=MapMove::Unavailable(Registry,Sync,TakeoverMembers,true);
+    const bool CanTakeover=FleetInteraction && FleetInteraction->IsAvailable() && HasTakeoverSource
+        && TakeoverUnavailable.IsEmpty() && !bDeviceSelectionPending && !Sync->IsMapSelectionPending() && !FleetInteraction->IsSelectionPending();
+    TakeoverButton->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+    TakeoverButton->GetParent()->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::SelfHitTestInvisible);
+    TakeoverButton->SetIsEnabled(CanTakeover);
+    TakeoverButton->SetToolTipText(!TakeoverUnavailable.IsEmpty()?TakeoverUnavailable:!HasTakeoverSource?ProductText::Get(TEXT("Takeover.SelectActive")):ProductText::Get(TEXT("Takeover.Warning")));
+    const bool TakeoverMode=HasTakeoverSource && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove;
+    MapUI::Button(TakeoverButton,TakeoverMode,true);
+    MapUI::Button(GroupMoveButton,!TakeoverMode && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove,true);
+    auto TintIcon=[](UCommandActionButton* Button,bool Selected){
+        if(auto* Row=Cast<UHorizontalBox>(Button->GetContent()))for(UWidget* Child:Row->GetAllChildren())
+            if(auto* Icon=Cast<UImage>(Child))Icon->SetColorAndOpacity(Selected?FigmaUI::Background:FigmaUI::PrimaryText);
+    };
+    TintIcon(TakeoverButton,TakeoverMode);
+    TintIcon(GroupMoveButton,!TakeoverMode && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
+    TintIcon(BoxSelectButton,FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
     DeviceButton->SetIsEnabled(!Configuring && !bDeviceSelectionPending && !Sync->IsMapSelectionPending());
     if(Configuring)bDropdownOpen=false;
     DroneDropdown->SetVisibility(bDropdownOpen?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
@@ -209,7 +232,7 @@ void UMapShellWidget::Refresh()
     ActionStatus->SetText(ProductText::Get(FleetInput?TEXT("MapUI.FleetPointerHint"):TEXT("MapUI.CameraHint")));
     ActionStatus->SetToolTipText(FleetInput?ProductText::Get(TEXT("MapUI.FleetPointerHelp")):FText::Format(PlanUI::User(TEXT("{0}\n{1}")),ActionStatus->GetText(),MapHint));
     Aircraft->SetIsEnabled(!Configuring);Aircraft->SetToolTipText(Configuring?ActionStatus->GetText():FText::GetEmpty());
-    MapUI::Button(Map2DButton, b2D); MapUI::Button(Map3DButton, !b2D);
+    MapUI::Button(Map2DButton,b2D,true);MapUI::Button(Map3DButton,!b2D,true);
     Status->SetText(ProductText::Source(FString::Printf(TEXT("UAV %02d  |  %s  |  %s"), Registry->GetPrimarySelectedDrone(),
         b2D ? TEXT("2D") : TEXT("3D"), Map && Map->OwnsCamera() ? TEXT("Camera ready") : TEXT("Initializing"))));
     if (Sync && Sync->IsEnabled()){
@@ -269,6 +292,16 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
     }
     if(Action==TEXT("open_video")){const int Id=Manager->GetRegistry()->GetPrimarySelectedDrone();if(Id>0)GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->OpenVideo(FString::Printf(TEXT("UAV-%02d"),Id));return;}
     if(Action==TEXT("execution_controls")){FleetInteraction->ShowExecutionControls();Refresh();return;}
+    if(Action==TEXT("manual_takeover")){
+        auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        const auto Members=MapMove::Selection(Manager->GetRegistry());
+        if(!FleetInteraction || !FleetInteraction->IsAvailable() || bDeviceSelectionPending || Sync->IsMapSelectionPending() || FleetInteraction->IsSelectionPending()
+            || !MapMove::CaptureTakeover(Sync->GetPlans(),Members).IsSet() || !MapMove::Unavailable(Manager->GetRegistry(),Sync,Members,true).IsEmpty())return;
+        // This opens the existing destination preview. Its consequence warning,
+        // explicit confirmation and Backend version checks still own submission.
+        FleetInteraction->SetMode(FleetInteraction->GetMode()==EMapFleetMode::GroupMove?EMapFleetMode::Browse:EMapFleetMode::GroupMove);
+        Refresh();return;
+    }
     if(Action==TEXT("box_select") || Action==TEXT("group_move")){
         const auto Mode=Action==TEXT("box_select")?EMapFleetMode::BoxSelect:EMapFleetMode::GroupMove;
         FleetInteraction->SetMode(FleetInteraction->GetMode()==Mode?EMapFleetMode::Browse:Mode);Refresh();return;

@@ -137,14 +137,15 @@ public:
             Test->TestTrue(TEXT("open execution opens details without a start intent"),P->bExecutionView && P->ExecutionIntent.IsEmpty());
             Test->TestTrue(TEXT("deployed tasks remain visible outside the editor step"),P->MissionList->GetParent()==P->Workspace && P->MissionList->IsVisible());CheckSelectionHelper(P);
             const auto TaskActions=P->MissionList->MissionActionIds,PlanActions=P->PlanActionIds;
-            auto* FirstTaskCard=Cast<UPanelWidget>(P->MissionList->GetRootWidget())->GetChildAt(2);auto* FirstPlanCard=P->PlanCards->GetChildAt(0);
-            auto ButtonOf=[](UWidget* Card,int32 RowIndex){auto* Border=Cast<UBorder>(Card);auto* Body=Border?Cast<UPanelWidget>(Border->GetContent()):nullptr;auto* Row=Body?Cast<UPanelWidget>(Body->GetChildAt(RowIndex)):nullptr;return Row?Cast<UCommandActionButton>(Row->GetChildAt(0)):nullptr;};
+            auto* TaskContent=Cast<UPanelWidget>(CastChecked<UBorder>(P->MissionList->GetRootWidget())->GetContent());
+            auto* FirstTaskCard=TaskContent->GetChildAt(2);auto* FirstPlanCard=P->PlanCards->GetChildAt(0);
+            TFunction<UCommandActionButton*(UWidget*,int32)> ButtonOf;ButtonOf=[&ButtonOf](UWidget* Card,int32)->UCommandActionButton*{if(auto* B=Cast<UCommandActionButton>(Card))return B;if(auto* Panel=Cast<UPanelWidget>(Card))for(UWidget* Child:Panel->GetAllChildren())if(auto* B=ButtonOf(Child,0))return B;return nullptr;};
             auto* TaskButton=ButtonOf(FirstTaskCard,3);auto* PlanButton=ButtonOf(FirstPlanCard,2);
             Test->TestNotNull(TEXT("Task card has a real action button"),TaskButton);Test->TestNotNull(TEXT("Plan card has a real action button"),PlanButton);
             auto Heartbeat=MakeShared<FJsonObject>(*State);Heartbeat->SetNumberField(TEXT("version"),State->GetNumberField(TEXT("version"))+1);
             auto Lease=MakeShared<FJsonObject>();Lease->SetNumberField(TEXT("last_seen_at"),FDateTime::UtcNow().ToUnixTimestamp());Heartbeat->SetObjectField(TEXT("configuration_session"),Lease);
             P->MissionList->Refresh(Heartbeat,Find(Heartbeat,TEXT("plans"),Original),First);P->RefreshPlanCards(Heartbeat);
-            Test->TestTrue(TEXT("heartbeat keeps task action identities and pressed button objects"),P->MissionList->MissionActionIds==TaskActions && Cast<UPanelWidget>(P->MissionList->GetRootWidget())->GetChildAt(2)==FirstTaskCard && ButtonOf(FirstTaskCard,3)==TaskButton);
+            Test->TestTrue(TEXT("heartbeat keeps task action identities and pressed button objects"),P->MissionList->MissionActionIds==TaskActions && TaskContent->GetChildAt(2)==FirstTaskCard && ButtonOf(FirstTaskCard,3)==TaskButton);
             Test->TestTrue(TEXT("heartbeat keeps plan action identities and pressed button objects"),P->PlanActionIds==PlanActions && P->PlanCards->GetChildAt(0)==FirstPlanCard && ButtonOf(FirstPlanCard,2)==PlanButton);
             const int32 Stale=P->MissionList->MissionActionIds[0];P->MissionList->Refresh(State,Find(State,TEXT("plans"),Original),Second);
             P->MissionAction(TEXT("select_mission"),Stale);Test->TestFalse(TEXT("stale row generation is ignored instead of retargeting"),P->bPending);P->Refresh();
@@ -220,9 +221,20 @@ public:
             if(!Test->TestTrue(TEXT("Production confirmation freezes complete plan/content/lease guards"),Validate.IsValid()))return true;
             Test->TestEqual(TEXT("Confirmation guards the acknowledged plan version"),Validate->GetNumberField(TEXT("expected_plan_version")),Find(State,TEXT("plans"),Original)->GetNumberField(TEXT("version")));
             Test->TestEqual(TEXT("Confirmation guards the exact acquired lease"),Validate->GetNumberField(TEXT("configuration_acquired_version")),PlanConfiguration::Session(State)->GetNumberField(TEXT("acquired_version")));
-            P->Action(TEXT("confirm_deployment"),0);Step=40;return false;
+            P->Action(TEXT("confirm_deployment"),0);Step=400;return false;
+        }
+        if(Step==400){
+            // Request the first capture's language once, after deployment ACK.
+            Sync->SetLanguage(TEXT("zh-Hans"));Step=401;return false;
+        }
+        if(Step==401){
+            if(Sync->IsLanguageChangePending())return false;
+            Test->TestTrue(TEXT("Chinese detail language is acknowledged without error"),Sync->GetLanguageSyncError().IsEmpty());
+            Test->TestEqual(TEXT("first detail capture uses the acknowledged Chinese heading"),P->ReviewHeading->GetText().ToString(),FString(TEXT("部署信息")));
+            Step=40;return false;
         }
         if(Step==40){
+            P->WorkspaceScroll->ScrollToStart();if(!Capture(TEXT("05-deployed-plan-detail")))return false;
             if(!Test->TestEqual(TEXT("same plan can deploy again through the normal review flow"),Field(Find(State,TEXT("plans"),Original),TEXT("status")),FString(TEXT("DEPLOYED"))))return true;
             Test->TestEqual(TEXT("saving and redeploying original did not clone a plan"),Object(State,TEXT("plans"))->Values.Num(),PlansBefore);
             TSharedPtr<FJsonObject> OldDeployments;FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(DeploymentsBefore),OldDeployments);
@@ -233,6 +245,26 @@ public:
             Test->TestEqual(TEXT("Three-stage deployment retains the exact confirmed content revision"),Deployment->GetNumberField(TEXT("content_revision")),ConfirmedDeployment.ContentRevision);
             for(const auto& Entry:OldDeployments->Values)Test->TestEqual(TEXT("previous deployment snapshot is unchanged"),MissionJson(Find(State,TEXT("deployments"),FString(Entry.Key.ToView()))),MissionJson(Entry.Value->AsObject()));
             DeploymentsBefore=MissionJson(Object(State,TEXT("deployments")));
+            Test->TestTrue(TEXT("latest plan detail presents the real review beside the task list"),P->DetailSidebar->IsVisible() && P->ReviewPage->IsVisible() && P->DeploymentActions->IsVisible());
+            Test->TestEqual(TEXT("deployed plan retains five stateful design steps"),P->StepMarkers.Num(),5);Test->TestEqual(TEXT("deployed plan highlights its actual fifth step"),P->CurrentStep,4);
+            Test->TestTrue(TEXT("header keeps edit, delete, back and copy actions available"),P->Actions[TEXT("back_list")]->IsVisible() && P->Actions[TEXT("edit_plan")]->IsVisible() && P->Actions[TEXT("delete_plan_prompt")]->IsVisible() && P->Actions[TEXT("copy_plan")]->IsVisible());
+            const auto Selected=Find(State,TEXT("missions"),P->MissionId),Route=Find(State,TEXT("paths"),Field(Selected,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;const int Count=Route && Route->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
+            Test->TestEqual(TEXT("review task metric comes from the acknowledged selected task"),P->Review->MissionValue->GetText().ToString(),Field(Selected,TEXT("name")));
+            Test->TestEqual(TEXT("review aircraft metric retains the complete assignment"),P->Review->AircraftValue->GetText().ToString(),AssignedUAVs(Selected));
+            Test->TestEqual(TEXT("review waypoint metric uses the saved route"),P->Review->WaypointsValue->GetText().ToString(),FText::AsNumber(Count).ToString());
+            Test->TestTrue(TEXT("review displays the actual immutable deployment identity"),P->Review->Deployment->GetText().ToString().Contains(Field(Deployment,TEXT("id"))));
+            if(!FParse::Param(FCommandLine::Get(),TEXT("NullRHI"))){const auto Main=P->Workspace->GetCachedGeometry(),Side=P->DetailSidebar->GetCachedGeometry();Test->TestTrue(TEXT("rendered detail has distinct readable main and review columns"),Main.GetLocalSize().X>650 && Side.GetLocalSize().X>300 && Side.GetAbsolutePosition().X>Main.GetAbsolutePosition().X+Main.GetLocalSize().X*.5);}
+            Sync->SetLanguage(TEXT("en"));Step=402;return false;
+        }
+        if(Step==402){
+            if(Sync->IsLanguageChangePending())return false;
+            Test->TestTrue(TEXT("detail language change is acknowledged without error"),Sync->GetLanguageSyncError().IsEmpty());
+            Test->TestEqual(TEXT("detail heading localizes to English"),P->ReviewHeading->GetText().ToString(),FString(TEXT("Deployment information")));
+            if(!Capture(TEXT("06-deployed-plan-detail-en")))return false;
+            Sync->SetLanguage(TEXT("zh-Hans"));Step=403;return false;
+        }
+        if(Step==403){
+            if(Sync->IsLanguageChangePending())return false;
             P->Action(TEXT("copy_plan"),0);Step=41;return false;
         }
         if(Step==41){

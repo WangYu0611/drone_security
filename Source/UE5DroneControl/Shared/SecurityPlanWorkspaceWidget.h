@@ -34,9 +34,21 @@ private:
 UCLASS()
 class UE5DRONECONTROL_API UPlanReviewWidget:public UUserWidget {
     GENERATED_BODY()
+    friend class FPlanMissionActions;
 public:void Refresh(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan);
 protected:virtual void NativeOnInitialized() override;
-private:UPROPERTY() TObjectPtr<class UTextBlock> Summary;
+private:
+    UPROPERTY() TObjectPtr<class UTextBlock> Summary;
+    UPROPERTY() TObjectPtr<class UTextBlock> Description;
+    UPROPERTY() TObjectPtr<class UTextBlock> MissionValue;
+    UPROPERTY() TObjectPtr<class UTextBlock> AircraftValue;
+    UPROPERTY() TObjectPtr<class UTextBlock> WaypointsValue;
+    UPROPERTY() TObjectPtr<class UTextBlock> DistanceValue;
+    UPROPERTY() TObjectPtr<class UTextBlock> Assignments;
+    UPROPERTY() TObjectPtr<class UTextBlock> Issues;
+    UPROPERTY() TObjectPtr<class UTextBlock> Deployment;
+    UPROPERTY() TObjectPtr<class UTextBlock> Readiness;
+    UPROPERTY() TObjectPtr<class UTextBlock> MapReadiness;
 };
 UCLASS()
 class UE5DRONECONTROL_API USecurityPlanWorkspaceWidget:public UUserWidget {
@@ -73,6 +85,12 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> WorkspaceTitle;
     UPROPERTY() TObjectPtr<class UTextBlock> GeometryStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> Steps;
+    UPROPERTY() TObjectPtr<class UHorizontalBox> DetailColumns;
+    UPROPERTY() TObjectPtr<class UVerticalBox> DetailSidebar;
+    UPROPERTY() TObjectPtr<class UBorder> DeploymentActions;
+    UPROPERTY() TObjectPtr<class UTextBlock> PlanStatusCaption;
+    UPROPERTY() TArray<TObjectPtr<class UBorder>> StepMarkers;
+    UPROPERTY() TArray<TObjectPtr<class UTextBlock>> StepLabels;
     UPROPERTY() TObjectPtr<class UTextBlock> RouteStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> ReviewHeading;
     UPROPERTY() TObjectPtr<class UTextBlock> DeploymentBlockers;

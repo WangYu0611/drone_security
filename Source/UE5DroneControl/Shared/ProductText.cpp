@@ -793,6 +793,19 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Errors.LANGUAGE_CHANGE_FAILED"),NSLOCTEXT("DroneOps","Errors.LANGUAGE_CHANGE_FAILED","Language change was not confirmed. Please try again.")},
 {TEXT("Errors.LANGUAGE_CHANGE_INTERRUPTED"),NSLOCTEXT("DroneOps","Errors.LANGUAGE_CHANGE_INTERRUPTED","Connection interrupted. Language change was not confirmed.")},
 {TEXT("Errors.LANGUAGE_CHANGE_OFFLINE"),NSLOCTEXT("DroneOps","Errors.LANGUAGE_CHANGE_OFFLINE","Reconnect before changing language.")},
+{TEXT("Takeover.Action"),NSLOCTEXT("DroneOps","Takeover.Action","Take over")},
+{TEXT("Takeover.SelectActive"),NSLOCTEXT("DroneOps","Takeover.SelectActive","Select one aircraft executing a deployed task.")},
+{TEXT("Figma.PlanDetail.DeploymentInfo"),NSLOCTEXT("DroneOps","Figma.PlanDetail.DeploymentInfo","Deployment information")},
+{TEXT("Figma.PlanDetail.DeploymentActions"),NSLOCTEXT("DroneOps","Figma.PlanDetail.DeploymentActions","Deployment actions")},
+{TEXT("Figma.PlanDetail.Waypoints"),NSLOCTEXT("DroneOps","Figma.PlanDetail.Waypoints","Waypoints")},
+{TEXT("Figma.PlanDetail.RouteDistance"),NSLOCTEXT("DroneOps","Figma.PlanDetail.RouteDistance","Route distance")},
+{TEXT("MapUI.BoxSelect"),NSLOCTEXT("DroneOps","MapUI.BoxSelect","Box select")},
+{TEXT("Figma.Plans.FlowStart"),NSLOCTEXT("DroneOps","Figma.Plans.FlowStart","Plan workflow: Create plan")},
+{TEXT("Figma.Plans.FlowDevices"),NSLOCTEXT("DroneOps","Figma.Plans.FlowDevices","Configure devices")},
+{TEXT("Figma.Plans.FlowRoutes"),NSLOCTEXT("DroneOps","Figma.Plans.FlowRoutes","Edit routes")},
+{TEXT("Figma.Plans.FlowCheck"),NSLOCTEXT("DroneOps","Figma.Plans.FlowCheck","Check")},
+{TEXT("Figma.Plans.FlowDeploy"),NSLOCTEXT("DroneOps","Figma.Plans.FlowDeploy","Deploy")},
+{TEXT("VideoUI.TakeoverHint"),NSLOCTEXT("DroneOps","VideoUI.TakeoverHint","Start manual takeover in the Map or Command client: select the aircraft, choose a destination, and confirm. The Video client is for monitoring.")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1589,6 +1602,19 @@ if(Source==TEXT("Reconnect before switching video."))return Get(TEXT("Errors.VID
 if(Source==TEXT("Language change was not confirmed. Please try again."))return Get(TEXT("Errors.LANGUAGE_CHANGE_FAILED"));
 if(Source==TEXT("Connection interrupted. Language change was not confirmed."))return Get(TEXT("Errors.LANGUAGE_CHANGE_INTERRUPTED"));
 if(Source==TEXT("Reconnect before changing language."))return Get(TEXT("Errors.LANGUAGE_CHANGE_OFFLINE"));
+if(Source==TEXT("Take over"))return Get(TEXT("Takeover.Action"));
+if(Source==TEXT("Select one aircraft executing a deployed task."))return Get(TEXT("Takeover.SelectActive"));
+if(Source==TEXT("Deployment information"))return Get(TEXT("Figma.PlanDetail.DeploymentInfo"));
+if(Source==TEXT("Deployment actions"))return Get(TEXT("Figma.PlanDetail.DeploymentActions"));
+if(Source==TEXT("Waypoints"))return Get(TEXT("Figma.PlanDetail.Waypoints"));
+if(Source==TEXT("Route distance"))return Get(TEXT("Figma.PlanDetail.RouteDistance"));
+if(Source==TEXT("Box select"))return Get(TEXT("MapUI.BoxSelect"));
+if(Source==TEXT("Plan workflow: Create plan"))return Get(TEXT("Figma.Plans.FlowStart"));
+if(Source==TEXT("Configure devices"))return Get(TEXT("Figma.Plans.FlowDevices"));
+if(Source==TEXT("Edit routes"))return Get(TEXT("Figma.Plans.FlowRoutes"));
+if(Source==TEXT("Check"))return Get(TEXT("Figma.Plans.FlowCheck"));
+if(Source==TEXT("Deploy"))return Get(TEXT("Figma.Plans.FlowDeploy"));
+if(Source==TEXT("Start manual takeover in the Map or Command client: select the aircraft, choose a destination, and confirm. The Video client is for monitoring."))return Get(TEXT("VideoUI.TakeoverHint"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

@@ -14,6 +14,7 @@
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
+#include "Components/BorderSlot.h"
 #include "Components/ButtonSlot.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
@@ -78,47 +79,70 @@ void UCommandShellWidget::BuildFigmaShell(UCanvasPanel* Root) {
     auto* Home=WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(),TEXT("FigmaOverview"));WorkspacePages->AddChild(Home);
     auto* Heading=WidgetTree->ConstructWidget<UHorizontalBox>();Home->AddChildToVerticalBox(Heading)->SetPadding(FMargin(0,0,0,14));
     auto* HeadingTitle=Heading->AddChildToHorizontalBox(Key(WidgetTree,TEXT("Nav.Overview"),34,true));Fill(HeadingTitle);HeadingTitle->SetVerticalAlignment(VAlign_Center);
-    auto* PlanCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(PlanCard,FigmaUI::Surface,FigmaUI::Outline,10,FMargin(12,6));
-    Heading->AddChildToHorizontalBox(Fixed(WidgetTree,PlanCard,620,44));
-    auto* PlanRow=WidgetTree->ConstructWidget<UHorizontalBox>();PlanCard->SetContent(PlanRow);
-    PlanRow->AddChildToHorizontalBox(FigmaUI::Icon(WidgetTree,TEXT("plan"),{26,26}))->SetVerticalAlignment(VAlign_Center);
-    auto* PlanTexts=WidgetTree->ConstructWidget<UVerticalBox>();auto* PTS=PlanRow->AddChildToHorizontalBox(PlanTexts);Fill(PTS);PTS->SetPadding(FMargin(12,0));
-    PlanTexts->AddChild(Key(WidgetTree,TEXT("Figma.CurrentPlan"),13,true));CurrentPlanSummary=Label(WidgetTree,FText::GetEmpty(),12);
-    CurrentPlanSummary->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);CurrentPlanSummary->SetClipping(EWidgetClipping::ClipToBounds);PlanTexts->AddChild(CurrentPlanSummary);
-    PlanRow->AddChildToHorizontalBox(ActionButton(TEXT("open_plan"),TEXT("Workflow.OpenPlan"),1))->SetVerticalAlignment(VAlign_Center);
     auto* Stats=WidgetTree->ConstructWidget<UHorizontalBox>();Home->AddChildToVerticalBox(Fixed(WidgetTree,Stats,0,78))->SetPadding(FMargin(0,0,0,16));
     const TCHAR* StatKeys[]={TEXT("Figma.TotalUAV"),TEXT("Figma.OnlineDevices"),TEXT("Nav.Alerts"),TEXT("Nav.Logs")};
     const TCHAR* StatActions[]={TEXT("fleet"),TEXT("devices"),TEXT("alerts"),TEXT("logs")};
-    const TCHAR* Icons[]={TEXT("drone"),TEXT("online"),TEXT("alarm"),TEXT("log")};
+    const TCHAR* Icons[]={TEXT("drone"),TEXT("online"),TEXT("alarm"),TEXT("health")};
+    const float IconSizes[]={34.f,24.f,27.f,28.f};
     for(int I=0;I<4;++I){
         auto* B=ActionButton(StatActions[I],StatKeys[I]);B->SetToolTipText(ProductText::Get(StatKeys[I]));
         FButtonStyle Style=B->GetStyle();Style.SetNormal(FSlateRoundedBoxBrush(FigmaUI::Surface,10,FigmaUI::Outline,0.5));Style.SetNormalPadding(FMargin(16,10));B->SetStyle(Style);
         auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();B->SetContent(Row);Cast<UButtonSlot>(Row->Slot)->SetHorizontalAlignment(HAlign_Fill);
-        Row->AddChildToHorizontalBox(FigmaUI::Icon(WidgetTree,Icons[I],{32,32}))->SetVerticalAlignment(VAlign_Center);
-        auto* Labels=WidgetTree->ConstructWidget<UVerticalBox>();auto* LS=Row->AddChildToHorizontalBox(Labels);Fill(LS);LS->SetPadding(FMargin(20,0));
+        auto* IconPlate=WidgetTree->ConstructWidget<UOverlay>();
+        for(auto* Icon:{FigmaUI::Icon(WidgetTree,TEXT("icon-disc"),{46,46}),FigmaUI::Icon(WidgetTree,Icons[I],FVector2D(IconSizes[I]))}){
+            auto* IconSlot=IconPlate->AddChildToOverlay(Icon);IconSlot->SetHorizontalAlignment(HAlign_Center);IconSlot->SetVerticalAlignment(VAlign_Center);
+        }
+        Row->AddChildToHorizontalBox(Fixed(WidgetTree,IconPlate,46,46))->SetVerticalAlignment(VAlign_Center);
+        auto* Labels=WidgetTree->ConstructWidget<UVerticalBox>();auto* LS=Row->AddChildToHorizontalBox(Labels);Fill(LS);LS->SetPadding(FMargin(16,0));
         Labels->AddChild(Key(WidgetTree,StatKeys[I],13));auto* Count=Label(WidgetTree,Number(0),28);Labels->AddChild(Count);StatisticValues.Add(Count);
-        if(I>0)Row->AddChildToHorizontalBox(FigmaUI::Icon(WidgetTree,TEXT("arrow-right"),{18,18}))->SetVerticalAlignment(VAlign_Center);
+        Row->AddChildToHorizontalBox(FigmaUI::Icon(WidgetTree,TEXT("arrow-right"),{29,29}))->SetVerticalAlignment(VAlign_Center);
         auto* S=Stats->AddChildToHorizontalBox(B);Fill(S);S->SetPadding(FMargin(0,0,I<3?18:0,0));
     }
+    // Figma 2522:230 / 2522:237: equal task and plan cards below the metrics.
+    // The live task list can move into the side column when executions need
+    // more room, without shrinking the map used to choose destinations.
+    auto* Summary=WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(),TEXT("FigmaOverviewSummaryRow"));
+    Home->AddChildToVerticalBox(Summary)->SetPadding(FMargin(0,0,0,16));
+    auto SummaryIcon=[&](const TCHAR* Name,FName WidgetName=NAME_None){
+        auto* Plate=WidgetTree->ConstructWidget<UBorder>();
+        FigmaUI::Panel(Plate,FLinearColor(FColor(30,34,46)),FLinearColor::Transparent,6,FMargin(0));
+        Plate->SetContent(FigmaUI::Icon(WidgetTree,Name,{25,25}));
+        if(auto* IconSlot=Cast<UBorderSlot>(Plate->GetContent()->Slot)){IconSlot->SetHorizontalAlignment(HAlign_Center);IconSlot->SetVerticalAlignment(VAlign_Center);}
+        auto* Size=WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(),WidgetName);Size->SetWidthOverride(44);Size->SetHeightOverride(44);Size->SetContent(Plate);return Size;
+    };
+    auto* TaskCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(TaskCard,FigmaUI::Surface,FigmaUI::Outline,9,FMargin(16,10));
+    OverviewSummarySize=Fixed(WidgetTree,TaskCard,0,70);
+    auto* TaskSlot=Summary->AddChildToHorizontalBox(OverviewSummarySize);Fill(TaskSlot);TaskSlot->SetPadding(FMargin(0,0,14,0));
+    auto* TaskRow=WidgetTree->ConstructWidget<UHorizontalBox>();TaskCard->SetContent(TaskRow);
+    auto* TaskIconSlot=TaskRow->AddChildToHorizontalBox(SummaryIcon(TEXT("log")));TaskIconSlot->SetVerticalAlignment(VAlign_Top);TaskIconSlot->SetPadding(FMargin(0,3,12,0));
+    auto* TaskBody=WidgetTree->ConstructWidget<UVerticalBox>();Fill(TaskRow->AddChildToHorizontalBox(TaskBody));
+    RunningTaskTitle=Label(WidgetTree,FText::GetEmpty(),16,true);TaskBody->AddChild(RunningTaskTitle);
+    RunningTaskEmpty=Key(WidgetTree,TEXT("Execution.None"),13);TaskBody->AddChildToVerticalBox(RunningTaskEmpty)->SetPadding(FMargin(0,5,0,0));
+    auto* TaskScroll=WidgetTree->ConstructWidget<UScrollBox>();Fill(TaskBody->AddChildToVerticalBox(TaskScroll));
+    RunningTaskRows=WidgetTree->ConstructWidget<UVerticalBox>();TaskScroll->AddChild(RunningTaskRows);
+    auto* EmptyTaskAction=WidgetTree->ConstructWidget<UCommandActionButton>(UCommandActionButton::StaticClass(),TEXT("FigmaOverviewEmptyTaskAction"));
+    EmptyTaskAction->SetContent(Key(WidgetTree,TEXT("Overview.ViewTask"),13));EmptyTaskAction->SetIsEnabled(false);FigmaUI::Button(EmptyTaskAction,false,true);
+    auto* EmptyActionSlot=TaskRow->AddChildToHorizontalBox(EmptyTaskAction);EmptyActionSlot->SetVerticalAlignment(VAlign_Center);EmptyActionSlot->SetPadding(FMargin(12,0,0,0));
+    CurrentExecutionSummary=Label(WidgetTree,FText::GetEmpty(),13);
+    auto* PlanCard=WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(),TEXT("FigmaOverviewPlanCard"));FigmaUI::Panel(PlanCard,FigmaUI::Surface,FigmaUI::Outline,9,FMargin(16,10));
+    auto* PlanSize=WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(),TEXT("FigmaOverviewPlan"));PlanSize->SetHeightOverride(70);PlanSize->SetContent(PlanCard);Fill(Summary->AddChildToHorizontalBox(PlanSize));
+    auto* PlanRow=WidgetTree->ConstructWidget<UHorizontalBox>();PlanCard->SetContent(PlanRow);
+    auto* PlanIcon=SummaryIcon(TEXT("plan"),TEXT("FigmaOverviewPlanIcon"));
+    PlanRow->AddChildToHorizontalBox(PlanIcon)->SetVerticalAlignment(VAlign_Center);
+    auto* PlanTexts=WidgetTree->ConstructWidget<UVerticalBox>();auto* PTS=PlanRow->AddChildToHorizontalBox(PlanTexts);Fill(PTS);PTS->SetPadding(FMargin(12,0));PTS->SetVerticalAlignment(VAlign_Center);
+    auto* PlanTitle=WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(),TEXT("FigmaOverviewPlanTitle"));PlanTitle->SetText(ProductText::Get(TEXT("Figma.CurrentPlan")));FigmaUI::Text(PlanTitle,16,FigmaUI::PrimaryText,true);PlanTexts->AddChild(PlanTitle);CurrentPlanSummary=Label(WidgetTree,FText::GetEmpty(),13);
+    CurrentPlanSummary->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);CurrentPlanSummary->SetClipping(EWidgetClipping::ClipToBounds);PlanTexts->AddChildToVerticalBox(CurrentPlanSummary)->SetPadding(FMargin(0,5,0,0));
+    PlanRow->AddChildToHorizontalBox(ActionButton(TEXT("open_plan"),TEXT("Workflow.OpenPlan"),1))->SetVerticalAlignment(VAlign_Center);
     auto* Lower=WidgetTree->ConstructWidget<UHorizontalBox>();Fill(Home->AddChildToVerticalBox(Lower));
-    auto* MapCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(MapCard,FigmaUI::Surface,FigmaUI::Outline,10,FMargin(16,12));auto* MS=Lower->AddChildToHorizontalBox(MapCard);Fill(MS,2.43f);MS->SetPadding(FMargin(0,0,16,0));
+    auto* MapCard=WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(),TEXT("FigmaOverviewMap"));FigmaUI::Panel(MapCard,FigmaUI::Surface,FigmaUI::Outline,10,FMargin(16,12));auto* MS=Lower->AddChildToHorizontalBox(MapCard);Fill(MS,2.43f);MS->SetPadding(FMargin(0,0,16,0));
     auto* MapContent=WidgetTree->ConstructWidget<UVerticalBox>();MapCard->SetContent(MapContent);auto* Toolbar=WidgetTree->ConstructWidget<UHorizontalBox>();MapContent->AddChild(Toolbar);
     Toolbar->AddChildToHorizontalBox(Key(WidgetTree,TEXT("Situation.Title"),16,true))->SetPadding(FMargin(0,0,24,0));ZoomCaption=Label(WidgetTree,FText::GetEmpty(),14);Fill(Toolbar->AddChildToHorizontalBox(ZoomCaption));
     for(const TCHAR* A:{TEXT("zoom_in"),TEXT("zoom_out")}){auto* B=ActionButton(A,TEXT("Situation.Title"));B->SetContent(FigmaUI::Icon(WidgetTree,FString(A)==TEXT("zoom_in")?TEXT("plus"):TEXT("minus"),{18,18}));auto Style=B->GetStyle();Style.SetNormalPadding(FMargin(0)).SetPressedPadding(FMargin(0));B->SetStyle(Style);Cast<UButtonSlot>(B->GetContent()->Slot)->SetHorizontalAlignment(HAlign_Center);Cast<UButtonSlot>(B->GetContent()->Slot)->SetVerticalAlignment(VAlign_Center);Toolbar->AddChildToHorizontalBox(Fixed(WidgetTree,B,30,30))->SetPadding(FMargin(8,0,0,0));}
     SituationMap=CreateWidget<UCommandTacticalMap>(GetOwningPlayer());SituationMap->SetFigmaPresentation(true);Fill(MapContent->AddChildToVerticalBox(SituationMap));
     FollowButton=ActionButton(TEXT("follow_situation"),TEXT("Situation.Follow"));auto* FS=MapContent->AddChildToVerticalBox(FollowButton);FS->SetHorizontalAlignment(HAlign_Right);
-    // Keep task rows beside the map so active execution controls cannot squeeze
-    // the destination-picking surface down to a strip.
     auto* Activity=WidgetTree->ConstructWidget<UVerticalBox>();Fill(Lower->AddChildToHorizontalBox(Activity));
-    auto* TaskCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(TaskCard,FigmaUI::Surface,FigmaUI::Outline,10,FMargin(16,10));
-    OverviewSummarySize=Fixed(WidgetTree,TaskCard,0,70);Activity->AddChildToVerticalBox(OverviewSummarySize)->SetPadding(FMargin(0,0,0,12));
-    auto* TaskBody=WidgetTree->ConstructWidget<UVerticalBox>();TaskCard->SetContent(TaskBody);
-    RunningTaskTitle=Label(WidgetTree,FText::GetEmpty(),16,true);TaskBody->AddChild(RunningTaskTitle);
-    RunningTaskEmpty=Key(WidgetTree,TEXT("Execution.None"),13);TaskBody->AddChildToVerticalBox(RunningTaskEmpty)->SetPadding(FMargin(0,5,0,0));
-    auto* TaskScroll=WidgetTree->ConstructWidget<UScrollBox>();Fill(TaskBody->AddChildToVerticalBox(TaskScroll));
-    RunningTaskRows=WidgetTree->ConstructWidget<UVerticalBox>();TaskScroll->AddChild(RunningTaskRows);
-    CurrentExecutionSummary=Label(WidgetTree,FText::GetEmpty(),13);
-    auto* EventCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(EventCard,FigmaUI::Surface,FigmaUI::Outline,10,FMargin(16,12));Fill(Activity->AddChildToVerticalBox(EventCard));
+    auto* DenseSummary=WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(),TEXT("FigmaOverviewDenseSummary"));Activity->AddChild(DenseSummary);
+    auto* EventCard=WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(),TEXT("FigmaOverviewEvents"));FigmaUI::Panel(EventCard,FigmaUI::Surface,FigmaUI::Outline,10,FMargin(16,12));Fill(Activity->AddChildToVerticalBox(EventCard));
     auto* EV=WidgetTree->ConstructWidget<UVerticalBox>();EventCard->SetContent(EV);auto* EH=WidgetTree->ConstructWidget<UHorizontalBox>();EV->AddChild(EH);Fill(EH->AddChildToHorizontalBox(Key(WidgetTree,TEXT("Workflow.RecentEvents"),16,true)));
     EH->AddChild(ActionButton(TEXT("logs"),TEXT("Figma.ViewAll")));auto* ES=WidgetTree->ConstructWidget<UScrollBox>();Fill(EV->AddChildToVerticalBox(ES));EventRows=WidgetTree->ConstructWidget<UVerticalBox>();ES->AddChild(EventRows);
     RecentEvents=Label(WidgetTree,FText::GetEmpty()); // Retain legacy summary for accessibility/diagnostics.
@@ -128,7 +152,12 @@ void UCommandShellWidget::BuildFigmaShell(UCanvasPanel* Root) {
     ConfigurationCaption=Label(WidgetTree,FText::GetEmpty(),16);ConfigurationHeader->AddChild(ConfigurationCaption);auto* CA=WidgetTree->ConstructWidget<UHorizontalBox>();ConfigurationHeader->AddChild(CA);
     CA->AddChild(ActionButton(TEXT("configuration_return"),TEXT("Configuration.Return"),1));ConfigurationFinish=ActionButton(TEXT("configuration_finish"),TEXT("Configuration.Finish"),1);CA->AddChild(ConfigurationFinish);
     ActiveControls=CreateWidget<UActiveExecutionControlsWidget>(GetOwningPlayer());auto* AS=Root->AddChildToCanvas(ActiveControls);AS->SetAnchors(FAnchors(0,0,1,0));AS->SetOffsets(FMargin(30,102,30,154));
-    Place(Root,Key(WidgetTree,TEXT("Figma.Plans.Flow"),11),{32,779},{1376,20});
+    auto* Workflow=WidgetTree->ConstructWidget<UHorizontalBox>();Place(Root,Workflow,{32,779},{1376,20});
+    const TCHAR* WorkflowKeys[]={TEXT("Figma.Plans.FlowStart"),TEXT("Figma.Plans.FlowDevices"),TEXT("Figma.Plans.FlowRoutes"),TEXT("Figma.Plans.FlowCheck"),TEXT("Figma.Plans.FlowDeploy")};
+    for(int I=0;I<5;++I){
+        if(I){auto* ArrowSlot=Workflow->AddChildToHorizontalBox(FigmaUI::Icon(WidgetTree,TEXT("workflow-arrow"),{13.4,4.3}));ArrowSlot->SetVerticalAlignment(VAlign_Center);ArrowSlot->SetPadding(FMargin(7,0));}
+        Workflow->AddChildToHorizontalBox(Key(WidgetTree,WorkflowKeys[I],11))->SetVerticalAlignment(VAlign_Center);
+    }
 
     FigmaDialog=WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(),TEXT("FigmaModalBackdrop"));FigmaDialog->SetBrushColor(FLinearColor(0,0,0,.78f));FigmaDialog->SetPadding(FMargin(0));
     auto* DS=Root->AddChildToCanvas(FigmaDialog);DS->SetAnchors(FAnchors(0,0,1,1));DS->SetOffsets(FMargin(0));DS->SetZOrder(100);

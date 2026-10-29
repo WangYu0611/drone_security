@@ -9,11 +9,73 @@
 #include "Components/SizeBox.h"
 #include "Components/MultiLineEditableTextBox.h"
 #include "Components/Image.h"
+#include "Components/ScaleBox.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 
 using namespace PlanUI;
 
 void USecurityPlanWorkspaceWidget::BuildPlanPresentation()
 {
+    // Recompose the existing controls; their action identities and acknowledged
+    // draft model remain unchanged. Workspace stays the mission list's owner.
+    Workspace->RemoveFromParent();
+    auto* DetailRoot=WidgetTree->ConstructWidget<UVerticalBox>();WorkspaceScroll->AddChild(DetailRoot);
+    auto* DetailNavigation=WidgetTree->ConstructWidget<UHorizontalBox>();DetailRoot->AddChildToVerticalBox(DetailNavigation)->SetPadding(FMargin(0,0,0,14));
+    auto MoveAction=[&](const TCHAR* Key,UHorizontalBox* Parent){auto* B=Actions[Key].Get();B->RemoveFromParent();auto* S=Parent->AddChildToHorizontalBox(B);S->SetPadding(FMargin(0,0,12,0));S->SetVerticalAlignment(VAlign_Center);FigmaUI::Button(B,false,true);auto Style=B->GetStyle();Style.SetNormal(FSlateRoundedBoxBrush(FLinearColor(FColor(30,36,51)),12));B->SetStyle(Style);return B;};
+    auto* Back=MoveAction(TEXT("back_list"),DetailNavigation);
+    auto* BackCaption=Back->GetContent();CastChecked<UTextBlock>(BackCaption)->SetText(T(TEXT("Nav.Plans")));BackCaption->RemoveFromParent();auto* BackRow=WidgetTree->ConstructWidget<UHorizontalBox>();Back->SetContent(BackRow);
+    auto* BackIcon=BackRow->AddChildToHorizontalBox(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-back"),FVector2D(12,10)));BackIcon->SetVerticalAlignment(VAlign_Center);BackIcon->SetPadding(FMargin(0,0,8,0));BackRow->AddChildToHorizontalBox(BackCaption)->SetVerticalAlignment(VAlign_Center);
+    MoveAction(TEXT("edit_plan"),DetailNavigation);MoveAction(TEXT("delete_plan_prompt"),DetailNavigation);MoveAction(TEXT("resume_configuration"),DetailNavigation);
+    DetailColumns=WidgetTree->ConstructWidget<UHorizontalBox>();DetailRoot->AddChild(DetailColumns);
+    auto* MainColumnSlot=DetailColumns->AddChildToHorizontalBox(Workspace);FSlateChildSize MainWeight(ESlateSizeRule::Fill);MainWeight.Value=.66f;MainColumnSlot->SetSize(MainWeight);MainColumnSlot->SetPadding(FMargin(0,0,16,0));
+    DetailSidebar=WidgetTree->ConstructWidget<UVerticalBox>();auto* SideSlot=DetailColumns->AddChildToHorizontalBox(DetailSidebar);FSlateChildSize SideWeight(ESlateSizeRule::Fill);SideWeight.Value=.34f;SideSlot->SetSize(SideWeight);
+    for(UWidget* Child:Workspace->GetAllChildren())Child->RemoveFromParent();
+    auto Card=[&](UVerticalBox* Parent,const FLinearColor& Fill=FigmaUI::Inset){auto* B=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(B,Fill,FigmaUI::Outline,9,FMargin(20));Parent->AddChildToVerticalBox(B)->SetPadding(FMargin(0,0,0,16));return B;};
+    auto Divider=[&](UVerticalBox* Parent,const TCHAR* Semantic,double Width){auto* Line=WidgetTree->ConstructWidget<USizeBox>();Line->SetWidthOverride(Width);Line->SetHeightOverride(1);Line->SetContent(FigmaUI::Icon(WidgetTree,Semantic,FVector2D(Width,1)));auto* S=Parent->AddChildToVerticalBox(Line);S->SetHorizontalAlignment(HAlign_Center);S->SetPadding(FMargin(0,8,0,12));};
+    auto* OverviewCard=Card(Workspace);auto* Overview=WidgetTree->ConstructWidget<UVerticalBox>();OverviewCard->SetContent(Overview);
+    auto* TitleRow=WidgetTree->ConstructWidget<UHorizontalBox>();Overview->AddChild(TitleRow);
+    WorkspaceTitle->RemoveFromParent();FigmaUI::Text(WorkspaceTitle,26,FigmaUI::PrimaryText,true);WorkspaceTitle->SetAutoWrapText(false);WorkspaceTitle->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);WorkspaceTitle->SetClipping(EWidgetClipping::ClipToBounds);
+    auto* TitleWidth=WidgetTree->ConstructWidget<USizeBox>();TitleWidth->SetMaxDesiredWidth(520);TitleWidth->SetContent(WorkspaceTitle);auto* TitleSlot=TitleRow->AddChildToHorizontalBox(TitleWidth);TitleSlot->SetVerticalAlignment(VAlign_Center);
+    PlanStatusCaption=Label(WidgetTree,TitleRow,FText::GetEmpty(),12);FigmaUI::Text(PlanStatusCaption,12,FigmaUI::Online);auto* StatusSlot=CastChecked<UHorizontalBoxSlot>(PlanStatusCaption->Slot);StatusSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));StatusSlot->SetVerticalAlignment(VAlign_Center);StatusSlot->SetPadding(FMargin(14,0));
+    MoveAction(TEXT("request_map_plan_move"),TitleRow);
+    Summary->RemoveFromParent();FigmaUI::Text(Summary,14,FigmaUI::Muted);Overview->AddChildToVerticalBox(Summary)->SetPadding(FMargin(0,10,0,18));
+    GeometryStatus->RemoveFromParent();Overview->AddChild(GeometryStatus);
+    auto* TrackCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(TrackCard,FigmaUI::Inset,FigmaUI::Outline,8,FMargin(12,8));Overview->AddChild(TrackCard);
+    auto* TrackHeight=WidgetTree->ConstructWidget<USizeBox>();TrackHeight->SetHeightOverride(88);TrackCard->SetContent(TrackHeight);
+    auto* TrackFit=WidgetTree->ConstructWidget<UScaleBox>();TrackFit->SetStretch(EStretch::ScaleToFit);TrackHeight->SetContent(TrackFit);
+    auto* TrackSize=WidgetTree->ConstructWidget<USizeBox>();TrackSize->SetWidthOverride(796);TrackSize->SetHeightOverride(80);TrackFit->SetContent(TrackSize);
+    auto* TrackCanvas=WidgetTree->ConstructWidget<UCanvasPanel>();TrackSize->SetContent(TrackCanvas);
+    auto Place=[&](UWidget* W,const FVector2D& Position,const FVector2D& Size){auto* S=TrackCanvas->AddChildToCanvas(W);S->SetPosition(Position);S->SetSize(Size);return S;};
+    Place(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-track"),FVector2D(700,32)),FVector2D(48,6),FVector2D(700,31.18));
+    const double Centers[]={63.59,229.31,397.02,564.22,732.44};
+    const TCHAR* StepKeys[]={TEXT("Workflow.BasicInfo"),TEXT("Workflow.TaskConfig"),TEXT("Workflow.StepRoute"),TEXT("Workflow.PreDeployReview"),TEXT("Workflow.StepDeploy")};
+    for(int I=0;I<5;++I){
+        auto* Marker=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Marker,FLinearColor::Transparent,FLinearColor::Transparent,18,FMargin(0));Place(Marker,FVector2D(Centers[I]-15.59,6),FVector2D(31.18,31.18));StepMarkers.Add(Marker);
+        auto* Number=Label(WidgetTree,Marker,FText::AsNumber(I+1),12);FigmaUI::Text(Number,12);Number->SetJustification(ETextJustify::Center);Marker->SetHorizontalAlignment(HAlign_Center);Marker->SetVerticalAlignment(VAlign_Center);
+        auto* StepLabel=WidgetTree->ConstructWidget<UTextBlock>();FigmaUI::Text(StepLabel,12);StepLabel->SetText(T(StepKeys[I]));StepLabel->SetAutoWrapText(true);StepLabel->SetJustification(ETextJustify::Center);Place(StepLabel,FVector2D(Centers[I]-63,48),FVector2D(126,30));StepLabels.Add(StepLabel);
+    }
+    Steps->RemoveFromParent();Overview->AddChild(Steps);Steps->SetVisibility(ESlateVisibility::Collapsed);
+    MissionList->RemoveFromParent();Workspace->AddChildToVerticalBox(MissionList)->SetPadding(FMargin(0,0,0,16));
+    for(UVerticalBox* Page:{BasicPageHost.Get(),TaskPage.Get(),RoutePage.Get(),ExecutionPage.Get()}){
+        Page->RemoveFromParent();Workspace->AddChildToVerticalBox(Page)->SetPadding(FMargin(0,0,0,16));
+    }
+    DeploymentActions=Card(Workspace);auto* Operations=WidgetTree->ConstructWidget<UVerticalBox>();DeploymentActions->SetContent(Operations);
+    FigmaUI::Text(Label(WidgetTree,Operations,T(TEXT("Figma.PlanDetail.DeploymentActions")),24),24,FigmaUI::PrimaryText,true);Divider(Operations,TEXT("plan-detail-divider"),820);
+    auto* OperationsRow=WidgetTree->ConstructWidget<UHorizontalBox>();Operations->AddChild(OperationsRow);
+    for(const TCHAR* Key:{TEXT("confirm_deployment"),TEXT("execution_start_prompt"),TEXT("execution_open"),TEXT("task_step")}){
+        auto* B=MoveAction(Key,OperationsRow);CastChecked<UHorizontalBoxSlot>(B->Slot)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+    }
+    ReviewPage->RemoveFromParent();DetailSidebar->AddChild(ReviewPage);
+    auto* ReviewCard=Card(ReviewPage);auto* ReviewContent=WidgetTree->ConstructWidget<UVerticalBox>();ReviewCard->SetContent(ReviewContent);
+    ReviewHeading->RemoveFromParent();FigmaUI::Text(ReviewHeading,24,FigmaUI::PrimaryText,true);ReviewContent->AddChild(ReviewHeading);Divider(ReviewContent,TEXT("plan-detail-review-divider"),420);
+    DeploymentBlockers->RemoveFromParent();ReviewContent->AddChild(DeploymentBlockers);
+    Review->RemoveFromParent();ReviewContent->AddChild(Review);
+    auto* HistoryCard=Card(DetailSidebar);auto* HistoryContent=WidgetTree->ConstructWidget<UVerticalBox>();HistoryCard->SetContent(HistoryContent);
+    FigmaUI::Text(Label(WidgetTree,HistoryContent,T(TEXT("Execution.History")),22),22,FigmaUI::PrimaryText,true);Divider(HistoryContent,TEXT("plan-detail-review-divider"),420);
+    ExecutionHistory->RemoveFromParent();FigmaUI::Text(ExecutionHistory,12,FigmaUI::Muted);HistoryContent->AddChild(ExecutionHistory);
+    auto* Copy=Actions[TEXT("copy_plan")].Get();Copy->RemoveFromParent();DetailSidebar->AddChild(Copy);FigmaUI::Button(Copy,false,true);
+
     auto* Overlay = WidgetTree->ConstructWidget<UOverlay>();
     WidgetTree->RootWidget = Overlay;
     auto* MainSlot = Overlay->AddChildToOverlay(Content);
@@ -139,6 +201,18 @@ void USecurityPlanWorkspaceWidget::BuildPlanPresentation()
 void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
 {
     const bool Creating = bCreating;
+    const bool Reviewing=ReviewPage->GetVisibility()!=ESlateVisibility::Collapsed;
+    DetailSidebar->SetVisibility(Reviewing?ESlateVisibility::SelfHitTestInvisible:ESlateVisibility::Collapsed);
+    DeploymentActions->SetVisibility(Reviewing?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    CastChecked<UHorizontalBoxSlot>(Workspace->Slot)->SetPadding(Reviewing?FMargin(0,0,16,0):FMargin(0));
+    const auto Plan=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanId);
+    const bool Deployed=Field(Plan,TEXT("status"))==TEXT("DEPLOYED");
+    WorkspaceTitle->SetToolTipText(WorkspaceTitle->GetText());
+    PlanStatusCaption->SetText(ProductText::Get(TEXT("Plan.")+Field(Plan,TEXT("status"))));
+    FigmaUI::Text(PlanStatusCaption,12,Deployed?FigmaUI::Online:FigmaUI::Muted);
+    ReviewHeading->SetText(T(Deployed?TEXT("Figma.PlanDetail.DeploymentInfo"):TEXT("Workflow.PreDeployReview")));
+    Steps->SetVisibility(ESlateVisibility::Collapsed);
+    for(int I=0;I<StepMarkers.Num();++I)FigmaUI::Panel(StepMarkers[I],I==CurrentStep?FigmaUI::Accent:FLinearColor::Transparent,FLinearColor::Transparent,18,FMargin(0));
     Actions[TEXT("new_plan")]->SetVisibility(Creating ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
     NewPlanLayer->SetVisibility(Creating ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
     NewPlanDialog->SetVisibility(Creating ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);

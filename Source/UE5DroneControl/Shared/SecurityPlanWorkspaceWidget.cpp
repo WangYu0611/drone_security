@@ -52,7 +52,11 @@ bool FocusMapWindow(){
 }
 }
 
-void UPlanMissionListWidget::NativeOnInitialized(){Super::NativeOnInitialized();Content=WidgetTree->ConstructWidget<UVerticalBox>();WidgetTree->RootWidget=Content;}
+void UPlanMissionListWidget::NativeOnInitialized(){
+    Super::NativeOnInitialized();
+    auto* Surface=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Surface,FigmaUI::Inset,FigmaUI::Outline,9,FMargin(20));WidgetTree->RootWidget=Surface;
+    Content=WidgetTree->ConstructWidget<UVerticalBox>();Surface->SetContent(Content);
+}
 bool UPlanMissionListWidget::ResolveAction(int32 Id,FString& OutPlan,FString& OutMission) const {
     const auto* Target=ActionTargets.Find(Id);if(!Target)return false;OutPlan=PlanId;OutMission=*Target;return true;
 }
@@ -70,49 +74,95 @@ void UPlanMissionListWidget::Refresh(const TSharedPtr<FJsonObject>& State,const 
     // A visible row or selection change still retires every old action generation.
     if(VisibleSignature==NewSignature)return;
     VisibleSignature=NewSignature;PlanId=NewPlan;SelectedId=SelectedMission;Content->ClearChildren();MissionIds.Empty();MissionActionIds.Empty();ActionTargets.Empty();
-    FigmaUI::Text(Label(WidgetTree,Content,T(TEXT("Plan.Tasks.Title")),22),22,FigmaUI::PrimaryText,true);
-    FigmaUI::Text(Label(WidgetTree,Content,T(TEXT("Plan.Tasks.Hint")),14),14,FigmaUI::Muted);
+    auto* Heading=WidgetTree->ConstructWidget<UHorizontalBox>();Content->AddChildToVerticalBox(Heading)->SetPadding(FMargin(0,0,0,16));
+    auto* MissionHeading=Label(WidgetTree,Heading,T(TEXT("Plan.Tasks.Title")),24);FigmaUI::Text(MissionHeading,24,FigmaUI::PrimaryText,true);MissionHeading->SetAutoWrapText(false);
+    auto* Hint=Label(WidgetTree,Heading,T(TEXT("Plan.Tasks.Hint")),12);FigmaUI::Text(Hint,12,FigmaUI::Muted);
+    auto* HintSlot=CastChecked<UHorizontalBoxSlot>(Hint->Slot);HintSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));HintSlot->SetVerticalAlignment(VAlign_Center);HintSlot->SetPadding(FMargin(18,0,0,0));
+    auto* HeadingLine=WidgetTree->ConstructWidget<USizeBox>();HeadingLine->SetWidthOverride(820);HeadingLine->SetHeightOverride(1);HeadingLine->SetContent(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-divider"),FVector2D(820,1)));auto* HeadingDivider=Content->AddChildToVerticalBox(HeadingLine);HeadingDivider->SetHorizontalAlignment(HAlign_Center);HeadingDivider->SetPadding(FMargin(0,0,0,12));
     const TArray<TSharedPtr<FJsonValue>>* Ids;if(!Plan || !Plan->TryGetArrayField(TEXT("mission_ids"),Ids) || Ids->IsEmpty()){Label(WidgetTree,Content,T(TEXT("Plan.NoMissions")));return;}
     const bool Deployed=Field(Plan,TEXT("status"))==TEXT("DEPLOYED");
     for(const auto& V:*Ids){const auto M=Find(State,TEXT("missions"),V->AsString());const auto R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points;
         const int Count=R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
         MissionIds.Add(V->AsString());const int Index=++NextActionId;MissionActionIds.Add(Index);ActionTargets.Add(Index,V->AsString());const auto UAV=AssignedUAVs(M);
         const auto E=MissionExecution(State,PlanId,V->AsString());const bool Selected=SelectedId==V->AsString();
-        auto* Card=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Card,FigmaUI::Inset,Selected?FigmaUI::Accent:FigmaUI::Outline,8,FMargin(14));Content->AddChildToVerticalBox(Card)->SetPadding(FMargin(0,8,0,0));
-        auto* Body=WidgetTree->ConstructWidget<UVerticalBox>();Card->SetContent(Body);
-        FigmaUI::Text(Label(WidgetTree,Body,User(Field(M,TEXT("name"))),18),18,FigmaUI::PrimaryText,true);
-        FigmaUI::Text(Label(WidgetTree,Body,FText::Format(T(TEXT("Plan.Tasks.Assignment")),UAV.IsEmpty()?T(TEXT("Common.None")):User(UAV),FText::AsNumber(Count))),14,FigmaUI::Muted);
-        FigmaUI::Text(Label(WidgetTree,Body,FText::Format(T(TEXT("Plan.Tasks.State")),ProductText::Get(TEXT("Plan.")+Field(M,TEXT("status"))),E?ProductText::Get(TEXT("Execution.")+Field(E,TEXT("state"))):T(TEXT("Execution.None")))),14,ExecutionUI::Active(E)?FigmaUI::Accent:FigmaUI::Muted);
-        auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();Body->AddChildToVerticalBox(Row)->SetPadding(FMargin(0,8,0,0));
-        auto Add=[&](const TCHAR* A,const TCHAR* K){auto* B=Button(WidgetTree,Row,A,K,Index);B->OnAction.AddDynamic(this,&UPlanMissionListWidget::Action);const bool Primary=A==FString(TEXT("execute_mission"));FigmaUI::Button(B,Primary);FigmaUI::Text(Cast<UTextBlock>(B->GetContent()),14,Primary?FigmaUI::Background:FigmaUI::PrimaryText);Cast<UHorizontalBoxSlot>(B->Slot)->SetPadding(FMargin(0,0,8,0));};
+        auto* Card=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Card,FigmaUI::Inset,Selected?FigmaUI::PrimaryText:FigmaUI::Outline,8,FMargin(14));Content->AddChildToVerticalBox(Card)->SetPadding(FMargin(0,10,0,0));
+        auto* Body=WidgetTree->ConstructWidget<UHorizontalBox>();Card->SetContent(Body);
+        auto* IconBox=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(IconBox,FigmaUI::Inset,FigmaUI::Outline,7,FMargin(8));
+        IconBox->SetContent(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-drone"),FVector2D(47,47)));
+        auto* IconSlot=Body->AddChildToHorizontalBox(IconBox);IconSlot->SetVerticalAlignment(VAlign_Center);IconSlot->SetPadding(FMargin(0,0,16,0));
+        auto* Info=WidgetTree->ConstructWidget<UVerticalBox>();auto* InfoSlot=Body->AddChildToHorizontalBox(Info);InfoSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));InfoSlot->SetVerticalAlignment(VAlign_Center);InfoSlot->SetPadding(FMargin(0,0,14,0));
+        auto* Name=Label(WidgetTree,Info,User(Field(M,TEXT("name"))),17);FigmaUI::Text(Name,17,FigmaUI::PrimaryText,true);Name->SetAutoWrapText(false);Name->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);Name->SetToolTipText(Name->GetText());
+        FigmaUI::Text(Label(WidgetTree,Info,FText::Format(T(TEXT("Plan.Tasks.Assignment")),UAV.IsEmpty()?T(TEXT("Common.None")):User(UAV),FText::AsNumber(Count))),12,FigmaUI::Muted);
+        FigmaUI::Text(Label(WidgetTree,Info,FText::Format(T(TEXT("Plan.Tasks.State")),ProductText::Get(TEXT("Plan.")+Field(M,TEXT("status"))),E?ProductText::Get(TEXT("Execution.")+Field(E,TEXT("state"))):T(TEXT("Execution.None")))),12,ExecutionUI::Active(E)?FigmaUI::Accent:FigmaUI::Muted);
+        if(Count<2)FigmaUI::Text(Label(WidgetTree,Info,T(TEXT("Errors.ROUTE_TOO_SHORT"))),12,FigmaUI::Warning);
+        auto* VerticalDivider=WidgetTree->ConstructWidget<USizeBox>();VerticalDivider->SetWidthOverride(1);VerticalDivider->SetHeightOverride(72);auto* DividerOverlay=WidgetTree->ConstructWidget<UOverlay>();VerticalDivider->SetContent(DividerOverlay);auto* DividerSlot=DividerOverlay->AddChildToOverlay(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-mission-divider"),FVector2D(1,72)));DividerSlot->SetHorizontalAlignment(HAlign_Center);DividerSlot->SetVerticalAlignment(VAlign_Center);auto* VerticalSlot=Body->AddChildToHorizontalBox(VerticalDivider);VerticalSlot->SetVerticalAlignment(VAlign_Center);VerticalSlot->SetPadding(FMargin(0,0,14,0));
+        auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();auto* ActionSize=WidgetTree->ConstructWidget<USizeBox>();ActionSize->SetWidthOverride(UAV.IsEmpty()?322:430);ActionSize->SetContent(Row);
+        Body->AddChildToHorizontalBox(ActionSize)->SetVerticalAlignment(VAlign_Center);
+        auto Add=[&](const TCHAR* A,const TCHAR* K){auto* B=Button(WidgetTree,Row,A,K,Index);B->OnAction.AddDynamic(this,&UPlanMissionListWidget::Action);const bool Primary=A==FString(TEXT("execute_mission"));FigmaUI::Button(B,false,true);
+            auto Style=B->GetStyle();const FLinearColor Fill=Primary?FigmaUI::Accent:FLinearColor(FColor(30,36,51));Style.SetNormal(FSlateRoundedBoxBrush(Fill,6));Style.SetHovered(FSlateRoundedBoxBrush(Fill,6,FigmaUI::PrimaryText,.7f));Style.SetPressed(FSlateRoundedBoxBrush(FigmaUI::SelectedSurface,6,FigmaUI::Accent,1));Style.SetNormalPadding(FMargin(8,10)).SetPressedPadding(FMargin(8,10));B->SetStyle(Style);
+            auto* Caption=CastChecked<UTextBlock>(B->GetContent());FigmaUI::Text(Caption,12,FigmaUI::PrimaryText);Caption->SetJustification(ETextJustify::Center);
+            auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(4,0));};
         Add(TEXT("select_mission"),Selected?TEXT("Plan.Tasks.Selected"):TEXT("Plan.Tasks.Select"));
         Add(TEXT("edit_mission"),TEXT("Plan.Tasks.Edit"));
         Add(TEXT("execute_mission"),ExecutionUI::Active(E)?TEXT("Plan.Tasks.ViewExecution"):Deployed?TEXT("Plan.Tasks.Execute"):TEXT("Plan.Tasks.CheckDeploy"));
         if(!UAV.IsEmpty())Add(TEXT("video_mission"),TEXT("Video.Open"));
-        if(Count<2)FigmaUI::Text(Label(WidgetTree,Body,T(TEXT("Errors.ROUTE_TOO_SHORT"))),14,FigmaUI::Muted);
     }
 }
-void UPlanReviewWidget::NativeOnInitialized(){Super::NativeOnInitialized();auto* V=WidgetTree->ConstructWidget<UVerticalBox>();WidgetTree->RootWidget=V;Summary=Label(WidgetTree,V,FText::GetEmpty());}
+void UPlanReviewWidget::NativeOnInitialized(){
+    Super::NativeOnInitialized();auto* V=WidgetTree->ConstructWidget<UVerticalBox>();WidgetTree->RootWidget=V;
+    Summary=Label(WidgetTree,V,FText::GetEmpty(),20);FigmaUI::Text(Summary,20,FigmaUI::PrimaryText,true);
+    Description=Label(WidgetTree,V,FText::GetEmpty(),12);FigmaUI::Text(Description,12,FigmaUI::Muted);
+    auto* Metrics=WidgetTree->ConstructWidget<UHorizontalBox>();V->AddChildToVerticalBox(Metrics)->SetPadding(FMargin(0,8));
+    auto Metric=[&](const TCHAR* Key){auto* Box=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Box,FigmaUI::Inset,FigmaUI::Outline,4,FMargin(8));Box->SetClipping(EWidgetClipping::ClipToBounds);
+        auto* Slot=Metrics->AddChildToHorizontalBox(Box);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(0,0,6,0));
+        auto* Column=WidgetTree->ConstructWidget<UVerticalBox>();Box->SetContent(Column);FigmaUI::Text(Label(WidgetTree,Column,T(Key),11),11,FigmaUI::Muted);
+        auto* Value=Label(WidgetTree,Column,FText::GetEmpty(),14);FigmaUI::Text(Value,14);Value->SetAutoWrapText(false);Value->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);Value->SetClipping(EWidgetClipping::ClipToBounds);return Value;};
+    MissionValue=Metric(TEXT("Plan.Mission"));AircraftValue=Metric(TEXT("Figma.Fleet.Title"));WaypointsValue=Metric(TEXT("Figma.PlanDetail.Waypoints"));DistanceValue=Metric(TEXT("Figma.PlanDetail.RouteDistance"));
+    auto* CheckNotice=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(CheckNotice,FigmaUI::Inset,FigmaUI::Outline,4,FMargin(10));V->AddChildToVerticalBox(CheckNotice)->SetPadding(FMargin(0,0,0,8));
+    FigmaUI::Text(Label(WidgetTree,CheckNotice,T(TEXT("Workflow.CheckInformation")),12),12,FigmaUI::Muted);
+    Assignments=Label(WidgetTree,V,FText::GetEmpty(),12);FigmaUI::Text(Assignments,12,FigmaUI::Muted);
+    auto* Warning=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Warning,FLinearColor(FColor(36,30,25)),FigmaUI::Warning,5,FMargin(10));V->AddChildToVerticalBox(Warning)->SetPadding(FMargin(0,0,0,8));
+    auto* WarningRow=WidgetTree->ConstructWidget<UHorizontalBox>();Warning->SetContent(WarningRow);
+    auto* WarningSize=WidgetTree->ConstructWidget<USizeBox>();WarningSize->SetWidthOverride(17);WarningSize->SetHeightOverride(17);auto* WarningBadge=WidgetTree->ConstructWidget<UOverlay>();WarningSize->SetContent(WarningBadge);
+    auto* WarningDisc=WarningBadge->AddChildToOverlay(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-warning"),FVector2D(17,17)));WarningDisc->SetHorizontalAlignment(HAlign_Center);WarningDisc->SetVerticalAlignment(VAlign_Center);
+    auto* Exclamation=WidgetTree->ConstructWidget<UTextBlock>();FigmaUI::Text(Exclamation,12,FigmaUI::Inset,true);Exclamation->SetText(User(TEXT("!")));Exclamation->SetJustification(ETextJustify::Center);auto* MarkSlot=WarningBadge->AddChildToOverlay(Exclamation);MarkSlot->SetHorizontalAlignment(HAlign_Center);MarkSlot->SetVerticalAlignment(VAlign_Center);
+    auto* WarningIcon=WarningRow->AddChildToHorizontalBox(WarningSize);WarningIcon->SetPadding(FMargin(0,0,8,0));WarningIcon->SetVerticalAlignment(VAlign_Top);
+    Issues=Label(WidgetTree,WarningRow,FText::GetEmpty(),12);FigmaUI::Text(Issues,12,FigmaUI::Warning);CastChecked<UHorizontalBoxSlot>(Issues->Slot)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+    auto* ReviewNotice=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(ReviewNotice,FigmaUI::Inset,FigmaUI::Outline,4,FMargin(10));V->AddChildToVerticalBox(ReviewNotice)->SetPadding(FMargin(0,0,0,10));
+    FigmaUI::Text(Label(WidgetTree,ReviewNotice,T(TEXT("Plan.ReviewNotice")),12),12,FigmaUI::Muted);
+    FigmaUI::Text(Label(WidgetTree,V,T(TEXT("Plan.Deployment")),18),18,FigmaUI::PrimaryText,true);
+    Deployment=Label(WidgetTree,V,FText::GetEmpty(),12);FigmaUI::Text(Deployment,12,FigmaUI::Muted);CastChecked<UVerticalBoxSlot>(Deployment->Slot)->SetPadding(FMargin(0,6));
+    auto* RecordLine=WidgetTree->ConstructWidget<USizeBox>();RecordLine->SetWidthOverride(420);RecordLine->SetHeightOverride(1);RecordLine->SetContent(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-record-divider"),FVector2D(420,1)));auto* RecordDivider=V->AddChildToVerticalBox(RecordLine);RecordDivider->SetHorizontalAlignment(HAlign_Center);RecordDivider->SetPadding(FMargin(0,4,0,8));
+    auto* ReadyRow=WidgetTree->ConstructWidget<UHorizontalBox>();V->AddChild(ReadyRow);
+    Readiness=Label(WidgetTree,ReadyRow,FText::GetEmpty(),12);FigmaUI::Text(Readiness,12,FigmaUI::Muted);CastChecked<UHorizontalBoxSlot>(Readiness->Slot)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+    auto* ReadyDivider=WidgetTree->ConstructWidget<USizeBox>();ReadyDivider->SetWidthOverride(1);ReadyDivider->SetHeightOverride(26);auto* ReadyOverlay=WidgetTree->ConstructWidget<UOverlay>();ReadyDivider->SetContent(ReadyOverlay);auto* ReadyLine=ReadyOverlay->AddChildToOverlay(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-readiness-divider"),FVector2D(1,26)));ReadyLine->SetHorizontalAlignment(HAlign_Center);ReadyLine->SetVerticalAlignment(VAlign_Center);ReadyRow->AddChildToHorizontalBox(ReadyDivider)->SetPadding(FMargin(10,0));
+    MapReadiness=Label(WidgetTree,ReadyRow,FText::GetEmpty(),12);FigmaUI::Text(MapReadiness,12,FigmaUI::Muted);CastChecked<UHorizontalBoxSlot>(MapReadiness->Slot)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+}
 void UPlanReviewWidget::Refresh(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan){
-    if(!Plan){Summary->SetText(T(TEXT("Plan.NoPlan")));return;}
-    TArray<FText> Lines{User(Field(Plan,TEXT("name"))),User(Field(Plan,TEXT("description")))};
-    const TArray<TSharedPtr<FJsonValue>>* Ids;if(Plan->TryGetArrayField(TEXT("mission_ids"),Ids))for(const auto& V:*Ids){
-        const auto M=Find(State,TEXT("missions"),V->AsString());const auto R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points;int Count=0;double Speed=0,Wait=0,Distance=0;bool Loop=false;
-        if(R){R->TryGetBoolField(TEXT("bClosedLoop"),Loop);if(R->TryGetArrayField(TEXT("waypoints"),Points)){Count=Points->Num();for(const auto& P:*Points){Speed=FMath::Max(Speed,P->AsObject()->GetNumberField(TEXT("segmentSpeed")));Wait+=P->AsObject()->GetNumberField(TEXT("waitTime"));}}}
-        Lines.Add(FText::Format(T(TEXT("Plan.MissionSummary")),User(Field(M,TEXT("name"))),User(AssignedUAVs(M)),FText::AsNumber(Count)));
-        if(R && R->TryGetArrayField(TEXT("waypoints"),Points))for(int I=1;I<Points->Num()+(Loop && Points->Num()>2?1:0);++I){const auto A=(*Points)[I-1]->AsObject(),B=(*Points)[I%Points->Num()]->AsObject();const double Lat=FMath::DegreesToRadians((A->GetNumberField(TEXT("latitude"))+B->GetNumberField(TEXT("latitude")))*.5);const double Y=FMath::DegreesToRadians(A->GetNumberField(TEXT("latitude"))-B->GetNumberField(TEXT("latitude")))*6371000.,X=FMath::DegreesToRadians(A->GetNumberField(TEXT("longitude"))-B->GetNumberField(TEXT("longitude")))*6371000.*FMath::Cos(Lat);Distance+=FMath::Sqrt(X*X+Y*Y);}
-        Lines.Add(FText::Format(T(TEXT("Workflow.ReviewDistance")),FText::AsNumber(Distance)));
-        Lines.Add(ProductText::Get(TEXT("Plan.")+Field(M,TEXT("status"))));
-
-    }
-    Lines.Add(T(TEXT("Workflow.CheckInformation")));
-    Lines.Add(T(TEXT("Plan.Blocking")));Lines.Append(ValidationIssueLines(State,Plan));
-    Lines.Add(T(TEXT("Plan.Warnings")));Lines.Add(T(TEXT("Plan.ReviewNotice")));if(Field(Plan,TEXT("status"))==TEXT("DEPLOYED") && !ExecutionUI::Latest(State,Field(Plan,TEXT("id"))))Lines.Add(T(TEXT("Workflow.DeploymentNotice")));
-    const auto Deployment=Find(State,TEXT("deployments"),Field(Plan,TEXT("deployment_id")));
-    if(Deployment){Lines.Add(T(TEXT("Plan.Deployment")));Lines.Add(User(Field(Deployment,TEXT("id"))));Lines.Add(FText::AsDateTime(FDateTime::FromUnixTimestamp(Deployment->GetNumberField(TEXT("deployed_at")))));}
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    Lines.Add(FText::Format(T(TEXT("Workflow.Readiness")),ProductText::Get(Sync->IsReady()?TEXT("Stage1.Online"):TEXT("Stage1.Offline")),ProductText::Get(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
-    Summary->SetText(FText::Join(FText::AsCultureInvariant(TEXT("\n")),Lines));
+    Summary->SetText(Plan?User(Field(Plan,TEXT("name"))):T(TEXT("Plan.NoPlan")));
+    Description->SetText(User(Field(Plan,TEXT("description"))));Description->SetVisibility(Description->GetText().IsEmpty()?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+    const auto SelectedId=Field(Sync->GetContext(),TEXT("active_mission_id"));
+    TArray<FText> AssignmentLines;TSharedPtr<FJsonObject> SelectedMission,SelectedRoute;
+    const TArray<TSharedPtr<FJsonValue>>* Ids=nullptr;
+    if(Plan && Plan->TryGetArrayField(TEXT("mission_ids"),Ids))for(const auto& V:*Ids){
+        const auto M=Find(State,TEXT("missions"),V->AsString()),R=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
+        const int Count=R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
+        AssignmentLines.Add(FText::Format(T(TEXT("Plan.MissionSummary")),User(Field(M,TEXT("name"))),User(AssignedUAVs(M)),FText::AsNumber(Count)));
+        if(!SelectedMission || V->AsString()==SelectedId){SelectedMission=M;SelectedRoute=R;}
+    }
+    MissionValue->SetText(SelectedMission?User(Field(SelectedMission,TEXT("name"))):T(TEXT("Common.None")));MissionValue->SetToolTipText(MissionValue->GetText());
+    AircraftValue->SetText(SelectedMission?User(AssignedUAVs(SelectedMission)):T(TEXT("Common.None")));AircraftValue->SetToolTipText(AircraftValue->GetText());
+    const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;const int Count=SelectedRoute && SelectedRoute->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
+    double Distance=0;bool Loop=false;if(SelectedRoute)SelectedRoute->TryGetBoolField(TEXT("bClosedLoop"),Loop);
+    if(Points)for(int I=1;I<Points->Num()+(Loop && Points->Num()>2?1:0);++I){const auto A=(*Points)[I-1]->AsObject(),B=(*Points)[I%Points->Num()]->AsObject();const double Lat=FMath::DegreesToRadians((A->GetNumberField(TEXT("latitude"))+B->GetNumberField(TEXT("latitude")))*.5);const double Y=FMath::DegreesToRadians(A->GetNumberField(TEXT("latitude"))-B->GetNumberField(TEXT("latitude")))*6371000.,X=FMath::DegreesToRadians(A->GetNumberField(TEXT("longitude"))-B->GetNumberField(TEXT("longitude")))*6371000.*FMath::Cos(Lat);Distance+=FMath::Sqrt(X*X+Y*Y);}
+    WaypointsValue->SetText(FText::AsNumber(Count));DistanceValue->SetText(FText::Format(User(TEXT("{0} m")),FText::AsNumber(FMath::RoundToInt(Distance))));DistanceValue->SetToolTipText(FText::Format(T(TEXT("Workflow.ReviewDistance")),FText::AsNumber(Distance)));
+    Assignments->SetText(FText::Join(User(TEXT("\n")),AssignmentLines));Assignments->SetVisibility(AssignmentLines.Num()>1?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+    TArray<FText> IssueLines=ValidationIssueLines(State,Plan);if(!IssueLines.IsEmpty())IssueLines.Insert(T(TEXT("Plan.Blocking")),0);IssueLines.Add(T(TEXT("Plan.Warnings")));Issues->SetText(FText::Join(User(TEXT("\n")),IssueLines));
+    const auto Record=Find(State,TEXT("deployments"),Field(Plan,TEXT("deployment_id")));double At=0;if(Record)Record->TryGetNumberField(TEXT("deployed_at"),At);
+    Deployment->SetText(Record?FText::Format(User(TEXT("{0}\n{1}")),User(Field(Record,TEXT("id"))),FText::AsDateTime(FDateTime::FromUnixTimestamp(At))):T(TEXT("Common.None")));
+    Readiness->SetText(FText::Format(User(TEXT("Backend: {0}")),T(Sync->IsReady()?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
+    MapReadiness->SetText(FText::Format(User(TEXT("Map: {0}")),T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Stage1.Online"):TEXT("Stage1.Offline"))));
 }
 void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     Super::NativeOnInitialized();
@@ -302,7 +352,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     RefreshPlanCards(State);
     TArray<FText> Lines{P?ProductText::Get(TEXT("Plan.")+Status):T(TEXT("Plan.NoPlan"))};const auto V=Object(P,TEXT("validation"));if(V)Lines.Add(FText::Format(T(TEXT("Plan.Counts")),FText::AsNumber(V->GetNumberField(TEXT("mission_count"))),FText::AsNumber(V->GetNumberField(TEXT("assigned_count"))),FText::AsNumber(V->GetNumberField(TEXT("routes_ready")))));
     if(Deployed && ExecutionUI::Latest(State,PlanId))Lines[0]=T(TEXT("Workflow.DeploymentSuccess"));
-    Summary->SetText(FText::Join(User(TEXT("\n")),Lines));
+    Summary->SetText(Lines.Num()>1?Lines[1]:User(Field(P,TEXT("description"))));
     RefreshExecution(State,P);
     RefreshConfiguration();
     RefreshPlanPresentation();
@@ -519,9 +569,9 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         if(!Field(E,TEXT("failure_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Errors.")+Field(E,TEXT("failure_reason"))));
     }
     if(bPending)Lines.Add(T(TEXT("Common.Waiting")));ExecutionPrompt->SetText(FText::Join(User(TEXT("\n")),Lines));
-    Lines.Empty();Lines.Add(T(TEXT("Execution.History")));const auto All=Object(State,TEXT("executions"));
+    Lines.Empty();const auto All=Object(State,TEXT("executions"));
     if(All)for(const auto& Entry:All->Values){const auto Item=Entry.Value->AsObject();if(Field(Item,TEXT("plan_id"))==PlanId && Field(Item,TEXT("mission_id"))==MissionId)Lines.Add(FText::Format(User(TEXT("{0}  {1}  {2}")),User(Field(Item,TEXT("execution_id"))),ProductText::Get(TEXT("Execution.")+Field(Item,TEXT("state"))),FText::AsDateTime(FDateTime::FromUnixTimestamp(Item->GetNumberField(TEXT("created_at"))))));}
-    ExecutionHistory->SetText(FText::Join(User(TEXT("\n")),Lines));
+    if(Lines.IsEmpty())Lines.Add(T(TEXT("Common.None")));ExecutionHistory->SetText(FText::Join(User(TEXT("\n")),Lines));
 }
 TArray<FText> USecurityPlanWorkspaceWidget::ExecutionStartBlockers(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Mission,const TArray<FString>& AvailableUavs){
     TArray<FString> Members;const TArray<TSharedPtr<FJsonValue>>* Values=nullptr;

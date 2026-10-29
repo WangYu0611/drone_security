@@ -18,6 +18,7 @@
 #include "Components/CanvasPanel.h"
 #include "Components/SizeBox.h"
 #include "Components/VerticalBox.h"
+#include "Components/TextBlock.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
@@ -96,6 +97,11 @@ class FFigmaMapChecks : public IAutomationLatentCommand
             Shell->IsPointOverMap(Geometry.LocalToAbsolute(FVector2D(Size.X*.5,Size.Y+4))));
         Test->TestFalse(*FString::Printf(TEXT("%s: device selector cannot click through"),Phase),
             Shell->IsPointOverMap(Center(Shell->DeviceButton)));
+        Test->TestFalse(*FString::Printf(TEXT("%s: manual takeover cannot click through"),Phase),
+            Shell->IsPointOverMap(Center(Shell->TakeoverButton)));
+        const auto& TakeoverGeometry=Shell->TakeoverButton->GetCachedGeometry();
+        Test->TestTrue(*FString::Printf(TEXT("%s: takeover entry does not overlap device selector"),Phase),
+            TakeoverGeometry.LocalToAbsolute(TakeoverGeometry.GetLocalSize()).X<=Shell->DeviceButton->GetCachedGeometry().GetAbsolutePosition().X);
         Test->TestFalse(*FString::Printf(TEXT("%s: camera hint cannot click through"),Phase),
             Shell->IsPointOverMap(Center(Shell->CameraHint)));
         Test->TestFalse(*FString::Printf(TEXT("%s: zoom controls cannot click through"),Phase),
@@ -163,6 +169,14 @@ public:
             FString Language;Sync->GetUIPreferences()->TryGetStringField(TEXT("language"),Language);
             if(Language!=TEXT("zh-Hans"))return false;
             Test->TestEqual(TEXT("2D button reaches existing map service"),Manager->GetMapService()->GetMapMode(),ECommandMapMode::Map2D);
+            for(auto* ModeButton:{Shell->Map2DButton.Get(),Shell->Map3DButton.Get()}){
+                const auto* Caption=Cast<UTextBlock>(ModeButton->GetContent());
+                Test->TestTrue(TEXT("2D and 3D captions retain readable allocated width"),Caption && Caption->GetCachedGeometry().GetLocalSize().X>=24);
+            }
+            Test->TestNotNull(TEXT("Latest design exposes manual takeover entry"),Shell->WidgetTree->FindWidget(TEXT("manual_takeover")));
+            Test->TestFalse(TEXT("Idle aircraft cannot enter manual takeover"),Shell->TakeoverButton->GetIsEnabled());
+            Shell->ActionRequested(TEXT("manual_takeover"),0);
+            Test->TestEqual(TEXT("Ineligible takeover entry cannot change input mode"),Shell->GetFleetInteraction()->GetMode(),EMapFleetMode::Browse);
             Boundaries(Shell,TEXT("Initial layout"));InitialFramePixels=PixelSize(Shell->MapFrame);
             Capture(TEXT("01-main"));Shell->DeviceButton->OnClicked.Broadcast();
         }

@@ -12,6 +12,7 @@
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Components/SizeBox.h"
+#include "Components/Border.h"
 #include "Components/TextBlock.h"
 #include "Engine/GameInstance.h"
 
@@ -22,9 +23,36 @@ void UCommandShellWidget::RefreshRunningTasks()
     const auto Groups=ExecutionControls::Groups(Sync->GetPlans());
     TArray<FString> Ids;for(const auto& Group:Groups)Ids.Add(Group.Id);
     const auto Language=PlanUI::Field(Sync->GetUIPreferences(),TEXT("language"));
-    RunningTaskTitle->SetText(FText::Format(ProductText::Get(TEXT("Overview.ActiveTasks")),FText::AsNumber(Groups.Num())));
+    RunningTaskTitle->SetText(Groups.IsEmpty()?ProductText::Get(TEXT("Figma.CurrentTask")):FText::Format(ProductText::Get(TEXT("Overview.ActiveTasks")),FText::AsNumber(Groups.Num())));
     RunningTaskEmpty->SetVisibility(Groups.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     OverviewSummarySize->SetHeightOverride(Groups.IsEmpty()?70:40+48*FMath::Min(Groups.Num(),3));
+    auto* Summary=Cast<UHorizontalBox>(WidgetTree->FindWidget(TEXT("FigmaOverviewSummaryRow")));
+    auto* DenseSummary=Cast<UVerticalBox>(WidgetTree->FindWidget(TEXT("FigmaOverviewDenseSummary")));
+    auto* Plan=Cast<USizeBox>(WidgetTree->FindWidget(TEXT("FigmaOverviewPlan")));
+    if(Summary && DenseSummary && Plan){
+        const bool Dense=!Groups.IsEmpty();
+        // The design's empty cards share a row. Live execution groups need a
+        // taller list beside the map, including when global controls are open.
+        // Reparent the existing cards only when that mode changes.
+        if(Dense && OverviewSummarySize->GetParent()!=DenseSummary){
+            OverviewSummarySize->RemoveFromParent();Plan->RemoveFromParent();
+            DenseSummary->AddChildToVerticalBox(OverviewSummarySize)->SetPadding(FMargin(0,0,0,12));
+            DenseSummary->AddChildToVerticalBox(Plan)->SetPadding(FMargin(0,0,0,12));
+        }else if(!Dense && OverviewSummarySize->GetParent()!=Summary){
+            OverviewSummarySize->RemoveFromParent();Plan->RemoveFromParent();
+            auto* TaskSlot=Summary->AddChildToHorizontalBox(OverviewSummarySize);TaskSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));TaskSlot->SetPadding(FMargin(0,0,14,0));
+            Summary->AddChildToHorizontalBox(Plan)->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+        }
+        Summary->SetVisibility(Dense?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
+        DenseSummary->SetVisibility(Dense?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
+        Plan->SetHeightOverride(Dense?48:70);
+        if(auto* PlanCard=Cast<UBorder>(WidgetTree->FindWidget(TEXT("FigmaOverviewPlanCard"))))PlanCard->SetPadding(Dense?FMargin(12,6):FMargin(16,10));
+        if(auto* PlanIcon=Cast<USizeBox>(WidgetTree->FindWidget(TEXT("FigmaOverviewPlanIcon")))){PlanIcon->SetWidthOverride(Dense?30:44);PlanIcon->SetHeightOverride(Dense?30:44);}
+        if(auto* PlanTitle=Cast<UTextBlock>(WidgetTree->FindWidget(TEXT("FigmaOverviewPlanTitle"))))FigmaUI::Text(PlanTitle,Dense?13:16,FigmaUI::PrimaryText,true);
+        FigmaUI::Text(CurrentPlanSummary,Dense?12:13);
+    }
+    if(auto* EmptyAction=WidgetTree->FindWidget(TEXT("FigmaOverviewEmptyTaskAction")))
+        EmptyAction->SetVisibility(Groups.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     if(Ids!=RunningGroupIds || RunningTaskLanguage!=Language){
         RunningGroupIds=Ids;RunningTaskLanguage=Language;
         RunningTaskRows->ClearChildren();RunningTaskNames.Empty();RunningTaskDetails.Empty();RunningTaskButtons.Empty();RunningTaskTargets.Empty();

@@ -20,6 +20,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/TextBlock.h"
 #include "Components/Border.h"
+#include "Components/SizeBox.h"
 #include "Components/VerticalBox.h"
 #include "Components/EditableTextBox.h"
 #include "Components/MultiLineEditableTextBox.h"
@@ -36,6 +37,13 @@
 #include "UnrealEdGlobals.h"
 #include "Editor/UnrealEdEngine.h"
 #include "Settings/LevelEditorPlaySettings.h"
+
+namespace {
+FBox2D RenderedBounds(const UWidget* Widget){
+    const auto& Geometry=Widget->GetCachedGeometry();
+    return FBox2D(Geometry.LocalToAbsolute(FVector2D::ZeroVector),Geometry.LocalToAbsolute(Geometry.GetLocalSize()));
+}
+}
 
 DEFINE_LATENT_AUTOMATION_COMMAND(FFigmaStartPIE);
 bool FFigmaStartPIE::Update(){FRequestPlaySessionParams P;P.EditorPlaySettings=DuplicateObject<ULevelEditorPlaySettings>(GetDefault<ULevelEditorPlaySettings>(),GetTransientPackage());P.EditorPlaySettings->NewWindowWidth=1920;P.EditorPlaySettings->NewWindowHeight=1080;P.EditorPlaySettings->CenterNewWindow=true;GUnrealEd->RequestPlaySession(P);return true;}
@@ -73,7 +81,21 @@ public:
         auto* GI=W->GetGameInstance();auto* Sync=GI->GetSubsystem<UOperationalContextSubsystem>();auto* R=GI->GetSubsystem<UDroneRegistrySubsystem>();if(!Sync->IsHydrated())return false;
         auto* Plan=Shell->CenterPanel->GetPlanWorkspace();auto* Fleet=Shell->FigmaFleet.Get();Shell->Refresh();
         if(Phase==0){Test->TestEqual(TEXT("Three design pages"),Shell->WorkspacePages->GetChildrenCount(),3);Test->TestEqual(TEXT("Three primary navigation choices"),Shell->PrimaryNavigationButtons.Num(),3);Test->TestEqual(TEXT("Registry count projected"),Shell->StatisticValues[0]->GetText().ToString(),FText::AsNumber(R->GetFriendlyDroneDescriptors().Num()).ToString());VideoBefore=PlanUI::Field(Sync->GetVideoView(),TEXT("video_target_uav_id"));Shell->Navigate(TEXT("navigate"),0);Sync->SetLanguage(TEXT("zh-Hans"));}
-        else if(Phase==1){Capture(TEXT("01-overview"));const int Z=Shell->SituationMap->GetZoom();Shell->FigmaAction(TEXT("zoom_in"),0);Test->TestEqual(TEXT("Zoom action operates map"),Shell->SituationMap->GetZoom(),FMath::Min(Z+1,19));Shell->FigmaAction(TEXT("zoom_out"),0);Shell->FigmaAction(TEXT("devices"),0);}
+        else if(Phase==1){
+            auto* Summary=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewSummaryRow"));
+            auto* PlanCard=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewPlan"));
+            auto* MapCard=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewMap"));
+            auto* Events=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewEvents"));
+            Test->TestTrue(TEXT("Overview has the design's summary and lower panels"),Summary && PlanCard && MapCard && Events);
+            if(Summary && PlanCard && MapCard && Events){
+                const auto TaskBounds=RenderedBounds(Shell->OverviewSummarySize),PlanBounds=RenderedBounds(PlanCard),MapBounds=RenderedBounds(MapCard),EventBounds=RenderedBounds(Events);
+                Test->TestTrue(TEXT("Task and plan cards share the row below the metrics"),FMath::Abs(TaskBounds.Min.Y-PlanBounds.Min.Y)<1.f && TaskBounds.Min.Y>=RenderedBounds(Shell->StatisticValues[0]).Max.Y);
+                Test->TestTrue(TEXT("Summary cards have separate equal-width hit regions"),TaskBounds.Max.X<PlanBounds.Min.X && FMath::Abs(TaskBounds.GetSize().X-PlanBounds.GetSize().X)<1.f);
+                Test->TestTrue(TEXT("Map and recent events align below both summary cards"),FMath::Abs(MapBounds.Min.Y-EventBounds.Min.Y)<1.f && MapBounds.Min.Y>=TaskBounds.Max.Y && MapBounds.Min.Y>=PlanBounds.Max.Y);
+                Test->TestTrue(TEXT("Map and events have separate hit regions"),MapBounds.Max.X<EventBounds.Min.X);
+            }
+            Capture(TEXT("01-overview"));const int Z=Shell->SituationMap->GetZoom();Shell->FigmaAction(TEXT("zoom_in"),0);Test->TestEqual(TEXT("Zoom action operates map"),Shell->SituationMap->GetZoom(),FMath::Min(Z+1,19));Shell->FigmaAction(TEXT("zoom_out"),0);Shell->FigmaAction(TEXT("devices"),0);
+        }
         else if(Phase==2){Capture(TEXT("02-devices"));Test->TestEqual(TEXT("Device table uses Registry"),Shell->DialogRows->GetChildrenCount(),FMath::Max(1,R->GetFriendlyDroneDescriptors().Num()));Shell->FigmaAction(TEXT("alerts"),0);}
         else if(Phase==3){Capture(TEXT("03-alerts"));Shell->FigmaAction(TEXT("logs"),0);}
         else if(Phase==4){Capture(TEXT("04-logs"));Test->TestTrue(TEXT("Dialog blocks page"),Shell->FigmaDialog->IsVisible());Shell->FigmaAction(TEXT("close_dialog"),0);Test->TestEqual(TEXT("Closing releases overlay"),Shell->FigmaDialog->GetVisibility(),ESlateVisibility::Collapsed);Shell->Navigate(TEXT("navigate"),1);}
@@ -152,6 +174,14 @@ public:
         } else if(Phase==1){
             Test->TestTrue(TEXT("Map remains usable with three active tasks and global execution controls"),Shell->SituationMap->GetCachedGeometry().GetLocalSize().Y>=220.f);
             Test->TestTrue(TEXT("All three task rows have room in the side panel"),Shell->RunningTaskRows->GetCachedGeometry().GetLocalSize().Y>=144.f);
+            auto* MapCard=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewMap"));auto* PlanCard=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewPlan"));auto* Events=Shell->WidgetTree->FindWidget(TEXT("FigmaOverviewEvents"));
+            Test->TestTrue(TEXT("Dense overview retains all three presentation panels"),MapCard && PlanCard && Events);
+            if(MapCard && PlanCard && Events){
+                const auto MapBounds=RenderedBounds(MapCard),TaskBounds=RenderedBounds(Shell->OverviewSummarySize),PlanBounds=RenderedBounds(PlanCard),EventBounds=RenderedBounds(Events);
+                Test->TestTrue(TEXT("Live task list stays beside the map without overlapping it"),TaskBounds.Min.X>MapBounds.Max.X && FMath::Abs(TaskBounds.Min.Y-MapBounds.Min.Y)<1.f);
+                Test->TestTrue(TEXT("Current plan and events stay below the live task list"),PlanBounds.Min.Y>=TaskBounds.Max.Y && EventBounds.Min.Y>=PlanBounds.Max.Y);
+                Test->TestTrue(TEXT("Dense overview leaves visible space for recent events"),EventBounds.GetSize().Y>=50.f);
+            }
             FSlateApplication::Get().InvalidateAllWidgets(false);TArray<FColor> Pixels;FIntVector Size=FIntVector::ZeroValue;auto V=GEngine->GameViewport?GEngine->GameViewport->GetGameViewportWidget():nullptr;
             if(V && FSlateApplication::Get().TakeScreenshot(V.ToSharedRef(),Pixels,Size)){TArray64<uint8> Bytes;FImageUtils::PNGCompressImageArray(Size.X,Size.Y,Pixels,Bytes);Test->TestTrue(TEXT("Active task list rendered screenshot saved"),FFileHelper::SaveArrayToFile(Bytes,*(Out/TEXT("01-overview-active-tasks.png"))));}else Test->AddError(TEXT("Overview rendered screenshot unavailable"));
             Executions=MakeShared<FJsonObject>(*Executions);auto Updated=MakeShared<FJsonObject>(*Executions->GetObjectField(TEXT("m1")));Updated->SetNumberField(TEXT("progress"),.75);Executions->SetObjectField(TEXT("m1"),Updated);Apply(Sync);Shell->Refresh();

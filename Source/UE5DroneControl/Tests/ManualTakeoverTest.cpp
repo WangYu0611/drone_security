@@ -115,13 +115,16 @@ bool FManualTakeoverLocalization::RunTest(const FString&){
         Localization.WaitForAsyncTasks();
     };
     const FText Confirm=ProductText::Get(TEXT("Takeover.Confirm")),Warning=ProductText::Get(TEXT("Takeover.Warning"));
+    const FText Entry=ProductText::Get(TEXT("Takeover.Action"));
     TestTrue(TEXT("Chinese culture can be selected"),Internationalization.SetCurrentCulture(TEXT("zh-Hans")));
     Localization.EnableGameLocalizationPreview(TEXT("zh-Hans"));Localization.WaitForAsyncTasks();
     TestEqual(TEXT("compiled Chinese confirm resource loads"),Confirm.ToString(),FString(TEXT("接管并移动")));
+    TestEqual(TEXT("latest toolbar entry loads compiled Chinese resource"),Entry.ToString(),FString(TEXT("手动接管")));
     TestEqual(TEXT("compiled Chinese consequence warning loads"),Warning.ToString(),FString(TEXT("将终止这架无人机的当前任务，其他无人机继续；原任务不会自动恢复。")));
     TestTrue(TEXT("English culture can be selected"),Internationalization.SetCurrentCulture(TEXT("en")));
     Localization.EnableGameLocalizationPreview(TEXT("en"));Localization.WaitForAsyncTasks();
     TestEqual(TEXT("retained confirm FText returns to English"),Confirm.ToString(),FString(TEXT("Take over and move")));
+    TestEqual(TEXT("toolbar entry returns to English"),Entry.ToString(),FString(TEXT("Take over")));
     TestEqual(TEXT("retained warning FText returns to English"),Warning.ToString(),FString(TEXT("This will end this aircraft's current task. Other aircraft will continue; the original task will not resume automatically.")));
     return true;
 }
