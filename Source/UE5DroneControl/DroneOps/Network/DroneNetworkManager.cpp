@@ -6,10 +6,13 @@
 #include "DroneOps/Core/ICoordinateService.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "RealTimeDroneReceiver.h"
+#include "MultiDroneCharacter.h"
+#include "Command/CommandScreenManager.h"
 #include "PathEditor/DronePathActor.h"
 #include "PathEditor/DroneWaypointTypes.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "TimerManager.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
@@ -282,10 +285,14 @@ void UDroneNetworkManager::OnDroneListResponse(bool bSuccess, const FString& Bod
 	TArray<TSharedPtr<FJsonObject>> DroneObjects;
 	for (const TSharedPtr<FJsonValue>& Val : *DroneArray)
 	{
-		if (Val->Type == EJson::Object)
+		// A malformed list is not an authoritative empty fleet. Preserve both
+		// descriptors and scene actors until a complete valid snapshot arrives.
+		if (!Val.IsValid() || Val->Type != EJson::Object || !Val->AsObject().IsValid())
 		{
-			DroneObjects.Add(Val->AsObject());
+			UE_LOG(LogTemp, Warning, TEXT("[DroneNetworkManager] Invalid drone list entry; snapshot ignored"));
+			return;
 		}
+		DroneObjects.Add(Val->AsObject());
 	}
 
 	SyncDroneListToRegistry(DroneObjects, &AtRequest, &PlansAtRequest);
@@ -359,6 +366,21 @@ void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJson
 	if (!Registry)
 	{
 		return;
+	}
+	// Validate the whole snapshot before applying any row or retiring anything.
+	// Skipping bad rows would otherwise turn [bad-row] into a destructive [].
+	TSet<int32> ValidatedIds;
+	for (const auto& Obj : DroneObjects)
+	{
+		double Id = 0;
+		if (!Obj.IsValid() || !Obj->TryGetNumberField(TEXT("id"), Id)
+			|| !FMath::IsFinite(Id) || Id <= 0 || Id >= DroneOpsConst::EnemyIdBase
+			|| Id != FMath::FloorToDouble(Id) || ValidatedIds.Contains(static_cast<int32>(Id)))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[DroneNetworkManager] Invalid drone list identity; snapshot ignored"));
+			return;
+		}
+		ValidatedIds.Add(static_cast<int32>(Id));
 	}
 	const auto* Context = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
 	const bool bPlansChanged = PlansAtRequest && Context && Context->GetPlans() != *PlansAtRequest;
@@ -534,6 +556,36 @@ void UDroneNetworkManager::SyncDroneListToRegistry(const TArray<TSharedPtr<FJson
 	{
 		UE_LOG(LogTemp, Log, TEXT("[DroneNetworkManager] Drone %d no longer in backend, unregistering"), RemovedId);
 		Registry->UnregisterDrone(RemovedId);
+	}
+
+	// A removed descriptor used to lose its actor mappings while leaving the
+	// receiver's native name label and the sender model alive in the level.
+	// Inspect the world as well as the mappings: placed/duplicate actors can
+	// share a DroneId, and a prior snapshot may already have removed the entry.
+	// Standalone and explicitly isolated preview scenes keep their local actors.
+	const EDroneClientRole Role = UCommandScreenManager::ResolveClientRole();
+	if (!bStrictLocalPreview && !bStrictLocalPreviewIsolation && Role != EDroneClientRole::Standalone)
+	{
+		UWorld* World = GetGameInstance()->GetWorld();
+		TArray<AActor*> RetiredActors;
+		if (World)
+		{
+			for (TActorIterator<ARealTimeDroneReceiver> It(World); It; ++It)
+				if (IsValid(*It) && It->DroneId > 0 && !DroneOpsConst::IsEnemyId(It->DroneId)
+					&& !SeenBackendIds.Contains(It->DroneId))RetiredActors.AddUnique(*It);
+			for (TActorIterator<AMultiDroneCharacter> It(World); It; ++It)
+				if (IsValid(*It) && It->DroneId > 0 && !It->bIsEnemyTarget && !DroneOpsConst::IsEnemyId(It->DroneId)
+					&& !SeenBackendIds.Contains(It->DroneId))RetiredActors.AddUnique(*It);
+		}
+		for (AActor* Actor : RetiredActors)
+		{
+			Actor->SetActorHiddenInGame(true);
+			Actor->SetActorEnableCollision(false);
+			Actor->SetActorTickEnabled(false);
+			Actor->Destroy();
+		}
+		if (!RetiredActors.IsEmpty())
+			UE_LOG(LogTemp, Log, TEXT("[DroneNetworkManager] Retired %d friendly scene actor(s) absent from the confirmed Backend fleet"), RetiredActors.Num());
 	}
 }
 

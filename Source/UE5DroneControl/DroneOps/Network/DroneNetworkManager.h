@@ -261,6 +261,7 @@ public:
 
 private:
 	friend class FMockTelemetryProjectionTest;
+	friend class FBackendFleetSceneTest;
 
 	UPROPERTY()
 	TObjectPtr<UDroneHttpClient> HttpClient;
