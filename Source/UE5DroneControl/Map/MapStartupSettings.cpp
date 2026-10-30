@@ -4,7 +4,37 @@
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Misc/CommandLine.h"
 #include "Misc/ConfigCacheIni.h"
+#include "Misc/DefaultValueHelper.h"
+#include "Misc/Parse.h"
+
+namespace
+{
+bool ParseLaunchCoordinate(const FString& Text,double& OutValue)
+{
+    int32 Cursor=0;
+    if(Cursor<Text.Len() && (Text[Cursor]==TEXT('+') || Text[Cursor]==TEXT('-')))++Cursor;
+    auto IsDigit=[](TCHAR Character){return Character>=TEXT('0') && Character<=TEXT('9');};
+    bool bHasDigit=false;
+    while(Cursor<Text.Len() && IsDigit(Text[Cursor])){bHasDigit=true;++Cursor;}
+    if(Cursor<Text.Len() && Text[Cursor]==TEXT('.'))
+    {
+        ++Cursor;
+        while(Cursor<Text.Len() && IsDigit(Text[Cursor])){bHasDigit=true;++Cursor;}
+    }
+    if(!bHasDigit)return false;
+    if(Cursor<Text.Len() && (Text[Cursor]==TEXT('e') || Text[Cursor]==TEXT('E')))
+    {
+        ++Cursor;
+        if(Cursor<Text.Len() && (Text[Cursor]==TEXT('+') || Text[Cursor]==TEXT('-')))++Cursor;
+        const int32 ExponentStart=Cursor;
+        while(Cursor<Text.Len() && IsDigit(Text[Cursor]))++Cursor;
+        if(Cursor==ExponentStart)return false;
+    }
+    return Cursor==Text.Len() && FDefaultValueHelper::ParseDouble(Text,OutValue) && FMath::IsFinite(OutValue);
+}
+}
 
 bool FMapStartupSettings::IsValid() const
 {
@@ -31,7 +61,56 @@ FMapStartupSettings FMapStartupSettings::Read()
         UE_LOG(LogTemp,Warning,TEXT("[MapStartup] Invalid or incomplete city view configuration; retaining existing map startup."));
         Value.bEnabled=false;
     }
+    Value.ResolveLaunchArguments(FCommandLine::Get());
     return Value;
+}
+
+void FMapStartupSettings::ResolveLaunchArguments(const TCHAR* CommandLine)
+{
+    const TCHAR* Names[]={TEXT("-MapStartupMode"),TEXT("-MapStartupLongitude"),TEXT("-MapStartupLatitude"),TEXT("-MapStartupHeight")};
+    FString Values[4];
+    int32 Counts[4]={0,0,0,0};
+    bool bExplicit=false;
+    const TCHAR* Cursor=CommandLine?CommandLine:TEXT("");
+    FString Token;
+    while(FParse::Token(Cursor,Token,false))
+    {
+        for(int32 Index=0;Index<4;++Index)
+        {
+            const FString Name(Names[Index]);
+            if(!Token.Equals(Name,ESearchCase::IgnoreCase) && !Token.StartsWith(Name+TEXT("="),ESearchCase::IgnoreCase))continue;
+            bExplicit=true;
+            ++Counts[Index];
+            Values[Index]=Token.Len()>Name.Len()?Token.Mid(Name.Len()+1):FString();
+            if(Values[Index].Len()>=2 && Values[Index].StartsWith(TEXT("\"")) && Values[Index].EndsWith(TEXT("\"")))
+                Values[Index]=Values[Index].Mid(1,Values[Index].Len()-2);
+        }
+    }
+    if(!bExplicit)return;
+
+    // A partial/invalid explicit origin must never inherit the Singapore default.
+    bLaunchOverride=true;
+    bMenuOverride=false;
+    bRealtimeLaunch=false;
+    bEnabled=false;
+    LongitudeLatitudeHeight=FVector::ZeroVector;
+    FVector Origin=FVector::ZeroVector;
+    if(Counts[0]!=1 || Counts[1]!=1 || Counts[2]!=1 || Counts[3]!=1
+        || (!Values[0].Equals(TEXT("Demo"),ESearchCase::IgnoreCase) && !Values[0].Equals(TEXT("Realtime"),ESearchCase::IgnoreCase))
+        || !ParseLaunchCoordinate(Values[1],Origin.X) || !ParseLaunchCoordinate(Values[2],Origin.Y)
+        || !ParseLaunchCoordinate(Values[3],Origin.Z))
+    {
+        UE_LOG(LogTemp,Warning,TEXT("[MapStartup] Invalid or incomplete explicit launch origin; configured city fallback is disabled."));
+        return;
+    }
+    LongitudeLatitudeHeight=Origin;
+    bEnabled=IsValid();
+    bRealtimeLaunch=bEnabled && Values[0].Equals(TEXT("Realtime"),ESearchCase::IgnoreCase);
+    if(!bEnabled)
+    {
+        LongitudeLatitudeHeight=FVector::ZeroVector;
+        UE_LOG(LogTemp,Warning,TEXT("[MapStartup] Explicit launch origin is out of range; configured city fallback is disabled."));
+    }
 }
 
 void FMapStartupSettings::ResolveMenuOverride(UWorld* World)
@@ -57,7 +136,7 @@ bool FMapStartupSettings::ApplyOrigin(UWorld* World) const
             It->SetOriginPlacement(EOriginPlacement::CartographicOrigin);
         It->SetOriginLongitudeLatitudeHeight(LongitudeLatitudeHeight);
         UE_LOG(LogTemp,Log,TEXT("[MapStartup] Applied %s origin longitude=%.6f latitude=%.6f height=%.1fm before map presentation."),
-            bMenuOverride?TEXT("menu"):TEXT("configured"),LongitudeLatitudeHeight.X,LongitudeLatitudeHeight.Y,LongitudeLatitudeHeight.Z);
+            bMenuOverride?TEXT("menu"):bLaunchOverride?TEXT("launch"):TEXT("configured"),LongitudeLatitudeHeight.X,LongitudeLatitudeHeight.Y,LongitudeLatitudeHeight.Z);
         return true;
     }
     UE_LOG(LogTemp,Warning,TEXT("[MapStartup] No CesiumGeoreference exists; configured city origin could not be applied."));

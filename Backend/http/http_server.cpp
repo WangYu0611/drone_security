@@ -133,6 +133,8 @@ HttpServer::HttpServer(const AppConfig& config,
     }
     // 注册 DroneManager 回调 -> WS 推送
     drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel, DroneConnectionState connection) {
+        const double received_at=std::chrono::duration<double>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
         // 构建遥测 JSON
         double ux, uy, uz;
         CoordinateConverter::NedToUeOffset(
@@ -158,6 +160,7 @@ HttpServer::HttpServer(const AppConfig& config,
             {"gps_lon",  tel.gps_lon},
             {"gps_alt",  tel.gps_alt},
             {"gps_fix",  tel.gps_fix},
+            {"telemetry_received_at", received_at},
             {"local_position_valid", tel.local_position_valid},
             {"anchor_valid", anchor.valid},
             {"anchor_gps_lat", anchor.latitude},
@@ -511,7 +514,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 {"http_port", config_.http_port},
                 {"ws_port",   config_.ws_port},
                 {"debug",     config_.debug},
-                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset"}},
+                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset", "telemetry_receive_time"}},
             }));
 
         if (method == "GET"  && path == "/api/drones")
@@ -655,8 +658,10 @@ boost::json::value HttpServer::ApiListDrones() {
             if(const auto cached=received_telemetry_snapshots_.find(numeric_id);cached!=received_telemetry_snapshots_.end()) {
                 // The source tag and payload are one atomic callback snapshot.
                 // Never tag an older pre-UDP GetLatestTelemetry result received.
+                // Connection state may advance to Lost without another payload;
+                // retain the current DroneManager status rather than cached Online.
                 for(const auto& field:cached->second)
-                    if(field.key()!="type" && field.key()!="drone_id" && field.key()!="drone_id_str")item[field.key()]=field.value();
+                    if(field.key()!="type" && field.key()!="drone_id" && field.key()!="drone_id_str" && field.key()!="status")item[field.key()]=field.value();
             } else {
                 const auto uid="UAV-"+std::string(rec.slot<10?"0":"")+std::to_string(rec.slot);
                 mock_telemetry::project(item,mock_positions.if_contains(uid),received);

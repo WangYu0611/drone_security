@@ -975,9 +975,53 @@
     "Launch System",
     "启动系统"
   ],
+  "Launcher.StartDemo": [
+    "Launch DEMO (Singapore)",
+    "DEMO 启动（新加坡）"
+  ],
+  "Launcher.StartRealtime": [
+    "Launch Realtime Mode",
+    "实时模式启动"
+  ],
+  "Launcher.ModeUnset": [
+    "Choose a launch mode",
+    "请选择启动模式"
+  ],
+  "Launcher.ModeDemo": [
+    "Mode: DEMO (Singapore)",
+    "当前模式：DEMO（新加坡）"
+  ],
+  "Launcher.ModeRealtime": [
+    "Mode: Realtime",
+    "当前模式：实时"
+  ],
+  "Launcher.LocationWaiting": [
+    "Waiting for real location",
+    "等待真实位置信息"
+  ],
+  "Launcher.LocationReady": [
+    "Initialized from UAV GPS",
+    "已按无人机 GPS 初始化"
+  ],
   "Launcher.Shutdown": [
     "Shutdown System",
     "关闭系统"
+  ],
+  "Launcher.RealtimeShutdownConfirm": [
+    "An execution is active. Close local windows and the Backend owned by this launcher? This does not send a flight pause command.",
+    "当前有活动任务。是否关闭本地窗口及本启动器管理的后端？此操作不会向无人机发送暂停命令。"
+  ],
+  "Launcher.LocationComputer": [
+    "No connected UAV; locating this computer",
+    "未连接真实无人机，正在获取电脑位置"
+  ],
+  "Launcher.LocationComputerReady": [
+    "Initialized from this computer's location",
+    "已按电脑位置初始化"
+  ],
+  "Launcher.LocationComputerEstimated": [
+    "Computer location; estimated map anchor height",
+    "已按电脑位置初始化（地图锚点高程为估计值）"
   ],
   "Launcher.Restart": [
     "Restart",

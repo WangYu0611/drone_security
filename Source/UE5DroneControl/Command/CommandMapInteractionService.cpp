@@ -444,7 +444,13 @@ void UCommandMapInteractionService::InitializeWorld(UWorld* World)
     }
     FString Mode;
     GConfig->GetString(TEXT("CommandMap"), TEXT("DefaultMapMode"), Mode, GGameIni);
-    if (!bModeRequested) CurrentMapMode = Mode.Equals(TEXT("3D"), ESearchCase::IgnoreCase) ? ECommandMapMode::Map3D : ECommandMapMode::Map2D;
+    if (!bModeRequested)
+    {
+        CurrentMapMode = !StartupSettings.StartsIn2D() && Mode.Equals(TEXT("3D"), ESearchCase::IgnoreCase)
+            ? ECommandMapMode::Map3D : ECommandMapMode::Map2D;
+        if(StartupSettings.StartsIn2D())
+            UE_LOG(LogTemp,Log,TEXT("[MapStartup] Realtime launch starts with the global 2D basemap; 3D remains available from the toolbar."));
+    }
     FString BasemapUrl;
     GConfig->GetString(TEXT("CommandMap"), TEXT("BasemapUrl"), BasemapUrl, GGameIni);
     BasemapUrl.ReplaceInline(TEXT("$z"), TEXT("{z}"));

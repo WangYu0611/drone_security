@@ -26,6 +26,7 @@
 #include "HAL/FileManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Map/MapMoveSupport.h"
+#include "Map/MapStartupSettings.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Components/SizeBox.h"
@@ -48,6 +49,12 @@ void UCommandTacticalMap::NativeOnInitialized()
     Canvas = WidgetTree->ConstructWidget<UCanvasPanel>(); WidgetTree->RootWidget = Canvas;
     SetClipping(EWidgetClipping::ClipToBounds);
     SetVisibility(ESlateVisibility::Visible);Canvas->SetVisibility(ESlateVisibility::Visible);
+    const auto Startup=FMapStartupSettings::Read();
+    if(Startup.bLaunchOverride && Startup.bEnabled)
+    {
+        Center=Project(Startup.LongitudeLatitudeHeight.Y,Startup.LongitudeLatitudeHeight.X,0)/256.;
+        bCentered=true;
+    }
     // Use the same WGS84 XYZ configuration as the main Cesium raster when provided.
     GConfig->GetString(TEXT("CommandMap"),TEXT("BasemapUrl"),Template,GGameIni);
     GConfig->GetString(TEXT("CommandTacticalMap"),TEXT("BasemapUrl"),Template,GGameIni);
