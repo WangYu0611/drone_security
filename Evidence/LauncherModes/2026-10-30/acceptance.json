@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-30",
+  "repository": ".",
+  "base_commit": "de6e1969718b5698e2ecdf5e3ff3841f63590aaf",
+  "code_commits": [
+    "769ad40505bb6bc42b56c29f329783e63c94ffa4",
+    "600d95b94faf1ec726fc5c440756659aca8223a0"
+  ],
+  "behavior": {
+    "demo": "Singapore The Meadow, acknowledged Mock startup reset",
+    "realtime": "fresh received UAV GPS first; Windows computer location only without real connection",
+    "no_flight_execution_on_launch": true,
+    "manual_mode_selection_by_default": true
+  },
+  "final_map_policy": {
+    "demo": "configured 3D Singapore view",
+    "realtime": "existing global 2D basemap at the accepted origin; manual 3D remains available"
+  },
+  "backend_sha256": "aeb5cef98a71fbde897b28cb97cf2d6aa7d5edafdf00674a2904fcd4f4e9ca86",
+  "final_ue_module_sha256": "e14c2d1262076e917b86dd77b1f373aea3ad3b6950c04e6f060cddc10e7987b8",
+  "launcher_checks": {
+    "count": 63,
+    "pass": true,
+    "log": "logs/launcher-tests-final.log"
+  },
+  "integration": {
+    "checks": 7,
+    "result": "PASS",
+    "report": "integration/run-20261030T062522.993580Z/result.json",
+    "actual_backends": 3,
+    "ue_commands_not_executed": 9,
+    "gps_and_computer_positions": "synthetic fixtures",
+    "native_os_location_queried": false,
+    "owned_processes_and_threads_cleaned": true
+  },
+  "backend_transport_checks": {
+    "checks": 16,
+    "pass": true
+  },
+  "ue_runs": [
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1793340609227467900",
+      "ue_module_sha256": "28f33acddc971c28127b1c32b0f3f90bdbfbc6071b4ff8078ca354f07ca460be",
+      "final_module": false,
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Map.StartupLaunchArguments",
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1793341567121877000",
+      "ue_module_sha256": "63a07109204c6be25d7959af2536b14d5c3b10684ea6828eece9cb4de3ba9ed0",
+      "final_module": false,
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Map.StartupLaunchArguments",
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0
+        },
+        {
+          "test": "DroneOps.Figma.CommandPresentation",
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1
+        }
+      ]
+    },
+    {
+      "directory": "Evidence/PlanConfiguration/verification-1793345691116023500",
+      "ue_module_sha256": "e14c2d1262076e917b86dd77b1f373aea3ad3b6950c04e6f060cddc10e7987b8",
+      "final_module": true,
+      "pass": true,
+      "checks": [
+        {
+          "test": "DroneOps.Map.StartupLaunchArguments",
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 0
+        },
+        {
+          "test": "DroneOps.Map.BackendFleetScene",
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "failed": 0,
+          "warnings": 1
+        }
+      ]
+    }
+  ],
+  "native_map_cases": [
+    {
+      "mode": "demo",
+      "native_button_clicked": true,
+      "applied_count": 1,
+      "origin_matches_singapore": true,
+      "initial_map_mode": "3D",
+      "stable_visual_observation": "Singapore Gardens by the Bay imagery and four Mock fleet labels visible; earlier dark shapes not reproduced after this restart",
+      "screenshot": "screenshots/demo-final.png",
+      "ue_module_sha256": "e14c2d1262076e917b86dd77b1f373aea3ad3b6950c04e6f060cddc10e7987b8"
+    },
+    {
+      "mode": "realtime",
+      "native_button_clicked": true,
+      "source": "computer",
+      "state": "READY",
+      "origin_matches_launcher": true,
+      "not_singapore": true,
+      "applied_count": 1,
+      "coordinates_omitted": true,
+      "initial_map_mode": "2D",
+      "manual_mode_change_in_final_run": false,
+      "policy_log_present": true,
+      "retired_scene_actor_counts": [
+        8
+      ],
+      "backend_fleet_empty": true,
+      "visual_observation": "actual computer-region satellite imagery visible; no Mock or aircraft name labels remain",
+      "ue_module_sha256": "e14c2d1262076e917b86dd77b1f373aea3ad3b6950c04e6f060cddc10e7987b8",
+      "screenshot": null,
+      "screenshot_retained_locally": true
+    }
+  ],
+  "computer_service_probe": {
+    "available": true,
+    "source": "computer",
+    "height_estimated": false,
+    "coordinates_recorded": false
+  },
+  "limitations": {
+    "native_uav_gps_case": false,
+    "physical_flight_test": false,
+    "mock_demo_and_computer_location_cases": true,
+    "real_computer_coordinates_omitted_from_summary": true,
+    "known_separate_audit_followup": "Existing nonzero geoid separation real-UAV marker/focus altitude uses raw AMSL in MapMoveSupport; needs dedicated display/control datum review, not exercised by this no-aircraft computer-location check"
+  },
+  "initial_demo_dark_shapes": "Observed on initial run; not reproduced after restarting and reaching stable streamed imagery. No show flags, model scale or model visibility shortcuts were used.",
+  "protected_files_unchanged": true,
+  "native_cleanup": {
+    "runtime_ownership_empty": true,
+    "normal_launcher_shutdown": true
+  },
+  "excluded_private_evidence": [
+    "native realtime screenshots",
+    "raw native Map logs",
+    "native launch origin state and invocation files"
+  ],
+  "scope_notes": [
+    "Per-run module identities are retained. Earlier CommandPresentation checks were not rerun as a final-module full suite.",
+    "Native input checks used the actual Launcher buttons and CesiumWorld with isolated Backend ports/storage and copied per-role registries.",
+    "Computer-location availability was checked with Windows; precise coordinates and aerial screenshots of that location are not published."
+  ],
+  "earlier_failures_preserved": [
+    "logs/launcher-tests-before-status-clear.log",
+    "integration/run-20261030T062134.291125Z/result.json",
+    "location-availability/computer-service-probe-before-firstfix-wait.json"
+  ]
+}

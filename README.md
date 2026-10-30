@@ -19,13 +19,17 @@
 1. 阅读 [Windows 首次运行指南](Docs/First-Run-Windows.md)，安装 Cesium、VS C++ 工具、Python 3.10+ 和 Git LFS。
 2. 双击 `SetupDroneSecurity.cmd` 编译后端和 UE 模块。
 3. 在 Unreal Editor 中配置自己的 Cesium ion Token。
-4. 双击 `CheckDroneSecurity.cmd` 检查，再运行 `DroneSecurityLauncher.cmd`。
+4. 双击 `CheckDroneSecurity.cmd` 检查，再运行 `DroneSecurityLauncher.cmd`，选择 **DEMO 启动（新加坡）** 或 **实时模式启动**。
 
-启动器自动定位 UE，本地路径覆盖写入 `Launcher/config.local.json`。Stage 1 默认端口是 **19880/19881**；下方 8080/8081 属于传统独立后端流程。
+启动器自动定位 UE，本地路径覆盖写入 `Launcher/config.local.json`。默认 `auto_start=false`，打开后等待选择模式；明确设为 `true` 时按 `startup_mode`（默认 `demo`）自动启动。DEMO 使用 **19880/19881** 与 `Saved/Stage1/data`；实时模式使用 **8080/8081** 与 `Backend/config.yaml` 的既有注册表、UDP `port_map` 和数据，工作目录为仓库根目录，`Saved/Realtime` 保存启动器进程记录、启动器日志、Backend 标准输出和 UE 日志；Backend 自身文件日志沿用配置的 `log.file`，默认 `logs/backend.log`。可本地覆盖 `realtime_backend_config` 及对应实时端口。切换模式前先关闭当前会话。
 
-2026-10-28 手册核对：默认在线 3D 地图位于新加坡 The Meadow 草地，Mock 编队间距为 3 米；Cesium 磁盘请求缓存上限为 131,072 条，不能代替完整离线三维数据。普通单机 Mock 演示无需配置 Jetson、ROS/PX4 或 MediaMTX；播放视频时才需要有效视频源。地图授权和网络条件见首次运行指南。
+2026-10-30 手册核对：DEMO 在线 3D 地图位于新加坡 The Meadow 草地，Mock 编队间距为 3 米；Cesium 磁盘请求缓存上限为 131,072 条，不能代替完整离线三维数据。普通单机 Mock 演示无需配置 Jetson、ROS/PX4 或 MediaMTX；播放视频时才需要有效视频源。地图授权和网络条件见首次运行指南。
 
-正常 Launcher 每次新建自有 Mock Backend 会执行启动重置：符合重置条件的活动 Mock 执行终止、预约取消并恢复编队；历史记录与已有路线保留。仅重启客户端或复用已有 Backend 不触发这项重置。需要保留执行状态时，按使用手册在本地配置设置 `mock_reset_on_start=false`，关闭后重开并不会自动继续已暂停任务。
+DEMO 每次新建自有 Mock Backend 会按默认设置执行启动重置：符合重置条件的活动 Mock 执行终止、预约取消并恢复编队；历史记录与已有路线保留。仅重启客户端或复用已有 Backend 不触发这项重置。需要保留执行状态时，按使用手册在本地配置设置 `mock_reset_on_start=false`，关闭后重开并不会自动继续已暂停任务。
+
+实时模式优先以真实接收、非模拟、在线、有 GPS fix 且接收时间默认不超过 5 秒的有效无人机坐标初始化，优先 active UAV，否则选最小 slot；AMSL 按与 UE 相同的 `GeoidSeparationMeters` 转为椭球高。有效 GPS 可立即初始化；未取得时使用 8 秒连接发现窗口（`realtime_device_wait`），之后才考虑电脑定位；有 `online` / `connecting` 真机但 GPS 无效时继续等 GPS，默认上限 60 秒，不用电脑替代。只有完全没有真实连接时才查 Windows 系统定位，最长 15 秒（`realtime_computer_location_timeout`）；系统不给高度时用 0 m 仅作相机锚点，并标记估计高程。系统定位禁用、拒绝、不可用或超时就明确报错，不打开 UE 角色，不自动改权限、不按 IP 猜测城市，也不回落到新加坡。初始化后不因新 GPS 自动切镜头；重启 Map 重新按同优先级定位。
+
+实时启动不生成 Mock 数据、模拟机或 reset，不创建或启用 `real_execution.json`，不自动开始飞行任务；实时关闭也不调用 Mock pause 或自动暂停真实执行。配置步骤见 [实时模式说明](Docs/First-Run-Windows.md#实时模式)，合成测试不代表实际电脑定位、真机 GPS 或原生地理对齐验收。
 
 UE5DroneControl 是一个基于 Unreal Engine 5.8、Cesium 和 C++17 后端的无人机安保指挥、三维态势展示与任务模拟演示项目。当前 Stage 1 采用 Command（指挥端）、Map（地图端）和 Video（视频端）三个独立客户端，由 DroneBackend 统一管理业务状态，并通过 HTTP / WebSocket 同步。
 
@@ -61,7 +65,7 @@ UE 不拥有后端注册表、GPS 上电锚点、NED 控制目标或飞控执行
 
 ## 2. 总体架构
 
-下图端口对应直接使用 `Backend/config.yaml` 的传统独立联调。正常 Launcher 的三个客户端由启动参数连接 `19880/19881`，数据位于 `Saved/Stage1/data`。
+下图端口对应 `Backend/config.yaml` 的独立联调或启动器实时模式。DEMO 的三个客户端由启动参数连接 `19880/19881`，数据位于 `Saved/Stage1/data`；实时模式默认连接 `8080/8081`，沿用 Backend 配置的业务存储。
 
 ```text
 ┌──────────────────────────── Windows / UE5 ────────────────────────────┐
@@ -152,7 +156,7 @@ UE5DroneControl/
 
 ## 5. 编译与启动
 
-普通使用从本文顶部的首次运行流程启动。以下保留后端开发与独立联调命令，使用 `8080/8081`；不要与 Launcher 的 `19880/19881` 混用。
+普通使用从本文顶部的首次运行流程启动。以下保留后端开发与独立联调命令，使用 `8080/8081`；不要与 Launcher DEMO 的 `19880/19881` 混用。
 
 ### 5.1 编译后端
 

@@ -1,0 +1,72 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (source file added)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: MapStartupSettings.cpp, Stage1HeaderWidget.cpp, MapStartupLaunchArgumentsTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 40 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 25.51 GB/36.4 GB committed
+  UBA Storage capacity 40 GB
+[1/40] Compile [x64] CommandAlarmPanel.cpp [NoUba]
+[2/40] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+UbaSessionServer - Killed process CommandShellTasks.cpp (Compile [x64]) (32.6s) - Low on memory (47.4gb/48.5gb). Kill threshold is 46.1gb
+[3/40] Compile [x64] CommandScreenManager.cpp [NoUba]
+[4/40] Compile [x64] CommandMapModeTest.cpp [NoUba]
+[5/40] Compile [x64] CommandClientTest.cpp [NoUba]
+[6/40] Compile [x64] CommandMapInteractionService.cpp [NoUba]
+[7/40] Compile [x64] CommandShellFigma.cpp [NoUba]
+[8/40] Compile [x64] CommandShellTasks.cpp [NoUba]
+[9/40] Compile [x64] FigmaCommandTest.cpp [NoUba]
+[10/40] Compile [x64] FigmaMapTest.cpp [NoUba]
+[11/40] Compile [x64] CommandShellWidget.cpp [NoUba]
+UbaSessionServer - Killed process FleetControlTest.cpp (Compile [x64]) (21.7s) - Low on memory (42.9gb/43.6gb). Kill threshold is 41.4gb
+[12/40] Compile [x64] DroneOpsGameMode.cpp [NoUba]
+[13/40] Compile [x64] DroneOpsPlayerController.cpp [NoUba]
+[14/40] Compile [x64] MapInteractionUXTest.cpp [NoUba]
+[15/40] Compile [x64] MapExtractionTest.cpp [NoUba]
+[16/40] Compile [x64] FleetTerrainTest.cpp [NoUba]
+[17/40] Compile [x64] FleetPanelVisibilityTest.cpp [NoUba]
+[18/40] Compile [x64] FleetControlTest.cpp [NoUba]
+UbaSessionServer - Killed process MapMissionRouteWidget.cpp (Compile [x64]) (22.6s) - Low on memory (47.1gb/48.3gb). Kill threshold is 45.9gb
+[19/40] Compile [x64] MapExecutionWidget.cpp [NoUba]
+[20/40] Compile [x64] MapFleetInteractionWidget.cpp [NoUba]
+[21/40] Compile [x64] MapStartupLaunchArgumentsTest.cpp [NoUba]
+[22/40] Compile [x64] MapStartupSettings.cpp [NoUba]
+[23/40] Compile [x64] MapPlanMoveWidget.cpp [NoUba]
+[24/40] Compile [x64] MapMissionRouteWidget.cpp [NoUba]
+UbaSessionServer - Killed process P4WorkflowTest.cpp (Compile [x64]) (19.8s) - Low on memory (47.0gb/47.3gb). Kill threshold is 45.0gb
+[25/40] Compile [x64] MapStartupVisibilityTest.cpp [NoUba]
+[26/40] Compile [x64] MapShellWidget.cpp [NoUba]
+[27/40] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[28/40] Compile [x64] RouteEditCameraLockTest.cpp [NoUba]
+[29/40] Compile [x64] SecurityPlanPanel.cpp [NoUba]
+UbaSessionServer - Killed process SecurityPlanRouteVisualTest.cpp (Compile [x64]) (19.2s) - Low on memory (47.7gb/48.0gb). Kill threshold is 45.6gb
+[30/40] Compile [x64] RouteVisualQA.cpp [NoUba]
+[31/40] Compile [x64] PlanConfigurationTests.cpp [NoUba]
+[32/40] Compile [x64] P4WorkflowTest.cpp [NoUba]
+[33/40] Compile [x64] PlanMissionActionsTest.cpp [NoUba]
+[34/40] Compile [x64] UE5DroneControl.cpp [NoUba]
+[35/40] Compile [x64] UIManagerBlueprintLibrary.cpp [NoUba]
+[36/40] Compile [x64] VideoClientTest.cpp [NoUba]
+[37/40] Compile [x64] SecurityPlanRouteVisualTest.cpp [NoUba]
+[38/40] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[39/40] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[40/40] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 149.64 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 155.85 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 23.4kb

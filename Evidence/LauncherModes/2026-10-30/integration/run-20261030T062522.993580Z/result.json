@@ -1,0 +1,1568 @@
+{
+  "scope": "Actual owned Backend and Runtime with synthetic loopback UDP; UE role arguments only; no native UI, UE rendering, hardware or flight acceptance",
+  "commands_not_executed": true,
+  "real_execution_enabled": false,
+  "network": {
+    "client_and_udp_target_host": "127.0.0.1",
+    "existing_backend_listener_bind": "0.0.0.0 / wildcard",
+    "ports": {
+      "demo_http": 50178,
+      "demo_ws": 50179,
+      "realtime_http": 50180,
+      "realtime_ws": 50181,
+      "computer_http": 50182,
+      "computer_ws": 50183,
+      "realtime_udp_receive": 63756,
+      "udp_sink": 63754,
+      "udp_sender": 63755
+    }
+  },
+  "passed": [
+    "DEMO real Runtime start acknowledged one Singapore reset and prepared all three unexecuted role commands",
+    "DEMO normal shutdown acknowledged Mock pause and reclaimed its owned Backend",
+    "Received Online telemetry without a GPS fix keeps startup waiting and prepares no UE role commands",
+    "Fresh synthetic received GPS initializes all three unexecuted roles at the non-Singapore ellipsoid origin",
+    "Realtime performs only GETs, preserves its sole registry entry, creates no Mock seed/reset/real-execution file, and stops its Backend",
+    "An empty real Backend uses the mocked computer location for three unexecuted roles, rechecks GPS and never seeds aircraft",
+    "All task-owned Backends and sender/sink/startup threads stopped; original business/configuration hashes remain unchanged"
+  ],
+  "commands": [
+    {
+      "role": "Command",
+      "mode": "demo",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Command",
+        "-P5Instance=f1b856da-f912-4d48-bd00-43c4e55562eb",
+        "-P1Http=http://127.0.0.1:50178",
+        "-P1Ws=ws://127.0.0.1:50179/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\demo\\Logs\\command-not-executed.log",
+        "-MapStartupMode=Demo",
+        "-MapStartupLongitude=103.862188",
+        "-MapStartupLatitude=1.279445",
+        "-MapStartupHeight=15.0"
+      ],
+      "origin": {
+        "latitude": 1.279445,
+        "longitude": 103.862188,
+        "altitude": 15.0
+      },
+      "commands_not_executed": true,
+      "at": 1793341524.192634
+    },
+    {
+      "role": "Map",
+      "mode": "demo",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Map",
+        "-P5Instance=dede8b87-762f-421c-b6a6-400bea6d0a42",
+        "-P1Http=http://127.0.0.1:50178",
+        "-P1Ws=ws://127.0.0.1:50179/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\demo\\Logs\\map-not-executed.log",
+        "-MapStartupMode=Demo",
+        "-MapStartupLongitude=103.862188",
+        "-MapStartupLatitude=1.279445",
+        "-MapStartupHeight=15.0"
+      ],
+      "origin": {
+        "latitude": 1.279445,
+        "longitude": 103.862188,
+        "altitude": 15.0
+      },
+      "commands_not_executed": true,
+      "at": 1793341524.1926873
+    },
+    {
+      "role": "Video",
+      "mode": "demo",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Video",
+        "-P5Instance=bae89b4b-ea2e-4426-a42c-58bf778ca6b7",
+        "-P1Http=http://127.0.0.1:50178",
+        "-P1Ws=ws://127.0.0.1:50179/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\demo\\Logs\\video-not-executed.log",
+        "-MapStartupMode=Demo",
+        "-MapStartupLongitude=103.862188",
+        "-MapStartupLatitude=1.279445",
+        "-MapStartupHeight=15.0"
+      ],
+      "origin": {
+        "latitude": 1.279445,
+        "longitude": 103.862188,
+        "altitude": 15.0
+      },
+      "commands_not_executed": true,
+      "at": 1793341524.1927285
+    },
+    {
+      "role": "Command",
+      "mode": "realtime",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Command",
+        "-P5Instance=efbe84fa-8057-44e5-995f-c8b816727f7e",
+        "-P1Http=http://127.0.0.1:50180",
+        "-P1Ws=ws://127.0.0.1:50181/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\realtime\\Logs\\command-not-executed.log",
+        "-MapStartupMode=Realtime",
+        "-MapStartupLongitude=116.4",
+        "-MapStartupLatitude=40.1",
+        "-MapStartupHeight=75.0"
+      ],
+      "origin": {
+        "longitude": 116.4,
+        "latitude": 40.1,
+        "altitude": 75.0,
+        "uav_id": "UAV-01"
+      },
+      "commands_not_executed": true,
+      "at": 1793341534.4239876
+    },
+    {
+      "role": "Map",
+      "mode": "realtime",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Map",
+        "-P5Instance=b5e74ba6-a96f-4c00-85d8-524aa0b9c5b1",
+        "-P1Http=http://127.0.0.1:50180",
+        "-P1Ws=ws://127.0.0.1:50181/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\realtime\\Logs\\map-not-executed.log",
+        "-MapStartupMode=Realtime",
+        "-MapStartupLongitude=116.4",
+        "-MapStartupLatitude=40.1",
+        "-MapStartupHeight=75.0"
+      ],
+      "origin": {
+        "longitude": 116.4,
+        "latitude": 40.1,
+        "altitude": 75.0,
+        "uav_id": "UAV-01"
+      },
+      "commands_not_executed": true,
+      "at": 1793341534.4240246
+    },
+    {
+      "role": "Video",
+      "mode": "realtime",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Video",
+        "-P5Instance=52efde90-d735-48a1-bc6b-40dc55c9b49a",
+        "-P1Http=http://127.0.0.1:50180",
+        "-P1Ws=ws://127.0.0.1:50181/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\realtime\\Logs\\video-not-executed.log",
+        "-MapStartupMode=Realtime",
+        "-MapStartupLongitude=116.4",
+        "-MapStartupLatitude=40.1",
+        "-MapStartupHeight=75.0"
+      ],
+      "origin": {
+        "longitude": 116.4,
+        "latitude": 40.1,
+        "altitude": 75.0,
+        "uav_id": "UAV-01"
+      },
+      "commands_not_executed": true,
+      "at": 1793341534.4240563
+    },
+    {
+      "role": "Command",
+      "mode": "realtime",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Command",
+        "-P5Instance=672d020d-b501-4937-8351-5e5491e0e3fe",
+        "-P1Http=http://127.0.0.1:50182",
+        "-P1Ws=ws://127.0.0.1:50183/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\computer-fallback\\Logs\\command-not-executed.log",
+        "-MapStartupMode=Realtime",
+        "-MapStartupLongitude=2.3522",
+        "-MapStartupLatitude=48.8566",
+        "-MapStartupHeight=0.0"
+      ],
+      "origin": {
+        "longitude": 2.3522,
+        "latitude": 48.8566,
+        "altitude": 0.0,
+        "source": "computer",
+        "accuracy_m": 25.0,
+        "height_estimated": true
+      },
+      "commands_not_executed": true,
+      "at": 1793341543.5911005
+    },
+    {
+      "role": "Map",
+      "mode": "realtime",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Map",
+        "-P5Instance=954298fa-c772-4bbc-965e-232b8abd4f84",
+        "-P1Http=http://127.0.0.1:50182",
+        "-P1Ws=ws://127.0.0.1:50183/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\computer-fallback\\Logs\\map-not-executed.log",
+        "-MapStartupMode=Realtime",
+        "-MapStartupLongitude=2.3522",
+        "-MapStartupLatitude=48.8566",
+        "-MapStartupHeight=0.0"
+      ],
+      "origin": {
+        "longitude": 2.3522,
+        "latitude": 48.8566,
+        "altitude": 0.0,
+        "source": "computer",
+        "accuracy_m": 25.0,
+        "height_estimated": true
+      },
+      "commands_not_executed": true,
+      "at": 1793341543.5911348
+    },
+    {
+      "role": "Video",
+      "mode": "realtime",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Video",
+        "-P5Instance=4856d489-69ae-4c29-9283-99be125efb2f",
+        "-P1Http=http://127.0.0.1:50182",
+        "-P1Ws=ws://127.0.0.1:50183/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062522.993580Z\\computer-fallback\\Logs\\video-not-executed.log",
+        "-MapStartupMode=Realtime",
+        "-MapStartupLongitude=2.3522",
+        "-MapStartupLatitude=48.8566",
+        "-MapStartupHeight=0.0"
+      ],
+      "origin": {
+        "longitude": 2.3522,
+        "latitude": 48.8566,
+        "altitude": 0.0,
+        "source": "computer",
+        "accuracy_m": 25.0,
+        "height_estimated": true
+      },
+      "commands_not_executed": true,
+      "at": 1793341543.591163
+    }
+  ],
+  "requests": [
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/",
+      "port": 50178,
+      "at": 1793341523.672775
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50178,
+      "at": 1793341524.1751227
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50178,
+      "at": 1793341524.1761234
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50178,
+      "at": 1793341524.1768544
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50178,
+      "at": 1793341524.1774926
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50178,
+      "at": 1793341524.1781123
+    },
+    {
+      "phase": "demo",
+      "method": "POST",
+      "path": "/api/mock-executions/reset",
+      "port": 50178,
+      "at": 1793341524.189533,
+      "body": {
+        "request_id": "3d493763-61e0-4144-a985-a8d93908b3c4",
+        "simulation": true,
+        "startup_formation": {
+          "origin": {
+            "latitude": 1.279445,
+            "longitude": 103.862188,
+            "altitude": 15.0
+          },
+          "spacing_m": 3.0,
+          "direction": "east"
+        }
+      }
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50178,
+      "at": 1793341524.192759
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50178,
+      "at": 1793341524.1938708
+    },
+    {
+      "phase": "demo",
+      "method": "POST",
+      "path": "/api/mock-executions/pause-all",
+      "port": 50178,
+      "at": 1793341524.2201476,
+      "body": {
+        "request_id": "03255bc4-b56f-4033-8531-0d07b548f6b9",
+        "simulation": true
+      }
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341532.2311072
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/",
+      "port": 50180,
+      "at": 1793341532.8534443
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341533.308526
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341533.3601556
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50180,
+      "at": 1793341533.3674614
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50180,
+      "at": 1793341533.3683035
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50180,
+      "at": 1793341533.3822472
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50180,
+      "at": 1793341533.3831027
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50180,
+      "at": 1793341533.3838274
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/",
+      "port": 50180,
+      "at": 1793341533.385956
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50180,
+      "at": 1793341533.3869097
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50180,
+      "at": 1793341533.387707
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341533.411674
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50180,
+      "at": 1793341533.4131901
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50180,
+      "at": 1793341533.4287937
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50180,
+      "at": 1793341533.4297187
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341533.444789
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/",
+      "port": 50180,
+      "at": 1793341533.754328
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50180,
+      "at": 1793341533.7553573
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50180,
+      "at": 1793341533.7560344
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50180,
+      "at": 1793341533.7566314
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50180,
+      "at": 1793341533.7572584
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50180,
+      "at": 1793341533.757851
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341533.7584279
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/",
+      "port": 50180,
+      "at": 1793341534.0630522
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50180,
+      "at": 1793341534.064306
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50180,
+      "at": 1793341534.0650449
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50180,
+      "at": 1793341534.0656445
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50180,
+      "at": 1793341534.079313
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50180,
+      "at": 1793341534.080096
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341534.0806699
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/",
+      "port": 50180,
+      "at": 1793341534.4037952
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50180,
+      "at": 1793341534.404932
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50180,
+      "at": 1793341534.4198387
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50180,
+      "at": 1793341534.4207907
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50180,
+      "at": 1793341534.4216185
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50180,
+      "at": 1793341534.4223073
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341534.42298
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50180,
+      "at": 1793341534.4241815
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/",
+      "port": 50182,
+      "at": 1793341543.072979
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50182,
+      "at": 1793341543.5769365
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50182,
+      "at": 1793341543.5780597
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50182,
+      "at": 1793341543.5787868
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50182,
+      "at": 1793341543.5795434
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50182,
+      "at": 1793341543.5801618
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/",
+      "port": 50182,
+      "at": 1793341543.5819173
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50182,
+      "at": 1793341543.582791
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50182,
+      "at": 1793341543.5834944
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50182,
+      "at": 1793341543.5841053
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50182,
+      "at": 1793341543.584696
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50182,
+      "at": 1793341543.5853379
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50182,
+      "at": 1793341543.5859644
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/",
+      "port": 50182,
+      "at": 1793341543.586604
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 50182,
+      "at": 1793341543.5871823
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 50182,
+      "at": 1793341543.5878062
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 50182,
+      "at": 1793341543.58849
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 50182,
+      "at": 1793341543.589126
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 50182,
+      "at": 1793341543.5896819
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50182,
+      "at": 1793341543.590217
+    },
+    {
+      "phase": "computer-fallback",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 50182,
+      "at": 1793341543.5911908
+    }
+  ],
+  "result": "PASS",
+  "original_files_before": {
+    "Backend/config.yaml": "cf7d7bc51e18903a94917e8b84094b692ccfaa8136e5d53579c83bfb6feefa42",
+    "Backend/mock_execution.json": "3b5b8b6488f6557fe75592a16175fd7e51f7167b1a4c4c33f3e50740324a1b69",
+    "Launcher/config.json": "51f3b77740ac78fd105796ebc07690f7660ad7aeaf1901156e60df545f9d06bc",
+    "Launcher/config.local.json": null,
+    "Config/DefaultGame.ini": "144dd5b7e3cedc24eb93c00806a40f1bce5dd75ad59d3e3d2498f0a931e58a13",
+    "Config/DefaultEngine.ini": "db6f6256ae1d134afb5122592b184913a92e0b8377c658a26ee21ab9f969e6e9",
+    "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+    "Saved/DroneRegistry.json": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+    "Saved/Config/WindowsEditor/Game.ini": null,
+    "Backend/data/": true,
+    "Backend/data/drones.json": "7aa5ac5644f81f091c728847f0a2712ced6445839feb31b6923b21ebe1cd230c",
+    "Saved/Stage1/data/": true,
+    "Saved/Stage1/data/drones.json": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+    "Saved/Stage1/data/mock-reset-history/before-1-314188543681700.json": "0e170d0b3c65fc5d73b4aacc43dd634f258a5d46d13f0e36bbaef750cf109784",
+    "Saved/Stage1/data/mock-reset-history/before-2-318300858277600.json": "003895e090ae165c4006f0ae09e6eb3bbd6c34c2f85af1995b184bf6dcdc6c4d",
+    "Saved/Stage1/data/mock-reset-history/before-3-320405366656100.json": "608ea61928770a47340ad6bc495e143be6fab534b0a00fb2a04cbcc8445f9652",
+    "Saved/Stage1/data/mock-reset-history/before-4-323561185613400.json": "ff16465c08f992e29231511e50be0e21515cef9633ca6d4462498afa0f65c62c",
+    "Saved/Stage1/data/mock-reset-history/before-5-324306814725800.json": "0786715951ab009405062bd67ae7bfef04f44ed8681459687482a8856e53f17e",
+    "Saved/Stage1/data/mock_execution.json": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+    "Saved/Stage1/data/operational_context.json": "b996dea3f2add0409c897d5aa2d25f1842c8480ac6baebad1aa656bdf0954fb3",
+    "Saved/Stage1/data/security_plans.json": "2b17836264798c1cc6320c286214e566122399a8e10e7753efd30ad71a7b551d",
+    "Saved/Stage1/data/ui_preferences.json": "ce9219f1a58d75d69383ca019642d4e3aa856ccfc0c66b070754125c38428567",
+    "Saved/Stage1/data/video_view.json": "faf16339737ccf057d80698891d2e13622107dc1ee79a5ebee5ba9b922a8cf0b"
+  },
+  "backend_binary": {
+    "path": "Backend/build/Release/DroneBackend.exe",
+    "sha256": "aeb5cef98a71fbde897b28cb97cf2d6aa7d5edafdf00674a2904fcd4f4e9ca86",
+    "bytes": 1428480
+  },
+  "demo": {
+    "baseline": {
+      "epoch": 1,
+      "reset_at": 1793341524.190226,
+      "request_id": "3d493763-61e0-4144-a985-a8d93908b3c4",
+      "positions": {
+        "UAV-01": {
+          "latitude": 1.279445,
+          "longitude": 103.862188,
+          "altitude": 15.0
+        },
+        "UAV-02": {
+          "latitude": 1.279445,
+          "longitude": 103.86221498637632,
+          "altitude": 15.0
+        },
+        "UAV-03": {
+          "latitude": 1.279445,
+          "longitude": 103.86224197275263,
+          "altitude": 15.0
+        },
+        "UAV-04": {
+          "latitude": 1.279445,
+          "longitude": 103.86226895912893,
+          "altitude": 15.0
+        }
+      },
+      "startup_formation": {
+        "origin": {
+          "latitude": 1.279445,
+          "longitude": 103.862188,
+          "altitude": 15.0
+        },
+        "spacing_m": 3.0,
+        "direction": "east"
+      },
+      "skipped_uav_ids": []
+    },
+    "drones": [
+      {
+        "id": 1,
+        "id_str": "d1",
+        "name": "Mock UAV 01",
+        "model": "Stage 1 Simulation",
+        "slot": 1,
+        "slot_number": 1,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.862188,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_1",
+        "bit_index": 0,
+        "mavlink_system_id": 1,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.862188,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      },
+      {
+        "id": 2,
+        "id_str": "d2",
+        "name": "Mock UAV 02",
+        "model": "Stage 1 Simulation",
+        "slot": 2,
+        "slot_number": 2,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.86221498637632,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_2",
+        "bit_index": 1,
+        "mavlink_system_id": 2,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.86221498637632,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      },
+      {
+        "id": 3,
+        "id_str": "d3",
+        "name": "Mock UAV 03",
+        "model": "Stage 1 Simulation",
+        "slot": 3,
+        "slot_number": 3,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.86224197275263,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_3",
+        "bit_index": 2,
+        "mavlink_system_id": 3,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.86224197275263,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      },
+      {
+        "id": 4,
+        "id_str": "d4",
+        "name": "Mock UAV 04",
+        "model": "Stage 1 Simulation",
+        "slot": 4,
+        "slot_number": 4,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.86226895912893,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_4",
+        "bit_index": 3,
+        "mavlink_system_id": 4,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.86226895912893,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      }
+    ],
+    "runtime_state_without_ue_clients": "STARTING"
+  },
+  "realtime_before_fix": [
+    {
+      "id": 1,
+      "id_str": "d1",
+      "name": "Owned synthetic realtime location QA",
+      "model": "Loopback synthetic telemetry",
+      "slot": 1,
+      "slot_number": 1,
+      "ip": "127.0.0.1",
+      "port": 63754,
+      "video_url": "",
+      "status": "online",
+      "battery": 81,
+      "x": 0.0,
+      "y": 0.0,
+      "z": 3000.0,
+      "yaw": 0.0,
+      "speed": 0.0,
+      "gps_lat": 40.1,
+      "gps_lon": 116.4,
+      "gps_alt": 75.0,
+      "gps_fix": false,
+      "local_position_valid": true,
+      "anchor_valid": false,
+      "anchor_gps_lat": 0.0,
+      "anchor_gps_lon": 0.0,
+      "anchor_gps_alt": 0.0,
+      "armed": false,
+      "offboard": false,
+      "task_mode": "move",
+      "task_state": "standby",
+      "task_array_id": "",
+      "task_current_wp": 0,
+      "task_waypoint_count": 0,
+      "task_detail": "",
+      "task_updated_at": 0.0,
+      "ue_receive_port": 63756,
+      "topic_prefix": "",
+      "bit_index": 0,
+      "mavlink_system_id": 1,
+      "simulation": false,
+      "telemetry_source": "received",
+      "pitch": 0.0,
+      "roll": 0.0,
+      "telemetry_received_at": 1793341533.3974562
+    }
+  ],
+  "realtime": {
+    "accepted_telemetry": {
+      "id": 1,
+      "id_str": "d1",
+      "name": "Owned synthetic realtime location QA",
+      "model": "Loopback synthetic telemetry",
+      "slot": 1,
+      "slot_number": 1,
+      "ip": "127.0.0.1",
+      "port": 63754,
+      "video_url": "",
+      "status": "online",
+      "battery": 81,
+      "x": 0.0,
+      "y": 0.0,
+      "z": 3000.0,
+      "yaw": 0.0,
+      "speed": 0.0,
+      "gps_lat": 40.1,
+      "gps_lon": 116.4,
+      "gps_alt": 75.0,
+      "gps_fix": true,
+      "local_position_valid": true,
+      "anchor_valid": true,
+      "anchor_gps_lat": 40.1,
+      "anchor_gps_lon": 116.4,
+      "anchor_gps_alt": 75.0,
+      "armed": false,
+      "offboard": false,
+      "task_mode": "move",
+      "task_state": "standby",
+      "task_array_id": "",
+      "task_current_wp": 0,
+      "task_waypoint_count": 0,
+      "task_detail": "",
+      "task_updated_at": 0.0,
+      "ue_receive_port": 63756,
+      "topic_prefix": "",
+      "bit_index": 0,
+      "mavlink_system_id": 1,
+      "simulation": false,
+      "telemetry_source": "received",
+      "pitch": 0.0,
+      "roll": 0.0,
+      "telemetry_received_at": 1793341534.3884637
+    },
+    "startup_origin": {
+      "longitude": 116.4,
+      "latitude": 40.1,
+      "altitude": 75.0,
+      "uav_id": "UAV-01"
+    },
+    "geoid_separation_m": 0.0,
+    "runtime_state_without_ue_clients": "STARTING"
+  },
+  "os_computer_location_queried": false,
+  "computer_fallback": {
+    "provider_mocked": true,
+    "actual_windows_location_queried": false,
+    "origin": {
+      "longitude": 2.3522,
+      "latitude": 48.8566,
+      "altitude": 0.0,
+      "source": "computer",
+      "accuracy_m": 25.0,
+      "height_estimated": true
+    },
+    "accuracy_m": 25.0,
+    "height_estimated": true,
+    "registry_remained_empty": true,
+    "runtime_state_without_ue_clients": "STARTING"
+  },
+  "original_files_after": {
+    "Backend/config.yaml": "cf7d7bc51e18903a94917e8b84094b692ccfaa8136e5d53579c83bfb6feefa42",
+    "Backend/mock_execution.json": "3b5b8b6488f6557fe75592a16175fd7e51f7167b1a4c4c33f3e50740324a1b69",
+    "Launcher/config.json": "51f3b77740ac78fd105796ebc07690f7660ad7aeaf1901156e60df545f9d06bc",
+    "Launcher/config.local.json": null,
+    "Config/DefaultGame.ini": "144dd5b7e3cedc24eb93c00806a40f1bce5dd75ad59d3e3d2498f0a931e58a13",
+    "Config/DefaultEngine.ini": "db6f6256ae1d134afb5122592b184913a92e0b8377c658a26ee21ab9f969e6e9",
+    "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+    "Saved/DroneRegistry.json": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+    "Saved/Config/WindowsEditor/Game.ini": null,
+    "Backend/data/": true,
+    "Backend/data/drones.json": "7aa5ac5644f81f091c728847f0a2712ced6445839feb31b6923b21ebe1cd230c",
+    "Saved/Stage1/data/": true,
+    "Saved/Stage1/data/drones.json": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+    "Saved/Stage1/data/mock-reset-history/before-1-314188543681700.json": "0e170d0b3c65fc5d73b4aacc43dd634f258a5d46d13f0e36bbaef750cf109784",
+    "Saved/Stage1/data/mock-reset-history/before-2-318300858277600.json": "003895e090ae165c4006f0ae09e6eb3bbd6c34c2f85af1995b184bf6dcdc6c4d",
+    "Saved/Stage1/data/mock-reset-history/before-3-320405366656100.json": "608ea61928770a47340ad6bc495e143be6fab534b0a00fb2a04cbcc8445f9652",
+    "Saved/Stage1/data/mock-reset-history/before-4-323561185613400.json": "ff16465c08f992e29231511e50be0e21515cef9633ca6d4462498afa0f65c62c",
+    "Saved/Stage1/data/mock-reset-history/before-5-324306814725800.json": "0786715951ab009405062bd67ae7bfef04f44ed8681459687482a8856e53f17e",
+    "Saved/Stage1/data/mock_execution.json": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+    "Saved/Stage1/data/operational_context.json": "b996dea3f2add0409c897d5aa2d25f1842c8480ac6baebad1aa656bdf0954fb3",
+    "Saved/Stage1/data/security_plans.json": "2b17836264798c1cc6320c286214e566122399a8e10e7753efd30ad71a7b551d",
+    "Saved/Stage1/data/ui_preferences.json": "ce9219f1a58d75d69383ca019642d4e3aa856ccfc0c66b070754125c38428567",
+    "Saved/Stage1/data/video_view.json": "faf16339737ccf057d80698891d2e13622107dc1ee79a5ebee5ba9b922a8cf0b"
+  },
+  "original_files_unchanged": true,
+  "sink_packets": [
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    }
+  ],
+  "thread_errors": [],
+  "startup_worker_errors": [],
+  "cleanup": {
+    "errors": [],
+    "threads_alive": [],
+    "owned_processes": [
+      {
+        "role": "Backend",
+        "pid": 133584,
+        "start_time": 1793341523.6625037,
+        "executable": "Backend\\build\\Release\\DroneBackend.exe",
+        "owned": true,
+        "exit_code": 1
+      },
+      {
+        "role": "Backend",
+        "pid": 120132,
+        "start_time": 1793341532.8427107,
+        "executable": "Backend\\build\\Release\\DroneBackend.exe",
+        "owned": true,
+        "exit_code": 1
+      },
+      {
+        "role": "Backend",
+        "pid": 140568,
+        "start_time": 1793341543.0633528,
+        "executable": "Backend\\build\\Release\\DroneBackend.exe",
+        "owned": true,
+        "exit_code": 1
+      }
+    ],
+    "all_owned_processes_exited": true,
+    "all_runtime_ownership_empty": true
+  }
+}

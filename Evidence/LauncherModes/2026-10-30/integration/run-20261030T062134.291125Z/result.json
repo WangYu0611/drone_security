@@ -1,0 +1,563 @@
+{
+  "scope": "Actual owned Backend and Runtime with synthetic loopback UDP; UE role arguments only; no native UI, UE rendering, hardware or flight acceptance",
+  "commands_not_executed": true,
+  "real_execution_enabled": false,
+  "network": {
+    "client_and_udp_target_host": "127.0.0.1",
+    "existing_backend_listener_bind": "0.0.0.0 / wildcard",
+    "ports": {
+      "demo_http": 61864,
+      "demo_ws": 61865,
+      "realtime_http": 61866,
+      "realtime_ws": 61867,
+      "realtime_udp_receive": 49183,
+      "udp_sink": 49181,
+      "udp_sender": 49182
+    }
+  },
+  "passed": [
+    "DEMO real Runtime start acknowledged one Singapore reset and prepared all three unexecuted role commands",
+    "DEMO normal shutdown acknowledged Mock pause and reclaimed its owned Backend"
+  ],
+  "commands": [
+    {
+      "role": "Command",
+      "mode": "demo",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Command",
+        "-P5Instance=dc1c33e4-d192-4555-bae3-109c6a6ef28f",
+        "-P1Http=http://127.0.0.1:61864",
+        "-P1Ws=ws://127.0.0.1:61865/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062134.291125Z\\demo\\Logs\\command-not-executed.log",
+        "-MapStartupMode=Demo",
+        "-MapStartupLongitude=103.862188",
+        "-MapStartupLatitude=1.279445",
+        "-MapStartupHeight=15.0"
+      ],
+      "origin": {
+        "latitude": 1.279445,
+        "longitude": 103.862188,
+        "altitude": 15.0
+      },
+      "commands_not_executed": true,
+      "at": 1793341295.6319396
+    },
+    {
+      "role": "Map",
+      "mode": "demo",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Map",
+        "-P5Instance=def52e35-ce87-4c74-aeed-94322de44fe0",
+        "-P1Http=http://127.0.0.1:61864",
+        "-P1Ws=ws://127.0.0.1:61865/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062134.291125Z\\demo\\Logs\\map-not-executed.log",
+        "-MapStartupMode=Demo",
+        "-MapStartupLongitude=103.862188",
+        "-MapStartupLatitude=1.279445",
+        "-MapStartupHeight=15.0"
+      ],
+      "origin": {
+        "latitude": 1.279445,
+        "longitude": 103.862188,
+        "altitude": 15.0
+      },
+      "commands_not_executed": true,
+      "at": 1793341295.631981
+    },
+    {
+      "role": "Video",
+      "mode": "demo",
+      "arguments": [
+        "COMMANDS_NOT_EXECUTED-UnrealEditor.exe",
+        "UE5DroneControl.uproject",
+        "/Game/Level/CesiumWorld",
+        "-game",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=800",
+        "-nosplash",
+        "-unattended",
+        "-ClientRole=Video",
+        "-P5Instance=7cc0476f-3d55-432c-811e-d0b4f49b396d",
+        "-P1Http=http://127.0.0.1:61864",
+        "-P1Ws=ws://127.0.0.1:61865/ws",
+        "-ExecCmds=t.MaxFPS 20",
+        "-abslog=Saved\\LauncherModesQA\\run-20261030T062134.291125Z\\demo\\Logs\\video-not-executed.log",
+        "-MapStartupMode=Demo",
+        "-MapStartupLongitude=103.862188",
+        "-MapStartupLatitude=1.279445",
+        "-MapStartupHeight=15.0"
+      ],
+      "origin": {
+        "latitude": 1.279445,
+        "longitude": 103.862188,
+        "altitude": 15.0
+      },
+      "commands_not_executed": true,
+      "at": 1793341295.63201
+    }
+  ],
+  "requests": [
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/",
+      "port": 61864,
+      "at": 1793341295.0996637
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/context",
+      "port": 61864,
+      "at": 1793341295.6111724
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/context/clients",
+      "port": 61864,
+      "at": 1793341295.6120145
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/ui-preferences",
+      "port": 61864,
+      "at": 1793341295.626106
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/video-view",
+      "port": 61864,
+      "at": 1793341295.6269972
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 61864,
+      "at": 1793341295.6277049
+    },
+    {
+      "phase": "demo",
+      "method": "POST",
+      "path": "/api/mock-executions/reset",
+      "port": 61864,
+      "at": 1793341295.628542,
+      "body": {
+        "request_id": "b460e3c9-5be0-4582-8f17-36412e789fd8",
+        "simulation": true,
+        "startup_formation": {
+          "origin": {
+            "latitude": 1.279445,
+            "longitude": 103.862188,
+            "altitude": 15.0
+          },
+          "spacing_m": 3.0,
+          "direction": "east"
+        }
+      }
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/security-plans",
+      "port": 61864,
+      "at": 1793341295.6320357
+    },
+    {
+      "phase": "demo",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 61864,
+      "at": 1793341295.6333354
+    },
+    {
+      "phase": "demo",
+      "method": "POST",
+      "path": "/api/mock-executions/pause-all",
+      "port": 61864,
+      "at": 1793341295.6570916,
+      "body": {
+        "request_id": "92430522-8ec2-44e3-98ce-6b11ec274adc",
+        "simulation": true
+      }
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/api/drones",
+      "port": 61866,
+      "at": 1793341303.6750202
+    },
+    {
+      "phase": "realtime",
+      "method": "GET",
+      "path": "/",
+      "port": 61866,
+      "at": 1793341304.2963495
+    }
+  ],
+  "result": "FAIL",
+  "original_files_before": {
+    "Backend/config.yaml": "cf7d7bc51e18903a94917e8b84094b692ccfaa8136e5d53579c83bfb6feefa42",
+    "Backend/mock_execution.json": "3b5b8b6488f6557fe75592a16175fd7e51f7167b1a4c4c33f3e50740324a1b69",
+    "Launcher/config.json": "51f3b77740ac78fd105796ebc07690f7660ad7aeaf1901156e60df545f9d06bc",
+    "Launcher/config.local.json": null,
+    "Config/DefaultGame.ini": "144dd5b7e3cedc24eb93c00806a40f1bce5dd75ad59d3e3d2498f0a931e58a13",
+    "Config/DefaultEngine.ini": "db6f6256ae1d134afb5122592b184913a92e0b8377c658a26ee21ab9f969e6e9",
+    "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+    "Saved/DroneRegistry.json": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+    "Saved/Config/WindowsEditor/Game.ini": null,
+    "Backend/data/": true,
+    "Backend/data/drones.json": "7aa5ac5644f81f091c728847f0a2712ced6445839feb31b6923b21ebe1cd230c",
+    "Saved/Stage1/data/": true,
+    "Saved/Stage1/data/drones.json": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+    "Saved/Stage1/data/mock-reset-history/before-1-314188543681700.json": "0e170d0b3c65fc5d73b4aacc43dd634f258a5d46d13f0e36bbaef750cf109784",
+    "Saved/Stage1/data/mock-reset-history/before-2-318300858277600.json": "003895e090ae165c4006f0ae09e6eb3bbd6c34c2f85af1995b184bf6dcdc6c4d",
+    "Saved/Stage1/data/mock-reset-history/before-3-320405366656100.json": "608ea61928770a47340ad6bc495e143be6fab534b0a00fb2a04cbcc8445f9652",
+    "Saved/Stage1/data/mock-reset-history/before-4-323561185613400.json": "ff16465c08f992e29231511e50be0e21515cef9633ca6d4462498afa0f65c62c",
+    "Saved/Stage1/data/mock-reset-history/before-5-324306814725800.json": "0786715951ab009405062bd67ae7bfef04f44ed8681459687482a8856e53f17e",
+    "Saved/Stage1/data/mock_execution.json": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+    "Saved/Stage1/data/operational_context.json": "b996dea3f2add0409c897d5aa2d25f1842c8480ac6baebad1aa656bdf0954fb3",
+    "Saved/Stage1/data/security_plans.json": "2b17836264798c1cc6320c286214e566122399a8e10e7753efd30ad71a7b551d",
+    "Saved/Stage1/data/ui_preferences.json": "ce9219f1a58d75d69383ca019642d4e3aa856ccfc0c66b070754125c38428567",
+    "Saved/Stage1/data/video_view.json": "faf16339737ccf057d80698891d2e13622107dc1ee79a5ebee5ba9b922a8cf0b"
+  },
+  "backend_binary": {
+    "path": "Backend/build/Release/DroneBackend.exe",
+    "sha256": "aeb5cef98a71fbde897b28cb97cf2d6aa7d5edafdf00674a2904fcd4f4e9ca86",
+    "bytes": 1428480
+  },
+  "demo": {
+    "baseline": {
+      "epoch": 1,
+      "reset_at": 1793341295.6290224,
+      "request_id": "b460e3c9-5be0-4582-8f17-36412e789fd8",
+      "positions": {
+        "UAV-01": {
+          "latitude": 1.279445,
+          "longitude": 103.862188,
+          "altitude": 15.0
+        },
+        "UAV-02": {
+          "latitude": 1.279445,
+          "longitude": 103.86221498637632,
+          "altitude": 15.0
+        },
+        "UAV-03": {
+          "latitude": 1.279445,
+          "longitude": 103.86224197275263,
+          "altitude": 15.0
+        },
+        "UAV-04": {
+          "latitude": 1.279445,
+          "longitude": 103.86226895912893,
+          "altitude": 15.0
+        }
+      },
+      "startup_formation": {
+        "origin": {
+          "latitude": 1.279445,
+          "longitude": 103.862188,
+          "altitude": 15.0
+        },
+        "spacing_m": 3.0,
+        "direction": "east"
+      },
+      "skipped_uav_ids": []
+    },
+    "drones": [
+      {
+        "id": 1,
+        "id_str": "d1",
+        "name": "Mock UAV 01",
+        "model": "Stage 1 Simulation",
+        "slot": 1,
+        "slot_number": 1,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.862188,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_1",
+        "bit_index": 0,
+        "mavlink_system_id": 1,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.862188,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      },
+      {
+        "id": 2,
+        "id_str": "d2",
+        "name": "Mock UAV 02",
+        "model": "Stage 1 Simulation",
+        "slot": 2,
+        "slot_number": 2,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.86221498637632,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_2",
+        "bit_index": 1,
+        "mavlink_system_id": 2,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.86221498637632,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      },
+      {
+        "id": 3,
+        "id_str": "d3",
+        "name": "Mock UAV 03",
+        "model": "Stage 1 Simulation",
+        "slot": 3,
+        "slot_number": 3,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.86224197275263,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_3",
+        "bit_index": 2,
+        "mavlink_system_id": 3,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.86224197275263,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      },
+      {
+        "id": 4,
+        "id_str": "d4",
+        "name": "Mock UAV 04",
+        "model": "Stage 1 Simulation",
+        "slot": 4,
+        "slot_number": 4,
+        "ip": "127.0.0.1",
+        "port": 29999,
+        "video_url": "",
+        "status": "offline",
+        "battery": -1,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "speed": 0.0,
+        "gps_lat": 1.279445,
+        "gps_lon": 103.86226895912893,
+        "gps_alt": 15.0,
+        "gps_fix": true,
+        "local_position_valid": false,
+        "anchor_valid": false,
+        "anchor_gps_lat": 0.0,
+        "anchor_gps_lon": 0.0,
+        "anchor_gps_alt": 0.0,
+        "armed": false,
+        "offboard": false,
+        "task_mode": "move",
+        "task_state": "standby",
+        "task_array_id": "",
+        "task_current_wp": 0,
+        "task_waypoint_count": 0,
+        "task_detail": "",
+        "task_updated_at": 0.0,
+        "ue_receive_port": 0,
+        "topic_prefix": "/px4_4",
+        "bit_index": 3,
+        "mavlink_system_id": 4,
+        "simulation": true,
+        "telemetry_source": "mock_reset",
+        "mock_position": {
+          "latitude": 1.279445,
+          "longitude": 103.86226895912893,
+          "altitude": 15.0
+        },
+        "mock_epoch": 1
+      }
+    ],
+    "runtime_state_without_ue_clients": "STARTING"
+  },
+  "error": "Traceback (most recent call last):\n  File \"Scripts\\LauncherModes\\verify.py\", line 299, in main\n    require(realtime.location_status == 'waiting', 'Realtime did not wait for valid GPS')\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"Scripts\\LauncherModes\\verify.py\", line 36, in require\n    raise AssertionError(message)\nAssertionError: Realtime did not wait for valid GPS\n",
+  "original_files_after": {
+    "Backend/config.yaml": "cf7d7bc51e18903a94917e8b84094b692ccfaa8136e5d53579c83bfb6feefa42",
+    "Backend/mock_execution.json": "3b5b8b6488f6557fe75592a16175fd7e51f7167b1a4c4c33f3e50740324a1b69",
+    "Launcher/config.json": "51f3b77740ac78fd105796ebc07690f7660ad7aeaf1901156e60df545f9d06bc",
+    "Launcher/config.local.json": null,
+    "Config/DefaultGame.ini": "144dd5b7e3cedc24eb93c00806a40f1bce5dd75ad59d3e3d2498f0a931e58a13",
+    "Config/DefaultEngine.ini": "db6f6256ae1d134afb5122592b184913a92e0b8377c658a26ee21ab9f969e6e9",
+    "Content/CesiumSettings/CesiumIonServers/CesiumIonSaaS.uasset": "0672487d30c0ba2b455ac84eb8d13de3ecf8f8717a6b978ec01866a794059d1e",
+    "Saved/DroneRegistry.json": "a1a240c0061064ebb29147d00343e94791ee65f3b78d8ca25c7cebca0b3ecf36",
+    "Saved/Config/WindowsEditor/Game.ini": null,
+    "Backend/data/": true,
+    "Backend/data/drones.json": "7aa5ac5644f81f091c728847f0a2712ced6445839feb31b6923b21ebe1cd230c",
+    "Saved/Stage1/data/": true,
+    "Saved/Stage1/data/drones.json": "4d9a723646cc3b512620116d01c5780b004f54e04b14abccada9334a8f12d960",
+    "Saved/Stage1/data/mock-reset-history/before-1-314188543681700.json": "0e170d0b3c65fc5d73b4aacc43dd634f258a5d46d13f0e36bbaef750cf109784",
+    "Saved/Stage1/data/mock-reset-history/before-2-318300858277600.json": "003895e090ae165c4006f0ae09e6eb3bbd6c34c2f85af1995b184bf6dcdc6c4d",
+    "Saved/Stage1/data/mock-reset-history/before-3-320405366656100.json": "608ea61928770a47340ad6bc495e143be6fab534b0a00fb2a04cbcc8445f9652",
+    "Saved/Stage1/data/mock-reset-history/before-4-323561185613400.json": "ff16465c08f992e29231511e50be0e21515cef9633ca6d4462498afa0f65c62c",
+    "Saved/Stage1/data/mock-reset-history/before-5-324306814725800.json": "0786715951ab009405062bd67ae7bfef04f44ed8681459687482a8856e53f17e",
+    "Saved/Stage1/data/mock_execution.json": "081e047731dc16651504dfe64a6a762ad84a8a24443360238229e922775159a4",
+    "Saved/Stage1/data/operational_context.json": "b996dea3f2add0409c897d5aa2d25f1842c8480ac6baebad1aa656bdf0954fb3",
+    "Saved/Stage1/data/security_plans.json": "2b17836264798c1cc6320c286214e566122399a8e10e7753efd30ad71a7b551d",
+    "Saved/Stage1/data/ui_preferences.json": "ce9219f1a58d75d69383ca019642d4e3aa856ccfc0c66b070754125c38428567",
+    "Saved/Stage1/data/video_view.json": "faf16339737ccf057d80698891d2e13622107dc1ee79a5ebee5ba9b922a8cf0b"
+  },
+  "original_files_unchanged": true,
+  "sink_packets": [
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    },
+    {
+      "type": "control",
+      "mode": "hold",
+      "slot": 1,
+      "from_host": "127.0.0.1"
+    }
+  ],
+  "thread_errors": [],
+  "startup_worker_errors": [
+    "Traceback (most recent call last):\n  File \"Scripts\\LauncherModes\\verify.py\", line 288, in startup\n    realtime.start('realtime')\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^\n  File \"Launcher\\runtime.py\", line 377, in start\n    self._resolve_realtime_origin()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"Launcher\\runtime.py\", line 312, in _resolve_realtime_origin\n    raise RuntimeError('No fresh real GPS fix. Check the UAV connection and GPS, then retry. / '\n                       '未取得有效实时定位，请检查无人机连接和 GPS 后重新启动实时模式。')\nRuntimeError: No fresh real GPS fix. Check the UAV connection and GPS, then retry. / 未取得有效实时定位，请检查无人机连接和 GPS 后重新启动实时模式。\n"
+  ],
+  "cleanup": {
+    "errors": [],
+    "threads_alive": [],
+    "owned_processes": [
+      {
+        "role": "Backend",
+        "pid": 141552,
+        "start_time": 1793341295.0892057,
+        "executable": "Backend\\build\\Release\\DroneBackend.exe",
+        "owned": true,
+        "exit_code": 1
+      },
+      {
+        "role": "Backend",
+        "pid": 129436,
+        "start_time": 1793341304.2857823,
+        "executable": "Backend\\build\\Release\\DroneBackend.exe",
+        "owned": true,
+        "exit_code": 1
+      }
+    ],
+    "all_owned_processes_exited": true,
+    "all_runtime_ownership_empty": true
+  }
+}

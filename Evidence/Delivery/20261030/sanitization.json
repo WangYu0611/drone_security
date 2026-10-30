@@ -1,0 +1,718 @@
+{
+  "policy_version": 1,
+  "created_at_utc": "20261030T080205.288332Z",
+  "scope": "Explicitly selected LauncherModes evidence and three Mock/component verification runs only",
+  "excluded": [
+    "tracked historical Evidence",
+    "Evidence/Delivery/20261030/sanitization.json",
+    "all files outside Evidence",
+    "all other untracked verification runs",
+    "all Saved files including precise native computer-location screenshots/logs"
+  ],
+  "raw_backup_root": "Saved/Delivery/raw-evidence/20261030T080205.288332Z",
+  "summary": {
+    "mode": "apply",
+    "files": 50,
+    "files_changed": 36,
+    "original_bytes": 2349111,
+    "image_files": 3,
+    "image_formats": {
+      "JPEG": 3
+    },
+    "xml_files": 0,
+    "remaining_secret": 0,
+    "categories": {
+      "account": 10,
+      "account-path": 198,
+      "machine": 10,
+      "machine-id": 10,
+      "machine-network": 15,
+      "repository-path": 307,
+      "ue-instance": 25,
+      "ue-session": 10
+    }
+  },
+  "preserved": [
+    "failed evidence",
+    "all lines and line endings",
+    "JSON keys and non-string values",
+    "test result and identity strings",
+    "XML hierarchy, test identities and numeric attributes",
+    "screenshot bytes",
+    "Mock business IDs"
+  ],
+  "image_review": {
+    "count": 3,
+    "actual_formats": {
+      "JPEG": 3
+    },
+    "filename_extensions": {
+      ".png": 3
+    },
+    "status": "VISUALLY_REVIEWED_NO_PRIVATE_INFORMATION",
+    "method": "Direct image inspection; no image editing",
+    "paths": [
+      "Evidence/LauncherModes/2026-10-30/screenshots/demo-final.png",
+      "Evidence/LauncherModes/2026-10-30/screenshots/demo-initial.png",
+      "Evidence/LauncherModes/2026-10-30/screenshots/launcher.png"
+    ]
+  },
+  "files": [
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/acceptance.json",
+      "changed": false,
+      "original_sha256": "8bb76abb58cb10b2570fbb6c4913303967edfffc954b955eb9a6b6ee73baf2d7",
+      "public_sha256": "8bb76abb58cb10b2570fbb6c4913303967edfffc954b955eb9a6b6ee73baf2d7",
+      "original_bytes": 6356,
+      "public_bytes": 6356,
+      "categories": {},
+      "lines": 173
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/integration/run-20261030T062134.291125Z/result.json",
+      "changed": true,
+      "original_sha256": "3c0d5f647e92d20d7c8880494243ecb451e41f05b15123f91361d8f3ad9168a8",
+      "public_sha256": "70daa28cc01a6a0b1f0111c6f551501063587254b31f7be68cb400ef2c5f1973",
+      "original_bytes": 20526,
+      "public_bytes": 19982,
+      "categories": {
+        "repository-path": 16
+      },
+      "lines": 563,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/integration/run-20261030T062134.291125Z/result.json"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/integration/run-20261030T062522.993580Z/result.json",
+      "changed": true,
+      "original_sha256": "9b057793e792d00613cde10999ac15700524733f2b47ac51557071d24b5ea1f5",
+      "public_sha256": "4da797c2d335a36f8b45e6688bb4d09380a72f9450a86d77548736275a9db073",
+      "original_bytes": 44418,
+      "public_bytes": 43398,
+      "categories": {
+        "repository-path": 30
+      },
+      "lines": 1568,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/integration/run-20261030T062522.993580Z/result.json"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/location-availability/computer-service-probe-before-firstfix-wait.json",
+      "changed": false,
+      "original_sha256": "f6ef26505a7e49b2ca16992c34205eec088df53c54ee6819a958b527a67d5f38",
+      "public_sha256": "f6ef26505a7e49b2ca16992c34205eec088df53c54ee6819a958b527a67d5f38",
+      "original_bytes": 165,
+      "public_bytes": 165,
+      "categories": {},
+      "lines": 5
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/location-availability/computer-service-probe-final.json",
+      "changed": false,
+      "original_sha256": "d2fb360b37af52feadb9e27706d84aa2893cbe0fdcdfe22427def38cc66867f1",
+      "public_sha256": "d2fb360b37af52feadb9e27706d84aa2893cbe0fdcdfe22427def38cc66867f1",
+      "original_bytes": 114,
+      "public_bytes": 114,
+      "categories": {},
+      "lines": 6
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/backend-build.log",
+      "changed": true,
+      "original_sha256": "77762c9faa85561dd88033fad60392b41c272d259b26b05fa163e86bfae05f66",
+      "public_sha256": "068c2252d6a3bff27b1ff8c990b6262894d086e56d9ec4202345030b7e679d96",
+      "original_bytes": 176,
+      "public_bytes": 145,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 4,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/backend-build.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/build-fixes.log",
+      "changed": true,
+      "original_sha256": "44e66382e7f90902049a721c7c57176aa091b38424a09b6565ca39bd30f128bd",
+      "public_sha256": "88b63c5a5ec5ed2c87bf5da8c148abfc2a5ad852535b36ecfb58ad23e418f8e4",
+      "original_bytes": 7118,
+      "public_bytes": 6979,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 95,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/build-fixes.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/environment-check.log",
+      "changed": false,
+      "original_sha256": "b5a8f4e288e61bcfbe9a6b65fe09df62fb13760a9d471e26e14801c1ff6fddfe",
+      "public_sha256": "b5a8f4e288e61bcfbe9a6b65fe09df62fb13760a9d471e26e14801c1ff6fddfe",
+      "original_bytes": 97,
+      "public_bytes": 97,
+      "categories": {},
+      "lines": 1
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/fixes-tests.log",
+      "changed": true,
+      "original_sha256": "6dbbb223d9c092a1d5eb9da9802cfe70864c73759c4c21c7a10de43a9646dacf",
+      "public_sha256": "9ef971ce5f64220dbbfcc98bcbd045ce3b36dfbf3c11f61efd4f038186203450",
+      "original_bytes": 1251,
+      "public_bytes": 1152,
+      "categories": {
+        "repository-path": 3
+      },
+      "lines": 3,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/fixes-tests.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/launcher-tests-before-status-clear.log",
+      "changed": true,
+      "original_sha256": "418dee5f1bb3dfaacbcb7bc3b16c2d205cdf903b7c707665e35ea4255f0b69b0",
+      "public_sha256": "92ede2ad4ddafd7f0bb07d5cb481ab5f60bb9bedd0ecec1cf8e95e990220911b",
+      "original_bytes": 9117,
+      "public_bytes": 9014,
+      "categories": {
+        "account-path": 9,
+        "repository-path": 1
+      },
+      "lines": 70,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/launcher-tests-before-status-clear.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/launcher-tests-final.log",
+      "changed": true,
+      "original_sha256": "6afce776b304c63d25d9f9d749760ab6b71f63c33af84df7016023960293297a",
+      "public_sha256": "6ca5f013ba87d2b98fa8e05c48c75be76f17120d254c7cb3c86d7e23c2e42832",
+      "original_bytes": 11516,
+      "public_bytes": 11444,
+      "categories": {
+        "account-path": 9
+      },
+      "lines": 76,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/launcher-tests-final.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/transport.log",
+      "changed": true,
+      "original_sha256": "428538ca4397a759d15ba1adc3273104eacd6388427160d666ef114171944201",
+      "public_sha256": "d9bafc25b78a28373cb02231c4094d81b49fbea29a361b7075c3073b2272e5ea",
+      "original_bytes": 1477,
+      "public_bytes": 1446,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 17,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/transport.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/ue-build-2.log",
+      "changed": true,
+      "original_sha256": "87cdf1613fd7404bf07f8b8d7728441e3a748b3b215c69fec3dd0a6ab07ce5cd",
+      "public_sha256": "374d6adfb32991859bc1fbb6607742f2a3d36a97b7c18d20f4ccb0182240501f",
+      "original_bytes": 3210,
+      "public_bytes": 3071,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 41,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/ue-build-2.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/logs/ue-build.log",
+      "changed": true,
+      "original_sha256": "26fb28a4954deef476c3f68f0017b393b05ff83edc95a3e2129b9ae5c6bf6b27",
+      "public_sha256": "0183371fc64deb3ad142e9b977fb6a8f4dd743abb47bb68cf4058ec7ef5a7a9d",
+      "original_bytes": 5214,
+      "public_bytes": 5075,
+      "categories": {
+        "account-path": 2,
+        "repository-path": 4
+      },
+      "lines": 72,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/LauncherModes/2026-10-30/logs/ue-build.log"
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/preview.md",
+      "changed": false,
+      "original_sha256": "a9bbe682ac9bfbc9b328745a26c7002bc56283cf73f56f6f860741c23aec6989",
+      "public_sha256": "a9bbe682ac9bfbc9b328745a26c7002bc56283cf73f56f6f860741c23aec6989",
+      "original_bytes": 1708,
+      "public_bytes": 1708,
+      "categories": {},
+      "lines": 25
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/provenance.json",
+      "changed": false,
+      "original_sha256": "1b4cdc8ff4c737b7adeaad31cb4fe97ac382806a73add4a2005fe88f5f1f4ca2",
+      "public_sha256": "1b4cdc8ff4c737b7adeaad31cb4fe97ac382806a73add4a2005fe88f5f1f4ca2",
+      "original_bytes": 6477,
+      "public_bytes": 6477,
+      "categories": {},
+      "lines": 117
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/screenshots/demo-final.png",
+      "changed": false,
+      "original_sha256": "094f0a635ede3a2d76fc182949d4a106d344882d7d84be44f3d854863f4ea8a2",
+      "public_sha256": "094f0a635ede3a2d76fc182949d4a106d344882d7d84be44f3d854863f4ea8a2",
+      "original_bytes": 163462,
+      "public_bytes": 163462,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/screenshots/demo-initial.png",
+      "changed": false,
+      "original_sha256": "0f00b48e92a2479b6a47562e4604d8122af16b61dcb93fcd4b2f79f198d9db06",
+      "public_sha256": "0f00b48e92a2479b6a47562e4604d8122af16b61dcb93fcd4b2f79f198d9db06",
+      "original_bytes": 165887,
+      "public_bytes": 165887,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/LauncherModes/2026-10-30/screenshots/launcher.png",
+      "changed": false,
+      "original_sha256": "01fb26005c88ec979e0526b28ccc6e362251f200024e994954296350c790b1e7",
+      "public_sha256": "01fb26005c88ec979e0526b28ccc6e362251f200024e994954296350c790b1e7",
+      "original_bytes": 65626,
+      "public_bytes": 65626,
+      "categories": {}
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/editor.log",
+      "changed": true,
+      "original_sha256": "87e501e77272b371ea6af562f9f8e7db3e71c138853389d5889d23f983a92a60",
+      "public_sha256": "a3c4226f2358c83a79f226d5421d394b7f7fcad01b0d78ea64cbb699d5843d7b",
+      "original_bytes": 314614,
+      "public_bytes": 313218,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2236,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/index.json",
+      "changed": true,
+      "original_sha256": "793db6b6c01b5b0825e39307423feb344bec65b2c494913a396b0ba55881bebe",
+      "public_sha256": "1c75757a2bc99d0ec4e8e6e4808d449a27345cb6be4b5e9bf5bc107e2b06c1fe",
+      "original_bytes": 1109,
+      "public_bytes": 1117,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/invocation.json",
+      "changed": true,
+      "original_sha256": "3c25128e6946846cdda4ea8c1081f105b06bfc8f2606e0fdccc96cc05c02a65b",
+      "public_sha256": "2d83561b51de468e8338e4bd0c914d8fb5038d2f246f79a00e78185d4aa45ba2",
+      "original_bytes": 1176,
+      "public_bytes": 1006,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 22,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/result.json",
+      "changed": true,
+      "original_sha256": "47c00ba01397a656c60d44f5b92a40c1107d4f462db6af6daa9e887729a79b9b",
+      "public_sha256": "b5a5e9af0fea4f605be872a7c79b42ace59d81d55e488f7de56091190fb307cf",
+      "original_bytes": 675,
+      "public_bytes": 641,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793340609227467900/00-DroneOps.Map.StartupLaunchArguments/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/run.json",
+      "changed": true,
+      "original_sha256": "40b6154de3d6d2f4f8589b471a86d778b643aa8adb50150fd506a85cc0baca9f",
+      "public_sha256": "f756f5e61b2a4e889290e567d3605b8c303e12da4b99c20264c9030a68ec8af0",
+      "original_bytes": 526,
+      "public_bytes": 492,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793340609227467900/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793340609227467900/summary.json",
+      "changed": true,
+      "original_sha256": "2844272b63d949367a6e7b2bcf3da90f8f0e7d4e4b3ad1cb8e6210dc7c0db2b7",
+      "public_sha256": "dc187acd99d9bc79a91665eb7923a21078371667900aa73bcf919524828774e5",
+      "original_bytes": 735,
+      "public_bytes": 701,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 29,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793340609227467900/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/editor.log",
+      "changed": true,
+      "original_sha256": "a46a309a25ca613f5560882dd1734ab0694790b67476404bfe1c23873c7bed25",
+      "public_sha256": "5955df722b11ff7571523c5e5549c7b6c0aa3c3ffbc97ef920d12f8043630d59",
+      "original_bytes": 331615,
+      "public_bytes": 330219,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2372,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/index.json",
+      "changed": true,
+      "original_sha256": "1e3224f3ddfcdaa2cc08c2de38d2cc393a4db7c8cd3c06ca86b154b5df5f8f29",
+      "public_sha256": "3cc198476d4a610070c256e88ce098a199436ada9ab9a774bb8ec6af44e26475",
+      "original_bytes": 1126,
+      "public_bytes": 1134,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/invocation.json",
+      "changed": true,
+      "original_sha256": "9fd2da9359036a20a07c7af3a1fdf8312f710753d249c017e26c97f524828a59",
+      "public_sha256": "7004847ced5b477e899e34d67bb51f07bd6e4950a32ed76596fe4bf6beabbff6",
+      "original_bytes": 1167,
+      "public_bytes": 997,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/result.json",
+      "changed": true,
+      "original_sha256": "68493f7a2b4a4a7704e79a13cc52f1d8c95a5d5ec06abc96d8e0e0b90449e2e1",
+      "public_sha256": "0d090ef5865d13dcddcde1dd6b06b8723d206b3d126f3d221659efb0d63fe139",
+      "original_bytes": 679,
+      "public_bytes": 645,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/00-DroneOps.Map.StartupLaunchArguments/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/editor.log",
+      "changed": true,
+      "original_sha256": "b7143cee34f901a7b7ed8329f4bbc11dfd47524e991beef713d2b43ba1f76faf",
+      "public_sha256": "a84b038f4691a02b138e0d997a550c4cba4d8f733446fb15c1804058fc7c1923",
+      "original_bytes": 366859,
+      "public_bytes": 365370,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 37,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2647,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/index.json",
+      "changed": true,
+      "original_sha256": "11b39b2f5a7a63adc84d6847f94e8501eb38303dcfb3340117d02351805639d9",
+      "public_sha256": "baf8b32c08651e496766c9804a371a3f980eeebce3c05338f6848db1dad004d6",
+      "original_bytes": 11224,
+      "public_bytes": 11201,
+      "categories": {
+        "machine": 1,
+        "repository-path": 1,
+        "ue-instance": 3
+      },
+      "lines": 393,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/invocation.json",
+      "changed": true,
+      "original_sha256": "1477c9dc7490abc982899344dd3e11287d16d0511c57bc9070b61bd932f666d4",
+      "public_sha256": "98a5a7dd465bfa696b7960c253642dbd55902f8124c50f6a015ce30896ff0ae0",
+      "original_bytes": 1164,
+      "public_bytes": 994,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 21,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/result.json",
+      "changed": true,
+      "original_sha256": "a68ece5de4515b78c0a4219403bfda07711cccb3b302750c5fefa3cef14e3f51",
+      "public_sha256": "e1abb39be504b7b7a8c809746fe4a86b7a588ca8a31ef543459948e9d3f3b781",
+      "original_bytes": 676,
+      "public_bytes": 642,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/01-DroneOps.Figma.CommandPresentation/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/run.json",
+      "changed": true,
+      "original_sha256": "84a97a64079afb5edd4d23f4fb92489ccb61e29f63609590d0213781b0d2d89e",
+      "public_sha256": "4055f53862cdb327c8ac4b394be578e6ea39b28016ca1d6e53a5a61fa6659082",
+      "original_bytes": 518,
+      "public_bytes": 484,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793341567121877000/summary.json",
+      "changed": true,
+      "original_sha256": "be2c226d105f29af1c68a6220c42afdcfcc80e29679d158a30bca47d22ed9a84",
+      "public_sha256": "0d672531efed568612dd40e390e12284a67b41097b79aaa32fd02d046b645b6c",
+      "original_bytes": 1472,
+      "public_bytes": 1404,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793341567121877000/summary.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/editor.log",
+      "changed": true,
+      "original_sha256": "aeec3a55e010c6988204e2d66d40d70fe7b47e635c90d2e7f2dc999f57d64cea",
+      "public_sha256": "41170ca6e7c124f8e03ad1680d14190ddebdd8e1c4efb31fd21d410fe8032006",
+      "original_bytes": 313989,
+      "public_bytes": 312593,
+      "categories": {
+        "account": 2,
+        "account-path": 36,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 34,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2232,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/index.json",
+      "changed": true,
+      "original_sha256": "4cf21914226240174157a310be40ed7894923fd37cb09753c0f77d105522f192",
+      "public_sha256": "b5191ab99807f829e25fc4834a60896d9e1b3624cad07fa6ed2d6433e1db5a04",
+      "original_bytes": 1109,
+      "public_bytes": 1117,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 44,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/invocation.json",
+      "changed": true,
+      "original_sha256": "8dc134a0330c96e9058c0bd8056a928bbcbb359254350385bb7adec655996546",
+      "public_sha256": "58289473d4de5f71ee42c24bf29c958cb622e9319c5d64b06da2318d84a4280a",
+      "original_bytes": 1176,
+      "public_bytes": 1006,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 22,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/result.json",
+      "changed": true,
+      "original_sha256": "2be2630cfd8d32ac78ac7ec1d7e72ca068c854774057e8b591cf7fa49de0eaea",
+      "public_sha256": "f193b0377bdec7bc8e57c454f784e406e76d58ad7a45797ef94aabb8a14bd36e",
+      "original_bytes": 675,
+      "public_bytes": 641,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/00-DroneOps.Map.StartupLaunchArguments/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/editor.log",
+      "changed": true,
+      "original_sha256": "073cff7e5ceb0834eae890e386c7ec7782c65884f785d09f40d83fc635e9938b",
+      "public_sha256": "6fcd8d9ce6c33d44bfddd5ef73c12d842b7e8dcb5dfd8629e3f29495c78f8be9",
+      "original_bytes": 352872,
+      "public_bytes": 350563,
+      "categories": {
+        "account": 2,
+        "account-path": 30,
+        "machine": 1,
+        "machine-id": 2,
+        "machine-network": 3,
+        "repository-path": 65,
+        "ue-instance": 2,
+        "ue-session": 2
+      },
+      "lines": 2582,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/editor.log"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/index.html",
+      "changed": false,
+      "original_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "public_sha256": "175cb8553a1df1d901f371e50f9846d2e3f7d86030c04aa9bbbb838ed708f6c6",
+      "original_bytes": 23356,
+      "public_bytes": 23356,
+      "categories": {},
+      "lines": 626
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/index.json",
+      "changed": true,
+      "original_sha256": "ff77b6995a39ec3799d9beb96c45ba2b91964f73d480d2fb143c9b3855d35ca0",
+      "public_sha256": "487b6091426cf74e8d9cc18c25360cd06a1e7d80026679a610a7c3de7d45ede3",
+      "original_bytes": 9461,
+      "public_bytes": 9469,
+      "categories": {
+        "machine": 1,
+        "ue-instance": 3
+      },
+      "lines": 345,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/index.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/invocation.json",
+      "changed": true,
+      "original_sha256": "d39fc71e5123955a6cc374edf2aced5a3be01e6029dc54446a457be8e1ef323f",
+      "public_sha256": "db7fdfbb6b86f02abfc23cf5344c03facc471c08bb1f2e71b97747dfb9091fd9",
+      "original_bytes": 1161,
+      "public_bytes": 991,
+      "categories": {
+        "repository-path": 5
+      },
+      "lines": 22,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/invocation.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/result.json",
+      "changed": true,
+      "original_sha256": "2612108ebfd358afccd91b17f1e0cbabcbb30a40518cc3f3f09ceba58299f3ef",
+      "public_sha256": "bcf11048f9ac2bd115b4c6fa4f32b28fc9bf97c9db5839df95c136e8a8582a7a",
+      "original_bytes": 660,
+      "public_bytes": 626,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 27,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/01-DroneOps.Map.BackendFleetScene/result.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/run.json",
+      "changed": true,
+      "original_sha256": "36fe10f3a0d723ad05ca89bd278ff09935f7c450b88729c33b7c702bfd84bc37",
+      "public_sha256": "2151f994b40c064fc0614f571fe487e669fd6fb99c2570794cf8900f23768bbc",
+      "original_bytes": 526,
+      "public_bytes": 492,
+      "categories": {
+        "repository-path": 1
+      },
+      "lines": 11,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/run.json"
+    },
+    {
+      "path": "Evidence/PlanConfiguration/verification-1793345691116023500/summary.json",
+      "changed": true,
+      "original_sha256": "9ba03504a58e84838fc0e38c0dc9fc0bc709d0ab98ff68d290f0e2bf8590a8ec",
+      "public_sha256": "c25976277a45c404bfa1b8cf20608aafedfc37b34e98c7bec9869d8c8c010db6",
+      "original_bytes": 1452,
+      "public_bytes": 1384,
+      "categories": {
+        "repository-path": 2
+      },
+      "lines": 56,
+      "raw_backup": "Saved/Delivery/raw-evidence/20261030T080205.288332Z/Evidence/PlanConfiguration/verification-1793345691116023500/summary.json"
+    }
+  ],
+  "selected_prefixes": [
+    "Evidence/LauncherModes/",
+    "Evidence/PlanConfiguration/verification-1793340609227467900/",
+    "Evidence/PlanConfiguration/verification-1793341567121877000/",
+    "Evidence/PlanConfiguration/verification-1793345691116023500/"
+  ]
+}

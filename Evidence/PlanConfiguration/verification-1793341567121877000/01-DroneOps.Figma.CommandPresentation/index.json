@@ -1,0 +1,393 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "<MACHINE>",
+			"instance": "<UE_INSTANCE_2917bf771be5>",
+			"instanceName": "<UE_INSTANCE_6f13f0efd10f>",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (26H2) [10.0.26300.9711] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 3060 Laptop GPU",
+			"cPUModel": "AMD Ryzen 7 5800H with Radeon Graphics         ",
+			"rAMInGB": 32,
+			"renderMode": "D3D12_SM6",
+			"rHI": "D3D12 (SM6)",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.10.30-06.27.53",
+	"succeeded": 0,
+	"succeededWithWarnings": 1,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 28.081741333007812,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CommandPresentation",
+			"fullTestPath": "DroneOps.Figma.CommandPresentation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"<UE_INSTANCE_2917bf771be5>"
+			],
+			"duration": 28.081741333007812,
+			"dateTime": "2026.10.30-06.27.25",
+			"entries": [
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Figma evidence: Saved/FigmaQA/20261030-062725",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogTemp: [DroneNetworkManager] Config check: BackendBaseUrl=http://127.0.0.1:19960  WebSocketUrl=ws://127.0.0.1:19961/ws  PollIntervalSec=3.0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogUE5DroneControl: MultiDroneManager: No RealTimeDroneReceiver found in level",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.25"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: invalid HTTP response code received. URL: https://api.epicgames.dev/sdk/v1/default?platformId=WIN, HTTP code: 0, content length: 0, actual payload size: 0",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: request failed, libcurl error: 35 (SSL connect error)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 0 (  Trying 127.0.0.1:7897...)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 1 (Connected to 127.0.0.1 (127.0.0.1) port 7897)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 2 (CONNECT tunnel: HTTP/1.1 negotiated)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 3 (allocate connect buffer)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 4 (Establish HTTP proxy tunnel to api.epicgames.dev:443)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 5 (CONNECT phase completed)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 6 (CONNECT tunnel established, response 200)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 7 (schannel: disabled automatic use of client certificate)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 8 (ALPN: curl offers http/1.1)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 9 (schannel: failed to receive handshake, SSL/TLS connection failed)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 10 (Closing connection)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: 0000026B0B2E1800: libcurl info message cache 11 (schannel: shutting down SSL/TLS connection with api.epicgames.dev port 443)",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogHttp: Retry exhausted on https://api.epicgames.dev/sdk/v1/default?platformId=WIN",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogEOS: Failed to connect to the backend. ServiceName=[SDKConfig], OperationName=[GetPlatformConfigRoute], Url=[<Redacted>]",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Warning",
+						"message": "LogEOSSDK: LogEOS: SDK Config Platform Update Request Failed, Result Code: EOS_NoConnection, Retrying after 2.656392 seconds",
+						"context": "log",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.30"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 01-overview 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.34"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 02-devices 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.36"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 03-alerts 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.37"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 04-logs 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.39"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 05-plans 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.41"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 06-new-plan 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.42"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 07-fleet 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.45"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 08-label 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.47"
+				},
+				{
+					"event":
+					{
+						"type": "Info",
+						"message": "Rendered screenshot 09-fleet-en 1920x1083",
+						"context": "",
+						"artifact": "00000000000000000000000000000000"
+					},
+					"filename": "",
+					"lineNumber": -1,
+					"timestamp": "2026.10.30-06.27.50"
+				}
+			],
+			"warnings": 19,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

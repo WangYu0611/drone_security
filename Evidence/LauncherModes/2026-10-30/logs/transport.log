@@ -1,0 +1,17 @@
+PASS Backend advertises server-side telemetry receive time for real-time startup compatibility
+PASS Natural REST startup has fixed Mock home and no hardware liveness or received timestamp
+PASS WebSocket and REST expose the same fixed location and provenance without invented received time
+PASS Refresh and idle telemetry do not move the Mock home or invent Online
+PASS Singleton starts through normal controller and repeated occupancy rejects
+PASS Owned restart restores completed execution position and stays there
+PASS Explicit reset preserves history and shares the acknowledged epoch across REST and WS
+PASS Reset writes a complete pre-reset history snapshot before acknowledging
+PASS A later same-epoch move starts from formation and reset retry never rewinds it
+PASS Backend-only restart preserves the current reset epoch and subsequent movement
+PASS Singleton does not bypass client role authorization
+PASS Concurrent first-packet REST hydration never labels old or empty GPS received
+PASS Received UDP has one server receipt time shared atomically by REST and WebSocket
+PASS Connection loss replaces cached Online while GET and loss detection preserve the last packet receipt time
+PASS Only a new UDP packet advances receipt time; lost hardware and invalid GPS never fall back to Mock
+PASS Reset excludes received hardware even after connection loss and invalid GPS
+Evidence: Saved\MockPositionQA\transport-1793340426913

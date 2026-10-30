@@ -1,0 +1,41 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UE5DroneControlEditor Win64 Development -Project=UE5DroneControl.uproject -WaitMutex -NoHotReloadFromIDE -NoUBTMakefiles -NoUBA
+Log file: <USER>\AppData\Local\UnrealBuildTool\Log.txt
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+Using 'git status' to determine working set for adaptive non-unity build ().
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for UE5DroneControlEditor (working set of source files changed)
+UHT compiled-in object format Default
+UHT processed UE5DroneControlEditor in 14.3426801 seconds (0 generated files written)
+Building UE5DroneControlEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35222 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UE5DroneControl unity file: CommandTacticalMap.cpp, MapStartupSettings.cpp, Stage1HeaderWidget.cpp, MapStartupLaunchArgumentsTest.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 11 action(s)
+  CPU 8 physical cores, 16 logical cores
+  Memory 31.9 GB physical, 26.23 GB/38.54 GB committed
+  UBA Storage capacity 40 GB
+[1/11] Compile [x64] CommandCenterPanel.cpp [NoUba]
+[2/11] Compile [x64] MapPointMoveTest.cpp [NoUba]
+[3/11] Compile [x64] CommandTacticalMap.cpp [NoUba]
+[4/11] Compile [x64] CommandCenterV2Test.cpp [NoUba]
+[5/11] Compile [x64] FigmaCommandTest.cpp [NoUba]
+[6/11] Compile [x64] CommandShellWidget.cpp [NoUba]
+UbaSessionServer - Killed process Module.UE5DroneControl.gen.cpp (Compile [x64]) (26.3s) - Low on memory (48.2gb/49.5gb). Kill threshold is 47.0gb
+[7/11] Compile [x64] CommandShellFigma.cpp [NoUba]
+[8/11] Compile [x64] Module.UE5DroneControl.gen.cpp [NoUba]
+[9/11] Link [x64] UnrealEditor-UE5DroneControl.lib [NoUba]
+  ￕ�ￔￚﾴﾴﾽﾨ﾿￢ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.lib ﾺￍﾶￔￏ￳ Intermediate/Build/Win64/x64/UnrealEditor/Development/UE5DroneControl/UnrealEditor-UE5DroneControl.exp
+[10/11] Link [x64] UnrealEditor-UE5DroneControl.dll [NoUba]
+[11/11] WriteMetadata UE5DroneControlEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 50.41 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 67.47 seconds
+Trace written to file <USER>\AppData\Local\UnrealBuildTool\Trace.uba with size 9.9kb

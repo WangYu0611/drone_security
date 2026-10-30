@@ -1,17 +1,27 @@
 # Stage 1 使用与演示操作手册
 
-适用：一台 Windows 电脑、Launcher + Command / Map / Video，**Mock 软件业务闭环演示**。本手册于 2026-10-28 按当前源码、配置、界面文案和既有验收记录核对；本次文档更新没有重新运行完整原生演示或真实设备测试。主流程约 13 分钟，框选移动、手动接管与恢复演示可另行安排。
+适用：一台 Windows 电脑、Launcher + Command / Map / Video，**Mock 软件业务闭环演示**。本手册于 2026-10-30 按当前源码、配置、界面文案和既有验收记录核对；本次文档更新没有重新运行完整原生演示或真实设备测试。主流程约 13 分钟，框选移动、手动接管与恢复演示可另行安排。
 
 ## 启动前准备
 
 1. 在当前克隆的仓库根目录运行 `DroneSecurityLauncher.cmd`。本开发机的项目目录是 `D:\CodexPublish\drone_security`；其他电脑使用自己的克隆目录。新电脑先按 [Windows 首次运行指南](../First-Run-Windows.md) 安装依赖、下载 Git LFS 资源、编译并配置 Cesium 地图授权。源码更新后也要重新编译，不能用旧 EXE / DLL 代替新代码。
-2. 正常 Launcher 使用本机 Backend `19880/19881`，依次启动 Backend、Command、Map、Video。基础配置在 `Launcher/config.json`，本机覆盖放在不提交的 `Launcher/config.local.json`。先运行 `CheckDroneSecurity.cmd`，再启动并确认四个组件就绪、地图可见、窗口可聚焦；窗口出现不等于连接就绪。
-3. 当前默认是在线实景 3D，起点为新加坡 The Meadow 草地。Map 默认中心为纬度 `1.279445`、经度 `103.862188`、椭球高 `15 m`；Mock 队列向东间隔 `3 m`。用“定位 / Locate”查看近处无人机，或按需要切换 2D / 3D。`15 m` 不是离地高度，也不代表自动贴地；地图中心与已有方案、航线不会自动一起迁移。详见 [地图起点与缓存](../MarinaBayStartup.md)。
-4. **正常 Launcher 每次新建其拥有的 Backend 都会重置符合条件的 Mock 会话。** 当前默认 `mock_reset_on_start=true`：符合条件的活动 Mock 执行会终止，预约执行会取消，无人机回到启动队列；历史和重置前备份仍保留。附加到已有 Backend、仅重启 Command / Map / Video 不会触发该重置。需要保留执行用于恢复演示时，先阅读下方“重启与恢复”。
+2. 启动器默认等待选择模式，演示时点 **“DEMO 启动（新加坡）”**。DEMO 使用本机 Backend `19880/19881` 和 `Saved/Stage1/data`，依次启动 Backend、Command、Map、Video。基础配置在 `Launcher/config.json`，本机覆盖放在不提交的 `Launcher/config.local.json`；默认 `auto_start=false`，明确改为 `true` 时按 `startup_mode`（默认 `demo`）自动启动。先运行 `CheckDroneSecurity.cmd`，再启动并确认四个组件就绪、地图可见、窗口可聚焦；窗口出现不等于连接就绪。
+3. DEMO 使用在线实景 3D，起点为新加坡 The Meadow 草地。Map 启动中心为纬度 `1.279445`、经度 `103.862188`、椭球高 `15 m`；Mock 队列向东间隔 `3 m`。用“定位 / Locate”查看近处无人机，或按需要切换 2D / 3D。`15 m` 不是离地高度，也不代表自动贴地；地图中心与已有方案、航线不会自动一起迁移。详见 [地图起点与缓存](../MarinaBayStartup.md)。
+4. **DEMO 每次新建其拥有的 Backend 都会按设置重置符合条件的 Mock 会话。** 当前默认 `mock_reset_on_start=true`：符合条件的活动 Mock 执行会终止，预约执行会取消，无人机回到启动队列；历史和重置前备份仍保留。附加到已有 Backend、仅重启 Command / Map / Video 不会触发该重置。需要保留执行用于恢复演示时，先阅读下方“重启与恢复”。
 5. 新安装默认创建四架明确标注的 Mock UAV，视频地址为空。已有运行目录保留自己的登记、视频地址、Home、方案及历史，不能把默认数据当成当前现场状态。正式演示前检查实际任务占用和视频源；需要播放时，预先配置并验证有授权的演示源。无源时可展示空态和目标切换，不宣称已经直播。
 6. 在线地图需要地图服务授权和可用网络；缓存不会保证完全离线可用。若网络依赖代理，按首次运行指南设置本机代理并预先确认加载。正式演示前完成着色器编译与地图预热，不把冷启动时间计入 13 分钟操作流程。
 
 本稿的开始、暂停、恢复、返航和移动均指 Mock。使用 Launcher 的 **Focus** 放大窗口，**Arrange Windows** 恢复总览。普通配置操作与正在运行的任务控制分开显示；开始其他方案的配置，不代表原任务已暂停。
+
+### 实时入口与本演示的区别
+
+**“实时模式启动”** 使用 `8080/8081` 和 `Backend/config.yaml`，从仓库根目录运行，沿用该配置的注册表、UDP `port_map` 和业务数据；本机可通过 `realtime_backend_config` 覆盖配置路径。`Saved/Realtime` 保存启动器进程记录、启动器日志、Backend 标准输出和 UE 日志；Backend 自身文件日志仍按所选配置的 `log.file`，默认 `logs/backend.log`。实时分支不播种 Mock UAV、不生成 Mock fixture、不执行启动重置，也不创建或启用 `real_execution.json`、不自动开始飞行任务。
+
+实时原点优先采用后端真实接收、非模拟、在线、有 GPS fix 且接收时间默认不超过 5 秒的有效无人机坐标；优先当前 active UAV，否则选最小 slot。AMSL 高程按与 UE 相同的 `GeoidSeparationMeters` 转为椭球高，配置来自 `Config/DefaultGame.ini` 及本机 `Saved/Config/WindowsEditor/Game.ini`。
+
+有效无人机 GPS 可立即初始化；未取得时，实时启动提供默认 **8 秒**连接发现窗口（`realtime_device_wait`），之后才考虑电脑定位。有真实 `online` / `connecting` 无人机但 GPS 无效时，继续等 GPS，默认上限 **60 秒**，不用电脑位置替代。只有完全没有真实连接时才查询 Windows 系统定位，最长 **15 秒**（`realtime_computer_location_timeout`）。系统不给高度时以 0 m 仅作相机锚点，状态标记估计高程，不作为飞机位置或飞行高度。系统定位禁用、拒绝、不可用或超时就明确报错，不打开 UE 角色，不自动改权限，不猜测 IP 城市，也不回落到新加坡。旧 Backend 缺少定位时间能力时先重新编译。初始化后不因新 GPS 自动切镜头；重启 Map 重新按相同优先级定位。
+
+切换模式前先 **Shutdown System / 关闭系统**。实时关闭不调用 Mock pause，不自动暂停真实执行；外部 Backend 不由 Launcher 停止。合成测试不构成实际电脑定位、无人机 GPS 或物理飞行验收，完整配置步骤见 [首次运行指南](../First-Run-Windows.md#实时模式)。下文 13 分钟流程使用 DEMO。
 
 ## 主流程：创建、部署、执行和查看视频
 
@@ -72,13 +82,13 @@
 
 ## 重启与恢复
 
-正常退出使用 **Shutdown System** 或关闭 Launcher；只有 Launcher 拥有的 Backend 会按提示先持久化暂停活动执行，再停止进程。复用的外部 Backend 不自动暂停或停止，需在业务界面自行处理执行。单组件 **Stop / Restart 不经过这一步统一暂停确认**；操作前先在业务界面暂停或结束需要保护的执行。
+DEMO 正常退出使用 **Shutdown System** 或关闭 Launcher；只有 Launcher 拥有的 Backend 会按提示先持久化暂停活动 Mock 执行，再停止进程。复用的外部 Backend 不自动暂停或停止，需在业务界面自行处理执行。单组件 **Stop / Restart 不经过这一步统一暂停确认**；操作前先在业务界面暂停或结束需要保护的执行。实时模式不发送 Mock pause，也不自动暂停真实执行；不要用下表的 Mock 重置规则推断实时行为。
 
 | 操作 | 当前行为 |
 | --- | --- |
 | 仅用 Launcher 重启 Command、Map 或 Video | 按 Backend 当前快照恢复客户端；不会重置无人机位置，也不会重新创建执行。 |
-| Launcher 附加到已经运行的兼容 Backend | 不执行启动重置，也不接管该外部 Backend 的进程生命周期。 |
-| 默认设置下重启 Launcher 拥有的 Backend，或全停后再启动 | 创建新的 Mock 会话并执行启动重置。符合条件的活动 Mock 执行转为 `ABORTED`，预约执行转为 `CANCELLED`，释放相应占用；位置回到 3 m 启动队列。不能用此流程演示原执行 Resume。 |
+| Launcher 附加到已经运行且模式相符的兼容 Backend | 不执行启动重置，也不接管该外部 Backend 的进程生命周期。 |
+| 默认 DEMO 设置下重启 Launcher 拥有的 Backend，或全停后再点 DEMO 启动 | 创建新的 Mock 会话并执行启动重置。符合条件的活动 Mock 执行转为 `ABORTED`，预约执行转为 `CANCELLED`，释放相应占用；位置回到 3 m 启动队列。不能用此流程演示原执行 Resume。 |
 | 明确把本机 `mock_reset_on_start` 设为 `false` 后启动，或使用同一运行配置和数据目录直接启动 Backend | 不调用 Launcher 启动重置；从已持久化的执行状态恢复。统一关闭前已暂停的执行仍需明确 Resume；切换数据目录不会带回另一目录的执行。 |
 
 需要演示保留执行时，**在下一次启动前**合并以下配置到 `Launcher/config.local.json`，保留该文件中其他本机设置；设置在 Backend 已重置后不能恢复被结束的执行：
@@ -89,7 +99,7 @@
 }
 ```
 
-默认启动重置会在 `Saved/Stage1/data/mock-reset-history` 保存重置前完整文档，并保留方案、部署与历史。自定义 Home 文件不被覆盖，历史路线也不会平移到新起点。检查新会话位置和旧路线是否处于同一区域后再开始任务。真实遥测、真实执行保护以及被跳过的组以 Backend 返回结果为准。
+默认 DEMO 启动重置会在 `Saved/Stage1/data/mock-reset-history` 保存重置前完整文档，并保留方案、部署与历史。自定义 Home 文件不被覆盖，历史路线也不会平移到新起点。检查新会话位置和旧路线是否处于同一区域后再开始任务。真实遥测、真实执行保护以及被跳过的组以 Backend 返回结果为准。
 
 Return Home 和 Abort 可另行展示：返航完成表示模拟位置到达有效 Home，不能证明真实飞机落地；Abort 后不能 Resume。不要同时操作多个组件重启，以免无法判断是哪一步改变了状态。
 
