@@ -471,7 +471,12 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Errors.REAL_ANCHOR_DATUM_UNRESOLVED"),NSLOCTEXT("DroneOps","Errors.REAL_ANCHOR_DATUM_UNRESOLVED","Declare the real anchor altitude datum before execution.")},
 {TEXT("Errors.REAL_ANCHOR_INVALID"),NSLOCTEXT("DroneOps","Errors.REAL_ANCHOR_INVALID","The real coordinate calibration is invalid.")},
 {TEXT("Inspector.Title"),NSLOCTEXT("DroneOps","Inspector.Title","Waypoint Inspector")},
-{TEXT("Inspector.Help"),NSLOCTEXT("DroneOps","Inspector.Help","Click a waypoint to select it. Click the map to add one. Enter or leave a field to update.")},
+{TEXT("Inspector.Help"),NSLOCTEXT("DroneOps","Inspector.Help","Click to select a waypoint or add one on the map. Press Enter or Apply for coordinates. Other fields also update when you leave them.")},
+{TEXT("Inspector.Longitude"),NSLOCTEXT("DroneOps","Inspector.Longitude","Longitude")},
+{TEXT("Inspector.Latitude"),NSLOCTEXT("DroneOps","Inspector.Latitude","Latitude")},
+{TEXT("Inspector.LongitudeHint"),NSLOCTEXT("DroneOps","Inspector.LongitudeHint","Enter longitude")},
+{TEXT("Inspector.LatitudeHint"),NSLOCTEXT("DroneOps","Inspector.LatitudeHint","Enter latitude")},
+{TEXT("Errors.WAYPOINT_COORDINATES_INVALID"),NSLOCTEXT("DroneOps","Errors.WAYPOINT_COORDINATES_INVALID","Enter a longitude from -180 to 180 and a latitude from -90 to 90.")},
 {TEXT("Inspector.Reference"),NSLOCTEXT("DroneOps","Inspector.Reference","Altitude reference")},
 {TEXT("Inspector.Speed"),NSLOCTEXT("DroneOps","Inspector.Speed","Speed (m/s; 0 = default)")},
 {TEXT("Inspector.Coordinates"),NSLOCTEXT("DroneOps","Inspector.Coordinates","Longitude: {0}\nLatitude: {1}")},
@@ -1280,7 +1285,12 @@ if(Source==TEXT("Measured NED position is invalid."))return Get(TEXT("Errors.REA
 if(Source==TEXT("Declare the real anchor altitude datum before execution."))return Get(TEXT("Errors.REAL_ANCHOR_DATUM_UNRESOLVED"));
 if(Source==TEXT("The real coordinate calibration is invalid."))return Get(TEXT("Errors.REAL_ANCHOR_INVALID"));
 if(Source==TEXT("Waypoint Inspector"))return Get(TEXT("Inspector.Title"));
-if(Source==TEXT("Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."))return Get(TEXT("Inspector.Help"));
+if(Source==TEXT("Click to select a waypoint or add one on the map. Press Enter or Apply for coordinates. Other fields also update when you leave them."))return Get(TEXT("Inspector.Help"));
+if(Source==TEXT("Longitude"))return Get(TEXT("Inspector.Longitude"));
+if(Source==TEXT("Latitude"))return Get(TEXT("Inspector.Latitude"));
+if(Source==TEXT("Enter longitude"))return Get(TEXT("Inspector.LongitudeHint"));
+if(Source==TEXT("Enter latitude"))return Get(TEXT("Inspector.LatitudeHint"));
+if(Source==TEXT("Enter a longitude from -180 to 180 and a latitude from -90 to 90."))return Get(TEXT("Errors.WAYPOINT_COORDINATES_INVALID"));
 if(Source==TEXT("Altitude reference"))return Get(TEXT("Inspector.Reference"));
 if(Source==TEXT("Speed (m/s; 0 = default)"))return Get(TEXT("Inspector.Speed"));
 if(Source==TEXT("Longitude: {0}\nLatitude: {1}"))return Get(TEXT("Inspector.Coordinates"));

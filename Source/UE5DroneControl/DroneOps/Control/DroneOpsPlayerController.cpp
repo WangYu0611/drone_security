@@ -5289,6 +5289,20 @@ void ADroneOpsPlayerController::UndoLastEditWaypoint()
 		}
 		break;
 	}
+
+	case EEditUndoKind::EditWaypointParameters:
+	{
+		OpDesc = TEXT("编辑航点参数");
+		for (const FEditWaypointUndoItem& Item : Entry.Items)
+		{
+			if (auto* Path = Item.Path.Get(); Path && Path->Waypoints.IsValidIndex(Item.Index))
+			{
+				Path->Waypoints[Item.Index] = Item.WaypointData;
+				Path->RefreshPath();
+			}
+		}
+		break;
+	}
 	}
 
 	if (GEngine)
@@ -5717,23 +5731,51 @@ bool ADroneOpsPlayerController::GetSelectedMissionWaypoint(FDroneWaypointSaveDat
     const auto& W=Path->Waypoints[Index];Out.Location=Path->GetWaypointWorldLocation(Index);Out.WaitTime=W.WaitTime;Out.SegmentSpeed=W.SegmentSpeed;
     Out.AltitudeReference=W.AltitudeReference;Out.AltitudeOffsetMeters=W.AltitudeOffsetMeters;return true;
 }
-bool ADroneOpsPlayerController::SetSelectedMissionWaypointParameters(double Altitude,double HoverSeconds,bool AGL,double SegmentSpeed) {
+bool ADroneOpsPlayerController::SetSelectedMissionWaypointParameters(double Altitude,double HoverSeconds,bool AGL,double SegmentSpeed,
+    TOptional<double> Longitude,TOptional<double> Latitude) {
     FDroneWaypointSaveData W;int32 Index;
-    if(!bPathEditMode || !GetSelectedMissionWaypoint(W,Index) || !FMath::IsFinite(Altitude) || !FMath::IsFinite(HoverSeconds) || HoverSeconds<0 || (AGL && Altitude<0))return false;
+    if(!bPathEditMode || !GetSelectedMissionWaypoint(W,Index) || !FMath::IsFinite(Altitude) || !FMath::IsFinite(HoverSeconds) ||
+        HoverSeconds<0 || HoverSeconds>TNumericLimits<float>::Max() || (AGL && Altitude<0) ||
+        !FMath::IsFinite(SegmentSpeed) || (SegmentSpeed!=-1 && (SegmentSpeed<0 || SegmentSpeed>15)))return false;
     auto* C=DroneRegistry?DroneRegistry->GetCoordinateService().GetObject():nullptr;
     if(!C || !ICoordinateService::Execute_IsCoordinateSystemReady(C))return false;
     const FVector Geo=ICoordinateService::Execute_WorldToGeographic(C,W.Location);
+    const double Lon=Longitude.Get(Geo.X),Lat=Latitude.Get(Geo.Y);
+    if(!FMath::IsFinite(Lon) || !FMath::IsFinite(Lat) || FMath::Abs(Lon)>180. || FMath::Abs(Lat)>90.)return false;
+    const bool bRelocated=Lon!=Geo.X || Lat!=Geo.Y;
     double Offset=0;
-    // Editing a value must not silently change its datum when 2D/3D surfaces differ.
     if(AGL){
-        if(W.AltitudeReference==TEXT("AGL"))Offset=W.AltitudeOffsetMeters;
-        else if(!TryGetMissionTerrainHeight(Geo.Y,Geo.X,Offset))return false;
+        // Keep the known terrain height for edits at the current point.
+        // Moving an AGL waypoint requires terrain at its destination.
+        if(!bRelocated && W.AltitudeReference==TEXT("AGL"))Offset=W.AltitudeOffsetMeters;
+        else if(!TryGetMissionTerrainHeight(Lat,Lon,Offset))return false;
     }
-    if(!FMath::IsFinite(SegmentSpeed) || (SegmentSpeed!=-1 && (SegmentSpeed<0 || SegmentSpeed>15)))return false;
+    const double EllipsoidHeight=Altitude+Offset;
+    if(!FMath::IsFinite(EllipsoidHeight))return false;
+    const FVector Location=bRelocated || !FMath::IsNearlyEqual(EllipsoidHeight,Geo.Z,1.e-8)
+        ? ICoordinateService::Execute_GeographicToWorld(C,Lat,Lon,EllipsoidHeight) : W.Location;
+    if(Location.ContainsNaN())return false;
+    const FString Reference=AGL?TEXT("AGL"):TEXT("Ellipsoid");
+    const float Speed=SegmentSpeed<0 || Index==0?W.SegmentSpeed:static_cast<float>(SegmentSpeed);
+    const float Wait=static_cast<float>(HoverSeconds);
+    if(Location==W.Location && W.SegmentSpeed==Speed && W.WaitTime==Wait &&
+        W.AltitudeReference==Reference && W.AltitudeOffsetMeters==Offset)return true;
+
     auto* Path=EditSelectedWaypoint->PathActor.Get();auto& Point=Path->Waypoints[Index];
-    if(SegmentSpeed>=0)Point.SegmentSpeed=SegmentSpeed;
-    Point.WaitTime=HoverSeconds;Point.AltitudeReference=AGL?TEXT("AGL"):TEXT("Ellipsoid");Point.AltitudeOffsetMeters=Offset;
-    return Path->UpdateWaypoint(Index,ICoordinateService::Execute_GeographicToWorld(C,Geo.Y,Geo.X,Altitude+Offset));
+    FEditUndoEntry Undo;
+    Undo.Kind=EEditUndoKind::EditWaypointParameters;
+    auto& Previous=Undo.Items.AddDefaulted_GetRef();
+    Previous.Path=Path;Previous.Index=Index;Previous.WaypointData=Point;
+    Point.SegmentSpeed=Speed;
+    Point.WaitTime=Wait;
+    Point.AltitudeReference=Reference;
+    Point.AltitudeOffsetMeters=Offset;
+    if(!Path->UpdateWaypoint(Index,Location)){
+        Point=Previous.WaypointData;
+        return false;
+    }
+    EditUndoStack.Add(MoveTemp(Undo));
+    return true;
 }
 
 void ADroneOpsPlayerController::CancelMissionGesture(){

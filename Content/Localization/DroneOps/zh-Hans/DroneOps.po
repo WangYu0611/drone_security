@@ -1884,8 +1884,28 @@ msgid "Waypoint Inspector"
 msgstr "航点属性"
 
 msgctxt "DroneOps,Inspector.Help"
-msgid "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."
-msgstr "点击航点选择；点击地图新增航点。输入后按回车或离开字段即可更新。"
+msgid "Click to select a waypoint or add one on the map. Press Enter or Apply for coordinates. Other fields also update when you leave them."
+msgstr "点击航点选择，点击地图新增。经纬度输入后按回车或应用，其他字段也可在离开时更新。"
+
+msgctxt "DroneOps,Inspector.Longitude"
+msgid "Longitude"
+msgstr "经度"
+
+msgctxt "DroneOps,Inspector.Latitude"
+msgid "Latitude"
+msgstr "纬度"
+
+msgctxt "DroneOps,Inspector.LongitudeHint"
+msgid "Enter longitude"
+msgstr "请输入经度"
+
+msgctxt "DroneOps,Inspector.LatitudeHint"
+msgid "Enter latitude"
+msgstr "请输入纬度"
+
+msgctxt "DroneOps,Errors.WAYPOINT_COORDINATES_INVALID"
+msgid "Enter a longitude from -180 to 180 and a latitude from -90 to 90."
+msgstr "请输入有效的经纬度，经度范围为 -180 到 180，纬度范围为 -90 到 90。"
 
 msgctxt "DroneOps,Inspector.Reference"
 msgid "Altitude reference"

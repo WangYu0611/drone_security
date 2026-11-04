@@ -11,8 +11,23 @@
 #include "DroneOps/Core/ICoordinateService.h"
 #include "Command/CommandScreenManager.h"
 #include "Command/CommandMapInteractionService.h"
+#include "Containers/StringConv.h"
 #include "Serialization/JsonSerializer.h"
+#include <cstdlib>
 using namespace PlanUI;
+
+namespace
+{
+bool ParseWaypointNumber(const FString& Text,double& Value)
+{
+    const FString Trimmed=Text.TrimStartAndEnd();
+    const auto Number=StringCast<ANSICHAR>(*Trimmed);
+    char* End=nullptr;
+    Value=std::strtod(Number.Get(),&End);
+    return End!=Number.Get() && *End==0 && FMath::IsFinite(Value);
+}
+}
+
 void UMapMissionRouteWidget::NativeOnInitialized(){
     Super::NativeOnInitialized();
     auto* Card=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(Card,MapUI::Surface,FigmaUI::Outline,8,FMargin(18));WidgetTree->RootWidget=Card;
@@ -25,15 +40,23 @@ void UMapMissionRouteWidget::NativeOnInitialized(){
     auto* ErrorRow=WidgetTree->ConstructWidget<UHorizontalBox>();ErrorBanner->SetContent(ErrorRow);auto* Disc=MapUI::Icon(WidgetTree,TEXT("error-disc"),FVector2D(17));ErrorRow->AddChildToHorizontalBox(Disc)->SetVerticalAlignment(VAlign_Center);
     Result=Text(ErrorRow,FText::GetEmpty(),12);auto* ERS=CastChecked<UHorizontalBoxSlot>(Result->Slot);ERS->SetSize(FSlateChildSize(ESlateSizeRule::Fill));ERS->SetPadding(FMargin(8,0));Result->SetColorAndOpacity(FigmaUI::Warning);
     InspectorFields=WidgetTree->ConstructWidget<UVerticalBox>();Content->AddChild(InspectorFields);
-    CoordinatesLabel=Text(InspectorFields,FText::GetEmpty(),11);
     auto FieldColumn=[&](UHorizontalBox* Row,const TCHAR* Key){auto* Col=WidgetTree->ConstructWidget<UVerticalBox>();auto* S=Row->AddChildToHorizontalBox(Col);S->SetSize(FSlateChildSize(ESlateSizeRule::Fill));S->SetPadding(FMargin(0,4,10,7));Text(Col,T(Key),12);return Col;};
-    auto Input=[&](UVerticalBox* Col){auto* Box=WidgetTree->ConstructWidget<UEditableTextBox>();MapUI::Input(Box);auto Style=Box->GetWidgetStyle();Style.SetPadding(FMargin(8,5));Box->SetWidgetStyle(Style);Col->AddChild(Box);Box->OnTextCommitted.AddDynamic(this,&UMapMissionRouteWidget::ParametersCommitted);return Box;};
+    auto Input=[&](UVerticalBox* Col){auto* Box=WidgetTree->ConstructWidget<UEditableTextBox>();MapUI::Input(Box);auto Style=Box->GetWidgetStyle();Style.SetPadding(FMargin(8,5));Box->SetWidgetStyle(Style);Col->AddChild(Box);return Box;};
     auto* First=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(First);AltitudeInput=Input(FieldColumn(First,TEXT("Mission3D.Altitude")));
     auto* Reference=FieldColumn(First,TEXT("Inspector.Reference"));AltitudeReference=WidgetTree->ConstructWidget<UComboBoxString>();Reference->AddChild(AltitudeReference);AltitudeReference->SetContentPadding(FMargin(8,5));
     AltitudeReference->OnGenerateWidgetEvent.BindDynamic(this,&UMapMissionRouteWidget::GenerateReferenceOption);
     auto Combo=AltitudeReference->GetWidgetStyle();Combo.ComboButtonStyle.ButtonStyle.SetNormal(FSlateRoundedBoxBrush(FigmaUI::Inset,5,FigmaUI::Outline,1));Combo.ComboButtonStyle.ButtonStyle.SetHovered(FSlateRoundedBoxBrush(FigmaUI::Inset,5,FigmaUI::Muted,1));AltitudeReference->SetWidgetStyle(Combo);
     AltitudeReference->AddOption(TEXT("AGL"));AltitudeReference->AddOption(TEXT("Ellipsoid"));AltitudeReference->OnSelectionChanged.AddDynamic(this,&UMapMissionRouteWidget::ReferenceChanged);
+    auto* CoordinateRow=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(CoordinateRow);
+    LongitudeInput=Input(FieldColumn(CoordinateRow,TEXT("Inspector.Longitude")));
+    LatitudeInput=Input(FieldColumn(CoordinateRow,TEXT("Inspector.Latitude")));
+    LongitudeInput->SetHintText(T(TEXT("Inspector.LongitudeHint")));
+    LatitudeInput->SetHintText(T(TEXT("Inspector.LatitudeHint")));
+    LongitudeInput->OnTextCommitted.AddDynamic(this,&UMapMissionRouteWidget::CoordinatesCommitted);
+    LatitudeInput->OnTextCommitted.AddDynamic(this,&UMapMissionRouteWidget::CoordinatesCommitted);
     auto* Second=WidgetTree->ConstructWidget<UHorizontalBox>();InspectorFields->AddChild(Second);HoverInput=Input(FieldColumn(Second,TEXT("Mission3D.Hover")));SpeedInput=Input(FieldColumn(Second,TEXT("Inspector.Speed")));
+    for(UEditableTextBox* Box:{AltitudeInput.Get(),HoverInput.Get(),SpeedInput.Get()})
+        Box->OnTextCommitted.AddDynamic(this,&UMapMissionRouteWidget::ParametersCommitted);
     auto AddTo=[&](UPanelWidget* Parent,const TCHAR* A,const TCHAR* K,bool Primary=false){auto* B=Button(WidgetTree,Parent,A,K);B->OnAction.AddDynamic(this,&UMapMissionRouteWidget::Action);MapUI::Button(B,Primary,true);MapUI::Text(Cast<UTextBlock>(B->GetContent()),13,Primary?FigmaUI::Background:FigmaUI::PrimaryText,true);Actions.Add(A,B);
         if(auto* HorizontalSlot=Cast<UHorizontalBoxSlot>(B->Slot)){HorizontalSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));HorizontalSlot->SetPadding(FMargin(0,3,8,3));}else if(auto* VerticalSlot=Cast<UVerticalBoxSlot>(B->Slot))VerticalSlot->SetPadding(FMargin(0,3));return B;};
     auto Pair=[&](UPanelWidget* Parent,const TCHAR* A,const TCHAR* K,const TCHAR* A2,const TCHAR* K2,bool Primary=false){auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();Parent->AddChild(Row);AddTo(Row,A,K);AddTo(Row,A2,K2,Primary);};
@@ -44,7 +67,7 @@ void UMapMissionRouteWidget::NativeOnInitialized(){
     auto* Guard=WidgetTree->ConstructWidget<UVerticalBox>();UnsavedDialog->SetContent(Guard);Text(Guard,T(TEXT("Map.DirtyPrompt")),13,true);
     for(const auto& Entry:TArray<TPair<FString,FString>>{{TEXT("cancel"),TEXT("Workflow.ContinueEditing")},{TEXT("save"),TEXT("Workflow.SaveExit")},{TEXT("discard"),TEXT("Common.Discard")}}){auto* B=Button(WidgetTree,Guard,*Entry.Key,*Entry.Value);B->OnAction.AddDynamic(this,&UMapMissionRouteWidget::Action);MapUI::Button(B,false,true);}
     Pair(Content,TEXT("begin"),TEXT("Map.Begin"),TEXT("undo"),TEXT("Workflow.Undo"));Actions[TEXT("begin")]->SetToolTipText(T(TEXT("Map.AdjustBeforeEdit")));
-    AddTo(Content,TEXT("coordinates"),TEXT("Map.Add"));Pair(Content,TEXT("speed"),TEXT("Workflow.EditSpeed"),TEXT("add"),TEXT("Map.Add"));Pair(Content,TEXT("clear"),TEXT("Map.Clear"),TEXT("focus"),TEXT("Map.Focus"));
+    Pair(Content,TEXT("speed"),TEXT("Workflow.EditSpeed"),TEXT("add"),TEXT("Map.Add"));Pair(Content,TEXT("clear"),TEXT("Map.Clear"),TEXT("focus"),TEXT("Map.Focus"));
     Pair(Content,TEXT("discard"),TEXT("Common.Discard"),TEXT("exit"),TEXT("Common.Exit"));AddTo(Content,TEXT("cancel"),TEXT("Workflow.ContinueEditing"));AddTo(Content,TEXT("video"),TEXT("Video.Assigned"));Space(8);
     DefaultSpeedPanel=WidgetTree->ConstructWidget<UBorder>();MapUI::Panel(DefaultSpeedPanel,FigmaUI::Inset,FigmaUI::Outline,6,FMargin(12));Content->AddChild(DefaultSpeedPanel);
     auto* SpeedBody=WidgetTree->ConstructWidget<UVerticalBox>();DefaultSpeedPanel->SetContent(SpeedBody);Text(SpeedBody,T(TEXT("MapUI.DefaultSpeed")),15,true);Text(SpeedBody,T(TEXT("MapUI.DefaultSpeedHint")),12);
@@ -108,7 +131,7 @@ void UMapMissionRouteWidget::Save(){
 void UMapMissionRouteWidget::Finish(){
     if(bPending || SessionId.IsEmpty())return;
     if(RouteJson()->GetArrayField(TEXT("waypoints")).Num()<2){ErrorCode=TEXT("ROUTE_TOO_SHORT");return;}
-    if(bDirty){bFinishAfterSave=true;Save();return;}
+    if(bDirty || Fingerprint()!=CleanFingerprint){bFinishAfterSave=true;Save();return;}
     Submit(TEXT("finish_route_edit"),[this](TSharedPtr<FJsonObject> Reply){
         if(!PlanUI::Error(Reply).IsEmpty())return;
         SessionId.Empty();bDirty=false;
@@ -174,30 +197,41 @@ void UMapMissionRouteWidget::Refresh(){
     UnsavedDialog->SetVisibility(bPrompt?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer()))PC->SetMissionPathEditing(!SessionId.IsEmpty() && !bPrompt && !bSaving, !SessionId.IsEmpty() || bBeginning);
     const bool CanEdit=!SessionId.IsEmpty() && !bPending && !bSaving && S->IsReady();
-    for(const TCHAR* A:{TEXT("add"),TEXT("delete"),TEXT("clear"),TEXT("save"),TEXT("finish"),TEXT("undo"),TEXT("coordinates"),TEXT("speed")})Actions[A]->SetIsEnabled(CanEdit && !bPrompt);
+    for(const TCHAR* A:{TEXT("add"),TEXT("delete"),TEXT("clear"),TEXT("save"),TEXT("finish"),TEXT("undo"),TEXT("speed")})Actions[A]->SetIsEnabled(CanEdit && !bPrompt);
     bool Closed=false;Geometry->TryGetBoolField(TEXT("bClosedLoop"),Closed);
     if(auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer())){
         FDroneWaypointSaveData W;int32 Index=INDEX_NONE;const bool Selected=PC->GetSelectedMissionWaypoint(W,Index);
-        InspectorFields->SetIsEnabled(CanEdit && Selected && !bPrompt);
+        auto* C=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();
+        const bool CanLoad=Selected && C && ICoordinateService::Execute_IsCoordinateSystemReady(C);
+        InspectorFields->SetIsEnabled(CanEdit && CanLoad && !bPrompt);
         SelectedPointLabel->SetText(Selected?FText::Format(T(TEXT("Mission3D.Selected")),User(FString::Printf(TEXT("%02d"),Index+1))):T(TEXT("Mission3D.SelectPoint")));
-        if(Selected){
+        if(CanLoad){
             SpeedInput->SetIsReadOnly(Index==0);
-            auto* C=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>()->GetCoordinateService().GetObject();
-            const auto Geo=ICoordinateService::Execute_WorldToGeographic(C,W.Location);
-            CoordinatesLabel->SetText(FText::Format(T(TEXT("Inspector.Coordinates")),User(FString::Printf(TEXT("%.6f"),Geo.X)),User(FString::Printf(TEXT("%.6f"),Geo.Y))));
-            if(LoadedWaypoint!=Index || (!AltitudeInput->HasKeyboardFocus() && !HoverInput->HasKeyboardFocus() && !SpeedInput->HasKeyboardFocus() && !W.Location.Equals(LoadedWaypointLocation,.1))){
+            if(LoadedWaypoint!=Index || (!InspectorFields->HasFocusedDescendants() && W.Location!=LoadedWaypointLocation)){
+                const auto Geo=ICoordinateService::Execute_WorldToGeographic(C,W.Location);
                 bLoadingParameters=true;LoadedWaypointLocation=W.Location;
-                AltitudeInput->SetText(User(FString::Printf(TEXT("%.2f"),Geo.Z-W.AltitudeOffsetMeters)));
+                LoadedLongitude=FString::Printf(TEXT("%.9f"),Geo.X);
+                LoadedLatitude=FString::Printf(TEXT("%.9f"),Geo.Y);
+                LoadedHeight=Geo.Z-W.AltitudeOffsetMeters;
+                if(W.AltitudeReference==TEXT("AGL") && LoadedHeight<0. && LoadedHeight>=-.001)LoadedHeight=0.;
+                LoadedAltitude=FString::Printf(TEXT("%.2f"),LoadedHeight);
+                LongitudeInput->SetText(User(LoadedLongitude));
+                LatitudeInput->SetText(User(LoadedLatitude));
+                AltitudeInput->SetText(User(LoadedAltitude));
                 HoverInput->SetText(User(FString::SanitizeFloat(W.WaitTime)));SpeedInput->SetText(User(FString::SanitizeFloat(W.SegmentSpeed)));
                 AltitudeReference->ClearSelection();AltitudeReference->SetSelectedOption(W.AltitudeReference);bLoadingParameters=false;
                 if(LoadedWaypoint!=Index)if(auto* Scroll=Cast<UScrollBox>(Content->GetParent()))Scroll->ScrollToStart();
             }
-        }else CoordinatesLabel->SetText(FText::GetEmpty());
-        LoadedWaypoint=Selected?Index:INDEX_NONE;
+        }else if(LoadedWaypoint!=INDEX_NONE){
+            bLoadingParameters=true;
+            LongitudeInput->SetText(FText::GetEmpty());
+            LatitudeInput->SetText(FText::GetEmpty());
+            bLoadingParameters=false;
+        }
+        LoadedWaypoint=CanLoad?Index:INDEX_NONE;
     }
     ClosedRoute->SetIsChecked(Closed);ClosedRoute->SetIsEnabled(CanEdit && !bPrompt && (Closed || Waypoints.Num()>=3));ClosedRoute->SetToolTipText(T(TEXT("Errors.CLOSED_ROUTE_TOO_SHORT")));
     Actions[TEXT("begin")]->SetIsEnabled(P && M && Field(P,TEXT("status"))!=TEXT("DEPLOYED") && SessionId.IsEmpty() && !bPending && S->IsReady());
-    Actions[TEXT("coordinates")]->SetVisibility(ESlateVisibility::Collapsed);
     Actions[TEXT("focus")]->SetIsEnabled(SessionId.IsEmpty());
     Actions[TEXT("begin")]->SetVisibility(SessionId.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     Actions[TEXT("cancel")]->SetVisibility(bPrompt || bDiscardConfirm?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
@@ -215,7 +249,6 @@ void UMapMissionRouteWidget::Action(FName Name,int32){
         ApplyParameters();return;
     }
     if(Name==TEXT("undo"))PC->UndoMissionRouteEdit();
-    if(Name==TEXT("coordinates"))return;
     if(Name==TEXT("speed")){bDefaultSpeedOpen=!bDefaultSpeedOpen;DefaultSpeedInput->SetText(User(FString::SanitizeFloat(PC->GetEditDefaultSegmentSpeed())));DefaultSpeedFeedback->SetText(FText::GetEmpty());Refresh();if(bDefaultSpeedOpen)if(auto* Scroll=Cast<UScrollBox>(Content->GetParent()))Scroll->ScrollWidgetIntoView(DefaultSpeedPanel,true);return;}
     if(Name==TEXT("default_speed_apply")){
         if(bPrompt || !GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady())return;
@@ -233,16 +266,50 @@ void UMapMissionRouteWidget::ClosedChanged(bool Checked){if(SessionId.IsEmpty() 
 
 bool UMapMissionRouteWidget::ApplyParameters(){
     if(bLoadingParameters || LoadedWaypoint==INDEX_NONE)return true;
-    if(SessionId.IsEmpty() || bPending || bSaving)return false;
+    if(SessionId.IsEmpty() || bPending || bSaving || bPrompt ||
+       !GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsReady())return false;
     auto* PC=Cast<ADroneOpsPlayerController>(GetOwningPlayer());
     FDroneWaypointSaveData W;int32 Index=INDEX_NONE;
     if(!PC || !PC->GetSelectedMissionWaypoint(W,Index) || Index!=LoadedWaypoint)return false;
+
+    const FString LongitudeText=LongitudeInput->GetText().ToString();
+    const FString LatitudeText=LatitudeInput->GetText().ToString();
+    TOptional<double> Longitude,Latitude;
+    double Value=0;
+    if(LongitudeText!=LoadedLongitude){
+        if(!ParseWaypointNumber(LongitudeText,Value) || FMath::Abs(Value)>180.){
+            ErrorCode=TEXT("WAYPOINT_COORDINATES_INVALID");return false;
+        }
+        Longitude=Value;
+    }
+    if(LatitudeText!=LoadedLatitude){
+        if(!ParseWaypointNumber(LatitudeText,Value) || FMath::Abs(Value)>90.){
+            ErrorCode=TEXT("WAYPOINT_COORDINATES_INVALID");return false;
+        }
+        Latitude=Value;
+    }
     double Height=0,Wait=0,Speed=0;
-    if(!LexTryParseString(Height,*AltitudeInput->GetText().ToString()) || !LexTryParseString(Wait,*HoverInput->GetText().ToString()) || !LexTryParseString(Speed,*SpeedInput->GetText().ToString()) ||
-       !FMath::IsFinite(Height) || !FMath::IsFinite(Wait) || !FMath::IsFinite(Speed) || Wait<0 || Speed<0 || Speed>15){ErrorCode=TEXT("WAYPOINT_PARAMETERS_INVALID");return false;}
+    const FString AltitudeText=AltitudeInput->GetText().ToString();
+    if(!ParseWaypointNumber(AltitudeText,Height) || !ParseWaypointNumber(HoverInput->GetText().ToString(),Wait) ||
+       !ParseWaypointNumber(SpeedInput->GetText().ToString(),Speed) || Wait<0 || Wait>TNumericLimits<float>::Max() || Speed<0 || Speed>15){
+        ErrorCode=TEXT("WAYPOINT_PARAMETERS_INVALID");return false;
+    }
     const auto Ref=AltitudeReference->GetSelectedOption();
-    if((Ref!=TEXT("AGL") && Ref!=TEXT("Ellipsoid")) || !PC->SetSelectedMissionWaypointParameters(Height,Wait,Ref==TEXT("AGL"),Speed)){ErrorCode=TEXT("ALTITUDE_DATUM_UNRESOLVED");return false;}
+    if(AltitudeText==LoadedAltitude && Ref==W.AltitudeReference)Height=LoadedHeight;
+    if((Ref!=TEXT("AGL") && Ref!=TEXT("Ellipsoid")) || !PC->SetSelectedMissionWaypointParameters(Height,Wait,Ref==TEXT("AGL"),Speed,Longitude,Latitude)){
+        ErrorCode=TEXT("ALTITUDE_DATUM_UNRESOLVED");return false;
+    }
     ErrorCode.Empty();LoadedWaypoint=INDEX_NONE;return true;
 }
-void UMapMissionRouteWidget::ParametersCommitted(const FText&,ETextCommit::Type){if(!bLoadingParameters)ApplyParameters();}
-void UMapMissionRouteWidget::ReferenceChanged(FString,ESelectInfo::Type){if(!bLoadingParameters)ApplyParameters();}
+bool UMapMissionRouteWidget::HasCoordinateEdits() const{
+    return LongitudeInput->GetText().ToString()!=LoadedLongitude || LatitudeInput->GetText().ToString()!=LoadedLatitude;
+}
+void UMapMissionRouteWidget::ParametersCommitted(const FText&,ETextCommit::Type Method){
+    if(!bLoadingParameters && (Method==ETextCommit::OnEnter || !HasCoordinateEdits()))ApplyParameters();
+}
+void UMapMissionRouteWidget::CoordinatesCommitted(const FText&,ETextCommit::Type Method){
+    if(!bLoadingParameters && Method==ETextCommit::OnEnter)ApplyParameters();
+}
+void UMapMissionRouteWidget::ReferenceChanged(FString,ESelectInfo::Type){
+    if(!bLoadingParameters && !HasCoordinateEdits())ApplyParameters();
+}

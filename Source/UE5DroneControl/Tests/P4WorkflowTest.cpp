@@ -93,6 +93,7 @@ class FP4MapDraft:public IAutomationLatentCommand {
     FAutomationTestBase* Test;int Step=0;double Started=FPlatformTime::Seconds();
     TWeakObjectPtr<UMapMissionRouteWidget> Panel;TWeakObjectPtr<ADronePathActor> Actor;
     int UndoCount=0,PointCount=0;FString Plan,Mission;int64 Version=0;bool bRequested2D=false;
+    double SavedLongitude=0,SavedLatitude=0,SavedGround=0;
 public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
     bool Update() override {
         if(FPlatformTime::Seconds()-Started>75){Test->AddError(TEXT("Map live draft test timeout"));return true;}
@@ -222,14 +223,56 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
             Test->TestTrue(TEXT("RouteEditDisablesModeSwitch in live editor"),Map->GetMapMode()==ECommandMapMode::Map2D);
             Test->TestTrue(TEXT("blocked mode switch retains selected waypoint"),PC->GetSelectedMissionWaypoint(Selected,Index) && Index==SelectedIndex);
             Test->TestEqual(TEXT("mode switch retains hover"),Selected.WaitTime,10.f);
+
+            const auto Geo=ICoordinateService::Execute_WorldToGeographic(Coordinates,Selected.Location);
+            SavedLongitude=Geo.X+.001234567;
+            SavedLatitude=Geo.Y+.001345678;
+            const auto SetDestination=[&](){
+                P->LongitudeInput->SetText(PlanUI::User(FString::Printf(TEXT("%.9f"),SavedLongitude)));
+                P->LatitudeInput->SetText(PlanUI::User(FString::Printf(TEXT("%.9f"),SavedLatitude)));
+            };
+            const auto AtDestination=[&](const FDroneWaypointSaveData& Point){
+                const auto Position=ICoordinateService::Execute_WorldToGeographic(Coordinates,Point.Location);
+                return FMath::IsNearlyEqual(Position.X,SavedLongitude,1.e-8) && FMath::IsNearlyEqual(Position.Y,SavedLatitude,1.e-8);
+            };
+            const auto BeforeCoordinates=P->Fingerprint();
+            const int BeforeCoordinatesUndo=PC->EditUndoStack.Num();
+            SetDestination();
+            P->LongitudeInput->OnTextCommitted.Broadcast(P->LongitudeInput->GetText(),ETextCommit::OnUserMovedFocus);
+            Test->TestEqual(TEXT("coordinate focus change does not apply the form"),P->Fingerprint(),BeforeCoordinates);
+            P->LatitudeInput->SetText(PlanUI::User(TEXT("90.01")));
+            Test->TestFalse(TEXT("out-of-range latitude rejects the coordinate edit"),P->ApplyParameters());
+            SetDestination();
+            P->LongitudeInput->SetText(PlanUI::User(P->LongitudeInput->GetText().ToString()+TEXT("oops")));
+            Test->TestFalse(TEXT("longitude with a non-numeric suffix is rejected"),P->ApplyParameters());
+            Test->TestEqual(TEXT("invalid coordinates report the inspector error"),P->ErrorCode,FString(TEXT("WAYPOINT_COORDINATES_INVALID")));
+            Test->TestEqual(TEXT("invalid coordinate edit leaves the whole waypoint unchanged"),P->Fingerprint(),BeforeCoordinates);
+            Test->TestEqual(TEXT("invalid coordinate edit creates no undo entry"),PC->EditUndoStack.Num(),BeforeCoordinatesUndo);
+            SetDestination();
+            P->Actions[TEXT("waypoint_parameters")]->OnClicked.Broadcast();
+            P->Refresh();
+            PC->GetSelectedMissionWaypoint(Selected,Index);
+            Test->TestTrue(TEXT("coordinate Apply updates both axes of the selected waypoint"),Index==SelectedIndex && AtDestination(Selected));
+            Test->TestEqual(TEXT("coordinate Apply leaves the waypoint count unchanged"),Path->Waypoints.Num(),OriginalCount);
+            Test->TestTrue(TEXT("coordinate Apply preserves the entered ellipsoid height"),
+                FMath::IsNearlyEqual(ICoordinateService::Execute_WorldToGeographic(Coordinates,Selected.Location).Z,120.,.001));
+            Test->TestTrue(TEXT("coordinate Apply waits for Save before publishing the route"),
+                PlanUI::Field(PlanUI::Find(S->GetPlans(),TEXT("missions"),Mission),TEXT("route_id")).IsEmpty());
+            PC->UndoMissionRouteEdit();
+            PC->SetEditSelectedWaypoint(Path->GetWaypointHandleActors()[SelectedIndex]);
+            P->Refresh();
+            Test->TestEqual(TEXT("coordinate Undo restores the previous draft"),P->Fingerprint(),BeforeCoordinates);
+
             // AGL datum drift (2D surface vs loaded 3D terrain) must not rewrite user altitude.
             double Ground=0;
-            const auto Geo=ICoordinateService::Execute_WorldToGeographic(Coordinates,Selected.Location);
             // Deterministic component-only terrain fixture; native QA uses the actual map.
-            auto* Terrain=W->SpawnActor<AActor>();auto* Surface=NewObject<UBoxComponent>(Terrain);
-            Terrain->SetRootComponent(Surface);Surface->SetBoxExtent(FVector(50000,50000,50));
-            Surface->SetCollisionEnabled(ECollisionEnabled::QueryOnly);Surface->SetCollisionObjectType(ECC_WorldStatic);Surface->SetCollisionResponseToAllChannels(ECR_Block);Surface->RegisterComponent();
-            Terrain->SetActorLocation(ICoordinateService::Execute_GeographicToWorld(Coordinates,Geo.Y,Geo.X,0));
+            const auto AddGround=[&](double Latitude,double Longitude,double Altitude,double Extent){
+                auto* Terrain=W->SpawnActor<AActor>();auto* Surface=NewObject<UBoxComponent>(Terrain);
+                Terrain->SetRootComponent(Surface);Surface->SetBoxExtent(FVector(Extent,Extent,50));
+                Surface->SetCollisionEnabled(ECollisionEnabled::QueryOnly);Surface->SetCollisionObjectType(ECC_WorldStatic);Surface->SetCollisionResponseToAllChannels(ECR_Block);Surface->RegisterComponent();
+                Terrain->SetActorLocation(ICoordinateService::Execute_GeographicToWorld(Coordinates,Latitude,Longitude,Altitude));
+            };
+            AddGround(Geo.Y,Geo.X,0.,50000.);
             if(!Test->TestTrue(TEXT("test surface resolves terrain"),PC->TryGetMissionTerrainHeight(Geo.Y,Geo.X,Ground)))return true;
             Path->Waypoints[SelectedIndex].AltitudeReference=TEXT("AGL");
             Path->Waypoints[SelectedIndex].AltitudeOffsetMeters=Ground-20;
@@ -238,6 +281,27 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
             PC->GetSelectedMissionWaypoint(Selected,Index);
             Test->TestTrue(TEXT("terrain refresh preserves entered 120m AGL"),FMath::Abs(ICoordinateService::Execute_WorldToGeographic(Coordinates,Selected.Location).Z-Selected.AltitudeOffsetMeters-120)<.001);
             Test->TestTrue(TEXT("terrain refresh renders corrected ellipsoid height"),FMath::Abs(ICoordinateService::Execute_WorldToGeographic(Coordinates,Selected.Location).Z-Ground-120)<.001);
+            AddGround(SavedLatitude,SavedLongitude,Ground+60.,2500.);
+            if(!Test->TestTrue(TEXT("destination fixture has a different terrain height"),
+                PC->TryGetMissionTerrainHeight(SavedLatitude,SavedLongitude,SavedGround) && SavedGround>Ground+10.))return true;
+            P->Refresh();
+            const auto BeforeAGL=P->Fingerprint();
+            SetDestination();
+            P->HoverInput->SetText(PlanUI::User(TEXT("15")));
+            P->LatitudeInput->OnTextCommitted.Broadcast(P->LatitudeInput->GetText(),ETextCommit::OnEnter);
+            PC->GetSelectedMissionWaypoint(Selected,Index);
+            Test->TestTrue(TEXT("Enter applies the AGL coordinate edit"),Index==SelectedIndex && AtDestination(Selected));
+            Test->TestEqual(TEXT("coordinate edit preserves the AGL reference"),Selected.AltitudeReference,FString(TEXT("AGL")));
+            Test->TestTrue(TEXT("moving an AGL waypoint samples destination terrain"),FMath::IsNearlyEqual(Selected.AltitudeOffsetMeters,SavedGround,.001));
+            Test->TestTrue(TEXT("AGL input is preserved against the new terrain"),
+                FMath::IsNearlyEqual(ICoordinateService::Execute_WorldToGeographic(Coordinates,Selected.Location).Z,SavedGround+120.,.001));
+            Test->TestEqual(TEXT("the same Apply updates waypoint hover"),Selected.WaitTime,15.f);
+            PC->UndoMissionRouteEdit();
+            PC->SetEditSelectedWaypoint(Path->GetWaypointHandleActors()[SelectedIndex]);
+            P->Refresh();
+            Test->TestEqual(TEXT("AGL Undo restores location, terrain metadata and hover together"),P->Fingerprint(),BeforeAGL);
+            SetDestination();
+            Test->TestTrue(TEXT("the destination can be reapplied after Undo"),P->ApplyParameters());
             UndoCount=PC->EditUndoStack.Num();Actor=(PC->EditingPaths.IsEmpty()?nullptr:PC->EditingPaths[0].Get());
             P->SwitchTo(Plan,TEXT(""),false);Test->TestTrue(TEXT("remote empty mission prompts instead of replacing draft"),P->bPrompt);
             Test->TestEqual(TEXT("pinned mission survives remote selection"),P->MissionId,Mission);
@@ -259,8 +323,16 @@ public:explicit FP4MapDraft(FAutomationTestBase* T):Test(T){}
             Test->TestTrue(TEXT("successful save has no error"),P->ErrorCode.IsEmpty());
             const auto M=PlanUI::Find(S->GetPlans(),TEXT("missions"),Mission);const auto R=PlanUI::Find(S->GetPlans(),TEXT("paths"),PlanUI::Field(M,TEXT("route_id")));
             Test->TestTrue(TEXT("server saved route is hydrated"),R.IsValid() && R->GetArrayField(TEXT("waypoints")).Num()==PointCount);
-            if(!R){Test->AddError(TEXT("Save did not produce a route: ")+P->ErrorCode);return true;}
-            Test->TestEqual(TEXT("inspector hover survives Backend save"),R->GetArrayField(TEXT("waypoints")).Last()->AsObject()->GetNumberField(TEXT("waitTime")),10.0);
+            if(!R || R->GetArrayField(TEXT("waypoints")).IsEmpty()){Test->AddError(TEXT("Save did not produce a route: ")+P->ErrorCode);return true;}
+            const auto Saved=R->GetArrayField(TEXT("waypoints")).Last()->AsObject();
+            Test->TestEqual(TEXT("inspector hover survives Backend save"),Saved->GetNumberField(TEXT("waitTime")),10.0);
+            Test->TestTrue(TEXT("Backend saves the typed longitude and latitude"),
+                FMath::IsNearlyEqual(Saved->GetNumberField(TEXT("longitude")),SavedLongitude,1.e-8) &&
+                FMath::IsNearlyEqual(Saved->GetNumberField(TEXT("latitude")),SavedLatitude,1.e-8));
+            Test->TestEqual(TEXT("Backend saves the AGL reference"),Saved->GetStringField(TEXT("altitude_reference")),FString(TEXT("AGL")));
+            Test->TestTrue(TEXT("Backend saves the AGL value and destination terrain separately"),
+                FMath::IsNearlyEqual(Saved->GetNumberField(TEXT("altitude")),120.,.001) &&
+                FMath::IsNearlyEqual(Saved->GetNumberField(TEXT("terrain_ellipsoid_m")),SavedGround,.001));
             P->Begin();Step=5;return false;
         }
         if(Step==5){

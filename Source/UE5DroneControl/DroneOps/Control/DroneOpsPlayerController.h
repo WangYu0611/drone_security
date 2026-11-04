@@ -150,7 +150,8 @@ TArray<int32> GetSelectedDroneIdsForDispatch() const;
 	/** 把当前临时路径打包成 DroneId -> FDronePathSaveData（世界坐标）。 */
 	TMap<int32, FDronePathSaveData> BuildEditingPathsData() const;
     bool GetSelectedMissionWaypoint(FDroneWaypointSaveData& Out, int32& Index) const;
-    bool SetSelectedMissionWaypointParameters(double Altitude, double HoverSeconds, bool AGL, double SegmentSpeed = -1);
+    bool SetSelectedMissionWaypointParameters(double Altitude, double HoverSeconds, bool AGL, double SegmentSpeed = -1,
+        TOptional<double> Longitude = {}, TOptional<double> Latitude = {});
     bool TryGetMissionTerrainHeight(double Latitude,double Longitude,double& Height) const;
     bool RefreshMissionTerrainMetadata();
 
@@ -560,6 +561,7 @@ bool ValidateDispatchDrone(int32 DroneId, FString& OutError) const;
 		AddWaypoints,   // 一次地图点击给所有活跃路径各追加一个航点
 		DeleteWaypoint, // 删除单个航点
 		MoveWaypoints,  // 一次拖拽整体移动一组航点
+		EditWaypointParameters,
 	};
 
 	// 单个航点的还原信息。用弱引用记录所属路径，避免路径销毁后悬空。
@@ -568,7 +570,7 @@ bool ValidateDispatchDrone(int32 DroneId, FString& OutError) const;
 		TWeakObjectPtr<ADronePathActor> Path;
 		int32 Index = INDEX_NONE;
 		FVector OldWorldLocation = FVector::ZeroVector; // 移动撤销：还原到的旧世界坐标
-		FDroneWaypoint WaypointData;                    // 删除撤销：完整航点数据（本地空间）
+		FDroneWaypoint WaypointData;                    // 删除或编辑参数前的完整航点数据（本地空间）
 	};
 
 	struct FEditUndoEntry

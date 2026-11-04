@@ -1884,8 +1884,28 @@ msgid "Waypoint Inspector"
 msgstr "Waypoint Inspector"
 
 msgctxt "DroneOps,Inspector.Help"
-msgid "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."
-msgstr "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update."
+msgid "Click to select a waypoint or add one on the map. Press Enter or Apply for coordinates. Other fields also update when you leave them."
+msgstr "Click to select a waypoint or add one on the map. Press Enter or Apply for coordinates. Other fields also update when you leave them."
+
+msgctxt "DroneOps,Inspector.Longitude"
+msgid "Longitude"
+msgstr "Longitude"
+
+msgctxt "DroneOps,Inspector.Latitude"
+msgid "Latitude"
+msgstr "Latitude"
+
+msgctxt "DroneOps,Inspector.LongitudeHint"
+msgid "Enter longitude"
+msgstr "Enter longitude"
+
+msgctxt "DroneOps,Inspector.LatitudeHint"
+msgid "Enter latitude"
+msgstr "Enter latitude"
+
+msgctxt "DroneOps,Errors.WAYPOINT_COORDINATES_INVALID"
+msgid "Enter a longitude from -180 to 180 and a latitude from -90 to 90."
+msgstr "Enter a longitude from -180 to 180 and a latitude from -90 to 90."
 
 msgctxt "DroneOps,Inspector.Reference"
 msgid "Altitude reference"

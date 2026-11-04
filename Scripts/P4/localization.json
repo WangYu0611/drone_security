@@ -1924,8 +1924,28 @@
     "航点属性"
   ],
   "Inspector.Help": [
-    "Click a waypoint to select it. Click the map to add one. Enter or leave a field to update.",
-    "点击航点选择；点击地图新增航点。输入后按回车或离开字段即可更新。"
+    "Click to select a waypoint or add one on the map. Press Enter or Apply for coordinates. Other fields also update when you leave them.",
+    "点击航点选择，点击地图新增。经纬度输入后按回车或应用，其他字段也可在离开时更新。"
+  ],
+  "Inspector.Longitude": [
+    "Longitude",
+    "经度"
+  ],
+  "Inspector.Latitude": [
+    "Latitude",
+    "纬度"
+  ],
+  "Inspector.LongitudeHint": [
+    "Enter longitude",
+    "请输入经度"
+  ],
+  "Inspector.LatitudeHint": [
+    "Enter latitude",
+    "请输入纬度"
+  ],
+  "Errors.WAYPOINT_COORDINATES_INVALID": [
+    "Enter a longitude from -180 to 180 and a latitude from -90 to 90.",
+    "请输入有效的经纬度，经度范围为 -180 到 180，纬度范围为 -90 到 90。"
   ],
   "Inspector.Reference": [
     "Altitude reference",

@@ -25,17 +25,22 @@ private:
     UPROPERTY() TObjectPtr<class UCheckBox> ClosedRoute;
     UPROPERTY() TObjectPtr<class UComboBoxString> AltitudeReference;
     UPROPERTY() TObjectPtr<class UVerticalBox> InspectorFields;
-    UPROPERTY() TObjectPtr<class UTextBlock> CoordinatesLabel;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> LongitudeInput;
+    UPROPERTY() TObjectPtr<class UEditableTextBox> LatitudeInput;
     UPROPERTY() TObjectPtr<class UEditableTextBox> SpeedInput;
     bool bLoadingParameters=false;
     bool ApplyParameters();
+    bool HasCoordinateEdits() const;
     UFUNCTION() void ParametersCommitted(const FText& Text,ETextCommit::Type Method);
+    UFUNCTION() void CoordinatesCommitted(const FText& Text,ETextCommit::Type Method);
     UFUNCTION() void ReferenceChanged(FString Value,ESelectInfo::Type Method);
     UPROPERTY() TObjectPtr<class UEditableTextBox> AltitudeInput;
     UPROPERTY() TObjectPtr<class UEditableTextBox> HoverInput;
     UPROPERTY() TObjectPtr<class UTextBlock> SelectedPointLabel;
     int32 LoadedWaypoint=INDEX_NONE;
     FVector LoadedWaypointLocation=FVector::ZeroVector;
+    FString LoadedLongitude,LoadedLatitude,LoadedAltitude;
+    double LoadedHeight=0.;
 
     UFUNCTION() void ClosedChanged(bool Checked);
     UPROPERTY() TObjectPtr<class UVerticalBox> Content;
