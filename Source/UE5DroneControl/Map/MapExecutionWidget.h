@@ -18,10 +18,17 @@ protected:
     virtual void NativeDestruct() override;
     virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
+    struct FPresentedRoute {
+        FString Key;
+        TSharedPtr<FJsonObject> Route;
+        TArray<TSharedPtr<FJsonObject>> Members;
+        bool bMissionGroup=false;
+    };
     UPROPERTY() TObjectPtr<class UBorder> SummaryPanel;
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
     TSharedPtr<FJsonObject> Execution;
     TArray<TSharedPtr<FJsonObject>> RenderedExecutions;
+    TArray<FPresentedRoute> PresentedRoutes;
     FString FocusedExecution;
     FString SuppressedPlan,SuppressedMission;
     FString ManagedFleetGroup;
@@ -29,5 +36,7 @@ private:
     bool bPlanMoving=false;
     bool bInitialExecutionSnapshotObserved=false;
     bool IsRouteSuppressed(const TSharedPtr<FJsonObject>& E) const;
+    bool IsPresentationSuppressed(const FPresentedRoute& Presentation) const;
+    void BuildPresentedRoutes(const TSharedPtr<FJsonObject>& State);
     FPlanRouteVisualSet VisualRoutes;
 };

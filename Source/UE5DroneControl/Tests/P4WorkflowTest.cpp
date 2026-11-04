@@ -392,21 +392,92 @@ public:FP52ExecutionWidgets(FAutomationTestBase* T,bool C):Test(T),Command(C){}
             Test->TestTrue(TEXT("Preview logical position matches authoritative receiver"),Preview->GetActorLocation().Equals(Mirror->GetActorLocation(),.01));
             const auto Before=S->GetVideoView();Test->TestTrue(TEXT("execution retains deployed geometry"),PlanUI::Object(E,TEXT("route_snapshot"))->GetArrayField(TEXT("waypoints")).Num()>=4);
             Test->TestTrue(TEXT("Map UI refresh does not alter video target"),Before==S->GetVideoView());
-            // Explicit replica fixture: no command or fabricated telemetry is sent to Backend.
+            // Isolated client replica. Keep the backend fixture used above unchanged.
             const auto Fixture=MakeShared<FJsonObject>(*S->GetPlans());
-            const auto All=MakeShared<FJsonObject>(*PlanUI::Object(Fixture,TEXT("executions")));
-            const auto Extra=MakeShared<FJsonObject>(*E);const int Other=DroneId==1?2:1;
-            Extra->SetStringField(TEXT("execution_id"),TEXT("qa-second-group"));Extra->SetStringField(TEXT("group_id"),TEXT("qa-independent-group"));
-            Extra->SetStringField(TEXT("mission_id"),TEXT("qa-independent-mission"));
-            Extra->SetStringField(TEXT("uav_id"),FString::Printf(TEXT("UAV-%02d"),Other));Extra->SetBoolField(TEXT("simulation"),false);
-            Extra->SetNumberField(TEXT("created_at"),E->GetNumberField(TEXT("created_at"))+1);
+            const auto All=MakeShared<FJsonObject>();
+            const int Other=DroneId==1?2:1;
+            const int Third=DroneId<=2?3:2;
+            const int Fourth=DroneId==4?3:4;
+            const FString Plan=PlanUI::Field(E,TEXT("plan_id")),Mission=PlanUI::Field(E,TEXT("mission_id"));
+            const FString Group=TEXT("qa-formation-group");
+            const FString GroupKey=TEXT("mission/")+Plan+TEXT("/")+Mission+TEXT("/")+Group;
+            const auto SourceRoute=PlanUI::Object(E,TEXT("route_snapshot"));
+            const auto CentralRoute=MakeShared<FJsonObject>(*SourceRoute);
+            auto CentralPoints=SourceRoute->GetArrayField(TEXT("waypoints"));
+            for(int Index=0;Index<2;++Index){
+                const auto Point=MakeShared<FJsonObject>(*CentralPoints[Index]->AsObject());
+                Point->SetStringField(TEXT("altitude_reference"),Index==0?TEXT("AGL"):TEXT("MSL"));
+                Point->SetNumberField(Index==0?TEXT("terrain_ellipsoid_m"):TEXT("geoid_undulation_m"),Index==0?17.:9.);
+                CentralPoints[Index]=MakeShared<FJsonValueObject>(Point);
+            }
+            CentralRoute->SetArrayField(TEXT("waypoints"),CentralPoints);
+            auto AddExecution=[&](const TCHAR* Id,const FString& PlanId,const FString& MissionId,const FString& GroupId,int Uav){
+                const auto Execution=MakeShared<FJsonObject>(*E);
+                Execution->SetStringField(TEXT("execution_id"),Id);
+                Execution->SetStringField(TEXT("plan_id"),PlanId);
+                Execution->SetStringField(TEXT("mission_id"),MissionId);
+                Execution->SetStringField(TEXT("group_id"),GroupId);
+                Execution->SetStringField(TEXT("uav_id"),FString::Printf(TEXT("UAV-%02d"),Uav));
+                Execution->SetBoolField(TEXT("simulation"),false);
+                if(PlanId.IsEmpty())Execution->SetStringField(TEXT("control_kind"),TEXT("GROUP_MOVE"));
+                All->SetObjectField(Id,Execution);
+                return Execution;
+            };
+            const auto Lead=AddExecution(TEXT("qa-lead"),Plan,Mission,Group,DroneId);
+            const auto Wing=AddExecution(TEXT("qa-wing"),Plan,Mission,Group,Other);
+            for(const auto& Member:{Lead,Wing}){
+                const double Offset=Member==Lead?1.e-5:-1.e-5;
+                const auto MemberRoute=MakeShared<FJsonObject>(*SourceRoute);
+                TArray<TSharedPtr<FJsonValue>> MemberPoints;
+                for(const auto& Value:SourceRoute->GetArrayField(TEXT("waypoints"))){
+                    const auto Point=MakeShared<FJsonObject>(*Value->AsObject());
+                    Point->SetNumberField(TEXT("longitude"),Point->GetNumberField(TEXT("longitude"))+Offset);
+                    MemberPoints.Add(MakeShared<FJsonValueObject>(Point));
+                }
+                MemberRoute->SetArrayField(TEXT("waypoints"),MemberPoints);
+                Member->SetObjectField(TEXT("route_snapshot"),MemberRoute);
+                Member->SetObjectField(TEXT("plan_route_snapshot"),CentralRoute);
+            }
+            Wing->SetStringField(TEXT("state"),TEXT("COMPLETED"));
+            AddExecution(TEXT("qa-independent"),Plan,TEXT("qa-independent-mission"),TEXT("qa-independent-group"),Other);
+            AddExecution(TEXT("qa-fleet-1"),TEXT(""),TEXT(""),TEXT("qa-fleet-group"),Third);
+            AddExecution(TEXT("qa-fleet-2"),TEXT(""),TEXT(""),TEXT("qa-fleet-group"),Fourth);
             FDroneTelemetrySnapshot ActualBefore;Registry->GetTelemetry(Other,ActualBefore);
-            All->SetObjectField(TEXT("qa-second-group"),Extra);Fixture->SetObjectField(TEXT("executions"),All);
+            Fixture->SetObjectField(TEXT("executions"),All);
             Fixture->SetNumberField(TEXT("execution_version"),Fixture->GetNumberField(TEXT("execution_version"))+10000);
             S->ApplyPlans(Fixture);if(Monitor)Monitor->Refresh();FDroneTelemetrySnapshot ActualAfter;Registry->GetTelemetry(Other,ActualAfter);
-            Test->TestTrue(TEXT("independent active groups are rendered together"),Monitor && Monitor->RenderedExecutions.Num()>=2);
             Test->TestTrue(TEXT("real execution snapshot does not fabricate registry telemetry"),ActualBefore.WorldLocation.Equals(ActualAfter.WorldLocation,.001));
             Test->TestEqual(TEXT("real execution snapshot does not fabricate ONLINE"),ActualBefore.Availability,ActualAfter.Availability);
+            if(!Monitor)return true;
+            Test->TestEqual(TEXT("all five execution records remain available to Map"),Monitor->RenderedExecutions.Num(),5);
+            Test->TestTrue(TEXT("active and completed formation members retain their own snapshots"),
+                Monitor->RenderedExecutions.Contains(Lead) && Monitor->RenderedExecutions.Contains(Wing));
+            Test->TestEqual(TEXT("shared formation, independent mission and two free movements each own one visual"),
+                Monitor->VisualRoutes.Num(),4);
+            Test->TestNotNull(TEXT("independent mission retains its own visual"),
+                Monitor->VisualRoutes.Find(TEXT("mission/")+Plan+TEXT("/qa-independent-mission/qa-independent-group")));
+            Test->TestNotNull(TEXT("first free fleet member retains its own visual"),Monitor->VisualRoutes.Find(TEXT("qa-fleet-1")));
+            Test->TestNotNull(TEXT("second free fleet member retains its own visual"),Monitor->VisualRoutes.Find(TEXT("qa-fleet-2")));
+            const auto* GroupRoute=Monitor->VisualRoutes.Find(GroupKey);
+            if(!Test->TestNotNull(TEXT("the same mission group has one shared Route V2 actor"),GroupRoute))return true;
+            const auto* Presented=Monitor->PresentedRoutes.FindByPredicate([&](const auto& Route){return Route.Key==GroupKey;});
+            Test->TestTrue(TEXT("the shared presentation retains both members"),Presented && Presented->bMissionGroup && Presented->Members.Num()==2);
+            auto* Coordinates=Registry->GetCoordinateService().GetObject();
+            for(int Index=0;Index<2;++Index){
+                const auto Point=CentralPoints[Index]->AsObject();
+                const double Height=Point->GetNumberField(TEXT("altitude"))+(Index==0?17.:9.);
+                const FVector Expected=ICoordinateService::Execute_GeographicToWorld(Coordinates,
+                    Point->GetNumberField(TEXT("latitude")),Point->GetNumberField(TEXT("longitude")),Height);
+                Test->TestTrue(Index==0?TEXT("shared route uses the central AGL waypoint"):TEXT("shared route uses the central MSL waypoint"),
+                    GroupRoute->GetWaypointWorldLocation(Index).Equals(Expected,.1));
+            }
+            Monitor->SetManagedFleetGroup(TEXT(""),{DroneId});
+            Test->TestFalse(TEXT("preview for one member keeps the shared route visible for its peer"),GroupRoute->IsHidden());
+            Monitor->SetManagedFleetGroup(TEXT(""),{DroneId,Other});
+            Test->TestTrue(TEXT("previews for all members hide the shared route"),GroupRoute->IsHidden());
+            Test->TestTrue(TEXT("fleet preview owns the mission without exposing the saved route"),Monitor->OwnsMission(Plan,Mission));
+            Monitor->SetManagedFleetGroup(TEXT(""),{});
+            Test->TestFalse(TEXT("clearing the preview restores the same shared route actor"),GroupRoute->IsHidden());
             return true;}
         USecurityPlanWorkspaceWidget* P=nullptr;for(TObjectIterator<USecurityPlanWorkspaceWidget> I;I;++I)if(I->GetWorld()==W){P=*I;break;}if(!P)return false;
         if(Step==0){auto R=MakeShared<FJsonObject>();R->SetStringField(TEXT("action"),TEXT("select"));R->SetStringField(TEXT("plan_id"),PlanUI::Field(E,TEXT("plan_id")));R->SetStringField(TEXT("mission_id"),PlanUI::Field(E,TEXT("mission_id")));P->Submit(R);++Step;return false;}
