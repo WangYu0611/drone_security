@@ -1,0 +1,193 @@
+{
+  "date": "2026-11-05",
+  "timezone": "Asia/Singapore",
+  "baseline": "6827f20b6e8df2ed581a4f82a2a7d9611d22f77f",
+  "repair_commits": [
+    "e05d373",
+    "0290fb0"
+  ],
+  "test_locator_commit": "695f5b0",
+  "builds": {
+    "backend_release": "PASS",
+    "ue_editor": "PASS",
+    "backend_sha256": "d7d2a2076564095dd165af9498b2666c785e94ad988bec5b13c341d99511107a",
+    "ue_module_sha256": "c2b9b231868acdbe838aa0943a8b5a99de1faa7e45f9d63e9500c16c49293829"
+  },
+  "unit": {
+    "backend": {
+      "passed": 205,
+      "total": 205
+    },
+    "jetson": {
+      "passed": 27,
+      "total": 27
+    },
+    "launcher": {
+      "passed": 63,
+      "total": 63
+    }
+  },
+  "integration": {
+    "launcher_modes": {
+      "passed_scenarios": 7,
+      "result": "PASS"
+    },
+    "plan_lifecycle": {
+      "result": "PASS",
+      "context_regression": true,
+      "restart_persistence": true
+    }
+  },
+  "ue_automation": [
+    {
+      "group": "component",
+      "role": "Map",
+      "exit": 0,
+      "results": [
+        {
+          "test": "DroneOps.P54.RouteEditCameraLock",
+          "expected": 2,
+          "discovered": 2,
+          "completed": 2,
+          "passed": 2,
+          "warnings": 0,
+          "failed": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.P55.RouteVisualComponents",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 0,
+          "failed": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.WGS84.CoordinateVectorParser",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 0,
+          "failed": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "group": "map",
+      "role": "Map",
+      "exit": 0,
+      "results": [
+        {
+          "test": "DroneOps.PlanConfiguration.MapControls",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.P4.Workflow.MapLiveDraftGuard",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "group": "command",
+      "role": "Command",
+      "exit": 0,
+      "results": [
+        {
+          "test": "DroneOps.Figma.CommandPresentation",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.Figma.ActiveTaskOverview",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "group": "video",
+      "role": "Video",
+      "exit": 0,
+      "results": [
+        {
+          "test": "DroneOps.Figma.VideoPresentation",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 1,
+          "failed": 0,
+          "pass": true
+        },
+        {
+          "test": "DroneOps.Video.RequestFeedback",
+          "expected": 1,
+          "discovered": 1,
+          "completed": 1,
+          "passed": 1,
+          "warnings": 0,
+          "failed": 0,
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "ue_automation_complete": true,
+  "ue_automation_summary": {
+    "passed": 10,
+    "total": 10,
+    "result": "PASS"
+  },
+  "initial_ue_automation": {
+    "passed": 9,
+    "total": 10,
+    "failure": "MapControls caption locator drift; assertions retained, locator corrected and final suite rerun",
+    "ue_module_sha256": "939c76f9e560cc0b572ecd30e944dd240cb59104e0baefd9f4efbd68194a4d48"
+  },
+  "native": {
+    "input": "Windows native mouse, keyboard and wheel",
+    "checkpoint_count": 33,
+    "result": "PASS",
+    "mock_only": true,
+    "source_commit": "0290fb0",
+    "ue_module_sha256": "939c76f9e560cc0b572ecd30e944dd240cb59104e0baefd9f4efbd68194a4d48",
+    "camera_pan_orbit_evidence": "component automation, not native mouse drag",
+    "video_playback_verified": false,
+    "hardware_verified": false
+  },
+  "data_preservation": {
+    "protected_file_count": 22,
+    "changed": [],
+    "owned_native_processes_reclaimed": true
+  },
+  "known_p2_not_repaired": [
+    "Command tactical map duplicates mission route presentation",
+    "Direct Backend shutdown can block on network threads"
+  ]
+}

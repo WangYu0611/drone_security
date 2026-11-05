@@ -1,0 +1,288 @@
+[
+  {
+    "name": "01-launcher-stopped",
+    "result": "PASS",
+    "note": "Actual Launcher UI opens stopped, with all four components offline and DEMO/Realtime choices visible; no automatic session was started.",
+    "at": "2026-11-05T10:03:40.888Z",
+    "screenshots": [
+      {
+        "path": "screenshots/01-launcher-stopped-0.jpg",
+        "sha256": "c6cf165cc64fe39007fd07a0c608437097653eef11db8167a7998e52683a0108"
+      }
+    ]
+  },
+  {
+    "name": "02-command-ready-en",
+    "result": "PASS",
+    "note": "Command shows all three roles online and system ready; four Mock aircraft, zero real online devices, Singapore tactical basemap loaded.",
+    "at": "2026-11-05T10:24:22.516Z",
+    "screenshots": []
+  },
+  {
+    "name": "03-command-language-zh",
+    "result": "PASS",
+    "note": "Native Chinese button changes Command labels after Backend confirmation.",
+    "at": "2026-11-05T10:24:37.899Z",
+    "screenshots": []
+  },
+  {
+    "name": "04-map-online-3d",
+    "result": "PASS",
+    "note": "Native Map shows the Singapore Google/Cesium scene and four labeled Mock UAVs; Chinese preference propagated from Command.",
+    "at": "2026-11-05T10:25:14.222Z",
+    "screenshots": [
+      {
+        "path": "screenshots/04-map-online-3d-0.jpg",
+        "sha256": "727a9c55090f9d2c5ae4367c27341f919eca5361e9c68b156d891e9b6500aaba"
+      }
+    ]
+  },
+  {
+    "name": "05-map-select-uav02",
+    "result": "PASS",
+    "note": "Native Map device menu selects UAV-02 and highlights its marker after Backend ACK.",
+    "at": "2026-11-05T10:25:49.939Z",
+    "screenshots": []
+  },
+  {
+    "name": "06-video-map-target",
+    "result": "PASS",
+    "note": "Video displays UAV-02 as the acknowledged Map target, propagated Chinese labels, and an explicit no-source state. No playback claim is made.",
+    "at": "2026-11-05T10:26:14.045Z",
+    "screenshots": [
+      {
+        "path": "screenshots/06-video-map-target-0.jpg",
+        "sha256": "8da86139f076a6e997178438fd618e5974843811cf52283cdfcec4bef9c93371"
+      }
+    ]
+  },
+  {
+    "name": "07-video-independent-four-layout",
+    "result": "PASS",
+    "note": "Video selects UAV-03 independently while the active UAV remains UAV-02; native four-slot layout retains the main target and shows three secondary source cards.",
+    "at": "2026-11-05T10:26:39.273Z",
+    "screenshots": []
+  },
+  {
+    "name": "08-default-drag-keeps-selection",
+    "result": "PASS",
+    "note": "Native left drag across the fleet without enabling box select leaves the acknowledged UAV-02 selection unchanged.",
+    "at": "2026-11-05T10:27:37.281Z",
+    "screenshots": []
+  },
+  {
+    "name": "09-box-select-four",
+    "result": "PASS",
+    "note": "Button-enabled native rectangle selects all four UAVs after ACK, preserving UAV-02 as primary; Backend video target remains UAV-03.",
+    "at": "2026-11-05T10:27:59.794Z",
+    "screenshots": [
+      {
+        "path": "screenshots/09-box-select-four-0.jpg",
+        "sha256": "001455012201a318e1301d10c1ed2ff7dbc5b921f0329dff42e494edfbd0e401"
+      }
+    ]
+  },
+  {
+    "name": "10-move-ground-clearance-guard",
+    "result": "PASS",
+    "note": "3D move is blocked because the Mock UAV is under the one-metre terrain-clearance threshold; confirm remains disabled and Backend has no execution.",
+    "at": "2026-11-05T10:29:14.766Z",
+    "screenshots": []
+  },
+  {
+    "name": "11-mock-lift-preview",
+    "result": "PASS",
+    "note": "The explicit Mock lift control creates a vertical preview with editable AGL height and enables confirmation; no motion has been committed.",
+    "at": "2026-11-05T10:29:34.098Z",
+    "screenshots": []
+  },
+  {
+    "name": "12-cancel-move-preview",
+    "result": "PASS",
+    "note": "Native Cancel removes the lift preview; Backend execution collection remains empty.",
+    "at": "2026-11-05T10:29:44.782Z",
+    "screenshots": []
+  },
+  {
+    "name": "13-mock-move-completed",
+    "result": "PASS",
+    "note": "A single confirmed Mock lift progressed to completion; the execution monitor and UAV altitude agree. The task completed before the pause attempt, so pause is not counted as verified here.",
+    "at": "2026-11-05T10:31:26.366Z",
+    "screenshots": []
+  },
+  {
+    "name": "14-move-paused",
+    "result": "PASS",
+    "note": "Native Pause is acknowledged; the execution card shows PAUSED at 50 percent with a Resume action.",
+    "at": "2026-11-05T10:32:11.924Z",
+    "screenshots": []
+  },
+  {
+    "name": "15-paused-zoom-stable",
+    "result": "PASS",
+    "note": "Native wheel zoom changes the camera while the paused execution position and progress remain identical in two Backend snapshots.",
+    "at": "2026-11-05T10:32:32.474Z",
+    "screenshots": []
+  },
+  {
+    "name": "16-move-resumed",
+    "result": "PASS",
+    "note": "Native Resume returns the same execution to EXECUTING and progress advances from 50 to 52 percent.",
+    "at": "2026-11-05T10:32:45.537Z",
+    "screenshots": []
+  },
+  {
+    "name": "17-empty-plan-validation",
+    "result": "PASS",
+    "note": "New-plan dialog keeps Create disabled with an empty name.",
+    "at": "2026-11-05T10:34:38.074Z",
+    "screenshots": []
+  },
+  {
+    "name": "18-cancel-new-plan",
+    "result": "PASS",
+    "note": "Cancelling new-plan creation returns to the empty list without adding a Backend plan.",
+    "at": "2026-11-05T10:35:00.709Z",
+    "screenshots": []
+  },
+  {
+    "name": "19-plan-assignment-saved",
+    "result": "PASS",
+    "note": "Native Create produced one draft and mission; selecting UAV-01/02 then Save is acknowledged, clears the dirty banner, and preserves 3 m spacing.",
+    "at": "2026-11-05T10:38:39.585Z",
+    "screenshots": []
+  },
+  {
+    "name": "20-route-edit-mode",
+    "result": "PASS",
+    "note": "Command opened the corresponding Map edit session; Map hides fleet-move tools, disables 2D/3D switching, and exposes waypoint editing with manual camera hints.",
+    "at": "2026-11-05T10:39:43.180Z",
+    "screenshots": []
+  },
+  {
+    "name": "21-route-coordinate-and-zoom",
+    "result": "PASS",
+    "note": "Native longitude edit applies to waypoint P04 (103.861780000); manual wheel zoom remains usable during editing without adding a waypoint.",
+    "at": "2026-11-05T10:42:07.208Z",
+    "screenshots": []
+  },
+  {
+    "name": "22-dirty-route-exit-guard",
+    "result": "PASS",
+    "note": "Native Exit with an unsaved four-waypoint route blocks departure and offers Continue editing, Save and exit, or Discard.",
+    "at": "2026-11-05T10:42:22.348Z",
+    "screenshots": [
+      {
+        "path": "screenshots/22-dirty-route-exit-guard-0.jpg",
+        "sha256": "4cc3f850687175825275b27f13b54deeca65889e2384c59a61fb4855fc770527"
+      }
+    ]
+  },
+  {
+    "name": "23-route-saved-still-editing",
+    "result": "PASS",
+    "note": "Save Draft persists exactly four waypoints and the edited longitude 103.86178, while the Map edit session remains open.",
+    "at": "2026-11-05T10:42:58.108Z",
+    "screenshots": []
+  },
+  {
+    "name": "24-route-edit-finished",
+    "result": "PASS",
+    "note": "Finish editing closes the Map editor while preserving the saved route; fleet actions remain unavailable during the Command configuration lease.",
+    "at": "2026-11-05T10:43:41.679Z",
+    "screenshots": []
+  },
+  {
+    "name": "25-deployed-not-started",
+    "result": "PASS",
+    "note": "Native deployment creates one deployment snapshot for the two-UAV/four-waypoint plan; Backend has no execution for this plan until a separate Start action.",
+    "at": "2026-11-05T10:44:47.155Z",
+    "screenshots": [
+      {
+        "path": "screenshots/25-deployed-not-started-0.jpg",
+        "sha256": "fde72f14a96dd435afc94221d8fc916ccb2f42cdb01dd21771671a3246aa02ab"
+      }
+    ]
+  },
+  {
+    "name": "26-plan-start-confirmation",
+    "result": "PASS",
+    "note": "Starting the deployed mission opens a separate confirmation listing plan, mission, both UAVs, four waypoints, distance and duration; no scheduled start is selected.",
+    "at": "2026-11-05T10:45:05.626Z",
+    "screenshots": []
+  },
+  {
+    "name": "27-plan-group-paused",
+    "result": "PASS",
+    "note": "Native Command group Pause is acknowledged for both assigned aircraft; Backend confirms two PAUSED executions with one shared plan-route snapshot.",
+    "at": "2026-11-05T10:45:45.816Z",
+    "screenshots": [
+      {
+        "path": "screenshots/27-plan-group-paused-0.jpg",
+        "sha256": "3bfaebe0f3410a408f9db352323a33b5e7f75d79a5efc0e2b959a13c4ca0a2d7"
+      }
+    ]
+  },
+  {
+    "name": "28-map-two-member-mission",
+    "result": "PASS",
+    "note": "Native Map shows both mission members paused and a shared mission route presentation; execution state agrees with Command and Backend.",
+    "at": "2026-11-05T10:46:32.962Z",
+    "screenshots": []
+  },
+  {
+    "name": "29-map-2d-paused",
+    "result": "PASS",
+    "note": "Native 2D switch loads the raster view, preserves paused mission state and selection, and keeps one mission route presentation.",
+    "at": "2026-11-05T10:47:06.178Z",
+    "screenshots": []
+  },
+  {
+    "name": "30-group-abort-confirmation",
+    "result": "PASS",
+    "note": "After Resume, both members execute again; the first Abort click only exposes Confirm/Cancel, with both Backend executions still EXECUTING.",
+    "at": "2026-11-05T10:48:11.405Z",
+    "screenshots": [
+      {
+        "path": "screenshots/30-group-abort-confirmation-0.jpg",
+        "sha256": "ec257c1093edc78e0883850b2e725eda36fa7a0c1165c12899c236b38cbede58"
+      }
+    ]
+  },
+  {
+    "name": "31-plan-group-aborted",
+    "result": "PASS",
+    "note": "After explicit Confirm Abort, both plan members are ABORTED; the UI shows ended-task history actions, and the deployment snapshot remains preserved.",
+    "at": "2026-11-05T10:49:12.534Z",
+    "screenshots": [
+      {
+        "path": "screenshots/31-plan-group-aborted-0.jpg",
+        "sha256": "b2ce9f99fdbc453bb7ef9c84aaf8badd08dcefb29d71ff0eaf1311010fd6cbb7"
+      }
+    ]
+  },
+  {
+    "name": "32-launcher-all-ready",
+    "result": "PASS",
+    "note": "Actual Launcher reports READY with Backend, Command, Map and Video all online, and the synchronized Chinese preference.",
+    "at": "2026-11-05T10:49:24.829Z",
+    "screenshots": [
+      {
+        "path": "screenshots/32-launcher-all-ready-0.jpg",
+        "sha256": "e50dff7288cf0bb90c04259a7e089958c6bf3df909f50663ff99448b6dc5933f"
+      }
+    ]
+  },
+  {
+    "name": "33-launcher-stopped-after-qa",
+    "result": "PASS",
+    "note": "Native Shutdown returns Launcher to STOPPED with all four components offline; task-owned UE processes exit and all ownership records are cleared. Backend required the existing stop fallback, which does not resolve the reviewed P2 direct-shutdown issue.",
+    "at": "2026-11-05T10:51:06.162Z",
+    "screenshots": [
+      {
+        "path": "screenshots/33-launcher-stopped-after-qa-0.jpg",
+        "sha256": "6bd424b5a6838ffb7bbb2bf4ad2cb7e2fe766ae12dd7a9bf2f96ab0c43314212"
+      }
+    ]
+  }
+]
