@@ -330,7 +330,7 @@ public:
             Fleet->SetMode(EMapFleetMode::GroupMove);Test->TestEqual(TEXT("configuration prevents direct reentry into fleet movement"),Fleet->GetMode(),EMapFleetMode::Browse);
             Test->TestFalse(TEXT("configuration does not retain primary-pointer ownership"),Fleet->OwnsPrimaryInput());
             Test->TestEqual(TEXT("configuration does not hide the existing selected execution group"),Fleet->GetManagedGroup(),GroupId);
-            auto* NewMove=ButtonCaption(Shell,ProductText::Source(TEXT("Fleet move")));
+            auto* NewMove=Cast<UCommandActionButton>(Shell->WidgetTree->FindWidget(TEXT("group_move")));
             if(Test->TestNotNull(TEXT("Map fleet toolbar button exists"),NewMove))Test->TestEqual(TEXT("new fleet move button is hidden during configuration"),NewMove->GetVisibility(),ESlateVisibility::Collapsed);
             auto* Pause=ButtonCaption(Fleet,T(TEXT("Execution.Pause")));
             if(!Test->TestNotNull(TEXT("existing group's pause control exists"),Pause))return true;
@@ -366,7 +366,7 @@ public:
         if(!Peer->HttpDone)return false;if(!Test->TestEqual(TEXT("explicit configuration release acknowledged"),Peer->Status,200))return true;
         if(PlanConfiguration::Active(State))return false;
         Test->TestTrue(TEXT("Map movement becomes available only after release broadcast"),Fleet->IsAvailable());
-        auto* NewMove=ButtonCaption(Shell,ProductText::Source(TEXT("Fleet move")));
+        auto* NewMove=Cast<UCommandActionButton>(Shell->WidgetTree->FindWidget(TEXT("group_move")));
         if(Test->TestNotNull(TEXT("Map fleet toolbar button restored"),NewMove))Test->TestEqual(TEXT("fleet move entry restored after configuration"),NewMove->GetVisibility(),ESlateVisibility::Visible);
         Test->TestEqual(TEXT("configuration created no extra execution"),Object(State,TEXT("executions"))->Values.Num(),2);
         Test->TestEqual(TEXT("group control and configuration preserve Video target"),JsonText(Sync->GetVideoView()),VideoBefore);
