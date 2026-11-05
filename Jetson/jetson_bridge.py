@@ -100,6 +100,25 @@ TELEMETRY_HZ = 10
 running = True
 
 
+def read_arm_confirmation(input_stream, is_running, *, arm_now=False):
+    """Accept operator input only while the bridge is still running.
+
+    EOF is not an ENTER key. Closed or unavailable stdin must leave the bridge
+    disarmed; only the explicit ARM_NOW setting bypasses interactive input.
+    """
+    if not is_running():
+        return False
+    if arm_now:
+        return is_running()
+    if input_stream is None:
+        return False
+    try:
+        line = input_stream.readline()
+    except (EOFError, OSError, ValueError):
+        return False
+    return isinstance(line, str) and line.endswith("\n") and is_running()
+
+
 def parse_speed_mps(raw_speed):
     """Parse the optional command speed.
 
@@ -180,11 +199,15 @@ def parse_control_packet(data: bytes):
         slot = int(message["slot"])
         issued_at = float(message["issued_at_unix_s"])
         sent_at = float(message["sent_at_unix_s"])
-    except (KeyError, TypeError, ValueError) as exc:
+    except (KeyError, TypeError, ValueError, OverflowError) as exc:
         raise ValueError(f"invalid command metadata: {exc}") from exc
-    if sequence <= 0 or drone_id <= 0 or slot <= 0:
+    # Match Backend's uint64 sequence and signed int drone/slot fields. Python
+    # integers are unbounded, so conversion alone does not reject huge numbers.
+    if not (0 < sequence <= (1 << 64) - 1
+            and 0 < drone_id <= (1 << 31) - 1
+            and 0 < slot <= (1 << 31) - 1):
         raise ValueError(
-            f"sequence/drone_id/slot must be positive: {sequence}/{drone_id}/{slot}"
+            "sequence/drone_id/slot must fit their positive Backend integer ranges"
         )
 
     target = message.get("target")
@@ -203,7 +226,7 @@ def parse_control_packet(data: bytes):
         north = float(target["north"])
         east = float(target["east"])
         down = float(target["down"])
-    except (KeyError, TypeError, ValueError) as exc:
+    except (KeyError, TypeError, ValueError, OverflowError) as exc:
         raise ValueError(f"invalid NED target: {exc}") from exc
 
     delivery = message.get("delivery")
@@ -212,11 +235,12 @@ def parse_control_packet(data: bytes):
     try:
         repeat_index = int(delivery["repeat_index"])
         repeat_total = int(delivery["repeat_total"])
-    except (KeyError, TypeError, ValueError) as exc:
+    except (KeyError, TypeError, ValueError, OverflowError) as exc:
         raise ValueError(f"invalid delivery metadata: {exc}") from exc
-    if repeat_index <= 0 or repeat_total < 0:
+    if not (0 < repeat_index <= (1 << 32) - 1
+            and 0 <= repeat_total <= (1 << 32) - 1):
         raise ValueError(
-            f"invalid repeat_index/repeat_total={repeat_index}/{repeat_total}"
+            "repeat_index/repeat_total must fit Backend uint32 ranges"
         )
     if repeat_total > 0 and repeat_index > repeat_total:
         raise ValueError(
@@ -1429,15 +1453,22 @@ def main(args=None):
         if not running:
             return
         # 环境变量 ARM_NOW=1 跳过确认，直接解锁
-        if os.environ.get("ARM_NOW") == "1":
+        arm_now = os.environ.get("ARM_NOW") == "1"
+        if arm_now:
             print("\n>>> ARM_NOW=1 detected, skipping confirmation.")
         else:
             sys.stdout.write("\n>>> Heartbeat ready. Press ENTER to ARM + OFFBOARD (Ctrl+C to abort): ")
             sys.stdout.flush()
-            sys.stdin.readline()
+        if not read_arm_confirmation(sys.stdin, lambda: running, arm_now=arm_now):
+            bridge.get_logger().warning(
+                "ARM + OFFBOARD not confirmed: stdin is unavailable or bridge stopped"
+            )
+            return
+        if not running:
+            return
+        bridge._arm_triggered = True
         print(">>> ARM + OFFBOARD triggered. Motor should spin soon.")
         print(">>> Press Ctrl+C to DISARM immediately.\n")
-        bridge._arm_triggered = True
 
     arm_thread = threading.Thread(target=_wait_for_arm, daemon=True)
     arm_thread.start()
