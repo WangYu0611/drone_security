@@ -2,6 +2,7 @@
 #include "conversion/assignment_solver.h"
 #include <spdlog/spdlog.h>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <map>
 #include <set>
@@ -98,13 +99,41 @@ double AssemblyPlanner::SegmentSegmentDistance(
     double b1x, double b1y, double b1z,
     double b2x, double b2y, double b2z)
 {
-    // 四个端点-线段距离中的最小值
+    // The minimum lies on the boundary of the two segment parameters, or
+    // at their interior closest points. Endpoint projections cover every
+    // boundary, including parallel segments and segments reduced to points.
     double d1 = PointSegmentDistance(a1x, a1y, a1z, b1x, b1y, b1z, b2x, b2y, b2z);
     double d2 = PointSegmentDistance(a2x, a2y, a2z, b1x, b1y, b1z, b2x, b2y, b2z);
     double d3 = PointSegmentDistance(b1x, b1y, b1z, a1x, a1y, a1z, a2x, a2y, a2z);
     double d4 = PointSegmentDistance(b2x, b2y, b2z, a1x, a1y, a1z, a2x, a2y, a2z);
 
-    return std::min({d1, d2, d3, d4});
+    double distance = std::min({d1, d2, d3, d4});
+    using Vec3 = std::array<double, 3>;
+    const auto cross = [](const Vec3& a, const Vec3& b) -> Vec3 {
+        return {a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2],
+                a[0]*b[1] - a[1]*b[0]};
+    };
+    const auto dot = [](const Vec3& a, const Vec3& b) {
+        return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+    };
+    const Vec3 u{a2x-a1x, a2y-a1y, a2z-a1z};
+    const Vec3 v{b2x-b1x, b2y-b1y, b2z-b1z};
+    const Vec3 w{b1x-a1x, b1y-a1y, b1z-a1z};
+    const auto normal = cross(u, v);
+    // Use the squared cross product rather than |u|²|v|²-(u·v)²,
+    // which loses precision when the segments are nearly parallel.
+    const double denominator = dot(normal, normal);
+    if (denominator > 0.0) {
+        const double s = dot(cross(w, v), normal) / denominator;
+        const double t = dot(cross(w, u), normal) / denominator;
+        if (s >= 0.0 && s <= 1.0 && t >= 0.0 && t <= 1.0) {
+            const Vec3 gap{w[0] + t*v[0] - s*u[0],
+                           w[1] + t*v[1] - s*u[1],
+                           w[2] + t*v[2] - s*u[2]};
+            distance = std::min(distance, std::sqrt(dot(gap, gap)));
+        }
+    }
+    return distance;
 }
 
 // ============================================================

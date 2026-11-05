@@ -80,8 +80,49 @@ TEST(SegmentDistanceTest, VerticalSeparation)
     double d = AssemblyPlanner::SegmentSegmentDistance(
         0,0,0, 10,0,0,  5,-5,10, 5,5,10);
     // 垂直距离 10m
-    EXPECT_GT(d, 8.0);
-    EXPECT_LT(d, 12.0);
+    EXPECT_NEAR(d, 10.0, 1e-6);
+}
+
+TEST(SegmentDistanceTest, SkewInteriorClosestPoints)
+{
+    // Both nearest points are interior: (5,0,0) and (5,0,2).
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        0,0,0, 10,0,0, 5,-5,2, 5,5,2), 2.0, 1e-6);
+    // Reversing either segment and swapping them preserves the result.
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        5,5,2, 5,-5,2, 10,0,0, 0,0,0), 2.0, 1e-6);
+}
+
+TEST(SegmentDistanceTest, ClosestLinesOutsideSegments)
+{
+    // The infinite lines cross at (5,0,0), outside segment A.
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        0,0,0, 1,0,0, 5,-5,0, 5,5,0), 4.0, 1e-6);
+}
+
+TEST(SegmentDistanceTest, DegenerateSegments)
+{
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        1,2,3, 1,2,3, 4,6,3, 4,6,3), 5.0, 1e-6);
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        0,0,0, 10,0,0, 5,3,0, 5,3,0), 3.0, 1e-6);
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        5,3,0, 5,3,0, 10,0,0, 0,0,0), 3.0, 1e-6);
+}
+
+TEST(SegmentDistanceTest, CollinearOverlappingAndDisjoint)
+{
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        0,0,0, 10,0,0, 15,0,0, 5,0,0), 0.0, 1e-6);
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        0,0,0, 10,0,0, 15,0,0, 20,0,0), 5.0, 1e-6);
+}
+
+TEST(SegmentDistanceTest, NearlyParallelInteriorCrossing)
+{
+    EXPECT_NEAR(AssemblyPlanner::SegmentSegmentDistance(
+        0,0,0, 10000,0,0, 0,-0.00001,0, 10000,0.00001,0),
+        0.0, 1e-10);
 }
 
 // ============================================================
@@ -110,7 +151,7 @@ TEST(AssemblyPlannerTest, NoConflictSparse)
 TEST(AssemblyPlannerTest, ConflictHeightSeparation)
 {
     AssemblyPlanner planner;
-    // 两架无人机相距 5m，路线交叉
+    // Keep the preassigned crossing routes, as AssemblyController does.
     std::unordered_map<int, std::tuple<double, double, double>> positions = {
         {1, {0, 0, -10}},
         {2, {5, 0, -10}},
@@ -123,7 +164,8 @@ TEST(AssemblyPlannerTest, ConflictHeightSeparation)
     double original_z_a = targets[0].ned_z;
     double original_z_b = targets[1].ned_z;
 
-    auto conflicts = planner.Plan(positions, targets, 2.0);
+    auto conflicts = planner.Plan(positions, targets, 2.0,
+                                  /*bAllowTargetReassignment=*/false);
     // 交叉段距离 ≈ 0 < 4m → 应检测到冲突
     EXPECT_GE(conflicts.size(), 1u);
 
@@ -131,6 +173,27 @@ TEST(AssemblyPlannerTest, ConflictHeightSeparation)
     bool z_changed = (std::abs(targets[0].ned_z - original_z_a) > 0.1) ||
                      (std::abs(targets[1].ned_z - original_z_b) > 0.1);
     EXPECT_TRUE(z_changed);
+    EXPECT_EQ(targets[0].drone_id, 1);
+    EXPECT_EQ(targets[1].drone_id, 2);
+}
+
+TEST(AssemblyPlannerTest, PreassignedInteriorCrossingRequiresSeparation)
+{
+    AssemblyPlanner planner;
+    const std::unordered_map<int, std::tuple<double, double, double>> positions = {
+        {1, {0, 0, -10}}, {2, {5, -5, -10}},
+    };
+    std::vector<AssemblyTarget> targets = {
+        {1, 10, 0, -10, 0}, {2, 5, 5, -10, 1},
+    };
+
+    const auto conflicts = planner.Plan(positions, targets, 2.0,
+                                        /*bAllowTargetReassignment=*/false);
+    ASSERT_EQ(conflicts.size(), 1u);
+    EXPECT_NEAR(conflicts.front().min_distance_m, 0.0, 1e-6);
+    EXPECT_EQ(targets[0].drone_id, 1);
+    EXPECT_EQ(targets[1].drone_id, 2);
+    EXPECT_NE(targets[0].ned_z, targets[1].ned_z);
 }
 
 TEST(AssemblyPlannerTest, PreservePreassignedTargets)
