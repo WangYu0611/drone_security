@@ -8,6 +8,7 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const backendExe=process.env.DRONE_BACKEND_EXE || path.join(root,'Backend','build','Release','DroneBackend.exe');
 const out=path.join(root,'Saved','MockPositionQA','transport-'+Date.now());fs.mkdirSync(out,{recursive:true});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function tcpPort(){const socket=net.createServer();await new Promise(r=>socket.listen(0,'127.0.0.1',r));const port=socket.address().port;await new Promise(r=>socket.close(r));return port;}
@@ -27,7 +28,7 @@ async function api(url,body,expected=200){const response=await fetch(base+url,{m
 async function until(read,predicate,timeout=10000){const start=Date.now();for(;;){const value=await read();if(predicate(value))return value;assert(Date.now()-start<timeout,'Timed out waiting for expected state');await sleep(60);}}
 const pass=name=>{passed.push(name);console.log('PASS '+name);};
 async function start(){
-    const log=fs.openSync(path.join(out,'process.log'),'a');child=spawn(path.join(root,'Backend','build','Release','DroneBackend.exe'),[path.join(out,'config.json')],{cwd:root,windowsHide:true,stdio:['ignore',log,log]});fs.closeSync(log);
+    const log=fs.openSync(path.join(out,'process.log'),'a');child=spawn(backendExe,[path.join(out,'config.json')],{cwd:root,windowsHide:true,stdio:['ignore',log,log]});fs.closeSync(log);
     evidence.process_ids??=[];evidence.process_ids.push(child.pid);
     await until(async()=>{assert(child.exitCode===null,'Owned Backend exited');try{return await api('/api/drones');}catch{return null;}},Boolean);
     events=[];socket=new WebSocket(`ws://127.0.0.1:${wsPort}/ws`);socket.onmessage=e=>events.push(JSON.parse(e.data));
@@ -76,7 +77,18 @@ try {
     pass('Backend-only restart preserves the current reset epoch and subsequent movement');
     await connect('Video');const forbidden=await send('execution_group_move',{assigned_uav_ids:['UAV-01'],target},403);assert.equal(forbidden.code,'ROLE_FORBIDDEN');pass('Singleton does not bypass client role authorization');
     udp=await udpSocket();
-    const received={gps_lat:40.1,gps_lon:116.4,gps_alt:75,gps_fix:true,local_position:[0,0,-30],local_position_valid:true,battery:81,telemetry_received_at:1};
+    const sendUdp=payload=>new Promise((resolve,reject)=>udp.send(Buffer.from(JSON.stringify(payload)),udpPort,'127.0.0.1',error=>error?reject(error):resolve()));
+    const ack={session_id:'loopback-test',command_id:'loopback-move',sequence:120,mode:'move'};
+    await sendUdp({type:'control_ack',slot:1,status:'rejected',...ack});
+    // A mismatched slot produces a warning, which flushes the test Backend log.
+    await sendUdp({type:'control_ack',slot:2,status:'rejected',...ack});
+    const readLog=()=>fs.readFileSync(path.join(out,'backend.log'),'utf8');
+    await until(readLog,log=>log.includes('[StandaloneControlAck]')&&log.includes('command_id=loopback-move'));
+    const afterAck=await drone();
+    assert.equal(afterAck.status,'offline');assert.equal(afterAck.simulation,true);assert(!Object.hasOwn(afterAck,'telemetry_received_at'));
+    pass('Standalone ACK is diagnostic and does not refresh telemetry or make a drone online');
+    const received={gps_lat:40.1,gps_lon:116.4,gps_alt:75,gps_fix:true,local_position:[0,0,-30],local_position_valid:true,battery:81,telemetry_received_at:1,
+        q:[Math.SQRT1_2,0,0,Math.SQRT1_2],velocity:[3,4,0],arming_state:2,nav_state:14,control_ack:{...ack,confirmed_packets:3}};
     const duringFirstPacket=Promise.all(Array.from({length:30},()=>drone()));
     const sentAt=Date.now()/1000;
     udp.send(Buffer.from(JSON.stringify(received)),udpPort,'127.0.0.1');
@@ -90,13 +102,24 @@ try {
     const wsReal=await until(async()=>events.find(e=>e.type==='telemetry'&&e.telemetry_source==='received'),Boolean);assert.deepEqual(gps(wsReal),gps(received));assert.equal(wsReal.status,'online');
     assert(Number.isFinite(real.telemetry_received_at));assert(real.telemetry_received_at>=sentAt&&real.telemetry_received_at<=Date.now()/1000);
     assert.equal(wsReal.telemetry_received_at,real.telemetry_received_at);pass('Received UDP has one server receipt time shared atomically by REST and WebSocket');
+    assert.equal(real.armed,true);assert.equal(real.offboard,true);assert.equal(real.speed,5);assert(Math.abs(real.yaw+90)<1e-6);
+    await sendUdp({type:'control_ack',slot:2,status:'rejected',...ack});
+    await until(readLog,log=>log.split('\n').some(line=>line.includes('[ControlAck]')&&line.includes('command_id=loopback-move')));
+    pass('Legacy status, orientation and velocity survive and the telemetry ACK has independent logging');
+    await sendUdp({...received,vehicle_status:{arming_state:0,nav_state:0},attitude:{q:[1,0,0,0]},odometry:{velocity:[0,0,0]}});
+    const nested=await until(drone,d=>d.telemetry_received_at>real.telemetry_received_at);
+    assert.equal(nested.armed,false);assert.equal(nested.offboard,false);assert.equal(nested.speed,0);assert(Math.abs(nested.yaw)<1e-6);
+    await sendUdp({...received,vehicle_status:{arming_state:256},attitude:{q:[1]},odometry:{velocity:[1,2,'invalid']}});
+    const fallback=await until(drone,d=>d.telemetry_received_at>nested.telemetry_received_at);
+    assert.equal(fallback.armed,true);assert.equal(fallback.offboard,true);assert.equal(fallback.speed,5);assert(Math.abs(fallback.yaw+90)<1e-6);
+    pass('Valid nested telemetry takes precedence and invalid or missing values fall back to legacy fields');
     const lost=await until(drone,d=>d.status==='lost');assert.equal(lost.telemetry_source,'received');assert.deepEqual(gps(lost),gps(received));
-    assert.equal(lost.telemetry_received_at,real.telemetry_received_at);
-    await sleep(150);const readAgain=await drone();assert.equal(readAgain.status,'lost');assert.equal(readAgain.telemetry_received_at,real.telemetry_received_at);
+    assert.equal(lost.telemetry_received_at,fallback.telemetry_received_at);
+    await sleep(150);const readAgain=await drone();assert.equal(readAgain.status,'lost');assert.equal(readAgain.telemetry_received_at,fallback.telemetry_received_at);
     pass('Connection loss replaces cached Online while GET and loss detection preserve the last packet receipt time');
     const afterLost=events.length;udp.send(Buffer.from(JSON.stringify({...received,gps_fix:false,local_position_valid:false,gps_lat:0,gps_lon:0})),udpPort,'127.0.0.1');
     const invalid=await until(drone,d=>d.gps_fix===false);assert.equal(invalid.telemetry_source,'received');assert.equal(invalid.status,'lost');
-    assert(invalid.telemetry_received_at>real.telemetry_received_at);
+    assert(invalid.telemetry_received_at>fallback.telemetry_received_at);
     await sleep(1300);assert.equal((await drone()).telemetry_source,'received');assert(!events.slice(afterLost).some(e=>e.type==='telemetry'&&e.simulation));
     const wsInvalid=events.slice(afterLost).find(e=>e.type==='telemetry'&&!e.gps_fix);assert(wsInvalid);assert.equal(wsInvalid.status,'lost');assert.equal(wsInvalid.telemetry_received_at,invalid.telemetry_received_at);assert.equal((await drone()).telemetry_received_at,invalid.telemetry_received_at);pass('Only a new UDP packet advances receipt time; lost hardware and invalid GPS never fall back to Mock');
     const protectedReset=await api('/api/mock-executions/reset',{...resetRequest,request_id:crypto.randomUUID()});

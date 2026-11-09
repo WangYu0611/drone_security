@@ -262,21 +262,26 @@ void HeartbeatManager::HeartbeatLoop(int drone_id)
         if (!has_active_move && state->get_command) {
             DroneControlPacket queued{};
             if (state->get_command(queued)) {
-                if (queued.sequence == 0) queued.sequence = NextControlSequence();
-                queued.mode = 1;
-                queued.slot = state->slot;
-                queued.repeat_total = static_cast<uint32_t>(command_repeat_count_);
-                active_move = queued;
-                has_active_move = true;
-                move_sent_count = 0;
-                state->last_ned_x.store(queued.x);
-                state->last_ned_y.store(queued.y);
-                state->last_ned_z.store(queued.z);
-                spdlog::info(
-                    "[Heartbeat] Drone {} begin move sequence={} repeat={} "
-                    "NED({:.3f},{:.3f},{:.3f})",
-                    drone_id, queued.sequence, command_repeat_count_,
-                    queued.x, queued.y, queued.z);
+                if (!UdpSender::IsValidMoveSpeed(queued)) {
+                    spdlog::error("[Heartbeat] Drone {} discarded move sequence={} with invalid speed {}",
+                                  drone_id, queued.sequence, queued.speed_mps);
+                } else {
+                    if (queued.sequence == 0) queued.sequence = NextControlSequence();
+                    queued.mode = 1;
+                    queued.slot = state->slot;
+                    queued.repeat_total = static_cast<uint32_t>(command_repeat_count_);
+                    active_move = queued;
+                    has_active_move = true;
+                    move_sent_count = 0;
+                    state->last_ned_x.store(queued.x);
+                    state->last_ned_y.store(queued.y);
+                    state->last_ned_z.store(queued.z);
+                    spdlog::info(
+                        "[Heartbeat] Drone {} begin move sequence={} repeat={} "
+                        "NED({:.3f},{:.3f},{:.3f})",
+                        drone_id, queued.sequence, command_repeat_count_,
+                        queued.x, queued.y, queued.z);
+                }
             }
         }
 

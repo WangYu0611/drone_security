@@ -33,7 +33,7 @@ struct DroneControlPacket {
     // Requested 3D speed in m/s. 0 is the legacy/unlimited marker; limited
     // values are normalized to [0.5, 15] before entering the command queue.
     float    speed_mps = 0.0f;
-    bool     use_unlimited_speed = false; // serialize speed as NaN for Jetson
+    bool     use_unlimited_speed = false; // position control without a velocity limit
     int      slot = 0;
     uint32_t repeat_index = 0; // 本逻辑指令的第几次发送（从 1 开始）
     uint32_t repeat_total = 0; // move 为有限重发次数；hold=0 表示持续发送
@@ -48,6 +48,23 @@ inline uint64_t NextControlSequence()
     };
     return sequence.fetch_add(1, std::memory_order_relaxed);
 }
+
+struct ControlAckData {
+    int slot = 0;
+    int drone_id = 0;
+
+    std::string status;
+    std::string message;
+
+    std::string session_id;
+    std::string command_id;
+
+    uint64_t sequence = 0;
+    std::string mode;
+
+    uint32_t confirmed_packets = 0;
+    uint64_t timestamp = 0;
+};
 
 struct TelemetryData {
     uint64_t timestamp = 0;

@@ -21,6 +21,7 @@ struct DroneContext {
 
     bool low_battery_alert_active = false;
     uint64_t last_logged_control_ack_sequence = 0;
+    uint64_t last_logged_standalone_ack_sequence = 0;
 
     double last_ned_x = 0.0;
     double last_ned_y = 0.0;

@@ -37,6 +37,7 @@ public:
 
     void OnTelemetryReceived(int drone_id, const TelemetryData& data);
     void OnTelemetryReceivedBySlot(int slot, const TelemetryData& data);
+    void OnControlAckReceivedBySlot(int slot, const ControlAckData& ack);
     int ResolveDroneIdBySlot(int slot) const;
 
     bool ProcessMoveCommand(int drone_id, double ue_x, double ue_y, double ue_z,

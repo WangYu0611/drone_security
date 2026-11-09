@@ -17,6 +17,7 @@
 class UdpReceiver {
 public:
     using ReceiveCallback = std::function<void(int slot, const TelemetryData&)>;
+    using AckCallback = std::function<void(int slot, const ControlAckData&)>;
     /// pong: (slot, ping_id, jetson 侧的 sent_at_unix_s 回显——仅供日志参考，
     /// RTT 计算必须只用后端自身单调时钟，不能用这个跨设备时间戳)
     using PongCallback = std::function<void(int slot, uint64_t ping_id, double echoed_sent_at_unix_s)>;
@@ -35,6 +36,7 @@ public:
 
     /// 设置延迟探测 pong 回调（type=="pong" 的数据报，不进入遥测解析）
     void SetPongCallback(PongCallback cb);
+    void SetAckCallback(AckCallback cb);
 
     /// 启动所有端口监听
     void Start();
@@ -62,6 +64,7 @@ private:
     std::vector<std::unique_ptr<PortListener>> listeners_;
     ReceiveCallback callback_;
     PongCallback pong_callback_;
+    AckCallback ack_callback_;
     mutable std::mutex callback_mutex_;
     std::atomic<bool> running_{false};
 };

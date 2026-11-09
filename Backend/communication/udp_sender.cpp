@@ -64,8 +64,20 @@ void UdpSender::SetTarget(int drone_id, const std::string& host, int port)
     spdlog::info("[UdpSender] Drone {} target set: {}:{}", drone_id, host, port);
 }
 
+bool UdpSender::IsValidMoveSpeed(const DroneControlPacket& packet)
+{
+    return packet.use_unlimited_speed ||
+           (std::isfinite(packet.speed_mps) && packet.speed_mps >= 0.5f &&
+            packet.speed_mps <= 15.0f);
+}
+
 bool UdpSender::Send(int drone_id, const DroneControlPacket& packet)
 {
+    if (packet.mode == 1 && !IsValidMoveSpeed(packet)) {
+        spdlog::error("[UdpSender] Invalid move speed: drone={} speed={}",
+                      drone_id, packet.speed_mps);
+        return false;
+    }
     const std::string mode = packet.mode == 1 ? "move" : "hold";
     const std::string command_id = session_id_ + "-d" +
         std::to_string(drone_id) + "-s" + std::to_string(packet.sequence);
@@ -95,13 +107,11 @@ bool UdpSender::Send(int drone_id, const DroneControlPacket& packet)
             {"repeat_total", packet.repeat_total},
         }},
     };
-    if (packet.mode == 1 && std::isfinite(packet.speed_mps) && packet.speed_mps >= 0.5f) {
-        // Finite value makes Jetson generate a velocity setpoint at this 3D speed.
-        json["speed"] = packet.speed_mps;
-    } else if (packet.use_unlimited_speed) {
-        // JSON has no portable NaN number literal. Jetson's control adapter
-        // accepts this explicit float marker and converts it via float("nan").
-        json["speed"] = "NaN";
+    if (packet.mode == 1) {
+        json["speed_unlimited"] = packet.use_unlimited_speed;
+        if (!packet.use_unlimited_speed) {
+            json["speed"] = packet.speed_mps;
+        }
     }
     const std::string payload = json.dump();
 

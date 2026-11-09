@@ -28,6 +28,8 @@ public:
     /// @return true 如果发送成功
     bool Send(int drone_id, const DroneControlPacket& packet);
 
+    static bool IsValidMoveSpeed(const DroneControlPacket& packet);
+
     /// 发送一个延迟探测 ping（走控制端口，Jetson 收到后立即原样回 pong）。
     /// 不进入 Jetson 端的指令确认状态机，不影响 sequence/hold。
     /// @param drone_id  目标无人机 ID

@@ -38,8 +38,7 @@ DroneControlPacket make_packet(int slot, double ned_n, double ned_e,
     cmd.z = static_cast<float>(ned_d);
     cmd.mode = mode;
     cmd.speed_mps = mode == 1 ? normalize_requested_speed(speed_mps) : 0.0f;
-    // Jetson uses a NaN marker for its legacy position-control (unlimited)
-    // mode.  Emit it explicitly for every move with no finite speed.
+    // Zero selects position control without a velocity limit.
     cmd.use_unlimited_speed = mode == 1 && cmd.speed_mps == 0.0f;
     cmd.slot = slot;
     return cmd;
@@ -310,6 +309,51 @@ void DroneManager::OnTelemetryReceivedBySlot(int slot, const TelemetryData& data
         return;
     }
     HandleTelemetry(*ctx, data);
+}
+
+void DroneManager::OnControlAckReceivedBySlot(
+    int slot,
+    const ControlAckData& ack)
+{
+    std::lock_guard<std::mutex> lock(drones_mutex_);
+
+    auto* ctx = GetContextBySlot(slot);
+    if (!ctx) {
+        spdlog::warn(
+            "[ControlAck] ACK for unregistered slot {}",
+            slot);
+        return;
+    }
+
+    if (ack.drone_id != 0 && ack.drone_id != ctx->drone_id) {
+        spdlog::warn(
+            "[ControlAck] Drone ID mismatch: slot={} expected={} received={}",
+            slot, ctx->drone_id, ack.drone_id);
+        return;
+    }
+
+    if (ack.sequence != 0 &&
+        ack.sequence <= ctx->last_logged_standalone_ack_sequence) {
+        return;
+    }
+
+    if (ack.sequence != 0) {
+        ctx->last_logged_standalone_ack_sequence = ack.sequence;
+    }
+
+    spdlog::info(
+        "[StandaloneControlAck] drone={} slot={} status={} "
+        "session={} command_id={} sequence={} mode={} "
+        "confirmed_packets={} message={}",
+        ctx->drone_id,
+        slot,
+        ack.status,
+        ack.session_id,
+        ack.command_id,
+        ack.sequence,
+        ack.mode,
+        ack.confirmed_packets,
+        ack.message);
 }
 
 int DroneManager::ResolveDroneIdBySlot(int slot) const

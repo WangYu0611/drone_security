@@ -1,6 +1,7 @@
 #include "udp_receiver.h"
 #include <yaml-cpp/yaml.h>
 #include <spdlog/spdlog.h>
+#include <algorithm>
 #include <cmath>
 #include <sstream>
 
@@ -38,6 +39,36 @@ bool TryParseBool(const YAML::Node& node, bool& out_value)
     }
 }
 
+template <std::size_t N>
+bool TryParseFiniteVector(const YAML::Node& node, double (&out_value)[N])
+{
+    if (!node || !node.IsSequence() || node.size() < N) {
+        return false;
+    }
+
+    double values[N];
+    for (std::size_t i = 0; i < N; ++i) {
+        if (!TryParseFiniteDouble(node[i], values[i])) {
+            return false;
+        }
+    }
+    std::copy_n(values, N, out_value);
+    return true;
+}
+
+bool TryParseStatusByte(const YAML::Node& node, uint8_t& out_value)
+{
+    if (!node || !node.IsScalar()) {
+        return false;
+    }
+    const int value = node.as<int>(-1);
+    if (value < 0 || value > UINT8_MAX) {
+        return false;
+    }
+    out_value = static_cast<uint8_t>(value);
+    return true;
+}
+
 }  // namespace
 
 UdpReceiver::UdpReceiver(boost::asio::io_context& io_context)
@@ -73,6 +104,12 @@ void UdpReceiver::SetPongCallback(PongCallback cb)
 {
     std::lock_guard<std::mutex> lock(callback_mutex_);
     pong_callback_ = std::move(cb);
+}
+
+void UdpReceiver::SetAckCallback(AckCallback cb)
+{
+    std::lock_guard<std::mutex> lock(callback_mutex_);
+    ack_callback_ = std::move(cb);
 }
 
 void UdpReceiver::Start()
@@ -147,6 +184,83 @@ void UdpReceiver::HandleReceive(PortListener& listener,
                 return;
             }
 
+            // Control ACK: independent from telemetry.
+            // Never pass an ACK-only packet into DroneManager::HandleTelemetry().
+            if (auto type_node = root["type"];
+                type_node && type_node.IsScalar()
+                && type_node.as<std::string>("") == "control_ack") {
+
+                ControlAckData ack{};
+
+                ack.slot = listener.slot;
+
+                if (auto v = root["slot"]) {
+                    const int packet_slot = v.as<int>(0);
+                    if (packet_slot != listener.slot) {
+                        spdlog::warn(
+                            "[UdpReceiver] ACK slot mismatch: listener={} packet={}",
+                            listener.slot, packet_slot);
+                        StartReceive(listener);
+                        return;
+                    }
+                }
+
+                if (auto v = root["drone_id"]) {
+                    ack.drone_id = v.as<int>(0);
+                    if (ack.drone_id <= 0) {
+                        spdlog::warn("[UdpReceiver] Invalid ACK drone ID for slot {}", listener.slot);
+                        StartReceive(listener);
+                        return;
+                    }
+                }
+
+                if (auto v = root["status"]) {
+                    ack.status = v.as<std::string>("");
+                }
+
+                if (auto v = root["message"]) {
+                    ack.message = v.as<std::string>("");
+                }
+
+                if (auto v = root["session_id"]) {
+                    ack.session_id = v.as<std::string>("");
+                }
+
+                if (auto v = root["command_id"]) {
+                    ack.command_id = v.as<std::string>("");
+                }
+
+                if (auto v = root["sequence"]) {
+                    ack.sequence = v.as<uint64_t>(0);
+                }
+
+                if (auto v = root["mode"]) {
+                    ack.mode = v.as<std::string>("");
+                }
+
+                if (auto v = root["confirmed_packets"]) {
+                    ack.confirmed_packets = v.as<uint32_t>(0);
+                }
+
+                if (auto v = root["timestamp"]) {
+                    ack.timestamp = v.as<uint64_t>(0);
+                }
+
+                {
+                    std::lock_guard<std::mutex> lock(callback_mutex_);
+                    if (ack_callback_) {
+                        ack_callback_(listener.slot, ack);
+                    }
+                }
+
+                spdlog::debug(
+                    "[UdpReceiver] Slot {} received control ACK: status={} sequence={}",
+                    listener.slot, ack.status, ack.sequence);
+
+                StartReceive(listener);
+                return;
+            }
+
             TelemetryData tel{};
 
             // timestamp (微秒)
@@ -154,7 +268,8 @@ void UdpReceiver::HandleReceive(PortListener& listener,
                 tel.timestamp = ts.as<uint64_t>(0);
             }
 
-            // position [N, E, D]
+            // Legacy position [N, E, D].
+            // Keep the existing legacy format; do not substitute VehicleOdometry here.
             if (auto pos = root["position"]) {
                 if (pos.IsSequence() && pos.size() >= 3) {
                     tel.position_ned[0] = pos[0].as<double>(0.0);
@@ -163,23 +278,18 @@ void UdpReceiver::HandleReceive(PortListener& listener,
                 }
             }
 
-            // quaternion [w, x, y, z]
-            if (auto q = root["q"]) {
-                if (q.IsSequence() && q.size() >= 4) {
-                    tel.quaternion[0] = q[0].as<double>(1.0);
-                    tel.quaternion[1] = q[1].as<double>(0.0);
-                    tel.quaternion[2] = q[2].as<double>(0.0);
-                    tel.quaternion[3] = q[3].as<double>(0.0);
-                }
+            // Quaternion [w, x, y, z].
+            const YAML::Node attitude = root["attitude"];
+            if (!attitude || !attitude.IsMap() ||
+                !TryParseFiniteVector(attitude["q"], tel.quaternion)) {
+                TryParseFiniteVector(root["q"], tel.quaternion);
             }
 
-            // velocity [vN, vE, vD]
-            if (auto vel = root["velocity"]) {
-                if (vel.IsSequence() && vel.size() >= 3) {
-                    tel.velocity[0] = vel[0].as<double>(0.0);
-                    tel.velocity[1] = vel[1].as<double>(0.0);
-                    tel.velocity[2] = vel[2].as<double>(0.0);
-                }
+            // Velocity [vN, vE, vD].
+            const YAML::Node odometry = root["odometry"];
+            if (!odometry || !odometry.IsMap() ||
+                !TryParseFiniteVector(odometry["velocity"], tel.velocity)) {
+                TryParseFiniteVector(root["velocity"], tel.velocity);
             }
 
             // angular_velocity
@@ -250,9 +360,18 @@ void UdpReceiver::HandleReceive(PortListener& listener,
                 tel.position_ned[2] = tel.local_position[2];
             }
 
-            // arming_state / nav_state (vehicle_status_v1)
-            if (auto arm = root["arming_state"]) tel.arming_state = arm.as<uint8_t>(0);
-            if (auto nav = root["nav_state"])    tel.nav_state    = nav.as<uint8_t>(0);
+            // arming_state / nav_state.
+            // Prefer nested vehicle_status; retain legacy top-level compatibility.
+            const YAML::Node vehicle_status = root["vehicle_status"];
+            const bool has_vehicle_status = vehicle_status && vehicle_status.IsMap();
+            if (!has_vehicle_status ||
+                !TryParseStatusByte(vehicle_status["arming_state"], tel.arming_state)) {
+                TryParseStatusByte(root["arming_state"], tel.arming_state);
+            }
+            if (!has_vehicle_status ||
+                !TryParseStatusByte(vehicle_status["nav_state"], tel.nav_state)) {
+                TryParseStatusByte(root["nav_state"], tel.nav_state);
+            }
 
             // Jetson 达到 3-of-5 确认阈值并真正应用 setpoint 后返回的应用层 ACK。
             if (auto ack = root["control_ack"]; ack && ack.IsMap()) {
