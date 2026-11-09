@@ -55,6 +55,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "DroneVideo")
 	void RetryVideo();
 
+	/** 将 YOLO 检测结果发送到当前视频页面，由 Canvas 绘制检测框。 */
+    void UpdateDetectionJson(const FString& DetectionJson);
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;

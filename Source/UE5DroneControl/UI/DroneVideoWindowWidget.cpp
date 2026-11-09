@@ -205,3 +205,122 @@ void UDroneVideoWindowWidget::OnVideoUrlChanged(const FText& NewUrl)
 		VideoStatusOverlay->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
+
+// ============================================================
+// YOLO Detection Overlay
+// ============================================================
+
+
+void UDroneVideoWindowWidget::UpdateDetectionJson(
+        const FString& DetectionJson)
+{
+        if (bShuttingDown || !VideoBrowser || DetectionJson.IsEmpty())
+        {
+                return;
+        }
+
+        const FString JavaScriptTemplate = TEXT(R"JS(
+(() => {
+    try {
+        const data = __YOLO_DETECTION_JSON__;
+        const video = document.getElementById('video');
+
+        if (!video) return;
+
+        let canvas = document.getElementById('ue-yolo-overlay');
+
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            canvas.id = 'ue-yolo-overlay';
+
+            Object.assign(canvas.style, {
+                position: 'fixed',
+                left: '0',
+                top: '0',
+                width: '100vw',
+                height: '100vh',
+                zIndex: '9999',
+                pointerEvents: 'none'
+            });
+
+            document.body.appendChild(canvas);
+        }
+
+        const rect = video.getBoundingClientRect();
+
+        if (rect.width <= 0 || rect.height <= 0) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+
+        canvas.style.left = rect.left + 'px';
+        canvas.style.top = rect.top + 'px';
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+
+        const ctx = canvas.getContext('2d');
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, rect.width, rect.height);
+
+        const imageWidth = data.image_width || video.videoWidth;
+        const imageHeight = data.image_height || video.videoHeight;
+
+        if (!imageWidth || !imageHeight) return;
+
+        const scaleX = rect.width / imageWidth;
+        const scaleY = rect.height / imageHeight;
+
+        const detections = data.detections || [];
+
+        ctx.lineWidth = 2;
+        ctx.font = '16px Arial';
+
+        for (const det of detections) {
+            const x = det.x1 * scaleX;
+            const y = det.y1 * scaleY;
+            const w = (det.x2 - det.x1) * scaleX;
+            const h = (det.y2 - det.y1) * scaleY;
+
+            if (w <= 0 || h <= 0) continue;
+
+            ctx.strokeStyle = '#00FF66';
+            ctx.strokeRect(x, y, w, h);
+
+            const label =
+                (det.class_name || ('class_' + det.class_id)) +
+                ' ' +
+                (Number(det.confidence) * 100).toFixed(1) +
+                '%';
+
+            const textWidth = ctx.measureText(label).width;
+            const labelHeight = 21;
+            const labelY = Math.max(0, y - labelHeight);
+
+            ctx.fillStyle = '#00AA44';
+            ctx.fillRect(
+                x,
+                labelY,
+                textWidth + 10,
+                labelHeight
+            );
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(label, x + 5, labelY + 15);
+        }
+    } catch (e) {
+        console.error('[UE YOLO Overlay]', e);
+    }
+})();
+)JS");
+
+        const FString JavaScript = JavaScriptTemplate.Replace(
+                TEXT("__YOLO_DETECTION_JSON__"),
+                *DetectionJson,
+                ESearchCase::CaseSensitive
+        );
+
+        VideoBrowser->ExecuteJavascript(JavaScript);
+}

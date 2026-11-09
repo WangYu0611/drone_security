@@ -1,10 +1,11 @@
-#include "Video/VideoShellWidget.h"
+﻿#include "Video/VideoShellWidget.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/Image.h"
 #include "Command/CommandTheme.h"
 #include "Shared/ProductText.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
@@ -20,13 +21,482 @@
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
+#include "Components/CanvasPanelSlot.h"
 #include "WebBrowser.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include "IPAddress.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Brushes/SlateColorBrush.h"
 
+
 void UVideoShellWidget::InitializeRegistry(UDroneRegistrySubsystem* InRegistry) { Registry = InRegistry; }
+void UVideoShellWidget::StartDetectionReceiver()
+{
+    // 闃叉閲嶅鍒涘缓 Socket
+    if (DetectionSocket)
+    {
+        return;
+    }
+
+    ISocketSubsystem* SocketSubsystem =
+        ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+    if (!SocketSubsystem)
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Socket subsystem unavailable"));
+        return;
+    }
+
+    DetectionSocket = SocketSubsystem->CreateSocket(
+        NAME_DGram,
+        TEXT("YOLODetectionReceiver"),
+        false
+    );
+
+    if (!DetectionSocket)
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Failed to create UDP socket"));
+        return;
+    }
+
+    TSharedRef<FInternetAddr> LocalAddress =
+        SocketSubsystem->CreateInternetAddr();
+
+    LocalAddress->SetAnyAddress();
+    LocalAddress->SetPort(18992);
+
+    DetectionSocket->SetNonBlocking(true);
+
+    if (!DetectionSocket->Bind(*LocalAddress))
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Failed to bind UDP port 18992"));
+
+        SocketSubsystem->DestroySocket(DetectionSocket);
+        DetectionSocket = nullptr;
+        return;
+    }
+
+    int32 ActualBufferSize = 0;
+    DetectionSocket->SetReceiveBufferSize(
+        1024 * 1024,
+        ActualBufferSize
+    );
+
+    UE_LOG(LogTemp, Log,
+        TEXT("[YOLO UDP] Listening on 0.0.0.0:18992, buffer=%d"),
+        ActualBufferSize);
+
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().SetTimer(
+            DetectionPollTimer,
+            this,
+            &UVideoShellWidget::PollDetectionSocket,
+            0.016f,
+            true
+        );
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Cannot start polling: World unavailable"));
+
+        StopDetectionReceiver();
+    }
+}
+
+void UVideoShellWidget::StopDetectionReceiver()
+{
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().ClearTimer(DetectionPollTimer);
+    }
+
+    if (DetectionSocket)
+    {
+        ISocketSubsystem* SocketSubsystem =
+            ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+        if (SocketSubsystem)
+        {
+            SocketSubsystem->DestroySocket(DetectionSocket);
+        }
+
+        DetectionSocket = nullptr;
+
+        UE_LOG(LogTemp, Log,
+            TEXT("[YOLO UDP] Receiver stopped"));
+    }
+}
+void UVideoShellWidget::PollDetectionSocket()
+{
+    if (!DetectionSocket || bStopped)
+    {
+        return;
+    }
+
+    // 鍙繚鐣欐渶鏂扮殑鏁版嵁鍖咃紝閬垮厤澶勭悊绉帇鐨勬棫甯?
+    TArray<uint8> Buffer;
+    Buffer.SetNumUninitialized(65537);
+
+    FString LatestPayload;
+    int32 ReceivedPackets = 0;
+
+    uint32 PendingSize = 0;
+
+    // 鏈€澶氳繛缁鍙?28涓暟鎹寘锛岄伩鍏嶅崟娆¤疆璇㈠崰鐢ㄨ繃闀挎椂闂?
+    while (ReceivedPackets < 128 &&
+           DetectionSocket->HasPendingData(PendingSize))
+    {
+        int32 BytesRead = 0;
+
+        if (!DetectionSocket->Recv(
+                Buffer.GetData(),
+                65536,
+                BytesRead))
+        {
+            break;
+        }
+
+        if (BytesRead <= 0)
+        {
+            break;
+        }
+
+        Buffer[BytesRead] = 0;
+
+        LatestPayload = UTF8_TO_TCHAR(
+            reinterpret_cast<const char*>(Buffer.GetData()));
+
+        ++ReceivedPackets;
+    }
+
+    if (LatestPayload.IsEmpty())
+    {
+        return;
+    }
+
+    // 瑙ｆ瀽 JSON
+    TSharedPtr<FJsonObject> JsonObject;
+
+    TSharedRef<TJsonReader<>> Reader =
+        TJsonReaderFactory<>::Create(LatestPayload);
+
+    if (!FJsonSerializer::Deserialize(Reader, JsonObject) ||
+        !JsonObject.IsValid())
+    {
+        UE_LOG(LogTemp, Warning,
+            TEXT("[YOLO UDP] Invalid JSON packet"));
+        return;
+    }
+
+    double DroneIdValue = 0;
+    double FrameIdValue = 0;
+    double WidthValue = 0;
+    double HeightValue = 0;
+
+    if (!JsonObject->TryGetNumberField(TEXT("drone_id"), DroneIdValue) ||
+        !JsonObject->TryGetNumberField(TEXT("image_width"), WidthValue) ||
+        !JsonObject->TryGetNumberField(TEXT("image_height"), HeightValue))
+    {
+        UE_LOG(LogTemp, Warning,
+            TEXT("[YOLO UDP] Missing required JSON fields"));
+        return;
+    }
+
+    JsonObject->TryGetNumberField(TEXT("frame_id"), FrameIdValue);
+
+    const int32 DroneId = static_cast<int32>(DroneIdValue);
+    const int32 FrameId = static_cast<int32>(FrameIdValue);
+    const int32 ImageWidth = static_cast<int32>(WidthValue);
+    const int32 ImageHeight = static_cast<int32>(HeightValue);
+
+    // 鍙帴鏀跺綋鍓嶈棰戠獥鍙ｅ搴旂殑鏃犱汉鏈烘暟鎹?
+    if (DroneId != DisplayedDroneId)
+    {
+        return;
+    }
+
+    if (ImageWidth <= 0 || ImageHeight <= 0)
+    {
+        return;
+    }
+
+    const TArray<TSharedPtr<FJsonValue>>* Detections = nullptr;
+
+    if (!JsonObject->TryGetArrayField(
+            TEXT("detections"),
+            Detections) || !Detections)
+    {
+        UE_LOG(LogTemp, Warning,
+            TEXT("[YOLO UDP] Missing detections array"));
+        return;
+    }
+
+    // 鎻愬彇妫€娴嬫鍧愭爣鍜岀被鍒俊鎭?
+    TArray<FVector4> Boxes;
+    TArray<FString> Labels;
+
+    Boxes.Reserve(Detections->Num());
+    Labels.Reserve(Detections->Num());
+
+    for (const TSharedPtr<FJsonValue>& DetectionValue : *Detections)
+    {
+        if (!DetectionValue.IsValid())
+        {
+            continue;
+        }
+
+        const TSharedPtr<FJsonObject> DetectionObject =
+            DetectionValue->AsObject();
+
+        if (!DetectionObject.IsValid())
+        {
+            continue;
+        }
+
+        double X1 = 0.0;
+        double Y1 = 0.0;
+        double X2 = 0.0;
+        double Y2 = 0.0;
+        double Confidence = 0.0;
+
+        FString ClassName;
+
+        if (!DetectionObject->TryGetNumberField(TEXT("x1"), X1) ||
+            !DetectionObject->TryGetNumberField(TEXT("y1"), Y1) ||
+            !DetectionObject->TryGetNumberField(TEXT("x2"), X2) ||
+            !DetectionObject->TryGetNumberField(TEXT("y2"), Y2))
+        {
+            continue;
+        }
+
+        DetectionObject->TryGetNumberField(TEXT("confidence"), Confidence);
+        DetectionObject->TryGetStringField(TEXT("class_name"), ClassName);
+
+        if (ClassName.IsEmpty())
+        {
+            ClassName = TEXT("Object");
+        }
+
+        Boxes.Add(FVector4(
+            static_cast<float>(X1),
+            static_cast<float>(Y1),
+            static_cast<float>(X2),
+            static_cast<float>(Y2)
+        ));
+
+        Labels.Add(FString::Printf(
+            TEXT("%s %.0f%%"),
+            *ClassName,
+            FMath::Clamp(Confidence, 0.0, 1.0) * 100.0
+        ));
+    }
+
+    // 鏇存柊 UE 鍘熺敓妫€娴嬫
+    UpdateDetectionOverlay(
+        Boxes,
+        Labels,
+        ImageWidth,
+        ImageHeight
+    );
+
+    // 姣?0甯ц褰曚竴娆℃帴鏀剁姸鎬?
+    if (FrameId > 0 && FrameId % 60 == 0)
+    {
+        UE_LOG(LogTemp, Log,
+            TEXT("[YOLO UDP] Drone=%d Frame=%d Detections=%d Image=%dx%d Packets=%d"),
+            DroneId,
+            FrameId,
+            Boxes.Num(),
+            ImageWidth,
+            ImageHeight,
+            ReceivedPackets);
+    }
+}
+
+void UVideoShellWidget::ClearDetectionOverlay()
+{
+    if (DetectionOverlay)
+    {
+        DetectionOverlay->ClearChildren();
+    }
+
+    DetectionBoxPool.Reset();
+}
+void UVideoShellWidget::UpdateDetectionOverlay(
+    const TArray<FVector4>& Boxes,
+    const TArray<FString>& Labels,
+    int32 ImageWidth,
+    int32 ImageHeight)
+{
+    if (!DetectionOverlay || ImageWidth <= 0 || ImageHeight <= 0)
+    {
+        return;
+    }
+
+    const FVector2D OverlaySize =
+        DetectionOverlay->GetCachedGeometry().GetLocalSize();
+
+    if (OverlaySize.X <= 0.0f || OverlaySize.Y <= 0.0f)
+    {
+        return;
+    }
+
+    const int32 Count = FMath::Min(Boxes.Num(), Labels.Num());
+
+    // 鎸?object-fit: contain 璁＄畻瑙嗛瀹為檯鏄剧ず鍖哄煙
+    const float Scale = FMath::Min(
+        OverlaySize.X / static_cast<float>(ImageWidth),
+        OverlaySize.Y / static_cast<float>(ImageHeight));
+
+    const float VideoWidth = ImageWidth * Scale;
+    const float VideoHeight = ImageHeight * Scale;
+
+    const float OffsetX = (OverlaySize.X - VideoWidth) * 0.5f;
+    const float OffsetY = (OverlaySize.Y - VideoHeight) * 0.5f;
+
+    // 鍒涘缓鎺т欢姹犱腑缂哄皯鐨勬娴嬫
+    while (DetectionBoxPool.Num() < Count)
+    {
+        UCanvasPanel* BoxCanvas =
+            WidgetTree->ConstructWidget<UCanvasPanel>(
+                UCanvasPanel::StaticClass());
+
+        DetectionOverlay->AddChildToCanvas(BoxCanvas);
+
+        // 缁胯壊杈规
+        for (int32 Side = 0; Side < 4; ++Side)
+        {
+            UBorder* Border =
+                WidgetTree->ConstructWidget<UBorder>();
+
+            Border->SetBrushColor(
+                FLinearColor(0.1f, 1.0f, 0.2f, 1.0f));
+
+            BoxCanvas->AddChildToCanvas(Border);
+        }
+
+        // 绫诲埆涓庣疆淇″害鏂囧瓧
+        UTextBlock* Label =
+            WidgetTree->ConstructWidget<UTextBlock>();
+
+        Label->SetColorAndOpacity(
+            FSlateColor(FLinearColor(0.1f, 1.0f, 0.2f, 1.0f)));
+
+        Label->SetShadowColorAndOpacity(
+            FLinearColor::Black);
+
+        Label->SetShadowOffset(FVector2D(1.0f, 1.0f));
+
+        BoxCanvas->AddChildToCanvas(Label);
+
+        DetectionBoxPool.Add(BoxCanvas);
+    }
+
+    // 鏇存柊姣忎釜妫€娴嬫
+    for (int32 Index = 0; Index < DetectionBoxPool.Num(); ++Index)
+    {
+        UCanvasPanel* BoxCanvas = DetectionBoxPool[Index];
+
+        if (!BoxCanvas)
+        {
+            continue;
+        }
+
+        if (Index >= Count)
+        {
+            BoxCanvas->SetVisibility(ESlateVisibility::Collapsed);
+            continue;
+        }
+
+        BoxCanvas->SetVisibility(ESlateVisibility::Visible);
+
+        const FVector4& Box = Boxes[Index];
+
+        const float X1 = FMath::Clamp(Box.X, 0.0f, static_cast<float>(ImageWidth));
+        const float Y1 = FMath::Clamp(Box.Y, 0.0f, static_cast<float>(ImageHeight));
+        const float X2 = FMath::Clamp(Box.Z, 0.0f, static_cast<float>(ImageWidth));
+        const float Y2 = FMath::Clamp(Box.W, 0.0f, static_cast<float>(ImageHeight));
+
+        if (X2 <= X1 || Y2 <= Y1)
+        {
+            BoxCanvas->SetVisibility(ESlateVisibility::Collapsed);
+            continue;
+        }
+
+        const float Left = OffsetX + X1 * Scale;
+        const float Top = OffsetY + Y1 * Scale;
+        const float BoxWidth = (X2 - X1) * Scale;
+        const float BoxHeight = (Y2 - Y1) * Scale;
+
+        UCanvasPanelSlot* BoxSlot =
+            Cast<UCanvasPanelSlot>(BoxCanvas->Slot);
+
+        if (BoxSlot)
+        {
+            BoxSlot->SetPosition(FVector2D(Left, Top));
+            BoxSlot->SetSize(FVector2D(BoxWidth, BoxHeight));
+        }
+
+        const float Thickness = 2.0f;
+
+        const FVector2D Positions[] =
+        {
+            FVector2D(0.0f, 0.0f),
+            FVector2D(0.0f, FMath::Max(0.0f, BoxHeight - Thickness)),
+            FVector2D(0.0f, 0.0f),
+            FVector2D(FMath::Max(0.0f, BoxWidth - Thickness), 0.0f)
+        };
+
+        const FVector2D Sizes[] =
+        {
+            FVector2D(BoxWidth, Thickness),
+            FVector2D(BoxWidth, Thickness),
+            FVector2D(Thickness, BoxHeight),
+            FVector2D(Thickness, BoxHeight)
+        };
+        for (int32 Side = 0; Side < 4; ++Side)
+        {
+            UWidget* Child = BoxCanvas->GetChildAt(Side);
+
+            UCanvasPanelSlot* SideSlot =
+                Child ? Cast<UCanvasPanelSlot>(Child->Slot) : nullptr;
+
+            if (SideSlot)
+            {
+                SideSlot->SetPosition(Positions[Side]);
+                SideSlot->SetSize(Sizes[Side]);
+            }
+        }
+
+        // 鏇存柊鏂囧瓧
+        UTextBlock* LabelWidget =
+            Cast<UTextBlock>(BoxCanvas->GetChildAt(4));
+
+        if (LabelWidget)
+        {
+            LabelWidget->SetText(FText::FromString(Labels[Index]));
+
+            UCanvasPanelSlot* LabelSlot =
+                Cast<UCanvasPanelSlot>(LabelWidget->Slot);
+
+            if (LabelSlot)
+            {
+                LabelSlot->SetPosition(FVector2D(2.0f, 2.0f));
+                LabelSlot->SetSize(FVector2D(
+                    FMath::Max(80.0f, BoxWidth - 4.0f),
+                    20.0f));
+            }
+        }
+    }
+}
 
 void UVideoFeedButton::ActivateFeed() { if (Owner.IsValid()) Owner->SelectDrone(DroneId); }
 
@@ -191,13 +661,33 @@ void UVideoShellWidget::UpdateLabels()
 void UVideoShellWidget::RetrySource() { if (!bStopped && Browser && !SourceUrl.IsEmpty() && !GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsVideoSwitchPending()) { SetSource(DisplayedDroneId, SourceUrl); MediaState=TEXT("RETRYING"); UpdateLabels(); } }
 void UVideoShellWidget::Shutdown()
 {
+    StopDetectionReceiver();
+    ClearDetectionOverlay();
+
     if (bStopped) return;
-    bStopped = true; ++Generation; bPageReady = false;
+
+    bStopped = true;
+    ++Generation;
+    bPageReady = false;
+
     if (Browser) Browser->LoadURL(TEXT("about:blank"));
-    MediaState = TEXT("OFFLINE / CLOSED"); UpdateLabels();
+
+    MediaState = TEXT("OFFLINE / CLOSED");
+    UpdateLabels();
+
     UE_LOG(LogTemp, Log, TEXT("[Video] Browser stopped"));
 }
-void UVideoShellWidget::Resume() { if (bStopped) { bStopped = false; SetSource(DisplayedDroneId, SourceUrl); Refresh(); } }
+void UVideoShellWidget::Resume()
+{
+    if (bStopped)
+    {
+        bStopped = false;
+        SetSource(DisplayedDroneId, SourceUrl);
+        Refresh();
+    }
+
+    StartDetectionReceiver();
+}
 void UVideoShellWidget::NativeDestruct() { Shutdown(); Super::NativeDestruct(); }
 
 void UVideoShellWidget::SetFollowTarget(bool Enabled) { bFollowTarget=false; }
@@ -208,3 +698,4 @@ bool UVideoShellWidget::SetAsActiveUAV() {
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     return Sync && Sync->IsEnabled() && Sync->SetActiveUAV(DisplayedDroneId);
 }
+

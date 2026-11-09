@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "TimerManager.h"
 #include "Components/Button.h"
 #include "VideoShellWidget.generated.h"
 
@@ -72,6 +73,24 @@ private:
     UPROPERTY() TObjectPtr<class UCanvasPanel> DesignCanvas;
     UPROPERTY() TObjectPtr<class UBorder> PrimaryPanel;
     UPROPERTY() TObjectPtr<class UOverlay> VideoSurface;
+    UPROPERTY() TObjectPtr<class UCanvasPanel> DetectionOverlay;
+    // Reusable YOLO detection box widgets
+    UPROPERTY()
+    TArray<TObjectPtr<class UCanvasPanel>> DetectionBoxPool;
+    // YOLO detection UDP receiver
+    class FSocket* DetectionSocket = nullptr;
+    FTimerHandle DetectionPollTimer;
+
+    void StartDetectionReceiver();
+    void StopDetectionReceiver();
+    void PollDetectionSocket();
+    void ClearDetectionOverlay();
+    void UpdateDetectionOverlay(
+        const TArray<FVector4>& Boxes,
+        const TArray<FString>& Labels,
+        int32 ImageWidth,
+        int32 ImageHeight
+    );
     UPROPERTY() TObjectPtr<class UTextBlock> EmptyHint;
     UPROPERTY() TObjectPtr<class UTextBlock> PrimaryTarget;
     UPROPERTY() TObjectPtr<class UTextBlock> DetectionTarget;
