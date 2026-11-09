@@ -312,6 +312,51 @@ void DroneManager::OnTelemetryReceivedBySlot(int slot, const TelemetryData& data
     HandleTelemetry(*ctx, data);
 }
 
+void DroneManager::OnControlAckReceivedBySlot(
+    int slot,
+    const ControlAckData& ack)
+{
+    std::lock_guard<std::mutex> lock(drones_mutex_);
+
+    auto* ctx = GetContextBySlot(slot);
+    if (!ctx) {
+        spdlog::warn(
+            "[ControlAck] ACK for unregistered slot {}",
+            slot);
+        return;
+    }
+
+    if (ack.drone_id != ctx->drone_id) {
+        spdlog::warn(
+            "[ControlAck] Drone ID mismatch: slot={} expected={} received={}",
+            slot, ctx->drone_id, ack.drone_id);
+        return;
+    }
+
+    if (ack.sequence != 0 &&
+        ack.sequence <= ctx->last_logged_control_ack_sequence) {
+        return;
+    }
+
+    if (ack.sequence != 0) {
+        ctx->last_logged_control_ack_sequence = ack.sequence;
+    }
+
+    spdlog::info(
+        "[ControlAck] drone={} slot={} status={} "
+        "session={} command_id={} sequence={} mode={} "
+        "confirmed_packets={} message={}",
+        ctx->drone_id,
+        slot,
+        ack.status,
+        ack.session_id,
+        ack.command_id,
+        ack.sequence,
+        ack.mode,
+        ack.confirmed_packets,
+        ack.message);
+}
+
 int DroneManager::ResolveDroneIdBySlot(int slot) const
 {
     std::lock_guard<std::mutex> lock(drones_mutex_);

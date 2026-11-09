@@ -49,6 +49,23 @@ inline uint64_t NextControlSequence()
     return sequence.fetch_add(1, std::memory_order_relaxed);
 }
 
+struct ControlAckData {
+    int slot = 0;
+    int drone_id = 0;
+
+    std::string status;
+    std::string message;
+
+    std::string session_id;
+    std::string command_id;
+
+    uint64_t sequence = 0;
+    std::string mode;
+
+    uint32_t confirmed_packets = 0;
+    uint64_t timestamp = 0;
+};
+
 struct TelemetryData {
     uint64_t timestamp = 0;
     double position_ned[3] = {0.0, 0.0, 0.0};

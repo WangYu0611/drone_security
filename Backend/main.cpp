@@ -116,6 +116,12 @@ int main(int argc, char* argv[])
         latency_tester.OnPong(slot, ping_id, echoed_sent_at);
     });
 
+    // Control ACK callback -> DroneManager
+    udp_receiver.SetAckCallback(
+        [&](int slot, const ControlAckData& ack) {
+            drone_mgr.OnControlAckReceivedBySlot(slot, ack);
+        });
+
     // 10. 启动 UDP 接收
     udp_receiver.Start();
 
