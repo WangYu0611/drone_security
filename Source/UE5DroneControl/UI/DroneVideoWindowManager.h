@@ -1,13 +1,15 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "Tickable.h"
 #include "DroneVideoWindowManager.generated.h"
 
 class SWindow;
 class UDroneVideoWindowWidget;
+class FSocket;
 
 /** Broadcast (native) whenever a drone's window is fully closed, from ANY path. Carries the DroneId. */
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnVideoWindowClosedNative, int32 /*DroneId*/);
@@ -23,8 +25,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnVideoWindowClosedNative, int32 /*DroneId*
  *  - At most one window per DroneId. OpenVideoWindow on an already-open drone
  *    only activates and brings its existing window to front.
  *  - At most MaxConcurrentWindows (4) windows at once; further opens are refused.
- *  - Every close path — the native window's close box, the widget's UMG close
- *    button, an un-check request, or level teardown — funnels into the single
+ *  - Every close path 鈥?the native window's close box, the widget's UMG close
+ *    button, an un-check request, or level teardown 鈥?funnels into the single
  *    CloseVideoWindow(DroneId). Cleanup order there is fixed: stop video
  *    (about:blank) -> unbind callbacks -> destroy SWindow -> remove record.
  *
@@ -32,7 +34,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnVideoWindowClosedNative, int32 /*DroneId*
  * name + video_url from the caller (which reads the isolated drone registry).
  */
 UCLASS()
-class UE5DRONECONTROL_API UDroneVideoWindowManager : public UObject
+class UE5DRONECONTROL_API UDroneVideoWindowManager
+        : public UObject
+        , public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -70,6 +74,14 @@ public:
 	/** Fires after a window is closed via any path (native X, UMG close, uncheck, teardown). */
 	FOnVideoWindowClosedNative OnWindowClosed;
 
+	// FTickableGameObject
+    virtual void Tick(float DeltaTime) override;
+    virtual TStatId GetStatId() const override;
+    virtual bool IsTickable() const override;
+    virtual bool IsTickableInEditor() const override { return false; }
+
+    virtual void BeginDestroy() override;
+
 private:
 	struct FVideoWindow
 	{
@@ -97,4 +109,13 @@ private:
 	void HandleWidgetCloseRequested(int32 DroneId);
 	void HandleWidgetFullscreenToggle(int32 DroneId);
 	void HandleNativeWindowClosed(const TSharedRef<SWindow>& ClosedWindow, int32 DroneId);
+
+	// YOLO UDP detection receiver
+    static constexpr int32 DetectionUdpPort = 18992;
+
+    FSocket* DetectionSocket = nullptr;
+
+    bool StartDetectionReceiver();
+    void StopDetectionReceiver();
+    void ReceiveDetectionPackets();
 };

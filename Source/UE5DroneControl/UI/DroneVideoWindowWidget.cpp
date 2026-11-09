@@ -205,3 +205,128 @@ void UDroneVideoWindowWidget::OnVideoUrlChanged(const FText& NewUrl)
 		VideoStatusOverlay->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
+
+// ============================================================
+// YOLO Detection Overlay
+// ============================================================
+
+
+void UDroneVideoWindowWidget::UpdateDetectionJson(
+        const FString& DetectionJson)
+{
+        if (bShuttingDown || !VideoBrowser || DetectionJson.IsEmpty())
+        {
+                return;
+        }
+
+        const FString JavaScriptTemplate = TEXT(R"JS(
+(() => {
+    try {
+        const data = __YOLO_DETECTION_JSON__;
+        const video = document.getElementById('video');
+
+        if (!video) return;
+
+        let canvas = document.getElementById('ue-yolo-overlay');
+
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            canvas.id = 'ue-yolo-overlay';
+
+            Object.assign(canvas.style, {
+                position: 'fixed',
+                left: '0',
+                top: '0',
+                width: '100vw',
+                height: '100vh',
+                zIndex: '9999',
+                pointerEvents: 'none'
+            });
+
+            document.body.appendChild(canvas);
+        }
+
+        const rect = video.getBoundingClientRect();
+
+        if (rect.width <= 0 || rect.height <= 0) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+
+        canvas.style.left = rect.left + 'px';
+        canvas.style.top = rect.top + 'px';
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+
+        const ctx = canvas.getContext('2d');
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, rect.width, rect.height);
+
+        const imageWidth = data.image_width || video.videoWidth;
+        const imageHeight = data.image_height || video.videoHeight;
+
+        if (!Number.isFinite(imageWidth) || imageWidth <= 0 ||
+            !Number.isFinite(imageHeight) || imageHeight <= 0) return;
+
+        const scaleX = rect.width / imageWidth;
+        const scaleY = rect.height / imageHeight;
+
+        const detections = Array.isArray(data.detections) ? data.detections : [];
+
+        ctx.lineWidth = 2;
+        ctx.font = '16px Arial';
+
+        for (const det of detections) {
+            if (!det || ![det.x1, det.y1, det.x2, det.y2].every(Number.isFinite)) continue;
+
+            const x = Math.max(0, Math.min(imageWidth, det.x1)) * scaleX;
+            const y = Math.max(0, Math.min(imageHeight, det.y1)) * scaleY;
+            const w = Math.max(0, Math.min(imageWidth, det.x2)) * scaleX - x;
+            const h = Math.max(0, Math.min(imageHeight, det.y2)) * scaleY - y;
+
+            if (w <= 0 || h <= 0) continue;
+
+            ctx.strokeStyle = '#00FF66';
+            ctx.strokeRect(x, y, w, h);
+
+            const confidence = Number.isFinite(det.confidence) ? Math.max(0, Math.min(1, det.confidence)) : 0;
+            const label =
+                (det.class_name || ('class_' + det.class_id)) +
+                ' ' +
+                (confidence * 100).toFixed(1) +
+                '%';
+
+            const textWidth = ctx.measureText(label).width;
+            const labelHeight = 21;
+            const labelY = Math.max(0, y - labelHeight);
+
+            ctx.fillStyle = '#00AA44';
+            ctx.fillRect(
+                x,
+                labelY,
+                textWidth + 10,
+                labelHeight
+            );
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(label, x + 5, labelY + 15);
+        }
+        window.clearTimeout(canvas.ueDetectionTimeout);
+        canvas.ueDetectionTimeout = window.setTimeout(() => ctx.clearRect(0, 0, rect.width, rect.height), 2000);
+    } catch (e) {
+        console.error('[UE YOLO Overlay]', e);
+    }
+})();
+)JS");
+
+        const FString JavaScript = JavaScriptTemplate.Replace(
+                TEXT("__YOLO_DETECTION_JSON__"),
+                *DetectionJson,
+                ESearchCase::CaseSensitive
+        );
+
+        VideoBrowser->ExecuteJavascript(JavaScript);
+}

@@ -8,6 +8,18 @@
 #include "GameFramework/PlayerController.h"
 #include "GenericPlatform/GenericApplication.h"
 #include "Widgets/SWindow.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include "IPAddress.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
+#include "Dom/JsonObject.h"
+#include "HAL/PlatformProcess.h"
+#include "Stats/Stats.h"
+#include "Serialization/JsonWriter.h"
+#include "Containers/StringConv.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 
 bool UDroneVideoWindowManager::OpenVideoWindow(int32 DroneId, const FString& DroneName, const FString& VideoUrl, FString& OutError)
 {
@@ -103,7 +115,14 @@ bool UDroneVideoWindowManager::OpenVideoWindow(int32 DroneId, const FString& Dro
 	NewWindow->BringToFront(true);
 
 	Widget->SetDroneContext(DroneId, DroneName, VideoUrl);
-	return true;
+
+    // The normal Video role owns the detector port. Opt in when debugging the detached window on its own.
+    if (FParse::Param(FCommandLine::Get(), TEXT("YoloDebugOverlay")))
+    {
+        StartDetectionReceiver();
+    }
+
+    return true;
 }
 
 bool UDroneVideoWindowManager::HasWindow(int32 DroneId) const
@@ -155,6 +174,12 @@ void UDroneVideoWindowManager::CloseVideoWindow(int32 DroneId)
 		LiveWidgets.Remove(Record->Widget);
 		Record->Widget = nullptr;
 	}
+
+	// 最后一个视频窗口关闭后，释放 UDP 接收端口。
+    if (Windows.Num() == 0)
+    {
+            StopDetectionReceiver();
+    }
 
 	// 5) Tell listeners (the BP row's checkbox) this drone's window is gone, so it can
 	//    reflect the closed state. Broadcast last, after the record is fully torn down.
@@ -248,4 +273,232 @@ void UDroneVideoWindowManager::HandleNativeWindowClosed(const TSharedRef<SWindow
 	// close originated from CloseVideoWindow itself, the record is already gone
 	// and this is a no-op.
 	CloseVideoWindow(DroneId);
+}
+
+// ============================================================
+// YOLO UDP Detection Receiver
+// ============================================================
+
+bool UDroneVideoWindowManager::StartDetectionReceiver()
+{
+        if (DetectionSocket)
+        {
+                return true;
+        }
+
+        ISocketSubsystem* SocketSubsystem =
+                ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+        if (!SocketSubsystem)
+        {
+                UE_LOG(LogTemp, Error,
+                        TEXT("[YOLO UDP] SocketSubsystem unavailable"));
+                return false;
+        }
+
+        DetectionSocket = SocketSubsystem->CreateSocket(
+                NAME_DGram,
+                TEXT("YOLODetectionReceiver"),
+                false
+        );
+
+        if (!DetectionSocket)
+        {
+                UE_LOG(LogTemp, Error,
+                        TEXT("[YOLO UDP] Failed to create socket"));
+                return false;
+        }
+
+        DetectionSocket->SetNonBlocking(true);
+
+        int32 ActualReceiveBufferSize = 0;
+        DetectionSocket->SetReceiveBufferSize(
+                2 * 1024 * 1024,
+                ActualReceiveBufferSize
+        );
+
+        TSharedRef<FInternetAddr> Address =
+                SocketSubsystem->CreateInternetAddr();
+
+        Address->SetAnyAddress();
+        Address->SetPort(DetectionUdpPort);
+
+        if (!DetectionSocket->Bind(*Address))
+        {
+                UE_LOG(LogTemp, Error,
+                        TEXT("[YOLO UDP] Detached debug overlay could not bind UDP port %d. Stop the main Video role or other detector listener before reopening the debug window."),
+                        DetectionUdpPort);
+
+                StopDetectionReceiver();
+                return false;
+        }
+
+        UE_LOG(LogTemp, Display,
+                TEXT("[YOLO UDP] Listening on UDP port %d"),
+                DetectionUdpPort);
+
+        return true;
+}
+
+
+void UDroneVideoWindowManager::StopDetectionReceiver()
+{
+        if (!DetectionSocket)
+        {
+                return;
+        }
+
+        DetectionSocket->Close();
+
+        ISocketSubsystem* SocketSubsystem =
+                ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+        if (SocketSubsystem)
+        {
+                SocketSubsystem->DestroySocket(DetectionSocket);
+        }
+
+        DetectionSocket = nullptr;
+
+        UE_LOG(LogTemp, Display,
+                TEXT("[YOLO UDP] Receiver stopped"));
+}
+
+
+bool UDroneVideoWindowManager::IsTickable() const
+{
+        return DetectionSocket != nullptr
+                && Windows.Num() > 0;
+}
+
+
+TStatId UDroneVideoWindowManager::GetStatId() const
+{
+        RETURN_QUICK_DECLARE_CYCLE_STAT(
+                UDroneVideoWindowManager,
+                STATGROUP_Tickables
+        );
+}
+
+
+void UDroneVideoWindowManager::Tick(float DeltaTime)
+{
+        ReceiveDetectionPackets();
+}
+
+
+void UDroneVideoWindowManager::ReceiveDetectionPackets()
+{
+        if (!DetectionSocket)
+        {
+                return;
+        }
+
+        constexpr int32 MaxPacketSize = 65507;
+        constexpr int32 MaxPacketsPerTick = 128;
+
+        uint8 Buffer[MaxPacketSize];
+
+        int32 ProcessedPackets = 0;
+
+        while (ProcessedPackets < MaxPacketsPerTick)
+        {
+                uint32 PendingSize = 0;
+
+                if (!DetectionSocket->HasPendingData(PendingSize)
+                        || PendingSize == 0)
+                {
+                        break;
+                }
+
+                int32 BytesRead = 0;
+
+                TSharedRef<FInternetAddr> SenderAddress =
+                        ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)
+                        ->CreateInternetAddr();
+
+                const bool bReceived = DetectionSocket->RecvFrom(
+                        Buffer,
+                        MaxPacketSize,
+                        BytesRead,
+                        *SenderAddress
+                );
+
+                if (!bReceived || BytesRead <= 0)
+                {
+                        break;
+                }
+
+                ++ProcessedPackets;
+
+				FString JsonString;
+
+                // UTF8_TO_TCHAR 需要以 null 结尾。
+                // 使用实际字节长度重新构造，避免读取未初始化区域。
+                FUTF8ToTCHAR Converted(
+                        reinterpret_cast<const ANSICHAR*>(Buffer),
+                        BytesRead
+                );
+
+                JsonString = FString(
+                        Converted.Length(),
+                        Converted.Get()
+                );
+
+                TSharedPtr<FJsonObject> JsonObject;
+
+                TSharedRef<TJsonReader<>> Reader =
+                        TJsonReaderFactory<>::Create(JsonString);
+
+                if (!FJsonSerializer::Deserialize(Reader, JsonObject)
+                        || !JsonObject.IsValid())
+                {
+                        UE_LOG(LogTemp, Warning,
+                                TEXT("[YOLO UDP] Invalid JSON packet"));
+                        continue;
+                }
+
+                double DroneIdValue = 0.0;
+
+                if (!JsonObject->HasTypedField<EJson::Number>(TEXT("drone_id"))
+                    || !JsonObject->TryGetNumberField(TEXT("drone_id"), DroneIdValue)
+                    || !FMath::IsFinite(DroneIdValue) || DroneIdValue <= 0
+                    || DroneIdValue > MAX_int32 || FMath::FloorToDouble(DroneIdValue) != DroneIdValue)
+                {
+                        continue;
+                }
+
+                const int32 DroneId = static_cast<int32>(DroneIdValue);
+
+                TSharedRef<FVideoWindow>* Found =
+                        Windows.Find(DroneId);
+
+                if (!Found || !(*Found)->Widget)
+                {
+                        continue;
+                }
+
+                // 重新序列化为安全的 JSON 对象文本，交给 WebBrowser。
+                FString SerializedJson;
+
+                TSharedRef<TJsonWriter<>> Writer =
+                        TJsonWriterFactory<>::Create(&SerializedJson);
+
+                if (!FJsonSerializer::Serialize(
+                        JsonObject.ToSharedRef(),
+                        Writer))
+                {
+                        continue;
+                }
+
+                (*Found)->Widget->UpdateDetectionJson(SerializedJson);
+        }
+}
+
+
+void UDroneVideoWindowManager::BeginDestroy()
+{
+        StopDetectionReceiver();
+
+        Super::BeginDestroy();
 }

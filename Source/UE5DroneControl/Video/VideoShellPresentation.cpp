@@ -185,7 +185,8 @@ void UVideoShellWidget::BuildPresentation()
     auto* Matte=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Matte,FigmaUI::Background,FLinearColor::Transparent,9,FMargin(0));Fill(VideoSurface,Matte);
     Browser=WidgetTree->ConstructWidget<UWebBrowser>(UWebBrowser::StaticClass(),TEXT("VideoView"));
     Browser->OnUrlChanged.AddDynamic(this,&UVideoShellWidget::UrlChanged);Browser->OnConsoleMessage.AddDynamic(this,&UVideoShellWidget::ConsoleMessage);Fill(VideoSurface,Browser);
-    auto* Detection=WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(),TEXT("DetectionOverlay"));Detection->SetVisibility(ESlateVisibility::HitTestInvisible);Fill(VideoSurface,Detection);
+    DetectionOverlay = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), TEXT("DetectionOverlay"));
+    DetectionOverlay->SetVisibility(ESlateVisibility::HitTestInvisible);Fill(VideoSurface, DetectionOverlay);
     auto* StatusLayer=WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass(),TEXT("StatusOverlay"));StatusLayer->SetVisibility(ESlateVisibility::HitTestInvisible);Fill(VideoSurface,StatusLayer);
     MediaCover=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(MediaCover,FigmaUI::Background,FLinearColor::Transparent,9,FMargin(0));
     MediaCover->SetHorizontalAlignment(HAlign_Center);MediaCover->SetVerticalAlignment(VAlign_Center);

@@ -1,10 +1,11 @@
-#include "Video/VideoShellWidget.h"
+﻿#include "Video/VideoShellWidget.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/Image.h"
 #include "Command/CommandTheme.h"
 #include "Shared/ProductText.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
@@ -20,13 +21,485 @@
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
+#include "Components/CanvasPanelSlot.h"
 #include "WebBrowser.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include "IPAddress.h"
+#include "Containers/StringConv.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Brushes/SlateColorBrush.h"
 
+namespace
+{
+constexpr double DetectionTimeoutSeconds = 2.0;
+
+bool TryGetDetectionInteger(const FJsonObject& Object, const TCHAR* Field, int32& Out)
+{
+    double Value = 0.0;
+    if (!Object.HasTypedField<EJson::Number>(Field) || !Object.TryGetNumberField(Field, Value)
+        || !FMath::IsFinite(Value)
+        || Value < 0 || Value > MAX_int32 || FMath::FloorToDouble(Value) != Value)
+    {
+        return false;
+    }
+    Out = static_cast<int32>(Value);
+    return true;
+}
+}
+
 void UVideoShellWidget::InitializeRegistry(UDroneRegistrySubsystem* InRegistry) { Registry = InRegistry; }
+void UVideoShellWidget::StartDetectionReceiver()
+{
+    // Keep one detection socket per Video window.
+    if (DetectionSocket)
+    {
+        return;
+    }
+
+    ISocketSubsystem* SocketSubsystem =
+        ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+    if (!SocketSubsystem)
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Socket subsystem unavailable"));
+        return;
+    }
+
+    DetectionSocket = SocketSubsystem->CreateSocket(
+        NAME_DGram,
+        TEXT("YOLODetectionReceiver"),
+        false
+    );
+
+    if (!DetectionSocket)
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Failed to create UDP socket"));
+        return;
+    }
+
+    TSharedRef<FInternetAddr> LocalAddress =
+        SocketSubsystem->CreateInternetAddr();
+
+    LocalAddress->SetAnyAddress();
+    LocalAddress->SetPort(18992);
+
+    DetectionSocket->SetNonBlocking(true);
+
+    if (!DetectionSocket->Bind(*LocalAddress))
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Failed to bind UDP port 18992"));
+
+        SocketSubsystem->DestroySocket(DetectionSocket);
+        DetectionSocket = nullptr;
+        return;
+    }
+
+    int32 ActualBufferSize = 0;
+    DetectionSocket->SetReceiveBufferSize(
+        1024 * 1024,
+        ActualBufferSize
+    );
+
+    UE_LOG(LogTemp, Log,
+        TEXT("[YOLO UDP] Listening on 0.0.0.0:18992, buffer=%d"),
+        ActualBufferSize);
+
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().SetTimer(
+            DetectionPollTimer,
+            this,
+            &UVideoShellWidget::PollDetectionSocket,
+            0.016f,
+            true
+        );
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error,
+            TEXT("[YOLO UDP] Cannot start polling: World unavailable"));
+
+        StopDetectionReceiver();
+    }
+}
+
+void UVideoShellWidget::StopDetectionReceiver()
+{
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().ClearTimer(DetectionPollTimer);
+    }
+
+    if (DetectionSocket)
+    {
+        ISocketSubsystem* SocketSubsystem =
+            ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+
+        if (SocketSubsystem)
+        {
+            SocketSubsystem->DestroySocket(DetectionSocket);
+        }
+
+        DetectionSocket = nullptr;
+
+        UE_LOG(LogTemp, Log,
+            TEXT("[YOLO UDP] Receiver stopped"));
+    }
+}
+void UVideoShellWidget::PollDetectionSocket()
+{
+    if (!DetectionSocket || bStopped)
+    {
+        return;
+    }
+
+    const double Now = FPlatformTime::Seconds();
+    if (LastDetectionPacketAt > 0.0 && Now - LastDetectionPacketAt > DetectionTimeoutSeconds)
+    {
+        ClearDetectionOverlay();
+    }
+
+    constexpr int32 MaxPacketSize = 65507;
+    constexpr int32 MaxPacketsPerPoll = 128;
+    uint8 Buffer[MaxPacketSize];
+    TSharedPtr<FJsonObject> LatestDetection;
+    int32 LatestFrameId = INDEX_NONE;
+    int32 LatestImageWidth = 0;
+    int32 LatestImageHeight = 0;
+    int32 ReceivedPackets = 0;
+    uint32 PendingSize = 0;
+
+    // Coalesce packets only after filtering them to the current video source.
+    while (ReceivedPackets < MaxPacketsPerPoll && DetectionSocket->HasPendingData(PendingSize))
+    {
+        int32 BytesRead = 0;
+        if (!DetectionSocket->Recv(Buffer, MaxPacketSize, BytesRead))
+        {
+            break;
+        }
+        ++ReceivedPackets;
+        if (BytesRead <= 0 || DisplayedDroneId <= 0 || SourceUrl.IsEmpty())
+        {
+            continue;
+        }
+
+        const FUTF8ToTCHAR Converted(reinterpret_cast<const ANSICHAR*>(Buffer), BytesRead);
+        const FString Payload(Converted.Length(), Converted.Get());
+        TSharedPtr<FJsonObject> Detection;
+        if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Payload), Detection)
+            || !Detection.IsValid())
+        {
+            continue;
+        }
+
+        int32 DroneId = 0;
+        int32 ImageWidth = 0;
+        int32 ImageHeight = 0;
+        if (!TryGetDetectionInteger(*Detection, TEXT("drone_id"), DroneId) || DroneId != DisplayedDroneId
+            || !TryGetDetectionInteger(*Detection, TEXT("image_width"), ImageWidth) || ImageWidth <= 0
+            || !TryGetDetectionInteger(*Detection, TEXT("image_height"), ImageHeight) || ImageHeight <= 0
+            || !Detection->HasTypedField<EJson::Array>(TEXT("detections")))
+        {
+            continue;
+        }
+
+        int32 FrameId = 0;
+        if (Detection->HasField(TEXT("frame_id")) && !TryGetDetectionInteger(*Detection, TEXT("frame_id"), FrameId))
+        {
+            continue;
+        }
+        if (FrameId > 0 && (FrameId <= LastDetectionFrameId || FrameId <= LatestFrameId))
+        {
+            continue;
+        }
+        if (FrameId == 0 && LatestFrameId > 0)
+        {
+            continue;
+        }
+
+        LatestFrameId = FrameId;
+        LatestDetection = MoveTemp(Detection);
+        LatestImageWidth = ImageWidth;
+        LatestImageHeight = ImageHeight;
+    }
+
+    if (!LatestDetection)
+    {
+        return;
+    }
+
+    const int32 ImageWidth = LatestImageWidth;
+    const int32 ImageHeight = LatestImageHeight;
+    const TArray<TSharedPtr<FJsonValue>>& Detections = LatestDetection->GetArrayField(TEXT("detections"));
+
+    TArray<FVector4> Boxes;
+    TArray<FString> Labels;
+
+    Boxes.Reserve(Detections.Num());
+    Labels.Reserve(Detections.Num());
+
+    for (const TSharedPtr<FJsonValue>& DetectionValue : Detections)
+    {
+        if (!DetectionValue.IsValid() || DetectionValue->Type != EJson::Object)
+        {
+            continue;
+        }
+
+        const TSharedPtr<FJsonObject> DetectionObject =
+            DetectionValue->AsObject();
+
+        if (!DetectionObject.IsValid())
+        {
+            continue;
+        }
+
+        double X1 = 0.0;
+        double Y1 = 0.0;
+        double X2 = 0.0;
+        double Y2 = 0.0;
+        double Confidence = 0.0;
+
+        FString ClassName;
+
+        if (!DetectionObject->TryGetNumberField(TEXT("x1"), X1) ||
+            !DetectionObject->TryGetNumberField(TEXT("y1"), Y1) ||
+            !DetectionObject->TryGetNumberField(TEXT("x2"), X2) ||
+            !DetectionObject->TryGetNumberField(TEXT("y2"), Y2) ||
+            !FMath::IsFinite(X1) || !FMath::IsFinite(Y1) ||
+            !FMath::IsFinite(X2) || !FMath::IsFinite(Y2))
+        {
+            continue;
+        }
+
+        DetectionObject->TryGetNumberField(TEXT("confidence"), Confidence);
+        if (!FMath::IsFinite(Confidence))
+        {
+            Confidence = 0.0;
+        }
+        DetectionObject->TryGetStringField(TEXT("class_name"), ClassName);
+
+        if (ClassName.IsEmpty())
+        {
+            ClassName = TEXT("Object");
+        }
+
+        Boxes.Emplace(X1, Y1, X2, Y2);
+
+        Labels.Add(FString::Printf(
+            TEXT("%s %.0f%%"),
+            *ClassName,
+            FMath::Clamp(Confidence, 0.0, 1.0) * 100.0
+        ));
+    }
+
+    UpdateDetectionOverlay(
+        Boxes,
+        Labels,
+        ImageWidth,
+        ImageHeight
+    );
+
+    LastDetectionPacketAt = Now;
+    if (LatestFrameId > 0)
+    {
+        LastDetectionFrameId = LatestFrameId;
+    }
+    if (LatestFrameId > 0 && LatestFrameId % 60 == 0)
+    {
+        UE_LOG(LogTemp, Log,
+            TEXT("[YOLO UDP] Drone=%d Frame=%d Detections=%d Image=%dx%d Packets=%d"),
+            DisplayedDroneId,
+            LatestFrameId,
+            Boxes.Num(),
+            ImageWidth,
+            ImageHeight,
+            ReceivedPackets);
+    }
+}
+
+void UVideoShellWidget::ClearDetectionOverlay()
+{
+    if (DetectionOverlay)
+    {
+        DetectionOverlay->ClearChildren();
+    }
+
+    DetectionBoxPool.Reset();
+    LastDetectionPacketAt = 0.0;
+    LastDetectionFrameId = INDEX_NONE;
+}
+void UVideoShellWidget::UpdateDetectionOverlay(
+    const TArray<FVector4>& Boxes,
+    const TArray<FString>& Labels,
+    int32 ImageWidth,
+    int32 ImageHeight)
+{
+    if (!DetectionOverlay || ImageWidth <= 0 || ImageHeight <= 0)
+    {
+        return;
+    }
+
+    const FVector2D OverlaySize =
+        DetectionOverlay->GetCachedGeometry().GetLocalSize();
+
+    if (OverlaySize.X <= 0.0f || OverlaySize.Y <= 0.0f)
+    {
+        return;
+    }
+
+    const int32 Count = FMath::Min(Boxes.Num(), Labels.Num());
+
+    // Match the letterboxed video area (object-fit: contain).
+    const float Scale = FMath::Min(
+        OverlaySize.X / static_cast<float>(ImageWidth),
+        OverlaySize.Y / static_cast<float>(ImageHeight));
+
+    const float VideoWidth = ImageWidth * Scale;
+    const float VideoHeight = ImageHeight * Scale;
+
+    const float OffsetX = (OverlaySize.X - VideoWidth) * 0.5f;
+    const float OffsetY = (OverlaySize.Y - VideoHeight) * 0.5f;
+
+    // Reuse detection widgets across frames.
+    while (DetectionBoxPool.Num() < Count)
+    {
+        UCanvasPanel* BoxCanvas =
+            WidgetTree->ConstructWidget<UCanvasPanel>(
+                UCanvasPanel::StaticClass());
+
+        DetectionOverlay->AddChildToCanvas(BoxCanvas);
+
+        // Four green edges.
+        for (int32 Side = 0; Side < 4; ++Side)
+        {
+            UBorder* Border =
+                WidgetTree->ConstructWidget<UBorder>();
+
+            Border->SetBrushColor(
+                FLinearColor(0.1f, 1.0f, 0.2f, 1.0f));
+
+            BoxCanvas->AddChildToCanvas(Border);
+        }
+
+        // Class and confidence label.
+        UTextBlock* Label =
+            WidgetTree->ConstructWidget<UTextBlock>();
+
+        Label->SetColorAndOpacity(
+            FSlateColor(FLinearColor(0.1f, 1.0f, 0.2f, 1.0f)));
+
+        Label->SetShadowColorAndOpacity(
+            FLinearColor::Black);
+
+        Label->SetShadowOffset(FVector2D(1.0f, 1.0f));
+
+        BoxCanvas->AddChildToCanvas(Label);
+
+        DetectionBoxPool.Add(BoxCanvas);
+    }
+
+    for (int32 Index = 0; Index < DetectionBoxPool.Num(); ++Index)
+    {
+        UCanvasPanel* BoxCanvas = DetectionBoxPool[Index];
+
+        if (!BoxCanvas)
+        {
+            continue;
+        }
+
+        if (Index >= Count)
+        {
+            BoxCanvas->SetVisibility(ESlateVisibility::Collapsed);
+            continue;
+        }
+
+        BoxCanvas->SetVisibility(ESlateVisibility::Visible);
+
+        const FVector4& Box = Boxes[Index];
+
+        const float X1 = FMath::Clamp(Box.X, 0.0f, static_cast<float>(ImageWidth));
+        const float Y1 = FMath::Clamp(Box.Y, 0.0f, static_cast<float>(ImageHeight));
+        const float X2 = FMath::Clamp(Box.Z, 0.0f, static_cast<float>(ImageWidth));
+        const float Y2 = FMath::Clamp(Box.W, 0.0f, static_cast<float>(ImageHeight));
+
+        if (X2 <= X1 || Y2 <= Y1)
+        {
+            BoxCanvas->SetVisibility(ESlateVisibility::Collapsed);
+            continue;
+        }
+
+        const float Left = OffsetX + X1 * Scale;
+        const float Top = OffsetY + Y1 * Scale;
+        const float BoxWidth = (X2 - X1) * Scale;
+        const float BoxHeight = (Y2 - Y1) * Scale;
+
+        UCanvasPanelSlot* BoxSlot =
+            Cast<UCanvasPanelSlot>(BoxCanvas->Slot);
+
+        if (BoxSlot)
+        {
+            BoxSlot->SetPosition(FVector2D(Left, Top));
+            BoxSlot->SetSize(FVector2D(BoxWidth, BoxHeight));
+        }
+
+        const float Thickness = 2.0f;
+
+        const FVector2D Positions[] =
+        {
+            FVector2D(0.0f, 0.0f),
+            FVector2D(0.0f, FMath::Max(0.0f, BoxHeight - Thickness)),
+            FVector2D(0.0f, 0.0f),
+            FVector2D(FMath::Max(0.0f, BoxWidth - Thickness), 0.0f)
+        };
+
+        const FVector2D Sizes[] =
+        {
+            FVector2D(BoxWidth, Thickness),
+            FVector2D(BoxWidth, Thickness),
+            FVector2D(Thickness, BoxHeight),
+            FVector2D(Thickness, BoxHeight)
+        };
+        for (int32 Side = 0; Side < 4; ++Side)
+        {
+            UWidget* Child = BoxCanvas->GetChildAt(Side);
+
+            UCanvasPanelSlot* SideSlot =
+                Child ? Cast<UCanvasPanelSlot>(Child->Slot) : nullptr;
+
+            if (SideSlot)
+            {
+                SideSlot->SetPosition(Positions[Side]);
+                SideSlot->SetSize(Sizes[Side]);
+            }
+        }
+
+        // 鏇存柊鏂囧瓧
+        UTextBlock* LabelWidget =
+            Cast<UTextBlock>(BoxCanvas->GetChildAt(4));
+
+        if (LabelWidget)
+        {
+            LabelWidget->SetText(FText::FromString(Labels[Index]));
+
+            UCanvasPanelSlot* LabelSlot =
+                Cast<UCanvasPanelSlot>(LabelWidget->Slot);
+
+            if (LabelSlot)
+            {
+                LabelSlot->SetPosition(FVector2D(2.0f, 2.0f));
+                LabelSlot->SetSize(FVector2D(
+                    FMath::Max(80.0f, BoxWidth - 4.0f),
+                    20.0f));
+            }
+        }
+    }
+}
 
 void UVideoFeedButton::ActivateFeed() { if (Owner.IsValid()) Owner->SelectDrone(DroneId); }
 
@@ -101,6 +574,7 @@ void UVideoShellWidget::SetSource(int32 Id, const FString& Url)
         const int32 FeedSlot = SecondaryIds.IndexOfByKey(Id);
         if (FeedSlot != INDEX_NONE) SecondaryIds[FeedSlot] = DisplayedDroneId;
     }
+    ClearDetectionOverlay();
     ++Generation; DisplayedDroneId = Id; SourceUrl = Url;
     bPageReady = false; bHasDecodedFrame = false; Width = Height = 0; Fps = -1; LastMediaTime = LastFrames = -1; LastSample = LastProbe = 0;
     LastProgress = FPlatformTime::Seconds();
@@ -191,13 +665,33 @@ void UVideoShellWidget::UpdateLabels()
 void UVideoShellWidget::RetrySource() { if (!bStopped && Browser && !SourceUrl.IsEmpty() && !GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->IsVideoSwitchPending()) { SetSource(DisplayedDroneId, SourceUrl); MediaState=TEXT("RETRYING"); UpdateLabels(); } }
 void UVideoShellWidget::Shutdown()
 {
+    StopDetectionReceiver();
+    ClearDetectionOverlay();
+
     if (bStopped) return;
-    bStopped = true; ++Generation; bPageReady = false;
+
+    bStopped = true;
+    ++Generation;
+    bPageReady = false;
+
     if (Browser) Browser->LoadURL(TEXT("about:blank"));
-    MediaState = TEXT("OFFLINE / CLOSED"); UpdateLabels();
+
+    MediaState = TEXT("OFFLINE / CLOSED");
+    UpdateLabels();
+
     UE_LOG(LogTemp, Log, TEXT("[Video] Browser stopped"));
 }
-void UVideoShellWidget::Resume() { if (bStopped) { bStopped = false; SetSource(DisplayedDroneId, SourceUrl); Refresh(); } }
+void UVideoShellWidget::Resume()
+{
+    if (bStopped)
+    {
+        bStopped = false;
+        SetSource(DisplayedDroneId, SourceUrl);
+        Refresh();
+    }
+
+    StartDetectionReceiver();
+}
 void UVideoShellWidget::NativeDestruct() { Shutdown(); Super::NativeDestruct(); }
 
 void UVideoShellWidget::SetFollowTarget(bool Enabled) { bFollowTarget=false; }
