@@ -69,7 +69,7 @@ class Application:
             for column,(key,callback) in enumerate(items):
                 bar.columnconfigure(column,weight=1,uniform='actions')
                 self.button(0,column,key,callback,parent=bar)
-        self.deployment_start = tk.Button(self.root, text='启动本机角色 / Start selected role',
+        self.deployment_start = tk.Button(self.root, text='按配置启动 / Start from config',
                                          command=self.start_deployment, bg='#24735b', fg='white', relief='flat', pady=8)
         self.deployment_start.grid(row=11, column=0, columnspan=4, padx=12, pady=5, sticky='ew')
         self.error = tk.Label(self.root,bg='#0c121b',fg='#e7666e',wraplength=900,font=('Segoe UI',10))
@@ -77,7 +77,7 @@ class Application:
         self.root.columnconfigure(0,weight=1)
         self.root.after(300,self.tick)
         if self.config.get('auto_start',False):
-            self.root.after(500,lambda:self.start_deployment() if self.role_choice.get() != 'All'
+            self.root.after(500,lambda:self.start_deployment() if selection['role'] is not None
                             else self.start(self.config.get('startup_mode','demo')))
         self.update_buttons()
     def text(self,key):return self.catalog[key][1 if self.language=='zh-Hans' else 0]
@@ -110,7 +110,6 @@ class Application:
         self.action(lambda:self.prepare_start(load_config(ROOT), mode))
     def start_deployment(self):
         role, path = self.role_choice.get(), self.deployment_path.get()
-        if role == 'All': return
         self.action(lambda:self.prepare_start(deployment_config(ROOT, load_config(ROOT), path, role)))
     def update_buttons(self):
         live_processes=any(p.process.poll() is None for p in list(self.runtime.owned.values()))
@@ -131,7 +130,9 @@ class Application:
         self.role_selector.config(state='readonly' if editable else 'disabled')
         self.profile_entry.config(state='normal' if editable else 'disabled')
         self.browse_button.config(state='normal' if editable else 'disabled')
-        self.deployment_start.config(state='normal' if editable and self.role_choice.get() != 'All' else 'disabled')
+        self.deployment_start.config(state='normal' if editable else 'disabled',
+                                     text='按配置启动四端 / Start all from config' if self.role_choice.get() == 'All'
+                                     else '启动本机角色 / Start selected role')
     def action(self, callback, clear_error=True):
         if self.busy:
             if self.polling and clear_error:self.root.after(100, lambda:self.action(callback, clear_error))

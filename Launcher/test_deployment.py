@@ -5,9 +5,9 @@ from pathlib import Path
 import socket
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import call, patch
 
-from deployment import (DEPLOYMENT_ROLES, SELECTION_PATH, deployment_config,
+from deployment import (DEPLOYMENT_ROLES, DEPLOYMENT_SELECTIONS, SELECTION_PATH, deployment_config,
                         load_deployment_selection, save_deployment_selection,
                         validate_local_role)
 from launch_modes import mode_config
@@ -54,9 +54,9 @@ class DeploymentConfigTests(DeploymentFixture):
         before = copy.deepcopy(self.base)
         files_before = {p: p.read_bytes() for p in (self.path, self.fixture, self.backend_config)}
         with patch('deployment.socket.socket') as socket_factory:
-            results = [self.derive(role) for role in DEPLOYMENT_ROLES]
+            results = [self.derive(role) for role in DEPLOYMENT_SELECTIONS]
         socket_factory.assert_not_called()
-        for role, result in zip(DEPLOYMENT_ROLES, results):
+        for role, result in zip(DEPLOYMENT_SELECTIONS, results):
             with self.subTest(role=role):
                 self.assertEqual(result['http_endpoint'], 'http://192.168.10.10:8080')
                 self.assertEqual(result['ws_endpoint'], 'ws://192.168.10.10:8081/ws')
@@ -113,7 +113,7 @@ class DeploymentConfigTests(DeploymentFixture):
                     'realtime_http_endpoint', 'realtime_ws_endpoint', 'realtime_runtime_directory')}
                 base.update(old)
                 before = copy.deepcopy(base)
-                for role in DEPLOYMENT_ROLES:
+                for role in DEPLOYMENT_SELECTIONS:
                     with self.subTest(mode=mode, old=old, role=role):
                         config = deployment_config(self.root, base, self.path, role)
                         self.assertEqual(config['http_endpoint'], 'http://192.168.10.10:8080')
@@ -151,6 +151,7 @@ class DeploymentConfigTests(DeploymentFixture):
         with self.assertRaisesRegex(ValueError, 'unknown'):
             self.derive()
         for hosts in ([], None, {**self.profile['hosts'], 'map': '10.0.0.5'},
+                      {**self.profile['hosts'], 'All': '127.0.0.1'},
                       {k: v for k, v in self.profile['hosts'].items() if k != 'Map'}):
             with self.subTest(hosts=hosts):
                 self.path.write_text(json.dumps({**self.profile, 'hosts': hosts}), encoding='utf-8')
@@ -170,14 +171,14 @@ class DeploymentConfigTests(DeploymentFixture):
                     with self.assertRaises(ValueError):
                         self.derive()
         self.write_profile()
-        for role in (None, '', 'map', 'All', 'Pilot', [], {}):
+        for role in (None, '', 'map', 'all', 'Pilot', [], {}):
             with self.subTest(role=role), self.assertRaises(ValueError):
                 self.derive(role)
 
-    def test_ipv4_unicast_and_distinct_addresses_are_required(self):
+    def test_ipv4_unicast_addresses_are_required(self):
         for address in ('localhost', '192.168.1.1/24', '192.168.1.1:8080', '::1',
-                        '::ffff:192.168.1.1', '0.0.0.0', '0.1.2.3', '127.0.0.1',
-                        '127.1.2.3', '224.0.0.1', '239.255.255.250', '240.0.0.1',
+                        '::ffff:192.168.1.1', '0.0.0.0', '0.1.2.3',
+                        '224.0.0.1', '239.255.255.250', '240.0.0.1',
                         '255.255.255.255', '192.168.10.010', '256.1.1.1',
                         ' 192.168.10.11', '', 12345, None, True):
             with self.subTest(address=address):
@@ -186,10 +187,31 @@ class DeploymentConfigTests(DeploymentFixture):
                 self.path.write_text(json.dumps(profile), encoding='utf-8')
                 with self.assertRaisesRegex(ValueError, 'Command'):
                     self.derive()
-        self.profile['hosts']['Map'] = self.profile['hosts']['Backend']
-        self.write_profile()
-        with self.assertRaisesRegex(ValueError, 'distinct'):
-            self.derive()
+
+    def test_repeated_and_loopback_hosts_support_local_and_mixed_deployments(self):
+        for addresses in (('127.0.0.1',) * 4, ('192.168.1.2',) * 4,
+                          ('127.0.0.1', '127.1.2.3', '192.168.1.3', '192.168.1.3')):
+            self.profile['hosts'] = dict(zip(DEPLOYMENT_ROLES, addresses))
+            self.write_profile()
+            for role in DEPLOYMENT_SELECTIONS:
+                with self.subTest(addresses=addresses, role=role):
+                    config = self.derive(role)
+                    self.assertEqual(config['deployment_hosts'], self.profile['hosts'])
+                    self.assertEqual(config['deployment_role'], role)
+                    self.assertEqual(config['http_endpoint'], f'http://{addresses[0]}:8080')
+                    self.assertEqual(config['ws_endpoint'], f'ws://{addresses[0]}:8081/ws')
+
+    def test_all_selection_keeps_four_host_keys_and_shared_mode(self):
+        for mode in ('demo', 'realtime'):
+            with self.subTest(mode=mode):
+                self.profile['mode'] = mode
+                self.profile['hosts'] = dict.fromkeys(DEPLOYMENT_ROLES, '127.0.0.1')
+                self.write_profile()
+                config = self.derive('All')
+                self.assertEqual(set(config['deployment_hosts']), set(DEPLOYMENT_ROLES))
+                self.assertEqual(config['launch_mode'], mode)
+                self.assertEqual(config['runtime_directory'], f'Saved/Deployment/{mode}/All')
+                self.assertEqual(config['deployment_role'], 'All')
 
     def test_other_valid_unicast_ranges_are_allowed(self):
         self.profile['hosts'] = dict(zip(DEPLOYMENT_ROLES,
@@ -226,6 +248,31 @@ class LocalRoleValidationTests(DeploymentFixture):
                 probe.sendto.assert_not_called()
                 factory.return_value.__exit__.assert_called_once()
 
+    def test_all_selection_binds_every_role_address_and_closes_each_probe(self):
+        for addresses in (tuple(self.profile['hosts'].values()), ('127.0.0.1',) * 4):
+            with self.subTest(addresses=addresses), patch('deployment.socket.socket') as factory:
+                self.profile['hosts'] = dict(zip(DEPLOYMENT_ROLES, addresses))
+                self.write_profile()
+                probe = factory.return_value.__enter__.return_value
+                self.assertIsNone(validate_local_role(self.derive('All')))
+                self.assertEqual(factory.call_args_list, [call(socket.AF_INET, socket.SOCK_DGRAM)] * 4)
+                self.assertEqual(probe.bind.call_args_list, [call((address, 0)) for address in addresses])
+                self.assertEqual(factory.return_value.__exit__.call_count, 4)
+                probe.connect.assert_not_called()
+                probe.send.assert_not_called()
+                probe.sendto.assert_not_called()
+
+    def test_all_selection_rejects_first_nonlocal_role_before_remaining_probes(self):
+        with patch('deployment.socket.socket') as factory:
+            probe = factory.return_value.__enter__.return_value
+            probe.bind.side_effect = [None, OSError('not local')]
+            with self.assertRaisesRegex(RuntimeError, 'Command.*192.168.10.11'):
+                validate_local_role(self.derive('All'))
+            self.assertEqual(probe.bind.call_args_list,
+                             [call(('192.168.10.10', 0)), call(('192.168.10.11', 0))])
+            self.assertEqual(factory.call_count, 2)
+            self.assertEqual(factory.return_value.__exit__.call_count, 2)
+
     def test_wrong_computer_fails_with_role_and_address(self):
         with patch('deployment.socket.socket') as factory:
             factory.return_value.__enter__.return_value.bind.side_effect = OSError('not local')
@@ -242,6 +289,14 @@ class LocalRoleValidationTests(DeploymentFixture):
 
 
 class LocalSelectionTests(DeploymentFixture):
+    def test_all_selection_persists_shared_profile_path_without_copying_hosts(self):
+        before = self.path.read_bytes()
+        save_deployment_selection(self.root, 'All', self.path)
+        expected = {'role': 'All', 'path': str(self.path.resolve())}
+        self.assertEqual(load_deployment_selection(self.root), expected)
+        self.assertEqual(json.loads((self.root / SELECTION_PATH).read_text(encoding='utf-8')), expected)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_choice_persists_only_role_and_profile_path(self):
         self.assertEqual(load_deployment_selection(self.root), {'role': None, 'path': None})
         before = self.path.read_bytes()

@@ -134,8 +134,37 @@ class EnvironmentTests(unittest.TestCase):
                 self.assertIn('git lfs pull', issues)
                 self.assertIn('UE module not built', issues)
 
+    def test_shared_all_accepts_complete_backend_and_ue_installation(self):
+        self.put('Backend/config.yaml', 'server: {}')
+        config = {**self.config_for_test(), 'deployment_role': 'All', 'launch_mode': 'realtime'}
+        self.assertEqual(preflight(self.root, config), [])
+
+    def test_shared_all_requires_backend_and_every_ue_dependency(self):
+        config = {**self.config_for_test(), 'deployment_role': 'All', 'launch_mode': 'realtime'}
+        (self.root / self.config['backend_executable']).unlink()
+        (self.root / self.config['project']).unlink()
+        (self.root / 'Binaries/Win64/UnrealEditor-UE5DroneControl.dll').unlink()
+        next(self.engine.rglob('*.uplugin')).unlink()
+        self.put('Content/Level/CesiumWorld.umap',
+                 'version https://git-lfs.github.com/spec/v1\noid sha256:123')
+        issues = '\n'.join(preflight(self.root, config))
+        for message in ('Backend not built', 'Realtime Backend config missing',
+                        'Missing UE5DroneControl.uproject', 'UE module not built',
+                        'Cesium for Unreal missing', 'git lfs pull'):
+            self.assertIn(message, issues)
+        self.assertEqual(issues.count('Backend not built'), 1)
+
+    def test_shared_all_demo_uses_generated_yaml_but_still_requires_backend_binary(self):
+        config = {**self.config_for_test(), 'deployment_role': 'All', 'launch_mode': 'demo'}
+        self.assertEqual(preflight(self.root, config), [])
+        (self.root / self.config['backend_executable']).unlink()
+        issues = '\n'.join(preflight(self.root, config))
+        self.assertIn('Backend not built', issues)
+        self.assertNotIn('Realtime Backend config missing', issues)
+        self.assertEqual(preflight(self.root, config, require_binaries=False), [])
+
     def test_invalid_explicit_deployment_role_is_rejected_before_other_checks(self):
-        for role in ('All', 'backend', '', None, ['Backend']):
+        for role in ('backend', '', None, ['Backend']):
             with self.subTest(role=role):
                 issues = preflight(self.root, {'deployment_role': role})
                 self.assertEqual(len(issues), 1)

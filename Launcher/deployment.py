@@ -14,13 +14,14 @@ from launch_modes import mode_config
 
 
 DEPLOYMENT_ROLES = ('Backend', 'Command', 'Map', 'Video')
+DEPLOYMENT_SELECTIONS = ('All',) + DEPLOYMENT_ROLES
 PROFILE_FIELDS = frozenset(('schema_version', 'mode', 'hosts', 'http_port', 'ws_port'))
 SELECTION_PATH = Path('Saved/Launcher/deployment-selection.json')
 
 
 def _role(role):
-    if role not in DEPLOYMENT_ROLES:
-        raise ValueError('Choose Backend, Command, Map or Video / 请选择本机角色。')
+    if role not in DEPLOYMENT_SELECTIONS:
+        raise ValueError('Choose All, Backend, Command, Map or Video / 请选择本机角色。')
     return role
 
 
@@ -53,14 +54,13 @@ def _host(role, value):
         if not isinstance(value, str):
             raise ValueError()
         address = ipaddress.IPv4Address(value)
-        # 0/8, loopback, multicast and reserved/broadcast addresses are not
-        # usable host assignments for this four-workstation deployment.
-        if (int(address) >> 24 == 0 or address.is_loopback or
-                address.is_multicast or address.is_reserved):
+        # Loopback and repeated hosts support local integration testing.
+        # 0/8, multicast and reserved/broadcast addresses cannot identify a host.
+        if (int(address) >> 24 == 0 or address.is_multicast or address.is_reserved):
             raise ValueError()
     except (ipaddress.AddressValueError, ValueError):
         raise ValueError(f'{role} requires a unicast IPv4 address / '
-                         f'{role} 必须填写有效的非回环 IPv4 单播地址。') from None
+                         f'{role} 必须填写有效的 IPv4 单播地址。') from None
     return str(address)
 
 
@@ -82,8 +82,6 @@ def deployment_config(root, base_config, path, role):
         raise ValueError('Deployment mode must be realtime or demo / 部署 mode 必须为 realtime 或 demo。')
     _exact_fields(profile['hosts'], frozenset(DEPLOYMENT_ROLES), 'hosts')
     hosts = {name: _host(name, profile['hosts'][name]) for name in DEPLOYMENT_ROLES}
-    if len(set(hosts.values())) != len(DEPLOYMENT_ROLES):
-        raise ValueError('Each role needs a distinct IPv4 address / 四个角色必须使用不同的 IPv4 地址。')
     for key in ('http_port', 'ws_port'):
         if type(profile[key]) is not int or not 1 <= profile[key] <= 65535:
             raise ValueError(f'{key} must be an integer from 1 to 65535 / {key} 必须是 1–65535 的整数。')
@@ -122,15 +120,17 @@ def deployment_config(root, base_config, path, role):
 
 
 def validate_local_role(config):
-    """Check the selected IPv4 belongs locally; bind port 0, never send data."""
+    """Check selected role addresses belong locally; bind port 0, never send."""
     role = _role(config.get('deployment_role'))
-    address = _host(role, config.get('deployment_hosts', {}).get(role))
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
-            probe.bind((address, 0))
-    except OSError as exc:
-        raise RuntimeError(f'{role}: {address} is not available on this computer / '
-                           f'本机无法绑定角色 {role} 的 IP {address}；请检查角色选择和网卡地址。') from exc
+    roles = DEPLOYMENT_ROLES if role == 'All' else (role,)
+    for local_role in roles:
+        address = _host(local_role, config.get('deployment_hosts', {}).get(local_role))
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+                probe.bind((address, 0))
+        except OSError as exc:
+            raise RuntimeError(f'{local_role}: {address} is not available on this computer / '
+                               f'本机无法绑定角色 {local_role} 的 IP {address}；请检查角色选择和网卡地址。') from exc
 
 
 def load_deployment_selection(root):

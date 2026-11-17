@@ -184,7 +184,7 @@ class Runtime:
         return self.config.get('deployment_role')
     @property
     def local_roles(self):
-        return (self.deployment_role,) if self.deployment_role else ('Backend',) + ROLES
+        return (self.deployment_role,) if self.deployment_role not in (None, 'All') else ('Backend',) + ROLES
     @property
     def local_client_roles(self):
         return tuple(role for role in self.local_roles if role in ROLES)
@@ -223,7 +223,7 @@ class Runtime:
             self.components['Backend'] = 'ONLINE'
             self.log('backend_existing' if self.existing_backend else 'backend_ready')
             return
-        if self.deployment_role and self.deployment_role != 'Backend':
+        if self.deployment_role and not self.manages_role('Backend'):
             raise RuntimeError('Backend is unavailable. Start the Backend workstation first / 后端不可达，请先启动 Backend 机器: ' + base)
         if port_open(self.config['ws_endpoint']):
             raise RuntimeError('WebSocket port occupied without compatible Backend')
@@ -411,7 +411,7 @@ log:
             self.stopping.clear(); self.error = ''; self.transition('STARTING')
             try:
                 self._backend()
-                if self.launch_mode == 'realtime' and (not self.deployment_role or self.deployment_role == 'Map'):
+                if self.launch_mode == 'realtime' and self.manages_role('Map'):
                     self._resolve_realtime_origin()
                 for role in self.local_client_roles:
                     if self.stopping.is_set(): break
@@ -436,7 +436,7 @@ log:
                 if self.deployment_role and not port_open(self.config['ws_endpoint']):
                     self.components['Backend'] = 'OFFLINE'
                 backend = self.owned.get('Backend')
-                if self.deployment_role == 'Backend' and backend and backend.process.poll() is not None:
+                if self.deployment_role and backend and backend.process.poll() is not None:
                     self.components['Backend'] = 'OFFLINE'
                 for role in ROLES:
                     process = self.owned.get(role)

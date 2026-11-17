@@ -85,6 +85,14 @@ class DeploymentRuntimeTests(unittest.TestCase):
         config.update(overrides)
         return Runtime(self.root, config)
 
+    def all_runtime(self, **overrides):
+        return self.runtime('All', **{
+            'deployment_hosts': {role: '127.0.0.1' for role in ('Backend',) + ROLES},
+            'http_endpoint': 'http://127.0.0.1:28080',
+            'ws_endpoint': 'ws://127.0.0.1:28081/ws',
+            **overrides,
+        })
+
     @staticmethod
     def client(role, instance='remote-instance', **overrides):
         record = {'client_role': role, 'instance_id': instance, 'state': 'ONLINE',
@@ -134,6 +142,96 @@ class DeploymentRuntimeTests(unittest.TestCase):
         self.origin.assert_not_called()
         self.assertFalse((runtime.directory / 'data').exists())
 
+    def test_shared_all_launches_backend_and_three_clients_with_same_loopback_endpoints(self):
+        self.port.side_effect = lambda endpoint: bool(self.created)
+        runtime = self.all_runtime()
+        runtime.start()
+        self.assertEqual(runtime.local_roles, ('Backend',) + ROLES)
+        self.assertEqual(runtime.local_client_roles, ROLES)
+        self.assertEqual([process.role for process in self.created], ['Backend', *ROLES])
+        self.assertEqual(set(runtime.owned), {'Backend', *ROLES})
+        self.assertTrue(all(runtime.manages_role(role) for role in ('Backend',) + ROLES))
+        self.assertFalse(runtime.manages_role('unknown'))
+        self.validate.assert_called_once_with(runtime.config)
+        self.origin.assert_called_once()
+        self.assertEqual(runtime.owned['Backend'].args[-4:],
+                         ['--http-port', '28080', '--ws-port', '28081'])
+        for role in ROLES:
+            args = runtime.owned[role].args
+            self.assertIn('-ClientRole=' + role, args)
+            self.assertIn('-P1Http=http://127.0.0.1:28080', args)
+            self.assertIn('-P1Ws=ws://127.0.0.1:28081/ws', args)
+        runtime.stop()
+        for process in self.created:
+            process.stop.assert_called_once()
+        self.assertEqual(runtime.state, 'STOPPED')
+        self.assertEqual(runtime.owned, {})
+
+    def test_shared_all_demo_generates_backend_config_without_requesting_real_location(self):
+        self.port.side_effect = lambda endpoint: bool(self.created)
+        self.snapshot['plans'].update(execution_adapter='Mock', mock_execution={'uavs': ['d1']})
+        (self.root / 'mock.json').write_text('{}', encoding='utf-8')
+        runtime = self.all_runtime(launch_mode='demo', mock_fixture='mock.json')
+        runtime.start()
+        self.assertEqual(set(runtime.owned), {'Backend', *ROLES})
+        self.origin.assert_not_called()
+        generated = (runtime.directory / 'backend.yaml').read_text(encoding='utf-8')
+        self.assertIn('http_port: 28080', generated)
+        self.assertIn('ws_port: 28081', generated)
+        for role in ROLES:
+            self.assertIn('-MapStartupMode=Demo', runtime.owned[role].args)
+
+    def test_shared_all_requires_every_owned_component_for_ready(self):
+        self.port.side_effect = lambda endpoint: bool(self.created)
+        runtime = self.all_runtime()
+        runtime.start()
+        runtime.deadline = 0
+        self.snapshot['clients'] = [self.client(role, runtime.instances[role]) for role in ROLES]
+        runtime.poll()
+        self.assertEqual(runtime.state, 'READY')
+        for role in ROLES:
+            with self.subTest(role=role):
+                local = next(client for client in self.snapshot['clients']
+                             if client['instance_id'] == runtime.instances[role])
+                local['hydrated'] = False
+                # Another instance of the same role cannot satisfy local readiness.
+                self.snapshot['clients'].append(self.client(role, 'unowned-' + role))
+                runtime.poll()
+                self.assertEqual(runtime.state, 'DEGRADED')
+                self.assertEqual(runtime.components[role], 'OFFLINE')
+                self.snapshot['clients'].pop()
+                local['hydrated'] = True
+                runtime.poll()
+                self.assertEqual(runtime.state, 'READY')
+        runtime.owned['Backend'].exit_code = 1
+        runtime.poll()
+        self.assertEqual(runtime.state, 'DEGRADED')
+        self.assertEqual(runtime.components['Backend'], 'OFFLINE')
+
+    def test_shared_all_failure_reclaims_every_new_local_process_but_not_external_backend(self):
+        for own_backend in (True, False):
+            with self.subTest(own_backend=own_backend):
+                self.created.clear()
+                self.port.side_effect = lambda endpoint: bool(self.created) or not own_backend
+                runtime = self.all_runtime()
+                original_start_role = runtime.start_role
+
+                def fail_after_map(role):
+                    original_start_role(role)
+                    if role == 'Map':
+                        raise RuntimeError('Map startup rejected')
+
+                with patch.object(runtime, 'start_role', side_effect=fail_after_map):
+                    with self.assertRaisesRegex(RuntimeError, 'Map startup rejected'):
+                        runtime.start()
+                self.assertEqual([process.role for process in self.created],
+                                 (['Backend'] if own_backend else []) + ['Command', 'Map'])
+                for process in self.created:
+                    process.stop.assert_called_once()
+                self.assertEqual(runtime.state, 'FAILED')
+                self.assertEqual(runtime.owned, {})
+        self.pause.assert_not_called()
+
     def test_clients_never_start_backend_when_remote_host_is_down(self):
         self.port.return_value = False
         for role in ROLES:
@@ -149,7 +247,7 @@ class DeploymentRuntimeTests(unittest.TestCase):
 
     def test_http_without_websocket_rejects_all_roles_before_spawning(self):
         self.port.side_effect = lambda endpoint: endpoint.startswith('http://')
-        for role in ('Backend',) + ROLES:
+        for role in ('All', 'Backend') + ROLES:
             with self.subTest(role=role):
                 runtime = self.runtime(role)
                 with self.assertRaisesRegex(RuntimeError, 'WebSocket'):
@@ -161,7 +259,7 @@ class DeploymentRuntimeTests(unittest.TestCase):
 
     def test_unrecognized_local_address_rejects_before_network_or_process_work(self):
         self.validate.side_effect = ValueError('Configured role IP is not a local address')
-        for role in ('Backend',) + ROLES:
+        for role in ('All', 'Backend') + ROLES:
             with self.subTest(role=role):
                 runtime = self.runtime(role)
                 with self.assertRaisesRegex(ValueError, 'not a local address'):

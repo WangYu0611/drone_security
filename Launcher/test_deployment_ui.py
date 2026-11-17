@@ -86,7 +86,7 @@ class DeploymentUITests(unittest.TestCase):
                 'ws_endpoint': 'ws://192.168.20.10:28081/ws'}
 
     def test_start_selected_role_derives_profile_then_runs_role_preflight_before_start(self):
-        for role in ('Backend', 'Command', 'Map', 'Video'):
+        for role in ('All', 'Backend', 'Command', 'Map', 'Video'):
             with self.subTest(role=role):
                 app = self.app(role)
                 config = self.derived(role)
@@ -234,9 +234,6 @@ class DeploymentUITests(unittest.TestCase):
         app.start('demo')
         app.start('realtime')
         app.action.assert_not_called()
-        app.role_choice.set('All')
-        app.start_deployment()
-        app.action.assert_not_called()
 
     def button_app(self, local='Command', existing=False):
         app = self.app(local)
@@ -297,8 +294,7 @@ class DeploymentUITests(unittest.TestCase):
                         self.assertEqual(app.role_selector.values['state'], 'readonly')
                         self.assertEqual(app.profile_entry.values['state'], 'normal')
                         self.assertEqual(app.browse_button.values['state'], 'normal')
-                        self.assertEqual(app.deployment_start.values['state'],
-                                         'disabled' if role == 'All' else 'normal')
+                        self.assertEqual(app.deployment_start.values['state'], 'normal')
                     poll.assert_called_once()
                     self.assertFalse(app.busy)
 
@@ -329,17 +325,16 @@ class DeploymentUITests(unittest.TestCase):
                     self.assertEqual(app.role_selector.values['state'], 'readonly')
                     self.assertEqual(app.profile_entry.values['state'], 'normal')
                     self.assertEqual(app.browse_button.values['state'], 'normal')
-                    self.assertEqual(app.deployment_start.values['state'],
-                                     'disabled' if role == 'All' else 'normal')
+                    self.assertEqual(app.deployment_start.values['state'], 'normal')
 
-    def test_constructor_restores_choice_and_opens_gui_without_global_preflight(self):
+    def test_constructor_restores_choice_and_auto_start_route_without_global_preflight(self):
         catalog = {key: [key, key] for key in ('Stage1.Name', 'Launcher.STOPPED', 'Launcher.Layout',
                    'Launcher.ModeUnset', 'Launcher.Restart', 'Launcher.Focus', 'Launcher.Stop',
                    'Launcher.StartDemo', 'Launcher.StartRealtime', 'Launcher.Arrange', 'Launcher.Shutdown')}
         catalog_path = self.root / 'Scripts/P4/localization.json'
         catalog_path.parent.mkdir(parents=True)
         catalog_path.write_text(json.dumps(catalog), encoding='utf-8')
-        for role in ('Backend', None):
+        for role in ('All', 'Backend', None):
             with self.subTest(role=role):
                 save_deployment_selection(self.root, role, self.root / 'shared.json' if role else None)
                 runtime = SimpleNamespace(owned={}, state='STOPPED', launch_mode=None,
@@ -348,7 +343,8 @@ class DeploymentUITests(unittest.TestCase):
                 # A stale single-workstation setting must not prevent choosing
                 # a valid shared profile in the launcher.
                 stale_config = {**self.base, 'http_endpoint': None,
-                                'runtime_directory': None, 'launch_mode': 'realtime'}
+                                'runtime_directory': None, 'launch_mode': 'realtime',
+                                'auto_start': True, 'startup_mode': 'demo'}
                 factory, guard = Mock(return_value=runtime), Mock()
                 root = Mock()
                 with patch.dict(UI, {'load_config': Mock(return_value=stale_config),
@@ -369,7 +365,20 @@ class DeploymentUITests(unittest.TestCase):
                 self.assertNotIn('launch_mode', idle)
                 self.assertEqual(app.role_choice.get(), role or 'All')
                 self.assertEqual(app.role_selector.values['state'], 'readonly')
-                self.assertEqual(app.deployment_start.values['state'], 'normal' if role else 'disabled')
+                self.assertEqual(app.deployment_start.values['state'], 'normal')
+                # An explicit saved All uses its shared profile. An absent role
+                # is the legacy All selection and retains the old mode button.
+                app.start_deployment, app.start = Mock(), Mock()
+                callbacks = [call.args[1] for call in root.after.call_args_list
+                             if call.args[0] == 500]
+                self.assertEqual(len(callbacks), 1)
+                callbacks[0]()
+                if role:
+                    app.start_deployment.assert_called_once_with()
+                    app.start.assert_not_called()
+                else:
+                    app.start.assert_called_once_with('demo')
+                    app.start_deployment.assert_not_called()
 
 
 if __name__ == '__main__':
