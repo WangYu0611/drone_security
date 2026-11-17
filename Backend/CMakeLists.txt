@@ -117,8 +117,9 @@ target_link_libraries(${PROJECT_NAME}_tests PRIVATE
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     Boost::json
-    GTest::gtest_main
-    GTest::gmock
+    # test_main.cpp supplies main; linking gmock as well can load a second
+    # Google Test runtime on Windows and split SCOPED_TRACE's push/pop state.
+    GTest::gtest
 )
 
 # ============================================================
