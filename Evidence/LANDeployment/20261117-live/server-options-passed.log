@@ -1,0 +1,23 @@
+Note: Google Test filter = ServerOptionsTest.*
+[==========] Running 7 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 7 tests from ServerOptionsTest
+[ RUN      ] ServerOptionsTest.DefaultsPreserveExistingConfigInvocation
+[       OK ] ServerOptionsTest.DefaultsPreserveExistingConfigInvocation (0 ms)
+[ RUN      ] ServerOptionsTest.AcceptsConfigAndBothOptionFormsInEitherOrder
+[       OK ] ServerOptionsTest.AcceptsConfigAndBothOptionFormsInEitherOrder (0 ms)
+[ RUN      ] ServerOptionsTest.RejectsUnknownExtraAndDuplicateArguments
+[       OK ] ServerOptionsTest.RejectsUnknownExtraAndDuplicateArguments (0 ms)
+[ RUN      ] ServerOptionsTest.RejectsMissingValues
+[       OK ] ServerOptionsTest.RejectsMissingValues (0 ms)
+[ RUN      ] ServerOptionsTest.RejectsInvalidAndOutOfRangePorts
+[       OK ] ServerOptionsTest.RejectsInvalidAndOutOfRangePorts (0 ms)
+[ RUN      ] ServerOptionsTest.RejectsExplicitAndEffectiveListenerConflicts
+[       OK ] ServerOptionsTest.RejectsExplicitAndEffectiveListenerConflicts (0 ms)
+[ RUN      ] ServerOptionsTest.OverridesOnlyRequestedListenerAndPreservesAircraftSettings
+[       OK ] ServerOptionsTest.OverridesOnlyRequestedListenerAndPreservesAircraftSettings (0 ms)
+[----------] 7 tests from ServerOptionsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 7 tests.

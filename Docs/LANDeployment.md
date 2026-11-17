@@ -2,7 +2,7 @@
 
 同一份部署 JSON 支持两种用法：一台 Windows 电脑选择 **All**，同时运行 Backend、Command、Map、Video；或四台电脑分别选择一个角色，通过同一个 Backend 的 HTTP/WebSocket 同步业务状态。每台保留自己的工程和运行文件。
 
-本说明对应 2026-11-17 的实现。[此前四机功能验证](../Evidence/LANDeployment/20261117/validation.json) 中的 128 项测试属于新增共享配置 `All` 支持之前的版本；本次单机配置、回归和启动实测以 [单机联测记录](../Evidence/LANDeployment/20261117-local/validation.json) 为准。组件测试、原生界面检查、实际进程启动和现场四机联网是不同证据，不能相互替代。
+本说明对应 2026-11-17 的实现。本次单机配置、回归和启动实测以 [四端实际联通记录](../Evidence/LANDeployment/20261117-live/validation.json) 为准。[此前 128 项功能测试](../Evidence/LANDeployment/20261117/validation.json) 和 [此前被系统拦截的启动记录](../Evidence/LANDeployment/20261117-local/validation.json) 保留为历史证据。组件测试、原生界面检查、实际进程启动和现场四机联网是不同证据，不能相互替代。
 
 ## 0. 只有一台电脑时，先这样启动
 
@@ -128,4 +128,6 @@ DEMO 单独 Backend 使用 `Saved/Deployment/demo/Backend/data`，共享配置 *
 | 视频无画面但其他状态正常 | 实际 `video_url`、MediaMTX、视频信令/媒体端口；不要把 Video 角色 IP 当成流服务器 |
 | 后端能力过旧或启动参数不支持 | 停止旧 EXE，更新同一版本并重新运行 `SetupDroneBackend.cmd`；UE 客户端同步更新模块 |
 
-自动化测试覆盖共享配置验证、角色启动与进程所有权、角色预检、端口覆盖和失败清理。共享配置 **All**、重复 IP 和回环地址的新增验证及本机启动结果见 [单机联测记录](../Evidence/LANDeployment/20261117-local/validation.json)；[此前 128 项记录](../Evidence/LANDeployment/20261117/validation.json) 保持为旧版本证据。未完成的现场四机 HTTP/WS、视频、地图服务和真机飞行检查不能由组件测试替代。
+自动化测试覆盖共享配置验证、角色启动与进程所有权、角色预检、端口覆盖和失败清理。2026-11-17 解除本机程序拦截后，修复了同机 UE 客户端共享 CEF 缓存的启动冲突，并完成 [本机四端实际联通记录](../Evidence/LANDeployment/20261117-live/validation.json)：147 项启动器测试、212 项后端测试通过；四个实际进程就绪，三个客户端 HTTP/WS 状态加载与持续心跳正常，原生界面双向语言同步及 Video 独立重启通过。原生 UI 截图与组件/接口证据在记录中分别列出。
+
+这是单台电脑使用 `127.0.0.1` 的 DEMO 实测，不代表四台物理机器的网络、防火墙、实际视频流或真机飞行已验证。[此前被系统拦截的单机记录](../Evidence/LANDeployment/20261117-local/validation.json) 和 [此前 128 项记录](../Evidence/LANDeployment/20261117/validation.json) 保留为历史证据。

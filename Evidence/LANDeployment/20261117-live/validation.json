@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-17",
+  "timezone": "Asia/Singapore",
+  "result": "PASS - one-machine four-process DEMO connectivity",
+  "source": {
+    "baseline": "95d878c27aa4c8e2a6e8942b361e98c842284578",
+    "backend_test_link_fix": "ee24bc7",
+    "launcher_cache_fix": "0999877",
+    "branch": "main",
+    "unrelated_existing_changes_excluded": true
+  },
+  "configuration": {
+    "file": "Launcher/deployment.json (ignored local file)",
+    "selection": "All",
+    "mode": "demo",
+    "hosts": {
+      "Backend": "127.0.0.1",
+      "Command": "127.0.0.1",
+      "Map": "127.0.0.1",
+      "Video": "127.0.0.1"
+    },
+    "http_endpoint": "http://127.0.0.1:19880",
+    "ws_endpoint": "ws://127.0.0.1:19881/ws",
+    "entry_point": "DroneSecurityLauncher.cmd",
+    "backend_executable": "Backend/build-c-machine-review/Release/DroneBackend.exe",
+    "backend_sha256": "e893b097ef581cb8e56fb77d2e89736c1076961e94540c7f310c3021a4b869f3",
+    "ue_module": "Binaries/Win64/UnrealEditor-UE5DroneControl.dll",
+    "ue_module_sha256": "09f8c82c75526ac0b3561e1796cc9d43c1165fa195793f61d7ddcb077218d113",
+    "ue_note": "Existing built UE module used. No UE source was changed or rebuilt for the launcher cache fix.",
+    "system_precondition": "User disabled Smart App Control; read-only registry check returned state 0 and all four executables launched without 4551. Agent did not change Windows security settings."
+  },
+  "issues_found_and_fixed": [
+    {
+      "issue": "Map and Video exited during concurrent CEF initialization against the same webcache_6613 directory.",
+      "evidence": "Both initial logs ended at the same CEF concurrent initialization retry; both exited 777003. That exit code alone is not treated as a CEF stack trace.",
+      "fix": "Per-role and per-instance absolute -UserDir under the configured runtime_directory/Clients.",
+      "verification": "Same UE module then started all three roles; three separate cache directories were created; zero concurrent CEF initialization warnings; isolated Video restart passed."
+    },
+    {
+      "issue": "Backend unit test access violation in SCOPED_TRACE destruction due to duplicate Google Test DLL runtimes.",
+      "fix": "Link only GTest::gtest; retain original tests and business parser.",
+      "details": "backend-validation.json"
+    }
+  ],
+  "component_and_api_evidence": {
+    "launcher_tests": {
+      "passed": 147,
+      "failed": 0,
+      "elapsed_seconds": 11.836,
+      "log": "launcher-tests-passed.log"
+    },
+    "backend_tests": {
+      "passed": 212,
+      "failed": 0,
+      "suites": 25,
+      "elapsed_seconds": 20.738,
+      "details": "backend-validation.json"
+    },
+    "port_tests": {
+      "passed": 7,
+      "included_in_backend_total": true
+    },
+    "real_process_and_heartbeat_monitor": "fixed-health-sanitized.json",
+    "real_video_restart_monitor": "restart-health-sanitized.json",
+    "language_backend_snapshots": [
+      {
+        "language": "en",
+        "ui_preferences_version": 0,
+        "updated_at": 0,
+        "updated_by": "Backend"
+      },
+      {
+        "language": "zh-Hans",
+        "ui_preferences_version": 1,
+        "updated_at": 1794892597.115234,
+        "updated_by": "CLIENT-COMMAND-76d8dbee"
+      },
+      {
+        "language": "en",
+        "ui_preferences_version": 2,
+        "updated_at": 1794892644.127427,
+        "updated_by": "CLIENT-VIDEO-492f7957"
+      }
+    ],
+    "http_reads": [
+      "/",
+      "/api/context",
+      "/api/context/clients",
+      "/api/ui-preferences",
+      "/api/video-view",
+      "/api/security-plans"
+    ],
+    "websocket_evidence": "Actual UE instance IDs matched process command lines; ONLINE and hydrated state plus advancing context_ping heartbeats and UI language broadcasts came from those clients. No synthetic clients were registered."
+  },
+  "native_ui_evidence": {
+    "method": "Windows Computer Use screenshots and real button clicks on Launcher and UE windows.",
+    "startup": "launcher-ready-before-restart.jpg",
+    "language_command_to_map_and_video": [
+      "command-language-zh.jpg",
+      "map-language-zh.jpg",
+      "video-language-zh.jpg"
+    ],
+    "language_video_to_command_and_map": [
+      "video-language-restored.jpg",
+      "command-language-restored.jpg",
+      "map-language-restored.jpg"
+    ],
+    "video_restart": [
+      "launcher-ready-after-restart.jpg",
+      "video-after-restart.jpg"
+    ],
+    "language_restored_to_original": "en",
+    "map_observation": "Native Map rendered the DEMO map and four mock aircraft.",
+    "video_observation": "Native Video UI online and synchronized; it shows no video target/source, so media playback is not claimed."
+  },
+  "left_running": [
+    {
+      "role": "Backend",
+      "pid": 58764
+    },
+    {
+      "role": "Command",
+      "pid": 63272
+    },
+    {
+      "role": "Map",
+      "pid": 64712
+    },
+    {
+      "role": "Video",
+      "pid": 67056
+    }
+  ],
+  "not_validated": [
+    "Four separate physical machines and LAN/firewall paths",
+    "Actual video streaming and decoding",
+    "Real aircraft transport or flight execution",
+    "Original REAL_ANCHOR_NOT_READY investigation"
+  ],
+  "publication": "Only allowlisted summaries, filtered test status logs and native application screenshots are included. Raw UE logs and local configuration stay under ignored paths.",
+  "artifacts_sha256": {
+    "backend-all-passed.log": "6bf5720421a33ce11bd2cc43bcaf7eb643b60af4de9b3e061b7019c6b63c6fe2",
+    "backend-validation.json": "8a5e459a315c9d76179082ad44075175b23511a8ff3cc9df8aca47a675055235",
+    "command-language-restored.jpg": "52bc94b9f9f0af6967b5760e96c6f3b7673913b0bbd5961385ff68d77f771e9c",
+    "command-language-zh.jpg": "d39101b81540c229864b0058efcf60ad5a520d3d1ad2c5b4abc6547ea6633ec6",
+    "fixed-health-sanitized.json": "53f396427ad3d71aa646ba15901c45ad1f22e5bbe85119b96534afc574785234",
+    "launcher-ready-after-restart.jpg": "7825ecbac317925d7439586abe26bdac0fc4c1ce0d3704019f6868bfb07d7d15",
+    "launcher-ready-before-restart.jpg": "41ccc160bf5d347e7cc94155e157784555da5ab003b1096f50745dbf976dee04",
+    "launcher-tests-passed.log": "358415ade079ad6a2430fae1d7d5f1cb2881131cb56b9e3df6ca3987f718827f",
+    "map-language-restored.jpg": "46a601776b2a86df5c04c200e7f95b551e5168d749167f703469f2432e4565cf",
+    "map-language-zh.jpg": "763a9aeaa60dd5106e66de9755a683641bb49713147b537f0b715481cd2ee9f0",
+    "restart-health-sanitized.json": "8ee62d8d8c14683b3c209dc7337cdb989017b67a329e7574902ebeac9f54bc32",
+    "server-options-passed.log": "7a27e2d5db1ef347049a13a82d2d657e079c2d651be77933a8a252d81a9e6438",
+    "video-after-restart.jpg": "471c689a1878356cc1e0acabe94239c689f1fc88c6e217792b00dd83561e85c5",
+    "video-language-restored.jpg": "fc9b1516c63ae1003d92349f07ef38edc79d0a986032ac1c1eeb8eaec153f360",
+    "video-language-zh.jpg": "8ff5ee8d8611fd45d7ddc5e3f4a1e938eb480674f9752bdc45ab509f11eeb8e0"
+  }
+}

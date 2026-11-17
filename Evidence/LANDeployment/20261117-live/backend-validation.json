@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "validation_date": "2026-11-17",
+  "scope": "Windows Release backend unit tests; no aircraft connection or native UI validation",
+  "change": {
+    "file": "Backend/CMakeLists.txt",
+    "description": "Link DroneBackend_tests only to GTest::gtest. The target supplies its own main and does not use Google Mock.",
+    "unchanged": [
+      "Backend/core/server_options.h",
+      "Backend/tests/test_server_options.cpp"
+    ]
+  },
+  "confirmed_root_cause": {
+    "symptom": "ServerOptionsTest.RejectsInvalidAndOutOfRangePorts raised SEH 0xc0000005 during destruction of the first SCOPED_TRACE.",
+    "mechanism": "The former GTest::gtest_main + GTest::gmock link combination split Google Test state between two DLL runtimes. ScopedTrace construction was imported from gtest_main.dll, which depends on gtest.dll, while destruction and UnitTest were imported from gmock.dll, which contains its own Google Test runtime. Trace push and pop therefore accessed different stacks.",
+    "fixed_imports": "ScopedTrace constructor, ScopedTrace destructor, InitGoogleTest and UnitTest::GetInstance all import from gtest.dll. The test executable no longer imports gtest_main.dll or gmock.dll."
+  },
+  "control_experiments": [
+    {
+      "name": "invalid_cli_processes",
+      "result": "All 20 invalid port cases across --http-port and --ws-port were rejected by the existing backend with exit 1 and the expected validation error; no crash."
+    },
+    {
+      "name": "full_rebuild_before_fix",
+      "result": "Rebuilding the original test target reproduced the same single SEH failure, excluding a stale object file as the explanation."
+    },
+    {
+      "name": "temporary_trace_diagnostics",
+      "result": "Both EXPECT_THROW assertions for the first empty value completed before SCOPED_TRACE destruction failed. All temporary diagnostics were removed."
+    },
+    {
+      "name": "same_test_source_gtest_only",
+      "result": "The original test_server_options.cpp with an independent main and only gtest.lib passed 7/7."
+    },
+    {
+      "name": "same_test_source_mixed_runtime",
+      "result": "The same original test source and main linked with gtest_main.lib, gmock.lib and gtest.lib reproduced the same SEH failure, with 6/7 passing."
+    },
+    {
+      "name": "fixed_pe_imports",
+      "result": "PE import inspection confirmed all trace and UnitTest functions resolve to one gtest.dll runtime."
+    }
+  ],
+  "build": {
+    "command": [
+      "cmake",
+      "--build",
+      "Backend/build-c-machine-review",
+      "--config",
+      "Release",
+      "--target",
+      "DroneBackend_tests"
+    ],
+    "working_directory": ".",
+    "exit_code": 0,
+    "only_target_rebuilt": "DroneBackend_tests",
+    "backend_executable_rebuilt": false
+  },
+  "test_executable_sha256": "5ade9e63ce65daab34e7a83b686c6649b40e53a9b36be8bfb2c874d9bf73c5cc",
+  "test_isolation": {
+    "working_directory": "Saved/LANDeployment/20261117-live/backend-tests",
+    "TEMP": "Saved/LANDeployment/20261117-live/backend-tests/temporary",
+    "TMP": "Saved/LANDeployment/20261117-live/backend-tests/temporary",
+    "description": "Temporary-directory environment overrides applied only to test subprocesses. The test target uses pure logic, callback mocks and temporary persistence; no live aircraft transport implementation is linked."
+  },
+  "tests": [
+    {
+      "name": "server_options",
+      "executable": "Backend/build-c-machine-review/Release/DroneBackend_tests.exe",
+      "arguments": [
+        "--gtest_filter=ServerOptionsTest.*",
+        "--gtest_color=no",
+        "--gtest_output=xml:<test-workdir>/server-options-fixed.xml"
+      ],
+      "working_directory": "Saved/LANDeployment/20261117-live/backend-tests",
+      "exit_code": 0,
+      "tests": 7,
+      "passed": 7,
+      "failures": 0,
+      "errors": 0,
+      "disabled": 0,
+      "test_suites": 1,
+      "elapsed_seconds": 0.0,
+      "passed_log": "server-options-passed.log",
+      "passed_log_sha256": "7a27e2d5db1ef347049a13a82d2d657e079c2d651be77933a8a252d81a9e6438"
+    },
+    {
+      "name": "all_backend",
+      "executable": "Backend/build-c-machine-review/Release/DroneBackend_tests.exe",
+      "arguments": [
+        "--gtest_color=no",
+        "--gtest_output=xml:<test-workdir>/all-fixed.xml"
+      ],
+      "working_directory": "Saved/LANDeployment/20261117-live/backend-tests",
+      "exit_code": 0,
+      "tests": 212,
+      "passed": 212,
+      "failures": 0,
+      "errors": 0,
+      "disabled": 0,
+      "test_suites": 25,
+      "elapsed_seconds": 20.738,
+      "passed_log": "backend-all-passed.log",
+      "passed_log_sha256": "6bf5720421a33ce11bd2cc43bcaf7eb643b60af4de9b3e061b7019c6b63c6fe2"
+    }
+  ],
+  "git_diff_check_exit_code": 0,
+  "existing_build_warnings": [
+    "CMake CMP0167 policy warning",
+    "yaml-cpp target deprecation warning"
+  ],
+  "evidence_policy": "Only relative repository paths and sanitized passed-test output are included."
+}
