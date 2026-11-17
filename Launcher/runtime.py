@@ -144,9 +144,13 @@ class OwnedProcess:
         self.output.close()
 
 def role_arguments(config, root, role, instance, log):
+    # UE's CEF cache follows UserDir. Each launch needs its own directory so
+    # concurrent roles and a restarting role never contend for the cache lock.
+    user_dir = (root / config['runtime_directory'] / 'Clients' / role / instance).resolve()
     args = [str(root / config['ue_executable']), str(root / config['project']), config['map'],
             '-game', '-windowed', '-ResX=1280', '-ResY=800', '-nosplash', '-unattended',
             '-ClientRole=' + role, '-P5Instance=' + instance,
+            '-UserDir=' + str(user_dir),
             '-P1Http=' + config['http_endpoint'], '-P1Ws=' + config['ws_endpoint'],
             '-ExecCmds=t.MaxFPS ' + str(config['max_fps']), '-abslog=' + str(log)]
     if config.get('launch_mode'):

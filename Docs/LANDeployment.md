@@ -102,6 +102,8 @@ Backend 主机的网络与防火墙需要允许其他三台机器访问共享配
 
 部署日志和进程记录位于各机 `Saved/Deployment/{mode}/{role}`。实时 Backend 仍以项目根目录为工作目录，沿用 `realtime_backend_config` 中的 `storage.path`、UDP `port_map`、注册表、执行策略和 `log.file`。共享端口通过启动参数覆盖本次进程的 HTTP/WS 监听端口，不改写该 YAML，也不创建或启用 `real_execution.json`。启动部署不自动开始飞行任务。
 
+每个 UE 客户端的用户目录通过 `-UserDir` 隔离到上述运行目录下的 `Clients/{客户端角色}/{实例 ID}`，包括其中的内置浏览器 CEF 缓存。三个角色并发启动、单独重启时都不会共用缓存锁；每次启动会产生新的实例目录。旧单机入口也使用同样的隔离方式，位于各自的 `Saved/Stage1` 或 `Saved/Realtime` 下。业务状态仍由 Backend 统一保存。
+
 DEMO 单独 Backend 使用 `Saved/Deployment/demo/Backend/data`，共享配置 **All** 使用 `Saved/Deployment/demo/All/data`，按原有 Mock 规则初始化或重置；客户端不播种自己的业务机队。部署流程不会把 `Saved/Stage1/data` 的旧方案搬迁到新目录，也不会把业务状态复制到三台客户端。重启自有 DEMO Backend 是否重置仍由本机 `mock_reset_on_start` 决定。
 
 “Stop / Restart”只操作本机拥有的角色，远程维护按钮不可用。客户端关闭不会停止、暂停或重启远程 Backend，也不会影响其他客户端进程。Backend 机器关闭自己启动的 Backend 会让其他角色断开；实时模式不会因此自动暂停真实执行，应先通过现有业务控制处理活动任务。

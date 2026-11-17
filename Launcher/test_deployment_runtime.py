@@ -181,6 +181,28 @@ class DeploymentRuntimeTests(unittest.TestCase):
         for role in ROLES:
             self.assertIn('-MapStartupMode=Demo', runtime.owned[role].args)
 
+    def test_video_restart_uses_new_user_directory_without_changing_other_roles(self):
+        self.port.side_effect = lambda endpoint: bool(self.created)
+        runtime = self.all_runtime()
+        runtime.start()
+        before = dict(runtime.owned)
+        old_instance = runtime.instances['Video']
+        old_user_dir = next(arg for arg in before['Video'].args if arg.startswith('-UserDir='))
+        runtime.restart('Video')
+        self.assertNotEqual(runtime.instances['Video'], old_instance)
+        new_user_dir = next(arg for arg in runtime.owned['Video'].args if arg.startswith('-UserDir='))
+        self.assertNotEqual(new_user_dir, old_user_dir)
+        self.assertIn(runtime.instances['Video'], new_user_dir)
+        self.assertEqual(len({next(arg for arg in runtime.owned[role].args
+                                  if arg.startswith('-UserDir=')) for role in ROLES}), 3)
+        before['Video'].stop.assert_called_once()
+        for role in ('Backend', 'Command', 'Map'):
+            self.assertIs(runtime.owned[role], before[role])
+            before[role].stop.assert_not_called()
+        self.assertIn('-ClientRole=Video', runtime.owned['Video'].args)
+        self.assertIn('-P1Http=' + runtime.config['http_endpoint'], runtime.owned['Video'].args)
+        self.assertIn('-P1Ws=' + runtime.config['ws_endpoint'], runtime.owned['Video'].args)
+
     def test_shared_all_requires_every_owned_component_for_ready(self):
         self.port.side_effect = lambda endpoint: bool(self.created)
         runtime = self.all_runtime()

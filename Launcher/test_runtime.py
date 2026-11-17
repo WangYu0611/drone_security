@@ -90,6 +90,33 @@ class LauncherTests(unittest.TestCase):
             self.assertIn('-P5Instance=owned-instance', args)
             self.assertIn('-P1Http='+cfg['http_endpoint'], args)
             self.assertIn('-P1Ws='+cfg['ws_endpoint'], args)
+    def test_UserDirectoriesAreAbsoluteAndIsolatedAcrossRolesModesAndInstances(self):
+        project_root = Path(__file__).resolve().parents[1]
+        cfg = json.loads((project_root/'Launcher/config.json').read_text(encoding='utf-8-sig'))
+        with tempfile.TemporaryDirectory(prefix='drone launch args ') as folder:
+            root = Path(folder)
+            directories = set()
+            for mode in ('demo', 'realtime'):
+                cfg['runtime_directory'] = f'Saved/Deployment/{mode}/All'
+                for role in ('Command', 'Map', 'Video'):
+                    for instance in ('first-instance', 'restarted-instance'):
+                        with self.subTest(mode=mode, role=role, instance=instance):
+                            args = role_arguments(cfg, root, role, instance, root/'role.log')
+                            values = [arg.removeprefix('-UserDir=') for arg in args
+                                      if arg.startswith('-UserDir=')]
+                            self.assertEqual(len(values), 1)
+                            user_dir = Path(values[0])
+                            self.assertTrue(user_dir.is_absolute())
+                            self.assertTrue(user_dir.is_relative_to(root / cfg['runtime_directory']))
+                            self.assertNotIn(user_dir, directories)
+                            directories.add(user_dir)
+            # Exercise the actual Windows argv transport with a path containing
+            # spaces; UE reconstructs -Key="Value with spaces" from this argv.
+            result = subprocess.run([sys.executable, '-c',
+                                     'import json, sys; print(json.dumps(sys.argv[1:]))', *args],
+                                    check=True, capture_output=True, text=True,
+                                    creationflags=subprocess.CREATE_NO_WINDOW)
+            self.assertEqual(json.loads(result.stdout), args)
     def test_ProcessOwnershipAndSafeShutdown(self):
         with tempfile.TemporaryDirectory() as folder:
             unrelated = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'], creationflags=subprocess.CREATE_NO_WINDOW)
