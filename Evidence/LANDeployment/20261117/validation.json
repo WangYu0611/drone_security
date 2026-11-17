@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-17",
+  "base_revision": "76997a84cd72fc05bf2759b3c25853e7d279070a",
+  "scope": "Four-workstation LAN role selection, shared IPv4 profile, local process ownership and backend TCP port overrides",
+  "automated_component_tests": {
+    "command": "python -B -m unittest discover -s Launcher -p test_*.py -v",
+    "result": "passed",
+    "tests": 128,
+    "duration_seconds": 10.073,
+    "log": "python-tests.log",
+    "coverage": [
+      "strict shared configuration validation and local IP binding",
+      "all four local role spawn boundaries",
+      "no client-side Backend spawn",
+      "role-specific preflight and Backend-only build orchestration",
+      "remote role controls disabled and local-only cleanup",
+      "Map-only realtime location resolution",
+      "HTTP and WebSocket readiness and disconnect behavior",
+      "local process and matching heartbeat required",
+      "background polling leaves idle configuration controls usable",
+      "legacy single-workstation behavior"
+    ],
+    "limits": "Deployment runtime and UI orchestration tests use process/network/widget doubles. They do not prove physical LAN connectivity or actual UE operation."
+  },
+  "backend_build": {
+    "result": "compiled_and_linked",
+    "configuration": "Release",
+    "build_directory": "Backend/build-c-machine-review",
+    "targets": [
+      "DroneBackend",
+      "DroneBackend_tests"
+    ],
+    "compiler": "Visual Studio 18 2026 Professional",
+    "receipts": [
+      "Backend/build-c-machine-review/DroneBackend.dir/Release/DroneBackend.exe.recipe",
+      "Backend/build-c-machine-review/DroneBackend_tests.dir/Release/DroneBackend_tests.exe.recipe"
+    ],
+    "artifacts": {
+      "DroneBackend.exe": {
+        "path": "Backend/build-c-machine-review/Release/DroneBackend.exe",
+        "bytes": 1447424,
+        "sha256": "e893b097ef581cb8e56fb77d2e89736c1076961e94540c7f310c3021a4b869f3"
+      },
+      "DroneBackend_tests.exe": {
+        "path": "Backend/build-c-machine-review/Release/DroneBackend_tests.exe",
+        "bytes": 1655296,
+        "sha256": "c62da1c2b9d17499666fb12a33aaea263f207a22827bf744e32963093e880589"
+      }
+    },
+    "notes": "Successful build output was observed in tool results. No dedicated build console log was saved; Saved/first-run-build.log is from an earlier unrelated build. Default Backend/build/Release binary was not replaced."
+  },
+  "backend_execution_tests": {
+    "result": "blocked_before_process_start",
+    "windows_error": 4551,
+    "new_server_option_tests": 7,
+    "new_server_option_tests_executed": 0,
+    "reason": "Windows enterprise signing / Code Integrity policy rejected the newly built executables.",
+    "corroboration": {
+      "log": "Microsoft-Windows-CodeIntegrity/Operational",
+      "event_id": 3077,
+      "backend_record_id": 203,
+      "test_binary_record_id": 218
+    },
+    "security_policy_changed": false,
+    "notes": "This is not a passing C++ test result. No security policy bypass was attempted."
+  },
+  "native_ui": {
+    "result": "passed_for_selection_controls_only",
+    "tool": "computer-use / @oai/sky",
+    "observations": [
+      "Opened actual Tk Launcher window",
+      "All initially enables legacy launch actions and disables selected-role launch",
+      "Dropdown exposes All, Backend, Command, Map, Video",
+      "Backend and Video selections enable selected-role launch and disable legacy launch actions",
+      "Role selection remains usable during background polling",
+      "Four-workstation layout label renders correctly",
+      "Closed verification window; no Launcher window remains"
+    ],
+    "screenshots": [
+      "launcher-backend.jpg",
+      "launcher-video.jpg"
+    ],
+    "stderr_bytes": 0,
+    "limits": "No deployment Start button was pressed. No Backend or UE role was started by this UI check, and no UAV was connected."
+  },
+  "physical_four_workstation_acceptance": {
+    "result": "not_run",
+    "remaining": [
+      "Run the approved rebuilt Backend and server-options test suite on a machine allowed by its application-control policy",
+      "Install same version on four physical hosts and distribute matching deployment JSON",
+      "Verify HTTP/WS firewall paths, all role heartbeats, disconnect/reconnect and local-only shutdown",
+      "Verify Map service/location and Video media URLs independently"
+    ]
+  },
+  "hashes": {
+    "python-tests.log": "75803864fb9509c19813f480d3c20a9c2e593b287899eed77900ec1b6ceb00d5",
+    "launcher-backend.jpg": "58dbb6fbc49365337f3eb52fef803633662126f2b8ed258cd2146e72a063add3",
+    "launcher-video.jpg": "36f9793b5edabe17626b80438ae752e0d04b060f35b9f5a8af43ecc89b5df11d"
+  }
+}
