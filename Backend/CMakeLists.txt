@@ -44,6 +44,7 @@ set(HEADERS
     core/types.h
     core/logger.h
     core/config_loader.h
+    core/server_options.h
     conversion/coordinate_converter.h
     conversion/quaternion_utils.h
     conversion/gps_anchor_manager.h
@@ -94,6 +95,7 @@ set(TEST_SOURCES
     tests/test_gps_anchor_manager.cpp
     tests/test_command_queue.cpp
     tests/test_state_machine.cpp
+    tests/test_server_options.cpp
     tests/test_assembly_planner.cpp
     tests/test_video_metadata_store.cpp
     conversion/coordinate_converter.cpp

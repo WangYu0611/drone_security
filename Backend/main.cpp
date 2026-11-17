@@ -1,5 +1,6 @@
 #include "core/logger.h"
 #include "core/config_loader.h"
+#include "core/server_options.h"
 #include "core/types.h"
 #include "communication/udp_receiver.h"
 #include "communication/udp_sender.h"
@@ -17,6 +18,8 @@
 #include <thread>
 #include <chrono>
 #include <memory>
+#include <cstdlib>
+#include <iostream>
 
 static std::atomic<bool> g_running{true};
 
@@ -28,11 +31,18 @@ void signal_handler(int)
 
 int main(int argc, char* argv[])
 {
-    // 1. 加载配置
-    auto config = LoadConfig(argc > 1 ? argv[1] : "config.yaml");
-
-    // 2. 验证配置
-    ValidateConfig(config);
+    // Reject invalid startup options before creating network objects or threads.
+    AppConfig config;
+    try {
+        const auto options = ParseServerOptions(argc, argv);
+        config = LoadConfig(options.config_path);
+        ApplyServerOptions(config, options);
+        ValidateConfig(config);
+    } catch (const std::exception& error) {
+        std::cerr << "Backend startup configuration error: " << error.what() << '\n'
+                  << "Usage: DroneBackend [config.yaml] [--http-port PORT] [--ws-port PORT]\n";
+        return EXIT_FAILURE;
+    }
 
     // 3. 初始化日志
     InitLogger(config.log_level, config.log_file);
