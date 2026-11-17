@@ -4,7 +4,7 @@
 
 本手册于 2026-10-30 对照当前启动器和项目配置核对。已安装好依赖的开发电脑可以先运行 `CheckDroneSecurity.cmd`，再运行 `DroneSecurityLauncher.cmd`，选择“DEMO 启动（新加坡）”或“实时模式启动”。检查通过只确认依赖、资源和本机构建文件存在；Cesium 账号权限、地图网络及实际画面仍需启动后确认。
 
-2026-11-17 新增 [局域网四机部署](LANDeployment.md)：启动器默认 `All` 保留本文的单机流程，也可分别选择 Backend、Command、Map、Video 并读取同一份共享 JSON。只运行 Backend 的电脑使用 `SetupDroneBackend.cmd`，无需安装 UE/Cesium；三个 UE 角色按下述流程准备。`CheckDroneSecurity.cmd` 仍检查完整单机环境，部署角色在点击“启动本机角色”时检查自身依赖。
+2026-11-17 新增 [共享配置部署](LANDeployment.md)：只有一台电脑时，复制 `Launcher/deployment.local.example.json` 为 `Launcher/deployment.json`，保留四项 `127.0.0.1`、`mode=demo` 与 `19880/19881`，在启动器选择 **All** 并点击 **“按配置启动四端”**。未来四机部署时把四项换成实际局域网 IP，每台分别选 Backend、Command、Map、Video。默认 **All** 下原来的 DEMO/实时按钮继续使用本文原单机流程，不读取共享 JSON。只运行 Backend 的电脑使用 `SetupDroneBackend.cmd`，无需安装 UE/Cesium；有 UE 角色的电脑按下述流程准备。`CheckDroneSecurity.cmd` 仍检查完整单机环境，配置部署在启动时检查所选角色依赖。
 
 ## 1. 安装依赖
 
@@ -15,6 +15,8 @@
 5. Git 和 Git LFS。
 
 Cesium 官方安装和 Token 配置说明：<https://cesium.com/learn/unreal/unreal-quickstart/>。
+
+Python 已安装但启动脚本找不到 `py`/`python` 时，可在工程的 `Launcher/python.path` 文件中仅写一行解释器绝对路径，例如 `C:\Python313\python.exe`。路径不加引号，不写成 JSON；解释器必须是带 Tcl/Tk 的 Python 3.10+。这个文件只作用于本机入口，不修改系统 PATH，也不提交到 Git。正常安装的 `py` 或 `python` 可用时，无需创建它。
 
 ## 2. 获取完整源码和资源
 
@@ -28,7 +30,7 @@ git lfs pull
 ```
 
 已有克隆先用 `git status` 检查本地修改；保留自己的修改后，再执行 `git pull --ff-only` 和 `git lfs pull`。不要覆盖本机 Cesium 凭据资源或删除 `Saved/Stage1/data` 中的业务数据。
-源码更新后仍需关闭正在运行的 Backend 和客户端，再运行 `SetupDroneSecurity.cmd`；拉取代码不会自动更新本机 EXE/DLL。启动器会检查后端是否支持当前 3D 集群移动，防止旧程序被当成可用服务复用。
+源码更新后仍需关闭正在运行的 Backend 和客户端，再运行 `SetupDroneSecurity.cmd`（Backend-only 电脑用 `SetupDroneBackend.cmd`）；拉取代码不会自动更新本机 EXE/DLL。默认实际启动产物为 `Backend/build/Release/DroneBackend.exe` 与 `Binaries/Win64/UnrealEditor-UE5DroneControl.dll`，二者必须与当前源码匹配；在其他测试构建目录编译成功不会自动更新这两个文件。若本机覆盖了 EXE 路径，确认该路径指向的实际文件也是当前版本。启动器会检查后端是否支持当前 3D 集群移动，防止旧程序被当成可用服务复用。
 2026-09-22 对修订 `7928ea3` 的 GitHub ZIP 检查发现 LFS 占位文件；本轮没有重新下载核验最新 ZIP，首次安装继续使用以上 Git + Git LFS 克隆方式。ZIP 解压目录没有 .git，不能直接在其中运行 git lfs pull。空的 `px4_msgs` 历史子模块不参与 Stage 1 构建，不需要递归初始化。
 
 ## 3. 首次编译
@@ -61,8 +63,8 @@ git lfs pull
 | `backend_executable` | `Backend/build/Release/DroneBackend.exe`；正常首次构建产物 |
 | `startup_timeout` | `180` 秒；首次着色器编译导致客户端就绪超时时可增大 |
 | `max_fps` | `20`；三个客户端的帧率上限，可按硬件能力调整 |
-| `auto_start` | `false`；打开启动器后等待选择模式。明确设为 `true` 时按 `startup_mode` 自动启动 |
-| `startup_mode` | `demo`；仅自动启动时使用，可设 `demo` 或 `realtime` |
+| `auto_start` | `false`；打开启动器后等待点击。设为 `true` 时优先恢复已保存的共享配置部署（包括 All），否则按 `startup_mode` 自动启动旧单机流程 |
+| `startup_mode` | `demo`；旧单机流程的自动启动模式，可设 `demo` 或 `realtime`；共享配置启动的模式以 JSON 为准 |
 | `mock_reset_on_start` | `true`；新建启动器所管理的 Mock Backend 会重新排队，详见第 5 节 |
 | `realtime_backend_config` | `Backend/config.yaml`；实时 Backend 的既有注册表、UDP `port_map` 和存储配置 |
 | `realtime_http_endpoint` / `realtime_ws_endpoint` | `http://127.0.0.1:8080` / `ws://127.0.0.1:8081/ws`；须与实时 Backend 配置一致 |
@@ -71,7 +73,7 @@ git lfs pull
 | `realtime_device_wait` | `8` 秒；发现真实无人机连接的等待窗口 |
 | `realtime_computer_location_timeout` | `15` 秒；无真实无人机连接时查询 Windows 系统定位的最长时间 |
 
-在默认 `All` 单机模式，DEMO Backend 使用本机 `19880/19881`，实时模式使用 `8080/8081`；两种模式不得共用后端端口或启动器运行目录。四机部署则在启动器选择本机角色，并使用 [共享部署 JSON](LANDeployment.md#2-准备一份共享配置) 指定四台 IP、模式和两个 TCP 端口；这些共享值优先于本机旧网络配置，运行记录位于 `Saved/Deployment/{mode}/{role}`。先启动 Backend 机器，再启动三个客户端；客户端不会在远程 Backend 不可达时自行新建后端。`config.local.json` 仍保存本机程序路径和 `realtime_backend_config`，不是 UE 地图配置文件，也没有已实现的 `proxy` / `extra_args` 参数；代理按下一节配置。
+在 **All 的旧 DEMO/实时按钮**中，DEMO Backend 使用本机 `19880/19881`，实时模式使用 `8080/8081`；两种模式不得共用后端端口或启动器运行目录。**“按配置启动四端”**和单角色部署则使用 [共享部署 JSON](LANDeployment.md#2-准备一份共享配置) 指定四个角色 IP、模式和两个 TCP 端口，优先于本机旧网络配置。相同电脑的角色可以使用相同 IP 或 `127.0.0.1`；远程电脑必须填写实际局域网 IP。选择 **All** 时四项 IP 都必须属于本机，启动器会逐项检查。配置部署运行记录在 `Saved/Deployment/{mode}/{role}`，本机模板为 `Saved/Deployment/demo/All`；不自动搬迁旧 `Saved/Stage1/data`。四机部署先启动 Backend 机器，再启动三个客户端；单独的客户端不会在远程 Backend 不可达时自行新建后端。`config.local.json` 仍保存本机程序路径和 `realtime_backend_config`，不是 UE 地图配置文件，也没有已实现的 `proxy` / `extra_args` 参数；代理按下一节配置。
 
 ## 4. 设置地图服务
 
@@ -93,7 +95,7 @@ HttpProxyAddress=127.0.0.1:7897
 HttpNoProxy=127.0.0.1,localhost,::1
 ```
 
-重新启动 UE 客户端后生效。这里的路径适用于当前启动器使用的 `UnrealEditor.exe -game`，不是将来打包游戏的配置路径。`Saved` 不提交到仓库，代理只影响本机；不要把自己的地址写进共享 `Config/DefaultEngine.ini`。恢复直连时将 `HttpProxyAddress` 置空，或移除该键以恢复引擎的系统代理选择，然后重启客户端。
+重新启动 UE 客户端后生效。多机部署时还要把 Backend 的实际局域网 IP 加入 `HttpNoProxy`，使内网请求直连。这里的路径适用于当前启动器使用的 `UnrealEditor.exe -game`，不是将来打包游戏的配置路径。`Saved` 不提交到仓库，代理只影响本机；不要把自己的地址写进共享 `Config/DefaultEngine.ini`。恢复直连时将 `HttpProxyAddress` 置空，或移除该键以恢复引擎的系统代理选择，然后重启客户端。
 
 直接从命令行启动 UE 时也可使用 `-httpproxy=127.0.0.1:7897`；目前双击启动器不会自动添加该参数，把它写进 `Launcher/config.local.json` 的自定义字段也不会传给 UE。仅启动代理程序不代表 UE 一定使用了该代理。可在 DEMO 的 `Saved/Stage1/Logs/map-*.log` 或实时模式的 `Saved/Realtime/Logs/map-*.log` 中检查 `HttpProxyAddress`，再确认地图有实际地形和建筑；不要把完整日志中的凭据公开。
 
@@ -114,7 +116,7 @@ DEMO 按钮使用随项目提供的新加坡 fixture 原点；`[MapStartup]` 仍
 
 ## 5. 启动
 
-双击 **CheckDroneSecurity.cmd** 检查环境，成功后双击 **DroneSecurityLauncher.cmd**。默认不自动启动，先选择模式：
+双击 **CheckDroneSecurity.cmd** 检查完整单机环境，成功后双击 **DroneSecurityLauncher.cmd**。使用共享本机配置时选 **All**、选择 `Launcher/deployment.json` 并点“按配置启动四端”，具体路径步骤见 [单机配置启动](LANDeployment.md#0-只有一台电脑时先这样启动)。下面两个旧按钮继续走原单机配置；默认不自动启动，先选择模式：
 
 | 按钮 | 位置与后端 |
 | --- | --- |
@@ -153,7 +155,7 @@ Mock 演示不要求填写真实无人机连接或视频地址。需要视频流
 | 缺少模块 / 由不同引擎版本构建 | 用本机 UE 5.8 重新运行 SetupDroneSecurity.cmd |
 | 缺少 DroneBackend.exe | 先运行 SetupDroneSecurity.cmd，检查 VS C++ / vcpkg |
 | 后端版本过旧；集群移动提示此客户端无权执行 | 关闭旧 Backend 和客户端，运行 SetupDroneSecurity.cmd，再从 DroneSecurityLauncher.cmd 启动。正常路径是 Backend/build/Release/DroneBackend.exe |
-| 提示 Python 或 tkinter 缺失 | 修改 Python 安装，启用 Tcl/Tk 和 Launcher |
+| 提示 Python 或 tkinter 缺失 | 安装带 Tcl/Tk 的 Python 3.10+；已安装但入口找不到时，在 Launcher/python.path 写实际解释器绝对路径 |
 | 地图文件极小或 LFS 占位 | `git lfs pull` |
 | 地图黑屏、401/403 | 检查自己的 Cesium ion Token、资产权限及网络 |
 | 地图模糊、瓦片持续超时 | 检查地图客户端日志、代理是否实际生效及服务可达性；增加缓存不能解决当前请求超时 |
@@ -171,6 +173,8 @@ Mock 演示不要求填写真实无人机连接或视频地址。需要视频流
 ## 验证边界
 
 本轮手册核对依据当前项目配置、启动器和本机 UE 5.8 源码，未在另一台电脑现场重做首次安装。首次运行脚本已有缺失 Cesium/LFS/二进制/错误引擎等自动化场景和启动器回归；安装好依赖后仍需实际启动确认。P5.3 的原始业务验收记录见 `TASK-P5.3-PlanGeometryClosure.md`。
+
+2026-11-17 [此前部署验证](../Evidence/LANDeployment/20261117/validation.json) 中的 128 项是共享配置 **All** 支持之前的结果；新增 All、重复/回环 IP、Python 路径入口的验证与本机实际启动结果见 [单机联测记录](../Evidence/LANDeployment/20261117-local/validation.json)。单机测试不等于现场四机联网、视频源或真机飞行验收。
 
 ## 历史问题与排查记录
 

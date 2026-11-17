@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-17",
+  "base_revision": "eaf3ace18cafbed93b5877963dbc9ac5fa3362fe",
+  "scope": "Shared-profile single-workstation All deployment and explicit local Python interpreter selection",
+  "local_profile": {
+    "template": "Launcher/deployment.local.example.json",
+    "active_file": "Launcher/deployment.json",
+    "role": "All",
+    "mode": "demo",
+    "hosts": {
+      "Backend": "127.0.0.1",
+      "Command": "127.0.0.1",
+      "Map": "127.0.0.1",
+      "Video": "127.0.0.1"
+    },
+    "http_port": 19880,
+    "ws_port": 19881
+  },
+  "local_settings": {
+    "written": [
+      "Launcher/deployment.json",
+      "Launcher/config.local.json",
+      "Launcher/python.path",
+      "Saved/Launcher/deployment-selection.json"
+    ],
+    "git_ignored": true,
+    "backend_executable": "Backend/build-c-machine-review/Release/DroneBackend.exe",
+    "note": "Uses the previously compiled current-source Backend, not the older default build/Release executable. No binaries were copied or renamed."
+  },
+  "automated_tests": {
+    "result": "passed",
+    "tests": 145,
+    "duration_seconds": 11.413,
+    "command": "python -B -m unittest discover -s Launcher -p test_*.py -v",
+    "log": "python-tests.log",
+    "coverage": [
+      "Legacy and single-role LAN regressions",
+      "Repeated and loopback IPv4 profiles",
+      "All validates all four addresses before process startup",
+      "All starts Backend and three local clients with shared endpoints",
+      "All readiness requires all locally owned roles",
+      "Shared All auto-start is distinct from legacy All",
+      "All preflight requires Backend and UE dependencies",
+      "Actual cmd.exe entry and Python/Tk probes, including spaces and punctuation in interpreter paths"
+    ],
+    "limits": "Runtime and widget unit tests use process, network and widget doubles. Entry tests execute cmd and Python/Tk probes, but do not start UE or Backend."
+  },
+  "real_preflight": {
+    "result": "passed",
+    "local_udp_bind_checks": 4,
+    "host": "127.0.0.1",
+    "ue_and_backend_dependencies": "passed",
+    "data_sent": false
+  },
+  "native_ui_startup": {
+    "action": "Clicked Start all from config in the real Launcher UI",
+    "result": "blocked_before_backend_process_start",
+    "windows_error": 4551,
+    "error": "Application control policy has blocked this file",
+    "screenshot": "launcher-all-start-blocked.jpg",
+    "log": "startup.jsonl",
+    "backend_started": false,
+    "ue_clients_started": false,
+    "owned_processes_after_failure": [],
+    "observed_backend_or_ue_processes_after_failure": [],
+    "system_log": {
+      "channel": "Microsoft-Windows-CodeIntegrity/Operational",
+      "event_id": 3077,
+      "record_id": 223,
+      "target": "DroneBackend.exe"
+    },
+    "security_settings_changed": false,
+    "real_aircraft_connected": false,
+    "flight_commands_sent": false
+  },
+  "normal_cmd_entry": {
+    "command": "DroneSecurityLauncher.cmd",
+    "result": "opened_native_launcher",
+    "screenshot": "launcher-cmd-entry.jpg",
+    "stdio_bytes": 0,
+    "final_state": "Launcher remains open, STOPPED, with All and local deployment JSON selected. Backend and UE clients are not running."
+  },
+  "pending": [
+    "Resolve the recorded Windows application-control rejection through the workstation administrator or approved software-signing process",
+    "Repeat actual Backend startup and four-role heartbeat/readiness checks after the executable is permitted",
+    "Physical four-workstation LAN and independent video/map connectivity checks"
+  ],
+  "hashes": {
+    "python-tests.log": "48b2b1bee4050ff97f37a84bda51fd4dafb3330795178b0c3f0f49eab45dbc55",
+    "startup.jsonl": "9db35e60bd2edfcc6489bb1aafe38a36eb5654133a93a8ae0f89031f70c8e6a5",
+    "launcher-all-start-blocked.jpg": "7c3f96f0c2cff517d79fb1bdf5fae7bc05a3d0e2c86ef4e48a0ec884c0dca951",
+    "launcher-cmd-entry.jpg": "2f22529039afa33c719d542d5e400ad96f96ca52e4eb917de49f685519d6d12c"
+  }
+}
