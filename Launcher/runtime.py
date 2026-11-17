@@ -16,6 +16,7 @@ import urllib.parse
 import uuid
 from launch_modes import mode_config, received_origin, geoid_separation, check_backend_mode, has_real_connection, valid_origin
 from computer_location import computer_origin
+from deployment import validate_local_role
 
 ROLES = ('Command', 'Map', 'Video')
 REQUIRED_CAPABILITIES = frozenset(('fleet_move_3d', 'map_fleet_controls', 'plan_configuration'))
@@ -84,11 +85,18 @@ class OwnedProcess:
         self.started_at = time.time()
         self.output = open(log_dir / f'{role.lower()}-stdio-{time.time_ns()}.log', 'ab')
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-        self.process = subprocess.Popen(args, cwd=cwd, stdout=self.output,
-                                        stderr=subprocess.STDOUT, creationflags=flags)
+        try:
+            self.process = subprocess.Popen(args, cwd=cwd, stdout=self.output,
+                                            stderr=subprocess.STDOUT, creationflags=flags)
+        except Exception:
+            self.output.close()
+            raise
         self.job = None
         if os.name == 'nt':
-            self._own_job()
+            try: self._own_job()
+            except Exception:
+                self.output.close()
+                raise
     def _own_job(self):
         # Kill-on-close contains browser/helper descendants as well as the root UE.
         class Basic(ctypes.Structure):
@@ -142,9 +150,10 @@ def role_arguments(config, root, role, instance, log):
             '-P1Http=' + config['http_endpoint'], '-P1Ws=' + config['ws_endpoint'],
             '-ExecCmds=t.MaxFPS ' + str(config['max_fps']), '-abslog=' + str(log)]
     if config.get('launch_mode'):
+        args += ['-MapStartupMode=' + ('Demo' if config['launch_mode'] == 'demo' else 'Realtime')]
+    if config.get('startup_origin'):
         origin = config['startup_origin']
-        args += ['-MapStartupMode=' + ('Demo' if config['launch_mode'] == 'demo' else 'Realtime'),
-                 '-MapStartupLongitude=' + str(origin['longitude']),
+        args += ['-MapStartupLongitude=' + str(origin['longitude']),
                  '-MapStartupLatitude=' + str(origin['latitude']),
                  '-MapStartupHeight=' + str(origin['altitude'])]
     return args
@@ -153,7 +162,7 @@ class Runtime:
     def __init__(self, root, config):
         self.root, self.config = Path(root), config
         self.base_config = dict(config)
-        self.launch_mode = None
+        self.launch_mode = config.get('launch_mode')
         self.location_status = ''
         self.location_source = ''
         self.directory = self.root / config['runtime_directory']
@@ -170,6 +179,17 @@ class Runtime:
         self.deadline = 0
         self.stopping = threading.Event()
         self.transition('STOPPED')
+    @property
+    def deployment_role(self):
+        return self.config.get('deployment_role')
+    @property
+    def local_roles(self):
+        return (self.deployment_role,) if self.deployment_role else ('Backend',) + ROLES
+    @property
+    def local_client_roles(self):
+        return tuple(role for role in self.local_roles if role in ROLES)
+    def manages_role(self, role):
+        return role in self.local_roles
     def log(self, event, **data):
         with self.lock:
             with (self.logs / 'launcher.jsonl').open('a', encoding='utf-8') as out:
@@ -197,14 +217,18 @@ class Runtime:
         if port_open(base):
             self.snapshot = compatible_snapshot(base)
             check_backend_mode(self.snapshot, self.launch_mode)
+            if self.deployment_role and not port_open(self.config['ws_endpoint']):
+                raise RuntimeError('Backend WebSocket is unreachable / 后端 WebSocket 不可达: ' + self.config['ws_endpoint'])
             self.existing_backend = 'Backend' not in self.owned
             self.components['Backend'] = 'ONLINE'
             self.log('backend_existing' if self.existing_backend else 'backend_ready')
             return
+        if self.deployment_role and self.deployment_role != 'Backend':
+            raise RuntimeError('Backend is unavailable. Start the Backend workstation first / 后端不可达，请先启动 Backend 机器: ' + base)
         if port_open(self.config['ws_endpoint']):
             raise RuntimeError('WebSocket port occupied without compatible Backend')
         uri, ws = urllib.parse.urlparse(base), urllib.parse.urlparse(self.config['ws_endpoint'])
-        if uri.hostname not in ('127.0.0.1', 'localhost') or ws.hostname not in ('127.0.0.1', 'localhost'):
+        if not self.deployment_role and (uri.hostname not in ('127.0.0.1', 'localhost') or ws.hostname not in ('127.0.0.1', 'localhost')):
             raise RuntimeError('Stage 1 requires local Backend')
         self.existing_backend = False
         if self.launch_mode == 'realtime':
@@ -213,8 +237,10 @@ class Runtime:
             config_path = self.root / self.config['backend_config']
             if not config_path.is_file():
                 raise RuntimeError('Realtime Backend config missing / 缺少实时后端配置: ' + str(config_path))
-            self._spawn('Backend', [str(self.root / self.config['backend_executable']),
-                                   str(config_path)], self.root)
+            args = [str(self.root / self.config['backend_executable']), str(config_path)]
+            if self.deployment_role:
+                args += ['--http-port', str(uri.port), '--ws-port', str(ws.port)]
+            self._spawn('Backend', args, self.root)
             self._wait_backend_ready(base)
             check_backend_mode(self.snapshot, self.launch_mode)
             return
@@ -251,7 +277,11 @@ log:
         while time.monotonic() < end and not self.stopping.is_set():
             if self.owned['Backend'].process.poll() is not None: raise RuntimeError('Backend exited before ready')
             try:
-                self.snapshot = compatible_snapshot(base)
+                snapshot = compatible_snapshot(base)
+                if self.deployment_role and not port_open(self.config['ws_endpoint']):
+                    self.stopping.wait(.3)
+                    continue
+                self.snapshot = snapshot
                 break
             except (OSError, ValueError): self.stopping.wait(.3)
         else:
@@ -346,6 +376,8 @@ log:
     def start_role(self, role):
         with self.lock:
             if role not in ROLES: raise ValueError(role)
+            if not self.manages_role(role):
+                raise RuntimeError('This workstation does not manage ' + role + ' / 本机未选择此角色')
             snap = compatible_snapshot(self.config['http_endpoint'])
             check_backend_mode(snap, self.launch_mode)
             if any(c.get('client_role') == role and c.get('state') == 'ONLINE' for c in snap['clients']):
@@ -362,7 +394,11 @@ log:
                 return
             if any(p.process.poll() is None for p in self.owned.values()):
                 raise RuntimeError('Stop the current session before relaunch')
-            if mode is not None:
+            if self.deployment_role:
+                if mode is not None and mode != self.launch_mode:
+                    raise RuntimeError('Deployment mode comes from the shared configuration / 部署模式由共享配置决定')
+                validate_local_role(self.config)
+            elif mode is not None:
                 self.config = mode_config(self.root, self.base_config, mode)
                 self.launch_mode = mode
                 self.location_status = ''
@@ -375,9 +411,9 @@ log:
             self.stopping.clear(); self.error = ''; self.transition('STARTING')
             try:
                 self._backend()
-                if self.launch_mode == 'realtime':
+                if self.launch_mode == 'realtime' and (not self.deployment_role or self.deployment_role == 'Map'):
                     self._resolve_realtime_origin()
-                for role in ROLES:
+                for role in self.local_client_roles:
                     if self.stopping.is_set(): break
                     self.start_role(role)
             except Exception as exc:
@@ -397,8 +433,19 @@ log:
                 snap = compatible_snapshot(self.config['http_endpoint'])
                 check_backend_mode(snap, self.launch_mode)
                 self.snapshot = snap; self.components['Backend'] = 'ONLINE'
+                if self.deployment_role and not port_open(self.config['ws_endpoint']):
+                    self.components['Backend'] = 'OFFLINE'
+                backend = self.owned.get('Backend')
+                if self.deployment_role == 'Backend' and backend and backend.process.poll() is not None:
+                    self.components['Backend'] = 'OFFLINE'
                 for role in ROLES:
                     process = self.owned.get(role)
+                    if self.deployment_role and not self.manages_role(role):
+                        remote = next((c for c in snap['clients'] if c.get('client_role') == role
+                                       and c.get('state') == 'ONLINE' and c.get('hydrated') is True
+                                       and time.time() - c.get('last_seen', 0) < 12), None)
+                        self.components[role] = 'ONLINE' if remote else 'OFFLINE'
+                        continue
                     client = next((c for c in snap['clients'] if c.get('instance_id') == self.instances.get(role)), {})
                     self.components[role] = ('ONLINE' if process and process.process.poll() is None
                         and client.get('state') == 'ONLINE' and client.get('hydrated') is True
@@ -411,7 +458,8 @@ log:
                     self.components[role] = 'RECONNECTING' if p and p.process.poll() is None else 'OFFLINE'
                 if isinstance(exc, BackendCompatibilityError):
                     compatibility_error = exc
-            ready = all(s == 'ONLINE' for s in self.components.values())
+            required = set(self.local_roles) | {'Backend'}
+            ready = all(self.components[role] == 'ONLINE' for role in required)
             self.transition('READY' if ready else 'STARTING' if self.state == 'STARTING' and time.monotonic() < self.deadline else 'DEGRADED')
             for role, value in self.components.items():
                 if value != old[role]: self.log('component', role=role, previous=old[role], state=value)
@@ -420,12 +468,18 @@ log:
                 raise compatibility_error
     def stop_role(self, role):
         with self.lock:
-            p = self.owned.pop(role, None)
+            p = self.owned.get(role)
             if p:
-                p.stop(); self.log('exit', **p.record()); self.components[role] = 'OFFLINE'
+                p.stop()
+                self.owned.pop(role, None)
+                self.log('exit', **p.record()); self.components[role] = 'OFFLINE'
             self._persist_ownership()
     def restart(self, role):
         with self.lock:
+            if not self.manages_role(role):
+                raise RuntimeError('Remote roles must be restarted on their own workstation / 请在对应机器重启远程角色')
+            if self.deployment_role:
+                validate_local_role(self.config)
             if role == 'Backend' and self.existing_backend:
                 raise RuntimeError('Existing Backend is not owned by Launcher')
             self.stop_role(role)

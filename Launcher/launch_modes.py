@@ -24,7 +24,7 @@ def valid_origin(origin):
             and -1000 <= origin['altitude'] <= 100000)
 
 
-def mode_config(root, config, mode):
+def mode_config(root, config, mode, *, validate_isolation=True):
     if mode not in MODES:
         raise ValueError('Unknown launch mode / 未知启动模式: ' + str(mode))
     result = copy.deepcopy(config)
@@ -47,21 +47,22 @@ def mode_config(root, config, mode):
             'mock_reset_on_start': False,
         })
         result.pop('startup_origin', None)
-        if ((Path(root) / result['runtime_directory']).resolve()
-                == (Path(root) / config['runtime_directory']).resolve()):
-            raise ValueError('Modes require separate runtime directories / 两种模式必须使用不同数据目录')
-        def address(endpoint):
-            uri = urlsplit(endpoint)
-            host = uri.hostname
-            if host in ('localhost', '127.0.0.1', '::1'):
-                host = 'loopback'
-            if not host or uri.port is None:
-                raise ValueError('Backend endpoint requires an explicit port / 后端地址必须包含端口')
-            return host, uri.port
-        demo_addresses = {address(config[key]) for key in ('http_endpoint', 'ws_endpoint')}
-        realtime_addresses = {address(result[key]) for key in ('http_endpoint', 'ws_endpoint')}
-        if demo_addresses & realtime_addresses:
-            raise ValueError('Modes require separate Backend ports / 两种模式必须使用不同后端端口')
+        if validate_isolation:
+            if ((Path(root) / result['runtime_directory']).resolve()
+                    == (Path(root) / config['runtime_directory']).resolve()):
+                raise ValueError('Modes require separate runtime directories / 两种模式必须使用不同数据目录')
+            def address(endpoint):
+                uri = urlsplit(endpoint)
+                host = uri.hostname
+                if host in ('localhost', '127.0.0.1', '::1'):
+                    host = 'loopback'
+                if not host or uri.port is None:
+                    raise ValueError('Backend endpoint requires an explicit port / 后端地址必须包含端口')
+                return host, uri.port
+            demo_addresses = {address(config[key]) for key in ('http_endpoint', 'ws_endpoint')}
+            realtime_addresses = {address(result[key]) for key in ('http_endpoint', 'ws_endpoint')}
+            if demo_addresses & realtime_addresses:
+                raise ValueError('Modes require separate Backend ports / 两种模式必须使用不同后端端口')
     return result
 
 

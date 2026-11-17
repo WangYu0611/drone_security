@@ -4,6 +4,8 @@
 
 本手册于 2026-10-30 对照当前启动器和项目配置核对。已安装好依赖的开发电脑可以先运行 `CheckDroneSecurity.cmd`，再运行 `DroneSecurityLauncher.cmd`，选择“DEMO 启动（新加坡）”或“实时模式启动”。检查通过只确认依赖、资源和本机构建文件存在；Cesium 账号权限、地图网络及实际画面仍需启动后确认。
 
+2026-11-17 新增 [局域网四机部署](LANDeployment.md)：启动器默认 `All` 保留本文的单机流程，也可分别选择 Backend、Command、Map、Video 并读取同一份共享 JSON。只运行 Backend 的电脑使用 `SetupDroneBackend.cmd`，无需安装 UE/Cesium；三个 UE 角色按下述流程准备。`CheckDroneSecurity.cmd` 仍检查完整单机环境，部署角色在点击“启动本机角色”时检查自身依赖。
+
 ## 1. 安装依赖
 
 1. Unreal Engine **5.8**。
@@ -69,7 +71,7 @@ git lfs pull
 | `realtime_device_wait` | `8` 秒；发现真实无人机连接的等待窗口 |
 | `realtime_computer_location_timeout` | `15` 秒；无真实无人机连接时查询 Windows 系统定位的最长时间 |
 
-DEMO Backend 默认使用本机 `19880/19881`，实时模式使用 `8080/8081`；两种模式不得共用后端端口或启动器运行目录。启动器新建的 Backend 只支持本机运行；没有远程 Backend 部署向导。`config.local.json` 不是 UE 地图配置文件，也没有已实现的 `proxy` / `extra_args` 参数；代理按下一节配置。
+在默认 `All` 单机模式，DEMO Backend 使用本机 `19880/19881`，实时模式使用 `8080/8081`；两种模式不得共用后端端口或启动器运行目录。四机部署则在启动器选择本机角色，并使用 [共享部署 JSON](LANDeployment.md#2-准备一份共享配置) 指定四台 IP、模式和两个 TCP 端口；这些共享值优先于本机旧网络配置，运行记录位于 `Saved/Deployment/{mode}/{role}`。先启动 Backend 机器，再启动三个客户端；客户端不会在远程 Backend 不可达时自行新建后端。`config.local.json` 仍保存本机程序路径和 `realtime_backend_config`，不是 UE 地图配置文件，也没有已实现的 `proxy` / `extra_args` 参数；代理按下一节配置。
 
 ## 4. 设置地图服务
 

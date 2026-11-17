@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "mode": "realtime",
+  "hosts": {
+    "Backend": "192.168.10.10",
+    "Command": "192.168.10.11",
+    "Map": "192.168.10.12",
+    "Video": "192.168.10.13"
+  },
+  "http_port": 8080,
+  "ws_port": 8081
+}

@@ -1,24 +1,24 @@
-# Stage 1 single-screen launcher
+# Stage 1 launcher: single workstation and four-workstation LAN
 
-For a new workstation follow [First run on Windows](../Docs/First-Run-Windows.md). Install UE 5.8, Cesium for Unreal, VS C++ tools and Python 3.10+ with Tk, then run `SetupDroneSecurity.cmd`. Use `CheckDroneSecurity.cmd` for actionable diagnostics and `DroneSecurityLauncher.cmd` to launch. UE is discovered through the registry/Epic manifest; optional local overrides belong in ignored `Launcher/config.local.json`.
+For a new UE workstation follow [First run on Windows](../Docs/First-Run-Windows.md). Install UE 5.8, Cesium for Unreal, VS C++ tools and Python 3.10+ with Tk, then run `SetupDroneSecurity.cmd`. Use `DroneSecurityLauncher.cmd` to launch. A Backend-only workstation can use `SetupDroneBackend.cmd` without UE/Cesium; it still needs Python with Tk and the Backend build dependencies. See [four-workstation LAN deployment](../Docs/LANDeployment.md) for preparation and startup order. UE is discovered through the registry/Epic manifest; optional local overrides belong in ignored `Launcher/config.local.json`.
 
-Reviewed against the implementation on 2026-10-30. The launcher opens without starting a session; choose **Launch DEMO (Singapore)** or **Launch Realtime Mode**. `CheckDroneSecurity.cmd` checks installed dependencies, resolved paths, LFS assets and build outputs; it does not verify a Cesium token, provider allowance, live map access or actual video playback. Configure your own Cesium ion connection in the UE editor before expecting online terrain. The default online source is Google Photorealistic 3D Tiles through Cesium ion; this path does not require a separate Google Maps API key. Mock operation needs no physical aircraft connection or video URL.
+The default local role **All** keeps the single-workstation flow: choose **Launch DEMO (Singapore)** or **Launch Realtime Mode**. For four-workstation deployment, select **Backend**, **Command**, **Map** or **Video**, choose the shared JSON, then use **Start selected role**. Only that role runs locally. Role-specific dependency checks run when starting; `CheckDroneSecurity.cmd` retains the complete single-workstation checks. These checks do not verify a Cesium token, provider allowance, live map access or actual video playback. Configure your own Cesium ion connection before expecting online terrain. Mock operation needs no physical aircraft connection or video URL. The LAN addition is documented as of 2026-11-17; [validation evidence](../Evidence/LANDeployment/20261117/validation.json) separates component and native checks from an actual four-machine acceptance run.
 
 ## Local configuration
 
-`Launcher/config.local.json` merges over `Launcher/config.json`. Only set values that differ on the workstation; keep credentials out of this file and public commits.
+`Launcher/config.local.json` merges over `Launcher/config.json`. It supplies local executable paths and operational settings. The following endpoint/directory defaults describe **All** mode. LAN deployment instead takes its mode, four role IPs and two TCP ports from a shared profile, such as ignored `Launcher/deployment.json`, using [deployment.example.json](deployment.example.json) as its schema. Copy the same profile content to all four machines; a network share is not required. The profile overrides legacy local HTTP/WS and runtime-directory settings. Only the selected role and profile path are saved in `Saved/Launcher/deployment-selection.json`; IPs are not duplicated there. Keep credentials out of these files and public commits.
 
 | Setting | Default / purpose |
 | --- | --- |
 | `ue_executable` | Empty means discover UE 5.8; set an absolute `UnrealEditor.exe` path only when discovery fails |
 | `backend_executable` | `Backend/build/Release/DroneBackend.exe` |
 | `map` | `/Game/Level/CesiumWorld` |
-| `http_endpoint`, `ws_endpoint` | DEMO: `http://127.0.0.1:19880`, `ws://127.0.0.1:19881/ws`; newly owned Backends must be local |
+| `http_endpoint`, `ws_endpoint` | All/DEMO: `http://127.0.0.1:19880`, `ws://127.0.0.1:19881/ws`; LAN uses the shared Backend IP/ports |
 | `runtime_directory` | DEMO: `Saved/Stage1`, including existing Mock business data under `data` |
 | `startup_timeout` | `180` seconds; increase if first-run shader compilation delays client readiness |
 | `max_fps` | `20`, applied to each UE client |
-| `auto_start` | `false`; wait for a mode button. Explicit `true` starts `startup_mode` |
-| `startup_mode` | `demo`; automatic startup mode when `auto_start=true`; allowed values: `demo`, `realtime` |
+| `auto_start` | `false`; wait for a launch button. Explicit `true` uses the saved LAN selection, or `startup_mode` for All |
+| `startup_mode` | `demo`; automatic All-mode startup; LAN mode comes from the shared profile |
 | `mock_reset_on_start` | `true`; controls the new owned Mock Backend reset described below |
 | `realtime_http_endpoint`, `realtime_ws_endpoint` | Real-time: `http://127.0.0.1:8080`, `ws://127.0.0.1:8081/ws`; match the selected Backend configuration |
 | `realtime_backend_config` | `Backend/config.yaml`; existing registry and `port_map` remain authoritative; local override supported |
@@ -27,6 +27,8 @@ Reviewed against the implementation on 2026-10-30. The launcher opens without st
 | `realtime_gps_max_age` | `5.0` seconds; maximum age of Backend's packet receipt time |
 | `realtime_device_wait` | `8` seconds to discover a connected real UAV before considering computer location |
 | `realtime_computer_location_timeout` | `15` seconds for Windows system location when no real UAV is connected |
+
+In LAN mode all clients use `hosts.Backend` for HTTP/WS; the selected role's own IP is checked by a temporary local UDP bind without sending data. Start Backend first, then the clients. Client workstations never spawn a replacement Backend when it is unreachable. Runtime records use `Saved/Deployment/{mode}/{role}`. Backend's existing storage, UDP mappings and real-execution configuration remain authoritative; the shared ports override only the process's TCP listeners. `hosts.Video` identifies the Video UI computer, not MediaMTX: configure reachable `video_url` and media transport separately. Stop affected sessions and restart them after changing the profile; it is not hot-reloaded. See the [LAN guide](../Docs/LANDeployment.md) for firewall, data, shutdown and evidence details.
 
 The launcher does not append `-httpproxy` or support a custom `extra_args` / `proxy` JSON field. If the workstation needs an HTTP proxy, close its UE editor and clients, then merge the following into the project's ignored `Saved/Config/WindowsEditor/Engine.ini` and restart the clients. Replace the example address with an actual running HTTP proxy; preserve other INI sections.
 
@@ -42,7 +44,7 @@ Map startup, UAV formation and Cesium request caching have shared defaults. DEMO
 
 ## Starting and stopping
 
-Choose a mode before starting. **Launch DEMO (Singapore)** uses local ports `19880/19881` and the existing `Saved/Stage1/data` Mock session. **Launch Realtime Mode** uses local ports `8080/8081` and `Backend/config.yaml` by default. The launcher starts or attaches to Backend first, validates its APIs and mode, then starts three independent instances of the same UE project. Real-time startup resolves the display origin through the priority rules below before opening any UE role. READY requires the expected instance for every role, a live owned process, a subscribed session and a fresh hydrated heartbeat. Shut down the current session before selecting another mode; the buttons cannot silently change a running session's mode.
+The remaining single-screen workflow describes **All**. **Launch DEMO (Singapore)** uses local ports `19880/19881` and the existing `Saved/Stage1/data` Mock session. **Launch Realtime Mode** uses local ports `8080/8081` and `Backend/config.yaml` by default. The launcher starts or attaches to Backend first, validates its APIs and mode, then starts three independent instances of the same UE project. Real-time All startup resolves the display origin before opening any UE role. READY requires all expected local instances and their hydrated heartbeats. LAN instead launches only the selected role, resolves real-time location only on Map, and requires Backend plus the local role for READY. Shut down the current session before changing modes or deployment selection.
 
 ### Real-time position initialization
 

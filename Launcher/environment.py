@@ -54,6 +54,20 @@ def load_config(root):
 def preflight(root, config, require_binaries=True):
     root = Path(root)
     issues = []
+    role = config.get('deployment_role')
+    if 'deployment_role' in config and role not in ('Backend', 'Command', 'Map', 'Video'):
+        return ['Invalid deployment role / 部署角色必须为 Backend、Command、Map 或 Video。']
+    if role == 'Backend':
+        if require_binaries and not (root / config['backend_executable']).is_file():
+            issues.append('Backend not built / 尚未编译后端。先运行 SetupDroneSecurity.cmd。')
+        # DEMO generates its own configuration. A real Backend must use the
+        # operator-selected configuration even on machines without UE assets.
+        if config.get('launch_mode', 'realtime') == 'realtime':
+            backend_config = (config.get('backend_config') or config.get('realtime_backend_config')
+                              or 'Backend/config.yaml')
+            if not (root / backend_config).is_file():
+                issues.append('Realtime Backend config missing / 缺少实时后端配置: ' + str(root / backend_config))
+        return issues
     project = root / config['project']
     if not project.is_file():
         issues.append('Missing UE5DroneControl.uproject / 缺少工程文件。请完整下载项目。')
@@ -85,7 +99,7 @@ def preflight(root, config, require_binaries=True):
     if not map_file.is_file():
         issues.append('Map asset missing / 缺少地图资源: ' + str(map_file))
     if require_binaries:
-        if not (root / config['backend_executable']).is_file():
+        if role is None and not (root / config['backend_executable']).is_file():
             issues.append('Backend not built / 尚未编译后端。先运行 SetupDroneSecurity.cmd。')
         if not (root / 'Binaries/Win64/UnrealEditor-UE5DroneControl.dll').is_file():
             issues.append('UE module not built / 尚未编译 UE 工程。先运行 SetupDroneSecurity.cmd。')
