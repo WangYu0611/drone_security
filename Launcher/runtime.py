@@ -16,9 +16,14 @@ import urllib.parse
 import uuid
 from launch_modes import mode_config, received_origin, geoid_separation, check_backend_mode, has_real_connection, valid_origin
 from computer_location import computer_origin
-from deployment import validate_local_role
+from deployment import PILOT_ROLE, validate_local_role
 
 ROLES = ('Command', 'Map', 'Video')
+CLIENT_ROLES = (*ROLES, PILOT_ROLE)
+PILOT_IDENTITIES = {'Command': 'pilot_control_command_identity', PILOT_ROLE: 'pilot_control_pilot_identity'}
+PILOT_MAP = '/Engine/Maps/Entry?game=/Script/UE5DroneControl.DroneOpsGameMode'
+PILOT_CAPABILITY = 'pilot_control_mock'
+PILOT_CREDENTIALS_ENV = 'DRONE_PILOT_CONTROL_CREDENTIALS'
 REQUIRED_CAPABILITIES = frozenset(('fleet_move_3d', 'map_fleet_controls', 'plan_configuration'))
 
 
@@ -143,11 +148,25 @@ class OwnedProcess:
             ctypes.windll.kernel32.CloseHandle(wintypes.HANDLE(self.job)); self.job = None
         self.output.close()
 
+def role_user_directory(config, root, role, instance):
+    return (root / config['runtime_directory'] / 'Clients' / role / instance).resolve()
+
+
+def pilot_identity(config, role):
+    key = PILOT_IDENTITIES.get(role)
+    return config.get(key, '') if key and config.get('launch_mode') == 'demo' else ''
+
+
+def pilot_ready_path(config, root, role, instance):
+    return role_user_directory(config, root, role, instance) / 'PilotControl.ready'
+
+
 def role_arguments(config, root, role, instance, log):
     # UE's CEF cache follows UserDir. Each launch needs its own directory so
     # concurrent roles and a restarting role never contend for the cache lock.
-    user_dir = (root / config['runtime_directory'] / 'Clients' / role / instance).resolve()
-    args = [str(root / config['ue_executable']), str(root / config['project']), config['map'],
+    user_dir = role_user_directory(config, root, role, instance)
+    map_url = PILOT_MAP if role == PILOT_ROLE else config['map']
+    args = [str(root / config['ue_executable']), str(root / config['project']), map_url,
             '-game', '-windowed', '-ResX=1280', '-ResY=800', '-nosplash', '-unattended',
             '-ClientRole=' + role, '-P5Instance=' + instance,
             '-UserDir=' + str(user_dir),
@@ -155,11 +174,17 @@ def role_arguments(config, root, role, instance, log):
             '-ExecCmds=t.MaxFPS ' + str(config['max_fps']), '-abslog=' + str(log)]
     if config.get('launch_mode'):
         args += ['-MapStartupMode=' + ('Demo' if config['launch_mode'] == 'demo' else 'Realtime')]
-    if config.get('startup_origin'):
+    if role != PILOT_ROLE and config.get('startup_origin'):
         origin = config['startup_origin']
         args += ['-MapStartupLongitude=' + str(origin['longitude']),
                  '-MapStartupLatitude=' + str(origin['latitude']),
                  '-MapStartupHeight=' + str(origin['altitude'])]
+    identity = pilot_identity(config, role)
+    if identity:
+        args += ['-PilotControlIdentity=' + identity,
+                 '-PilotControlReadyFile=' + str(pilot_ready_path(config, root, role, instance))]
+        if role == PILOT_ROLE and config.get('pilot_control_mock_input') is True:
+            args.append('-PilotMockInput')
     return args
 
 class Runtime:
@@ -176,7 +201,7 @@ class Runtime:
         self.owned = {}
         self.instances = {}
         self.state = 'STOPPED'
-        self.components = {r: 'OFFLINE' for r in ('Backend',) + ROLES}
+        self.components = {r: 'OFFLINE' for r in ('Backend',) + CLIENT_ROLES}
         self.snapshot = None
         self.existing_backend = False
         self.error = ''
@@ -188,12 +213,31 @@ class Runtime:
         return self.config.get('deployment_role')
     @property
     def local_roles(self):
-        return (self.deployment_role,) if self.deployment_role not in (None, 'All') else ('Backend',) + ROLES
+        if self.deployment_role not in (None, 'All'):
+            return (self.deployment_role,)
+        include_pilot = self.launch_mode == 'demo' and (
+            PILOT_ROLE in self.config.get('deployment_hosts', {}) if self.deployment_role == 'All'
+            else bool(pilot_identity(self.config, PILOT_ROLE)))
+        return ('Backend',) + ROLES + ((PILOT_ROLE,) if include_pilot else ())
     @property
     def local_client_roles(self):
-        return tuple(role for role in self.local_roles if role in ROLES)
+        return tuple(role for role in self.local_roles if role in CLIENT_ROLES)
     def manages_role(self, role):
         return role in self.local_roles
+    def _validate_pilot_configuration(self, role):
+        if role == PILOT_ROLE and self.launch_mode != 'demo':
+            raise RuntimeError('Pilot requires a Mock deployment / Pilot 仅支持 DEMO 部署。')
+        identity = pilot_identity(self.config, role)
+        if not identity and role != PILOT_ROLE:
+            return
+        if (not isinstance(identity, str) or not identity.strip() or len(identity) > 128):
+            raise RuntimeError('Set a Pilot control identity in Launcher/config.local.json / '
+                               '请在 Launcher/config.local.json 设置控制权身份。')
+        configured_path = os.environ.get(PILOT_CREDENTIALS_ENV)
+        path = Path(configured_path) if configured_path else None
+        if path is None or not path.is_absolute() or not path.is_file():
+            raise RuntimeError('Set DRONE_PILOT_CONTROL_CREDENTIALS to an existing absolute file path / '
+                               '请将 DRONE_PILOT_CONTROL_CREDENTIALS 设置为现有凭据文件的绝对路径。')
     def log(self, event, **data):
         with self.lock:
             with (self.logs / 'launcher.jsonl').open('a', encoding='utf-8') as out:
@@ -379,11 +423,16 @@ log:
                     raise
     def start_role(self, role):
         with self.lock:
-            if role not in ROLES: raise ValueError(role)
+            if role not in CLIENT_ROLES: raise ValueError(role)
             if not self.manages_role(role):
                 raise RuntimeError('This workstation does not manage ' + role + ' / 本机未选择此角色')
+            self._validate_pilot_configuration(role)
             snap = compatible_snapshot(self.config['http_endpoint'])
             check_backend_mode(snap, self.launch_mode)
+            if pilot_identity(self.config, role) and PILOT_CAPABILITY not in snap['backend']['capabilities']:
+                raise BackendCompatibilityError('Backend does not advertise pilot_control_mock. '
+                    'Start the current Mock Backend with DRONE_PILOT_CONTROL_CREDENTIALS / '
+                    '请使用当前版本和凭据配置启动 Mock 后端。')
             if any(c.get('client_role') == role and c.get('state') == 'ONLINE' for c in snap['clients']):
                 raise RuntimeError(role + ' already ONLINE; refusing duplicate')
             instance = str(uuid.uuid4()); self.instances[role] = instance
@@ -414,6 +463,8 @@ log:
                 self.log('launch_mode', mode=mode)
             self.stopping.clear(); self.error = ''; self.transition('STARTING')
             try:
+                for role in self.local_client_roles:
+                    self._validate_pilot_configuration(role)
                 self._backend()
                 if self.launch_mode == 'realtime' and self.manages_role('Map'):
                     self._resolve_realtime_origin()
@@ -442,8 +493,17 @@ log:
                 backend = self.owned.get('Backend')
                 if self.deployment_role and backend and backend.process.poll() is not None:
                     self.components['Backend'] = 'OFFLINE'
-                for role in ROLES:
+                for role in CLIENT_ROLES:
                     process = self.owned.get(role)
+                    alive = process is not None and process.process.poll() is None
+                    instance = self.instances.get(role)
+                    control_ready = not pilot_identity(self.config, role) or (
+                        instance is not None and PILOT_CAPABILITY in snap['backend']['capabilities']
+                        and pilot_ready_path(self.config, self.root, role, instance).is_file())
+                    if role == PILOT_ROLE:
+                        self.components[role] = ('ONLINE' if alive and control_ready else
+                            'STARTING' if alive and time.monotonic() < self.deadline else 'OFFLINE')
+                        continue
                     if self.deployment_role and not self.manages_role(role):
                         remote = next((c for c in snap['clients'] if c.get('client_role') == role
                                        and c.get('state') == 'ONLINE' and c.get('hydrated') is True
@@ -451,13 +511,13 @@ log:
                         self.components[role] = 'ONLINE' if remote else 'OFFLINE'
                         continue
                     client = next((c for c in snap['clients'] if c.get('instance_id') == self.instances.get(role)), {})
-                    self.components[role] = ('ONLINE' if process and process.process.poll() is None
+                    self.components[role] = ('ONLINE' if alive and control_ready
                         and client.get('state') == 'ONLINE' and client.get('hydrated') is True
                         and time.time() - client.get('last_seen', 0) < 12 else
-                        'STARTING' if process and process.process.poll() is None and time.monotonic() < self.deadline else 'OFFLINE')
+                        'STARTING' if alive and time.monotonic() < self.deadline else 'OFFLINE')
             except Exception as exc:
                 self.components['Backend'] = 'OFFLINE'
-                for role in ROLES:
+                for role in CLIENT_ROLES:
                     p = self.owned.get(role)
                     self.components[role] = 'RECONNECTING' if p and p.process.poll() is None else 'OFFLINE'
                 if isinstance(exc, BackendCompatibilityError):
@@ -526,12 +586,12 @@ log:
         with self.lock:
             self.transition('STOPPING')
             errors = []
-            for role in ROLES + ('Backend',):
+            for role in CLIENT_ROLES + ('Backend',):
                 try: self.stop_role(role)
                 except Exception as exc: errors.append(role + ': ' + str(exc))
             if errors:
                 self.error = '; '.join(errors); self.transition('FAILED'); raise RuntimeError(self.error)
-            self.components = {r: 'OFFLINE' for r in ('Backend',) + ROLES}
+            self.components = {r: 'OFFLINE' for r in ('Backend',) + CLIENT_ROLES}
             self.location_status = ''
             self.location_source = ''
             self.transition('STOPPED')

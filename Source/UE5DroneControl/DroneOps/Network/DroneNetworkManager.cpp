@@ -22,6 +22,7 @@
 void UDroneNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Pilot) return;
 
 	// UGameInstanceSubsystem 的 UPROPERTY(config) 不会被引擎自动从 ini 加载，
 	// 需要手动读取。优先级：DefaultGame.ini < Saved/Config/*/Game.ini

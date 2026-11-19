@@ -1,5 +1,6 @@
 #include "Command/CommandScreenManager.h"
 #include "Video/VideoShellWidget.h"
+#include "Pilot/PilotShellWidget.h"
 #include "Map/MapShellWidget.h"
 #include "Command/CommandShellWidget.h"
 #include "Command/CommandMapInteractionService.h"
@@ -60,17 +61,24 @@ EDroneClientRole UCommandScreenManager::ResolveClientRoleFromSettings(const TCHA
     FString Role = DefaultRole;
     FParse::Value(CommandLine, TEXT("ClientRole="), Role);
     Role.TrimStartAndEndInline();
-    return Role.Equals(TEXT("Command"), ESearchCase::IgnoreCase) ? EDroneClientRole::Command
-        : Role.Equals(TEXT("Map"), ESearchCase::IgnoreCase) ? EDroneClientRole::Map
-        : (Role.Equals(TEXT("Video"), ESearchCase::IgnoreCase) ? EDroneClientRole::Video : EDroneClientRole::Standalone);
+    if (Role.Equals(TEXT("Command"), ESearchCase::IgnoreCase)) return EDroneClientRole::Command;
+    if (Role.Equals(TEXT("Map"), ESearchCase::IgnoreCase)) return EDroneClientRole::Map;
+    if (Role.Equals(TEXT("Video"), ESearchCase::IgnoreCase)) return EDroneClientRole::Video;
+    if (Role.Equals(TEXT("Pilot"), ESearchCase::IgnoreCase)) return EDroneClientRole::Pilot;
+    return EDroneClientRole::Standalone;
 }
 void UCommandScreenManager::Initialize(ADroneOpsPlayerController* Owner)
 {
-    if (Controller == Owner && (VideoShell || Shell || MapShell)) { Show(); return; }
+    if (Controller == Owner && (VideoShell || Shell || MapShell || PilotShell)) { Show(); return; }
     Destroy();
     Controller = Owner;
     if (!Owner || !Owner->IsLocalController()) return;
     ClientRole = ResolveClientRole();
+    if (ClientRole == EDroneClientRole::Pilot)
+    {
+        Show();
+        return;
+    }
     bInitialMapFocusPending = ClientRole == EDroneClientRole::Map;
     if (ClientRole == EDroneClientRole::Map) GConfig->GetBool(TEXT("OperationalContext"), TEXT("FollowSelection"), bFollowSelection, GGameIni);
     if (ClientRole == EDroneClientRole::Video)
@@ -109,6 +117,16 @@ void UCommandScreenManager::Initialize(ADroneOpsPlayerController* Owner)
 void UCommandScreenManager::Show()
 {
     if (!Controller.IsValid()) return;
+    if (ClientRole == EDroneClientRole::Pilot)
+    {
+        if (!PilotShell)
+        {
+            PilotShell = CreateWidget<UPilotShellWidget>(Controller.Get(), UPilotShellWidget::StaticClass());
+            PilotShell->AddToViewport(30);
+            UE_LOG(LogTemp, Log, TEXT("[Pilot] Pilot Shell created"));
+        }
+        return;
+    }
     if (ClientRole == EDroneClientRole::Video)
     {
         if (!VideoShell)
@@ -146,6 +164,7 @@ void UCommandScreenManager::Show()
 }
 void UCommandScreenManager::Hide()
 {
+    if (PilotShell) { PilotShell->RemoveFromParent(); PilotShell = nullptr; }
     if (VideoShell) { VideoShell->Shutdown(); VideoShell->SetVisibility(ESlateVisibility::Collapsed); }
     if (MapShell) MapShell->SetVisibility(ESlateVisibility::Collapsed);
     if (Shell) Shell->SetVisibility(ESlateVisibility::Collapsed);
@@ -165,6 +184,7 @@ void UCommandScreenManager::Destroy()
     if (GeographicPanel) GeographicPanel->RemoveFromParent();
     if (SpeedPanel) SpeedPanel->RemoveFromParent();
     if (VideoShell) { VideoShell->Shutdown(); VideoShell->RemoveFromParent(); VideoShell = nullptr; }
+    if (PilotShell) { PilotShell->RemoveFromParent(); PilotShell = nullptr; }
     if (MapShell) { MapShell->RemoveFromParent(); MapShell = nullptr; }
     if (Shell) Shell->RemoveFromParent();
     PathPanel = nullptr; GeographicPanel = nullptr; SpeedPanel = nullptr; Shell = nullptr; MapService = nullptr;

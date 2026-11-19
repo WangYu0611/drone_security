@@ -4,9 +4,9 @@
 #include "UObject/Object.h"
 #include "CommandScreenManager.generated.h"
 
-// Shared startup role contract for Command, Video and legacy Standalone.
+// Shared startup role contract. Keep existing enum values stable for Blueprint.
 UENUM(BlueprintType)
-enum class EDroneClientRole : uint8 { Standalone, Command, Video, Map };
+enum class EDroneClientRole : uint8 { Standalone, Command, Video, Map, Pilot };
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCommandOpenVideoRequested, int32, DroneId);
 
 /** PC-owned UI lifetime. No network transport or independent selected-drone state. */
@@ -47,6 +47,7 @@ private:
     UPROPERTY() TObjectPtr<class UCommandShellWidget> Shell;
     UPROPERTY() TObjectPtr<class UMapShellWidget> MapShell;
     UPROPERTY() TObjectPtr<class UVideoShellWidget> VideoShell;
+    UPROPERTY() TObjectPtr<class UPilotShellWidget> PilotShell;
     UPROPERTY() TObjectPtr<class UCommandMapInteractionService> MapService;
     UPROPERTY() TObjectPtr<class USequenceDispatchPanelWidget> PathPanel;
     UPROPERTY() TObjectPtr<class UGeographicTargetPanelWidget> GeographicPanel;

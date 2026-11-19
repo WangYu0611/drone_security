@@ -15,13 +15,14 @@ from launch_modes import mode_config
 
 DEPLOYMENT_ROLES = ('Backend', 'Command', 'Map', 'Video')
 DEPLOYMENT_SELECTIONS = ('All',) + DEPLOYMENT_ROLES
+PILOT_ROLE = 'Pilot'
 PROFILE_FIELDS = frozenset(('schema_version', 'mode', 'hosts', 'http_port', 'ws_port'))
 SELECTION_PATH = Path('Saved/Launcher/deployment-selection.json')
 
 
 def _role(role):
-    if role not in DEPLOYMENT_SELECTIONS:
-        raise ValueError('Choose All, Backend, Command, Map or Video / 请选择本机角色。')
+    if role not in (*DEPLOYMENT_SELECTIONS, PILOT_ROLE):
+        raise ValueError('Choose All, Backend, Command, Map, Video or Pilot / 请选择本机角色。')
     return role
 
 
@@ -80,8 +81,15 @@ def deployment_config(root, base_config, path, role):
         raise ValueError('Unsupported deployment schema_version / 部署 schema_version 必须为 1。')
     if profile['mode'] not in ('realtime', 'demo'):
         raise ValueError('Deployment mode must be realtime or demo / 部署 mode 必须为 realtime 或 demo。')
-    _exact_fields(profile['hosts'], frozenset(DEPLOYMENT_ROLES), 'hosts')
-    hosts = {name: _host(name, profile['hosts'][name]) for name in DEPLOYMENT_ROLES}
+    host_roles = DEPLOYMENT_ROLES
+    if isinstance(profile['hosts'], dict) and PILOT_ROLE in profile['hosts']:
+        if profile['mode'] != 'demo':
+            raise ValueError('Pilot requires a Mock deployment / Pilot 仅支持 DEMO 部署。')
+        host_roles += (PILOT_ROLE,)
+    _exact_fields(profile['hosts'], frozenset(host_roles), 'hosts')
+    hosts = {name: _host(name, profile['hosts'][name]) for name in host_roles}
+    if role == PILOT_ROLE and role not in hosts:
+        raise ValueError('Shared DEMO config requires hosts.Pilot / 共享 DEMO 配置缺少 hosts.Pilot。')
     for key in ('http_port', 'ws_port'):
         if type(profile[key]) is not int or not 1 <= profile[key] <= 65535:
             raise ValueError(f'{key} must be an integer from 1 to 65535 / {key} 必须是 1–65535 的整数。')
@@ -122,9 +130,12 @@ def deployment_config(root, base_config, path, role):
 def validate_local_role(config):
     """Check selected role addresses belong locally; bind port 0, never send."""
     role = _role(config.get('deployment_role'))
-    roles = DEPLOYMENT_ROLES if role == 'All' else (role,)
+    hosts = config.get('deployment_hosts', {})
+    roles = (role,)
+    if role == 'All':
+        roles = DEPLOYMENT_ROLES + ((PILOT_ROLE,) if PILOT_ROLE in hosts else ())
     for local_role in roles:
-        address = _host(local_role, config.get('deployment_hosts', {}).get(local_role))
+        address = _host(local_role, hosts.get(local_role))
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
                 probe.bind((address, 0))

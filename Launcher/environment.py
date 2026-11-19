@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 
+from deployment import DEPLOYMENT_SELECTIONS, PILOT_ROLE
+
 EDITOR = Path('Engine/Binaries/Win64/UnrealEditor.exe')
 
 
@@ -55,8 +57,10 @@ def preflight(root, config, require_binaries=True):
     root = Path(root)
     issues = []
     role = config.get('deployment_role')
-    if 'deployment_role' in config and role not in ('All', 'Backend', 'Command', 'Map', 'Video'):
-        return ['Invalid deployment role / 部署角色必须为 All、Backend、Command、Map 或 Video。']
+    if 'deployment_role' in config and role not in (*DEPLOYMENT_SELECTIONS, PILOT_ROLE):
+        return ['Invalid deployment role / 部署角色必须为 All、Backend、Command、Map、Video 或 Pilot。']
+    if role == PILOT_ROLE and config.get('launch_mode') != 'demo':
+        return ['Pilot requires a Mock deployment / Pilot 仅支持 DEMO 部署。']
     if role in ('Backend', 'All'):
         if require_binaries and not (root / config['backend_executable']).is_file():
             issues.append('Backend not built / 尚未编译后端。先运行 SetupDroneBackend.cmd。')
@@ -86,19 +90,20 @@ def preflight(root, config, require_binaries=True):
                 issues.append('UE 5.8 is required / 请使用 UE 5.8。')
         if not (has_cesium(root / 'Plugins') or has_cesium(engine / 'Engine/Plugins')):
             issues.append('Cesium for Unreal missing / 请在 Epic Games Launcher 的 Fab 库中将 Cesium for Unreal 安装到 UE 5.8。见 Docs/First-Run-Windows.md。')
-    missing_assets = []
-    for folder in ('Content', 'Plugins'):
-        for path in (root / folder).rglob('*'):
-            if path.suffix.lower() not in ('.uasset', '.umap') or not path.is_file():
-                continue
-            with path.open('rb') as source:
-                if source.read(80).startswith(b'version https://git-lfs.github.com/spec/v1'):
-                    missing_assets.append(str(path.relative_to(root)))
-    if missing_assets:
-        issues.append(f'Git LFS assets missing / {len(missing_assets)} 个资源仍为占位文件。运行 git lfs install 和 git lfs pull。示例: {missing_assets[0]}')
-    map_file = root / ('Content/' + config['map'].removeprefix('/Game/') + '.umap')
-    if not map_file.is_file():
-        issues.append('Map asset missing / 缺少地图资源: ' + str(map_file))
+    if role != PILOT_ROLE:
+        missing_assets = []
+        for folder in ('Content', 'Plugins'):
+            for path in (root / folder).rglob('*'):
+                if path.suffix.lower() not in ('.uasset', '.umap') or not path.is_file():
+                    continue
+                with path.open('rb') as source:
+                    if source.read(80).startswith(b'version https://git-lfs.github.com/spec/v1'):
+                        missing_assets.append(str(path.relative_to(root)))
+        if missing_assets:
+            issues.append(f'Git LFS assets missing / {len(missing_assets)} 个资源仍为占位文件。运行 git lfs install 和 git lfs pull。示例: {missing_assets[0]}')
+        map_file = root / ('Content/' + config['map'].removeprefix('/Game/') + '.umap')
+        if not map_file.is_file():
+            issues.append('Map asset missing / 缺少地图资源: ' + str(map_file))
     if require_binaries:
         if role is None and not (root / config['backend_executable']).is_file():
             issues.append('Backend not built / 尚未编译后端。先运行 SetupDroneSecurity.cmd。')

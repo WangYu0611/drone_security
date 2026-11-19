@@ -16,6 +16,7 @@ bool FCommandStartupRoleTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("unknown explicit role never falls back to Command"), Resolve(TEXT("-ClientRole=Unknown"), TEXT("Command")), EDroneClientRole::Standalone);
     TestEqual(TEXT("Map CLI overrides Command default"), Resolve(TEXT("-ClientRole=Map"), TEXT("Command")), EDroneClientRole::Map);
     TestEqual(TEXT("Map is case insensitive"), Resolve(TEXT("-ClientRole=mAp"), TEXT("Command")), EDroneClientRole::Map);
+    TestEqual(TEXT("Pilot CLI selects the independent role"), Resolve(TEXT("-ClientRole=Pilot"), TEXT("Command")), EDroneClientRole::Pilot);
     return true;
 }
 #endif

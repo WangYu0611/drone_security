@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import Mock, patch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from runtime import (Runtime, OwnedProcess, compatible_snapshot, role_arguments, SingleInstance,
-                     BackendCompatibilityError, REQUIRED_CAPABILITIES)
+                     BackendCompatibilityError, REQUIRED_CAPABILITIES, PILOT_MAP, pilot_ready_path)
 from windows import rectangles
 
 class LauncherTests(unittest.TestCase):
@@ -90,6 +90,57 @@ class LauncherTests(unittest.TestCase):
             self.assertIn('-P5Instance=owned-instance', args)
             self.assertIn('-P1Http='+cfg['http_endpoint'], args)
             self.assertIn('-P1Ws='+cfg['ws_endpoint'], args)
+
+    def test_pilot_opts_in_only_in_demo_and_uses_its_own_map_and_ready_file(self):
+        project_root = Path(__file__).resolve().parents[1]
+        cfg = json.loads((project_root/'Launcher/config.json').read_text(encoding='utf-8-sig'))
+        cfg.update(launch_mode='demo', pilot_control_command_identity='dispatch-a',
+                   pilot_control_pilot_identity='pilot-a', pilot_control_mock_input=True,
+                   startup_origin={'latitude': 1, 'longitude': 2, 'altitude': 3})
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            runtime = Runtime(root, cfg)
+            self.assertEqual(runtime.local_client_roles, ('Command', 'Map', 'Video', 'Pilot'))
+            pilot_args = role_arguments(cfg, root, 'Pilot', 'first', root/'pilot.log')
+            self.assertIn(PILOT_MAP, pilot_args)
+            self.assertIn('-ClientRole=Pilot', pilot_args)
+            self.assertIn('-PilotControlIdentity=pilot-a', pilot_args)
+            self.assertIn('-PilotMockInput', pilot_args)
+            self.assertIn('-PilotControlReadyFile='+str(pilot_ready_path(cfg, root, 'Pilot', 'first')), pilot_args)
+            self.assertFalse(any(a.startswith('-MapStartupLatitude=') for a in pilot_args))
+            command_args = role_arguments(cfg, root, 'Command', 'first', root/'command.log')
+            self.assertIn('-PilotControlIdentity=dispatch-a', command_args)
+            self.assertNotIn('-PilotMockInput', command_args)
+            realtime = {**cfg, 'launch_mode': 'realtime'}
+            self.assertEqual(Runtime(root, realtime).local_client_roles, ('Command', 'Map', 'Video'))
+            self.assertFalse(any(a.startswith('-PilotControl') for a in
+                role_arguments(realtime, root, 'Command', 'real', root/'command.log')))
+
+    def test_pilot_readiness_requires_own_hydrated_control_marker(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            config = {'runtime_directory': 'runtime', 'launch_mode': 'demo', 'deployment_role': 'Pilot',
+                      'pilot_control_pilot_identity': 'pilot-a', 'http_endpoint': 'http://127.0.0.1:26080',
+                      'ws_endpoint': 'ws://127.0.0.1:26081/ws'}
+            runtime = Runtime(root, config)
+            runtime.owned['Pilot'] = Mock()
+            runtime.owned['Pilot'].process.poll.return_value = None
+            runtime.instances['Pilot'] = 'new-client'
+            runtime.state = 'STARTING'
+            snapshot = {'backend': {'capabilities': ['pilot_control_mock']}, 'clients': []}
+            marker = pilot_ready_path(config, root, 'Pilot', 'new-client')
+            marker.parent.mkdir(parents=True)
+            with patch('runtime.compatible_snapshot', return_value=snapshot), \
+                 patch('runtime.check_backend_mode'), patch('runtime.port_open', return_value=True), \
+                 patch.object(runtime, '_persist_ownership'):
+                runtime.poll()
+                self.assertEqual(runtime.state, 'DEGRADED')
+                marker.touch()
+                runtime.poll()
+                self.assertEqual(runtime.state, 'READY')
+                marker.unlink()
+                runtime.poll()
+                self.assertEqual(runtime.state, 'DEGRADED')
     def test_UserDirectoriesAreAbsoluteAndIsolatedAcrossRolesModesAndInstances(self):
         project_root = Path(__file__).resolve().parents[1]
         cfg = json.loads((project_root/'Launcher/config.json').read_text(encoding='utf-8-sig'))

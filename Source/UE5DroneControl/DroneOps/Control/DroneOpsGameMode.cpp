@@ -381,12 +381,13 @@ ADroneOpsGameMode::ADroneOpsGameMode()
 void ADroneOpsGameMode::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();
-    if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Map)
+    const auto ClientRole = UCommandScreenManager::ResolveClientRole();
+    if (ClientRole == EDroneClientRole::Map)
     {
         CommandMapService = UCommandMapInteractionService::GetOrCreateForWorld(GetWorld());
     }
 
-    if ((UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Video || UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command))
+    if (ClientRole == EDroneClientRole::Video || ClientRole == EDroneClientRole::Command || ClientRole == EDroneClientRole::Pilot)
     {
         // Use the existing native controller without legacy Blueprint HUD/BeginPlay overrides.
         PlayerControllerClass = ADroneOpsPlayerController::StaticClass();
@@ -411,7 +412,8 @@ void ADroneOpsGameMode::PreInitializeComponents()
 void ADroneOpsGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	if ((UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Video || UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command))
+	const auto ClientRole = UCommandScreenManager::ResolveClientRole();
+	if (ClientRole == EDroneClientRole::Video || ClientRole == EDroneClientRole::Command || ClientRole == EDroneClientRole::Pilot)
 	{
 		// Video consumes Registry descriptors, not scene receiver/shadow actors. Shadow
 		// BeginPlay re-registers a partial descriptor and would erase the HTTP VideoUrl.

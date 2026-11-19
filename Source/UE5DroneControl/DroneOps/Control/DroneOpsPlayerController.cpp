@@ -292,12 +292,13 @@ ADroneOpsPlayerController::ADroneOpsPlayerController()
 void ADroneOpsPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Video || UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command)
+    const auto ClientRole = UCommandScreenManager::ResolveClientRole();
+    if (ClientRole == EDroneClientRole::Video || ClientRole == EDroneClientRole::Command || ClientRole == EDroneClientRole::Pilot)
     {
         DroneRegistry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
         CommandScreenManager = NewObject<UCommandScreenManager>(this);
         CommandScreenManager->Initialize(this);
-        if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command && GetWorld()->GetGameViewport())
+        if ((ClientRole == EDroneClientRole::Command || ClientRole == EDroneClientRole::Pilot) && GetWorld()->GetGameViewport())
             GetWorld()->GetGameViewport()->bDisableWorldRendering = true;
         SetInputMode(FInputModeUIOnly());
         bShowMouseCursor = true;
@@ -401,7 +402,8 @@ void ADroneOpsPlayerController::BeginPlay()
 
 void ADroneOpsPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command && GetWorld()->GetGameViewport())
+    const auto ClientRole = UCommandScreenManager::ResolveClientRole();
+    if ((ClientRole == EDroneClientRole::Command || ClientRole == EDroneClientRole::Pilot) && GetWorld()->GetGameViewport())
         GetWorld()->GetGameViewport()->bDisableWorldRendering = false;
     if (DroneRegistry) DroneRegistry->OnMultiSelectionChanged.RemoveDynamic(this, &ADroneOpsPlayerController::OnRegistryMultiSelectionChanged);
     if (CommandScreenManager) { CommandScreenManager->Destroy(); CommandScreenManager = nullptr; }
@@ -419,7 +421,8 @@ void ADroneOpsPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason
 void ADroneOpsPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-    if (UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Video || UCommandScreenManager::ResolveClientRole() == EDroneClientRole::Command) return;
+    const auto ClientRole = UCommandScreenManager::ResolveClientRole();
+    if (ClientRole == EDroneClientRole::Video || ClientRole == EDroneClientRole::Command || ClientRole == EDroneClientRole::Pilot) return;
 
 	if (InputComponent)
 	{

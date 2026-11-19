@@ -2,7 +2,9 @@
 #include "Command/FigmaCommandStyle.h"
 #include "Command/CommandActionButton.h"
 #include "Command/GroupControlWidget.h"
+#include "Command/PilotDispatchWidget.h"
 #include "Shared/OperationalContextSubsystem.h"
+#include "Shared/PilotControlSubsystem.h"
 #include "Shared/ProductText.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
@@ -108,7 +110,13 @@ void UFigmaFleetWidget::NativeOnInitialized()
 
     auto* ListCard = WidgetTree->ConstructWidget<UBorder>(); FigmaUI::Panel(ListCard, FigmaUI::Inset);
     auto* List = WidgetTree->ConstructWidget<UVerticalBox>(); ListCard->SetContent(List);
-    List->AddChildToVerticalBox(MakeText(T(TEXT("Figma.Fleet.List")), 20, true))->SetPadding(FMargin(0, 0, 0, 14));
+    auto* ListHeader = WidgetTree->ConstructWidget<UHorizontalBox>();
+    List->AddChildToVerticalBox(ListHeader)->SetPadding(FMargin(0, 0, 0, 14));
+    ListHeader->AddChildToHorizontalBox(MakeText(T(TEXT("Figma.Fleet.List")), 20, true))->SetSize(Fill());
+    PilotDispatchButton = MakeAction(TEXT("pilot_dispatch"), TEXT(""));
+    PilotDispatchButton->SetContent(MakeText(UPilotDispatchWidget::Title(), 13));
+    PilotDispatchButton->SetVisibility(ESlateVisibility::Collapsed);
+    ListHeader->AddChildToHorizontalBox(PilotDispatchButton)->SetVerticalAlignment(VAlign_Center);
     DroneScroll = WidgetTree->ConstructWidget<UScrollBox>();
     List->AddChildToVerticalBox(DroneScroll)->SetSize(Fill());
     EmptyList = MakeText(T(TEXT("Figma.Fleet.Empty")), 15); EmptyList->SetAutoWrapText(true);
@@ -243,6 +251,10 @@ void UFigmaFleetWidget::Refresh()
     if (!DroneScroll || !GetGameInstance()) return;
     auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>(); auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     if (!Registry || !Sync) return;
+    const auto* Control = GetGameInstance()->GetSubsystem<UPilotControlSubsystem>();
+    const bool bPilotEnabled = Control && Control->IsEnabled();
+    PilotDispatchButton->SetVisibility(bPilotEnabled ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    if (bPilotEnabled) CastChecked<UTextBlock>(PilotDispatchButton->GetContent())->SetText(UPilotDispatchWidget::Title());
     auto Descriptors = Registry->GetFriendlyDroneDescriptors(); Descriptors.Sort([](const FDroneDescriptor& A, const FDroneDescriptor& B) { return (A.Slot > 0 ? A.Slot : A.DroneId) < (B.Slot > 0 ? B.Slot : B.DroneId); });
     TArray<int32> CurrentIds; for (const auto& Descriptor : Descriptors) CurrentIds.Add(Descriptor.DroneId);
     if (CurrentIds != DroneIds || (Rows.IsEmpty() && DroneScroll->GetChildrenCount() == 0)) BuildRows(Descriptors);
@@ -278,7 +290,17 @@ void UFigmaFleetWidget::Refresh()
         FigmaUI::Panel(Row->Badge, IsPrimary ? FigmaUI::Accent : FLinearColor(FColor(44, 56, 76)), FLinearColor::Transparent, 12, FMargin(10, 2));
         Row->State->SetText(IsPrimary ? T(TEXT("Fleet.Primary")) : Connection(Telemetry.Availability));
         const FText Battery = Telemetry.BatteryPercent >= 0 ? User(FString::Printf(TEXT("%d%%"), Telemetry.BatteryPercent)) : User(TEXT("N/A"));
-        Row->Detail->SetText(FText::Format(T(TEXT("Figma.Fleet.RowDetail")), Battery, Task(Telemetry.TaskState)));
+        FText Detail = FText::Format(T(TEXT("Figma.Fleet.RowDetail")), Battery, Task(Telemetry.TaskState));
+        if (bPilotEnabled && Control->IsReady())
+        {
+            const FString UavId = FString::Printf(TEXT("UAV-%02d"), Descriptor.Slot > 0 ? Descriptor.Slot : Descriptor.DroneId);
+            if (const auto* Aircraft = Control->GetAircraft().FindByPredicate([&](const auto& Candidate) { return Candidate.UavId == UavId; }))
+            {
+                const FText Assignment = UPilotDispatchWidget::AssignmentText(*Aircraft);
+                if (!Assignment.IsEmpty()) Detail = FText::AsCultureInvariant(Detail.ToString() + TEXT(" · ") + Assignment.ToString());
+            }
+        }
+        Row->Detail->SetText(Detail);
         Row->Check->SetVisibility(InGroup ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden);
         FigmaUI::Panel(Row->CheckBox, InGroup ? FigmaUI::Accent : FLinearColor::Transparent, InGroup ? FigmaUI::Accent : FigmaUI::Muted, 2, FMargin(1));
         Row->Toggle->SetIsEnabled(CanSelect); Row->Primary->SetIsEnabled(CanSelect);
@@ -325,6 +347,25 @@ void UFigmaFleetWidget::Action(FName Name, int32 Id)
     auto* Registry = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>() : nullptr;
     auto* Sync = GetGameInstance() ? GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>() : nullptr;
     if (!Registry || !Sync) return;
+    if (Name == TEXT("pilot_dispatch"))
+    {
+        if (!PilotDispatch)
+        {
+            PilotDispatch = CreateWidget<UPilotDispatchWidget>(GetOwningPlayer());
+            auto* DispatchSlot = RootOverlay->AddChildToOverlay(PilotDispatch);
+            DispatchSlot->SetHorizontalAlignment(HAlign_Fill);
+            DispatchSlot->SetVerticalAlignment(VAlign_Fill);
+        }
+        TArray<FString> Targets;
+        for (const int32 DroneId : Registry->GetMultiSelectedDrones())
+        {
+            FDroneDescriptor Descriptor;
+            if (Registry->GetDroneDescriptor(DroneId, Descriptor) && !Descriptor.bIsEnemyTarget)
+                Targets.AddUnique(FString::Printf(TEXT("UAV-%02d"), Descriptor.Slot > 0 ? Descriptor.Slot : DroneId));
+        }
+        PilotDispatch->Open(Targets);
+        return;
+    }
     if (Name == TEXT("label")) { OpenLabelDialog(Id); return; }
     if (Name == TEXT("label_cancel")) { LabelLayer->SetVisibility(ESlateVisibility::Collapsed); EditingId = 0; return; }
     if (Name == TEXT("color")) { if (Id >= 0 && Id < UE_ARRAY_COUNT(LabelColors)) DraftLabel.LabelColor = LabelColors[Id]; RefreshLabelPreview(); return; }

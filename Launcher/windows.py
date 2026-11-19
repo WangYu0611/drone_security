@@ -8,11 +8,16 @@ def work_area():
         raise OSError('Cannot read desktop working area')
     return rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top
 
-def rectangles(area):
+def rectangles(area, *, pilot=False):
     x,y,w,h = area
     gap = 8
     half = (w-gap)//2
     height = (h-gap)//2
+    if pilot:
+        return {'Command': (x,y,half,height),
+                'Pilot': (x+half+gap,y,w-half-gap,height),
+                'Map': (x,y+height+gap,half,h-height-gap),
+                'Video': (x+half+gap,y+height+gap,w-half-gap,h-height-gap)}
     return {'Command': (x,y,half,h), 'Map': (x+half+gap,y,w-half-gap,height),
             'Video': (x+half+gap,y+height+gap,w-half-gap,h-height-gap)}
 

@@ -31,7 +31,8 @@ void UOperationalContextSubsystem::Initialize(FSubsystemCollectionBase& Collecti
     Super::Initialize(Collection);
     Collection.InitializeDependency<UDroneRegistrySubsystem>();
     const auto ClientRole = UCommandScreenManager::ResolveClientRole();
-    bEnabled = ClientRole != EDroneClientRole::Standalone && !FParse::Param(FCommandLine::Get(), TEXT("P1DisableSync"));
+    bEnabled = ClientRole != EDroneClientRole::Standalone && ClientRole != EDroneClientRole::Pilot
+        && !FParse::Param(FCommandLine::Get(), TEXT("P1DisableSync"));
     if (!bEnabled) return;
     Role = StaticEnum<EDroneClientRole>()->GetNameStringByValue(static_cast<int64>(ClientRole));
     InstanceId = FGuid::NewGuid().ToString(EGuidFormats::DigitsWithHyphens);

@@ -44,6 +44,8 @@ private:
     bool bSelectionPending = false;
     FDroneLabelSettings DraftLabel;
     UPROPERTY() TObjectPtr<class UOverlay> RootOverlay;
+    UPROPERTY() TObjectPtr<class UPilotDispatchWidget> PilotDispatch;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> PilotDispatchButton;
     UPROPERTY() TObjectPtr<class UScrollBox> DroneScroll;
     UPROPERTY() TObjectPtr<class UTextBlock> EmptyList;
     UPROPERTY() TObjectPtr<class UGroupControlWidget> GroupControls;

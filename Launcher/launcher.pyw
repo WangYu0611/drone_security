@@ -6,10 +6,10 @@ import threading
 import time
 import tkinter as tk
 from tkinter import messagebox, filedialog, ttk
-from runtime import Runtime, SingleInstance, ROLES
+from runtime import Runtime, SingleInstance, ROLES, PILOT_IDENTITIES
 from environment import load_config, preflight
 from windows import rectangles, work_area, place, focus
-from deployment import (DEPLOYMENT_ROLES, deployment_config,
+from deployment import (DEPLOYMENT_SELECTIONS, PILOT_ROLE, deployment_config,
                         load_deployment_selection, save_deployment_selection)
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,15 +36,18 @@ class Application:
         self.buttons = []
         self.role_buttons = {}
         selection = load_deployment_selection(ROOT)
+        pilot_configured = bool(self.config.get(PILOT_IDENTITIES[PILOT_ROLE])) or selection['role'] == PILOT_ROLE
+        display_roles = ('Backend',) + ROLES + ((PILOT_ROLE,) if pilot_configured else ())
+        selection_roles = DEPLOYMENT_SELECTIONS + ((PILOT_ROLE,) if pilot_configured else ())
         self.role_choice = tk.StringVar(value=selection['role'] or 'All')
         self.deployment_path = tk.StringVar(value=selection['path'] or str(ROOT / 'Launcher/deployment.json'))
         selector = tk.Frame(self.root, bg='#0c121b')
         selector.grid(row=4, column=0, columnspan=4, sticky='ew', padx=12, pady=6)
         tk.Label(selector, text='本机角色 / Local role', bg='#0c121b', fg='#ebf3fa').pack(side='left')
         self.role_selector = ttk.Combobox(selector, textvariable=self.role_choice,
-                                         values=('All',) + DEPLOYMENT_ROLES, state='readonly', width=14)
+                                         values=selection_roles, state='readonly', width=14)
         self.role_selector.pack(side='left', padx=10)
-        tk.Label(selector, text='All = 单机全部端；其余 = 四机部署 / All = single workstation',
+        tk.Label(selector, text='All = 单机全部端；其余 = 本机单端 / All = single workstation',
                  bg='#0c121b', fg='#aebdcd').pack(side='left')
         self.role_selector.bind('<<ComboboxSelected>>', lambda _: self.update_buttons())
         profile = tk.Frame(self.root, bg='#0c121b')
@@ -54,16 +57,17 @@ class Application:
         self.profile_entry.pack(side='left', fill='x', expand=True, padx=10)
         self.browse_button = tk.Button(profile, text='选择文件 / Browse', command=self.browse_deployment)
         self.browse_button.pack(side='right')
-        for i, role in enumerate(('Backend',)+ROLES):
+        for i, role in enumerate(display_roles):
             text = tk.Label(self.root, bg='#131c28', fg='#ebf3fa', anchor='w', font=('Segoe UI',12))
             text.grid(row=i+6,column=0,padx=12,pady=4,sticky='ew');self.labels[role]=text
             self.role_buttons[self.button(i+6,1,'Launcher.Restart',lambda r=role:self.action(lambda:self.runtime.restart(r)))]=role
-            if role in ROLES:
+            if role != 'Backend':
                 self.role_buttons[self.button(i+6,2,'Launcher.Focus',lambda r=role:self.focus(r))]=role
             self.role_buttons[self.button(i+6,3,'Launcher.Stop',lambda r=role:self.action(lambda:self.runtime.stop_role(r)))]=role
-        for row,items in ((10,(('Launcher.StartDemo',lambda:self.start('demo')),
+        footer = 6 + len(display_roles)
+        for row,items in ((footer,(('Launcher.StartDemo',lambda:self.start('demo')),
                               ('Launcher.StartRealtime',lambda:self.start('realtime')))),
-                          (12,(('Launcher.Arrange',self.arrange),('Launcher.Shutdown',self.shutdown)))):
+                          (footer + 2,(('Launcher.Arrange',self.arrange),('Launcher.Shutdown',self.shutdown)))):
             bar=tk.Frame(self.root,bg='#0c121b')
             bar.grid(row=row,column=0,columnspan=4,sticky='ew')
             for column,(key,callback) in enumerate(items):
@@ -71,9 +75,9 @@ class Application:
                 self.button(0,column,key,callback,parent=bar)
         self.deployment_start = tk.Button(self.root, text='按配置启动 / Start from config',
                                          command=self.start_deployment, bg='#24735b', fg='white', relief='flat', pady=8)
-        self.deployment_start.grid(row=11, column=0, columnspan=4, padx=12, pady=5, sticky='ew')
+        self.deployment_start.grid(row=footer + 1, column=0, columnspan=4, padx=12, pady=5, sticky='ew')
         self.error = tk.Label(self.root,bg='#0c121b',fg='#e7666e',wraplength=900,font=('Segoe UI',10))
-        self.error.grid(row=13,column=0,columnspan=4,padx=12,pady=8,sticky='w')
+        self.error.grid(row=footer + 3,column=0,columnspan=4,padx=12,pady=8,sticky='w')
         self.root.columnconfigure(0,weight=1)
         self.root.after(300,self.tick)
         if self.config.get('auto_start',False):
@@ -130,8 +134,10 @@ class Application:
         self.role_selector.config(state='readonly' if editable else 'disabled')
         self.profile_entry.config(state='normal' if editable else 'disabled')
         self.browse_button.config(state='normal' if editable else 'disabled')
+        all_caption = ('按配置启动全部本机端 / Start all from config' if self.config.get(PILOT_IDENTITIES[PILOT_ROLE])
+                       else '按配置启动四端 / Start all from config')
         self.deployment_start.config(state='normal' if editable else 'disabled',
-                                     text='按配置启动四端 / Start all from config' if self.role_choice.get() == 'All'
+                                     text=all_caption if self.role_choice.get() == 'All'
                                      else '启动本机角色 / Start selected role')
     def action(self, callback, clear_error=True):
         if self.busy:
@@ -149,8 +155,10 @@ class Application:
     def arrange(self):
         self.placed.clear();self.place_ready()
     def place_ready(self):
-        rects=rectangles(work_area())
-        for role in ROLES:
+        area = work_area()
+        local_clients = self.runtime.local_client_roles
+        rects = {PILOT_ROLE: area} if local_clients == (PILOT_ROLE,) else rectangles(area, pilot=PILOT_ROLE in local_clients)
+        for role in local_clients:
             p=self.runtime.owned.get(role)
             if p and p.process.poll() is None and p.process.pid not in self.placed and self.runtime.components[role]=='ONLINE':
                 if place(p.process.pid,rects[role],'Drone Security | '+role):
@@ -167,8 +175,10 @@ class Application:
         if snap:self.language=snap['preferences']['language']
         self.title.config(text=self.text('Stage1.Name'))
         layout_text = self.text('Launcher.Layout') if self.role_choice.get() == 'All' else (
-            '四机部署 | 本机只启动所选角色' if self.language == 'zh-Hans'
-            else 'Four workstations | Only the selected role runs locally')
+            '共享配置部署 | 本机只启动所选角色' if self.language == 'zh-Hans'
+            else 'Shared deployment | Only the selected role runs locally')
+        if self.role_choice.get() == PILOT_ROLE:
+            layout_text = '本机只启动 Mock 驾驶员端' if self.language == 'zh-Hans' else 'Local Mock Pilot client'
         self.mode.config(text=layout_text)
         self.state.config(text=self.text('Launcher.'+self.runtime.state))
         mode_key={'demo':'Launcher.ModeDemo','realtime':'Launcher.ModeRealtime'}.get(self.runtime.launch_mode,'Launcher.ModeUnset')
@@ -184,6 +194,8 @@ class Application:
         for role,label in self.labels.items():
             value=self.runtime.components[role]
             detail=self.text('Launcher.Existing') if role=='Backend' and self.runtime.existing_backend else self.text('Launcher.'+value)
+            if role == PILOT_ROLE and not self.runtime.manages_role(role):
+                detail = '当前会话不启动' if self.language == 'zh-Hans' else 'Outside this session'
             host = self.runtime.config.get('deployment_hosts', {}).get(role)
             if host:
                 scope = ('本机' if self.runtime.manages_role(role) else '远程') if self.language == 'zh-Hans' else ('Local' if self.runtime.manages_role(role) else 'Remote')

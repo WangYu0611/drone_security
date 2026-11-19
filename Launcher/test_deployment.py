@@ -213,6 +213,21 @@ class DeploymentConfigTests(DeploymentFixture):
                 self.assertEqual(config['runtime_directory'], f'Saved/Deployment/{mode}/All')
                 self.assertEqual(config['deployment_role'], 'All')
 
+    def test_optional_pilot_host_is_demo_only_and_can_be_selected_directly(self):
+        self.profile['hosts']['Pilot'] = '127.0.0.2'
+        self.write_profile()
+        with self.assertRaisesRegex(ValueError, 'Mock deployment'):
+            self.derive('Pilot')
+        self.profile['mode'] = 'demo'
+        self.write_profile()
+        config = self.derive('Pilot')
+        self.assertEqual(config['http_endpoint'], 'http://192.168.10.10:8080')
+        self.assertEqual(config['runtime_directory'], 'Saved/Deployment/demo/Pilot')
+        self.assertEqual(config['deployment_hosts']['Pilot'], '127.0.0.2')
+        with patch('deployment.socket.socket') as factory:
+            validate_local_role(config)
+            factory.return_value.__enter__.return_value.bind.assert_called_once_with(('127.0.0.2', 0))
+
     def test_other_valid_unicast_ranges_are_allowed(self):
         self.profile['hosts'] = dict(zip(DEPLOYMENT_ROLES,
                                         ('10.1.1.1', '172.16.0.2', '169.254.1.3', '8.8.8.8')))
