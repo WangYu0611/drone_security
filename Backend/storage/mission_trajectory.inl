@@ -38,9 +38,21 @@
         return execution.contains("simulation") && execution.at("simulation")==true && epoch &&
             *epoch==doc.at("mock_position_baseline").as_object().at("epoch");
     }
+    static const Object* mockPilotPose(const Object& doc, const std::string& uid) {
+        const auto* poses = doc.if_contains("mock_pilot_poses");
+        if (!poses) return nullptr;
+        const auto* pose = poses->as_object().if_contains(uid);
+        return pose ? &pose->as_object() : nullptr;
+    }
+    static void clearMockPilotPose(Object& doc, const std::string& uid) {
+        if (auto* poses = doc.if_contains("mock_pilot_poses")) poses->as_object().erase(uid);
+    }
     Object currentPosition(const Object& doc,const std::string& uid,bool observed=true) const {
         const auto* u=mock_.at("uavs").as_object().if_contains(uid);
         if(!u || (adapter_->simulation() && !u->as_object().contains("home_position")))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","No adapter position for "+uid);
+        if (adapter_->simulation()) {
+            if (const auto* pose = mockPilotPose(doc, uid)) return pose->at("position").as_object();
+        }
         Object start;double latest=-1;
         for(const auto& entry:doc.at("executions").as_object()) {
             const auto& e=entry.value().as_object();

@@ -37,6 +37,7 @@ set(SOURCES
     execution/assembly_planner.cpp
     execution/execution_engine.cpp
     http/http_server.cpp
+    storage/pilot_control_store.cpp
     storage/video_metadata_store.cpp
 )
 
@@ -61,6 +62,7 @@ set(HEADERS
     execution/assembly_planner.h
     execution/execution_engine.h
     http/http_server.h
+    storage/pilot_control_store.h
     storage/video_metadata_store.h
 )
 

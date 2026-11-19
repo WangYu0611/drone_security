@@ -12,6 +12,7 @@
 #include "storage/operational_context.h"
 #include "storage/security_plan_store.h"
 #include "storage/shared_view_store.h"
+#include "storage/pilot_control_store.h"
 
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/core.hpp>
@@ -172,6 +173,23 @@ private:
     std::thread plan_lease_thread_;
     boost::json::value ViewRequest(const boost::json::object& body,bool language);
     std::mutex plan_requests_mutex_;
+    // The plan transaction lock also serializes Pilot authority and Mock motion.
+    std::unique_ptr<PilotControlStore> pilot_control_;
+    std::map<std::string, PilotControlStore::Actor> pilot_credentials_;
+    struct PilotSocket;
+    std::map<std::string, std::shared_ptr<PilotSocket>> pilot_connections_;
+    void LoadPilotControlCredentials(bool explicitMock);
+    const PilotControlStore::Actor* PilotControlActor(const http::request<http::string_body>& req) const;
+    http::response<http::string_body> HandlePilotControlHttp(const http::request<http::string_body>& req);
+    void RunPilotControlWsSession(tcp::socket socket, http::request<http::string_body> req);
+    PilotControlStore::Connections PilotControlConnections() const;
+    std::vector<PilotControlStore::Aircraft> PilotAircraftSnapshot();
+    void PublishPilotControlState(const std::vector<PilotControlStore::Aircraft>* sampled = nullptr);
+    void TickPilotControlSockets();
+    void StopPilotControlSockets();
+    void TickPilotMock(double dt);
+    void CheckPilotOwnership(int drone_id);
+    void CheckPilotArray(const AssemblyConfig& config);
     struct MapSelectionIntent { int64_t serial=0, context_version=-1; std::string target; bool consumed=false; };
     // Access only while holding plan_requests_mutex_. Instances are process-unique.
     std::unordered_map<std::string,MapSelectionIntent> map_selection_intents_;

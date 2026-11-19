@@ -11,6 +11,7 @@ inline bool project(boost::json::object& message, const boost::json::value* entr
     message["simulation"]=true;message["telemetry_source"]=item.at("telemetry_source");
     message["mock_position"]=p;
     if(const auto* epoch=item.if_contains("mock_epoch"))message["mock_epoch"]=*epoch;
+    if(const auto* yaw=item.if_contains("yaw"))message["yaw"]=*yaw;
     message["gps_lat"]=p.at("latitude");message["gps_lon"]=p.at("longitude");
     message["gps_alt"]=p.at("altitude");message["gps_fix"]=true;
     message["local_position_valid"]=false;message["anchor_valid"]=false;

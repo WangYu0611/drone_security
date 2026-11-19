@@ -188,6 +188,15 @@ AssemblyProgress AssemblyController::GetProgress() const
     return GetProgressUnsafe();
 }
 
+bool AssemblyController::HasAssignedDrone(int drone_id) const
+{
+    std::lock_guard<std::mutex> lock(state_mutex_);
+    return state_ != AssemblyState::Idle &&
+        std::any_of(arrivals_.begin(), arrivals_.end(), [drone_id](const DroneArrival& arrival) {
+            return arrival.drone_id == drone_id;
+        });
+}
+
 AssemblyProgress AssemblyController::GetProgressUnsafe() const
 {
     AssemblyProgress progress;

@@ -414,6 +414,27 @@ python tools\simulate_telemetry.py --register --transport udp --drones 1 --hz 10
 
 完整人工步骤见 `Backend/TEST_GUIDE.md`。涉及真实控制 JSON 时，必须使用新版后端和新版 Jetson 脚本；旧集成脚本若直接解析 24 字节控制包，需要先更新测试逻辑。
 
+### 10.4 驾驶员控制权 Mock
+
+使用隔离的 Mock 数据目录。无人机注册表旁的 `mock_execution.json` 声明 `"simulation": true`，环境变量 `DRONE_PILOT_CONTROL_CREDENTIALS` 指向单独保存的凭据 JSON。凭据文件的 `credentials` 数组为每个身份提供 `id`、`role`（`Command` 或 `Pilot`）和 `token`。使用 `Authorization: Bearer` 请求头连接 HTTP 和 WebSocket，凭据文件保存在仓库之外。启用后，`GET /` 的 `capabilities` 包含 `pilot_control_mock`。
+
+| 入口 | Mock 约定 |
+|---|---|
+| `GET /api/pilot-control` | 按角色读取快照，包含 `server_epoch`、`version` 和飞机记录。 |
+| `POST /api/pilot-control` | 使用 `request_id` 提交 `grant`、`activate`、`stop` 或 `revoke`，返回 `results`。批量 `grant` 提交 `pilot_id`、`uav_ids` 和按机号索引的 `expected_revisions`。 |
+| `/ws/pilot-control` | 发送 `subscribe_pilot_control`，从 `pilot_control_subscribed` 读取 `connection_id` 和初始快照，后续订阅 `pilot_control_changed`。Pilot 启用时提交 `uav_id`、`grant_id`、`connection_id` 和 `expected_revision`。 |
+| `pilot_input` | 使用当前 `control_session_id` 和 Backend 下发的 `window_id`，提交机号 `uav_id`、递增 `seq` 和 `axes`。摇杆量为 `[-1, 1]` 的 `forward`、`right`、`vertical`、`yaw`。 |
+
+`stop` 提交 `control_session_id` 和 `reason`，保留分配。`revoke` 由 Command 提交 `uav_id` 和 `grant_id`。Mock 在同一个事务内完成退出和输入作废，下一份快照的操控状态为 `IDLE`，飞机状态为 `CONFIRMED`。重启恢复分配，操控需要再次显式启用。位置通过 `/api/drones` 的 `mock_position` 读取，驾驶员操控产生的位置标为 `mock_pilot`。
+
+使用 Node.js 24 运行协议验收。脚本创建独立 Backend 进程、临时凭据、Mock 注册表和端口，输出位于 `Saved/PilotControlQA`。如需指定后端构建，设置 `DRONE_BACKEND_EXE`。
+
+```powershell
+node Backend/tests/pilot_control_integration.mjs
+```
+
+这项验收覆盖后台 HTTP/WebSocket 与 Mock 位移。原生界面、USB 遥控器、图传与真机属于后续验收。
+
 ## 11. 日志与故障定位
 
 ### 11.1 后端关键日志

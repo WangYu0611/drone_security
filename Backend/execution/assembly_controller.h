@@ -81,6 +81,7 @@ public:
 
     /// 获取集结进度
     AssemblyProgress GetProgress() const;
+    bool HasAssignedDrone(int drone_id) const;
 
     /// 注册进度回调
     void SetProgressCallback(ProgressCallback cb);

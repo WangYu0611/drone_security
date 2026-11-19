@@ -85,12 +85,13 @@ public:
         checkConfigurationRequest(state_,request);
     }
     Object transact(const Object& request, const std::set<std::string>& uavs,
-                    const std::string& source, const std::function<void(const Object&)>& publish) {
+                    const std::string& source, const std::function<void(const Object&)>& publish,
+                    const std::function<void(const std::string&)>& checkPilotOwner = {}) {
         std::lock_guard<std::mutex> lock(mutex_);
         auto next = state_;
         expire(next, OperationalContext::now());
         const auto action = str(request, "action");
-        if (action.rfind("execution_",0)==0) return executionRequest(request,uavs,source,publish);
+        if (action.rfind("execution_",0)==0) return executionRequest(request,uavs,source,publish,checkPilotOwner);
         checkConfigurationRequest(next,request);
         const bool guardedDeployment=checkDeploymentRequestGuard(next,request);
         if(action=="begin_configuration")if(const auto* current=activeConfiguration(next)) {

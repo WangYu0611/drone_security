@@ -2,6 +2,11 @@
 // and event log. The historical filename is retained for include compatibility.
 // Lifecycle, hover, formation, scheduling and progress are shared by both adapters.
 public:
+    struct MockPilotMotion {
+        std::string uav_id;
+        double forward, right, vertical, yaw;
+    };
+
     void configureMock(const Object& config) {configureAdapter(config,std::make_shared<security_mission::MockAdapter>());}
     bool usesRealAdapter() const {std::lock_guard<std::mutex> lock(mutex_);return !adapter_->simulation();}
     #include "storage/mock_reset.inl"
@@ -28,6 +33,10 @@ public:
                 const auto p=currentPosition(state_,uid);security_mission::validate(geo(p));
                 const bool reset=mockBaselinePosition(state_,uid)!=nullptr;
                 Object projection{{"position",p},{"telemetry_source",current?"mock_execution":reset?"mock_reset":"mock_home"}};
+                if (const auto* pose = mockPilotPose(state_, uid)) {
+                    projection["telemetry_source"] = "mock_pilot";
+                    projection["yaw"] = pose->at("yaw");
+                }
                 if(reset)projection["mock_epoch"]=state_.at("mock_position_baseline").as_object().at("epoch");
                 result[uid]=std::move(projection);
             } catch(const std::exception&) {
@@ -35,6 +44,20 @@ public:
             }
         }
         return result;
+    }
+
+    // Simulated pose only. Caller serializes this tick with ownership changes.
+    void stepMockPilot(double dt, const std::vector<MockPilotMotion>& inputs) {
+        if (inputs.empty() || !std::isfinite(dt) || dt <= 0.) return;
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!adapter_->simulation()) return;
+        const double elapsed = std::min(dt, 0.1);
+        auto next = state_;
+        bool changed = false;
+        for (const auto& motion : inputs) changed = applyMockPilotMotion(next, motion, elapsed) || changed;
+        if (!changed) return;
+        persist(next);
+        state_.swap(next);
     }
     void configureAdapter(const Object& config,std::shared_ptr<security_mission::Adapter> adapter) {
         if(!adapter)throw std::runtime_error("ADAPTER_REQUIRED");
@@ -81,7 +104,11 @@ public:
             try {checkTrajectories(next,routes);for(const auto& r:routes){const std::string uid(r.key());if(!uavs.count(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Scheduled aircraft unavailable");startPositions[uid]=currentPosition(next,uid);}}
             catch(const std::exception& ex){failure=ex.what();}
             for(auto& item:next.at("executions").as_object()){auto& e=item.value().as_object();if(str(e,"group_id")!=group || str(e,"state")!="SCHEDULED")continue;
-                if(failure.empty()){e["position"]=startPositions.at(str(e,"uav_id"));e["segment_start"]=e.at("position");transition(next,e,"CREATED","SCHEDULE_STARTED");}
+                if(failure.empty()){
+                    const auto uid = str(e, "uav_id");
+                    e["position"]=startPositions.at(uid);e["segment_start"]=e.at("position");transition(next,e,"CREATED","SCHEDULE_STARTED");
+                    if (adapter_->simulation()) clearMockPilotPose(next, uid);
+                }
                 else{e["failure_reason"]=failure;e["completed_at"]=OperationalContext::now();transition(next,e,"FAILED","MISSION_FAILED");}}
             changed=true;
         }
@@ -141,6 +168,49 @@ public:
         }
     }
 private:
+    bool applyMockPilotMotion(Object& next, const MockPilotMotion& motion, double dt) {
+        if (motion.forward == 0. && motion.right == 0. && motion.vertical == 0. && motion.yaw == 0.) return false;
+        const auto& uid = motion.uav_id;
+        const auto& configured = mock_.at("uavs").as_object();
+        if (!configured.contains(uid)) return false;
+        const auto from = currentPosition(next, uid);
+        const auto* previous = mockPilotPose(next, uid);
+        const double heading = previous ? number(*previous, "yaw") : 0.;
+        const double yaw = std::remainder(heading + (motion.yaw * 60. * dt), 360.);
+        constexpr double radians = 3.14159265358979323846 / 180.;
+        constexpr double metresPerDegree = 6371000. * radians;
+        const double cosLat = std::cos(number(from, "latitude") * radians);
+        if (std::abs(cosLat) < .1) return false;
+
+        const double cosHeading = std::cos(yaw * radians);
+        const double sinHeading = std::sin(yaw * radians);
+        const double step = number(mock_, "default_speed_mps") * dt;
+        const double scaled = step / std::max(1., std::hypot(motion.forward, motion.right));
+        const double north = (motion.forward * cosHeading - motion.right * sinHeading) * scaled;
+        const double east = (motion.forward * sinHeading + motion.right * cosHeading) * scaled;
+        auto to = geo(from);
+        to.latitude += north / metresPerDegree;
+        to.longitude = std::remainder(to.longitude + east / (metresPerDegree * cosLat), 360.);
+        to.altitude += motion.vertical * step;
+        security_mission::validate(to);
+        const auto target = jsonPosition(to);
+
+        if (north != 0. || east != 0. || motion.vertical != 0.) {
+            const Timeline travelled{{0., 1., from, target}};
+            for (const auto& entry : configured) {
+                const std::string other(entry.key());
+                if (other == uid || !entry.value().as_object().contains("home_position")) continue;
+                const auto occupied = currentPosition(next, other);
+                const Timeline stationary{{0., 1., occupied, occupied}};
+                if (minimumSeparation(travelled, stationary) + 1e-6 < requiredDistance(uid, other)) return false;
+            }
+        }
+        if (!next.contains("mock_pilot_poses")) next["mock_pilot_poses"] = Object{};
+        next.at("mock_pilot_poses").as_object()[uid] = Object{
+            {"position", target}, {"yaw", yaw}, {"updated_at", OperationalContext::now()}};
+        return true;
+    }
+
     std::shared_ptr<security_mission::Adapter> adapter_=std::make_shared<security_mission::MockAdapter>();
     Object mock_{{"default_speed_mps",8.},{"uavs",Object{}}};
     static double number(const Object& o,const char* k){return o.at(k).to_number<double>();}
@@ -240,7 +310,9 @@ private:
             all.at(id).as_object()["mock_epoch"]=next.at("mock_position_baseline").as_object().at("epoch");
         return id;
     }
-    Object executionRequest(const Object& r,const std::set<std::string>& uavs,const std::string&,const std::function<void(const Object&)>& publish) {
+    Object executionRequest(const Object& r,const std::set<std::string>& uavs,const std::string&,
+        const std::function<void(const Object&)>& publish,
+        const std::function<void(const std::string&)>& checkPilotOwner) {
         const auto action=str(r,"action"),key=str(r,"request_id");
         if(key.empty())throw PlanError("REQUEST_ID_REQUIRED","Execution request id required");
         Object identity=r;identity.erase("expected_version");identity.erase("instance_id");
@@ -279,6 +351,7 @@ private:
             if(members.empty())throw PlanError("INVALID_UAV","Select at least one UAV");
             std::set<std::string> unique;
             for(const auto& v:members){const std::string uid(v.as_string());if(!unique.insert(uid).second || !uavs.count(uid) || !mock_.at("uavs").as_object().contains(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Selected UAV is unavailable");
+                if (checkPilotOwner) checkPilotOwner(uid);
                 checkReservation(next,"",uid);
                 for(const auto& old:all)if(str(old.value().as_object(),"uav_id")==uid && executionActive(old.value().as_object()))throw PlanError("EXECUTION_CONFLICT","Selected UAV already has a mission");}
             const auto* t=r.if_contains("target");if(!t || !t->is_object())throw PlanError("INVALID_WAYPOINT","Group anchor required");
@@ -312,6 +385,7 @@ private:
             }
             checkTrajectories(next,routes);const auto group=allocate(next,"group-");
             for(const auto& member:routes){const std::string uid(member.key());const auto eid=createRuntimeExecution(next,member.value().as_object(),Object{{"name","Group Move"}},Object{{"name","Group Move"}},uid,"","","","");
+                if (adapter_->simulation()) clearMockPilotPose(next, uid);
                 auto& e=all.at(eid).as_object();e["group_id"]=group;e["control_kind"]="GROUP_MOVE";e["formation"]=needsPacking?"Line":"RelativeOffset";e["safety_separation_m"]=safetySeparation();
                 if(takeover) {
                     auto& source=all.at(sourceId).as_object();
@@ -338,6 +412,7 @@ private:
             for(const auto& member:trajectories) {
                 const std::string uid(member.key());
                 if(!uavs.count(uid) || !mock_.at("uavs").as_object().contains(uid))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","Mock UAV unavailable");
+                if (checkPilotOwner) checkPilotOwner(uid);
                 checkReservation(next,pid,uid);
                 for(const auto& entry:all)if(str(entry.value().as_object(),"uav_id")==uid && executionActive(entry.value().as_object()))
                     throw PlanError("EXECUTION_CONFLICT",uid+" already has an active or scheduled mission");
@@ -361,7 +436,7 @@ private:
                     const double when=parseScheduledTime(str(r,"scheduled_start_at"));
                     if(when<=OperationalContext::now())throw PlanError("INVALID_SCHEDULE","Scheduled time must be in the future");
                     execution["state"]="SCHEDULED";execution["scheduled_start_at"]=r.at("scheduled_start_at");execution["scheduled_start_epoch"]=when;
-                }
+                } else if (adapter_->simulation()) clearMockPilotPose(next, uid);
                 executionEvent(next,execution,"EXECUTION_CREATED");created.emplace_back(id);
             }
             id=std::string(created.front().as_string());
@@ -383,6 +458,7 @@ private:
             }
             if(targets.empty())throw PlanError("EXECUTION_STATE_INVALID","No active group members remain");
             for(const auto& target:targets){auto& e=all.at(target).as_object();const auto s=str(e,"state");
+            if (checkPilotOwner) checkPilotOwner(str(e, "uav_id"));
             if(action=="execution_reschedule" && s=="SCHEDULED") {
                 const double when=parseScheduledTime(str(r,"scheduled_start_at"));if(when<=OperationalContext::now())throw PlanError("INVALID_SCHEDULE","Time must be in the future");
                 e["scheduled_start_at"]=r.at("scheduled_start_at");e["scheduled_start_epoch"]=when;transition(next,e,"SCHEDULED","SCHEDULE_CHANGED");

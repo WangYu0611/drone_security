@@ -118,9 +118,13 @@ HttpServer::HttpServer(const AppConfig& config,
     , video_view_((std::filesystem::path(config.storage_path).parent_path() / "video_view.json").string())
 {
     const auto mockPath=std::filesystem::path(config.storage_path).parent_path()/"mock_execution.json";
+    bool explicitPilotMock = false;
     if(std::filesystem::exists(mockPath)) {
         std::ifstream input(mockPath);std::string text((std::istreambuf_iterator<char>(input)),{});
-        security_plans_.configureMock(boost::json::parse(text).as_object());
+        const auto mock = boost::json::parse(text).as_object();
+        security_plans_.configureMock(mock);
+        const auto* simulation = mock.if_contains("simulation");
+        explicitPilotMock = simulation && *simulation == true;
     }
     const auto realPath=std::filesystem::path(config.storage_path).parent_path()/"real_execution.json";
     if(std::filesystem::exists(realPath)){
@@ -131,6 +135,7 @@ HttpServer::HttpServer(const AppConfig& config,
             security_plans_.configureAdapter(real,security_mission::makeDroneManagerAdapter(drone_mgr_,real,[this]{return exec_engine_.IsRunning() || assembly_ctrl_.GetState()!=AssemblyState::Idle;}));
         }
     }
+    LoadPilotControlCredentials(explicitPilotMock && !security_plans_.usesRealAdapter());
     // 注册 DroneManager 回调 -> WS 推送
     drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel, DroneConnectionState connection) {
         const double received_at=std::chrono::duration<double>(
@@ -325,9 +330,18 @@ void HttpServer::Run() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         try {
             const auto now=std::chrono::steady_clock::now();const double dt=std::chrono::duration<double>(now-last).count();last=now;
-            {std::lock_guard<std::mutex> transaction(plan_requests_mutex_);std::lock_guard<std::mutex> records(records_mutex_);
-             std::set<std::string> uavs;for(const auto& d:drone_records_)if(d.slot>0)uavs.insert("UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot));
-             security_plans_.tickExecutions(dt,uavs,[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});}
+            {
+                std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+                {
+                    std::lock_guard<std::mutex> records(records_mutex_);
+                    std::set<std::string> uavs;
+                    for (const auto& drone : drone_records_) {
+                        if (drone.slot > 0) uavs.insert("UAV-" + std::string(drone.slot < 10 ? "0" : "") + std::to_string(drone.slot));
+                    }
+                    security_plans_.tickExecutions(dt, uavs, [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
+                }
+                if (pilot_control_) TickPilotMock(dt);
+            }
             if(++leaseTick<10)continue;leaseTick=0;
             PublishMockTelemetry();
             std::vector<std::shared_ptr<WsSession>> expired;
@@ -355,6 +369,7 @@ void HttpServer::Run() {
 
 void HttpServer::Stop() {
     running_ = false;
+    StopPilotControlSockets();
     if(security_plans_.usesRealAdapter()){
         std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
         try{security_plans_.transact(boost::json::object{{"action","execution_shutdown"},{"request_id","real-shutdown-"+std::to_string(current_unix_seconds())}}, {}, "Backend Shutdown",[](const boost::json::object&){});}
@@ -442,6 +457,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
         spdlog::debug("[HTTP Request] {} {}", method, path);
 
         if (method == "OPTIONS") return MakeResponse(req, 204, "");
+        if (path == "/api/pilot-control") return HandlePilotControlHttp(req);
 
         const auto body = parse_body(req);
         std::string id;
@@ -467,6 +483,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 const auto uid="UAV-"+std::string(rec.slot<10?"0":"")+std::to_string(rec.slot);
                 registered.insert(uid);
                 if(received_telemetry_.count(drone_id_from_string(rec.id)))received.insert(uid);
+                if (pilot_control_ && pilot_control_->OwnsAircraft(uid)) received.insert(uid);
             }
             return MakeResponse(req,200,json_stringify(security_plans_.resetMockPositions(request,registered,received,
                 [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));})));
@@ -508,14 +525,17 @@ http::response<http::string_body> HttpServer::HandleHttp(
         if (method == "PATCH" && path == "/api/context")
             return MakeResponse(req, 200, json_stringify(UpdateContext(require_object(body, "body"))));
 
-        if (method == "GET" && path == "/")
-            return MakeResponse(req, 200, json_stringify(boost::json::object{
+        if (method == "GET" && path == "/") {
+            boost::json::object status{
                 {"status", "ok"},
                 {"http_port", config_.http_port},
                 {"ws_port",   config_.ws_port},
                 {"debug",     config_.debug},
                 {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset", "telemetry_receive_time"}},
-            }));
+            };
+            if (pilot_control_) status.at("capabilities").as_array().emplace_back("pilot_control_mock");
+            return MakeResponse(req, 200, json_stringify(status));
+        }
 
         if (method == "GET"  && path == "/api/drones")
             return MakeResponse(req, 200, json_stringify(ApiListDrones()));
@@ -583,6 +603,80 @@ static int drone_id_from_string(const std::string& id) {
     }
     try { return std::stoi(id); } catch (...) {}
     throw ApiError(400, "invalid drone id: " + id);
+}
+
+static std::string pilot_uav_id(int slot) {
+    return "UAV-" + std::string(slot < 10 ? "0" : "") + std::to_string(slot);
+}
+
+std::vector<PilotControlStore::Aircraft> HttpServer::PilotAircraftSnapshot() {
+    const auto poses = security_plans_.mockTelemetryPositions();
+    const auto plan = security_plans_.snapshot();
+    std::set<std::string> occupied;
+    for (const auto& item : plan.at("executions").as_object()) {
+        const auto& execution = item.value().as_object();
+        if (SecurityPlanStore::executionActive(execution)) {
+            occupied.insert(SecurityPlanStore::str(execution, "uav_id"));
+        }
+    }
+
+    std::vector<PilotControlStore::Aircraft> aircraft;
+    std::lock_guard<std::mutex> records(records_mutex_);
+    std::set<int> received;
+    {
+        std::lock_guard<std::mutex> source(telemetry_source_mutex_);
+        received = received_telemetry_;
+    }
+    for (const auto& record : drone_records_) {
+        if (record.slot <= 0) continue;
+        const auto uid = pilot_uav_id(record.slot);
+        const auto id = drone_id_from_string(record.id);
+        std::string reason;
+        if (received.count(id) || !poses.contains(uid)) reason = "MOCK_UAV_UNAVAILABLE";
+        else if (occupied.count(uid) || assembly_ctrl_.HasAssignedDrone(id) || drone_mgr_.GetCommandQueueSize(id) > 0) {
+            reason = "UAV_BUSY";
+        }
+        aircraft.push_back({uid, reason, record.video_url});
+    }
+    return aircraft;
+}
+
+void HttpServer::TickPilotMock(double dt) {
+    const auto aircraft = PilotAircraftSnapshot();
+    pilot_control_->RefreshView(aircraft, PilotControlConnections());
+    pilot_control_->Expire();
+
+    std::vector<SecurityPlanStore::MockPilotMotion> motions;
+    for (const auto& input : pilot_control_->ActiveInputs()) {
+        motions.push_back({input.uav_id, input.forward, input.right, input.vertical, input.yaw});
+    }
+    security_plans_.stepMockPilot(dt, motions);
+    PublishPilotControlState(&aircraft);
+}
+
+void HttpServer::CheckPilotOwnership(int drone_id) {
+    if (!pilot_control_) return;
+    std::lock_guard<std::mutex> records(records_mutex_);
+    for (const auto& record : drone_records_) {
+        if (record.slot > 0 && drone_id_from_string(record.id) == drone_id) {
+            const auto uid = pilot_uav_id(record.slot);
+            if (pilot_control_->OwnsAircraft(uid)) {
+                throw PlanError("PILOT_CONTROL_ASSIGNED", "Aircraft is assigned to a Pilot", {{"uav_id", uid}});
+            }
+            return;
+        }
+    }
+}
+
+void HttpServer::CheckPilotArray(const AssemblyConfig& config) {
+    if (!pilot_control_) return;
+    for (const auto& path : config.paths) {
+        int id = 0;
+        const auto& raw = path.drone_id;
+        try { id = drone_id_from_string(!raw.empty() && raw.front() == 'D' ? raw.substr(1) : raw); }
+        catch (const ApiError&) { continue; } // Existing array validation handles malformed paths.
+        CheckPilotOwnership(id);
+    }
 }
 
 boost::json::value HttpServer::ApiListDrones() {
@@ -798,8 +892,10 @@ boost::json::value HttpServer::ApiUpdateDrone(const std::string& id, const boost
 
 boost::json::value HttpServer::ApiDeleteDrone(const std::string& id) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Real adapter requires a stable calibrated aircraft registry");
-    std::lock_guard<std::mutex> lock(records_mutex_);
     const int numeric_id = drone_id_from_string(id);
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    CheckPilotOwnership(numeric_id);
+    std::lock_guard<std::mutex> lock(records_mutex_);
     const std::string canonical_id = drone_id_string(numeric_id);
     for (auto it = drone_records_.begin(); it != drone_records_.end(); ++it) {
         if (it->id != canonical_id) continue;
@@ -829,6 +925,7 @@ boost::json::value HttpServer::ApiGetAnchor(const std::string& id) {
 
 boost::json::value HttpServer::ApiCreateArray(const boost::json::object& body) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
     AssemblyConfig cfg;
     cfg.array_id = body.contains("array_id") ? std::string(body.at("array_id").as_string()) : "a1";
     cfg.mode     = normalize_command_mode(get_string(body, "mode", "scout"), "scout");
@@ -881,6 +978,7 @@ boost::json::value HttpServer::ApiCreateArray(const boost::json::object& body) {
         AutoAssignDrones(cfg);
     }
 
+    CheckPilotArray(cfg);
     if (!assembly_ctrl_.Start(cfg, config_.assembly_safety_cylinder_m))
         throw ApiError(409, "assembly already in progress");
 
@@ -976,6 +1074,7 @@ void HttpServer::AutoAssignDrones(AssemblyConfig& cfg) {
 
 boost::json::value HttpServer::ApiStopArray(const std::string& id) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
     const AssemblyConfig config = assembly_ctrl_.GetConfig();
     exec_engine_.StopAll();
     assembly_ctrl_.Stop();
@@ -983,6 +1082,11 @@ boost::json::value HttpServer::ApiStopArray(const std::string& id) {
         int drone_id = 0;
         try { drone_id = drone_id_from_string(path.drone_id); } catch (...) { drone_id = 0; }
         if (drone_id <= 0) continue;
+
+        // A stopped legacy array retains its old membership in the controller.
+        // It must not send a hold to an aircraft since assigned to a Pilot.
+        try { CheckPilotOwnership(drone_id); }
+        catch (const PlanError&) { continue; }
 
         if (!drone_mgr_.AbortAndHoldAtCurrentPosition(drone_id)) {
             spdlog::warn("[HTTP] Stop array '{}': drone {} could not be held at a measured position",
@@ -1162,6 +1266,8 @@ boost::json::value HttpServer::DebugInjectTelemetry(const std::string& id, const
 boost::json::value HttpServer::DebugMove(const std::string& id, const boost::json::object& body) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    CheckPilotOwnership(drone_id);
     double x = get_number(body, "x", 0.0);
     double y = get_number(body, "y", 0.0);
     double z = get_number(body, "z", 0.0);
@@ -1174,6 +1280,8 @@ boost::json::value HttpServer::DebugMove(const std::string& id, const boost::jso
 boost::json::value HttpServer::DebugPause(const std::string& id, bool pause) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    CheckPilotOwnership(drone_id);
     bool ok = pause ? drone_mgr_.ProcessPauseCommand(drone_id)
                     : drone_mgr_.ProcessResumeCommand(drone_id);
     if (!ok) throw ApiError(404, "drone not found: " + id);
@@ -1187,6 +1295,8 @@ boost::json::value HttpServer::DebugSingleArray(const std::string& id, const boo
 boost::json::value HttpServer::DebugTarget(const std::string& id, const boost::json::object& body) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
     int drone_id = drone_id_from_string(id);
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    CheckPilotOwnership(drone_id);
     if (!drone_mgr_.HasDrone(drone_id)) throw ApiError(404, "drone not found: " + id);
     double x = get_number(body, "x", 0.0);
     double y = get_number(body, "y", 0.0);
@@ -1197,6 +1307,7 @@ boost::json::value HttpServer::DebugTarget(const std::string& id, const boost::j
 
 boost::json::value HttpServer::DebugBatchArray(const boost::json::array& body) {
     if(security_plans_.usesRealAdapter())throw PlanError("MISSION_CONTROLLER_OWNS_CONTROL","Use Security Plan execution controls while Real mission adapter is enabled");
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
     AssemblyConfig cfg;
     cfg.array_id = "debug_batch";
     cfg.mode = "scout";
@@ -1250,6 +1361,7 @@ boost::json::value HttpServer::DebugBatchArray(const boost::json::array& body) {
     if (!is_array_mode(cfg.mode)) {
         throw ApiError(400, "invalid mode: " + cfg.mode);
     }
+    CheckPilotArray(cfg);
     if (!assembly_ctrl_.Start(cfg, config_.assembly_safety_cylinder_m)) {
         throw ApiError(409, "assembly already in progress");
     }
@@ -1278,6 +1390,7 @@ void HttpServer::HandleWsCommand(const boost::json::object& msg,
                                   const std::shared_ptr<WsSession>& session)
 {
     if (HandleContextMessage(msg, session)) return;
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
     if(security_plans_.usesRealAdapter()){
         ws_manager_.send(session,json_stringify(boost::json::object{{"type","error"},{"code","MISSION_CONTROLLER_OWNS_CONTROL"},{"message","Use Security Plan execution controls while Real mission adapter is enabled"}}));return;
     }
@@ -1297,6 +1410,7 @@ void HttpServer::HandleWsCommand(const boost::json::object& msg,
         const bool coalesce_queued_vertical_targets = get_bool(msg, "coalesce_queued_vertical_targets", false);
         const bool coalesce_queued_manual_targets = get_bool(msg, "coalesce_queued_manual_targets", false);
         int drone_id = drone_id_from_string(drone_id_str);
+        CheckPilotOwnership(drone_id);
         if (!drone_mgr_.ProcessMoveCommand(
                 drone_id, x, y, z, speed_mps,
                 coalesce_queued_vertical_targets, coalesce_queued_manual_targets)) {
@@ -1330,6 +1444,16 @@ void HttpServer::HandleWsCommand(const boost::json::object& msg,
     }
 
     std::string type = std::string(msg.at("type").as_string());
+
+    if (pilot_control_ && (type == "pause" || type == "resume")) {
+        if (msg.contains("drone_ids") && msg.at("drone_ids").is_array()) {
+            for (const auto& value : msg.at("drone_ids").as_array()) {
+                CheckPilotOwnership(drone_id_from_string(value_to_string(value)));
+            }
+        } else if (msg.contains("drone_id")) {
+            CheckPilotOwnership(drone_id_from_string(value_to_string(msg.at("drone_id"))));
+        }
+    }
 
     if (type == "move") {
         ws_manager_.send(session, json_stringify(boost::json::object{
@@ -1432,6 +1556,12 @@ void HttpServer::HandleWsCommand(const boost::json::object& msg,
 void HttpServer::RunWsSession(tcp::socket socket,
                                http::request<http::string_body> upgrade_req)
 {
+    const auto target = upgrade_req.target();
+    const auto path = target.substr(0, target.find('?'));
+    if (path == "/ws/pilot-control" || path == "/ws/pilot-control/") {
+        RunPilotControlWsSession(std::move(socket), std::move(upgrade_req));
+        return;
+    }
     ws_ns::stream<tcp::socket> ws(std::move(socket));
     try {
         ws.set_option(ws_ns::stream_base::timeout::suggested(beast::role_type::server));
@@ -1472,6 +1602,9 @@ void HttpServer::RunWsSession(tcp::socket socket,
             try {
                 spdlog::debug("[WS Recv] {}", payload);
                 HandleWsCommand(jv.as_object(), session);
+            } catch (const PlanError& e) {
+                ws_manager_.send(session, json_stringify(boost::json::object{
+                    {"type", "error"}, {"code", e.code}, {"params", e.params}, {"message", e.what()}}));
             } catch (const ApiError& e) {
                 ws_manager_.send(session, json_stringify(boost::json::object{
                     {"type", "error"}, {"code", e.status_code}, {"message", e.what()}}));
@@ -1547,11 +1680,14 @@ void HttpServer::RunWsServer() {
     spdlog::info("[WS] Listening on 0.0.0.0:{}", config_.ws_port);
 
     while (running_) {
-        tcp::socket socket(ctx);
+        auto connection_ctx = std::make_shared<net::io_context>(1);
+        tcp::socket socket(*connection_ctx);
         acceptor.accept(socket);
         {
             std::lock_guard<std::mutex> lock(conn_threads_mutex_);
-            conn_threads_.emplace_back(HandleWsConnection, std::move(socket), this);
+            conn_threads_.emplace_back([this, connection_ctx, socket = std::move(socket)]() mutable {
+                HandleWsConnection(std::move(socket), this);
+            });
         }
     }
 }
@@ -1826,7 +1962,13 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
         // P1/UE canonical selection uses the existing numeric slot, while legacy records may use d1.
         if(d.slot>0)uavs.insert("UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot));
     }
-    auto result=security_plans_.transact(body,uavs,source,[this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
+    auto result = security_plans_.transact(body, uavs, source,
+        [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); },
+        [this](const std::string& uid) {
+            if (pilot_control_ && pilot_control_->OwnsAircraft(uid)) {
+                throw PlanError("PILOT_CONTROL_ASSIGNED", "Aircraft is assigned to a Pilot", {{"uav_id", uid}});
+            }
+        });
     if(action=="create_plan" || action=="add_mission" || action=="copy_plan" || action=="open_plan") result["context"]=select(get_string(result,"plan_id"),get_string(result,"mission_id"));
     if(action=="delete_plan" && get_string(operational_context_.snapshot(),"active_security_plan_id")==get_string(body,"plan_id"))
         result["context"]=select("","");
@@ -1864,3 +2006,5 @@ boost::json::value HttpServer::ViewRequest(const boost::json::object& body,bool 
     if(intent)intent->consumed=true;
     return accepted;
 }
+
+#include "http/pilot_control_transport.inl"

@@ -79,6 +79,9 @@
         const int64_t epoch=state_.contains("mock_position_baseline")?
             state_.at("mock_position_baseline").as_object().at("epoch").to_number<int64_t>()+1:1;
         auto next=state_;const double now=OperationalContext::now();
+        if (auto* poses = next.if_contains("mock_pilot_poses")) {
+            for (const auto& entry : positions) poses->as_object().erase(entry.key());
+        }
         for(auto& item:next.at("executions").as_object()) {
             auto& e=item.value().as_object();
             if(!positions.contains(str(e,"uav_id")) || !executionActive(e) ||
