@@ -335,6 +335,21 @@ log:
         else:
             raise RuntimeError('Backend readiness timed out')
         self.components['Backend'] = 'ONLINE'
+
+    def _read_computer_origin(self, timeout, geoid=0.0):
+        self.location_status = 'computer'
+        origin = computer_origin(timeout=timeout, geoid=geoid, cancelled=self.stopping)
+        if not valid_origin(origin):
+            raise RuntimeError('Computer location is outside the supported map range. / 电脑位置超出当前地图支持范围。')
+        return origin
+
+    def _accept_computer_origin(self, origin):
+        self.config['startup_origin'] = origin
+        self.location_source = 'computer'
+        estimated = bool(origin.get('height_estimated'))
+        self.location_status = 'estimated' if estimated else 'ready'
+        self.log('computer_location_ready', height_estimated=estimated)
+
     def _resolve_realtime_origin(self):
         manual = self.config.get('manual_map_origin')
         if manual is not None:
@@ -348,13 +363,22 @@ log:
         self.location_status = 'waiting'
         self.location_source = ''
         self.config.pop('startup_origin', None)
+        source = self.config.get('realtime_map_location_source', 'uav')
+        if source not in ('computer', 'uav'):
+            raise ValueError('realtime_map_location_source must be computer or uav / 地图定位来源须为 computer 或 uav')
+        computer_timeout = float(self.config.get('realtime_computer_location_timeout', 15))
+        if not 0 < computer_timeout <= 60:
+            raise ValueError('Invalid computer location timeout / 电脑定位等待时间配置无效')
+        if source == 'computer':
+            self._accept_computer_origin(self._read_computer_origin(computer_timeout))
+            return
+
         timeout = float(self.config.get('realtime_gps_timeout', 60))
         device_wait = float(self.config.get('realtime_device_wait', 8))
-        computer_timeout = float(self.config.get('realtime_computer_location_timeout', 15))
         max_age = self.config.get('realtime_gps_max_age', 5.0)
         if not 0 < timeout <= 600:
             raise ValueError('realtime_gps_timeout must be 0–600 seconds / 实时定位等待时间须在 0–600 秒之间')
-        if not 0 <= device_wait <= 600 or not 0 < computer_timeout <= 60:
+        if not 0 <= device_wait <= 600:
             raise ValueError('Invalid location wait settings / 定位等待时间配置无效')
         geoid = geoid_separation(self.root)
         started = time.monotonic()
@@ -377,12 +401,8 @@ log:
                 return
             if not has_real_connection(drones) and time.monotonic() - started >= device_wait:
                 if not computer_tried:
-                    self.location_status = 'computer'
                     try:
-                        computer = computer_origin(timeout=computer_timeout, geoid=geoid,
-                                                   cancelled=self.stopping)
-                        if not valid_origin(computer):
-                            raise RuntimeError('Computer location is outside the supported map range. / 电脑位置超出当前地图支持范围。')
+                        computer = self._read_computer_origin(computer_timeout, geoid)
                     except RuntimeError as exc:
                         computer_error = exc
                     computer_tried = True
@@ -392,10 +412,7 @@ log:
                     continue
                 if computer_error:
                     raise computer_error
-                self.config['startup_origin'] = computer
-                self.location_source = 'computer'
-                self.location_status = 'estimated' if computer.get('height_estimated') else 'ready'
-                self.log('computer_location_ready', height_estimated=bool(computer.get('height_estimated')))
+                self._accept_computer_origin(computer)
                 return
             self.stopping.wait(.3)
         raise RuntimeError('No fresh real GPS fix. Check the UAV connection and GPS, then retry. / '

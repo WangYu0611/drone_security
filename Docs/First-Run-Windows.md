@@ -67,9 +67,10 @@ git lfs pull
 | `realtime_backend_config` | `Backend/config.yaml`；实时 Backend 的既有注册表、UDP `port_map` 和存储配置 |
 | `realtime_http_endpoint` / `realtime_ws_endpoint` | `http://127.0.0.1:8080` / `ws://127.0.0.1:8081/ws`；须与实时 Backend 配置一致 |
 | `realtime_runtime_directory` | `Saved/Realtime`；启动器进程记录和日志，不是新建业务数据库 |
-| `realtime_gps_timeout` / `realtime_gps_max_age` | `60` / `5.0` 秒；有真实无人机连接时等待 GPS 的时长 / 后端收到真实遥测的最大年龄 |
-| `realtime_device_wait` | `8` 秒；发现真实无人机连接的等待窗口 |
-| `realtime_computer_location_timeout` | `15` 秒；无真实无人机连接时查询 Windows 系统定位的最长时间 |
+| `realtime_map_location_source` | `computer`，经纬度留空时使用 Map 电脑的 Windows 系统定位。设为 `uav` 可优先使用无人机 GPS |
+| `realtime_gps_timeout` / `realtime_gps_max_age` | `uav` 设置下等待 GPS 的时长和遥测接收时间上限，分别为 `60` 秒和 `5.0` 秒 |
+| `realtime_device_wait` | `uav` 设置下等待真实无人机连接的窗口，默认 `8` 秒 |
+| `realtime_computer_location_timeout` | 查询 Windows 系统定位的最长时间，默认 `15` 秒 |
 
 默认 **All** 使用本机实时端口 `8080/8081`。[共享部署 JSON](LANDeployment.md#2-准备一份共享配置) 可覆盖四个角色 IP 和两个 TCP 端口。同一台电脑的角色可以使用相同 IP 或 `127.0.0.1`，远程电脑使用实际局域网 IP。选择 **All** 时四项 IP 都必须属于本机。共享部署运行记录位于 `Saved/Deployment/realtime/{role}`。四机部署先启动 Backend 机器，再启动三个客户端。客户端启动要求远程 Backend 可达。`config.local.json` 保存本机程序路径和 `realtime_backend_config`，代理按下一节配置。
 
@@ -125,11 +126,13 @@ HttpNoProxy=127.0.0.1,localhost,::1
 
 ### 实时模式
 
-使用无人机 GPS 时，先配置并注册现场无人机，确认 `Backend/config.yaml` 中的 UDP `port_map`、设备地址与存储位置符合现场；没有真实无人机连接时可以使用电脑定位分支。启动器从仓库根目录运行这个配置，保留其现有注册表和业务数据；默认注册表为 `Backend/data/drones.json`。如需本机专用配置，在不提交的 `Launcher/config.local.json` 中覆盖 `realtime_backend_config`，并让实时 HTTP / WS 地址与该配置端口一致。`Saved/Realtime` 保存启动器进程记录、启动器日志、Backend 标准输出和 UE 日志。Backend 自身文件日志沿用所选配置的 `log.file`，默认为 `logs/backend.log`。实时分支不生成 Mock fixture、不播种模拟无人机、不执行 Mock reset，也不创建或启用 `real_execution.json`、不自动开始飞行任务。
+启动器从仓库根目录运行 Backend，使用所选配置中的 UDP `port_map`、设备地址与存储位置。默认注册表为 `Backend/data/drones.json`。如需本机专用配置，在不提交的 `Launcher/config.local.json` 中覆盖 `realtime_backend_config`，并让实时 HTTP / WS 地址与该配置端口一致。`Saved/Realtime` 保存启动器进程记录、启动器日志、Backend 标准输出和 UE 日志。Backend 自身文件日志沿用所选配置的 `log.file`，默认为 `logs/backend.log`。实时分支不生成 Mock fixture、不播种模拟无人机、不执行 Mock reset，也不创建或启用 `real_execution.json`、不自动开始飞行任务。
 
-手动坐标留空时，有效无人机 GPS 可立即初始化。未取得时，默认等待 **8 秒**的真实连接发现窗口（`realtime_device_wait`），之后才考虑电脑定位。优先位置来自 `/api/drones` 的真实遥测，要求 `online`、`gps_fix=true`、`simulation=false`、`telemetry_source=received`、经纬高有效，且 `telemetry_received_at` 默认不超过 **5 秒**。符合条件时优先当前 active UAV，否则采用最小 slot 的无人机。GPS 海拔按 `椭球高 = AMSL + GeoidSeparationMeters` 转换。启动器与 UE 读取同一 `Config/DefaultGame.ini`，并允许 `Saved/Config/WindowsEditor/Game.ini` 覆盖高程修正。
+经纬度留空时，默认直接查询运行 Map 的电脑的 **Windows 系统定位**。无人机在线时也使用该来源。定位最长等待 **15 秒**（`realtime_computer_location_timeout`）。Windows 未提供高度时，地图使用 **0 m 估计高程**作为相机锚点，并在状态中标记估计高程。
 
-只有注册表条目或发出的连接探测不算真实连接，连接判断同时要求后端实际收到非模拟遥测。存在这类真实 `online` / `connecting` 无人机但其 GPS 无效时，继续等待该类 GPS，默认上限 **60 秒**（`realtime_gps_timeout`），不会用电脑位置替代已连接飞机。只有完全没有真实无人机连接时，才查询 **Windows 系统定位**，最长 **15 秒**（`realtime_computer_location_timeout`）。Windows 未提供高度时以 **0 m 估计高程**作为地图相机锚点，并在状态中标记估计高程；不把它当作无人机位置、Home 或飞行高度。
+如果现场需要优先使用无人机 GPS，在 Map 电脑的 `Launcher/config.local.json` 中将 `realtime_map_location_source` 设为 `uav`，并配置、注册现场无人机。有效 GPS 可立即初始化地图。定位来自 `/api/drones` 的真实遥测，要求 `online`、`gps_fix=true`、`simulation=false`、`telemetry_source=received`、经纬高有效，且 `telemetry_received_at` 默认不超过 **5 秒**。符合条件时优先当前 active UAV，否则采用最小 slot 的无人机。GPS 海拔按 `椭球高 = AMSL + GeoidSeparationMeters` 转换。启动器与 UE 读取同一 `Config/DefaultGame.ini`，并允许 `Saved/Config/WindowsEditor/Game.ini` 覆盖高程修正。
+
+`uav` 设置下，收到真实非模拟遥测的 `online` 或 `connecting` 无人机若缺少有效 GPS，启动器最多等待 **60 秒**（`realtime_gps_timeout`）。真实连接发现窗口默认 **8 秒**（`realtime_device_wait`），期满仍没有真实连接时查询 Windows 系统定位。
 
 系统定位被禁用、拒绝、不可用或超时，会显示错误。可填写经纬度再启动。自动定位失败时，启动器清理自己创建的启动进程。新收到的 GPS 数据供实时状态使用，视图切换由操作者发起。旧 Backend 若缺少 `telemetry_receive_time` 能力，会提示重新运行 `SetupDroneSecurity.cmd`。实时启动仅接受实时 Backend，外部进程仍由其启动者管理。
 
@@ -149,8 +152,8 @@ Mock 演示不要求填写真实无人机连接或视频地址。需要视频流
 | 地图文件极小或 LFS 占位 | `git lfs pull` |
 | 地图黑屏、401/403 | 检查自己的 Cesium ion Token、资产权限及网络 |
 | 地图模糊、瓦片持续超时 | 检查地图客户端日志、代理是否实际生效及服务可达性；增加缓存不能解决当前请求超时 |
-| 有真实连接但一直等待定位 | 检查注册表、UDP `port_map`、GPS fix 与最近接收时间，或手动填写地图经纬度 |
-| 没有真实连接且电脑定位失败 | 检查 Windows 系统定位的启用、权限与可用状态；启动器不自动改权限、不按 IP 猜测城市 |
+| `uav` 设置下有真实连接但一直等待定位 | 检查注册表、UDP `port_map`、GPS fix 与最近接收时间，或手动填写地图经纬度 |
+| 电脑定位失败 | 检查 Windows 系统定位的启用、权限与可用状态，或手动填写地图经纬度 |
 | 电脑定位状态显示估计高程 | 系统未给出高度，使用 0 m 仅作相机锚点；不作为飞行高度 |
 | 旧共享配置显示模式无效 | 使用 `mode=realtime` 的共享文件，并核对实时端口及四个角色 IP |
 | 启动提示 Backend 为 Mock | 核对所填 HTTP/WS 端口对应实时 Backend |

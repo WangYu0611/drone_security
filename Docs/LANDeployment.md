@@ -92,7 +92,7 @@ Backend 单独构建入口 `SetupDroneBackend.cmd` 调用 `Launcher/Start.cmd --
 
 每台的 `READY` 要求 Backend 可用，并且本机客户端进程及其订阅、加载完成状态和新鲜心跳正常；Backend 角色只要求 Backend；**All** 要求本机四端全部正常。单角色部署时，其他机器未启动不会使本机就绪状态降级，也不能用远程同角色进程替代本机进程。请让四台机器的系统时间保持同步，心跳与遥测新鲜度检查依赖时间戳。
 
-**Map** 或 **All** 启动时可以直接使用输入的经纬度。未填写时优先有效 UAV GPS，完全没有真实连接时使用 Map 电脑的 Windows 定位。单独启动 Command、Video 或 Backend 无需初始化地图位置。常用地点保存在运行 Map 的电脑的 `Saved/Launcher/map-locations.json`。
+**Map** 或 **All** 启动时优先使用输入的经纬度。留空时默认使用 Map 电脑的 Windows 系统定位，无人机已连接时也适用。需要优先使用 UAV GPS 时，可在 Map 电脑的 `Launcher/config.local.json` 中将 `realtime_map_location_source` 设为 `uav`。单独启动 Command、Video 或 Backend 无需初始化地图位置。常用地点保存在运行 Map 的电脑的 `Saved/Launcher/map-locations.json`。
 
 本机选择以 `role` 和共享文件 `path` 保存到 `Saved/Launcher/deployment-selection.json`，下次打开可恢复。默认 `auto_start=false`。开启后，启动器使用已保存的共享配置；没有保存的共享配置时，使用 **All** 和本机配置。
 
@@ -122,7 +122,7 @@ Backend 主机的网络与防火墙需要允许其他三台机器访问共享配
 | 提示先启动 Backend | Backend 机器是否已就绪、共享文件是否一致、HTTP TCP 端口与防火墙 |
 | HTTP 正常但 WebSocket 不可达 | 共享 `ws_port`、Backend WS 监听、客户端到该端口的网络路径 |
 | 提示同角色已在线 | 是否已有该角色窗口/另一台机器误选相同角色；先在拥有它的电脑关闭 |
-| Map 等待或定位失败 | UAV GPS 新鲜度；没有真实连接时检查 Map 电脑的 Windows 定位设置 |
+| Map 等待或定位失败 | 检查 Map 电脑的 Windows 定位设置。选择 `uav` 时另查 GPS 新鲜度 |
 | 视频无画面但其他状态正常 | 实际 `video_url`、MediaMTX、视频信令/媒体端口；不要把 Video 角色 IP 当成流服务器 |
 | 后端能力过旧或启动参数不支持 | 停止旧 EXE，更新同一版本并重新运行 `SetupDroneBackend.cmd`；UE 客户端同步更新模块 |
 

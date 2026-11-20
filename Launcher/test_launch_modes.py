@@ -261,7 +261,8 @@ class RealtimeRuntimeTests(ModeFixture):
 
     def test_manual_location_starts_realtime_without_requesting_gps_or_windows_location(self):
         manual = {'longitude': 121.4737, 'latitude': 31.2304, 'altitude': 0.0}
-        runtime = Runtime(self.root, {**self.base, 'manual_map_origin': manual})
+        runtime = Runtime(self.root, {**self.base, 'manual_map_origin': manual,
+                                     'realtime_map_location_source': 'computer'})
         with patch('runtime.port_open', return_value=True), \
              patch('runtime.compatible_snapshot', return_value=real_snapshot()), \
              patch('runtime.api') as read, patch('runtime.computer_origin') as computer, \
@@ -276,6 +277,27 @@ class RealtimeRuntimeTests(ModeFixture):
         self.assertIn('-MapStartupMode=Realtime', args)
         self.assertIn('-MapStartupLongitude=121.4737', args)
         self.assertIn('-MapStartupLatitude=31.2304', args)
+        self.assertIn('-MapStartupHeight=0.0', args)
+
+    def test_project_default_starts_map_at_computer_location_without_waiting_for_uav_gps(self):
+        config_path = Path(__file__).with_name('config.json')
+        source = json.loads(config_path.read_text(encoding='utf-8-sig'))['realtime_map_location_source']
+        runtime = Runtime(self.root, {**self.base, 'realtime_map_location_source': source})
+        computer_fix = {'longitude': 2.3522, 'latitude': 48.8566, 'altitude': 0.0,
+                        'source': 'computer', 'accuracy_m': 50, 'height_estimated': True}
+        with patch('runtime.port_open', return_value=True), \
+             patch('runtime.compatible_snapshot', return_value=real_snapshot()), \
+             patch('runtime.api', return_value=[real_drone(gps_fix=False)]) as drones, \
+             patch('runtime.computer_origin', return_value=computer_fix) as computer, \
+             patch.object(runtime, '_spawn') as spawn:
+            runtime.start('realtime')
+        drones.assert_not_called()
+        computer.assert_called_once_with(timeout=15.0, geoid=0.0, cancelled=runtime.stopping)
+        self.assertEqual(runtime.config['startup_origin'], computer_fix)
+        self.assertEqual((runtime.location_status, runtime.location_source), ('estimated', 'computer'))
+        args = next(call.args[1] for call in spawn.call_args_list if call.args[0] == 'Map')
+        self.assertIn('-MapStartupLongitude=2.3522', args)
+        self.assertIn('-MapStartupLatitude=48.8566', args)
         self.assertIn('-MapStartupHeight=0.0', args)
 
     def test_map_location_switch_restarts_only_owned_map_and_skips_a_repeat(self):
