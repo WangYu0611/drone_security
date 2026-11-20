@@ -77,7 +77,7 @@ public:
         state_["execution_adapter"]=adapter_->simulation()?"Mock":"Real";
         if(!adapter_->simulation())for(auto& item:state_.at("executions").as_object()){
             auto& e=item.value().as_object();
-            if(executionActive(e) && str(e,"state")!="SCHEDULED" && str(e,"state")!="PAUSED"){
+            if(!isRehearsal(e) && executionActive(e) && str(e,"state")!="SCHEDULED" && str(e,"state")!="PAUSED"){
                 e["resume_state"]=e.at("state");e["failure_reason"]="REAL_RESTART_REQUIRES_RESUME";
                 transition(state_,e,"PAUSED","MISSION_PAUSED");
             }
@@ -96,7 +96,7 @@ public:
         // adapter and state machine as immediate starts. Due groups start atomically.
         std::set<std::string> due;
         for(const auto& item:next.at("executions").as_object()){const auto& e=item.value().as_object();
-            if(!activeConfiguration(next) && str(e,"state")=="SCHEDULED" && number(e,"scheduled_start_epoch")<=OperationalContext::now())due.insert(str(e,"group_id"));}
+            if(!isRehearsal(e) && !activeConfiguration(next) && str(e,"state")=="SCHEDULED" && number(e,"scheduled_start_epoch")<=OperationalContext::now())due.insert(str(e,"group_id"));}
         for(const auto& group:due) {
             Object routes;
             for(const auto& item:next.at("executions").as_object()){const auto& e=item.value().as_object();if(str(e,"group_id")==group && str(e,"state")=="SCHEDULED")routes[str(e,"uav_id")]=e.at("route_snapshot");}
@@ -113,7 +113,7 @@ public:
             changed=true;
         }
         for(auto& entry:next.at("executions").as_object()) {
-            auto& e=entry.value().as_object(); if(!executionActive(e))continue;
+            auto& e=entry.value().as_object(); if(isRehearsal(e) || !executionActive(e))continue;
             if(e.at("simulation").as_bool()!=adapter_->simulation()){
                 e["failure_reason"]="ADAPTER_MODE_MISMATCH";transition(next,e,"FAILED","MISSION_FAILED");changed=true;continue;
             }
@@ -128,14 +128,7 @@ public:
                 }
                 if(!uavs.count(str(e,"uav_id")) || !mock_.at("uavs").as_object().contains(str(e,"uav_id")))
                     throw std::runtime_error(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE");
-                const auto s=str(e,"state");
-                if(s=="CREATED")transition(next,e,"PREFLIGHT","PREFLIGHT_STARTED");
-                else if(s=="PREFLIGHT") {
-                    checkPath(e.at("route_snapshot").as_object());
-                    executionEvent(next,e,"PREFLIGHT_PASSED");transition(next,e,"STARTING","MISSION_STARTING");
-                } else if(s=="STARTING") {
-                    e["started_at"]=OperationalContext::now();transition(next,e,"EXECUTING","MISSION_STARTED");
-                } else advanceExecution(next,e,std::min(dt,1.));
+                advanceMissionTick(next,e,dt,*adapter_);
             } catch(const std::exception& ex) {
                 e["failure_reason"]=ex.what();e["completed_at"]=OperationalContext::now();transition(next,e,"FAILED","MISSION_FAILED");
             }
@@ -143,9 +136,9 @@ public:
         if(changed) {
             if(!adapter_->simulation()){
                 std::set<std::string> failedGroups;
-                for(const auto& item:next.at("executions").as_object())if(str(item.value().as_object(),"state")=="FAILED")failedGroups.insert(str(item.value().as_object(),"group_id"));
+                for(const auto& item:next.at("executions").as_object())if(!isRehearsal(item.value().as_object()) && str(item.value().as_object(),"state")=="FAILED")failedGroups.insert(str(item.value().as_object(),"group_id"));
                 for(auto& item:next.at("executions").as_object()){auto& e=item.value().as_object();
-                    if(failedGroups.count(str(e,"group_id")) && executionActive(e) && str(e,"state")!="SCHEDULED"){
+                    if(!isRehearsal(e) && failedGroups.count(str(e,"group_id")) && executionActive(e) && str(e,"state")!="SCHEDULED"){
                         e["completed_at"]=OperationalContext::now();e["failure_reason"]="GROUP_MEMBER_FAILED";transition(next,e,"FAILED","MISSION_FAILED");
                     }
                 }
@@ -162,10 +155,16 @@ public:
                 if(minimumSeparation(ta,tb)+1e-6<requiredDistance(ids[i],ids[j]))conflict=true;
             }
             }catch(...){if(adapter_->simulation())throw;conflict=true;}
-            if(conflict){if(adapter_->simulation())next=state_;for(auto& item:next.at("executions").as_object()){auto& e=item.value().as_object();if(executionActive(e) && str(e,"state")!="SCHEDULED") {
+            if(conflict){if(adapter_->simulation())next=state_;for(auto& item:next.at("executions").as_object()){auto& e=item.value().as_object();if(!isRehearsal(e) && executionActive(e) && str(e,"state")!="SCHEDULED") {
                 e["failure_reason"]="TRAJECTORY_CONFLICT";e["resume_state"]=str(e,"state");transition(next,e,"PAUSED","SAFETY_CONFLICT");}}}
-            commitExecutions(next,publish);
         }
+        if(changed) {
+            commitExecutions(next,publish);
+            next=state_;
+        }
+        // Persist any physical mission progress before processing the separate
+        // simulator, whose state transitions never require a transport action.
+        if(tickRehearsals(next,dt))commitExecutions(next,publish);
     }
 private:
     bool applyMockPilotMotion(Object& next, const MockPilotMotion& motion, double dt) {
@@ -291,22 +290,24 @@ private:
         state_.swap(next);
     }
     std::string createRuntimeExecution(Object& next,const Object& route,const Object& plan,const Object& mission,
-        const std::string& uid,const std::string& pid,const std::string& mid,const std::string& rid,const std::string& did) {
+        const std::string& uid,const std::string& pid,const std::string& mid,const std::string& rid,const std::string& did,bool rehearsal=false) {
         auto& all=next.at("executions").as_object();const auto& points=route.at("waypoints").as_array();
-        const auto home=homePosition(uid);
+        const auto home=rehearsal ? next.at("simulation_uavs").as_object().at(uid).as_object().at("home_position").as_object():homePosition(uid);
         const auto start=currentPosition(next,uid);
+        const double defaultSpeed=rehearsal?rehearsalSpeed_:number(mock_,"default_speed_mps");
+        const bool simulation=rehearsal || adapter_->simulation();
             double total=0,seconds=0;auto from=start;
-            for(const auto& v:points){const auto& point=v.as_object();const auto d=distance(from,point);const auto speed=number(point,"segmentSpeed")>0?number(point,"segmentSpeed"):number(mock_,"default_speed_mps");total+=d;seconds+=d/speed+number(point,"waitTime");from=point;}
-            if(closedRoute(route)){const auto d=distance(points.back().as_object(),points.front().as_object());const double configured=number(points.back().as_object(),"segmentSpeed");total+=d;seconds+=d/(configured>0?configured:number(mock_,"default_speed_mps"));}
+            for(const auto& v:points){const auto& point=v.as_object();const auto d=distance(from,point);const auto speed=number(point,"segmentSpeed")>0?number(point,"segmentSpeed"):defaultSpeed;total+=d;seconds+=d/speed+number(point,"waitTime");from=point;}
+            if(closedRoute(route)){const auto d=distance(points.back().as_object(),points.front().as_object());const double configured=number(points.back().as_object(),"segmentSpeed");total+=d;seconds+=d/(configured>0?configured:defaultSpeed);}
             const auto id=allocate(next,"execution-");const auto now=OperationalContext::now();
             all[id]=Object{{"execution_id",id},{"deployment_id",did},{"plan_id",pid},{"mission_id",mid},{"route_id",rid},
                 {"route_revision",route.contains("revision")?route.at("revision"):boost::json::value(1)},{"route_snapshot",route},{"plan_name",plan.at("name")},{"mission_name",mission.at("name")},
                 {"uav_id",uid},{"state","CREATED"},{"control_version",0},{"current_waypoint",1},{"completed_waypoints",0},{"total_waypoints",points.size()},
                 {"segment_progress",0.},{"overall_progress",0.},{"progress",0.},{"position",start},{"segment_start",start},{"home_position",home},
-                {"default_speed_mps",mock_.at("default_speed_mps")},{"distance_m",total},{"estimated_seconds",seconds},{"distance_travelled_m",0.},
+                {"default_speed_mps",defaultSpeed},{"distance_m",total},{"estimated_seconds",seconds},{"distance_travelled_m",0.},
                 {"wait_remaining",0.},{"elapsed_seconds",0.},{"created_at",now},{"started_at",nullptr},{"updated_at",now},{"completed_at",nullptr},
-                {"completion_reason",""},{"failure_reason",""},{"simulation",adapter_->simulation()},{"adapter",adapter_->simulation()?"Mock":"Real"},{"loopMode","Once"},{"closure_completed",false}};
-        if(adapter_->simulation() && mockBaselinePosition(next,uid))
+                {"completion_reason",""},{"failure_reason",""},{"simulation",simulation},{"adapter",simulation?"Mock":"Real"},{"loopMode","Once"},{"closure_completed",false}};
+        if(!rehearsal && simulation && mockBaselinePosition(next,uid))
             all.at(id).as_object()["mock_epoch"]=next.at("mock_position_baseline").as_object().at("epoch");
         return id;
     }
@@ -407,6 +408,9 @@ private:
             if(!mv)throw PlanError("MISSION_PLAN_MISMATCH","Task does not belong to deployment");
             const auto& mission=mv->as_object();const auto rid=str(mission,"route_id");
             const auto& central=snap.at("paths").as_object().at(rid).as_object();
+            if(rehearsalAssignment(next,assignment(mission)))
+                throw PlanError("SIMULATION_START_REQUIRED","Start this mission with Run rehearsal");
+            if(plan.if_contains("real_assignment"))checkRealAssignment(next,plan,mission,uavs);
             const auto trajectories=formationRoutes(mission,central);
             if(trajectories.empty())throw PlanError("NO_UAV_ASSIGNED","Assign at least one UAV");
             for(const auto& member:trajectories) {
@@ -486,7 +490,19 @@ private:
         if(!str(result,"error_code").empty())throw PlanError(str(result,"error_code"),str(result,"error_message"));
         return {{"state",state_},{"execution_id",id}};
     }
-    void advanceExecution(Object& doc,Object& e,double dt) {
+    void advanceMissionTick(Object& doc,Object& e,double dt,security_mission::Adapter& motion) {
+        const auto status=str(e,"state");
+        if(status=="CREATED")transition(doc,e,"PREFLIGHT","PREFLIGHT_STARTED");
+        else if(status=="PREFLIGHT") {
+            checkPath(e.at("route_snapshot").as_object());
+            executionEvent(doc,e,"PREFLIGHT_PASSED");
+            transition(doc,e,"STARTING","MISSION_STARTING");
+        } else if(status=="STARTING") {
+            e["started_at"]=OperationalContext::now();
+            transition(doc,e,"EXECUTING","MISSION_STARTED");
+        } else advanceExecution(doc,e,std::min(dt,1.),motion);
+    }
+    void advanceExecution(Object& doc,Object& e,double dt,security_mission::Adapter& adapter) {
         const bool returning=str(e,"state")=="RETURNING";auto& points=e.at("route_snapshot").as_object().at("waypoints").as_array();
         if(points.size()<2)throw std::runtime_error("IMMUTABLE_ROUTE_MISSING");
         e["elapsed_seconds"]=number(e,"elapsed_seconds")+dt;e["updated_at"]=OperationalContext::now();
@@ -494,7 +510,7 @@ private:
         for(size_t guard=0;remaining>0 && guard<=points.size();++guard) {
             const double wait=number(e,"wait_remaining");
             if(!returning && wait>0){
-                if(!adapter_->simulation() && distance(e.at("position").as_object(),points[static_cast<size_t>(number(e,"completed_waypoints"))-1].as_object())>.5)throw std::runtime_error("REAL_HOVER_DRIFT");
+                if(!adapter.simulation() && distance(e.at("position").as_object(),points[static_cast<size_t>(number(e,"completed_waypoints"))-1].as_object())>.5)throw std::runtime_error("REAL_HOVER_DRIFT");
                 e["phase"]="HOVER";const auto used=std::min(wait,remaining);e["wait_remaining"]=wait-used;remaining-=used;if(remaining<=0)break;}
             e["phase"]=returning?"RETURNING":"TRAVEL";
             const int completed=static_cast<int>(number(e,"completed_waypoints"));
@@ -506,7 +522,7 @@ private:
             auto pos=e.at("position").as_object();const double length=distance(pos,target);
             const double configured=returning?0:number(points[closing?points.size()-1:completed].as_object(),"segmentSpeed");
             const double speed=configured>0?configured:number(e,"default_speed_mps");
-            const auto motion=adapter_->advance({str(e,"uav_id"),str(e,"execution_id"),geo(target),speed},geo(pos),remaining);
+            const auto motion=adapter.advance({str(e,"uav_id"),str(e,"execution_id"),geo(target),speed},geo(pos),remaining);
             const double moved=distance(pos,jsonPosition(motion.position));
             pos=jsonPosition(motion.position);e["position"]=pos;remaining=std::max(0.,remaining-motion.consumed_seconds);
             if(!returning){e["distance_travelled_m"]=number(e,"distance_travelled_m")+moved;
@@ -514,7 +530,7 @@ private:
                 e["progress"]=progress;e["overall_progress"]=progress;
                 const double segment=distance(e.at("segment_start").as_object(),target);e["segment_progress"]=segment>1e-8?1-distance(pos,target)/segment:1.;}
             if(!motion.arrived)break;
-            if(adapter_->simulation())e["position"]=target;
+            if(adapter.simulation())e["position"]=target;
             if(returning){finishExecution(doc,e,"RETURNED_HOME");break;}
             if(closing){e["closure_completed"]=true;e["current_waypoint"]=1;executionEvent(doc,e,"ROUTE_CLOSURE_REACHED");finishExecution(doc,e,"ROUTE_FINISHED");break;}
             e["completed_waypoints"]=completed+1;executionEvent(doc,e,"WAYPOINT_REACHED");

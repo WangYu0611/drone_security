@@ -48,6 +48,7 @@
         if (auto* poses = doc.if_contains("mock_pilot_poses")) poses->as_object().erase(uid);
     }
     Object currentPosition(const Object& doc,const std::string& uid,bool observed=true) const {
+        if(isSimulatedAircraft(doc,uid))return rehearsalPosition(doc,uid);
         const auto* u=mock_.at("uavs").as_object().if_contains(uid);
         if(!u || (adapter_->simulation() && !u->as_object().contains("home_position")))throw PlanError(adapter_->simulation()?"MOCK_UAV_UNAVAILABLE":"REAL_UAV_UNAVAILABLE","No adapter position for "+uid);
         if (adapter_->simulation()) {
@@ -97,13 +98,14 @@
     }
     struct TrajectorySegment {double begin,end;Object from,to;};
     using Timeline=std::vector<TrajectorySegment>;
-    Timeline timeline(const Object& start,const Object& route,double delay=0) const {
+    Timeline timeline(const Object& start,const Object& route,double delay=0,double defaultSpeed=0) const {
+        if(defaultSpeed==0)defaultSpeed=number(mock_,"default_speed_mps");
         Timeline out;double time=0;Object from=start;
         auto append=[&](const Object& to,double seconds){if(seconds>0){out.push_back({time,time+seconds,from,to});time+=seconds;}from=to;};
         append(start,delay);
         const auto& points=route.at("waypoints").as_array();
-        for(const auto& v:points){const auto& p=v.as_object();const double speed=number(p,"segmentSpeed")>0?number(p,"segmentSpeed"):number(mock_,"default_speed_mps");append(position(p),distance(from,p)/speed);append(from,number(p,"waitTime"));}
-        if(closedRoute(route)){const double speed=number(points.back().as_object(),"segmentSpeed");append(position(points.front().as_object()),distance(from,points.front().as_object())/(speed>0?speed:number(mock_,"default_speed_mps")));}
+        for(const auto& v:points){const auto& p=v.as_object();const double speed=number(p,"segmentSpeed")>0?number(p,"segmentSpeed"):defaultSpeed;append(position(p),distance(from,p)/speed);append(from,number(p,"waitTime"));}
+        if(closedRoute(route)){const double speed=number(points.back().as_object(),"segmentSpeed");append(position(points.front().as_object()),distance(from,points.front().as_object())/(speed>0?speed:defaultSpeed));}
         append(from,86400.); // Occupied final position remains reserved through comparison horizon.
         return out;
     }
@@ -129,11 +131,13 @@
         }
         return minimum;
     }
-    void checkTrajectories(const Object& doc,const Object& routes) const {
+    void checkTrajectories(const Object& doc,const Object& routes,bool rehearsal=false) const {
+        const double speed=rehearsal?rehearsalSpeed_:number(mock_,"default_speed_mps");
+        const auto& fleet=rehearsal?doc.at("simulation_uavs").as_object():mock_.at("uavs").as_object();
         std::vector<std::pair<std::string,Timeline>> lines;
-        for(const auto& entry:routes){const std::string uid(entry.key());lines.emplace_back(uid,timeline(currentPosition(doc,uid),entry.value().as_object()));}
+        for(const auto& entry:routes){const std::string uid(entry.key());lines.emplace_back(uid,timeline(currentPosition(doc,uid),entry.value().as_object(),0,speed));}
         // Also reserve aircraft outside this assignment at their acknowledged position.
-        for(const auto& entry:mock_.at("uavs").as_object())if(!routes.contains(entry.key())){
+        for(const auto& entry:fleet)if(!routes.contains(entry.key())){
             const std::string uid(entry.key());const auto pos=currentPosition(doc,uid);Timeline reservation{{0.,172800.,pos,pos}};
             for(const auto& item:doc.at("executions").as_object()){const auto& e=item.value().as_object();
                 if(str(e,"uav_id")!=uid || !executionActive(e) || str(e,"state")=="PAUSED" || str(e,"state")=="SCHEDULED")continue;
@@ -142,7 +146,7 @@
                 else {const auto count=std::min(points.size(),static_cast<size_t>(number(e,"completed_waypoints")));points.erase(points.begin(),points.begin()+count);
                     if(closedRoute(route) && !(e.contains("closure_completed") && e.at("closure_completed").as_bool())){auto closure=first.as_object();closure["waitTime"]=0.;points.push_back(closure);}
                     route["bClosedLoop"]=false;route["closedRoute"]=false;}
-                reservation=timeline(pos,route,number(e,"wait_remaining"));break;
+                reservation=timeline(pos,route,number(e,"wait_remaining"),speed);break;
             }
             lines.push_back({uid,reservation});
         }

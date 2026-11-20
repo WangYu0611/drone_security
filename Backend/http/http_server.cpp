@@ -94,6 +94,23 @@ double current_unix_seconds()
         / 1000000.0;
 }
 
+boost::json::object simulation_drone_row(const boost::json::value& entry)
+{
+    const auto& aircraft = entry.as_object();
+    const auto slot = aircraft.at("slot").to_number<int>();
+    boost::json::object row{
+        {"id", slot},
+        {"id_str", drone_id_string(slot)},
+        {"name", aircraft.at("name")},
+        {"slot", slot},
+        {"slot_number", slot},
+        {"status", "simulated"},
+        {"bit_index", -1},
+    };
+    mock_telemetry::project(row, &entry, false);
+    return row;
+}
+
 } // namespace
 static int drone_id_from_string(const std::string& id);
 
@@ -531,7 +548,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 {"http_port", config_.http_port},
                 {"ws_port",   config_.ws_port},
                 {"debug",     config_.debug},
-                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset", "telemetry_receive_time"}},
+                {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset", "telemetry_receive_time", "simulation_rehearsal"}},
             };
             if (pilot_control_) status.at("capabilities").as_array().emplace_back("pilot_control_mock");
             return MakeResponse(req, 200, json_stringify(status));
@@ -763,6 +780,10 @@ boost::json::value HttpServer::ApiListDrones() {
         }
         arr.push_back(std::move(item));
     }
+    const auto simulation_fleet = security_plans_.simulationFleet();
+    for (const auto& aircraft : simulation_fleet) {
+        arr.push_back(simulation_drone_row(aircraft.value()));
+    }
     return arr;
 }
 
@@ -781,6 +802,15 @@ void HttpServer::PublishMockTelemetry() {
         std::lock_guard<std::mutex> source_lock(telemetry_source_mutex_);
         if(mock_telemetry::project(message,position,received_telemetry_.count(id)>0))
             ws_manager_.broadcast(json_stringify(message));
+    }
+    const auto simulation_fleet = security_plans_.simulationFleet();
+    for (const auto& aircraft : simulation_fleet) {
+        auto message = simulation_drone_row(aircraft.value());
+        const auto id = message.at("id").to_number<int>();
+        message["type"] = "telemetry";
+        message["drone_id"] = id;
+        message["drone_id_str"] = drone_id_string(id);
+        ws_manager_.broadcast(json_stringify(message));
     }
 }
 
@@ -827,9 +857,24 @@ boost::json::value HttpServer::ApiStoreVideoMetadataBatch(
 boost::json::value HttpServer::ApiRegisterDrone(const boost::json::object& body) {
     std::lock_guard<std::mutex> lock(records_mutex_);
 
+    if (const auto* simulated = body.if_contains("simulation");
+        simulated && (!simulated->is_bool() || simulated->as_bool())) {
+        throw ApiError(400, "Create simulated aircraft through the simulation fleet action");
+    }
     if (static_cast<int>(drone_records_.size()) >= config_.max_count)
         throw ApiError(507, "max drone count reached");
 
+    std::set<int> assigned_drone_ids;
+    const auto plans = security_plans_.snapshot();
+    for (const auto& entry : plans.at("plans").as_object()) {
+        if (const auto* assignment = entry.value().as_object().if_contains("real_assignment");
+            assignment && assignment->is_object()) {
+            const int assigned_id = get_int(assignment->as_object(), "assigned_drone_id");
+            if (assigned_id > 0) assigned_drone_ids.insert(assigned_id);
+        }
+    }
+    while (SecurityPlanStore::isSimulationSlot(next_drone_seq_) || assigned_drone_ids.count(next_drone_seq_))
+        ++next_drone_seq_;
     DroneRecord rec;
     rec.id        = "d" + std::to_string(next_drone_seq_++);
     rec.name      = get_string(body, "name", rec.id);
@@ -844,7 +889,7 @@ boost::json::value HttpServer::ApiRegisterDrone(const boost::json::object& body)
 
     // 配置 Jetson 目标地址
     auto it = config_.port_map.find(rec.slot);
-    if (it == config_.port_map.end())
+    if (it == config_.port_map.end() || SecurityPlanStore::isSimulationSlot(rec.slot))
         throw ApiError(400, "slot " + std::to_string(rec.slot) + " not in port_map");
 
     if (rec.ip.empty()) {
@@ -1921,7 +1966,8 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     }
     const auto action=get_string(body,"action");
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
-    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_takeover_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move"};
+    const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_takeover_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move",
+        "simulation_create","simulation_start","simulation_review","simulation_assign_real"};
     const std::set<std::string> mapActions{"execution_group_move","execution_takeover_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     if(role=="Map" && (action=="execution_pause" || action=="execution_resume" || action=="execution_abort")) {
@@ -1935,7 +1981,7 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
             {"active_mission_id",mission.empty()?boost::json::value(nullptr):boost::json::value(mission)}},source,
             [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
     };
-    if(action=="execution_start") {
+    if(action=="execution_start" || action=="simulation_start") {
         bool online=false;{std::lock_guard<std::mutex> lock(context_clients_mutex_);for(const auto& e:context_clients_)if(e.second.at("client_role")=="Map" && e.second.at("state")=="ONLINE")online=true;}
         if(!online)throw PlanError("MAP_CLIENT_UNAVAILABLE","Map client unavailable");
     }
@@ -1958,18 +2004,45 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     if(action=="open_plan")security_plans_.checkSelection(get_string(body,"plan_id"),get_string(body,"mission_id"));
     // Hold the existing descriptor lock through validation and commit.
     std::lock_guard<std::mutex> records(records_mutex_);
-    std::set<std::string> uavs; for(const auto& d:drone_records_) {
-        // P1/UE canonical selection uses the existing numeric slot, while legacy records may use d1.
-        if(d.slot>0)uavs.insert("UAV-"+std::string(d.slot<10?"0":"")+std::to_string(d.slot));
+    if (action == "simulation_create") {
+        for (const auto& drone : drone_records_) {
+            if (SecurityPlanStore::isSimulationSlot(drone.slot)
+                || SecurityPlanStore::isSimulationSlot(drone_id_from_string(drone.id))) {
+                throw PlanError("SIMULATION_ID_CONFLICT", "A physical aircraft uses a reserved simulation identity");
+            }
+        }
     }
-    auto result = security_plans_.transact(body, uavs, source,
+    boost::json::object asserted_handoff;
+    const auto* plan_request = &body;
+    std::string assigned_uav;
+    if (action == "simulation_assign_real") {
+        assigned_uav = get_string(body, "assigned_uav_id");
+        asserted_handoff = body;
+        asserted_handoff.erase("assigned_drone_id");
+        plan_request = &asserted_handoff;
+    }
+    std::set<std::string> uavs;
+    for (const auto& drone : drone_records_) {
+        if (drone.slot <= 0) continue;
+        // The slot is the UI identity. The server also pins the selected descriptor's durable registration ID.
+        const auto uid = "UAV-" + std::string(drone.slot < 10 ? "0" : "") + std::to_string(drone.slot);
+        uavs.insert(uid);
+        if (uid == assigned_uav) asserted_handoff["assigned_drone_id"] = drone_id_from_string(drone.id);
+    }
+    auto result = security_plans_.transact(*plan_request, uavs, source,
         [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); },
         [this](const std::string& uid) {
             if (pilot_control_ && pilot_control_->OwnsAircraft(uid)) {
                 throw PlanError("PILOT_CONTROL_ASSIGNED", "Aircraft is assigned to a Pilot", {{"uav_id", uid}});
             }
         });
-    if(action=="create_plan" || action=="add_mission" || action=="copy_plan" || action=="open_plan") result["context"]=select(get_string(result,"plan_id"),get_string(result,"mission_id"));
+    const bool replayed = get_bool(result, "replayed");
+    if(action=="simulation_create" && !replayed) {
+        ws_manager_.broadcast(json_stringify(boost::json::object{{"type", "DroneRegistryChanged"}}));
+    }
+    if(action=="create_plan" || action=="add_mission" || action=="copy_plan" || action=="open_plan" ||
+       (action=="simulation_assign_real" && !replayed))
+        result["context"]=select(get_string(result,"plan_id"),get_string(result,"mission_id"));
     if(action=="delete_plan" && get_string(operational_context_.snapshot(),"active_security_plan_id")==get_string(body,"plan_id"))
         result["context"]=select("","");
     if(action=="delete_mission") {

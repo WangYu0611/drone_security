@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <sstream>
 #include <ctime>
+#include <iterator>
 
 struct PlanError : std::runtime_error {
     std::string code;
@@ -36,6 +37,8 @@ public:
         if (!state_.contains("executions")) state_["executions"] = Object{};
         if (!state_.contains("execution_version")) state_["execution_version"] = 0;
         if (!state_.contains("execution_requests")) state_["execution_requests"] = Object{};
+        if (!state_.contains("simulation_uavs")) state_["simulation_uavs"] = Object{};
+        if (!state_.contains("simulation_requests")) state_["simulation_requests"] = Object{};
         if (!state_.contains("deployments")) state_["deployments"] = Object{};
         if (!state_.contains("deleted_plans")) state_["deleted_plans"] = Object{};
         if (!state_.contains("edit_sessions")) state_["edit_sessions"] = Object{};
@@ -84,14 +87,17 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         checkConfigurationRequest(state_,request);
     }
-    Object transact(const Object& request, const std::set<std::string>& uavs,
+    Object transact(const Object& request, const std::set<std::string>& physicalUavs,
                     const std::string& source, const std::function<void(const Object&)>& publish,
                     const std::function<void(const std::string&)>& checkPilotOwner = {}) {
         std::lock_guard<std::mutex> lock(mutex_);
         auto next = state_;
         expire(next, OperationalContext::now());
         const auto action = str(request, "action");
-        if (action.rfind("execution_",0)==0) return executionRequest(request,uavs,source,publish,checkPilotOwner);
+        if (action.rfind("execution_",0)==0) return executionRequest(request,physicalUavs,source,publish,checkPilotOwner);
+        if (action.rfind("simulation_",0)==0) return rehearsalRequest(next,request,physicalUavs,source,publish);
+        auto uavs=physicalUavs;
+        for(const auto& entry:next.at("simulation_uavs").as_object())uavs.emplace(entry.key());
         checkConfigurationRequest(next,request);
         const bool guardedDeployment=checkDeploymentRequestGuard(next,request);
         if(action=="begin_configuration")if(const auto* current=activeConfiguration(next)) {
@@ -334,6 +340,7 @@ public:
                     event(next,"MISSION_UPDATED","MISSION",missionId,"Mission renamed: " + str(mission,"name"),source);
                 } else if (action == "assign") {
                     const auto assigned=assignment(request);
+                    rehearsalAssignment(next,assigned);
                     std::set<std::string> unique;
                     for(const auto& v:assigned){const std::string uav(v.as_string());
                         checkReservation(next,planId,uav);
@@ -509,6 +516,9 @@ private:
     static Object& lookup(Object& objects, const std::string& id, const char* error) {
         auto* v = objects.if_contains(id); if (!v) throw PlanError(error,"Unknown ID: " + id); return v->as_object();
     }
+    static const Object& lookup(const Object& objects, const std::string& id, const char* error) {
+        const auto* v = objects.if_contains(id); if (!v) throw PlanError(error,"Unknown ID: " + id); return v->as_object();
+    }
     static std::string requiredName(const Object& o) {
         auto s = str(o,"name");
         if (s.empty() || s.size()>160 || s.find_first_not_of(" \t\r\n")==std::string::npos)
@@ -571,6 +581,12 @@ private:
             const std::string key(mid.as_string());
             const auto members=assignment(m);
             if(members.empty())issue(key,"NO_UAV_ASSIGNED");
+            try { rehearsalAssignment(s,members); }
+            catch(const PlanError& ex){issue(key,ex.code.c_str());}
+            if(plan.if_contains("real_assignment")) {
+                try { checkRealAssignment(s,plan,m,uavs); }
+                catch(const PlanError& ex){issue(key,ex.code.c_str());}
+            }
             for(const auto& member:members){const std::string uid(member.as_string());
                 try { checkReservation(s,id,uid); }
                 catch(const PlanError& ex){issues.emplace_back(Object{{"mission_id",key},{"code",ex.code},{"params",ex.params}});}
@@ -590,7 +606,7 @@ private:
         for(const auto& mid:ids){const auto& m=s.at("missions").as_object().at(mid.as_string()).as_object();
             if(assignment(m).size()<2)continue;
             const auto* route=s.at("paths").as_object().if_contains(str(m,"route_id"));if(!route)continue;
-            try{checkTrajectories(s,formationRoutes(m,route->as_object()));}
+            try{checkTrajectories(s,formationRoutes(m,route->as_object()),rehearsalAssignment(s,assignment(m)));}
             catch(const PlanError& ex){issues.emplace_back(Object{{"mission_id",mid},{"code",ex.code},{"params",ex.params}});}
         }
         // A task is ready only after every check, including generated trajectories.
@@ -622,5 +638,6 @@ private:
 #endif
     }
     #include "storage/mock_execution.inl"
+    #include "storage/rehearsal.inl"
     std::string path_; mutable std::mutex mutex_; Object state_;
 };
