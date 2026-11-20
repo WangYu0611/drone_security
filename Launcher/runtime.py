@@ -336,6 +336,15 @@ log:
             raise RuntimeError('Backend readiness timed out')
         self.components['Backend'] = 'ONLINE'
     def _resolve_realtime_origin(self):
+        manual = self.config.get('manual_map_origin')
+        if manual is not None:
+            if not valid_origin(manual):
+                raise ValueError('Invalid manual map location / 手动地图地点无效。')
+            self.config['startup_origin'] = dict(manual)
+            self.location_status = 'ready'
+            self.location_source = 'manual'
+            self.log('manual_location_ready')
+            return
         self.location_status = 'waiting'
         self.location_source = ''
         self.config.pop('startup_origin', None)
@@ -564,6 +573,45 @@ log:
                 if role == 'Map' and self.launch_mode == 'realtime':
                     self._resolve_realtime_origin()
                 self.start_role(role)
+    def apply_map_location(self, origin):
+        """Set a visual origin and restart only a running, launcher-owned Map."""
+        if not valid_origin(origin):
+            raise ValueError('Invalid manual map location / 手动地图地点无效。')
+        position = {key: origin[key] for key in ('longitude', 'latitude', 'altitude')}
+        with self.lock:
+            if self.launch_mode != 'realtime' or not self.manages_role('Map'):
+                raise RuntimeError('Change location on the realtime Map workstation / 请在实时地图端所在电脑切换地点。')
+            map_process = self.owned.get('Map')
+            current = self.config.get('startup_origin') or {}
+            if (not map_process or map_process.process.poll() is not None
+                    or all(current.get(key) == value for key, value in position.items())):
+                self.config['manual_map_origin'] = position
+                return False
+
+            self._require_map_edit_finished()
+            keys = ('manual_map_origin', 'startup_origin')
+            previous = {key: self.config[key] for key in keys if key in self.config}
+            previous_location = self.location_status, self.location_source
+            self.config['manual_map_origin'] = position
+            try:
+                self.restart('Map')
+            except Exception:
+                for key in keys:
+                    self.config.pop(key, None)
+                self.config.update(previous)
+                self.location_status, self.location_source = previous_location
+                raise
+            return True
+
+    def _require_map_edit_finished(self):
+        plans = api(self.config['http_endpoint'], '/api/security-plans')
+        instance = self.instances['Map']
+        sessions = [*plans['edit_sessions'].values(), plans.get('configuration_session')]
+        now = time.time()
+        if any(session and session.get('owner_instance_id') == instance
+               and session['lease_expires_at'] > now for session in sessions):
+            raise RuntimeError('Finish the active Map edit before changing location / 请先结束地图端正在进行的编辑，再切换地点。')
+
     def has_active_execution(self):
         plans=api(self.config['http_endpoint'],'/api/security-plans')
         return any(e.get('state') not in ('COMPLETED','CANCELLED','ABORTED','FAILED') for e in plans.get('executions',{}).values())

@@ -259,6 +259,109 @@ class RealtimeRuntimeTests(ModeFixture):
         process.record.return_value = {'role': role, 'pid': 123, 'owned': True}
         return process
 
+    def test_manual_location_starts_realtime_without_requesting_gps_or_windows_location(self):
+        manual = {'longitude': 121.4737, 'latitude': 31.2304, 'altitude': 0.0}
+        runtime = Runtime(self.root, {**self.base, 'manual_map_origin': manual})
+        with patch('runtime.port_open', return_value=True), \
+             patch('runtime.compatible_snapshot', return_value=real_snapshot()), \
+             patch('runtime.api') as read, patch('runtime.computer_origin') as computer, \
+             patch.object(runtime, '_spawn') as spawn:
+            runtime.start('realtime')
+        read.assert_not_called()
+        computer.assert_not_called()
+        self.assertEqual(runtime.config['startup_origin'], manual)
+        self.assertIsNot(runtime.config['startup_origin'], manual)
+        self.assertEqual((runtime.location_status, runtime.location_source), ('ready', 'manual'))
+        args = next(call.args[1] for call in spawn.call_args_list if call.args[0] == 'Map')
+        self.assertIn('-MapStartupMode=Realtime', args)
+        self.assertIn('-MapStartupLongitude=121.4737', args)
+        self.assertIn('-MapStartupLatitude=31.2304', args)
+        self.assertIn('-MapStartupHeight=0.0', args)
+
+    def test_map_location_switch_restarts_only_owned_map_and_skips_a_repeat(self):
+        location = {'longitude': 2.3522, 'latitude': 48.8566, 'altitude': 0.0}
+        runtime = self.realtime_runtime()
+        runtime.config['startup_origin'] = dict(SINGAPORE)
+        runtime.instances['Map'] = 'local-map'
+        runtime.owned = {role: self.owned(role) for role in ('Backend', *ROLES)}
+        before = dict(runtime.owned)
+        expired = {'owner_instance_id': 'local-map', 'lease_expires_at': NOW-1}
+        other = {'owner_instance_id': 'remote-map', 'lease_expires_at': NOW+10}
+        leases = {'edit_sessions': {'expired': expired}, 'configuration_session': other}
+        with patch('runtime.api', return_value=leases) as read, \
+             patch('runtime.time.time', return_value=NOW), \
+             patch('runtime.compatible_snapshot', return_value=real_snapshot()), \
+             patch.object(runtime, '_spawn') as spawn:
+            self.assertTrue(runtime.apply_map_location(location))
+            runtime.owned['Map'] = self.owned('Map')
+            self.assertFalse(runtime.apply_map_location(location))
+        read.assert_called_once_with(runtime.config['http_endpoint'], '/api/security-plans')
+        before['Map'].stop.assert_called_once()
+        for role in ('Backend', 'Command', 'Video'):
+            self.assertIs(runtime.owned[role], before[role])
+            before[role].stop.assert_not_called()
+        spawn.assert_called_once()
+        role, args, _ = spawn.call_args.args
+        self.assertEqual(role, 'Map')
+        self.assertIn('-MapStartupLongitude=2.3522', args)
+        self.assertIn('-MapStartupLatitude=48.8566', args)
+        self.assertEqual(runtime.config['startup_origin'], location)
+
+    def test_invalid_coordinates_or_own_active_edit_leave_map_intact(self):
+        runtime = self.realtime_runtime()
+        runtime.config['startup_origin'] = dict(SINGAPORE)
+        runtime.instances['Map'] = 'local-map'
+        owner = self.owned('Map')
+        runtime.owned['Map'] = owner
+        location = {'longitude': 2.3522, 'latitude': 48.8566, 'altitude': 0.0}
+        lease = {'owner_instance_id': 'local-map', 'lease_expires_at': NOW+10}
+        with patch('runtime.api') as read, patch.object(runtime, 'restart') as restart:
+            with self.assertRaisesRegex(ValueError, 'Invalid manual map location'):
+                runtime.apply_map_location({**location, 'latitude': 90})
+            read.assert_not_called()
+            for plans in ({'edit_sessions': {'dirty': {**lease, 'state': 'DIRTY'}}},
+                          {'edit_sessions': {}, 'configuration_session': lease}):
+                with self.subTest(plans=plans), patch('runtime.time.time', return_value=NOW):
+                    read.return_value = plans
+                    with self.assertRaisesRegex(RuntimeError, 'Finish the active Map edit'):
+                        runtime.apply_map_location(location)
+            restart.assert_not_called()
+        self.assertIs(runtime.owned['Map'], owner)
+        owner.stop.assert_not_called()
+        self.assertEqual(runtime.config['startup_origin'], SINGAPORE)
+        self.assertNotIn('manual_map_origin', runtime.config)
+
+    def test_stopped_map_remembers_manual_location_without_starting_a_process(self):
+        runtime = self.realtime_runtime()
+        location = {'longitude': 2.3522, 'latitude': 48.8566, 'altitude': 0.0}
+        with patch('runtime.api') as read, patch.object(runtime, 'restart') as restart:
+            self.assertFalse(runtime.apply_map_location(location))
+        read.assert_not_called()
+        restart.assert_not_called()
+        self.assertEqual(runtime.config['manual_map_origin'], location)
+        self.assertNotIn('startup_origin', runtime.config)
+
+    def test_map_restart_failure_restores_prior_location_settings(self):
+        runtime = self.realtime_runtime()
+        runtime.config['startup_origin'] = dict(SINGAPORE)
+        runtime.location_status, runtime.location_source = 'ready', 'uav'
+        runtime.instances['Map'] = 'local-map'
+        runtime.owned['Map'] = self.owned('Map')
+        location = {'longitude': 2.3522, 'latitude': 48.8566, 'altitude': 0.0}
+
+        def fail_restart(role):
+            self.assertEqual(role, 'Map')
+            runtime._resolve_realtime_origin()
+            raise RuntimeError('Map could not launch')
+
+        with patch('runtime.api', return_value={'edit_sessions': {}}), \
+             patch.object(runtime, 'restart', side_effect=fail_restart):
+            with self.assertRaisesRegex(RuntimeError, 'Map could not launch'):
+                runtime.apply_map_location(location)
+        self.assertNotIn('manual_map_origin', runtime.config)
+        self.assertEqual(runtime.config['startup_origin'], SINGAPORE)
+        self.assertEqual((runtime.location_status, runtime.location_source), ('ready', 'uav'))
+
     def test_new_realtime_backend_preserves_operator_config_and_never_seeds_or_resets(self):
         runtime = self.realtime_runtime()
         before = self.backend_config.read_bytes()

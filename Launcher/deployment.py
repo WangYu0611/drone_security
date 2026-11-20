@@ -65,9 +65,11 @@ def _host(role, value):
     return str(address)
 
 
-def deployment_config(root, base_config, path, role):
+def deployment_config(root, base_config, path, role, *, realtime_only=False):
     """Derive one role's settings without writing or contacting any host."""
     role = _role(role)
+    if realtime_only and role not in DEPLOYMENT_SELECTIONS:
+        raise ValueError('Choose a realtime launcher role / 请选择实时启动器支持的角色。')
     profile_path = _profile_path(root, path)
     try:
         profile = json.loads(profile_path.read_text(encoding='utf-8-sig'),
@@ -81,6 +83,9 @@ def deployment_config(root, base_config, path, role):
         raise ValueError('Unsupported deployment schema_version / 部署 schema_version 必须为 1。')
     if profile['mode'] not in ('realtime', 'demo'):
         raise ValueError('Deployment mode must be realtime or demo / 部署 mode 必须为 realtime 或 demo。')
+    if realtime_only and profile['mode'] != 'realtime':
+        raise ValueError('Choose a realtime shared config or clear the path for local startup. / '
+                         '请选择实时共享配置，或清空路径使用单机启动。')
     host_roles = DEPLOYMENT_ROLES
     if isinstance(profile['hosts'], dict) and PILOT_ROLE in profile['hosts']:
         if profile['mode'] != 'demo':

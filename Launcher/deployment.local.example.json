@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "mode": "demo",
+  "mode": "realtime",
   "hosts": {
     "Backend": "127.0.0.1",
     "Command": "127.0.0.1",
     "Map": "127.0.0.1",
     "Video": "127.0.0.1"
   },
-  "http_port": 19880,
-  "ws_port": 19881
+  "http_port": 8080,
+  "ws_port": 8081
 }

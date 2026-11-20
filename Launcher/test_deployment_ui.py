@@ -9,6 +9,8 @@ import unittest
 from unittest.mock import Mock, patch
 
 from deployment import load_deployment_selection, save_deployment_selection
+from launch_modes import mode_config
+from map_locations import load_map_locations, save_map_locations
 from runtime import Runtime
 
 
@@ -18,7 +20,7 @@ UI = Application.__init__.__globals__
 
 
 class Value:
-    def __init__(self, value=None, **kwargs):
+    def __init__(self, value='', **kwargs):
         self.value = value
 
     def get(self):
@@ -31,6 +33,7 @@ class Value:
 class Widget:
     def __init__(self, *args, **kwargs):
         self.values = dict(kwargs)
+        self.selected = -1
         self.grid = Mock()
         self.pack = Mock()
         self.bind = Mock()
@@ -38,6 +41,14 @@ class Widget:
 
     def config(self, **kwargs):
         self.values.update(kwargs)
+
+    def current(self, index=None):
+        if index is None:
+            return self.selected
+        self.selected = index
+
+    def set(self, value):
+        self.selected = -1
 
 
 class ImmediateThread:
@@ -72,6 +83,9 @@ class DeploymentUITests(unittest.TestCase):
         app.runtime = SimpleNamespace(owned={}, state='STOPPED', stop=Mock())
         app.role_choice = Value(role)
         app.deployment_path = Value(str(self.root / 'shared.json'))
+        app.latitude, app.longitude, app.location_name = Value(), Value(), Value()
+        app.map_locations, app.favorite_picker = [], Widget()
+        app.location_feedback = 'Launcher.LocationHint'
         app.placed = {100}
         app.busy = app.polling = app.closing = False
         app.messages = queue.Queue()
@@ -93,20 +107,20 @@ class DeploymentUITests(unittest.TestCase):
                 replacement = Mock(owned={})
                 events = []
                 loader = Mock(return_value=self.base)
-                derive = Mock(side_effect=lambda *args: events.append('profile') or config)
+                derive = Mock(side_effect=lambda *args, **kwargs: events.append('profile') or config)
                 preflight = Mock(side_effect=lambda *args: events.append('preflight') or [])
                 factory = Mock(side_effect=lambda *args: events.append('runtime') or replacement)
                 replacement.start.side_effect = lambda *args: events.append('start')
                 with patch.dict(UI, {'load_config': loader, 'deployment_config': derive,
                                      'preflight': preflight, 'Runtime': factory}), \
                      patch.object(UI['threading'], 'Thread', ImmediateThread):
-                    app.start_deployment()
-                derive.assert_called_once_with(self.root, self.base, app.deployment_path.get(), role)
+                    app.start()
+                derive.assert_called_once_with(self.root, self.base, app.deployment_path.get(), role,
+                                               realtime_only=True)
                 preflight.assert_called_once_with(self.root, config)
                 factory.assert_called_once_with(self.root, config)
                 self.assertEqual(events, ['profile', 'preflight', 'runtime', 'start'])
-                self.assertEqual(replacement.start.call_count, 1)
-                self.assertIn(replacement.start.call_args.args, ((), (None,)))
+                replacement.start.assert_called_once_with()
                 self.assertEqual(app.placed, set())
                 self.assertTrue(app.messages.empty())
                 self.assertEqual(load_deployment_selection(self.root),
@@ -120,7 +134,7 @@ class DeploymentUITests(unittest.TestCase):
         with patch.dict(UI, {'load_config': Mock(return_value=self.base), 'deployment_config': derive,
                              'preflight': preflight, 'Runtime': factory}), \
              patch.object(UI['threading'], 'Thread', ImmediateThread):
-            app.start_deployment()
+            app.start()
         self.assertIs(app.runtime, original)
         self.assertEqual(app.messages.get_nowait(), 'Invalid deployment JSON')
         self.assertFalse(app.busy)
@@ -213,27 +227,123 @@ class DeploymentUITests(unittest.TestCase):
         old._backend.assert_not_called()
         self.assertEqual(old.owned, {})
 
-    def test_legacy_all_start_uses_local_config_and_clears_saved_lan_selection(self):
+    def test_local_all_start_uses_realtime_with_manual_coordinates_and_clears_lan_selection(self):
         app = self.app('All')
+        app.deployment_path.set('  ')
+        app.latitude.set(' 31.25 ')
+        app.longitude.set('121.5')
         save_deployment_selection(self.root, 'Command', self.root / 'shared.json')
         replacement = Mock(owned={})
-        derive = Mock(side_effect=AssertionError('Legacy All must not read LAN profile'))
+        derive = Mock(side_effect=AssertionError('Local All must not read LAN profile'))
+        local_mode = Mock(wraps=mode_config)
         preflight = Mock(return_value=[])
         with patch.dict(UI, {'load_config': Mock(return_value=self.base), 'deployment_config': derive,
-                             'preflight': preflight, 'Runtime': Mock(return_value=replacement)}), \
+                             'mode_config': local_mode, 'preflight': preflight,
+                             'Runtime': Mock(return_value=replacement)}), \
              patch.object(UI['threading'], 'Thread', ImmediateThread):
-            app.start('demo')
+            app.start()
         derive.assert_not_called()
-        preflight.assert_called_once_with(self.root, self.base)
-        replacement.start.assert_called_once_with('demo')
+        local_mode.assert_called_once_with(self.root, self.base, 'realtime', validate_isolation=False)
+        config = preflight.call_args.args[1]
+        self.assertEqual(config['launch_mode'], 'realtime')
+        self.assertEqual(config['manual_map_origin'], {'latitude': 31.25, 'longitude': 121.5, 'altitude': 0.0})
+        self.assertFalse(config['mock_reset_on_start'])
+        replacement.start.assert_called_once_with()
         self.assertEqual(load_deployment_selection(self.root), {'role': None, 'path': None})
 
-    def test_start_buttons_cannot_launch_wrong_deployment_mode(self):
+    def test_shared_demo_profile_is_rejected_before_preflight(self):
         app = self.app('Map')
-        app.action = Mock()
-        app.start('demo')
-        app.start('realtime')
-        app.action.assert_not_called()
+        original = app.runtime
+        Path(app.deployment_path.get()).write_text(json.dumps({
+            'schema_version': 1, 'mode': 'demo',
+            'hosts': {role: '127.0.0.1' for role in ('Backend', 'Command', 'Map', 'Video')},
+            'http_port': 8080, 'ws_port': 8081,
+        }), encoding='utf-8')
+        preflight, factory = Mock(), Mock()
+        with patch.dict(UI, {'load_config': Mock(return_value=self.base),
+                             'preflight': preflight, 'Runtime': factory}), \
+             patch.object(UI['threading'], 'Thread', ImmediateThread):
+            app.start()
+        self.assertIn('Choose a realtime shared config', app.messages.get_nowait())
+        self.assertIs(app.runtime, original)
+        preflight.assert_not_called()
+        factory.assert_not_called()
+
+    def test_shared_map_start_uses_manual_coordinates_and_rejects_partial_coordinates(self):
+        for longitude in ('', '-122.4'):
+            with self.subTest(longitude=longitude):
+                app = self.app('Map')
+                app.latitude.set('37.75')
+                app.longitude.set(longitude)
+                app.prepare_start = Mock()
+                with patch.dict(UI, {'load_config': Mock(return_value=self.base),
+                                     'deployment_config': Mock(return_value=self.derived('Map'))}), \
+                     patch.object(UI['threading'], 'Thread', ImmediateThread):
+                    app.start()
+                if longitude:
+                    self.assertTrue(app.messages.empty())
+                    self.assertEqual(app.prepare_start.call_args.args[0]['manual_map_origin'], {
+                        'latitude': 37.75, 'longitude': -122.4, 'altitude': 0.0,
+                    })
+                else:
+                    app.prepare_start.assert_not_called()
+                    self.assertIn('Longitude', app.messages.get_nowait())
+
+    def test_location_switch_stages_idle_coordinates_or_updates_running_map(self):
+        for state in ('STOPPED', 'READY'):
+            with self.subTest(state=state):
+                app = self.app('Map')
+                app.latitude.set(' 0 ')
+                app.longitude.set('180')
+                app.runtime.state = state
+                app.runtime.manages_role = lambda role: role == 'Map'
+                app.runtime.apply_map_location = Mock()
+                with patch.object(UI['threading'], 'Thread', ImmediateThread):
+                    app.switch_location()
+                self.assertTrue(app.messages.empty())
+                if state == 'READY':
+                    app.runtime.apply_map_location.assert_called_once_with({
+                        'latitude': 0.0, 'longitude': 180.0, 'altitude': 0.0,
+                    })
+                    self.assertEqual(app.location_feedback, 'Launcher.LocationHint')
+                else:
+                    app.runtime.apply_map_location.assert_not_called()
+                    self.assertEqual(app.location_feedback, 'Launcher.LocationNextLaunch')
+
+    def test_favorites_load_select_add_and_delete_without_starting_map(self):
+        app = self.app('Map')
+        saved = {'name': '厂区', 'latitude': 31.25, 'longitude': 121.5}
+        save_map_locations(self.root, [saved])
+        with patch.object(UI['tk'], 'Frame', Widget), patch.object(UI['tk'], 'Label', Widget), \
+             patch.object(UI['tk'], 'Button', Widget), patch.object(UI['tk'], 'StringVar', Value), \
+             patch.object(UI['ttk'], 'Combobox', Widget), patch.object(UI['ttk'], 'Entry', Widget):
+            app.buttons = []
+            app.text = lambda key: key
+            app.build_location_panel(6)
+        self.assertEqual(app.favorite_picker.values['values'], ['厂区'])
+        app.favorite_picker.current(0)
+        app.select_location()
+        self.assertEqual((app.location_name.get(), app.latitude.get(), app.longitude.get()),
+                         ('厂区', '31.25', '121.5'))
+
+        app.location_name.set('')
+        app.latitude.set('39.9')
+        app.longitude.set('116.3')
+        app.runtime.apply_map_location = Mock()
+        app.prepare_start = Mock()
+        app.add_location()
+        added = {'name': '39.9, 116.3', 'latitude': 39.9, 'longitude': 116.3}
+        self.assertEqual(load_map_locations(self.root), [saved, added])
+        self.assertEqual(app.favorite_picker.current(), 1)
+        self.assertEqual(app.favorite_picker.values['values'], ['厂区', '39.9, 116.3'])
+
+        app.favorite_picker.current(0)
+        app.remove_location()
+        self.assertEqual(load_map_locations(self.root), [added])
+        self.assertEqual(app.favorite_picker.values['values'], ['39.9, 116.3'])
+        self.assertEqual(app.favorite_picker.current(), -1)
+        app.runtime.apply_map_location.assert_not_called()
+        app.prepare_start.assert_not_called()
 
     def button_app(self, local='Command', existing=False):
         app = self.app(local)
@@ -250,24 +360,38 @@ class DeploymentUITests(unittest.TestCase):
         app.role_selector = Widget()
         app.profile_entry = Widget()
         app.browse_button = Widget()
-        app.deployment_start = Widget()
+        app.start_button = Widget()
+        app.switch_button = Widget()
+        app.buttons.extend(((app.start_button, 'Launcher.Start'),
+                            (app.switch_button, 'Launcher.SwitchLocation')))
+        app.location_entries = [Widget(), Widget(), Widget()]
+        app.location_labels = {}
+        app.location_hint = Widget()
         app.text = lambda key: key
         return app
 
     def test_remote_operation_buttons_are_disabled_while_local_controls_remain_enabled(self):
         app = self.button_app()
         Application.update_buttons(app)
-        for button, key in app.buttons:
+        for button in app.role_buttons:
             self.assertEqual(button.values['state'],
                              'normal' if app.role_buttons[button] == 'Command' else 'disabled')
         self.assertEqual(app.role_selector.values['state'], 'disabled')
-        self.assertEqual(app.deployment_start.values['state'], 'disabled')
+        self.assertEqual(app.start_button.values['state'], 'disabled')
+        self.assertEqual(app.switch_button.values['state'], 'disabled')
+
+    def test_running_local_map_can_switch_location(self):
+        app = self.button_app('Map')
+        Application.update_buttons(app)
+        self.assertEqual(app.start_button.values['state'], 'disabled')
+        self.assertEqual(app.switch_button.values['state'], 'normal')
+        self.assertEqual(app.favorite_picker.values['state'], 'readonly')
 
     def test_existing_external_backend_buttons_are_disabled_even_on_backend_workstation(self):
         app = self.button_app('Backend', existing=True)
         app.runtime.owned = {}
         Application.update_buttons(app)
-        for button, key in app.buttons:
+        for button in app.role_buttons:
             self.assertEqual(button.values['state'], 'disabled')
 
     def test_background_poll_keeps_idle_role_and_profile_controls_usable(self):
@@ -294,7 +418,7 @@ class DeploymentUITests(unittest.TestCase):
                         self.assertEqual(app.role_selector.values['state'], 'readonly')
                         self.assertEqual(app.profile_entry.values['state'], 'normal')
                         self.assertEqual(app.browse_button.values['state'], 'normal')
-                        self.assertEqual(app.deployment_start.values['state'], 'normal')
+                        self.assertEqual(app.start_button.values['state'], 'normal')
                     poll.assert_called_once()
                     self.assertFalse(app.busy)
 
@@ -315,7 +439,8 @@ class DeploymentUITests(unittest.TestCase):
                     self.assertTrue(app.busy)
                     self.assertFalse(app.polling)
                     for widget in (app.role_selector, app.profile_entry,
-                                   app.browse_button, app.deployment_start):
+                                   app.browse_button, app.start_button, app.favorite_picker,
+                                   *app.location_entries):
                         self.assertEqual(widget.values['state'], 'disabled')
                     start.assert_not_called()
                     workers.pop()()
@@ -325,16 +450,19 @@ class DeploymentUITests(unittest.TestCase):
                     self.assertEqual(app.role_selector.values['state'], 'readonly')
                     self.assertEqual(app.profile_entry.values['state'], 'normal')
                     self.assertEqual(app.browse_button.values['state'], 'normal')
-                    self.assertEqual(app.deployment_start.values['state'], 'normal')
+                    self.assertEqual(app.start_button.values['state'], 'normal')
 
-    def test_constructor_restores_choice_and_auto_start_route_without_global_preflight(self):
+    def test_constructor_restores_realtime_roles_and_uses_single_start_action(self):
         catalog = {key: [key, key] for key in ('Stage1.Name', 'Launcher.STOPPED', 'Launcher.Layout',
-                   'Launcher.ModeUnset', 'Launcher.Restart', 'Launcher.Focus', 'Launcher.Stop',
-                   'Launcher.StartDemo', 'Launcher.StartRealtime', 'Launcher.Arrange', 'Launcher.Shutdown')}
+                   'Launcher.ModeRealtime', 'Launcher.Restart', 'Launcher.Focus', 'Launcher.Stop',
+                   'Launcher.Start', 'Launcher.Arrange', 'Launcher.Shutdown', 'Launcher.LocationHint',
+                   'Launcher.FavoriteLocations', 'Launcher.Latitude', 'Launcher.Longitude',
+                   'Launcher.LocationName', 'Launcher.RemoveLocation', 'Launcher.SwitchLocation',
+                   'Launcher.AddLocation')}
         catalog_path = self.root / 'Scripts/P4/localization.json'
         catalog_path.parent.mkdir(parents=True)
         catalog_path.write_text(json.dumps(catalog), encoding='utf-8')
-        for role in ('All', 'Backend', None):
+        for role in ('All', 'Backend', 'Pilot', None):
             with self.subTest(role=role):
                 save_deployment_selection(self.root, role, self.root / 'shared.json' if role else None)
                 runtime = SimpleNamespace(owned={}, state='STOPPED', launch_mode=None,
@@ -356,29 +484,29 @@ class DeploymentUITests(unittest.TestCase):
                      patch.object(UI['tk'], 'Label', Widget), \
                      patch.object(UI['tk'], 'Entry', Widget), \
                      patch.object(UI['tk'], 'Button', Widget), \
-                     patch.object(UI['ttk'], 'Combobox', Widget):
-                    app = Application()
+                     patch.object(UI['ttk'], 'Combobox', Widget), \
+                     patch.object(UI['ttk'], 'Entry', Widget):
+                    start = Mock()
+                    with patch.object(Application, 'start', start):
+                        app = Application()
                 preflight.assert_not_called()
                 guard.assert_called_once_with('launcher:' + str(self.root.resolve()))
                 idle = factory.call_args.args[1]
                 self.assertEqual(idle['runtime_directory'], 'Saved/Launcher/Idle')
                 self.assertNotIn('launch_mode', idle)
-                self.assertEqual(app.role_choice.get(), role or 'All')
+                self.assertEqual(app.role_choice.get(), role if role in ('All', 'Backend') else 'All')
+                self.assertEqual(app.deployment_path.get(), str(self.root / 'shared.json')
+                                 if role in ('All', 'Backend') else '')
+                self.assertEqual(app.role_selector.values['values'], ('All', 'Backend', 'Command', 'Map', 'Video'))
                 self.assertEqual(app.role_selector.values['state'], 'readonly')
-                self.assertEqual(app.deployment_start.values['state'], 'normal')
-                # An explicit saved All uses its shared profile. An absent role
-                # is the legacy All selection and retains the old mode button.
-                app.start_deployment, app.start = Mock(), Mock()
+                start_buttons = [(button, key) for button, key in app.buttons if 'Start' in key]
+                self.assertEqual([key for _, key in start_buttons], ['Launcher.Start'])
+                self.assertEqual(start_buttons[0][0].values['state'], 'normal')
                 callbacks = [call.args[1] for call in root.after.call_args_list
                              if call.args[0] == 500]
                 self.assertEqual(len(callbacks), 1)
                 callbacks[0]()
-                if role:
-                    app.start_deployment.assert_called_once_with()
-                    app.start.assert_not_called()
-                else:
-                    app.start.assert_called_once_with('demo')
-                    app.start_deployment.assert_not_called()
+                start.assert_called_once_with()
 
 
 if __name__ == '__main__':
