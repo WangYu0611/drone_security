@@ -18,7 +18,6 @@
 #include "Components/Slider.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
-#include "Brushes/SlateRoundedBoxBrush.h"
 #include "Rendering/DrawElements.h"
 #include "Layout/Clipping.h"
 #include "Styling/CoreStyle.h"
@@ -42,11 +41,6 @@ void UMapExecutionWidget::NativeOnInitialized(){
     MapUI::Text(Label(WidgetTree,Box,T(TEXT("Execution.MonitorNeutral")),24),20,MapUI::PrimaryText,true);Summary=Label(WidgetTree,Box,FText::GetEmpty(),22);MapUI::Text(Summary,15);
     RunPicker=WidgetTree->ConstructWidget<UComboBoxString>();
     RunPicker->SetContentPadding(FMargin(8,4));
-    auto ComboStyle=RunPicker->GetWidgetStyle();
-    ComboStyle.ComboButtonStyle.ButtonStyle.SetNormal(FSlateRoundedBoxBrush(FigmaUI::Inset,5,FigmaUI::Outline,1));
-    ComboStyle.ComboButtonStyle.ButtonStyle.SetHovered(FSlateRoundedBoxBrush(FigmaUI::Inset,5,FigmaUI::Muted,1));
-    RunPicker->SetWidgetStyle(ComboStyle);
-    RunPicker->SetToolTipText(SimulationUI::Label(TEXT("Select a completed rehearsal to replay."),TEXT("选择已结束的预演查看回放。")));
     RunPicker->OnSelectionChanged.AddDynamic(this,&UMapExecutionWidget::SelectRun);
     RunPicker->SetVisibility(ESlateVisibility::Collapsed);
     Box->AddChildToVerticalBox(RunPicker)->SetPadding(FMargin(0,8,0,0));
@@ -70,7 +64,7 @@ void UMapExecutionWidget::NativeOnInitialized(){
     auto* Locate=WidgetTree->ConstructWidget<UButton>();
     auto* LocateCaption=WidgetTree->ConstructWidget<UTextBlock>();
     MapUI::Text(LocateCaption,13);
-    LocateCaption->SetText(SimulationUI::Label(TEXT("Locate route"),TEXT("定位航线")));
+    LocateCaption->SetText(T(TEXT("Map.Focus")));
     Locate->SetContent(LocateCaption);
     MapUI::Button(Locate,false,true);
     Locate->OnClicked.AddDynamic(this,&UMapExecutionWidget::LocateExecution);
@@ -81,6 +75,7 @@ void UMapExecutionWidget::NativeOnInitialized(){
 
 void UMapExecutionWidget::RefreshHistory(const TSharedPtr<FJsonObject>& State)
 {
+    RunPicker->SetToolTipText(SimulationUI::Label(TEXT("Select a finished rehearsal to replay."),TEXT("选择已结束的预演查看回放。")));
     TArray<TSharedPtr<FJsonObject>> Completed;
     TSet<FString> ActiveGroups;
     const auto All=Object(State,TEXT("executions"));
