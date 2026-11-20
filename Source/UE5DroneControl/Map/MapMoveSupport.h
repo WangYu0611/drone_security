@@ -2,6 +2,7 @@
 #include "Shared/ExecutionPresentation.h"
 #include "Map/MapMoveIntent.h"
 #include "Shared/PlanConfiguration.h"
+#include "Shared/SimulationRehearsalUI.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 
 /** Both map clients use accepted positions and the same authoritative execution action. */
@@ -17,9 +18,11 @@ inline bool MockFallbackAllowed(const TSharedPtr<FJsonObject>& State,int32 Id){
     bool Simulation=false;return !Owner || (Owner->TryGetBoolField(TEXT("simulation"),Simulation) && Simulation);
 }
 inline bool TelemetrySourceAllowed(const TSharedPtr<FJsonObject>& State,int32 Id,const FDroneTelemetrySnapshot& Telemetry){
-    return !Telemetry.bSimulation || (PlanUI::Field(State,TEXT("execution_adapter"))==TEXT("Mock") && MockFallbackAllowed(State,Id));
+    return !Telemetry.bSimulation || SimulationUI::Aircraft(State,UAV(Id))
+        || (PlanUI::Field(State,TEXT("execution_adapter"))==TEXT("Mock") && MockFallbackAllowed(State,Id));
 }
 inline bool Position(const UDroneRegistrySubsystem* Registry,const TSharedPtr<FJsonObject>& State,int32 Id,FVector& Geographic,bool ForControl=false){
+    if(ForControl && SimulationUI::Aircraft(State,UAV(Id)))return false;
     FDroneTelemetrySnapshot Telemetry;
     const bool Mock=PlanUI::Field(State,TEXT("execution_adapter"))==TEXT("Mock");
     const bool AllowedMock=Mock && MockFallbackAllowed(State,Id);
@@ -41,7 +44,7 @@ inline bool Position(const UDroneRegistrySubsystem* Registry,const TSharedPtr<FJ
 }
 inline TSharedPtr<FJsonObject> TakeoverSource(const TSharedPtr<FJsonObject>& State,const TArray<int32>& Members){
     using namespace PlanUI;
-    if(Members.Num()!=1)return nullptr;
+    if(Members.Num()!=1 || SimulationUI::Aircraft(State,UAV(Members[0])))return nullptr;
     TSharedPtr<FJsonObject> Source;const auto All=Object(State,TEXT("executions"));
     if(All)for(const auto& Item:All->Values){const auto E=Item.Value->AsObject();
         if(!E || Field(E,TEXT("uav_id"))!=UAV(Members[0]))continue;
@@ -77,6 +80,8 @@ inline FText Unavailable(const UDroneRegistrySubsystem* Registry,UOperationalCon
     const auto Takeover=AllowTakeover?TakeoverSource(Sync->GetPlans(),Members):nullptr;
     for(int32 Id:Members){FDroneDescriptor Descriptor;
         if(!Registry->GetDroneDescriptor(Id,Descriptor) || Descriptor.bIsEnemyTarget)return T(TEXT("Errors.INVALID_UAV"));
+        if(SimulationUI::Aircraft(Sync->GetPlans(),UAV(Id)))
+            return SimulationUI::Label(TEXT("Use a mission rehearsal to move simulated aircraft."),TEXT("请通过任务预演移动模拟机。"));
         if(const auto Owner=UAVReservation(Sync->GetPlans(),TEXT(""),UAV(Id));Owner && Owner!=Takeover)
             return FText::Format(T(TEXT("Fleet.Occupied")),User(UAV(Id)),Field(Owner,TEXT("control_kind"))==TEXT("GROUP_MOVE")?T(TEXT("MapMove.Title")):User(Field(Owner,TEXT("plan_name"))));
         FVector P;if(!Position(Registry,Sync->GetPlans(),Id,P,true))return FText::Format(T(TEXT("Fleet.TelemetryRequired")),User(UAV(Id)));
@@ -91,6 +96,7 @@ inline TSharedRef<FJsonObject> Request(const TArray<int32>& Members,const FVecto
 }
 inline TSharedPtr<FJsonObject> PreviewRequest(const TSharedPtr<FJsonObject>& State,const TArray<int32>& Members,const FVector& Target,const FTakeoverIntent& Intent){
     if(Members.IsEmpty() || !PreviewIsCurrent(State,Members,Intent))return nullptr;
+    for(int Id:Members)if(SimulationUI::Aircraft(State,UAV(Id)))return nullptr;
     // The unoccupied path stays closed to active tasks, including mixed or
     // multi-selection requests that have no eligible singleton takeover source.
     if(!Intent.IsSet())for(int Id:Members)if(PlanUI::UAVReservation(State,TEXT(""),UAV(Id)))return nullptr;

@@ -1,6 +1,7 @@
 #include "Shared/SecurityPlanWorkspaceWidget.h"
 #include "Shared/PlanWidgetSupport.h"
 #include "Shared/PlanConfiguration.h"
+#include "Shared/SimulationRehearsalUI.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/VerticalBoxSlot.h"
@@ -12,6 +13,7 @@
 #include "Components/ScaleBox.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "DroneOps/Core/DroneRegistrySubsystem.h"
 
 using namespace PlanUI;
 
@@ -208,7 +210,22 @@ void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
     const auto Plan=Find(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),TEXT("plans"),PlanId);
     const bool Deployed=Field(Plan,TEXT("status"))==TEXT("DEPLOYED");
     WorkspaceTitle->SetToolTipText(WorkspaceTitle->GetText());
-    PlanStatusCaption->SetText(ProductText::Get(TEXT("Plan.")+Field(Plan,TEXT("status"))));
+    const auto Assignment = Object(Plan, TEXT("real_assignment"));
+    const bool PendingReal = Assignment && !Deployed && Field(Plan, TEXT("status")) != TEXT("READY");
+    FText PlanStatus = ProductText::Get(TEXT("Plan.")+Field(Plan,TEXT("status")));
+    if (PendingReal)
+    {
+        const auto Uav = Field(Assignment, TEXT("assigned_uav_id"));
+        auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+        int32 DroneId = 0;
+        FDroneTelemetrySnapshot Telemetry;
+        const bool PositionUnavailable = Uav.StartsWith(TEXT("UAV-")) && LexTryParseString(DroneId, *Uav.Mid(4))
+            && Registry && Registry->GetTelemetry(DroneId, Telemetry) && !Telemetry.bGpsFix;
+        PlanStatus = PositionUnavailable
+            ? SimulationUI::Label(TEXT("Awaiting checks · No valid positioning"), TEXT("待执行检查 · 无有效定位"))
+            : SimulationUI::Label(TEXT("Awaiting real-aircraft checks"), TEXT("真机分配 · 待执行检查"));
+    }
+    PlanStatusCaption->SetText(PlanStatus);
     FigmaUI::Text(PlanStatusCaption,12,Deployed?FigmaUI::Online:FigmaUI::Muted);
     ReviewHeading->SetText(T(Deployed?TEXT("Figma.PlanDetail.DeploymentInfo"):TEXT("Workflow.PreDeployReview")));
     Steps->SetVisibility(ESlateVisibility::Collapsed);

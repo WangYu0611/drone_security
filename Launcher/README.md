@@ -51,6 +51,14 @@ To change the position during a session, apply coordinates with **Switch locatio
 
 Mock fixtures, including the Mock Pilot, remain available for internal QA. [Mock control setup](../Backend/README.md#104-驾驶员控制权-mock)
 
+## Mission rehearsals
+
+With Command and Map connected to the realtime Backend, open the Command fleet list and choose **Add simulated aircraft**. Set a batch size and start location, or choose a Launcher favorite. A rehearsal can run with an empty physical fleet.
+
+Assign simulated aircraft to a task in the Security Plan workspace, save its route in Map, then choose **Run rehearsal** on the task. Map shows live progress and lets you play or scrub completed rehearsal records. Changes to the saved route or formation require a new rehearsal before the task can be reviewed and assigned.
+
+After reviewing a completed single-aircraft rehearsal, select a registered physical aircraft and save the pending assignment. Command opens a new draft linked to the rehearsal. The draft must pass the existing real-aircraft checks, review and deployment before a separate start confirmation.
+
 ## Starting and stopping
 
 **Launch System** uses local ports `8080/8081` and `Backend/config.yaml` by default. The launcher starts or attaches to Backend, validates its APIs, and starts the selected UE processes. **All** resolves the map location before opening the three clients and requires their hydrated heartbeats for READY. A single-role deployment starts the selected role and resolves the location only for Map. Shut down the current session before changing deployment settings.

@@ -59,6 +59,7 @@ private:
     UPROPERTY() TObjectPtr<class UComboBoxString> Aircraft;
     UPROPERTY() TObjectPtr<class UCommandActionButton> Map2DButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> Map3DButton;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> VideoButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> BoxSelectButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> GroupMoveButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> TakeoverButton;

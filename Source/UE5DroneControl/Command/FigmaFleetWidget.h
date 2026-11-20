@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/ComboBoxString.h"
 #include "DroneOps/Core/DroneOpsTypes.h"
 #include "FigmaFleetWidget.generated.h"
 
@@ -46,6 +47,17 @@ private:
     UPROPERTY() TObjectPtr<class UOverlay> RootOverlay;
     UPROPERTY() TObjectPtr<class UPilotDispatchWidget> PilotDispatch;
     UPROPERTY() TObjectPtr<class UCommandActionButton> PilotDispatchButton;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> AddSimulation;
+    UPROPERTY() TObjectPtr<class UBorder> SimulationLayer;
+    UPROPERTY() TObjectPtr<class UComboBoxString> SimulationOrigin;
+    UPROPERTY() TArray<TObjectPtr<class UEditableTextBox>> SimulationInputs;
+    UPROPERTY() TObjectPtr<class UTextBlock> SimulationResult;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> SimulationConfirm;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> SimulationCancel;
+    TMap<FString, FVector2D> SimulationFavorites;
+    FString SimulationRequestId;
+    FString SimulationLastInput;
+    bool bSimulationPending = false;
     UPROPERTY() TObjectPtr<class UScrollBox> DroneScroll;
     UPROPERTY() TObjectPtr<class UTextBlock> EmptyList;
     UPROPERTY() TObjectPtr<class UGroupControlWidget> GroupControls;
@@ -71,6 +83,10 @@ private:
     void BuildRows(const TArray<FDroneDescriptor>& Descriptors);
     void RefreshVideoOptions(const TArray<FDroneDescriptor>& Descriptors);
     void SetSelectionStatus(const FText& Text);
+    void BuildSimulationDialog();
+    void OpenSimulationDialog();
+    void SubmitSimulationBatch();
+    UFUNCTION() void SimulationOriginSelected(FString Option, ESelectInfo::Type SelectionType);
     void BuildLabelDialog();
     void OpenLabelDialog(int32 Id);
     void RefreshLabelPreview();

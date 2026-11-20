@@ -16,6 +16,7 @@ public:void Refresh();
 protected:
     virtual void NativeOnInitialized() override;
     virtual void NativeDestruct() override;
+    virtual void NativeTick(const FGeometry&,float DeltaSeconds) override;
     virtual int32 NativePaint(const FPaintArgs&,const FGeometry&,const FSlateRect&,FSlateWindowElementList&,int32,const FWidgetStyle&,bool) const override;
 private:
     struct FPresentedRoute {
@@ -24,8 +25,39 @@ private:
         TArray<TSharedPtr<FJsonObject>> Members;
         bool bMissionGroup=false;
     };
+    struct FReplaySample {
+        FVector Geographic=FVector::ZeroVector;
+        double Seconds=0;
+        double Progress=0;
+        int32 CurrentWaypoint=0;
+        int32 CompletedWaypoints=0;
+    };
     UPROPERTY() TObjectPtr<class UBorder> SummaryPanel;
     UPROPERTY() TObjectPtr<class UTextBlock> Summary;
+    UPROPERTY() TObjectPtr<class UComboBoxString> RunPicker;
+    UPROPERTY() TObjectPtr<class UVerticalBox> ReplayControls;
+    UPROPERTY() TObjectPtr<class USlider> ReplaySlider;
+    UPROPERTY() TObjectPtr<class UButton> PlayButton;
+    UPROPERTY() TObjectPtr<class UTextBlock> PlayCaption;
+    UPROPERTY() TObjectPtr<class UTextBlock> ReplayTime;
+    TArray<FString> RunOptions;
+    TMap<FString,FString> HistoryIds;
+    TMap<FString,TArray<FReplaySample>> ReplayTracks;
+    FString ReplayId;
+    double ReplaySeconds=0;
+    double ReplayDuration=0;
+    bool bReplayPlaying=false;
+    bool bChangingReplayUi=false;
+    bool bReplaySelectionChanged=false;
+    UFUNCTION() void SelectRun(FString Option,ESelectInfo::Type Type);
+    UFUNCTION() void PlayReplay();
+    UFUNCTION() void ScrubReplay(float Position);
+    UFUNCTION() void LocateExecution();
+    void RefreshHistory(const TSharedPtr<FJsonObject>& State);
+    void LoadReplay(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Run);
+    void RefreshSummary();
+    bool ReplaySample(const TSharedPtr<FJsonObject>& Current,FReplaySample& Result) const;
+    bool FocusExecution();
     TSharedPtr<FJsonObject> Execution;
     TArray<TSharedPtr<FJsonObject>> RenderedExecutions;
     TArray<FPresentedRoute> PresentedRoutes;

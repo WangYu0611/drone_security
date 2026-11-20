@@ -1,5 +1,6 @@
 #include "Shared/OperationalContextSubsystem.h"
 #include "Shared/ExecutionPresentation.h"
+#include "Shared/SimulationRehearsalUI.h"
 #include "Shared/MapSelectionVideo.h"
 #include "RealTimeDroneReceiver.h"
 #include "DroneOps/Core/ICoordinateService.h"
@@ -266,6 +267,7 @@ bool UOperationalContextSubsystem::SetMapSelection(int32 Id,const TArray<int32>&
     if(Role!=TEXT("Map") || !IsHydrated() || bMapSelectionPending || bVideoSwitchPending)return false;
     auto* Registry=GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
     if(ClickedId<=0 || !Registry->IsDroneRegistered(ClickedId))return false;
+    if(SimulationUI::Aircraft(GetPlans(),FString::Printf(TEXT("UAV-%02d"),ClickedId)))return SetLocalSelection(Id,Multi);
     ++VideoSwitchSerial; // A prior ordinary-video callback cannot overwrite this Map operation.
     const int64 Serial=++SelectionSerial;
     const FString Target=FString::Printf(TEXT("UAV-%02d"),ClickedId);
@@ -466,7 +468,7 @@ bool UOperationalContextSubsystem::SetLanguage(const FString& Language) {
     Request(TEXT("PATCH"),TEXT("/api/ui-preferences"),Body,[this,Serial](TSharedPtr<FJsonObject> R){CompleteLanguageChange(Serial,R);});return true;
 }
 bool UOperationalContextSubsystem::OpenVideo(const FString& UAV) {
-    if(bMapSelectionPending || bVideoSwitchPending)return false;
+    if(bMapSelectionPending || bVideoSwitchPending || SimulationUI::Aircraft(GetPlans(),UAV))return false;
     RequestedVideoTarget=UAV;
     if(!IsReady()){ViewSyncError=TEXT("VIDEO_SWITCH_OFFLINE");return false;}
     const int64 Serial=++VideoSwitchSerial;

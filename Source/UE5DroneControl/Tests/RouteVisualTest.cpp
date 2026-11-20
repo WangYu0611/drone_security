@@ -39,6 +39,32 @@ bool FRouteOwnershipTest::RunTest(const FString&){
     auto Owners=ExecutionUI::RouteOwners(State,TEXT("p1"));TestEqual(TEXT("completed route retained alongside another executing mission"),Owners.Num(),2);TestTrue(TEXT("latest immutable completion retained"),Owners.Contains(Current));
     Add(TEXT("restart"),TEXT("m1"),TEXT("g3"),TEXT("EXECUTING"),4);Owners=ExecutionUI::RouteOwners(State,TEXT("p1"));TestEqual(TEXT("restart replaces completed owner"),Owners.Num(),2);TestFalse(TEXT("old completion excluded"),Owners.Contains(Current));
     Plan->SetStringField(TEXT("deployment_id"),TEXT("d2"));Executions->RemoveField(TEXT("restart"));TestEqual(TEXT("stale deployment completion excluded"),ExecutionUI::RouteOwners(State,TEXT("p1")).Num(),1);
+    auto Replay=Add(TEXT("replay-1"),TEXT("m1"),TEXT("simulation"),TEXT("COMPLETED"),5);
+    auto Peer=Add(TEXT("replay-2"),TEXT("m1"),TEXT("simulation"),TEXT("COMPLETED"),5);
+    Replay->SetBoolField(TEXT("rehearsal"),true);
+    Peer->SetBoolField(TEXT("rehearsal"),true);
+    const auto Live=Add(TEXT("live"),TEXT("m1"),TEXT("hardware"),TEXT("EXECUTING"),6);
+    Live->SetStringField(TEXT("deployment_id"),TEXT("d2"));
+    Owners=ExecutionUI::RouteOwners(State,TEXT("p1"),Replay);
+    TestTrue(TEXT("explicit rehearsal selects both historical group members"),Owners.Contains(Replay) && Owners.Contains(Peer));
+    TestFalse(TEXT("historical replay replaces the same Mission's live route"),Owners.Contains(Live));
+    TestEqual(TEXT("an unrelated running Mission remains displayed"),Owners.Num(),3);
+    TestTrue(TEXT("leaving replay restores the live Mission owner"),ExecutionUI::RouteOwners(State,TEXT("p1")).Contains(Live));
+    Executions->RemoveField(TEXT("live"));
+    auto Missions=MakeShared<FJsonObject>(),Paths=MakeShared<FJsonObject>();
+    auto Mission=MakeShared<FJsonObject>(),Path=MakeShared<FJsonObject>();
+    State->SetObjectField(TEXT("missions"),Missions);Missions->SetObjectField(TEXT("m1"),Mission);
+    State->SetObjectField(TEXT("paths"),Paths);Paths->SetObjectField(TEXT("r1"),Path);
+    Mission->SetStringField(TEXT("route_id"),TEXT("r1"));
+    for(const auto& Member:{Replay,Peer}){
+        Member->SetStringField(TEXT("route_id"),TEXT("r1"));
+        Member->SetNumberField(TEXT("route_revision"),1);
+    }
+    Path->SetNumberField(TEXT("revision"),1);
+    TestTrue(TEXT("finished rehearsal can own the matching saved revision"),ExecutionUI::RouteOwners(State,TEXT("p1")).Contains(Replay));
+    Path->SetNumberField(TEXT("revision"),2);
+    TestFalse(TEXT("revision after rehearsal keeps the freshly saved route owner"),ExecutionUI::RouteOwners(State,TEXT("p1")).Contains(Replay));
+    TestTrue(TEXT("older versions remain explicitly replayable"),ExecutionUI::RouteOwners(State,TEXT("p1"),Replay).Contains(Replay));
     return true;
 }
 #endif

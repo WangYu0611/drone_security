@@ -812,6 +812,12 @@ void UDroneNetworkManager::OnWsMessage(const FString& Message)
 		UE_LOG(LogTemp, Log, TEXT("[DroneNetworkManager] WS non-telemetry: type=%s"), *MsgType);
 	}
 
+	if (MsgType == TEXT("DroneRegistryChanged"))
+	{
+		PollDroneList();
+		return;
+	}
+
 	if (MsgType == TEXT("drone_task_state"))
 	{
 		UDroneRegistrySubsystem* Registry = GetGameInstance()

@@ -312,9 +312,9 @@ void UMapFleetInteractionWidget::SelectInRectangle(bool Click) {
     RequestedSelection=Selected;RequestedPrimary=Primary;
     SelectionRequestedAt=FPlatformTime::Seconds();
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
-    bSelectionVideoPending=Click && Nearest>0;
+    bSelectionVideoPending=Click && Nearest>0 && !SimulationUI::Aircraft(Sync->GetPlans(),MapMove::UAV(Nearest));
     bSelectionPending=bSelectionVideoPending?Sync->SetMapSelection(Primary,Selected,Nearest):Sync->SetLocalSelection(Primary,Selected);
-    if(Click && Nearest>0 && bSelectionPending)MessageKey=TEXT("MapShell.VideoSelectionPending");
+    if(bSelectionVideoPending && bSelectionPending)MessageKey=TEXT("MapShell.VideoSelectionPending");
     if(!bSelectionPending)MessageKey=TEXT("Errors.SYNC_OFFLINE");
 }
 void UMapFleetInteractionWidget::ClearTarget() { bHasTarget=false;bRecoveryPreview=false;NextTerrainCheck=0;TargetMembers.Empty();TargetPrimary=0;TargetTakeover={};NextTakeoverPreviewUpdate=0;PreviewRoutes.Reset(); }
@@ -618,10 +618,15 @@ int32 UMapFleetInteractionWidget::NativePaint(const FPaintArgs& Args,const FGeom
             const double MaxLabelWidth=FMath::Min(460.,LabelBounds.GetSize().X-24.);
             while(DisplayName.Len()>2 && Measure->Measure(DisplayName,NameFont).X>MaxLabelWidth-30.)DisplayName.LeftChopInline(1);
             if(DisplayName!=(Settings.DisplayName.IsEmpty()?Descriptor.Name:Settings.DisplayName))DisplayName+=TEXT("…");
-            FVector Geo;double Ground=0;const bool HasGeo=Telemetry(Id,Geo),AGL=HasGeo && Is3DView() && SurfaceHeight(Geo,Ground);
+            FVector Geo;double Ground=0;
+            const bool Simulated=SimulationUI::Aircraft(Plans,MapMove::UAV(Id));
+            const bool HasGeo=Simulated?MapMove::Position(R,Plans,Id,Geo):Telemetry(Id,Geo);
+            const bool AGL=HasGeo && Is3DView() && SurfaceHeight(Geo,Ground);
             FNumberFormattingOptions MarkerFormat;MarkerFormat.SetMaximumFractionalDigits(1);
             FText Caption=HasGeo?FText::Format(T(AGL?TEXT("FleetTerrain.MarkerAGL"):TEXT("FleetUX.Marker")),User(FString::Printf(TEXT("%02d"),Id)),AGL?FText::AsNumber(Geo.Z-Ground,&MarkerFormat):FText::AsNumber(FMath::RoundToInt(Geo.Z))):User(FString::Printf(TEXT("UAV-%02d"),Id));
-            FDroneTelemetrySnapshot Snapshot;if(R->GetTelemetry(Id,Snapshot) && Snapshot.bSimulation)Caption=FText::Format(T(TEXT("MapMove.MockMarker")),Caption);
+            FDroneTelemetrySnapshot Snapshot;
+            if(Simulated)Caption=FText::Format(SimulationUI::Label(TEXT("{0} · Simulated"),TEXT("{0} · 模拟")),Caption);
+            else if(R->GetTelemetry(Id,Snapshot) && Snapshot.bSimulation)Caption=FText::Format(T(TEXT("MapMove.MockMarker")),Caption);
             FLinearColor CaptionColor=Color;
             if(const auto E=ExecutionUI::PositionExecution(Plans,FString::Printf(TEXT("UAV-%02d"),Id))){const FString State=Field(E,TEXT("state"));Caption=FText::Format(User(TEXT("{0} · {1}")),Caption,T(*(TEXT("Execution.")+State)));CaptionColor=State==TEXT("FAILED")?MapUI::Critical:State==TEXT("PAUSED")?MapUI::Warning:ExecutionUI::Active(E)?MapUI::Online:MapUI::SecondaryText;}
             const auto NameSize=Measure->Measure(DisplayName,NameFont),CaptionSize=Measure->Measure(Caption,CaptionFont);

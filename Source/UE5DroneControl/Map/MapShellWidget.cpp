@@ -94,7 +94,7 @@ void UMapShellWidget::NativeOnInitialized()
     auto* Divider=WidgetTree->ConstructWidget<UBorder>();Divider->SetBrushColor(FigmaUI::Outline);auto* DS=WidgetTree->ConstructWidget<USizeBox>();DS->SetWidthOverride(1);DS->SetHeightOverride(26);DS->SetContent(Divider);auto* DSlot=Tools->AddChildToHorizontalBox(DS);DSlot->SetPadding(FMargin(8,0,18,0));DSlot->SetVerticalAlignment(VAlign_Center);
     MakeButton(TEXT("focus"),ProductText::Source(TEXT("Locate")),TEXT("locate"),96);
     RouteButton=MakeButton(TEXT("security_plan"),ProductText::Get(TEXT("MapUI.MissionRoute")),TEXT("route"),122);
-    MakeButton(TEXT("open_video"),ProductText::Get(TEXT("MapUI.ViewVideo")),TEXT("video"),122);
+    VideoButton=MakeButton(TEXT("open_video"),ProductText::Get(TEXT("MapUI.ViewVideo")),TEXT("video"),122);
     BoxSelectButton=MakeButton(TEXT("box_select"),ProductText::Get(TEXT("MapUI.BoxSelect")),TEXT("box-select"),134);
     GroupMoveButton=MakeButton(TEXT("group_move"),ProductText::Source(TEXT("Fleet move")),TEXT("fleet-move"),122);
     ExecutionControlsButton=MakeButton(TEXT("execution_controls"),ProductText::Get(TEXT("FleetUX.ExecutionControls")),TEXT(""),184);
@@ -170,7 +170,10 @@ void UMapShellWidget::Refresh()
     for (const auto& D : Drones)
     {
         FDroneLabelSettings Settings;Registry->GetDroneLabelSettings(D.DroneId,Settings);
-        const FString Label = FString::Printf(TEXT("UAV-%02d · %s"), D.DroneId, *(Settings.DisplayName.IsEmpty()?D.Name:Settings.DisplayName));
+        const FString Callsign=MapMove::UAV(D.DroneId);
+        FString Label = FString::Printf(TEXT("%s · %s"), *Callsign, *(Settings.DisplayName.IsEmpty()?D.Name:Settings.DisplayName));
+        if(SimulationUI::Aircraft(PlanState,Callsign))
+            Label=FText::Format(SimulationUI::Label(TEXT("{0} · Simulated"),TEXT("{0} · 模拟")),PlanUI::User(Label)).ToString();
         Options.Add(Label); AircraftIds.Add(Label, D.DroneId);
         if (Registry->GetPrimarySelectedDrone() == D.DroneId) Selected = Label;
     }
@@ -212,6 +215,7 @@ void UMapShellWidget::Refresh()
     TintIcon(GroupMoveButton,!TakeoverMode && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove);
     TintIcon(BoxSelectButton,FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::BoxSelect);
     DeviceButton->SetIsEnabled(!Configuring && !bDeviceSelectionPending && !Sync->IsMapSelectionPending());
+    VideoButton->SetIsEnabled(!SimulationUI::Aircraft(PlanState,MapMove::UAV(Registry->GetPrimarySelectedDrone())));
     if(Configuring)bDropdownOpen=false;
     DroneDropdown->SetVisibility(bDropdownOpen?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     RefreshDeviceMenu();
@@ -236,7 +240,9 @@ void UMapShellWidget::Refresh()
     Status->SetText(ProductText::Source(FString::Printf(TEXT("UAV %02d  |  %s  |  %s"), Registry->GetPrimarySelectedDrone(),
         b2D ? TEXT("2D") : TEXT("3D"), Map && Map->OwnsCamera() ? TEXT("Camera ready") : TEXT("Initializing"))));
     if (Sync && Sync->IsEnabled()){
-        Status->SetText(ProductText::Get(!Sync->IsReady()?TEXT("FleetUX.SyncWaiting"):PlanUI::Field(Sync->GetPlans(),TEXT("execution_adapter"))==TEXT("Mock")?TEXT("FleetUX.SyncMock"):TEXT("FleetUX.SyncReady")));
+        const auto LegacyFleet=PlanUI::Object(PlanUI::Object(PlanState,TEXT("mock_execution")),TEXT("uavs"));
+        const bool LegacyMock=PlanUI::Field(PlanState,TEXT("execution_adapter"))==TEXT("Mock") && LegacyFleet && !LegacyFleet->Values.IsEmpty();
+        Status->SetText(ProductText::Get(!Sync->IsReady()?TEXT("FleetUX.SyncWaiting"):LegacyMock?TEXT("FleetUX.SyncMock"):TEXT("FleetUX.SyncReady")));
         Status->SetColorAndOpacity(Sync->IsReady()?MapUI::Online:MapUI::Warning);
     }
     if(!Sync->ViewSyncError.IsEmpty()){Status->SetText(ProductText::Get(TEXT("Errors.")+Sync->ViewSyncError));Status->SetColorAndOpacity(MapUI::Warning);}
@@ -286,7 +292,10 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
     if(Action==TEXT("choose_aircraft")){
         auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
         if(bDeviceSelectionPending || Sync->IsMapSelectionPending() || (FleetInteraction && FleetInteraction->IsSelectionPending()) || PlanConfiguration::Active(Sync->GetPlans()) || !Manager->GetRegistry()->IsDroneRegistered(ItemId))return;
-        const bool Accepted=Sync->IsEnabled()?Sync->SetMapSelection(ItemId,{ItemId},ItemId):Manager->GetMapService()->SelectDrone(ItemId);
+        const bool Simulated=SimulationUI::Aircraft(Sync->GetPlans(),MapMove::UAV(ItemId));
+        const bool Accepted=Sync->IsEnabled()?
+            (Simulated?Sync->SetLocalSelection(ItemId,{ItemId}):Sync->SetMapSelection(ItemId,{ItemId},ItemId)):
+            Manager->GetMapService()->SelectDrone(ItemId);
         if(Accepted){DeviceSelectionError=FText::GetEmpty();PendingDevice=ItemId;bDeviceSelectionPending=Sync->IsEnabled();DeviceSelectionRequestedAt=FPlatformTime::Seconds();bDropdownOpen=false;}
         else DeviceSelectionError=ProductText::Get(TEXT("Errors.SYNC_FAILED"));Refresh();return;
     }

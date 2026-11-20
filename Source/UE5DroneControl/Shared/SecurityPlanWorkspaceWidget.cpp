@@ -3,6 +3,7 @@
 #include "Shared/ExecutionPresentation.h"
 #include "Shared/PlanConfiguration.h"
 #include "Shared/DeploymentConfirmation.h"
+#include "Shared/SimulationRehearsalUI.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/ProgressBar.h"
 #include "Components/CheckBox.h"
@@ -19,13 +20,15 @@
 #endif
 using namespace PlanUI;
 namespace {
+FText RehearsalError(const FString& Code);
 // Length prefixes keep user-entered names from colliding with signature separators.
 void AddVisibleKey(FString& Key,const FString& Value){Key+=FString::FromInt(Value.Len())+TEXT(":")+Value;}
 TArray<FText> ValidationIssueLines(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan){
     TArray<FText> Lines;const auto Validation=Object(Plan,TEXT("validation"));const TArray<TSharedPtr<FJsonValue>>* Issues=nullptr;
     if(Validation && Validation->TryGetArrayField(TEXT("issues"),Issues))for(const auto& V:*Issues){const auto I=V->AsObject();const auto Params=Object(I,TEXT("params"));
         const FString MissionName=Field(Find(State,TEXT("missions"),Field(I,TEXT("mission_id"))),TEXT("name"));
-        Lines.Add(MissionName.IsEmpty()?ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code"))):FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(MissionName),ProductText::Get(TEXT("Errors.")+Field(I,TEXT("code")))));
+        const auto Error = RehearsalError(Field(I, TEXT("code")));
+        Lines.Add(MissionName.IsEmpty()?Error:FText::Format(FText::AsCultureInvariant(TEXT("{0}: {1}")),User(MissionName),Error));
         if(Params && Params->HasField(TEXT("minimum_separation_m")) && Params->HasField(TEXT("required_separation_m")))
             Lines.Add(FText::Format(T(TEXT("Group.Conflict")),User(Field(Params,TEXT("uav_a"))),User(Field(Params,TEXT("uav_b"))),FText::AsNumber(Params->GetNumberField(TEXT("minimum_separation_m"))),FText::AsNumber(Params->GetNumberField(TEXT("required_separation_m")))));
     }
@@ -40,6 +43,71 @@ TSharedPtr<FJsonObject> MissionExecution(const TSharedPtr<FJsonObject>& State,co
         double Created=0,Previous=0;E->TryGetNumberField(TEXT("created_at"),Created);if(Result)Result->TryGetNumberField(TEXT("created_at"),Previous);
         if(!Result || (ExecutionUI::Active(E) && !ExecutionUI::Active(Result)) || (ExecutionUI::Active(E)==ExecutionUI::Active(Result) && Created>Previous))Result=E;
     }return Result;
+}
+
+TArray<FString> MissionAircraft(const TSharedPtr<FJsonObject>& Mission)
+{
+    TArray<FString> Aircraft;
+    const TArray<TSharedPtr<FJsonValue>>* Values = nullptr;
+    if (Mission && Mission->TryGetArrayField(TEXT("assigned_uav_ids"), Values))
+    {
+        for (const auto& Value : *Values) Aircraft.AddUnique(Value->AsString());
+    }
+    const FString Primary = Field(Mission, TEXT("assigned_uav_id"));
+    if (Aircraft.IsEmpty() && !Primary.IsEmpty()) Aircraft.Add(Primary);
+    return Aircraft;
+}
+
+bool HasSimulatedAssignment(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Mission)
+{
+    return MissionAircraft(Mission).ContainsByPredicate([&](const FString& Id) { return SimulationUI::Aircraft(State, Id); });
+}
+
+bool HasOnlySimulatedAssignment(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Mission)
+{
+    const auto Aircraft = MissionAircraft(Mission);
+    return !Aircraft.IsEmpty() && !Aircraft.ContainsByPredicate([&](const FString& Id) { return !SimulationUI::Aircraft(State, Id); });
+}
+
+bool IsCurrentRehearsal(const TSharedPtr<FJsonObject>& Execution,const TSharedPtr<FJsonObject>& Mission,
+    const TSharedPtr<FJsonObject>& Route)
+{
+    const auto Snapshot = Object(Execution, TEXT("plan_route_snapshot"));
+    const auto Inputs = Object(Execution, TEXT("rehearsal_inputs"));
+    if (!Snapshot || !Route || !Mission || !Inputs || Field(Snapshot, TEXT("route_id")) != Field(Route, TEXT("route_id")))
+        return false;
+    double SavedRevision = 0, CurrentRevision = 0, SavedSpacing = 0, CurrentSpacing = 0;
+    return Snapshot->TryGetNumberField(TEXT("revision"), SavedRevision)
+        && Route->TryGetNumberField(TEXT("revision"), CurrentRevision) && SavedRevision == CurrentRevision
+        && Field(Inputs, TEXT("formation")) == Field(Mission, TEXT("formation"))
+        && (!Mission->TryGetNumberField(TEXT("spacing_m"), CurrentSpacing)
+            || (Inputs->TryGetNumberField(TEXT("spacing_m"), SavedSpacing) && CurrentSpacing == SavedSpacing))
+        && MissionAircraft(Inputs) == MissionAircraft(Mission);
+}
+
+FText RehearsalError(const FString& Code)
+{
+    using SimulationUI::Label;
+    if (Code == TEXT("REHEARSAL_STALE"))
+        return Label(TEXT("The task changed. Run a new rehearsal."), TEXT("任务已修改，请重新预演。"));
+    if (Code == TEXT("REHEARSAL_INCOMPLETE"))
+        return Label(TEXT("Every simulated aircraft must finish its route."), TEXT("全部模拟机完成航线后才能复核。"));
+    if (Code == TEXT("REHEARSAL_REVIEW_REQUIRED"))
+        return Label(TEXT("Review the completed rehearsal first."), TEXT("请先复核完成的预演。"));
+    if (Code == TEXT("REHEARSAL_MULTI_AIRCRAFT"))
+        return Label(TEXT("Rehearse a single-aircraft version first."), TEXT("请先预演单机版本。"));
+    if (Code == TEXT("SIMULATION_UAV_REQUIRED"))
+        return Label(TEXT("Assign only simulated aircraft to rehearse this task."), TEXT("请只分配模拟机，再运行预演。"));
+    if (Code == TEXT("REAL_UAV_REQUIRED"))
+        return Label(TEXT("Select a registered real aircraft."), TEXT("请选择一架已注册的真机。"));
+    if (Code == TEXT("REAL_UAV_REGISTRATION_CHANGED"))
+        return Label(TEXT("Aircraft registration changed. Open the rehearsal and assign the aircraft again."),
+            TEXT("真机注册已变更，请回到预演重新分配。"));
+    if (Code == TEXT("REAL_EXECUTION_DISABLED"))
+        return Label(TEXT("Real execution is awaiting site configuration."), TEXT("待执行检查：真机执行尚未配置。"));
+    if (Code == TEXT("REAL_UAV_UNAVAILABLE"))
+        return Label(TEXT("Check the real aircraft's connection, positioning, and calibration."), TEXT("待执行检查：请检查真机连通、有效定位和坐标标定。"));
+    return ProductText::Get(TEXT("Errors.") + Code);
 }
 bool FocusMapWindow(){
 #if PLATFORM_WINDOWS
@@ -68,6 +136,7 @@ void UPlanMissionListWidget::Refresh(const TSharedPtr<FJsonObject>& State,const 
         const auto M=Find(State,TEXT("missions"),Id->AsString()),R=Find(State,TEXT("paths"),Field(M,TEXT("route_id"))),E=MissionExecution(State,NewPlan,Id->AsString());
         const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
         for(const auto& Value:{Id->AsString(),Field(M,TEXT("name")),Field(M,TEXT("status")),AssignedUAVs(M),Field(E,TEXT("execution_id")),Field(E,TEXT("state"))})AddVisibleKey(NewSignature,Value);
+        AddVisibleKey(NewSignature, HasSimulatedAssignment(State, M) ? TEXT("rehearsal") : TEXT("regular"));
         AddVisibleKey(NewSignature,FString::FromInt(R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0));
     }
     // Lease heartbeats and position ticks must not replace a pressed/focused button.
@@ -85,6 +154,7 @@ void UPlanMissionListWidget::Refresh(const TSharedPtr<FJsonObject>& State,const 
         const int Count=R && R->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
         MissionIds.Add(V->AsString());const int Index=++NextActionId;MissionActionIds.Add(Index);ActionTargets.Add(Index,V->AsString());const auto UAV=AssignedUAVs(M);
         const auto E=MissionExecution(State,PlanId,V->AsString());const bool Selected=SelectedId==V->AsString();
+        const bool SimulatedAssignment=HasSimulatedAssignment(State,M);
         auto* Card=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(Card,FigmaUI::Inset,Selected?FigmaUI::PrimaryText:FigmaUI::Outline,8,FMargin(14));Content->AddChildToVerticalBox(Card)->SetPadding(FMargin(0,10,0,0));
         auto* Body=WidgetTree->ConstructWidget<UHorizontalBox>();Card->SetContent(Body);
         auto* IconBox=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(IconBox,FigmaUI::Inset,FigmaUI::Outline,7,FMargin(8));
@@ -98,14 +168,28 @@ void UPlanMissionListWidget::Refresh(const TSharedPtr<FJsonObject>& State,const 
         auto* VerticalDivider=WidgetTree->ConstructWidget<USizeBox>();VerticalDivider->SetWidthOverride(1);VerticalDivider->SetHeightOverride(72);auto* DividerOverlay=WidgetTree->ConstructWidget<UOverlay>();VerticalDivider->SetContent(DividerOverlay);auto* DividerSlot=DividerOverlay->AddChildToOverlay(FigmaUI::Icon(WidgetTree,TEXT("plan-detail-mission-divider"),FVector2D(1,72)));DividerSlot->SetHorizontalAlignment(HAlign_Center);DividerSlot->SetVerticalAlignment(VAlign_Center);auto* VerticalSlot=Body->AddChildToHorizontalBox(VerticalDivider);VerticalSlot->SetVerticalAlignment(VAlign_Center);VerticalSlot->SetPadding(FMargin(0,0,14,0));
         auto* Row=WidgetTree->ConstructWidget<UHorizontalBox>();auto* ActionSize=WidgetTree->ConstructWidget<USizeBox>();ActionSize->SetWidthOverride(UAV.IsEmpty()?322:430);ActionSize->SetContent(Row);
         Body->AddChildToHorizontalBox(ActionSize)->SetVerticalAlignment(VAlign_Center);
-        auto Add=[&](const TCHAR* A,const TCHAR* K){auto* B=Button(WidgetTree,Row,A,K,Index);B->OnAction.AddDynamic(this,&UPlanMissionListWidget::Action);const bool Primary=A==FString(TEXT("execute_mission"));FigmaUI::Button(B,false,true);
+        auto Add=[&](const TCHAR* A,const TCHAR* K){auto* B=Button(WidgetTree,Row,A,K,Index);B->OnAction.AddDynamic(this,&UPlanMissionListWidget::Action);const bool Primary=A==FString(TEXT("execute_mission")) || A==FString(TEXT("simulation_mission"));FigmaUI::Button(B,false,true);
             auto Style=B->GetStyle();const FLinearColor Fill=Primary?FigmaUI::Accent:FLinearColor(FColor(30,36,51));Style.SetNormal(FSlateRoundedBoxBrush(Fill,6));Style.SetHovered(FSlateRoundedBoxBrush(Fill,6,FigmaUI::PrimaryText,.7f));Style.SetPressed(FSlateRoundedBoxBrush(FigmaUI::SelectedSurface,6,FigmaUI::Accent,1));Style.SetNormalPadding(FMargin(8,10)).SetPressedPadding(FMargin(8,10));B->SetStyle(Style);
             auto* Caption=CastChecked<UTextBlock>(B->GetContent());FigmaUI::Text(Caption,12,FigmaUI::PrimaryText);Caption->SetJustification(ETextJustify::Center);
-            auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(4,0));};
+            auto* Slot=CastChecked<UHorizontalBoxSlot>(B->Slot);Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));Slot->SetPadding(FMargin(4,0));return B;};
         Add(TEXT("select_mission"),Selected?TEXT("Plan.Tasks.Selected"):TEXT("Plan.Tasks.Select"));
         Add(TEXT("edit_mission"),TEXT("Plan.Tasks.Edit"));
-        Add(TEXT("execute_mission"),ExecutionUI::Active(E)?TEXT("Plan.Tasks.ViewExecution"):Deployed?TEXT("Plan.Tasks.Execute"):TEXT("Plan.Tasks.CheckDeploy"));
-        if(!UAV.IsEmpty())Add(TEXT("video_mission"),TEXT("Video.Open"));
+        if (SimulatedAssignment)
+        {
+            const bool HasRehearsal = ExecutionUI::IsRehearsal(E);
+            auto* Rehearsal = Add(TEXT("simulation_mission"), TEXT("Execution.Simulation"));
+            CastChecked<UTextBlock>(Rehearsal->GetContent())->SetText(HasRehearsal
+                ? SimulationUI::Label(TEXT("View rehearsal"), TEXT("查看预演"))
+                : SimulationUI::Label(TEXT("Run rehearsal"), TEXT("运行预演")));
+            Rehearsal->SetIsEnabled(HasRehearsal || (Count>=2 && HasOnlySimulatedAssignment(State,M)));
+            if (!HasOnlySimulatedAssignment(State,M))
+                Rehearsal->SetToolTipText(RehearsalError(TEXT("SIMULATION_UAV_REQUIRED")));
+        }
+        else
+        {
+            Add(TEXT("execute_mission"),ExecutionUI::Active(E)?TEXT("Plan.Tasks.ViewExecution"):Deployed?TEXT("Plan.Tasks.Execute"):TEXT("Plan.Tasks.CheckDeploy"));
+            if(!UAV.IsEmpty())Add(TEXT("video_mission"),TEXT("Video.Open"));
+        }
     }
 }
 void UPlanReviewWidget::NativeOnInitialized(){
@@ -257,6 +341,20 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     ExecutionPrompt=Label(WidgetTree,ExecutionPage,FText::GetEmpty(),16);
     for(const auto& Item:TArray<TPair<FString,FString>>{{TEXT("confirm"),TEXT("Confirm")},{TEXT("pause"),TEXT("Pause")},{TEXT("resume"),TEXT("Resume")},{TEXT("return_prompt"),TEXT("Return")},{TEXT("abort_prompt"),TEXT("Abort")},{TEXT("cancel"),TEXT("Cancel")},{TEXT("details"),TEXT("History")},{TEXT("video"),TEXT("Video")}})
         Add(ExecutionPage,*(TEXT("execution_")+Item.Key),*(TEXT("Execution.")+Item.Value));
+    auto AddRehearsalAction = [&](const TCHAR* ActionName,const FText& Caption)
+    {
+        auto* Button = Add(ExecutionPage, ActionName, TEXT("Execution.Simulation"));
+        CastChecked<UTextBlock>(Button->GetContent())->SetText(Caption);
+        Button->SetVisibility(ESlateVisibility::Collapsed);
+    };
+    AddRehearsalAction(TEXT("simulation_start"), SimulationUI::Label(TEXT("Run another rehearsal"), TEXT("重新预演")));
+    AddRehearsalAction(TEXT("simulation_review"), SimulationUI::Label(TEXT("Approve rehearsal result"), TEXT("复核通过")));
+    RehearsalRealTarget = WidgetTree->ConstructWidget<UComboBoxString>();
+    RehearsalRealTarget->SetContentPadding(FMargin(8, 4));
+    RehearsalRealTarget->OnSelectionChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::RehearsalRealTargetChanged);
+    RehearsalRealTarget->SetVisibility(ESlateVisibility::Collapsed);
+    ExecutionPage->AddChildToVerticalBox(RehearsalRealTarget);
+    AddRehearsalAction(TEXT("simulation_assign_real"), SimulationUI::Label(TEXT("Assign to real aircraft"), TEXT("分配真机")));
     // Keep the existing action bindings available to regression automation, hidden from the product flow.
     Plans=WidgetTree->ConstructWidget<UComboBoxString>();Plans->OnSelectionChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::PlanSelected);
     for(const TCHAR* A:{TEXT("unassign"),TEXT("delete_mission"),TEXT("validate"),TEXT("review_page"),TEXT("review"),TEXT("deploy_page"),TEXT("deploy"),TEXT("cancel")}){
@@ -299,8 +397,9 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     bool HasUnavailableSelection=false;
     for(const auto& Item:AssignmentChecks){const auto E=UAVReservation(State,PlanId,Item.Key);
         HasUnavailableSelection|=E.IsValid() && Item.Value->IsChecked();
-        Item.Value->SetIsEnabled(!E);if(auto* Caption=Cast<UTextBlock>(Item.Value->GetContent()))
-            Caption->SetText(E?FText::Format(T(TEXT("Reservation.InUse")),User(Item.Key),ProductText::Source(Field(E,TEXT("plan_name")))):User(Item.Key));
+        Item.Value->SetIsEnabled(!E);if(auto* Caption=Cast<UTextBlock>(Item.Value->GetContent())){
+            const auto Aircraft = SimulationUI::AircraftCaption(State, Item.Key);
+            Caption->SetText(E?FText::Format(T(TEXT("Reservation.InUse")),Aircraft,ProductText::Source(Field(E,TEXT("plan_name")))):Aircraft);}
     }
     Actions[TEXT("clear_unavailable")]->SetVisibility(HasUnavailableSelection?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     bRefreshing=false;const FString Selection=PlanId+TEXT("/")+MissionId;
@@ -344,7 +443,8 @@ void USecurityPlanWorkspaceWidget::Refresh(){
     if(!Blockers.IsEmpty())Blockers.Insert(T(TEXT("Plan.Blocking")),0);
     DeploymentBlockers->SetText(FText::Join(User(TEXT("\n")),Blockers));
     DeploymentBlockers->SetVisibility(!Deployed && !Blockers.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
-    Show(TEXT("confirm_deployment"),!Deployed);Actions[TEXT("confirm_deployment")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Complete);
+    const bool Rehearsing = HasSimulatedAssignment(State, M);
+    Show(TEXT("confirm_deployment"),!Deployed && !Rehearsing);Actions[TEXT("confirm_deployment")]->SetIsEnabled(!bPending && Sync->IsReady() && Sync->IsRoleOnline(TEXT("Map")) && Complete && !Rehearsing);
     const auto Route=Find(State,TEXT("paths"),Field(M,TEXT("route_id")));const TArray<TSharedPtr<FJsonValue>>* Points=nullptr;
     const int Count=Route && Route->TryGetArrayField(TEXT("waypoints"),Points)?Points->Num():0;
     RouteStatus->SetText(FText::Format(T(Sync->IsRoleOnline(TEXT("Map"))?TEXT("Workflow.MapEditingStatus"):TEXT("Workflow.MapOfflineStatus")),User(Field(P,TEXT("name"))),User(Field(M,TEXT("name"))),User(AssignedUAVs(M)),FText::AsNumber(Count)));
@@ -361,7 +461,7 @@ void USecurityPlanWorkspaceWidget::Refresh(){
         for(const TCHAR* A:{TEXT("review_page"),TEXT("review"),TEXT("deploy_page"),TEXT("deploy"),TEXT("confirm_deployment")})Actions[A]->SetIsEnabled(false);
         Result->SetText(FText::Format(T(TEXT("Plan.EditingBlock")),User(EditingMission)));Result->SetVisibility(ESlateVisibility::Visible);return;
     }
-    Result->SetText(bPending?T(TEXT("Common.Waiting")):ErrorCode.IsEmpty()?FText::GetEmpty():!ExecutionErrorDetails.IsEmpty()?ExecutionErrorDetails:ProductText::Get(TEXT("Errors.")+ErrorCode));
+    Result->SetText(bPending?T(TEXT("Common.Waiting")):ErrorCode.IsEmpty()?FText::GetEmpty():!ExecutionErrorDetails.IsEmpty()?ExecutionErrorDetails:RehearsalError(ErrorCode));
     Result->SetVisibility(Result->GetText().IsEmpty()?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
 }
 void USecurityPlanWorkspaceWidget::RefreshPlanCards(const TSharedPtr<FJsonObject>& State){
@@ -399,6 +499,22 @@ void USecurityPlanWorkspaceWidget::MissionAction(FName Name,int32 Index){
     if(!Contains)return;
     if(Name==TEXT("video_mission")){Sync->OpenVideo(Field(Find(Sync->GetPlans(),TEXT("missions"),ID),TEXT("assigned_uav_id")));return;}
     if(Name==TEXT("edit_mission")){EditMission(PlanId,ID);return;}
+    if (Name == TEXT("simulation_mission"))
+    {
+        SelectMission(PlanId, ID, [this]
+        {
+            const auto State = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans();
+            if (ExecutionUI::IsRehearsal(SelectedExecution(State)))
+            {
+                bExecutionView = true;
+                ExecutionIntent.Empty();
+                Refresh();
+                WorkspaceScroll->ScrollWidgetIntoView(ExecutionPage, false);
+            }
+            else RehearsalAction(TEXT("simulation_start"));
+        }, true);
+        return;
+    }
     if(Name==TEXT("execute_mission")){PrepareMissionExecution(PlanId,ID);return;}
     SelectMission(PlanId,ID,[this]{bExecutionView=false;ExecutionIntent.Empty();Refresh();});
 }
@@ -415,6 +531,7 @@ void USecurityPlanWorkspaceWidget::Action(FName Name,int32 Index){
         ErrorCode.Empty();ExecutionErrorDetails=FText::GetEmpty();Refresh();return;
     }
     if(Name.ToString().StartsWith(TEXT("execution_"))){ExecutionAction(Name);return;}
+    if(Name.ToString().StartsWith(TEXT("simulation_"))){RehearsalAction(Name);return;}
     if(Name==TEXT("back_list") || Name==TEXT("cancel_new")){RequestFinishConfiguration();return;}
     if(Name==TEXT("new_plan")){BeginConfiguration(TEXT(""),[this]{bList=false;bCreating=true;PlanName->SetText(FText::GetEmpty());Description->SetText(FText::GetEmpty());Refresh();});return;}
     if(Name==TEXT("create_plan") || Name==TEXT("update_plan") || Name==TEXT("assign_group") || Name==TEXT("rename_mission")){SaveConfiguration();return;}
@@ -504,7 +621,8 @@ void USecurityPlanWorkspaceWidget::ConfirmDeployment(){
 void UPlanUAVOptionWidget::NativeOnInitialized(){Super::NativeOnInitialized();Caption=WidgetTree->ConstructWidget<UTextBlock>();CommandTheme::Text(Caption,16,CommandTheme::PrimaryText);WidgetTree->RootWidget=Caption;}
 void UPlanUAVOptionWidget::SetCaption(const FString& Item){Caption->SetText(User(Item));}
 UWidget* USecurityPlanWorkspaceWidget::UAVOption(FString Item){auto* Option=CreateWidget<UPlanUAVOptionWidget>(GetOwningPlayer());const auto E=UAVReservation(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(),PlanId,Item);
-    Option->SetCaption(E?FText::Format(T(TEXT("Reservation.InUse")),User(Item),User(Field(E,TEXT("plan_name")))).ToString():Item);Option->SetIsEnabled(!E);return Option;}
+    const auto Aircraft = SimulationUI::AircraftCaption(GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>()->GetPlans(), Item);
+    Option->SetCaption(E?FText::Format(T(TEXT("Reservation.InUse")),Aircraft,User(Field(E,TEXT("plan_name")))).ToString():Aircraft.ToString());Option->SetIsEnabled(!E);return Option;}
 void USecurityPlanWorkspaceWidget::UAVSelected(FString,ESelectInfo::Type Type){if(!bRefreshing && Type!=ESelectInfo::Direct && !bPending)Action(TEXT("assign"),0);}
 
 TSharedPtr<FJsonObject> USecurityPlanWorkspaceWidget::SelectedExecution(const TSharedPtr<FJsonObject>& State) const {
@@ -517,12 +635,16 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     if(!LatestId.IsEmpty() && LatestId!=ExecutionId){ExecutionId=LatestId;bExecutionView=ExecutionUI::Active(E);ExecutionIntent.Empty();}
     auto Show=[&](const TCHAR* K,bool Yes){Actions[K]->SetVisibility(Yes?ESlateVisibility::Visible:ESlateVisibility::Collapsed);};
     const bool Deployed=Field(P,TEXT("status"))==TEXT("DEPLOYED");
-    Show(TEXT("execution_start_prompt"),Deployed && !ExecutionUI::Active(E));Show(TEXT("execution_open"),E.IsValid());
-    if(!Deployed){bExecutionView=false;ExecutionIntent.Empty();}
-    const bool Visible=Deployed && bExecutionView && !bList && !bCreating;
+    const bool Rehearsal=ExecutionUI::IsRehearsal(E);
+    const auto Mission=Find(State,TEXT("missions"),MissionId);
+    const bool RealAssignment=Object(P,TEXT("real_assignment")).IsValid();
+    const bool RealAdapter=Field(State,TEXT("execution_adapter"))==TEXT("Real");
+    Show(TEXT("execution_start_prompt"),Deployed && !ExecutionUI::Active(E) && !HasSimulatedAssignment(State,Mission) && (!RealAssignment || RealAdapter));Show(TEXT("execution_open"),E.IsValid());
+    if(!Deployed && !Rehearsal){bExecutionView=false;ExecutionIntent.Empty();}
+    const bool Visible=(Deployed || Rehearsal) && bExecutionView && !bList && !bCreating;
     ExecutionPage->SetVisibility(Visible?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
     if(Visible)ReviewPage->SetVisibility(ESlateVisibility::Collapsed);
-    const bool Real=Field(State,TEXT("execution_adapter"))==TEXT("Real");
+    const bool Real=RealAdapter && (!Rehearsal || ExecutionIntent==TEXT("start"));
     ExecutionMode->SetText(T(Real?TEXT("Execution.Real"):TEXT("Execution.Simulation")));
     const auto StateName=Field(E,TEXT("state"));
     const bool Scheduled=StateName==TEXT("SCHEDULED");
@@ -533,8 +655,8 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
     ExecutionSummary->SetText(ExecutionIntent==TEXT("start")?T(TEXT("Execution.StartConfirm")):ExecutionUI::Summary(E));ExecutionProgress->SetVisibility(ExecutionIntent.IsEmpty()?ESlateVisibility::Visible:ESlateVisibility::Collapsed);ExecutionProgress->SetPercent(E?E->GetNumberField(TEXT("progress")):0);
     const bool Prompt=!ExecutionIntent.IsEmpty();
     Show(TEXT("execution_pause"),!Prompt && (StateName==TEXT("EXECUTING") || StateName==TEXT("RETURNING")));Show(TEXT("execution_resume"),!Prompt && StateName==TEXT("PAUSED"));
-    Show(TEXT("execution_return_prompt"),!Prompt && StateName==TEXT("EXECUTING"));Show(TEXT("execution_abort_prompt"),!Prompt && (StateName==TEXT("EXECUTING") || StateName==TEXT("PAUSED") || StateName==TEXT("RETURNING")));
-    Show(TEXT("execution_confirm"),Prompt);Show(TEXT("execution_cancel"),Prompt);Show(TEXT("execution_details"),!Prompt);Show(TEXT("execution_video"),E.IsValid() && !Prompt);
+    Show(TEXT("execution_return_prompt"),!Rehearsal && !Prompt && StateName==TEXT("EXECUTING"));Show(TEXT("execution_abort_prompt"),!Prompt && (StateName==TEXT("EXECUTING") || StateName==TEXT("PAUSED") || StateName==TEXT("RETURNING")));
+    Show(TEXT("execution_confirm"),Prompt);Show(TEXT("execution_cancel"),Prompt);Show(TEXT("execution_details"),!Prompt);Show(TEXT("execution_video"),E.IsValid() && !Prompt && !Rehearsal);
     if(auto* Caption=Cast<UTextBlock>(Actions[TEXT("execution_confirm")]->GetContent()))Caption->SetText(T(ExecutionIntent==TEXT("start")?TEXT("Execution.ConfirmStart"):ExecutionIntent==TEXT("return")?TEXT("Execution.ConfirmReturn"):TEXT("Execution.ConfirmAbort")));
     TArray<FText> Lines;
     if(ExecutionIntent==TEXT("start")){
@@ -554,7 +676,10 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         bool Closed=false;if(R)R->TryGetBoolField(TEXT("bClosedLoop"),Closed);
         if(Closed && From && Points && Points->Num()>2 && Config){const auto Point=(*Points)[0]->AsObject();const double Y=(Point->GetNumberField(TEXT("latitude"))-From->GetNumberField(TEXT("latitude")))*PI/180.*6371000.,X=(Point->GetNumberField(TEXT("longitude"))-From->GetNumberField(TEXT("longitude")))*PI/180.*6371000.*FMath::Cos((Point->GetNumberField(TEXT("latitude"))+From->GetNumberField(TEXT("latitude")))*.5*PI/180.),Z=Point->GetNumberField(TEXT("altitude"))-From->GetNumberField(TEXT("altitude"));const double D=FMath::Sqrt(X*X+Y*Y+Z*Z),Speed=From->GetNumberField(TEXT("segmentSpeed"));Distance+=D;Seconds+=D/(Speed>0?Speed:Config->GetNumberField(TEXT("default_speed_mps")));}
         Lines.Add(Real?T(TEXT("Execution.RealEstimate")):FText::Format(T(TEXT("Execution.Estimate")),FText::AsNumber(FMath::RoundToInt(Distance)),FText::AsNumber(FMath::RoundToInt(Seconds))));
-        const auto StartBlockers=ExecutionStartBlockers(State,M,UavIds);
+        auto StartBlockers=ExecutionStartBlockers(State,M,UavIds);
+        if (RealAssignment && (!Real || FromTelemetry.TelemetrySource != TEXT("received")
+            || FromTelemetry.Availability != EDroneAvailability::Online || !FromTelemetry.bGpsFix))
+            StartBlockers.Add(RehearsalError(TEXT("REAL_UAV_UNAVAILABLE")));
         if(StartBlockers.IsEmpty())Lines.Add(T(TEXT("Execution.StartMembersReady")));else Lines.Append(StartBlockers);
         Lines.Add(T(Real?TEXT("Execution.RealCheck"):TEXT("Execution.MockCheck")));
         Lines.Add(T(TEXT("Execution.DeploymentValid")));
@@ -568,11 +693,135 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
         if(!Field(E,TEXT("completion_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Execution.")+Field(E,TEXT("completion_reason"))));
         if(!Field(E,TEXT("failure_reason")).IsEmpty())Lines.Add(ProductText::Get(TEXT("Errors.")+Field(E,TEXT("failure_reason"))));
     }
+    RefreshRehearsal(State, E, Lines);
     if(bPending)Lines.Add(T(TEXT("Common.Waiting")));ExecutionPrompt->SetText(FText::Join(User(TEXT("\n")),Lines));
     Lines.Empty();const auto All=Object(State,TEXT("executions"));
     if(All)for(const auto& Entry:All->Values){const auto Item=Entry.Value->AsObject();if(Field(Item,TEXT("plan_id"))==PlanId && Field(Item,TEXT("mission_id"))==MissionId)Lines.Add(FText::Format(User(TEXT("{0}  {1}  {2}")),User(Field(Item,TEXT("execution_id"))),ProductText::Get(TEXT("Execution.")+Field(Item,TEXT("state"))),FText::AsDateTime(FDateTime::FromUnixTimestamp(Item->GetNumberField(TEXT("created_at"))))));}
     if(Lines.IsEmpty())Lines.Add(T(TEXT("Common.None")));ExecutionHistory->SetText(FText::Join(User(TEXT("\n")),Lines));
 }
+
+void USecurityPlanWorkspaceWidget::RefreshRehearsal(const TSharedPtr<FJsonObject>& State,
+    const TSharedPtr<FJsonObject>& Execution,TArray<FText>& Lines)
+{
+    const bool Rehearsal = ExecutionUI::IsRehearsal(Execution);
+    const bool Showing = Rehearsal && ExecutionIntent.IsEmpty();
+    const auto Mission = Find(State, TEXT("missions"), MissionId);
+    const auto Route = Find(State, TEXT("paths"), Field(Mission, TEXT("route_id")));
+    const TArray<TSharedPtr<FJsonValue>>* Waypoints = nullptr;
+    const bool CanRerun = Showing && !ExecutionUI::Active(Execution) && HasOnlySimulatedAssignment(State, Mission)
+        && Route && Route->TryGetArrayField(TEXT("waypoints"), Waypoints) && Waypoints->Num()>=2;
+    Actions[TEXT("simulation_start")]->SetVisibility(CanRerun ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+
+    bool AllCompleted = Showing && Field(Execution, TEXT("state")) == TEXT("COMPLETED");
+    if (AllCompleted)
+    {
+        const auto Group = Field(Execution, TEXT("group_id"));
+        const auto Executions = Object(State, TEXT("executions"));
+        if (Executions && !Group.IsEmpty())
+        {
+            for (const auto& Item : Executions->Values)
+            {
+                const auto Member = Item.Value->AsObject();
+                if (Field(Member, TEXT("group_id")) == Group)
+                    AllCompleted &= Field(Member, TEXT("state")) == TEXT("COMPLETED");
+            }
+        }
+    }
+    const bool Current = AllCompleted && IsCurrentRehearsal(Execution, Mission, Route);
+    const bool Reviewed = Current && Object(Execution, TEXT("rehearsal_review")).IsValid();
+    Actions[TEXT("simulation_review")]->SetVisibility(Current && !Reviewed ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    if (Reviewed) Lines.Add(SimulationUI::Label(TEXT("Rehearsal reviewed"), TEXT("预演已复核")));
+    if (AllCompleted && !Current) Lines.Add(RehearsalError(TEXT("REHEARSAL_STALE")));
+
+    const auto Inputs = Object(Execution, TEXT("rehearsal_inputs"));
+    const TArray<TSharedPtr<FJsonValue>>* Members = nullptr;
+    const bool SingleAircraft = Inputs && Inputs->TryGetArrayField(TEXT("assigned_uav_ids"), Members) && Members->Num()==1;
+    TArray<FString> Targets;
+    if (Reviewed && SingleAircraft)
+    {
+        auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+        for (const auto& Aircraft : Registry->GetFriendlyDroneDescriptors())
+        {
+            const FString Id = FString::Printf(TEXT("UAV-%02d"), Aircraft.DroneId);
+            FDroneTelemetrySnapshot Telemetry;
+            if (SimulationUI::Aircraft(State, Id) || (Registry->GetTelemetry(Aircraft.DroneId, Telemetry) && Telemetry.bSimulation)) continue;
+            Targets.Add(Id);
+        }
+        Targets.Sort();
+    }
+    if (Targets != RehearsalRealTargets)
+    {
+        const FString PreviousTarget = RehearsalRealTarget->GetSelectedOption();
+        RehearsalRealTargets = MoveTemp(Targets);
+        RehearsalRealTarget->ClearOptions();
+        if (!RehearsalRealTargets.IsEmpty())
+        {
+            const FString Placeholder = SimulationUI::Label(TEXT("Choose a real aircraft"), TEXT("选择真机")).ToString();
+            RehearsalRealTarget->AddOption(Placeholder);
+            for (const auto& Id : RehearsalRealTargets) RehearsalRealTarget->AddOption(Id);
+            RehearsalRealTarget->SetSelectedOption(RehearsalRealTargets.Contains(PreviousTarget) ? PreviousTarget : Placeholder);
+        }
+    }
+    const bool CanChoose = Reviewed && SingleAircraft && !RehearsalRealTargets.IsEmpty();
+    RehearsalRealTarget->SetVisibility(CanChoose ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    RehearsalRealTarget->SetIsEnabled(!bPending);
+    auto* Assign = Actions[TEXT("simulation_assign_real")].Get();
+    Assign->SetVisibility(CanChoose ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    Assign->SetIsEnabled(Assign->GetIsEnabled() && RehearsalRealTargets.Contains(RehearsalRealTarget->GetSelectedOption()));
+    if (Reviewed && !SingleAircraft) Lines.Add(RehearsalError(TEXT("REHEARSAL_MULTI_AIRCRAFT")));
+    if (Reviewed && SingleAircraft && !CanChoose)
+        Lines.Add(SimulationUI::Label(TEXT("No real aircraft available for assignment"), TEXT("暂无可分配真机")));
+}
+
+void USecurityPlanWorkspaceWidget::RehearsalRealTargetChanged(FString,ESelectInfo::Type Type)
+{
+    if (Type != ESelectInfo::Direct) Refresh();
+}
+
+void USecurityPlanWorkspaceWidget::RehearsalAction(FName Name)
+{
+    if (bPending) return;
+    auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    const auto State = Sync->GetPlans();
+    if (!Sync->IsReady() || !SimulationUI::Supported(State)) return;
+    const bool Starting = Name == TEXT("simulation_start");
+    const bool Assigning = Name == TEXT("simulation_assign_real");
+    const auto Execution = SelectedExecution(State);
+    const auto Mission = Find(State, TEXT("missions"), MissionId);
+    if (Starting && (!HasOnlySimulatedAssignment(State, Mission) || ExecutionUI::Active(Execution))) return;
+    if (!Starting && !ExecutionUI::IsRehearsal(Execution)) return;
+    const FString Target = Assigning ? RehearsalRealTarget->GetSelectedOption() : FString();
+    if (Assigning && !RehearsalRealTargets.Contains(Target)) return;
+    if (HasUnsavedChanges())
+    {
+        GuardConfigurationChange([this,Name] { RehearsalAction(Name); });
+        return;
+    }
+    auto Request = MakeShared<FJsonObject>();
+    Request->SetStringField(TEXT("action"), Name.ToString());
+    Request->SetStringField(TEXT("plan_id"), PlanId);
+    Request->SetStringField(TEXT("mission_id"), MissionId);
+    const FString SourceExecution = Field(Execution, TEXT("execution_id"));
+    if (!Starting) Request->SetStringField(TEXT("execution_id"), SourceExecution);
+    if (Assigning) Request->SetStringField(TEXT("assigned_uav_id"), Target);
+    const auto Key = Name.ToString() + TEXT("/") + PlanId + TEXT("/") + MissionId + TEXT("/") + SourceExecution + TEXT("/") + Target;
+    if (RehearsalRequestId.IsEmpty() || RehearsalRequestKey != Key)
+    {
+        RehearsalRequestId = FGuid::NewGuid().ToString();
+        RehearsalRequestKey = Key;
+    }
+    Request->SetStringField(TEXT("request_id"), RehearsalRequestId);
+    Submit(Request, [this,Assigning]
+    {
+        RehearsalRequestId.Empty();
+        bExecutionView = !Assigning;
+        ExecutionIntent.Empty();
+        if (Assigning) CurrentStep = 3;
+        Refresh();
+        WorkspaceScroll->ScrollWidgetIntoView(Assigning ? ReviewPage.Get() : ExecutionPage.Get(), false);
+    });
+}
+
 TArray<FText> USecurityPlanWorkspaceWidget::ExecutionStartBlockers(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Mission,const TArray<FString>& AvailableUavs){
     TArray<FString> Members;const TArray<TSharedPtr<FJsonValue>>* Values=nullptr;
     if(Mission && Mission->TryGetArrayField(TEXT("assigned_uav_ids"),Values)){for(const auto& V:*Values)Members.AddUnique(V->AsString());}

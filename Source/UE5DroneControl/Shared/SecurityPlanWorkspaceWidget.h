@@ -127,6 +127,9 @@ private:
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionPrompt;
     UPROPERTY() TObjectPtr<class UTextBlock> ExecutionHistory;
     UPROPERTY() TObjectPtr<class UProgressBar> ExecutionProgress;
+    UPROPERTY() TObjectPtr<UComboBoxString> RehearsalRealTarget;
+    TArray<FString> RehearsalRealTargets;
+    FString RehearsalRequestKey,RehearsalRequestId;
     FString ExecutionId,ExecutionIntent,StartRequestId;
     FString ScheduleExecutionId,ScheduleAcceptedAt,ScheduleLoadedText;
     void ResetStartSchedule(const FDateTime& LocalNow);
@@ -135,6 +138,9 @@ private:
     bool bExecutionView=false;
     void RefreshExecution(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Plan);
     void ExecutionAction(FName Name);
+    void RehearsalAction(FName Name);
+    void RefreshRehearsal(const TSharedPtr<FJsonObject>& State,const TSharedPtr<FJsonObject>& Execution,TArray<FText>& Lines);
+    UFUNCTION() void RehearsalRealTargetChanged(FString Item,ESelectInfo::Type Type);
     TSharedPtr<FJsonObject> SelectedExecution(const TSharedPtr<FJsonObject>& State) const;
     void SelectMission(const FString& InPlanId,const FString& InMissionId,TFunction<void()> Continue,bool FinishConfigurationFirst=false);
     void EditMission(const FString& InPlanId,const FString& InMissionId);
