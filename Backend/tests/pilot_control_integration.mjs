@@ -380,15 +380,31 @@ try {
 
     const firstHome = await pose(firstAircraft);
     const secondBefore = await pose(secondAircraft);
+    const idleEvents = pilotSocket.events.length;
+    input(pilotSocket, firstAircraft, randomUUID(), 1, 1, { forward: 1 }, 'takeoff');
+    await until(() => pilotSocket.events.slice(idleEvents).some(event =>
+        event.type === 'pilot_input_rejected' && event.code === 'INPUT_REJECTED'), Boolean,
+    'input rejection before the assigned pilot activates');
+    assert.deepEqual(await pose(firstAircraft), firstHome);
+
     await activate(pilotSocket, firstGrant);
     const firstSession = await sessionFor(pilotSocket, firstAircraft);
     const firstWindow = await inputWindow(pilotSocket, firstSession);
     await activate(pilotSocket, secondGrant, { status: 409, code: 'PILOT_BUSY' });
     await activate(secondPilotConnection, secondGrant, { status: 409, code: 'PILOT_BUSY' });
-    input(secondPilotConnection, firstAircraft, firstSession, firstWindow.window_id, 9000);
-    await until(() => secondPilotConnection.events.some(event =>
-        event.type === 'pilot_input_rejected' && event.code === 'INPUT_REJECTED'), Boolean,
-    'input rejection from another connection of the same pilot');
+    const unauthorizedSources = [
+        [commandSocket, 'error', 'ROLE_FORBIDDEN', 'Command connection'],
+        [otherSocket, 'pilot_input_rejected', 'INPUT_REJECTED', 'unassigned Pilot identity'],
+        [secondPilotConnection, 'pilot_input_rejected', 'INPUT_REJECTED', 'another connection of the assigned Pilot'],
+    ];
+    await Promise.all(unauthorizedSources.map(async ([client, type, code, label]) => {
+        const eventCount = client.events.length;
+        input(client, firstAircraft, firstSession, firstWindow.window_id, 9000, { forward: 1 }, 'takeoff');
+        await until(() => client.events.slice(eventCount).some(event => event.type === type && event.code === code),
+            Boolean, `input rejection from ${label}`);
+    }));
+    assert.deepEqual(await pose(firstAircraft), firstHome);
+    pass('Only the assigned Pilot connection with an active session can send stick or flight actions');
     await move(pilotSocket, firstAircraft, firstSession);
     assert.deepEqual(await pose(secondAircraft), secondBefore);
     await change(pilot, 'stop', { control_session_id: firstSession, reason: 'SWITCH' });
@@ -408,7 +424,7 @@ try {
     const revokedPose = await pose(secondAircraft);
     const previousEvents = pilotSocket.events.length;
     for (let seq = 20000; seq < 20004; ++seq) {
-        input(pilotSocket, secondAircraft, secondSession, secondWindow.window_id, seq);
+        input(pilotSocket, secondAircraft, secondSession, secondWindow.window_id, seq, { forward: 1 }, 'takeoff');
         await sleep(70);
         assert.deepEqual(await pose(secondAircraft), revokedPose);
     }
