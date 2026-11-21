@@ -11,8 +11,9 @@ from environment import load_config, preflight
 from launch_modes import mode_config
 from map_locations import load_map_locations, map_origin, named_location, save_map_locations
 from windows import rectangles, work_area, place, focus
-from deployment import (DEPLOYMENT_SELECTIONS, deployment_config,
-                        load_deployment_selection, save_deployment_selection)
+from deployment import (AUTO_ROLE, CLIENTS_ROLE, DEPLOYMENT_SELECTIONS, PILOT_ROLE,
+                        deployment_config, deployment_roles, load_deployment_selection,
+                        save_deployment_selection)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -48,7 +49,7 @@ class Application:
         self.role_selector = ttk.Combobox(selector, textvariable=self.role_choice,
                                          values=DEPLOYMENT_SELECTIONS, state='readonly', width=14)
         self.role_selector.pack(side='left', padx=10)
-        tk.Label(selector, text='All = 单机全部端；其余 = 本机单端 / All = single workstation',
+        tk.Label(selector, text='Auto：匹配本机 IP　Clients：全部客户端 / Auto: local IP · Clients: all clients',
                  bg='#0c121b', fg='#aebdcd').pack(side='left')
         self.role_selector.bind('<<ComboboxSelected>>', lambda _: self.update_buttons())
         profile = tk.Frame(self.root, bg='#0c121b')
@@ -60,13 +61,9 @@ class Application:
         self.browse_button.pack(side='right')
         self.build_location_panel(6)
         for row, role in enumerate(display_roles, start=7):
-            text = tk.Label(self.root, bg='#131c28', fg='#ebf3fa', anchor='w', font=('Segoe UI',12))
-            text.grid(row=row,column=0,padx=12,pady=4,sticky='ew');self.labels[role]=text
-            self.role_buttons[self.button(row,1,'Launcher.Restart',lambda r=role:self.action(lambda:self.runtime.restart(r)))]=role
-            if role != 'Backend':
-                self.role_buttons[self.button(row,2,'Launcher.Focus',lambda r=role:self.focus(r))]=role
-            self.role_buttons[self.button(row,3,'Launcher.Stop',lambda r=role:self.action(lambda:self.runtime.stop_role(r)))]=role
-        footer = 7 + len(display_roles)
+            self.add_role_row(row, role)
+        self.pilot_row = 7 + len(display_roles)
+        footer = self.pilot_row + 1
         bar = tk.Frame(self.root, bg='#0c121b')
         bar.grid(row=footer, column=0, columnspan=4, padx=7, sticky='ew')
         for column, (key, callback) in enumerate((('Launcher.Start', self.start),
@@ -91,6 +88,27 @@ class Application:
         w=tk.Button(parent or self.root,text=self.text(key),command=action,bg='#1b2837',fg='#ebf3fa',relief='flat',padx=10,pady=5)
         w.grid(row=row,column=column,columnspan=columnspan,padx=5,pady=4,sticky='ew');self.buttons.append((w,key))
         return w
+    def add_role_row(self, row, role):
+        label = tk.Label(self.root, bg='#131c28', fg='#ebf3fa', anchor='w', font=('Segoe UI', 12))
+        label.grid(row=row, column=0, padx=12, pady=4, sticky='ew')
+        self.labels[role] = label
+        restart = self.button(row, 1, 'Launcher.Restart', lambda: self.action(lambda: self.runtime.restart(role)))
+        self.role_buttons[restart] = role
+        if role != 'Backend':
+            self.role_buttons[self.button(row, 2, 'Launcher.Focus', lambda: self.focus(role))] = role
+        stop = self.button(row, 3, 'Launcher.Stop', lambda: self.action(lambda: self.runtime.stop_role(role)))
+        self.role_buttons[stop] = role
+    def sync_pilot_row(self):
+        visible = self.runtime.launch_mode == 'demo' and self.runtime.manages_role(PILOT_ROLE)
+        if visible and PILOT_ROLE not in self.labels:
+            self.add_role_row(self.pilot_row, PILOT_ROLE)
+        elif not visible and PILOT_ROLE in self.labels:
+            self.labels.pop(PILOT_ROLE).destroy()
+            pilot_buttons = [button for button, role in self.role_buttons.items() if role == PILOT_ROLE]
+            self.buttons = [(button, key) for button, key in self.buttons if button not in pilot_buttons]
+            for button in pilot_buttons:
+                del self.role_buttons[button]
+                button.destroy()
     def browse_deployment(self):
         path = filedialog.askopenfilename(parent=self.root, title='选择共享部署配置 / Shared deployment config',
                                          filetypes=[('JSON', '*.json')])
@@ -212,9 +230,11 @@ class Application:
 
         def launch():
             base = load_config(ROOT)
-            config = (deployment_config(ROOT, base, path, role, realtime_only=True) if path or role != 'All'
+            config = (deployment_config(ROOT, base, path, role) if path or role != 'All'
                       else mode_config(ROOT, base, 'realtime', validate_isolation=False))
-            if role in ('Map', 'All') and (latitude or longitude):
+            local_roles = deployment_roles(role, config.get('deployment_hosts', {}),
+                                           config.get('deployment_local_roles'))
+            if config['launch_mode'] == 'realtime' and 'Map' in local_roles and (latitude or longitude):
                 config['manual_map_origin'] = map_origin(latitude, longitude)
             self.prepare_start(config)
             self.location_feedback = 'Launcher.LocationHint'
@@ -229,8 +249,11 @@ class Application:
             disabled=disabled or (self.runtime.state in ('STOPPED','FAILED') and key in ('Launcher.Restart','Launcher.Focus'))
             disabled=disabled or (key == 'Launcher.RemoveLocation' and self.favorite_picker.current() < 0)
             if key == 'Launcher.SwitchLocation':
-                local_map = (self.role_choice.get() in ('Map', 'All') if self.runtime.state in ('STOPPED', 'FAILED')
-                             else self.runtime.manages_role('Map'))
+                if self.runtime.state in ('STOPPED', 'FAILED'):
+                    role = self.role_choice.get()
+                    local_map = role == AUTO_ROLE or 'Map' in deployment_roles(role, {})
+                else:
+                    local_map = self.runtime.launch_mode == 'realtime' and self.runtime.manages_role('Map')
                 disabled = disabled or not local_map
             role = self.role_buttons.get(button)
             if role:
@@ -268,7 +291,7 @@ class Application:
     def place_ready(self):
         area = work_area()
         local_clients = self.runtime.local_client_roles
-        rects = rectangles(area)
+        rects = rectangles(area, pilot=PILOT_ROLE in local_clients)
         for role in local_clients:
             p=self.runtime.owned.get(role)
             if p and p.process.poll() is None and p.process.pid not in self.placed and self.runtime.components[role]=='ONLINE':
@@ -285,12 +308,29 @@ class Application:
         snap=self.runtime.snapshot
         if snap:self.language=snap['preferences']['language']
         self.title.config(text=self.text('Stage1.Name'))
-        layout_text = self.text('Launcher.Layout') if self.role_choice.get() == 'All' else (
-            '共享配置部署 | 本机只启动所选角色' if self.language == 'zh-Hans'
-            else 'Shared deployment | Only the selected role runs locally')
+        self.sync_pilot_row()
+        role_choice = self.role_choice.get()
+        if role_choice in (AUTO_ROLE, CLIENTS_ROLE):
+            local_roles = self.runtime.local_roles if self.runtime.deployment_role == role_choice else ()
+            if role_choice == AUTO_ROLE:
+                layout_text = ('根据本机 IP 启动配置中的角色' if self.language == 'zh-Hans'
+                               else 'Start roles matching this workstation’s IP')
+            else:
+                layout_text = '本机客户端组' if self.language == 'zh-Hans' else 'Local client group'
+                local_roles = local_roles or ROLES
+            if local_roles:
+                layout_text += ' | ' + ' · '.join(local_roles)
+        elif role_choice == 'All':
+            layout_text = self.text('Launcher.Layout')
+        else:
+            layout_text = (('共享配置部署 | 本机启动 ' if self.language == 'zh-Hans' else
+                            'Shared deployment | Local role ') + role_choice)
         self.mode.config(text=layout_text)
         self.state.config(text=self.text('Launcher.'+self.runtime.state))
-        session_text=self.text('Launcher.ModeRealtime')
+        if self.runtime.launch_mode == 'demo':
+            session_text = 'DEMO 模拟' if self.language == 'zh-Hans' else 'DEMO (Mock)'
+        else:
+            session_text = self.text('Launcher.ModeRealtime')
         if self.runtime.deployment_role:
             session_text += ' | ' + self.runtime.deployment_role + ' | ' + self.runtime.config['http_endpoint']
         location_key={'waiting':'Launcher.LocationWaiting','computer':'Launcher.LocationComputer',
@@ -316,7 +356,13 @@ class Application:
     def shutdown(self):
         try:active=self.runtime.has_active_execution() if self.runtime.state!='STOPPED' and 'Backend' in self.runtime.owned else False
         except Exception:active=bool(self.runtime.snapshot and any(e.get('state') not in ('COMPLETED','ABORTED','FAILED') for e in self.runtime.snapshot['plans'].get('executions',{}).values()))
-        if active and not messagebox.askokcancel(self.text('Launcher.Shutdown'),self.text('Launcher.RealtimeShutdownConfirm'),parent=self.root):return False
+        if active:
+            prompt = self.text('Launcher.RealtimeShutdownConfirm')
+            if self.runtime.launch_mode == 'demo':
+                prompt = ('关闭本地窗口和后端前，将暂停活动的模拟任务。是否继续？' if self.language == 'zh-Hans'
+                          else 'Active Mock executions will pause before the local windows and Backend close. Continue?')
+            if not messagebox.askokcancel(self.text('Launcher.Shutdown'), prompt, parent=self.root):
+                return False
         self.action(self.runtime.stop);return True
     def close(self):
         if self.busy:

@@ -1,12 +1,14 @@
 """LAN lifecycle contract tests; no sockets, aircraft or UE processes are opened."""
 import copy
+import json
 from pathlib import Path
 import tempfile
 import time
 import unittest
 from unittest.mock import Mock, patch
 
-from runtime import Runtime, ROLES, REQUIRED_CAPABILITIES
+from environment import preflight
+from runtime import BackendCompatibilityError, Runtime, ROLES, REQUIRED_CAPABILITIES, pilot_ready_path
 
 
 class StubOwnedProcess:
@@ -126,6 +128,112 @@ class DeploymentRuntimeTests(unittest.TestCase):
                 self.assertIn('-P1Http=' + runtime.config['http_endpoint'], args)
                 self.assertIn('-P1Ws=' + runtime.config['ws_endpoint'], args)
                 self.validate.assert_called_with(runtime.config)
+
+    def test_client_group_never_creates_restarts_or_pauses_backend(self):
+        runtime = self.runtime('Clients', mock_reset_on_start=True)
+        runtime.start()
+        self.assertEqual(runtime.local_roles, ROLES)
+        self.assertEqual([p.role for p in self.created], list(ROLES))
+        self.assertTrue(runtime.existing_backend)
+        self.origin.assert_called_once()
+        self.assertFalse((runtime.directory / 'data').exists())
+        self.assertFalse((runtime.directory / 'backend.yaml').exists())
+        with self.assertRaisesRegex(RuntimeError, 'Remote roles'):
+            runtime.restart('Backend')
+        self.snapshot['clients'] = [self.client(role, runtime.instances[role]) for role in ROLES]
+        runtime.poll()
+        self.assertEqual(runtime.state, 'READY')
+        runtime.stop()
+        self.pause.assert_not_called()
+        for process in self.created:
+            process.stop.assert_called_once()
+
+    def test_clients_without_reachable_backend_does_not_start_any_process(self):
+        self.port.return_value = False
+        runtime = self.runtime('Clients')
+        with self.assertRaisesRegex(RuntimeError, 'Start the Backend workstation first'):
+            runtime.start()
+        self.process_factory.assert_not_called()
+        self.assertFalse((runtime.directory / 'data').exists())
+        self.assertEqual(runtime.state, 'FAILED')
+
+    def test_auto_mock_backend_and_clients_have_independent_process_ownership(self):
+        self.port.side_effect = lambda endpoint: bool(self.created)
+        self.snapshot['plans'].update(execution_adapter='Mock', mock_execution={'uavs': ['d1']})
+        self.snapshot['backend']['capabilities'].append('pilot_control_mock')
+        (self.root / 'mock.json').write_text('{}', encoding='utf-8')
+        hosts = dict.fromkeys((*ROLES, 'Pilot'), '192.168.20.11')
+        hosts['Backend'] = '192.168.20.10'
+        credentials = self.root / 'mock-credentials.json'
+        credentials.write_text(json.dumps({'credentials': [
+            {'id': 'dispatch', 'role': 'Command', 'token': 'test-command'},
+            {'id': 'pilot', 'role': 'Pilot', 'token': 'test-pilot'},
+        ]}), encoding='utf-8')
+        (self.root / 'DroneBackend.exe').touch()
+        with patch.dict('os.environ', {'DRONE_PILOT_CONTROL_CREDENTIALS': str(credentials)}), \
+             patch.object(Runtime, 'reset_mock_for_startup') as reset:
+            backend = self.runtime('Auto', deployment_local_roles=('Backend',), deployment_hosts=hosts,
+                                   launch_mode='demo', mock_fixture='mock.json')
+            self.assertEqual(preflight(self.root, backend.config), [])
+            backend.start()
+            self.assertEqual(set(backend.owned), {'Backend'})
+            backend.poll()
+            self.assertEqual(backend.state, 'READY')
+            clients = self.runtime('Auto', deployment_local_roles=(*ROLES, 'Pilot'), deployment_hosts=hosts,
+                                   launch_mode='demo', mock_reset_on_start=True,
+                                   pilot_control_command_identity='dispatch', pilot_control_pilot_identity='pilot')
+            clients.start()
+            self.assertEqual(set(clients.owned), {*ROLES, 'Pilot'})
+            self.assertTrue(clients.existing_backend)
+            self.assertFalse((clients.directory / 'data').exists())
+            for role, identity in (('Command', 'dispatch'), ('Pilot', 'pilot')):
+                self.assertIn('-PilotControlIdentity=' + identity, clients.owned[role].args)
+                marker = pilot_ready_path(clients.config, self.root, role, clients.instances[role])
+                marker.parent.mkdir(parents=True)
+                marker.touch()
+            self.snapshot['clients'] = [self.client(role, clients.instances[role]) for role in ROLES]
+            clients.poll()
+            self.assertEqual(clients.state, 'READY')
+            clients.stop()
+            self.assertIsNone(backend.owned['Backend'].process.poll())
+            self.pause.assert_not_called()
+            reset.assert_not_called()
+            backend.stop()
+            self.pause.assert_called_once()
+
+    def test_shared_pilot_requires_only_local_actor_identities_and_capability(self):
+        self.snapshot['plans'].update(execution_adapter='Mock', mock_execution={'uavs': ['d1']})
+        hosts = {**self.hosts, 'Pilot': '192.168.20.14'}
+        credentials = self.root / 'mock-credentials.json'
+        credentials.write_text(json.dumps({'credentials': [
+            {'id': 'dispatch', 'role': 'Command', 'token': 'test-command'},
+        ]}), encoding='utf-8')
+        with patch.dict('os.environ', {'DRONE_PILOT_CONTROL_CREDENTIALS': str(credentials)}):
+            clients = self.runtime('Clients', launch_mode='demo', deployment_hosts=hosts,
+                                   pilot_control_pilot_identity='pilot')
+            with self.assertRaisesRegex(RuntimeError, 'pilot_control_command_identity'):
+                clients.start()
+            self.process_factory.assert_not_called()
+            command = self.runtime('Auto', deployment_local_roles=('Command',), launch_mode='demo',
+                                   deployment_hosts=hosts, pilot_control_command_identity='dispatch')
+            with self.assertRaisesRegex(BackendCompatibilityError, 'pilot_control_mock'):
+                command.start()
+            self.process_factory.assert_not_called()
+            self.snapshot['backend']['capabilities'].append('pilot_control_mock')
+            command.start()
+            self.assertEqual(set(command.owned), {'Command'})
+            command.stop()
+
+    def test_auto_realtime_can_mix_backend_with_one_local_client(self):
+        self.port.side_effect = lambda endpoint: bool(self.created)
+        runtime = self.runtime('Auto', deployment_local_roles=('Backend', 'Map'))
+        runtime.start()
+        self.assertEqual(runtime.local_roles, ('Backend', 'Map'))
+        self.assertEqual([p.role for p in self.created], ['Backend', 'Map'])
+        self.assertFalse(runtime.existing_backend)
+        self.origin.assert_called_once()
+        runtime.stop()
+        self.pause.assert_not_called()
 
     def test_backend_workstation_starts_only_backend_with_shared_custom_ports(self):
         self.port.side_effect = lambda endpoint: bool(self.created)

@@ -4,9 +4,71 @@ import json
 import os
 from pathlib import Path
 
-from deployment import DEPLOYMENT_SELECTIONS, PILOT_ROLE
+from deployment import DEPLOYMENT_SELECTIONS, PILOT_ROLE, deployment_roles
 
 EDITOR = Path('Engine/Binaries/Win64/UnrealEditor.exe')
+PILOT_IDENTITIES = {'Command': 'pilot_control_command_identity', PILOT_ROLE: 'pilot_control_pilot_identity'}
+PILOT_CREDENTIALS_ENV = 'DRONE_PILOT_CONTROL_CREDENTIALS'
+
+
+def pilot_credentials_path():
+    configured_path = os.environ.get(PILOT_CREDENTIALS_ENV)
+    path = Path(configured_path) if configured_path else None
+    if path is None or not path.is_absolute() or not path.is_file():
+        raise RuntimeError('Set DRONE_PILOT_CONTROL_CREDENTIALS to an existing absolute file path / '
+                           '请将 DRONE_PILOT_CONTROL_CREDENTIALS 设置为现有凭据文件的绝对路径。')
+    return path
+
+
+def shared_pilot_roles(config):
+    selection = config.get('deployment_role')
+    hosts = config.get('deployment_hosts', {})
+    if selection is None or config.get('launch_mode') != 'demo' or PILOT_ROLE not in hosts:
+        return ()
+    roles = deployment_roles(selection, hosts, config.get('deployment_local_roles'))
+    return tuple(role for role in roles if role == 'Backend' or role in PILOT_IDENTITIES)
+
+
+def validate_shared_pilot_credentials(config):
+    local_roles = shared_pilot_roles(config)
+    if not local_roles:
+        return
+    local_identities = {}
+    for role in local_roles:
+        if role not in PILOT_IDENTITIES:
+            continue
+        key = PILOT_IDENTITIES[role]
+        value = config.get(key)
+        if not isinstance(value, str) or not value.strip():
+            raise RuntimeError(f'Set {key} in Launcher/config.local.json / '
+                               f'请在 Launcher/config.local.json 设置 {key}。')
+        local_identities[role] = value
+    path = pilot_credentials_path()
+    try:
+        document = json.loads(path.read_text(encoding='utf-8'))
+        credentials = document.get('credentials') if isinstance(document, dict) else None
+        if not isinstance(credentials, list) or not credentials:
+            raise ValueError()
+        actors = set()
+        tokens = set()
+        for entry in credentials:
+            if not isinstance(entry, dict):
+                raise ValueError()
+            role, identity, token = (entry.get(key) for key in ('role', 'id', 'token'))
+            if (role not in PILOT_IDENTITIES or not isinstance(identity, str)
+                    or not identity or len(identity.encode('utf-8')) > 128
+                    or not isinstance(token, str) or not token or len(token.encode('utf-8')) > 512
+                    or any(character in token for character in ' \t\r\n')
+                    or (role, identity) in actors or token in tokens):
+                raise ValueError()
+            actors.add((role, identity))
+            tokens.add(token)
+    except (OSError, ValueError, TypeError):
+        raise RuntimeError('Invalid Pilot control credential file / 驾驶员控制权凭据文件无效。') from None
+    for role, identity in local_identities.items():
+        if (role, identity) not in actors:
+            raise RuntimeError(f'{role} identity has no matching entry in the credential file / '
+                               f'凭据文件中没有匹配的 {role} 身份。')
 
 
 def has_cesium(folder):
@@ -56,12 +118,18 @@ def load_config(root):
 def preflight(root, config, require_binaries=True):
     root = Path(root)
     issues = []
-    role = config.get('deployment_role')
-    if 'deployment_role' in config and role not in (*DEPLOYMENT_SELECTIONS, PILOT_ROLE):
-        return ['Invalid deployment role / 部署角色必须为 All、Backend、Command、Map、Video 或 Pilot。']
-    if role == PILOT_ROLE and config.get('launch_mode') != 'demo':
+    selection = config.get('deployment_role')
+    if 'deployment_role' in config and selection not in DEPLOYMENT_SELECTIONS:
+        return ['Invalid deployment role / 部署角色必须为 Auto、All、Clients、Backend、Command、Map、Video 或 Pilot。']
+    roles = deployment_roles(selection, config.get('deployment_hosts', {}),
+                             config.get('deployment_local_roles')) if selection is not None else ()
+    if PILOT_ROLE in roles and config.get('launch_mode') != 'demo':
         return ['Pilot requires a Mock deployment / Pilot 仅支持 DEMO 部署。']
-    if role in ('Backend', 'All'):
+    try:
+        validate_shared_pilot_credentials(config)
+    except RuntimeError as error:
+        issues.append(str(error))
+    if 'Backend' in roles:
         if require_binaries and not (root / config['backend_executable']).is_file():
             issues.append('Backend not built / 尚未编译后端。先运行 SetupDroneBackend.cmd。')
         # DEMO generates its own configuration. A real Backend must use the
@@ -71,7 +139,7 @@ def preflight(root, config, require_binaries=True):
                               or 'Backend/config.yaml')
             if not (root / backend_config).is_file():
                 issues.append('Realtime Backend config missing / 缺少实时后端配置: ' + str(root / backend_config))
-        if role == 'Backend':
+        if roles == ('Backend',):
             return issues
     project = root / config['project']
     if not project.is_file():
@@ -90,7 +158,7 @@ def preflight(root, config, require_binaries=True):
                 issues.append('UE 5.8 is required / 请使用 UE 5.8。')
         if not (has_cesium(root / 'Plugins') or has_cesium(engine / 'Engine/Plugins')):
             issues.append('Cesium for Unreal missing / 请在 Epic Games Launcher 的 Fab 库中将 Cesium for Unreal 安装到 UE 5.8。见 Docs/First-Run-Windows.md。')
-    if role != PILOT_ROLE:
+    if not roles or any(role not in ('Backend', PILOT_ROLE) for role in roles):
         missing_assets = []
         for folder in ('Content', 'Plugins'):
             for path in (root / folder).rglob('*'):
@@ -105,7 +173,7 @@ def preflight(root, config, require_binaries=True):
         if not map_file.is_file():
             issues.append('Map asset missing / 缺少地图资源: ' + str(map_file))
     if require_binaries:
-        if role is None and not (root / config['backend_executable']).is_file():
+        if selection is None and not (root / config['backend_executable']).is_file():
             issues.append('Backend not built / 尚未编译后端。先运行 SetupDroneSecurity.cmd。')
         if not (root / 'Binaries/Win64/UnrealEditor-UE5DroneControl.dll').is_file():
             issues.append('UE module not built / 尚未编译 UE 工程。先运行 SetupDroneSecurity.cmd。')

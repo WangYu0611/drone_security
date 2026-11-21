@@ -1,8 +1,8 @@
-# 配置部署：单机四端与局域网四机
+# 单机和局域网部署
 
-同一份部署 JSON 支持两种用法：一台 Windows 电脑选择 **All**，同时运行 Backend、Command、Map、Video；或四台电脑分别选择一个角色，通过同一个 Backend 的 HTTP/WebSocket 同步业务状态。每台保留自己的工程和运行文件。
+启动器支持单机 **All**、按 IP 自动分配的 **Auto**、成组的 **Clients** 和指定单个角色。多机使用同一份部署 JSON，通过同一个 Backend 的 HTTP/WebSocket 同步状态。每台保留自己的工程和运行文件。
 
-启动器使用实时配置。[2026-11-17 四端实际联通记录](../Evidence/LANDeployment/20261117-live/validation.json) 保存了共享配置的历史实测。[此前 128 项功能测试](../Evidence/LANDeployment/20261117/validation.json) 和 [此前被系统拦截的启动记录](../Evidence/LANDeployment/20261117-local/validation.json) 也保留为历史证据。组件测试、原生界面检查、实际进程启动和现场四机联网是不同证据，不能相互替代。
+[2026-11-17 四端实际联通记录](../Evidence/LANDeployment/20261117-live/validation.json) 保存了共享配置的历史实测。[此前 128 项功能测试](../Evidence/LANDeployment/20261117/validation.json) 和 [此前被系统拦截的启动记录](../Evidence/LANDeployment/20261117-local/validation.json) 也保留为历史证据。组件测试、原生界面检查、实际进程启动和现场四机联网是不同证据，不能相互替代。
 
 ## 0. 只有一台电脑时，先这样启动
 
@@ -35,6 +35,43 @@
 
 若双击入口找不到 Python，但本机已有带 Tk 的 Python 3.10+，可创建 `D:\CodexPublish\drone_security\Launcher\python.path`，仅写一行实际解释器绝对路径，例如 `C:\Python313\python.exe`，不加引号、不写 JSON。它只影响本机启动脚本，不改系统 PATH，也不提交 Git。`py` 或 `python` 已正常可用时无需此文件。
 
+## 按本机 IP 自动选择角色
+
+把同一份共享配置复制到各台电脑。为每个角色填写实际运行该角色的电脑的局域网 IPv4。同一台电脑承担多个角色时，可以在这些字段中重复填写它的地址。各台启动器选择 **Auto** 后，会启动配置中所有与本机地址匹配的角色。配置没有匹配到本机时，启动器显示地址不匹配。先启动负责 Backend 的电脑，再启动其他电脑。多机部署填写实际局域网 IP，`127.0.0.1` 用于同机测试。
+
+也可以手选 **Backend**、**Clients** 或具体角色。**Clients** 启动本机的 Command、Map、Video，以及 DEMO 配置中定义的 Pilot。`Auto`、`All` 和 `Clients` 都是启动器选择，`hosts` 中填写实际进程角色。
+
+## 两台电脑运行驾驶员 Mock
+
+| 电脑 | 启动器选择 | 本机运行内容 |
+| --- | --- | --- |
+| A | **Auto**（匹配 Backend） | Mock Backend。可用 `SetupDroneBackend.cmd` 构建 |
+| B | **Auto**（匹配四个客户端） | Command、Map、Video、Pilot。需要 UE 5.8、Cesium、LFS 资源和当前版本的 UE 模块 |
+
+1. 将双机 DEMO 模板复制为 `Launcher/deployment.json`。把 `hosts.Backend` 改成电脑 A 的实际局域网 IPv4，把 `Command`、`Map`、`Video`、`Pilot` 四项都填成电脑 B 的实际局域网 IPv4。将相同内容复制到两机。电脑 A 的防火墙需允许电脑 B 访问配置里的两个 TCP 端口，模板使用 `19880` 和 `19881`。 [双机 DEMO 模板](../Launcher/deployment.two-workstations.demo.example.json)
+2. 在仓库外为两台电脑准备凭据 JSON。Command 与 Pilot 的身份及对应令牌须和 Backend 文件中的记录匹配。 [凭据文件格式](../Backend/README.md#104-驾驶员控制权-mock)
+3. 在电脑 B 的 `Launcher/config.local.json` 中合并以下两项。值使用凭据里的对应 `id`。如需在 Pilot 窗口用屏幕按钮测试输入，可另外设置 `"pilot_control_mock_input": true`。
+
+   ```json
+   {
+     "pilot_control_command_identity": "mock-command",
+     "pilot_control_pilot_identity": "mock-pilot"
+   }
+   ```
+
+4. 两台电脑各自在工程根目录打开 PowerShell，设置本机凭据文件的实际绝对路径，再从该窗口打开启动器。
+
+   ```powershell
+   $env:DRONE_PILOT_CONTROL_CREDENTIALS = 'C:\Private\drone-pilot-mock-credentials.json'
+   .\DroneSecurityLauncher.cmd
+   ```
+
+5. 先在电脑 A 的启动器选择 **Auto** 和共享 JSON，点击 **启动系统**，等待 Backend 就绪。选择 **Auto** 时，其日志和进程记录位于 `Saved/Deployment/demo/Auto`，Mock 注册表位于其中的 `data/drones.json`。
+6. 若要演示 Pilot 操控，在注册表中为计划使用的 Mock 无人机填入电脑 B 可访问的播放页 `video_url`。首次生成的注册表需要填写该字段。编辑前关闭电脑 A 上启动的 Backend，保存后重新启动。驾驶员端会等待选中飞机的图传出现新帧。 [视频地址设置](MediaMTX/README.md)
+7. 在电脑 B 的启动器选择 **Auto** 和同一份共享 JSON，点击 **启动系统**。等待四个本地客户端就绪后，可在 Command 分配，再到 Pilot 选机并启用。电脑 B 的客户端日志和进程记录位于本机的 `Saved/Deployment/demo/Auto`。结束时先在电脑 B 关闭客户端，再在电脑 A 关闭 Backend。
+
+按以上两台电脑的分工也可分别手选 **Backend** 和 **Clients**，文件放在 `Saved/Deployment/demo/{选择的角色}`。双机可以使用 `mode=realtime` 的四角色共享配置，电脑 B 负责 Command、Map 和 Video。带 Pilot 的流程使用 `mode=demo` 和 `hosts.Pilot`。
+
 ## 1. 准备四台电脑
 
 使用同一项目版本，并记录每台电脑接入同一局域网的实际 IPv4 地址。不同物理电脑应有各自的稳定地址；可使用固定地址或 DHCP 地址保留。同一电脑承载多个角色时，对应字段允许使用相同 IP。地址改变后需要同步更新部署文件。
@@ -50,7 +87,7 @@
 
 Backend 单独构建入口 `SetupDroneBackend.cmd` 调用 `Launcher/Start.cmd --build-backend`，产物为 `Backend/build/Release/DroneBackend.exe`。它使用本机 `realtime_backend_config` 指向的既有 YAML，不生成飞行策略。构建日志为 `Saved/first-run-build.log`。更新源码后应重新构建相应 EXE/DLL；拉取代码不会替换正在运行的旧程序。启动器默认读取这个 Backend 路径和 `Binaries/Win64/UnrealEditor-UE5DroneControl.dll`；仅在其他测试构建目录生成新文件，不会更新默认启动产物。若本机配置覆盖了 EXE 路径，也须确认被选中的实际文件与当前源码匹配。
 
-## 2. 准备一份共享配置
+## 2. 准备一份实时共享配置
 
 四机使用 [deployment.example.json](../Launcher/deployment.example.json) 为模板，首次创建本地 `Launcher/deployment.json`，把四个地址改成各机器的实际网卡 IPv4；单机则使用 [deployment.local.example.json](../Launcher/deployment.local.example.json)。实际 `deployment.json` 被 Git 忽略；已有配置直接编辑，不要覆盖掉自己的地址。
 
@@ -72,7 +109,7 @@ Backend 单独构建入口 `SetupDroneBackend.cmd` 调用 `Launcher/Start.cmd --
 以上是示例地址。规则如下：
 
 - 顶层必须正好包含示例中的五个字段，`schema_version` 为整数 `1`，`mode` 为 `realtime`。
-- `hosts` 必须正好包含大小写一致的四个角色，不能增加 `All` 字段。同机角色允许相同地址或 `127.0.0.1`；多机互连使用各机真实局域网 IPv4，不能用回环地址指代远程电脑。未指定地址、`0.0.0.0/8`、组播和保留地址无效；域名、IPv6、带端口或网段后缀的地址不受支持。
+- `hosts` 必须正好包含大小写一致的四个角色。**Auto**、**All** 和 **Clients** 是启动器选项。同机角色允许相同地址或 `127.0.0.1`。多机互连使用各机真实局域网 IPv4。未指定地址、`0.0.0.0/8`、组播和保留地址无效。域名、IPv6、带端口或网段后缀的地址不受支持。
 - 两个端口必须是 `1–65535` 的不同整数。未知字段、重复 JSON 字段或拼错的角色会报错。
 
 将**同一份配置内容复制到四台机器**。各台可以使用不同的本地文件路径；在启动器中选择各自那份文件即可。这里的“共享配置”不要求共享盘，也不共享 `Saved`、构建缓存、注册表或业务数据目录。
@@ -90,9 +127,9 @@ Backend 单独构建入口 `SetupDroneBackend.cmd` 调用 `Launcher/Start.cmd --
 
 客户端机器连接不到 Backend 时会明确失败，不会自行创建另一个 Backend。同角色已在线时拒绝重复启动；已在线的其他角色不会阻止本机启动。兼容的既有 Backend 可以被复用，启动器不会取得它的停止或重启权限。
 
-每台的 `READY` 要求 Backend 可用，并且本机客户端进程及其订阅、加载完成状态和新鲜心跳正常；Backend 角色只要求 Backend；**All** 要求本机四端全部正常。单角色部署时，其他机器未启动不会使本机就绪状态降级，也不能用远程同角色进程替代本机进程。请让四台机器的系统时间保持同步，心跳与遥测新鲜度检查依赖时间戳。
+每台的 `READY` 要求 Backend 可用，以及本机负责的客户端进程正常并完成就绪检查。**Backend** 只要求本机 Backend 就绪。**Auto** 和 **Clients** 按各自匹配的本地角色检查就绪。请让各台机器的系统时间保持同步，心跳与遥测新鲜度检查依赖时间戳。
 
-**Map** 或 **All** 启动时优先使用输入的经纬度。留空时默认使用 Map 电脑的 Windows 系统定位，无人机已连接时也适用。需要优先使用 UAV GPS 时，可在 Map 电脑的 `Launcher/config.local.json` 中将 `realtime_map_location_source` 设为 `uav`。单独启动 Command、Video 或 Backend 无需初始化地图位置。常用地点保存在运行 Map 的电脑的 `Saved/Launcher/map-locations.json`。
+实时会话启动地图端时优先使用输入的经纬度。留空时默认使用 Map 电脑的 Windows 系统定位，无人机已连接时也适用。需要优先使用 UAV GPS 时，可在 Map 电脑的 `Launcher/config.local.json` 中将 `realtime_map_location_source` 设为 `uav`。单独启动 Command、Video 或 Backend 无需初始化地图位置。常用地点保存在运行 Map 的电脑的 `Saved/Launcher/map-locations.json`。
 
 本机选择以 `role` 和共享文件 `path` 保存到 `Saved/Launcher/deployment-selection.json`，下次打开可恢复。默认 `auto_start=false`。开启后，启动器使用已保存的共享配置；没有保存的共享配置时，使用 **All** 和本机配置。
 

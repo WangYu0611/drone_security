@@ -7,10 +7,14 @@ import tempfile
 import unittest
 from unittest.mock import call, patch
 
-from deployment import (DEPLOYMENT_ROLES, DEPLOYMENT_SELECTIONS, SELECTION_PATH, deployment_config,
+from deployment import (AUTO_ROLE, CLIENTS_ROLE, DEPLOYMENT_ROLES, DEPLOYMENT_SELECTIONS, PILOT_ROLE,
+                        SELECTION_PATH, deployment_config, deployment_roles,
                         load_deployment_selection, save_deployment_selection,
                         validate_local_role)
 from launch_modes import mode_config
+
+
+FIXED_SELECTIONS = tuple(role for role in DEPLOYMENT_SELECTIONS if role not in (AUTO_ROLE, PILOT_ROLE))
 
 
 class DeploymentFixture(unittest.TestCase):
@@ -54,9 +58,9 @@ class DeploymentConfigTests(DeploymentFixture):
         before = copy.deepcopy(self.base)
         files_before = {p: p.read_bytes() for p in (self.path, self.fixture, self.backend_config)}
         with patch('deployment.socket.socket') as socket_factory:
-            results = [self.derive(role) for role in DEPLOYMENT_SELECTIONS]
+            results = [self.derive(role) for role in FIXED_SELECTIONS]
         socket_factory.assert_not_called()
-        for role, result in zip(DEPLOYMENT_SELECTIONS, results):
+        for role, result in zip(FIXED_SELECTIONS, results):
             with self.subTest(role=role):
                 self.assertEqual(result['http_endpoint'], 'http://192.168.10.10:8080')
                 self.assertEqual(result['ws_endpoint'], 'ws://192.168.10.10:8081/ws')
@@ -113,7 +117,7 @@ class DeploymentConfigTests(DeploymentFixture):
                     'realtime_http_endpoint', 'realtime_ws_endpoint', 'realtime_runtime_directory')}
                 base.update(old)
                 before = copy.deepcopy(base)
-                for role in DEPLOYMENT_SELECTIONS:
+                for role in FIXED_SELECTIONS:
                     with self.subTest(mode=mode, old=old, role=role):
                         config = deployment_config(self.root, base, self.path, role)
                         self.assertEqual(config['http_endpoint'], 'http://192.168.10.10:8080')
@@ -193,7 +197,7 @@ class DeploymentConfigTests(DeploymentFixture):
                           ('127.0.0.1', '127.1.2.3', '192.168.1.3', '192.168.1.3')):
             self.profile['hosts'] = dict(zip(DEPLOYMENT_ROLES, addresses))
             self.write_profile()
-            for role in DEPLOYMENT_SELECTIONS:
+            for role in FIXED_SELECTIONS:
                 with self.subTest(addresses=addresses, role=role):
                     config = self.derive(role)
                     self.assertEqual(config['deployment_hosts'], self.profile['hosts'])
@@ -228,6 +232,49 @@ class DeploymentConfigTests(DeploymentFixture):
             validate_local_role(config)
             factory.return_value.__enter__.return_value.bind.assert_called_once_with(('127.0.0.2', 0))
 
+    def test_clients_group_keeps_the_backend_remote_in_both_modes(self):
+        self.assertEqual(deployment_roles(CLIENTS_ROLE, self.profile['hosts']), ('Command', 'Map', 'Video'))
+        self.profile['mode'] = 'demo'
+        self.profile['hosts'].update(dict.fromkeys(('Command', 'Map', 'Video', 'Pilot'), '192.168.10.20'))
+        self.write_profile()
+        backend = self.derive('Backend')
+        clients = self.derive(CLIENTS_ROLE)
+        self.assertEqual(deployment_roles(CLIENTS_ROLE, clients['deployment_hosts']), ('Command', 'Map', 'Video', 'Pilot'))
+        self.assertEqual(deployment_roles('Backend', backend['deployment_hosts']), ('Backend',))
+        for key in ('http_endpoint', 'ws_endpoint'):
+            self.assertEqual(clients[key], backend[key])
+        self.assertEqual(clients['runtime_directory'], 'Saved/Deployment/demo/Clients')
+        self.assertEqual(backend['runtime_directory'], 'Saved/Deployment/demo/Backend')
+
+    def test_auto_groups_any_roles_assigned_to_local_addresses(self):
+        hosts = {'Backend': '192.168.10.10', 'Command': '192.168.10.20', 'Map': '192.168.10.10',
+                 'Video': '192.168.10.20', 'Pilot': '192.168.10.21'}
+        self.profile.update(mode='demo', hosts=hosts)
+        self.write_profile()
+        for local_ips, expected in (({'192.168.10.10'}, ('Backend', 'Map')),
+                                    ({'192.168.10.20', '192.168.10.21'}, ('Command', 'Video', 'Pilot'))):
+            with self.subTest(roles=expected), patch('deployment.socket.socket') as factory:
+                probe = factory.return_value.__enter__.return_value
+
+                def bind(endpoint):
+                    if endpoint[0] not in local_ips:
+                        raise OSError('Address is not local')
+
+                probe.bind.side_effect = bind
+                result = self.derive(AUTO_ROLE)
+                self.assertEqual(result['deployment_local_roles'], expected)
+                self.assertEqual(result['http_endpoint'], 'http://192.168.10.10:8080')
+                self.assertEqual(result['runtime_directory'], 'Saved/Deployment/demo/Auto')
+                self.assertEqual(probe.bind.call_args_list, [call((ip, 0)) for ip in dict.fromkeys(hosts.values())])
+                probe.send.assert_not_called()
+                probe.connect.assert_not_called()
+
+    def test_auto_requires_at_least_one_profile_address_on_this_computer(self):
+        with patch('deployment.socket.socket') as factory:
+            factory.return_value.__enter__.return_value.bind.side_effect = OSError('Address is not local')
+            with self.assertRaisesRegex(ValueError, 'No role in the profile'):
+                self.derive(AUTO_ROLE)
+
     def test_other_valid_unicast_ranges_are_allowed(self):
         self.profile['hosts'] = dict(zip(DEPLOYMENT_ROLES,
                                         ('10.1.1.1', '172.16.0.2', '169.254.1.3', '8.8.8.8')))
@@ -251,6 +298,16 @@ class DeploymentConfigTests(DeploymentFixture):
 
 
 class LocalRoleValidationTests(DeploymentFixture):
+    def test_clients_validate_each_client_ip_without_binding_the_backend_ip(self):
+        self.profile['mode'] = 'demo'
+        self.profile['hosts'].update(dict.fromkeys(('Command', 'Map', 'Video', 'Pilot'), '192.168.10.20'))
+        self.write_profile()
+        with patch('deployment.socket.socket') as factory:
+            validate_local_role(self.derive(CLIENTS_ROLE))
+            probe = factory.return_value.__enter__.return_value
+            self.assertEqual(probe.bind.call_args_list, [call(('192.168.10.20', 0))] * 4)
+            probe.connect.assert_not_called()
+
     def test_local_validation_only_binds_selected_address_and_closes(self):
         for role in DEPLOYMENT_ROLES:
             with self.subTest(role=role), patch('deployment.socket.socket') as factory:

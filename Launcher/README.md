@@ -1,14 +1,25 @@
-# Stage 1 launcher: shared profiles for one or four workstations
+# Stage 1 launcher and shared workstation profiles
 
 For a new UE workstation follow [First run on Windows](../Docs/First-Run-Windows.md). Install UE 5.8, Cesium for Unreal, VS C++ tools and Python 3.10+ with Tk, then run `SetupDroneSecurity.cmd`. Use `DroneSecurityLauncher.cmd` to launch. A Backend-only workstation can use `SetupDroneBackend.cmd` without UE/Cesium; it still needs Python with Tk and the Backend build dependencies. See [shared-profile deployment](../Docs/LANDeployment.md) for preparation and startup order. UE is discovered through the registry/Epic manifest; optional local overrides belong in ignored `Launcher/config.local.json`. Rebuild the actual configured Backend EXE and UE DLL after source updates: a successful build in a separate review directory does not replace the default `Backend/build/Release/DroneBackend.exe` or `Binaries/Win64/UnrealEditor-UE5DroneControl.dll`.
 
 For one computer, select **All**, leave the shared profile path empty, and click **Launch System**. To use a shared profile on one computer, select [deployment.local.example.json](deployment.local.example.json) or a local copy. The template uses four `127.0.0.1` entries, `mode=realtime`, and ports `8080/8081`. For four workstations, use [deployment.example.json](deployment.example.json), fill in each computer's LAN IPv4 address, distribute matching content, and select **Backend**, **Command**, **Map** or **Video** before clicking **Launch System** on the corresponding machine.
 
-Role-specific dependency checks run when starting; `CheckDroneSecurity.cmd` retains the complete single-workstation checks. These checks do not verify a Cesium token, provider allowance, live map access or actual video playback. Configure your own Cesium ion connection before expecting online terrain. Mock operation needs no physical aircraft connection or video URL. The [earlier 128-test record](../Evidence/LANDeployment/20261117/validation.json) predates shared-profile All support; [local integration evidence](../Evidence/LANDeployment/20261117-local/validation.json) records the current checks and startup result. Neither component nor single-computer testing establishes physical four-machine acceptance.
+Role-specific dependency checks run when starting; `CheckDroneSecurity.cmd` retains the complete single-workstation checks. These checks do not verify a Cesium token, provider allowance, live map access or actual video playback. Configure your own Cesium ion connection before expecting online terrain. Earlier validation is available in the [128-test record](../Evidence/LANDeployment/20261117/validation.json) and [local integration evidence](../Evidence/LANDeployment/20261117-local/validation.json).
+
+## Two-workstation Mock deployment
+
+For one Windows PC running Backend and another running Command, Map, Video and Pilot, copy the DEMO template to ignored `Launcher/deployment.json`. Replace `hosts.Backend` with the Backend PC's LAN IPv4 and put the client PC's LAN IPv4 in each of the four client fields. Copy the same profile to both PCs. The Backend PC needs inbound TCP access on both shared ports from the client PC. [Two-workstation DEMO template](deployment.two-workstations.demo.example.json)
+
+1. Prepare the current Backend build on the Backend PC and the current UE module on the client PC. Set `DRONE_PILOT_CONTROL_CREDENTIALS` to the absolute path of a private credential file on each PC before opening the launcher. Use matching Command and Pilot identities and tokens in both files.
+2. On the client PC set `pilot_control_command_identity` and `pilot_control_pilot_identity` in ignored `Launcher/config.local.json` to the corresponding credential IDs. For an on-screen Mock input test, optionally set `pilot_control_mock_input` to `true`.
+3. Open the launcher on the Backend PC, select the shared profile and **Auto**, and click **Launch System**. Once Backend is ready, open the launcher on the client PC, select the same profile and **Auto**, and click **Launch System**. The client PC connects to the shared Backend and starts its four UE windows.
+4. For the Pilot control walkthrough, set the Mock aircraft's `video_url` to a playback page reachable from the client PC. Pilot checks for fresh video frames before enabling control. See the [two-workstation deployment steps](../Docs/LANDeployment.md#两台电脑运行驾驶员-mock) and [Mock credential format](../Backend/README.md#104-驾驶员控制权-mock).
+
+**Auto** starts every role in the shared profile whose address belongs to the current PC. Repeat an address for roles on the same PC and use the actual LAN IPv4 for each PC in a multi-workstation deployment. A PC with no matching role reports an address mismatch. You can also pick **Backend**, **Clients** or an individual role explicitly. **Clients** manages Command, Map and Video, plus Pilot when a `demo` profile includes `hosts.Pilot`.
 
 ## Local configuration
 
-`Launcher/config.local.json` merges over `Launcher/config.json`. It supplies local executable paths and operational settings. A selected shared profile supplies four role IPs and two TCP ports, and must use `mode=realtime`. Update older DEMO profiles with the realtime mode, endpoints, and the four `hosts` keys from the templates. Same-computer roles may repeat an IP or use loopback. Use actual LAN addresses for remote computers. The selected role and profile path are saved in `Saved/Launcher/deployment-selection.json`. Keep credentials out of these files and public commits.
+`Launcher/config.local.json` merges over `Launcher/config.json`. It supplies local executable paths and operational settings. A shared profile supplies role IPs and two TCP ports. Use `mode=realtime` for standard deployments and the two-workstation `mode=demo` template for the Mock Pilot workflow. Same-computer roles may repeat an IP or use loopback. Use actual LAN addresses for remote computers. The selected role and profile path are saved in `Saved/Launcher/deployment-selection.json`. Keep credentials out of these files and public commits.
 
 If Python 3.10+ with Tk is installed but `py`/`python` is not discoverable, create ignored `Launcher/python.path` containing one line with the interpreter's absolute path, for example `C:\Python313\python.exe`. Do not add quotes or JSON. This local startup override does not change system PATH; omit it when the normal `py` or `python` entry works.
 
@@ -19,7 +30,7 @@ If Python 3.10+ with Tk is installed but `py`/`python` is not discoverable, crea
 | `map` | `/Game/Level/CesiumWorld` |
 | `startup_timeout` | `180` seconds; increase if first-run shader compilation delays client readiness |
 | `max_fps` | `20`, applied to each UE client |
-| `auto_start` | `false`, wait for **Launch System**. `true` uses the saved realtime shared profile or the default local All setup |
+| `auto_start` | `false`, wait for **Launch System**. `true` uses the saved shared profile or the default local All setup |
 | `realtime_http_endpoint`, `realtime_ws_endpoint` | Real-time: `http://127.0.0.1:8080`, `ws://127.0.0.1:8081/ws`; match the selected Backend configuration |
 | `realtime_backend_config` | `Backend/config.yaml`; existing registry and `port_map` remain authoritative; local override supported |
 | `realtime_runtime_directory` | `Saved/Realtime`; launcher ownership records and logs, not a new business database |
@@ -29,7 +40,7 @@ If Python 3.10+ with Tk is installed but `py`/`python` is not discoverable, crea
 | `realtime_device_wait` | `8` seconds in `uav` mode to discover a connected real UAV before considering computer location |
 | `realtime_computer_location_timeout` | `15` seconds to obtain Windows system location |
 
-All clients in a shared deployment use `hosts.Backend` for HTTP/WS. The selected role's IP is checked with a temporary local UDP bind. **All** checks that all four addresses belong to this computer and starts Backend before the three clients. On separate machines, start Backend first. Runtime records use `Saved/Deployment/realtime/{role}`. The shared ports override the current process's TCP listeners. Backend configuration still supplies storage, UDP mappings, and execution settings. Configure `video_url` and media transport separately for the computer identified by `hosts.Video`. Restart affected sessions after changing the profile. See the [deployment guide](../Docs/LANDeployment.md).
+All clients in a shared deployment use `hosts.Backend` for HTTP/WS. The launcher checks role IPs with temporary local UDP binds. **Clients** checks the client role addresses. **All** checks all selected addresses and starts Backend before the clients. On separate machines, start the workstation that owns Backend first. Runtime records use `Saved/Deployment/{mode}/{selection}`. The shared ports set the Backend process's TCP listeners. The realtime Backend configuration supplies its storage, UDP mappings, and execution settings. Configure `video_url` and media transport separately for the computer running Video or Pilot. Restart affected sessions after changing the profile. See the [deployment guide](../Docs/LANDeployment.md).
 
 The launcher does not append `-httpproxy` or support a custom `extra_args` / `proxy` JSON field. If the workstation needs an HTTP proxy, close its UE editor and clients, then merge the following into the project's ignored `Saved/Config/WindowsEditor/Engine.ini` and restart the clients. Replace the example address with an actual running HTTP proxy; preserve other INI sections.
 
@@ -63,7 +74,7 @@ After reviewing a completed single-aircraft rehearsal, select a registered physi
 
 ## Starting and stopping
 
-**Launch System** uses local ports `8080/8081` and `Backend/config.yaml` by default. The launcher starts or attaches to Backend, validates its APIs, and starts the selected UE processes. **All** resolves the map location before opening the three clients and requires their hydrated heartbeats for READY. A single-role deployment starts the selected role and resolves the location only for Map. Shut down the current session before changing deployment settings.
+**Launch System** uses local ports `8080/8081` and `Backend/config.yaml` by default. The launcher starts or attaches to Backend, validates its APIs, and starts the selected UE processes. Readiness depends on the local role set. Whenever a realtime session includes Map, the launcher resolves the location before launching Map. Shut down the current session before changing deployment settings.
 
 ### Real-time position initialization
 

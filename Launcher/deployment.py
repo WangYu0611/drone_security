@@ -1,7 +1,7 @@
-"""Read-only shared LAN profiles and a workstation's selected role.
+"""Read-only shared LAN profiles and workstation role selection.
 
-Loading a profile never opens a socket or changes flight configuration. Local
-address validation is a separate, bind-only operation performed before launch.
+Auto discovery and local validation bind an ephemeral UDP port without sending
+traffic. Profiles do not change flight configuration.
 """
 from __future__ import annotations
 
@@ -14,16 +14,48 @@ from launch_modes import mode_config
 
 
 DEPLOYMENT_ROLES = ('Backend', 'Command', 'Map', 'Video')
-DEPLOYMENT_SELECTIONS = ('All',) + DEPLOYMENT_ROLES
+AUTO_ROLE = 'Auto'
+CLIENTS_ROLE = 'Clients'
 PILOT_ROLE = 'Pilot'
+DEPLOYMENT_SELECTIONS = ('All', AUTO_ROLE, 'Backend', CLIENTS_ROLE, 'Command', 'Map', 'Video', PILOT_ROLE)
 PROFILE_FIELDS = frozenset(('schema_version', 'mode', 'hosts', 'http_port', 'ws_port'))
 SELECTION_PATH = Path('Saved/Launcher/deployment-selection.json')
 
 
 def _role(role):
-    if role not in (*DEPLOYMENT_SELECTIONS, PILOT_ROLE):
-        raise ValueError('Choose All, Backend, Command, Map, Video or Pilot / 请选择本机角色。')
+    if role not in DEPLOYMENT_SELECTIONS:
+        raise ValueError('Choose All, Auto, Backend, Clients, Command, Map, Video or Pilot / 请选择本机角色。')
     return role
+
+
+def deployment_roles(selection, hosts, local_roles=None):
+    """Expand a shared selection into the roles owned by this workstation."""
+    if selection == AUTO_ROLE:
+        return tuple(local_roles or ())
+    if selection in ('All', CLIENTS_ROLE):
+        roles = DEPLOYMENT_ROLES if selection == 'All' else DEPLOYMENT_ROLES[1:]
+        return roles + ((PILOT_ROLE,) if PILOT_ROLE in hosts else ())
+    return (selection,)
+
+
+def _bind_local_address(address):
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+        probe.bind((address, 0))
+
+
+def _detect_local_roles(hosts):
+    local_addresses = set()
+    for address in dict.fromkeys(hosts.values()):
+        try:
+            _bind_local_address(address)
+        except OSError:
+            continue
+        local_addresses.add(address)
+    roles = tuple(role for role, address in hosts.items() if address in local_addresses)
+    if not roles:
+        raise ValueError('No role in the profile matches an IP on this computer. / '
+                         '共享配置中没有角色的 IP 属于本机，请核对配置和本机网卡地址。')
+    return roles
 
 
 def _profile_path(root, path):
@@ -66,9 +98,9 @@ def _host(role, value):
 
 
 def deployment_config(root, base_config, path, role, *, realtime_only=False):
-    """Derive one role's settings without writing or contacting any host."""
+    """Derive a workstation's settings without writing or contacting any host."""
     role = _role(role)
-    if realtime_only and role not in DEPLOYMENT_SELECTIONS:
+    if realtime_only and role == PILOT_ROLE:
         raise ValueError('Choose a realtime launcher role / 请选择实时启动器支持的角色。')
     profile_path = _profile_path(root, path)
     try:
@@ -129,6 +161,8 @@ def deployment_config(root, base_config, path, role, *, realtime_only=False):
         'deployment_ws_port': profile['ws_port'],
         'launch_mode': profile['mode'],
     })
+    if role == AUTO_ROLE:
+        result['deployment_local_roles'] = _detect_local_roles(hosts)
     return result
 
 
@@ -136,14 +170,13 @@ def validate_local_role(config):
     """Check selected role addresses belong locally; bind port 0, never send."""
     role = _role(config.get('deployment_role'))
     hosts = config.get('deployment_hosts', {})
-    roles = (role,)
-    if role == 'All':
-        roles = DEPLOYMENT_ROLES + ((PILOT_ROLE,) if PILOT_ROLE in hosts else ())
+    roles = deployment_roles(role, hosts, config.get('deployment_local_roles'))
+    if not roles:
+        raise RuntimeError('No local deployment roles resolved / 共享配置未匹配到本机角色。')
     for local_role in roles:
         address = _host(local_role, hosts.get(local_role))
         try:
-            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
-                probe.bind((address, 0))
+            _bind_local_address(address)
         except OSError as exc:
             raise RuntimeError(f'{local_role}: {address} is not available on this computer / '
                                f'本机无法绑定角色 {local_role} 的 IP {address}；请检查角色选择和网卡地址。') from exc

@@ -38,6 +38,7 @@ class Widget:
         self.pack = Mock()
         self.bind = Mock()
         self.columnconfigure = Mock()
+        self.destroy = Mock()
 
     def config(self, **kwargs):
         self.values.update(kwargs)
@@ -100,7 +101,7 @@ class DeploymentUITests(unittest.TestCase):
                 'ws_endpoint': 'ws://192.168.20.10:28081/ws'}
 
     def test_start_selected_role_derives_profile_then_runs_role_preflight_before_start(self):
-        for role in ('All', 'Backend', 'Command', 'Map', 'Video'):
+        for role in ('All', 'Auto', 'Backend', 'Clients', 'Command', 'Map', 'Video', 'Pilot'):
             with self.subTest(role=role):
                 app = self.app(role)
                 config = self.derived(role)
@@ -115,8 +116,7 @@ class DeploymentUITests(unittest.TestCase):
                                      'preflight': preflight, 'Runtime': factory}), \
                      patch.object(UI['threading'], 'Thread', ImmediateThread):
                     app.start()
-                derive.assert_called_once_with(self.root, self.base, app.deployment_path.get(), role,
-                                               realtime_only=True)
+                derive.assert_called_once_with(self.root, self.base, app.deployment_path.get(), role)
                 preflight.assert_called_once_with(self.root, config)
                 factory.assert_called_once_with(self.root, config)
                 self.assertEqual(events, ['profile', 'preflight', 'runtime', 'start'])
@@ -251,43 +251,75 @@ class DeploymentUITests(unittest.TestCase):
         replacement.start.assert_called_once_with()
         self.assertEqual(load_deployment_selection(self.root), {'role': None, 'path': None})
 
-    def test_shared_demo_profile_is_rejected_before_preflight(self):
-        app = self.app('Map')
-        original = app.runtime
-        Path(app.deployment_path.get()).write_text(json.dumps({
-            'schema_version': 1, 'mode': 'demo',
-            'hosts': {role: '127.0.0.1' for role in ('Backend', 'Command', 'Map', 'Video')},
-            'http_port': 8080, 'ws_port': 8081,
-        }), encoding='utf-8')
-        preflight, factory = Mock(), Mock()
-        with patch.dict(UI, {'load_config': Mock(return_value=self.base),
-                             'preflight': preflight, 'Runtime': factory}), \
-             patch.object(UI['threading'], 'Thread', ImmediateThread):
-            app.start()
-        self.assertIn('Choose a realtime shared config', app.messages.get_nowait())
-        self.assertIs(app.runtime, original)
-        preflight.assert_not_called()
-        factory.assert_not_called()
+    def test_explicit_shared_profile_selects_demo_with_or_without_pilot(self):
+        fixture = self.root / 'Backend/mock_execution.json'
+        fixture.parent.mkdir()
+        fixture.write_text(json.dumps({'startup_formation': {
+            'origin': {'latitude': 1.27, 'longitude': 103.86, 'altitude': 10}}}), encoding='utf-8')
+        profile = self.root / 'shared.json'
+        for include_pilot in (False, True):
+            hosts = {'Backend': '192.168.20.10', 'Command': '192.168.20.11',
+                     'Map': '192.168.20.11', 'Video': '192.168.20.11'}
+            if include_pilot:
+                hosts['Pilot'] = '192.168.20.11'
+            profile.write_text(json.dumps({
+                'schema_version': 1, 'mode': 'demo', 'hosts': hosts,
+                'http_port': 28080, 'ws_port': 28081,
+            }), encoding='utf-8')
+            roles = ('Backend', 'Clients', 'Map') + (('Pilot',) if include_pilot else ())
+            for role in roles:
+                with self.subTest(role=role, include_pilot=include_pilot):
+                    app = self.app(role)
+                    app.latitude.set('37.75')
+                    app.prepare_start = Mock()
+                    with patch.dict(UI, {'load_config': Mock(return_value=self.base)}), \
+                         patch.object(UI['threading'], 'Thread', ImmediateThread):
+                        app.start()
+                    self.assertTrue(app.messages.empty())
+                    config = app.prepare_start.call_args.args[0]
+                    self.assertEqual(config['launch_mode'], 'demo')
+                    self.assertEqual(config['deployment_role'], role)
+                    self.assertEqual(config['http_endpoint'], 'http://192.168.20.10:28080')
+                    self.assertEqual('Pilot' in config['deployment_hosts'], include_pilot)
+                    self.assertNotIn('manual_map_origin', config)
 
-    def test_shared_map_start_uses_manual_coordinates_and_rejects_partial_coordinates(self):
-        for longitude in ('', '-122.4'):
-            with self.subTest(longitude=longitude):
-                app = self.app('Map')
+    def test_shared_map_and_client_group_use_manual_coordinates_and_reject_partial_coordinates(self):
+        for role in ('Map', 'Clients'):
+            for longitude in ('', '-122.4'):
+                with self.subTest(role=role, longitude=longitude):
+                    app = self.app(role)
+                    app.latitude.set('37.75')
+                    app.longitude.set(longitude)
+                    app.prepare_start = Mock()
+                    with patch.dict(UI, {'load_config': Mock(return_value=self.base),
+                                         'deployment_config': Mock(return_value=self.derived(role))}), \
+                         patch.object(UI['threading'], 'Thread', ImmediateThread):
+                        app.start()
+                    if longitude:
+                        self.assertTrue(app.messages.empty())
+                        self.assertEqual(app.prepare_start.call_args.args[0]['manual_map_origin'], {
+                            'latitude': 37.75, 'longitude': -122.4, 'altitude': 0.0,
+                        })
+                    else:
+                        app.prepare_start.assert_not_called()
+                        self.assertIn('Longitude', app.messages.get_nowait())
+
+    def test_auto_map_location_applies_only_when_map_resolves_locally(self):
+        for local_roles in (('Backend', 'Command'), ('Map', 'Video')):
+            with self.subTest(local_roles=local_roles):
+                app = self.app('Auto')
                 app.latitude.set('37.75')
-                app.longitude.set(longitude)
+                app.longitude.set('-122.4')
                 app.prepare_start = Mock()
+                config = {**self.derived('Auto'), 'deployment_local_roles': local_roles}
                 with patch.dict(UI, {'load_config': Mock(return_value=self.base),
-                                     'deployment_config': Mock(return_value=self.derived('Map'))}), \
+                                     'deployment_config': Mock(return_value=config)}), \
                      patch.object(UI['threading'], 'Thread', ImmediateThread):
                     app.start()
-                if longitude:
-                    self.assertTrue(app.messages.empty())
-                    self.assertEqual(app.prepare_start.call_args.args[0]['manual_map_origin'], {
-                        'latitude': 37.75, 'longitude': -122.4, 'altitude': 0.0,
-                    })
-                else:
-                    app.prepare_start.assert_not_called()
-                    self.assertIn('Longitude', app.messages.get_nowait())
+                self.assertTrue(app.messages.empty())
+                self.assertEqual(app.prepare_start.call_args.args[0].get('manual_map_origin'),
+                                 {'latitude': 37.75, 'longitude': -122.4, 'altitude': 0.0}
+                                 if 'Map' in local_roles else None)
 
     def test_location_switch_stages_idle_coordinates_or_updates_running_map(self):
         for state in ('STOPPED', 'READY'):
@@ -387,6 +419,64 @@ class DeploymentUITests(unittest.TestCase):
         self.assertEqual(app.switch_button.values['state'], 'normal')
         self.assertEqual(app.favorite_picker.values['state'], 'readonly')
 
+    def test_client_group_location_controls_follow_effective_mode(self):
+        app = self.button_app('Map')
+        app.role_choice.set('Clients')
+        Application.update_buttons(app)
+        self.assertEqual(app.switch_button.values['state'], 'normal')
+        app.runtime.launch_mode = 'demo'
+        Application.update_buttons(app)
+        self.assertEqual(app.switch_button.values['state'], 'disabled')
+        app.runtime.state = 'STOPPED'
+        app.runtime.owned = {}
+        Application.update_buttons(app)
+        self.assertEqual(app.switch_button.values['state'], 'normal')
+
+    def test_pilot_row_follows_local_mock_session(self):
+        app = self.button_app('Map')
+        app.labels = {role: Widget() for role in ('Backend', 'Command', 'Map', 'Video')}
+        app.pilot_row = 11
+        app.runtime.config = {'deployment_hosts': {'Pilot': '192.168.20.11'}}
+        app.runtime.manages_role = lambda role: role == 'Map'
+        with patch.object(UI['tk'], 'Label', Widget), patch.object(UI['tk'], 'Button', Widget):
+            app.sync_pilot_row()
+            self.assertNotIn('Pilot', app.labels)
+            app.runtime.launch_mode = 'demo'
+            app.sync_pilot_row()
+            self.assertNotIn('Pilot', app.labels)
+            app.runtime.manages_role = lambda role: role in ('Map', 'Pilot')
+            app.sync_pilot_row()
+            label = app.labels['Pilot']
+            buttons = [button for button, role in app.role_buttons.items() if role == 'Pilot']
+            self.assertEqual(len(buttons), 3)
+            app.sync_pilot_row()
+            self.assertIs(app.labels['Pilot'], label)
+            app.runtime.owned['Pilot'] = Mock()
+            Application.update_buttons(app)
+            self.assertTrue(all(button.values['state'] == 'normal' for button in buttons))
+            app.runtime.launch_mode = 'realtime'
+            app.sync_pilot_row()
+        label.destroy.assert_called_once()
+        self.assertNotIn('Pilot', app.labels)
+        self.assertNotIn('Pilot', app.role_buttons.values())
+        for button in buttons:
+            button.destroy.assert_called_once()
+
+    def test_window_placement_uses_pilot_layout_when_pilot_is_local(self):
+        app = self.button_app('Pilot')
+        app.runtime.local_client_roles = ('Command', 'Map', 'Video', 'Pilot')
+        app.runtime.owned['Pilot'].process.pid = 101
+        app.runtime.components = {'Pilot': 'ONLINE'}
+        app.runtime.log = Mock()
+        area, rect = (0, 0, 1000, 800), (500, 0, 500, 400)
+        layout = Mock(return_value={'Pilot': rect})
+        place = Mock(return_value=True)
+        with patch.dict(UI, {'work_area': Mock(return_value=area), 'rectangles': layout, 'place': place}):
+            app.place_ready()
+        layout.assert_called_once_with(area, pilot=True)
+        place.assert_called_once_with(101, rect, 'Drone Security | Pilot')
+        self.assertIn(101, app.placed)
+
     def test_existing_external_backend_buttons_are_disabled_even_on_backend_workstation(self):
         app = self.button_app('Backend', existing=True)
         app.runtime.owned = {}
@@ -395,7 +485,7 @@ class DeploymentUITests(unittest.TestCase):
             self.assertEqual(button.values['state'], 'disabled')
 
     def test_background_poll_keeps_idle_role_and_profile_controls_usable(self):
-        for role in ('All', 'Backend', 'Command', 'Map', 'Video'):
+        for role in ('All', 'Auto', 'Backend', 'Clients', 'Command', 'Map', 'Video', 'Pilot'):
             for state in ('STOPPED', 'FAILED'):
                 with self.subTest(role=role, state=state):
                     app = self.button_app(role)
@@ -423,7 +513,7 @@ class DeploymentUITests(unittest.TestCase):
                     self.assertFalse(app.busy)
 
     def test_foreground_start_disables_role_and_profile_controls_until_complete(self):
-        for role in ('All', 'Backend', 'Command', 'Map', 'Video'):
+        for role in ('All', 'Auto', 'Backend', 'Clients', 'Command', 'Map', 'Video', 'Pilot'):
             for state in ('STOPPED', 'FAILED'):
                 with self.subTest(role=role, state=state):
                     app = self.button_app(role)
@@ -462,7 +552,7 @@ class DeploymentUITests(unittest.TestCase):
         catalog_path = self.root / 'Scripts/P4/localization.json'
         catalog_path.parent.mkdir(parents=True)
         catalog_path.write_text(json.dumps(catalog), encoding='utf-8')
-        for role in ('All', 'Backend', 'Pilot', None):
+        for role in ('All', 'Auto', 'Backend', 'Clients', 'Pilot', None):
             with self.subTest(role=role):
                 save_deployment_selection(self.root, role, self.root / 'shared.json' if role else None)
                 runtime = SimpleNamespace(owned={}, state='STOPPED', launch_mode=None,
@@ -494,10 +584,11 @@ class DeploymentUITests(unittest.TestCase):
                 idle = factory.call_args.args[1]
                 self.assertEqual(idle['runtime_directory'], 'Saved/Launcher/Idle')
                 self.assertNotIn('launch_mode', idle)
-                self.assertEqual(app.role_choice.get(), role if role in ('All', 'Backend') else 'All')
+                self.assertEqual(app.role_choice.get(), role or 'All')
                 self.assertEqual(app.deployment_path.get(), str(self.root / 'shared.json')
-                                 if role in ('All', 'Backend') else '')
-                self.assertEqual(app.role_selector.values['values'], ('All', 'Backend', 'Command', 'Map', 'Video'))
+                                 if role else '')
+                self.assertEqual(set(app.role_selector.values['values']),
+                                 {'All', 'Auto', 'Backend', 'Clients', 'Command', 'Map', 'Video', 'Pilot'})
                 self.assertEqual(app.role_selector.values['state'], 'readonly')
                 start_buttons = [(button, key) for button, key in app.buttons if 'Start' in key]
                 self.assertEqual([key for _, key in start_buttons], ['Launcher.Start'])

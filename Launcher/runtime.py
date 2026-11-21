@@ -16,14 +16,13 @@ import urllib.parse
 import uuid
 from launch_modes import mode_config, received_origin, geoid_separation, check_backend_mode, has_real_connection, valid_origin
 from computer_location import computer_origin
-from deployment import PILOT_ROLE, validate_local_role
+from deployment import PILOT_ROLE, deployment_roles, validate_local_role
+from environment import PILOT_IDENTITIES, pilot_credentials_path, shared_pilot_roles, validate_shared_pilot_credentials
 
 ROLES = ('Command', 'Map', 'Video')
 CLIENT_ROLES = (*ROLES, PILOT_ROLE)
-PILOT_IDENTITIES = {'Command': 'pilot_control_command_identity', PILOT_ROLE: 'pilot_control_pilot_identity'}
 PILOT_MAP = '/Engine/Maps/Entry?game=/Script/UE5DroneControl.DroneOpsGameMode'
 PILOT_CAPABILITY = 'pilot_control_mock'
-PILOT_CREDENTIALS_ENV = 'DRONE_PILOT_CONTROL_CREDENTIALS'
 REQUIRED_CAPABILITIES = frozenset(('fleet_move_3d', 'map_fleet_controls', 'plan_configuration'))
 
 
@@ -213,11 +212,10 @@ class Runtime:
         return self.config.get('deployment_role')
     @property
     def local_roles(self):
-        if self.deployment_role not in (None, 'All'):
-            return (self.deployment_role,)
-        include_pilot = self.launch_mode == 'demo' and (
-            PILOT_ROLE in self.config.get('deployment_hosts', {}) if self.deployment_role == 'All'
-            else bool(pilot_identity(self.config, PILOT_ROLE)))
+        if self.deployment_role is not None:
+            return deployment_roles(self.deployment_role, self.config.get('deployment_hosts', {}),
+                                    self.config.get('deployment_local_roles'))
+        include_pilot = bool(pilot_identity(self.config, PILOT_ROLE))
         return ('Backend',) + ROLES + ((PILOT_ROLE,) if include_pilot else ())
     @property
     def local_client_roles(self):
@@ -231,13 +229,10 @@ class Runtime:
         if not identity and role != PILOT_ROLE:
             return
         if (not isinstance(identity, str) or not identity.strip() or len(identity) > 128):
-            raise RuntimeError('Set a Pilot control identity in Launcher/config.local.json / '
-                               '请在 Launcher/config.local.json 设置控制权身份。')
-        configured_path = os.environ.get(PILOT_CREDENTIALS_ENV)
-        path = Path(configured_path) if configured_path else None
-        if path is None or not path.is_absolute() or not path.is_file():
-            raise RuntimeError('Set DRONE_PILOT_CONTROL_CREDENTIALS to an existing absolute file path / '
-                               '请将 DRONE_PILOT_CONTROL_CREDENTIALS 设置为现有凭据文件的绝对路径。')
+            key = PILOT_IDENTITIES[role]
+            raise RuntimeError(f'Set {key} in Launcher/config.local.json / '
+                               f'请在 Launcher/config.local.json 设置 {key}。')
+        pilot_credentials_path()
     def log(self, event, **data):
         with self.lock:
             with (self.logs / 'launcher.jsonl').open('a', encoding='utf-8') as out:
@@ -260,11 +255,18 @@ class Runtime:
         self.components[role] = 'STARTING'
         self.log('launch', **process.record())
         self._persist_ownership()
+    def _check_backend(self, snapshot, *, requires_pilot=False):
+        check_backend_mode(snapshot, self.launch_mode)
+        if (requires_pilot or shared_pilot_roles(self.config)) and PILOT_CAPABILITY not in snapshot['backend']['capabilities']:
+            raise BackendCompatibilityError('Backend does not advertise pilot_control_mock. '
+                'Start the current Mock Backend with DRONE_PILOT_CONTROL_CREDENTIALS / '
+                '请使用当前版本和凭据配置启动 Mock 后端。')
     def _backend(self):
+        validate_shared_pilot_credentials(self.config)
         base = self.config['http_endpoint']
         if port_open(base):
             self.snapshot = compatible_snapshot(base)
-            check_backend_mode(self.snapshot, self.launch_mode)
+            self._check_backend(self.snapshot)
             if self.deployment_role and not port_open(self.config['ws_endpoint']):
                 raise RuntimeError('Backend WebSocket is unreachable / 后端 WebSocket 不可达: ' + self.config['ws_endpoint'])
             self.existing_backend = 'Backend' not in self.owned
@@ -290,7 +292,7 @@ class Runtime:
                 args += ['--http-port', str(uri.port), '--ws-port', str(ws.port)]
             self._spawn('Backend', args, self.root)
             self._wait_backend_ready(base)
-            check_backend_mode(self.snapshot, self.launch_mode)
+            self._check_backend(self.snapshot)
             return
         # Fresh simulation data only; existing confirmed business data is never replaced.
         data = self.directory / 'data'; data.mkdir(exist_ok=True)
@@ -315,7 +317,7 @@ log:
 ''', encoding='utf-8')
         self._spawn('Backend', [str(self.root / self.config['backend_executable']), str(config_path)], self.directory)
         self._wait_backend_ready(base)
-        check_backend_mode(self.snapshot, self.launch_mode)
+        self._check_backend(self.snapshot)
         # Only a newly owned Backend starts a new Mock session. Reattaching or
         # restarting one UI role never rewinds the shared execution authority.
         if self.config.get('mock_reset_on_start', False):
@@ -454,11 +456,7 @@ log:
                 raise RuntimeError('This workstation does not manage ' + role + ' / 本机未选择此角色')
             self._validate_pilot_configuration(role)
             snap = compatible_snapshot(self.config['http_endpoint'])
-            check_backend_mode(snap, self.launch_mode)
-            if pilot_identity(self.config, role) and PILOT_CAPABILITY not in snap['backend']['capabilities']:
-                raise BackendCompatibilityError('Backend does not advertise pilot_control_mock. '
-                    'Start the current Mock Backend with DRONE_PILOT_CONTROL_CREDENTIALS / '
-                    '请使用当前版本和凭据配置启动 Mock 后端。')
+            self._check_backend(snap, requires_pilot=bool(pilot_identity(self.config, role)))
             if any(c.get('client_role') == role and c.get('state') == 'ONLINE' for c in snap['clients']):
                 raise RuntimeError(role + ' already ONLINE; refusing duplicate')
             instance = str(uuid.uuid4()); self.instances[role] = instance
@@ -512,7 +510,7 @@ log:
             compatibility_error = None
             try:
                 snap = compatible_snapshot(self.config['http_endpoint'])
-                check_backend_mode(snap, self.launch_mode)
+                self._check_backend(snap)
                 self.snapshot = snap; self.components['Backend'] = 'ONLINE'
                 if self.deployment_role and not port_open(self.config['ws_endpoint']):
                     self.components['Backend'] = 'OFFLINE'
@@ -572,6 +570,8 @@ log:
                 validate_local_role(self.config)
             if role == 'Backend' and self.existing_backend:
                 raise RuntimeError('Existing Backend is not owned by Launcher')
+            if role == 'Backend' or role in PILOT_IDENTITIES:
+                validate_shared_pilot_credentials(self.config)
             self.stop_role(role)
             if role == 'Backend':
                 try:
