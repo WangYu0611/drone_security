@@ -19,6 +19,8 @@ struct FPilotControlAircraft
     FString ActivationReason;
     FString VideoUrl;
     FString ControlSessionId;
+    FString HandoffExecutionId;
+    int64 HandoffControlVersion = 0;
     int64 Revision = 0;
     bool bAvailable = false;
     bool bInputFrozen = false;
@@ -72,6 +74,7 @@ public:
     const FString& GetLastExitReason() const { return LastExitReason; }
 
     bool Grant(const FString& PilotId, const TArray<FString>& UavIds);
+    bool GrantHandoff(const FString& PilotId, const FString& UavId);
     bool Revoke(const FString& UavId);
     bool Activate(const FString& UavId);
     bool Stop(const FString& Reason = TEXT("OPERATOR_STOP"));

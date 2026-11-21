@@ -5,11 +5,13 @@
 #include "Command/CommandCenterPanel.h"
 #include "Command/CommandTacticalMap.h"
 #include "Command/CommandAlertStore.h"
+#include "Command/PilotDispatchWidget.h"
 #include "Shared/ActiveExecutionControlsWidget.h"
 #include "Shared/OperationalContextSubsystem.h"
 #include "Shared/OperationalEventStore.h"
 #include "Shared/PlanConfiguration.h"
 #include "Shared/PlanWidgetSupport.h"
+#include "Shared/PilotControlSubsystem.h"
 #include "Shared/ProductText.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
 #include "Blueprint/WidgetTree.h"
@@ -66,6 +68,10 @@ void UCommandShellWidget::BuildFigmaShell(UCanvasPanel* Root) {
     auto* Nav=WidgetTree->ConstructWidget<UHorizontalBox>();NavPlate->SetContent(Nav);Place(Head,NavPlate,{555,4},{324,34});
     const TCHAR* NavKeys[]={TEXT("Nav.Overview"),TEXT("Nav.Plans"),TEXT("Nav.Fleet")};
     for(int I=0;I<3;++I){auto* B=ActionButton(TEXT("navigate"),NavKeys[I],I);Fill(Nav->AddChildToHorizontalBox(B),I==1?1.4f:1.f);PrimaryNavigationButtons.Add(B);FigmaUI::Button(B,I==0,true);}
+    PilotHandoffButton=ActionButton(TEXT("pilot_handoff"),TEXT("Nav.Fleet"));
+    CastChecked<UTextBlock>(PilotHandoffButton->GetContent())->SetTextOverflowPolicy(ETextOverflowPolicy::Ellipsis);
+    PilotHandoffButton->SetVisibility(ESlateVisibility::Collapsed);
+    Place(Head,PilotHandoffButton,{891,4},{137,34});
     auto* LangPlate=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(LangPlate,FigmaUI::Surface,FLinearColor::Transparent,24,FMargin(0));
     auto* Lang=WidgetTree->ConstructWidget<UHorizontalBox>();LangPlate->SetContent(Lang);Place(Head,LangPlate,{1040,4},{178,34});
     for(const TCHAR* L:{TEXT("zh-Hans"),TEXT("en")}){auto* B=ActionButton(L,FString(L)==TEXT("en")?TEXT("Workflow.English"):TEXT("Workflow.Chinese"));Fill(Lang->AddChildToHorizontalBox(B));LanguageButtons.Add(B);}
@@ -148,6 +154,7 @@ void UCommandShellWidget::BuildFigmaShell(UCanvasPanel* Root) {
     RecentEvents=Label(WidgetTree,FText::GetEmpty()); // Retain legacy summary for accessibility/diagnostics.
     CenterPanel=CreateWidget<UCommandCenterPanel>(GetOwningPlayer());WorkspacePages->AddChild(CenterPanel);
     FigmaFleet=CreateWidget<UFigmaFleetWidget>(GetOwningPlayer());WorkspacePages->AddChild(FigmaFleet);
+    FigmaFleet->OnPilotDispatchRequested.AddUObject(this, &UCommandShellWidget::OpenPilotDispatch, false);
     ConfigurationHeader=WidgetTree->ConstructWidget<UVerticalBox>();auto* CSlot=Root->AddChildToCanvas(ConfigurationHeader);CSlot->SetAnchors(FAnchors(0,0,1,0));CSlot->SetOffsets(FMargin(30,102,30,76));
     ConfigurationCaption=Label(WidgetTree,FText::GetEmpty(),16);ConfigurationHeader->AddChild(ConfigurationCaption);auto* CA=WidgetTree->ConstructWidget<UHorizontalBox>();ConfigurationHeader->AddChild(CA);
     CA->AddChild(ActionButton(TEXT("configuration_return"),TEXT("Configuration.Return"),1));ConfigurationFinish=ActionButton(TEXT("configuration_finish"),TEXT("Configuration.Finish"),1);CA->AddChild(ConfigurationFinish);
@@ -170,6 +177,47 @@ void UCommandShellWidget::BuildFigmaShell(UCanvasPanel* Root) {
     DialogFeedback=Label(WidgetTree,FText::GetEmpty(),13);Body->AddChild(DialogFeedback);
     auto* Foot=WidgetTree->ConstructWidget<UHorizontalBox>();Body->AddChildToVerticalBox(Foot)->SetPadding(FMargin(0,18,0,0));DialogCount=Label(WidgetTree,FText::GetEmpty(),15);Fill(Foot->AddChildToHorizontalBox(DialogCount));Foot->AddChild(ActionButton(TEXT("refresh_dialog"),TEXT("Figma.Refresh")));
     FigmaDialog->SetVisibility(ESlateVisibility::Collapsed);WorkspacePages->SetActiveWidgetIndex(0);
+
+    PilotDispatch=CreateWidget<UPilotDispatchWidget>(GetOwningPlayer());
+    auto* PilotSlot=Root->AddChildToCanvas(PilotDispatch);
+    PilotSlot->SetAnchors(FAnchors(0,0,1,1));
+    PilotSlot->SetOffsets(FMargin(0));
+    PilotSlot->SetZOrder(110);
+    PilotDispatch->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void UCommandShellWidget::PilotHandoffRequested(const FString& UavId, const FString& RequestId)
+{
+    if (UavId.IsEmpty() || RequestId.IsEmpty() || RequestId == LatestPilotHandoffRequestId) return;
+    LatestPilotHandoffRequestId = RequestId;
+    PendingPilotHandoffs.AddUnique(UavId);
+    RefreshPilotHandoffs();
+}
+
+void UCommandShellWidget::RefreshPilotHandoffs()
+{
+    const auto* Control = GetGameInstance()->GetSubsystem<UPilotControlSubsystem>();
+    if (Control && Control->IsReady())
+    {
+        PendingPilotHandoffs.RemoveAll([&](const FString& UavId)
+        {
+            return Control->GetAircraft().ContainsByPredicate([&](const auto& Row)
+            {
+                return Row.UavId == UavId && !Row.GrantId.IsEmpty();
+            });
+        });
+    }
+    const bool bShow = Control && Control->IsEnabled() && !PendingPilotHandoffs.IsEmpty();
+    PilotHandoffButton->SetVisibility(bShow ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    if (bShow) CastChecked<UTextBlock>(PilotHandoffButton->GetContent())->SetText(
+        UPilotDispatchWidget::HandoffRequestsTitle(PendingPilotHandoffs.Num()));
+}
+
+void UCommandShellWidget::OpenPilotDispatch(const TArray<FString>& Targets, bool bRequestedHandoff)
+{
+    const auto* Control = GetGameInstance()->GetSubsystem<UPilotControlSubsystem>();
+    if (PilotDispatch && !PilotDispatch->IsVisible() && DialogKind.IsEmpty() && Control && Control->IsEnabled())
+        PilotDispatch->Open(Targets, bRequestedHandoff);
 }
 
 void UCommandShellWidget::RefreshFigmaShell() {
@@ -186,6 +234,7 @@ void UCommandShellWidget::RefreshFigmaShell() {
     const auto* Alerts=GI->GetSubsystem<UCommandAlertStore>();const auto& Events=GI->GetSubsystem<UOperationalEventStore>()->GetEvents();
     StatisticValues[0]->SetText(Number(Drones.Num()));StatisticValues[1]->SetText(Number(Online));StatisticValues[2]->SetText(Number(Alerts->GetUnhandledCount()));StatisticValues[3]->SetText(Number(Events.Num()));
     RefreshRunningTasks();
+    RefreshPilotHandoffs();
     if(FigmaFleet)FigmaFleet->Refresh();
     ZoomCaption->SetText(FText::AsCultureInvariant(FString::Printf(TEXT("Z%d"),SituationMap->GetZoom())));FigmaUI::Button(FollowButton,SituationMap->IsFollowing(),true);
     const FString Signature=FString::Printf(TEXT("%llu/%s"),GI->GetSubsystem<UOperationalEventStore>()->GetLatestSequence(),*Language);
@@ -205,6 +254,19 @@ void UCommandShellWidget::RefreshFigmaShell() {
 }
 
 void UCommandShellWidget::FigmaAction(FName Action,int32 Index) {
+    if(Action==TEXT("pilot_handoff")){
+        if (!PendingPilotHandoffs.IsEmpty() && !PilotDispatch->IsVisible())
+        {
+            const FString UavId = PendingPilotHandoffs[0];
+            OpenPilotDispatch({UavId}, true);
+            if (PilotDispatch->IsVisible() && PendingPilotHandoffs.Num() > 1)
+            {
+                PendingPilotHandoffs.RemoveAt(0);
+                PendingPilotHandoffs.Add(UavId);
+            }
+        }
+        return;
+    }
     if(Action==TEXT("close_dialog")){DialogKind.Empty();FigmaDialog->SetVisibility(ESlateVisibility::Collapsed);return;}
     if(Action==TEXT("devices") || Action==TEXT("alerts") || Action==TEXT("logs")){DialogKind=Action.ToString();DialogSignature.Empty();DialogFeedback->SetText(FText::GetEmpty());FigmaDialog->SetVisibility(ESlateVisibility::Visible);RefreshFigmaDialog();return;}
     if(Action==TEXT("refresh_dialog")){DialogSignature.Empty();RefreshFigmaDialog();return;}

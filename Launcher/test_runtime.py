@@ -114,6 +114,9 @@ class LauncherTests(unittest.TestCase):
             self.assertIn('-PilotControlIdentity=dispatch-a', command_args)
             self.assertNotIn('-PilotMockInput', command_args)
             self.assertNotIn('-PilotKeyboardInput', command_args)
+            video_args = role_arguments(cfg, root, 'Video', 'first', root/'video.log')
+            self.assertIn('-ClientRole=Video', video_args)
+            self.assertFalse(any(arg.startswith('-Pilot') for arg in video_args))
             realtime = {**cfg, 'launch_mode': 'realtime'}
             self.assertEqual(Runtime(root, realtime).local_client_roles, ('Command', 'Map', 'Video'))
             self.assertFalse(any(a.startswith('-PilotControl') for a in

@@ -43,6 +43,7 @@ private:
     bool bDropdownOpen=false,bDeviceSelectionPending=false,bRouteIconActive=false;
     int32 PendingDevice=0;
     double DeviceSelectionRequestedAt=0;
+    double PilotHandoffFeedbackUntil=0;
     FString MenuSignature;
     FText DeviceSelectionError;
     void RefreshDeviceMenu();

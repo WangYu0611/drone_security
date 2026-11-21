@@ -390,13 +390,6 @@ void UFigmaFleetWidget::Action(FName Name, int32 Id)
     if (Name == TEXT("simulation_confirm")) { SubmitSimulationBatch(); return; }
     if (Name == TEXT("pilot_dispatch"))
     {
-        if (!PilotDispatch)
-        {
-            PilotDispatch = CreateWidget<UPilotDispatchWidget>(GetOwningPlayer());
-            auto* DispatchSlot = RootOverlay->AddChildToOverlay(PilotDispatch);
-            DispatchSlot->SetHorizontalAlignment(HAlign_Fill);
-            DispatchSlot->SetVerticalAlignment(VAlign_Fill);
-        }
         TArray<FString> Targets;
         for (const int32 DroneId : Registry->GetMultiSelectedDrones())
         {
@@ -404,7 +397,7 @@ void UFigmaFleetWidget::Action(FName Name, int32 Id)
             if (Registry->GetDroneDescriptor(DroneId, Descriptor) && !Descriptor.bIsEnemyTarget)
                 Targets.AddUnique(FString::Printf(TEXT("UAV-%02d"), Descriptor.Slot > 0 ? Descriptor.Slot : DroneId));
         }
-        PilotDispatch->Open(Targets);
+        OnPilotDispatchRequested.Broadcast(Targets);
         return;
     }
     if (Name == TEXT("label")) { OpenLabelDialog(Id); return; }

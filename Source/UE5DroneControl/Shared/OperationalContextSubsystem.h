@@ -7,6 +7,7 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOperationalFieldChanged, const FString&);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOperationalContextChanged, const TSharedPtr<FJsonObject>&);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FPilotHandoffRequested, const FString&, const FString&);
 
 /** Per-process replica. All shared writes pass through Backend; remote apply never echoes. */
 UCLASS()
@@ -20,6 +21,12 @@ public:
     bool ShouldRouteSelection() const { return bEnabled && !bApplying && bFollowGlobalSelection; }
     bool IsReady() const { return State == TEXT("CONNECTED"); }
     bool SetActiveUAV(int32 Id);
+    bool CanRequestPilotHandoff() const;
+    bool RequestPilotHandoff(int32 DroneId);
+    bool IsPilotHandoffPending() const { return bPilotHandoffPending; }
+    const FString& GetPilotHandoffStatus() const { return PilotHandoffStatus; }
+    bool GetLatestPilotHandoffRequest(FString& OutUavId, FString& OutRequestId) const;
+    FPilotHandoffRequested OnPilotHandoffRequested;
     bool SetLocalSelection(int32 Id, const TArray<int32>& Multi);
     // Only explicit Map hits call this: the clicked video target may differ
     // from the resulting primary/members after Shift or Ctrl selection.
@@ -61,6 +68,8 @@ public:
 private:
     friend class FVideoRequestFeedbackTest;
     bool bVideoSwitchPending = false, bLanguageChangePending = false;
+    bool bPilotHandoffRequests = false, bPilotHandoffPending = false;
+    FString LatestPilotHandoffUav, LatestPilotHandoffId, PendingPilotHandoffId, PilotHandoffStatus;
     int64 VideoSwitchSerial = 0, LanguageChangeSerial = 0;
     FString RequestedVideoTarget, RequestedLanguage, LanguageSyncError;
     void CancelPendingViewRequests(bool ReportFailure);

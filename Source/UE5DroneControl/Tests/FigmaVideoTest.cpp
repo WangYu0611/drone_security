@@ -6,6 +6,7 @@
 #include "Command/CommandScreenManager.h"
 #include "Command/CommandAlertStore.h"
 #include "Shared/OperationalContextSubsystem.h"
+#include "Shared/PilotControlSubsystem.h"
 #include "Shared/ProductText.h"
 #include "DroneOps/Control/DroneOpsPlayerController.h"
 #include "DroneOps/Core/DroneRegistrySubsystem.h"
@@ -66,23 +67,27 @@ class FFigmaVideoChecks : public IAutomationLatentCommand
     }
     void CheckBottomControls(UVideoShellWidget* Shell,UOperationalContextSubsystem* Sync,const TCHAR* Phase)
     {
-        if(!Test->TestNotNull(TEXT("latest Video design includes manual takeover affordance"),Shell->TakeoverButton.Get()))return;
-        Test->TestTrue(*FString::Printf(TEXT("%s keeps takeover affordance visible"),Phase),Shell->TakeoverButton->IsVisible());
-        Test->TestFalse(TEXT("Video cannot enable flight/execution takeover"),Shell->TakeoverButton->GetIsEnabled());
-        Test->TestFalse(TEXT("Video takeover has no unprivileged request or fake handoff delegate"),Shell->TakeoverButton->OnClicked.IsBound());
-        Test->TestEqual(TEXT("Video takeover tooltip explains supported Map/Command workflow"),Shell->TakeoverButton->GetToolTipText().ToString(),ProductText::Get(TEXT("VideoUI.TakeoverHint")).ToString());
-        FString Language;if(Sync->GetUIPreferences())Sync->GetUIPreferences()->TryGetStringField(TEXT("language"),Language);
-        Test->TestTrue(TEXT("takeover guidance loads the compiled language resource"),Shell->TakeoverButton->GetToolTipText().ToString().Contains(Language==TEXT("en")?TEXT("Map or Command"):TEXT("战术地图")));
-        const int64 ContextVersion=Sync->GetVersion();const FString VideoTarget=Target(Sync);const int MediaGeneration=Shell->GetBrowserGeneration();
-        Shell->TakeoverButton->OnClicked.Broadcast();
-        Test->TestEqual(TEXT("disabled takeover cannot change acknowledged selection"),Sync->GetVersion(),ContextVersion);
-        Test->TestEqual(TEXT("disabled takeover cannot change video target"),Target(Sync),VideoTarget);
-        Test->TestEqual(TEXT("disabled takeover does not recreate/reload player"),Shell->GetBrowserGeneration(),MediaGeneration);
+        Test->TestNull(*FString::Printf(TEXT("%s has no manual takeover control"),Phase),
+            Shell->WidgetTree->FindWidget(TEXT("VideoManualTakeover")));
+        const bool HandoffAvailable = Sync->CanRequestPilotHandoff();
+        Test->TestEqual(TEXT("Video exposes handoff request only when Backend supports it"),
+            Shell->HandoffRequestButton->IsVisible(), HandoffAvailable);
+        Test->TestTrue(TEXT("handoff request is wired to the Video shell"), Shell->HandoffRequestButton->OnClicked.IsBound());
+        FString Language;
+        if (Sync->GetUIPreferences()) Sync->GetUIPreferences()->TryGetStringField(TEXT("language"), Language);
+        if (Language == TEXT("en") || Language == TEXT("zh-Hans")) {
+            Test->TestEqual(TEXT("Video identifies the control as a request"),
+                Shell->HandoffRequestCaption->GetText().ToString(),
+                FString(Language == TEXT("en") ? TEXT("Request pilot handoff") : TEXT("交接申请")));
+        }
         if(FParse::Param(FCommandLine::Get(),TEXT("NullRHI")))return;
         auto Left=[](const UWidget* W){return W->GetCachedGeometry().GetAbsolutePosition().X;};
         auto Right=[](const UWidget* W){const auto& G=W->GetCachedGeometry();return G.LocalToAbsolute(G.GetLocalSize()).X;};
-        Test->TestTrue(TEXT("set-active action does not overlap takeover button"),Right(Shell->SetActiveButton)<=Left(Shell->TakeoverButton));
-        Test->TestTrue(TEXT("takeover button does not overlap current-selection feedback"),Right(Shell->TakeoverButton)<=Left(Shell->SystemHeader));
+        Test->TestTrue(TEXT("shared selection action does not overlap current-selection feedback"),Right(Shell->SetActiveButton)<=Left(Shell->SystemHeader));
+        if (HandoffAvailable) {
+            Test->TestTrue(TEXT("handoff request does not overlap shared selection"), Right(Shell->SetActiveButton)<=Left(Shell->HandoffRequestButton));
+            Test->TestTrue(TEXT("handoff request does not overlap current-selection feedback"), Right(Shell->HandoffRequestButton)<=Left(Shell->SystemHeader));
+        }
         Test->TestTrue(TEXT("current-selection feedback does not overlap retry"),Right(Shell->SystemHeader)<=Left(Shell->Retry));
         for(const TCHAR* Name:{TEXT("VideoDetectionDivider"),TEXT("VideoSystemDivider"),TEXT("VideoModeDivider")}){
             const auto* Rule=Cast<USizeBox>(Shell->WidgetTree->FindWidget(FName(Name)));
@@ -106,6 +111,8 @@ public:
         auto* GI=World->GetGameInstance();auto* Sync=GI->GetSubsystem<UOperationalContextSubsystem>();auto* Registry=GI->GetSubsystem<UDroneRegistrySubsystem>();
         auto* Network=GI->GetSubsystem<UDroneNetworkManager>();if(!Sync->IsHydrated())return false;Shell->Refresh();
         if(Step==0){
+            const auto* PilotControl=GI->GetSubsystem<UPilotControlSubsystem>();
+            Test->TestFalse(TEXT("Video role does not enable the Pilot control channel"),PilotControl && PilotControl->IsEnabled());
             const auto Drones=Registry->GetFriendlyDroneDescriptors();if(Drones.Num()<2)return false;
             SavedFirst=Drones[0];SavedSecond=Drones[1];First=SavedFirst.DroneId;Second=SavedSecond.DroneId;
             WasIsolated=Network->IsStrictLocalPreviewIsolation();Network->SetStrictLocalPreviewIsolation(true);

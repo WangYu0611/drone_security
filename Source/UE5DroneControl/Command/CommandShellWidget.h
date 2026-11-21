@@ -26,6 +26,9 @@ private:
     void BuildFigmaShell(class UCanvasPanel* Root);
     void RefreshFigmaShell();
     void RefreshFigmaDialog();
+    void RefreshPilotHandoffs();
+    void OpenPilotDispatch(const TArray<FString>& Targets, bool bRequestedHandoff);
+    void PilotHandoffRequested(const FString& UavId, const FString& RequestId);
     void RefreshRunningTasks();
     UFUNCTION() void OpenRunningTask(FName Action,int32 Index);
     UPROPERTY() TObjectPtr<class USizeBox> OverviewSummarySize;
@@ -41,6 +44,10 @@ private:
     FString RunningTaskLanguage;
     UFUNCTION() void FigmaAction(FName Action, int32 Index);
     UPROPERTY() TObjectPtr<class UFigmaFleetWidget> FigmaFleet;
+    UPROPERTY() TObjectPtr<class UPilotDispatchWidget> PilotDispatch;
+    UPROPERTY() TObjectPtr<class UCommandActionButton> PilotHandoffButton;
+    TArray<FString> PendingPilotHandoffs;
+    FString LatestPilotHandoffRequestId;
     UPROPERTY() TObjectPtr<class UTextBlock> HeaderClock;
     UPROPERTY() TArray<TObjectPtr<class UTextBlock>> HealthLabels;
     UPROPERTY() TArray<TObjectPtr<class UImage>> HealthDots;

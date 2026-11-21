@@ -810,7 +810,6 @@ const TMap<FString,FText>& Catalog(){static const TMap<FString,FText> C={
 {TEXT("Figma.Plans.FlowRoutes"),NSLOCTEXT("DroneOps","Figma.Plans.FlowRoutes","Edit routes")},
 {TEXT("Figma.Plans.FlowCheck"),NSLOCTEXT("DroneOps","Figma.Plans.FlowCheck","Check")},
 {TEXT("Figma.Plans.FlowDeploy"),NSLOCTEXT("DroneOps","Figma.Plans.FlowDeploy","Deploy")},
-{TEXT("VideoUI.TakeoverHint"),NSLOCTEXT("DroneOps","VideoUI.TakeoverHint","Start manual takeover in the Map or Command client: select the aircraft, choose a destination, and confirm. The Video client is for monitoring.")},
 };return C;}
 }
 FText ProductText::Get(const FString& Key){if(const auto* T=Catalog().Find(Key))return *T;return NSLOCTEXT("DroneOps","Errors.Request","Request failed. Confirm the current selection and retry.");}
@@ -1624,7 +1623,6 @@ if(Source==TEXT("Configure devices"))return Get(TEXT("Figma.Plans.FlowDevices"))
 if(Source==TEXT("Edit routes"))return Get(TEXT("Figma.Plans.FlowRoutes"));
 if(Source==TEXT("Check"))return Get(TEXT("Figma.Plans.FlowCheck"));
 if(Source==TEXT("Deploy"))return Get(TEXT("Figma.Plans.FlowDeploy"));
-if(Source==TEXT("Start manual takeover in the Map or Command client: select the aircraft, choose a destination, and confirm. The Video client is for monitoring."))return Get(TEXT("VideoUI.TakeoverHint"));
 if(Source==TEXT("MAP OPERATIONS"))return Get(TEXT("Map.Header"));
 if(Source==TEXT("Map initializing"))return Get(TEXT("Map.Init"));
 if(Source==TEXT("Select a UAV here or on the map."))return Get(TEXT("Map.Select"));

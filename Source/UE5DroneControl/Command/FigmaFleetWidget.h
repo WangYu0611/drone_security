@@ -6,6 +6,8 @@
 #include "DroneOps/Core/DroneOpsTypes.h"
 #include "FigmaFleetWidget.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FFleetPilotDispatchRequested, const TArray<FString>&);
+
 /** Command fleet presentation. Selection, execution and video keep independent authorities. */
 UCLASS()
 class UE5DRONECONTROL_API UFigmaFleetWidget : public UUserWidget
@@ -14,6 +16,7 @@ class UE5DRONECONTROL_API UFigmaFleetWidget : public UUserWidget
     friend class FFigmaCommandChecks;
 public:
     void Refresh();
+    FFleetPilotDispatchRequested OnPilotDispatchRequested;
 protected:
     virtual void NativeOnInitialized() override;
 private:
@@ -45,7 +48,6 @@ private:
     bool bSelectionPending = false;
     FDroneLabelSettings DraftLabel;
     UPROPERTY() TObjectPtr<class UOverlay> RootOverlay;
-    UPROPERTY() TObjectPtr<class UPilotDispatchWidget> PilotDispatch;
     UPROPERTY() TObjectPtr<class UCommandActionButton> PilotDispatchButton;
     UPROPERTY() TObjectPtr<class UCommandActionButton> AddSimulation;
     UPROPERTY() TObjectPtr<class UBorder> SimulationLayer;

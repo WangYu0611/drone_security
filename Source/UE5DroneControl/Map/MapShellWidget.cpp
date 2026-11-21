@@ -198,13 +198,18 @@ void UMapShellWidget::Refresh()
     const auto TakeoverMembers=MapMove::Selection(Registry);
     const bool HasTakeoverSource=MapMove::CaptureTakeover(Sync->GetPlans(),TakeoverMembers).IsSet();
     const FText TakeoverUnavailable=MapMove::Unavailable(Registry,Sync,TakeoverMembers,true);
-    const bool CanTakeover=FleetInteraction && FleetInteraction->IsAvailable() && HasTakeoverSource
-        && TakeoverUnavailable.IsEmpty() && !bDeviceSelectionPending && !Sync->IsMapSelectionPending() && !FleetInteraction->IsSelectionPending();
+    const bool PilotHandoff=Sync->CanRequestPilotHandoff();
+    const bool SelectionReady=!bDeviceSelectionPending && !Sync->IsMapSelectionPending() && FleetInteraction && !FleetInteraction->IsSelectionPending();
+    const bool CanTakeover=SelectionReady && (PilotHandoff
+        ? TakeoverMembers.Num()==1 && !Sync->IsPilotHandoffPending()
+        : FleetInteraction->IsAvailable() && HasTakeoverSource && TakeoverUnavailable.IsEmpty());
     TakeoverButton->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
     TakeoverButton->GetParent()->SetVisibility(Configuring?ESlateVisibility::Collapsed:ESlateVisibility::SelfHitTestInvisible);
     TakeoverButton->SetIsEnabled(CanTakeover);
-    TakeoverButton->SetToolTipText(!TakeoverUnavailable.IsEmpty()?TakeoverUnavailable:!HasTakeoverSource?ProductText::Get(TEXT("Takeover.SelectActive")):ProductText::Get(TEXT("Takeover.Warning")));
-    const bool TakeoverMode=HasTakeoverSource && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove;
+    TakeoverButton->SetToolTipText(PilotHandoff
+        ? SimulationUI::Label(TEXT("Request Pilot handoff for one aircraft. Command selects the pilot."), TEXT("为一架无人机申请手动接管，由指挥端指定驾驶员。"))
+        : !TakeoverUnavailable.IsEmpty()?TakeoverUnavailable:!HasTakeoverSource?ProductText::Get(TEXT("Takeover.SelectActive")):ProductText::Get(TEXT("Takeover.Warning")));
+    const bool TakeoverMode=!PilotHandoff && HasTakeoverSource && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove;
     MapUI::Button(TakeoverButton,TakeoverMode,true);
     MapUI::Button(GroupMoveButton,!TakeoverMode && FleetInteraction && FleetInteraction->GetMode()==EMapFleetMode::GroupMove,true);
     auto TintIcon=[](UCommandActionButton* Button,bool Selected){
@@ -234,6 +239,13 @@ void UMapShellWidget::Refresh()
 
     const bool FleetInput=FleetInteraction && FleetInteraction->IsAvailable();
     ActionStatus->SetText(ProductText::Get(FleetInput?TEXT("MapUI.FleetPointerHint"):TEXT("MapUI.CameraHint")));
+    if(FPlatformTime::Seconds()<PilotHandoffFeedbackUntil){
+        const FString& Code=Sync->GetPilotHandoffStatus();
+        if(Sync->IsPilotHandoffPending())ActionStatus->SetText(SimulationUI::Label(TEXT("Submitting handoff request…"),TEXT("正在提交交接申请…")));
+        else if(Code==TEXT("PILOT_HANDOFF_SENT"))ActionStatus->SetText(SimulationUI::Label(TEXT("Awaiting Command"),TEXT("等待指挥端处理")));
+        else if(Code==TEXT("PILOT_HANDOFF_NO_COMMAND"))ActionStatus->SetText(SimulationUI::Label(TEXT("Command offline"),TEXT("指挥端离线")));
+        else ActionStatus->SetText(SimulationUI::Label(TEXT("Could not request pilot handoff"),TEXT("暂无法提交交接申请")));
+    }
     ActionStatus->SetToolTipText(FleetInput?ProductText::Get(TEXT("MapUI.FleetPointerHelp")):FText::Format(PlanUI::User(TEXT("{0}\n{1}")),ActionStatus->GetText(),MapHint));
     Aircraft->SetIsEnabled(!Configuring);Aircraft->SetToolTipText(Configuring?ActionStatus->GetText():FText::GetEmpty());
     MapUI::Button(Map2DButton,b2D,true);MapUI::Button(Map3DButton,!b2D,true);
@@ -304,6 +316,15 @@ void UMapShellWidget::ActionRequested(FName Action, int32 ItemId)
     if(Action==TEXT("manual_takeover")){
         auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
         const auto Members=MapMove::Selection(Manager->GetRegistry());
+        if(Sync->CanRequestPilotHandoff()){
+            if(FleetInteraction && !FleetInteraction->IsSelectionPending() && !bDeviceSelectionPending && !Sync->IsMapSelectionPending()
+                && !PlanConfiguration::Active(Sync->GetPlans()) && Members.Num()==1){
+                Sync->RequestPilotHandoff(Manager->GetRegistry()->GetPrimarySelectedDrone());
+                PilotHandoffFeedbackUntil=FPlatformTime::Seconds()+12.;
+                Refresh();
+            }
+            return;
+        }
         if(!FleetInteraction || !FleetInteraction->IsAvailable() || bDeviceSelectionPending || Sync->IsMapSelectionPending() || FleetInteraction->IsSelectionPending()
             || !MapMove::CaptureTakeover(Sync->GetPlans(),Members).IsSet() || !MapMove::Unavailable(Manager->GetRegistry(),Sync,Members,true).IsEmpty())return;
         // This opens the existing destination preview. Its consequence warning,

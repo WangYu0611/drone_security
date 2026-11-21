@@ -702,3 +702,13 @@ bool UVideoShellWidget::SetAsActiveUAV() {
     auto* Sync=GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     return Sync && Sync->IsEnabled() && Sync->SetActiveUAV(DisplayedDroneId);
 }
+
+void UVideoShellWidget::RequestPilotHandoff()
+{
+    if (bStopped || DisplayedDroneId <= 0) return;
+    auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    if (!Sync || !Sync->CanRequestPilotHandoff() || Sync->IsPilotHandoffPending() || Sync->IsVideoSwitchPending()) return;
+    HandoffRequestDroneId = DisplayedDroneId;
+    bHandoffSubmissionRejected = !Sync->RequestPilotHandoff(DisplayedDroneId);
+    UpdateHandoffRequestPresentation(*Sync);
+}

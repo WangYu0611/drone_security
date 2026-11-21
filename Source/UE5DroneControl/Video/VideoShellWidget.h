@@ -101,7 +101,9 @@ private:
     UPROPERTY() TObjectPtr<class UVerticalBox> AlertRows;
     UPROPERTY() TObjectPtr<class UWidget> AlertEmpty;
     UPROPERTY() TObjectPtr<class UButton> SetActiveButton;
-    UPROPERTY() TObjectPtr<class UButton> TakeoverButton;
+    UPROPERTY() TObjectPtr<class UButton> HandoffRequestButton;
+    UPROPERTY() TObjectPtr<class UTextBlock> HandoffRequestCaption;
+    UPROPERTY() TObjectPtr<class UTextBlock> HandoffRequestFeedback;
     UPROPERTY() TArray<TObjectPtr<class UButton>> UnsupportedButtons;
     UPROPERTY() TArray<TObjectPtr<class UTextBlock>> StaticLabels;
     TArray<FString> StaticKeys;
@@ -111,9 +113,11 @@ private:
     int32 ViewMode = 6;
     FString SourceUrl, MediaState = TEXT("OFFLINE"), ProbeToken;
     int32 DisplayedDroneId = 0, Generation = 0, Width = 0, Height = 0;
+    int32 HandoffRequestDroneId = 0;
     double LastProbe = 0, LastProgress = 0, LastSample = 0, LastMediaTime = -1, LastFrames = -1, Fps = -1;
     bool bStopped = false, bPageReady = false, bHasDecodedFrame = false;
     bool bFollowTarget = false;
+    bool bHandoffSubmissionRejected = false;
     int32 LocalSourceId = 0;
     UPROPERTY() TObjectPtr<class UButton> FollowButton;
     UPROPERTY() TObjectPtr<class UTextBlock> FollowLabel;
@@ -121,11 +125,13 @@ private:
     UFUNCTION() void English();
     UFUNCTION() void ToggleFollow() { SetFollowTarget(!bFollowTarget); }
     UFUNCTION() void PublishActive() { SetAsActiveUAV(); }
+    UFUNCTION() void RequestPilotHandoff();
     class UTextBlock* MakeText(const FString& Value, int32 Size);
     UVideoFeedButton* MakeFeedButton(bool Secondary = false);
     void BuildPresentation();
     void UpdateFeed(UVideoFeedButton* Button);
     void UpdatePresentation();
+    void UpdateHandoffRequestPresentation(const class UOperationalContextSubsystem& Sync);
     void UpdateFeeds();
     FString FeedDescription(int32 Id, bool Secondary) const;
     void SetSource(int32 Id, const FString& Url);

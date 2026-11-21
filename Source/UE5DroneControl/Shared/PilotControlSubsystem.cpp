@@ -365,6 +365,9 @@ bool UPilotControlSubsystem::ApplySnapshot(const TSharedPtr<FJsonObject>& Snapsh
         AircraftRow.ActivationReason = PilotString(Row, TEXT("activation_reason"));
         AircraftRow.VideoUrl = PilotString(Row, TEXT("video_url"));
         AircraftRow.ControlSessionId = PilotString(Row, TEXT("control_session_id"));
+        AircraftRow.HandoffExecutionId = PilotString(Row, TEXT("handoff_execution_id"));
+        if (!AircraftRow.HandoffExecutionId.IsEmpty() &&
+            !ReadPilotCounter(Row, TEXT("handoff_control_version"), AircraftRow.HandoffControlVersion)) return false;
         Row->TryGetBoolField(TEXT("input_frozen"), AircraftRow.bInputFrozen);
         if (AircraftRow.UavId.IsEmpty() || !ReadPilotCounter(Row, TEXT("revision"), AircraftRow.Revision) ||
             !Row->TryGetBoolField(TEXT("available"), AircraftRow.bAvailable)) return false;
@@ -437,6 +440,20 @@ bool UPilotControlSubsystem::Grant(const FString& PilotId, const TArray<FString>
     Body->SetArrayField(TEXT("uav_ids"), MoveTemp(Ids));
     Body->SetObjectField(TEXT("expected_revisions"), Revisions);
     return BeginOperation(TEXT("grant"), Body);
+}
+
+bool UPilotControlSubsystem::GrantHandoff(const FString& PilotId, const FString& UavId)
+{
+    const auto* Row = FindAircraft(UavId);
+    if (Role != TEXT("Command") || PilotId.IsEmpty() || !Row || !Row->GrantId.IsEmpty() ||
+        Row->HandoffExecutionId.IsEmpty()) return false;
+    auto Body = MakeShared<FJsonObject>();
+    Body->SetStringField(TEXT("pilot_id"), PilotId);
+    Body->SetStringField(TEXT("uav_id"), UavId);
+    Body->SetStringField(TEXT("execution_id"), Row->HandoffExecutionId);
+    WritePilotCounter(Body, TEXT("expected_revision"), Row->Revision);
+    WritePilotCounter(Body, TEXT("control_version"), Row->HandoffControlVersion);
+    return BeginOperation(TEXT("handoff_grant"), Body);
 }
 
 bool UPilotControlSubsystem::Revoke(const FString& UavId)

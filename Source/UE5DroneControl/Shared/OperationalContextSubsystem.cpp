@@ -110,6 +110,12 @@ void UOperationalContextSubsystem::OpenSocket(int32 Attempt) {
 }
 void UOperationalContextSubsystem::Offline() {
     CancelPendingViewRequests(true);
+    if (bPilotHandoffPending) PilotHandoffStatus = TEXT("PILOT_HANDOFF_FAILED");
+    bPilotHandoffPending = false;
+    PendingPilotHandoffId.Reset();
+    bPilotHandoffRequests = false;
+    LatestPilotHandoffUav.Reset();
+    LatestPilotHandoffId.Reset();
     if(bMapSelectionPending)ViewSyncError=TEXT("MAP_VIDEO_SYNC_FAILED");
     CancelPendingLocalSelection();
     if (auto* Events=GetGameInstance()->GetSubsystem<UOperationalEventStore>()) Events->ProjectConnectivity(false);
@@ -124,6 +130,18 @@ void UOperationalContextSubsystem::Receive(const FString& Message) {
     TSharedPtr<FJsonObject> Json;
     if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Message), Json) || !Json) return;
     FString Type; Json->TryGetStringField(TEXT("type"), Type);
+    if (Type == TEXT("PilotHandoffRequested")) {
+        const TSharedPtr<FJsonObject>* Payload;
+        FString UavId, RequestId;
+        if (Role == TEXT("Command") && Json->TryGetObjectField(TEXT("payload"), Payload) &&
+            (*Payload)->TryGetStringField(TEXT("uav_id"), UavId) && !UavId.IsEmpty() &&
+            (*Payload)->TryGetStringField(TEXT("request_id"), RequestId) && !RequestId.IsEmpty() && RequestId != LatestPilotHandoffId) {
+            LatestPilotHandoffUav = UavId;
+            LatestPilotHandoffId = RequestId;
+            OnPilotHandoffRequested.Broadcast(UavId, RequestId);
+        }
+        return;
+    }
     if(Type==TEXT("UIPreferencesChanged") || Type==TEXT("VideoViewChanged") || Type==TEXT("MapRouteEditRequested")) {
         const TSharedPtr<FJsonObject>* Payload;if(Json->TryGetObjectField(TEXT("payload"),Payload)) {
             if(Type==TEXT("UIPreferencesChanged"))ApplyUIPreferences(*Payload);
@@ -137,6 +155,8 @@ void UOperationalContextSubsystem::Receive(const FString& Message) {
         return;
     }
     if (Type == TEXT("context_subscribed")) {
+        bPilotHandoffRequests = false;
+        Json->TryGetBoolField(TEXT("pilot_handoff_requests"), bPilotHandoffRequests);
         Request(TEXT("GET"),TEXT("/api/security-plans"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyPlans(Reply);bPlansHydrated=true;});
         Request(TEXT("GET"),TEXT("/api/ui-preferences"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyUIPreferences(Reply);bLanguageHydrated=true;ReconcileLanguageFeedback();});
         Request(TEXT("GET"),TEXT("/api/video-view"),nullptr,[this](TSharedPtr<FJsonObject> Reply){if(!Reply){Offline();return;} ApplyVideoView(Reply);bVideoHydrated=true;ReconcileVideoFeedback();});
@@ -394,6 +414,57 @@ bool UOperationalContextSubsystem::SubmitPlan(const TSharedRef<FJsonObject>& Bod
         Complete(Reply);
     });
     return Req->ProcessRequest();
+}
+
+bool UOperationalContextSubsystem::CanRequestPilotHandoff() const {
+    return bPilotHandoffRequests && IsReady() && (Role == TEXT("Video") || Role == TEXT("Map"));
+}
+
+bool UOperationalContextSubsystem::RequestPilotHandoff(int32 DroneId) {
+    if (!CanRequestPilotHandoff() || bPilotHandoffPending || DroneId <= 0) return false;
+    const auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    FDroneDescriptor Drone;
+    if (!Registry || !Registry->GetDroneDescriptor(DroneId, Drone) || Drone.bIsEnemyTarget || Drone.Slot <= 0) {
+        PilotHandoffStatus = TEXT("PILOT_HANDOFF_UNAVAILABLE");
+        return false;
+    }
+    const FString UavId = FString::Printf(TEXT("UAV-%02d"), Drone.Slot);
+    const FString RequestId = FGuid::NewGuid().ToString(EGuidFormats::DigitsWithHyphens);
+    auto Body = MakeShared<FJsonObject>();
+    Body->SetStringField(TEXT("action"), TEXT("request_pilot_handoff"));
+    Body->SetStringField(TEXT("request_id"), RequestId);
+    Body->SetStringField(TEXT("uav_id"), UavId);
+    bPilotHandoffPending = true;
+    PendingPilotHandoffId = RequestId;
+    PilotHandoffStatus.Reset();
+    if (SubmitPlan(Body, [this, UavId, RequestId](const TSharedPtr<FJsonObject>& Reply) {
+        if (PendingPilotHandoffId != RequestId) return;
+        bPilotHandoffPending = false;
+        PendingPilotHandoffId.Reset();
+        FString Code, RepliedUav, RepliedId;
+        const TSharedPtr<FJsonObject>* Receipt;
+        if (Reply && Reply->TryGetStringField(TEXT("code"), Code) &&
+            (Code == TEXT("PILOT_HANDOFF_NO_COMMAND") || Code == TEXT("PILOT_HANDOFF_UNAVAILABLE"))) {
+            PilotHandoffStatus = Code;
+        } else if (Reply && Reply->TryGetObjectField(TEXT("request"), Receipt) &&
+            (*Receipt)->TryGetStringField(TEXT("uav_id"), RepliedUav) && RepliedUav == UavId &&
+            (*Receipt)->TryGetStringField(TEXT("request_id"), RepliedId) && RepliedId == RequestId) {
+            PilotHandoffStatus = TEXT("PILOT_HANDOFF_SENT");
+        } else {
+            PilotHandoffStatus = TEXT("PILOT_HANDOFF_FAILED");
+        }
+    })) return true;
+    bPilotHandoffPending = false;
+    PendingPilotHandoffId.Reset();
+    PilotHandoffStatus = TEXT("PILOT_HANDOFF_FAILED");
+    return false;
+}
+
+bool UOperationalContextSubsystem::GetLatestPilotHandoffRequest(FString& OutUavId, FString& OutRequestId) const {
+    if (LatestPilotHandoffId.IsEmpty()) return false;
+    OutUavId = LatestPilotHandoffUav;
+    OutRequestId = LatestPilotHandoffId;
+    return true;
 }
 namespace {
 bool NewDomainVersion(const TSharedPtr<FJsonObject>& Incoming,const TSharedPtr<FJsonObject>& Current,const TCHAR* Key) {

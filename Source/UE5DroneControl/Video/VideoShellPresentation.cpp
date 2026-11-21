@@ -9,6 +9,8 @@
 #include "Engine/GameInstance.h"
 #include "Engine/Texture2D.h"
 #include "ImageUtils.h"
+#include "Internationalization/Culture.h"
+#include "Internationalization/Internationalization.h"
 #include "Components/Border.h"
 #include "Components/ButtonSlot.h"
 #include "Components/CanvasPanel.h"
@@ -35,6 +37,21 @@ const FLinearColor PanelColor(FColor(20,24,34));
 const FLinearColor Muted(FColor(170,180,193));
 const FLinearColor Dim(FColor(120,126,147));
 const FLinearColor Badge(FColor(44,56,76));
+
+FText HandoffLabel(const TCHAR* English, const TCHAR* Chinese)
+{
+    const bool bChinese = FInternationalization::Get().GetCurrentLanguage()->GetTwoLetterISOLanguageName() == TEXT("zh");
+    return FText::FromString(bChinese ? Chinese : English);
+}
+
+FText HandoffFeedback(const FString& Code)
+{
+    if (Code == TEXT("PILOT_HANDOFF_SENT")) return HandoffLabel(TEXT("Awaiting Command"), TEXT("等待指挥端处理"));
+    if (Code == TEXT("PILOT_HANDOFF_NO_COMMAND")) return HandoffLabel(TEXT("Command offline"), TEXT("指挥端离线"));
+    if (Code == TEXT("PILOT_HANDOFF_UNAVAILABLE")) return HandoffLabel(TEXT("Request unavailable"), TEXT("暂无法申请"));
+    if (Code == TEXT("PILOT_HANDOFF_FAILED")) return HandoffLabel(TEXT("Request failed"), TEXT("申请失败"));
+    return FText::GetEmpty();
+}
 
 UCanvasPanelSlot* Place(UCanvasPanel* Canvas,UWidget* Widget,float X,float Y,float W,float H)
 {
@@ -230,16 +247,18 @@ void UVideoShellWidget::BuildPresentation()
     // Existing explicit video-to-selection action remains available without changing source semantics.
     SetActiveButton=WidgetTree->ConstructWidget<UButton>();SetActiveButton->SetContent(Key(TEXT("VideoUI.SetActive"),12));ToolStyle(SetActiveButton);
     SetActiveButton->OnClicked.AddDynamic(this,&UVideoShellWidget::PublishActive);Place(DesignCanvas,SetActiveButton,369,750,147,40);
-    // Figma 2586:120. Video remains a viewing role; no execution or cross-client
-    // takeover request is bound to this affordance. Map/Command own confirmation.
-    TakeoverButton=WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(),TEXT("VideoManualTakeover"));ToolStyle(TakeoverButton);
-    auto* TakeoverRow=WidgetTree->ConstructWidget<UHorizontalBox>();TakeoverButton->SetContent(TakeoverRow);
-    auto* TakeoverIcon=Asset(WidgetTree,TEXT("../Refresh20261029/8494e.svg"),{249,249},{20.4,20.4});TakeoverIcon->SetColorAndOpacity(Dim);
-    TakeoverRow->AddChildToHorizontalBox(TakeoverIcon)->SetVerticalAlignment(VAlign_Center);
-    auto* TakeoverCaption=Key(TEXT("Takeover.Action"),14,false,Dim);auto* TakeoverCaptionSlot=TakeoverRow->AddChildToHorizontalBox(TakeoverCaption);TakeoverCaptionSlot->SetVerticalAlignment(VAlign_Center);TakeoverCaptionSlot->SetPadding(FMargin(8,0,0,0));
-    auto* TakeoverContent=CastChecked<UButtonSlot>(TakeoverRow->Slot);TakeoverContent->SetHorizontalAlignment(HAlign_Center);TakeoverContent->SetVerticalAlignment(VAlign_Center);
-    TakeoverButton->SetIsEnabled(false);TakeoverButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.TakeoverHint")));Place(DesignCanvas,TakeoverButton,529.3f,749.8f,120.8f,40.05f);
-    SystemHeader=MakeText(TEXT(""),11);FigmaUI::Text(SystemHeader,11,Muted);SystemHeader->SetClipping(EWidgetClipping::ClipToBounds);Place(DesignCanvas,SystemHeader,663,759,160,22);
+    HandoffRequestButton=WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(),TEXT("VideoPilotHandoffRequest"));
+    HandoffRequestCaption=MakeText(TEXT(""),12);
+    HandoffRequestButton->SetContent(HandoffRequestCaption);ToolStyle(HandoffRequestButton);
+    HandoffRequestButton->OnClicked.AddDynamic(this,&UVideoShellWidget::RequestPilotHandoff);
+    HandoffRequestButton->SetVisibility(ESlateVisibility::Collapsed);
+    Place(DesignCanvas,HandoffRequestButton,528,750,154,40);
+    HandoffRequestFeedback=MakeText(TEXT(""),10);
+    FigmaUI::Text(HandoffRequestFeedback,10,Muted);
+    HandoffRequestFeedback->SetJustification(ETextJustify::Center);
+    HandoffRequestFeedback->SetVisibility(ESlateVisibility::Collapsed);
+    Place(DesignCanvas,HandoffRequestFeedback,528,791,154,15);
+    SystemHeader=MakeText(TEXT(""),11);FigmaUI::Text(SystemHeader,11,Muted);SystemHeader->SetClipping(EWidgetClipping::ClipToBounds);Place(DesignCanvas,SystemHeader,533,759,290,22);
     const TCHAR* Names[]={TEXT("VideoUI.Retry"),TEXT("VideoUI.Record"),TEXT("VideoUI.Playback"),TEXT("VideoUI.Screenshot"),TEXT("VideoUI.Filter")};
     const TCHAR* Icons[]={TEXT("a9033.svg"),TEXT("85010.svg"),TEXT("7b89e.svg"),TEXT("a03b0.svg"),TEXT("15368.svg")};
     const int Sizes[]={224,225,225,227,220};
@@ -317,6 +336,38 @@ void UVideoShellWidget::UpdateFeeds()
     for(int I=0;I<SecondaryButtons.Num();++I){SecondaryButtons[I]->DroneId=GetSecondaryDroneId(I);UpdateFeed(SecondaryButtons[I]);}
 }
 
+void UVideoShellWidget::UpdateHandoffRequestPresentation(const UOperationalContextSubsystem& Sync)
+{
+    using namespace VideoUI;
+    const bool bAvailable = Sync.CanRequestPilotHandoff();
+    HandoffRequestButton->SetVisibility(bAvailable ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    HandoffRequestButton->SetIsEnabled(bAvailable && !bStopped && DisplayedDroneId > 0
+        && !Sync.IsVideoSwitchPending() && !Sync.IsPilotHandoffPending());
+    HandoffRequestCaption->SetText(HandoffLabel(TEXT("Request pilot handoff"), TEXT("交接申请")));
+    HandoffRequestButton->SetToolTipText(HandoffLabel(
+        TEXT("Request a Pilot assignment for the displayed aircraft. Command chooses the Pilot."),
+        TEXT("为当前画面的无人机申请交接，由指挥端指定驾驶员。")));
+
+    auto* SelectionSlot = CastChecked<UCanvasPanelSlot>(SystemHeader->Slot);
+    const FVector2D SelectionPosition(bAvailable ? 698 : 533, 759);
+    if (SelectionSlot->GetPosition() != SelectionPosition) {
+        SelectionSlot->SetPosition(SelectionPosition);
+        SelectionSlot->SetSize(FVector2D(bAvailable ? 125 : 290, 22));
+    }
+
+    FText Feedback;
+    if (bAvailable && HandoffRequestDroneId > 0 && HandoffRequestDroneId == DisplayedDroneId) {
+        if (Sync.IsPilotHandoffPending()) {
+            Feedback = HandoffLabel(TEXT("Submitting…"), TEXT("正在提交…"));
+        } else {
+            const FString& Code = Sync.GetPilotHandoffStatus();
+            Feedback = HandoffFeedback(Code.IsEmpty() && bHandoffSubmissionRejected ? TEXT("PILOT_HANDOFF_UNAVAILABLE") : Code);
+        }
+    }
+    HandoffRequestFeedback->SetText(Feedback);
+    HandoffRequestFeedback->SetVisibility(Feedback.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+}
+
 void UVideoShellWidget::UpdatePresentation()
 {
     if(!DesignCanvas || !Registry.IsValid())return;
@@ -331,7 +382,7 @@ void UVideoShellWidget::UpdatePresentation()
     SystemHeader->SetText(FText::Format(ProductText::Get(TEXT("VideoUI.ActiveSelection")),Active.IsEmpty()?ProductText::Get(TEXT("VideoUI.NA")):FText::AsCultureInvariant(Active)));
     SystemHeader->SetToolTipText(SystemHeader->GetText());
     SetActiveButton->SetIsEnabled(!bStopped && DisplayedDroneId>0 && Sync->IsReady() && !Sync->IsVideoSwitchPending());SetActiveButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.SetActiveHint")));
-    TakeoverButton->SetIsEnabled(false);TakeoverButton->SetToolTipText(ProductText::Get(TEXT("VideoUI.TakeoverHint")));
+    UpdateHandoffRequestPresentation(*Sync);
     for(auto B:UnsupportedButtons)B->SetToolTipText(ProductText::Get(TEXT("VideoUI.Unsupported")));
     // AlertStore contains received Backend/session events. Do not manufacture AI detections.
     const auto Alerts=GetGameInstance()->GetSubsystem<UCommandAlertStore>()->GetAlerts();

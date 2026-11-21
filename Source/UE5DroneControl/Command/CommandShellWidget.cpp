@@ -246,6 +246,16 @@ void UCommandShellWidget::NativeConstruct()
 {
     Super::NativeConstruct();
     if (Manager.IsValid()) AlarmPanel->SetMapService(Manager->GetMapService());
+    if (PilotHandoffButton)
+    {
+        if (auto* Game = GetGameInstance())
+        {
+            auto* Sync = Game->GetSubsystem<UOperationalContextSubsystem>();
+            Sync->OnPilotHandoffRequested.AddUObject(this, &UCommandShellWidget::PilotHandoffRequested);
+            FString UavId, RequestId;
+            if (Sync->GetLatestPilotHandoffRequest(UavId, RequestId)) PilotHandoffRequested(UavId, RequestId);
+        }
+    }
     Refresh();
 }
 void UCommandShellWidget::Refresh()
@@ -444,6 +454,10 @@ void UCommandShellWidget::MapModeChanged(ECommandMapMode Mode)
 void UCommandShellWidget::NativeDestruct()
 {
     if (Manager.IsValid() && Manager->GetMapService()) Manager->GetMapService()->OnMapModeChanged.RemoveAll(this);
+    if (PilotHandoffButton)
+    {
+        if (auto* Game = GetGameInstance()) Game->GetSubsystem<UOperationalContextSubsystem>()->OnPilotHandoffRequested.RemoveAll(this);
+    }
     Super::NativeDestruct();
 }
 
