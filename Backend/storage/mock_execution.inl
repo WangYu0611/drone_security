@@ -92,6 +92,31 @@ public:
         const auto s=str(e,"state");
         return s=="SCHEDULED" || s=="CREATED" || s=="PREFLIGHT" || s=="STARTING" || s=="EXECUTING" || s=="PAUSED" || s=="RETURNING";
     }
+    static bool canReleaseMockPilotMission(const Object& execution) {
+        const auto mode = execution.if_contains("simulation");
+        const auto status = str(execution, "state");
+        return mode && *mode == true && !isRehearsal(execution) &&
+            !str(execution, "plan_id").empty() && !str(execution, "deployment_id").empty() &&
+            (status == "EXECUTING" || status == "RETURNING" || status == "PAUSED");
+    }
+
+    void releaseMockPilotMission(const std::string& uav, const std::string& executionId, std::uint64_t version,
+                                 const std::function<void(const Object&)>& publish) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto next = state_;
+        auto* stored = next.at("executions").as_object().if_contains(executionId);
+        if (!adapter_->simulation() || !stored || !canReleaseMockPilotMission(stored->as_object()))
+            throw PlanError("HANDOFF_STALE", "Selected Mock mission is no longer available");
+        auto& execution = stored->as_object();
+        if (str(execution, "uav_id") != uav || execution.at("control_version").to_number<std::uint64_t>() != version)
+            throw PlanError("HANDOFF_STALE", "The aircraft mission changed");
+        execution["completed_at"] = OperationalContext::now();
+        execution["completion_reason"] = "MANUAL_TAKEOVER";
+        execution["failure_reason"] = "";
+        transition(next, execution, "ABORTED", "MISSION_MANUALLY_TAKEN_OVER");
+        commitExecutions(next, publish);
+    }
+
     void tickExecutions(double dt,const std::set<std::string>& uavs,const std::function<void(const Object&)>& publish) {
         std::lock_guard<std::mutex> lock(mutex_);
         if (!std::isfinite(dt) || dt<=0) return;

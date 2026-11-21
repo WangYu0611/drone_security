@@ -633,11 +633,12 @@ static std::string pilot_uav_id(int slot) {
 std::vector<PilotControlStore::Aircraft> HttpServer::PilotAircraftSnapshot() {
     const auto poses = security_plans_.mockTelemetryPositions();
     const auto plan = security_plans_.snapshot();
-    std::set<std::string> occupied;
+    std::map<std::string, const boost::json::object*> occupied;
     for (const auto& item : plan.at("executions").as_object()) {
         const auto& execution = item.value().as_object();
         if (SecurityPlanStore::executionActive(execution)) {
-            occupied.insert(SecurityPlanStore::str(execution, "uav_id"));
+            const auto [entry, first] = occupied.emplace(SecurityPlanStore::str(execution, "uav_id"), &execution);
+            if (!first) entry->second = nullptr;
         }
     }
 
@@ -652,12 +653,18 @@ std::vector<PilotControlStore::Aircraft> HttpServer::PilotAircraftSnapshot() {
         if (record.slot <= 0) continue;
         const auto uid = pilot_uav_id(record.slot);
         const auto id = drone_id_from_string(record.id);
-        std::string reason;
-        if (received.count(id) || !poses.contains(uid)) reason = "MOCK_UAV_UNAVAILABLE";
-        else if (occupied.count(uid) || assembly_ctrl_.HasAssignedDrone(id) || drone_mgr_.GetCommandQueueSize(id) > 0) {
-            reason = "UAV_BUSY";
+        PilotControlStore::Aircraft plane{uid, {}, record.video_url};
+        if (received.count(id) || !poses.contains(uid)) plane.unavailable_reason = "MOCK_UAV_UNAVAILABLE";
+        else if (assembly_ctrl_.HasAssignedDrone(id) || drone_mgr_.GetCommandQueueSize(id) > 0) {
+            plane.unavailable_reason = "UAV_BUSY";
+        } else if (const auto mission = occupied.find(uid); mission != occupied.end()) {
+            plane.unavailable_reason = "UAV_BUSY";
+            if (mission->second && SecurityPlanStore::canReleaseMockPilotMission(*mission->second)) {
+                plane.handoff_execution_id = SecurityPlanStore::str(*mission->second, "execution_id");
+                plane.handoff_control_version = mission->second->at("control_version").to_number<std::uint64_t>();
+            }
         }
-        aircraft.push_back({uid, reason, record.video_url});
+        aircraft.push_back(std::move(plane));
     }
     return aircraft;
 }
@@ -1937,7 +1944,8 @@ bool HttpServer::HandleContextMessage(const boost::json::object& body, const std
         {"timestamp", OperationalContext::now()}, {"payload", client}}));
     // Subscribe before sampling: full-state events + version rejection close the snapshot/WS race.
     ws_manager_.send(session, json_stringify(boost::json::object{{"type", "context_subscribed"},
-        {"payload", operational_context_.snapshot()}, {"clients", ContextClients()}}));
+        {"payload", operational_context_.snapshot()}, {"clients", ContextClients()},
+        {"pilot_handoff_requests", static_cast<bool>(pilot_control_)}}));
     return true;
 }
 void HttpServer::DisconnectContextClient(const std::shared_ptr<WsSession>& session) {
@@ -1955,16 +1963,93 @@ void HttpServer::DisconnectContextClient(const std::shared_ptr<WsSession>& sessi
             {"timestamp", OperationalContext::now()}, {"payload", client}}));
 }
 
+boost::json::value HttpServer::RequestPilotHandoff(const boost::json::object& body, const std::string& instance,
+                                                  const std::string& role) {
+    if (role != "Video" && role != "Map") throw ApiError(403, "This client role cannot request Pilot handoff");
+    if (!pilot_control_) throw PlanError("PILOT_HANDOFF_UNAVAILABLE", "Pilot control is unavailable");
+
+    const auto request_id = get_string(body, "request_id");
+    const bool hyphenated = request_id.size() == 36;
+    if (!hyphenated && request_id.size() != 32) throw ApiError(400, "Pilot handoff request_id must be a UUID");
+    for (std::size_t i = 0; i < request_id.size(); ++i) {
+        const bool separator = hyphenated && (i == 8 || i == 13 || i == 18 || i == 23);
+        const auto character = static_cast<unsigned char>(request_id[i]);
+        if (separator ? character != '-' : !std::isxdigit(character)) {
+            throw ApiError(400, "Pilot handoff request_id must be a UUID");
+        }
+    }
+    const auto uav_id = get_string(body, "uav_id");
+
+    std::vector<std::shared_ptr<WsSession>> recipients;
+    {
+        std::lock_guard<std::mutex> lock(context_clients_mutex_);
+        const auto sender_entry = context_sessions_.find(instance);
+        const auto sender = sender_entry == context_sessions_.end() ? nullptr : sender_entry->second.lock();
+        if (!sender || !sender->alive) throw ApiError(409, "client not subscribed");
+        for (const auto& [id, client] : context_clients_) {
+            if (client.at("client_role") != "Command" || client.at("state") != "ONLINE") continue;
+            const auto entry = context_sessions_.find(id);
+            if (entry == context_sessions_.end()) continue;
+            auto session = entry->second.lock();
+            if (session && session->alive) recipients.push_back(std::move(session));
+        }
+    }
+
+    const auto now = std::chrono::steady_clock::now();
+    const auto key = std::make_pair(instance, request_id);
+    constexpr auto receipt_lifetime = std::chrono::seconds(30);
+    constexpr auto per_aircraft_cooldown = std::chrono::seconds(2);
+    constexpr std::size_t maximum_receipts = 256;
+    bool cooling_down = false;
+    for (auto it = pilot_handoff_receipts_.begin(); it != pilot_handoff_receipts_.end();) {
+        if (now - it->second.submitted_at >= receipt_lifetime) {
+            it = pilot_handoff_receipts_.erase(it);
+            continue;
+        }
+        const auto& previous = it->second.payload;
+        const auto previous_uav = get_string(previous, "uav_id");
+        if (it->first == key) {
+            if (previous_uav != uav_id) throw PlanError("REQUEST_ID_REUSED", "Request id has different content");
+            return boost::json::object{{"request", previous}};
+        }
+        if (it->first.first == instance && previous_uav == uav_id &&
+            now - it->second.submitted_at < per_aircraft_cooldown) cooling_down = true;
+        ++it;
+    }
+    if (cooling_down || pilot_handoff_receipts_.size() >= maximum_receipts) {
+        throw PlanError("PILOT_HANDOFF_RATE_LIMITED", "Wait before sending another Pilot handoff request");
+    }
+
+    const auto fleet = PilotAircraftSnapshot();
+    const auto aircraft = std::find_if(fleet.begin(), fleet.end(), [&](const auto& row) { return row.uav_id == uav_id; });
+    if (aircraft == fleet.end() || aircraft->unavailable_reason == "MOCK_UAV_UNAVAILABLE" || pilot_control_->OwnsAircraft(uav_id)) {
+        throw PlanError("PILOT_HANDOFF_UNAVAILABLE", "The selected aircraft is unavailable", {{"uav_id", uav_id}});
+    }
+
+    const boost::json::object payload{{"uav_id", uav_id}, {"request_id", request_id}, {"source_role", role}};
+    const auto message = json_stringify(boost::json::object{{"type", "PilotHandoffRequested"}, {"payload", payload}});
+    bool delivered = false;
+    for (const auto& session : recipients) {
+        ws_manager_.send(session, message);
+        delivered = delivered || session->alive.load();
+    }
+    if (!delivered) throw PlanError("PILOT_HANDOFF_NO_COMMAND", "No Command client is online to receive the request");
+    pilot_handoff_receipts_.emplace(key, PilotHandoffReceipt{payload, now});
+    return boost::json::object{{"request", payload}};
+}
+
 boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    const auto instance = get_string(body, "instance_id");
     std::string role, source;
     {
         std::lock_guard<std::mutex> lock(context_clients_mutex_);
-        auto it=context_clients_.find(get_string(body,"instance_id"));
+        auto it=context_clients_.find(instance);
         if(it==context_clients_.end() || it->second.at("state")!="ONLINE") throw ApiError(409,"client not subscribed");
         role=get_string(it->second,"client_role"); source=get_string(it->second,"client_id");
     }
     const auto action=get_string(body,"action");
+    if (action == "request_pilot_handoff") return RequestPilotHandoff(body, instance, role);
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
     const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_takeover_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move",
         "simulation_create","simulation_start","simulation_review","simulation_assign_real"};

@@ -272,8 +272,19 @@ http::response<http::string_body> HttpServer::HandlePilotControlHttp(
         if (request.method() == http::verb::get) {
             return response(200, pilot_control_->Snapshot(*actor, aircraft, connections));
         }
-        auto result = pilot_control_->Apply(*actor, require_object(body, "body"), aircraft, connections);
-        PublishPilotControlState(&aircraft);
+        bool released = false;
+        auto result = pilot_control_->Apply(*actor, require_object(body, "body"), aircraft, connections,
+            PilotControlStore::Clock::now(), [this, &released](const PilotControlStore::Aircraft& plane) {
+                try {
+                    security_plans_.releaseMockPilotMission(plane.uav_id, plane.handoff_execution_id,
+                        plane.handoff_control_version,
+                        [this](const auto& event) { ws_manager_.broadcast(json_stringify(event)); });
+                    released = true;
+                } catch (const PlanError& failure) {
+                    throw PilotControlError(409, failure.code, failure.what());
+                }
+            });
+        PublishPilotControlState(released ? nullptr : &aircraft);
         return response(200, result);
     } catch (const PilotControlError& failure) {
         return error(failure.status_code, failure.code, failure.what());

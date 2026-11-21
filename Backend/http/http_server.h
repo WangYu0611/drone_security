@@ -21,6 +21,7 @@
 #include <boost/json.hpp>
 
 #include <atomic>
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <mutex>
@@ -29,6 +30,7 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace beast = boost::beast;
@@ -193,6 +195,14 @@ private:
     struct MapSelectionIntent { int64_t serial=0, context_version=-1; std::string target; bool consumed=false; };
     // Access only while holding plan_requests_mutex_. Instances are process-unique.
     std::unordered_map<std::string,MapSelectionIntent> map_selection_intents_;
+    struct PilotHandoffReceipt {
+        boost::json::object payload;
+        std::chrono::steady_clock::time_point submitted_at;
+    };
+    // Access only while holding plan_requests_mutex_. Receipts expire after 30 seconds.
+    std::map<std::pair<std::string, std::string>, PilotHandoffReceipt> pilot_handoff_receipts_;
+    boost::json::value RequestPilotHandoff(const boost::json::object& body, const std::string& instance,
+                                          const std::string& role);
     // Once received telemetry exists, link/GPS loss never restores Mock home.
     // Serialize source arbitration and broadcasts to preserve source ordering.
     std::mutex telemetry_source_mutex_;

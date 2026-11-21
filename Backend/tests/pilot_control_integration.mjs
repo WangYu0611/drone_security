@@ -20,8 +20,8 @@ const registryPath = path.join(runDirectory, 'drones.json');
 const mockPath = path.join(runDirectory, 'mock_execution.json');
 const controlPath = '/api/pilot-control';
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-const aircraftIds = ['UAV-01', 'UAV-02', 'UAV-03'];
-const [firstAircraft, secondAircraft, unassignedAircraft] = aircraftIds;
+const aircraftIds = ['UAV-01', 'UAV-02', 'UAV-03', 'UAV-04'];
+const [firstAircraft, secondAircraft, unassignedAircraft, wingAircraft] = aircraftIds;
 const command = { token: randomUUID(), role: 'Command', id: 'command-qa' };
 const pilot = { token: randomUUID(), role: 'Pilot', id: 'pilot-a-qa' };
 const otherPilot = { token: randomUUID(), role: 'Pilot', id: 'pilot-b-qa' };
@@ -131,21 +131,33 @@ async function connect(actor) {
     return client;
 }
 
-async function connectMap() {
+async function connectContext(role, handoffEnabled = true) {
     const instanceId = randomUUID();
     await request('/api/context/clients', { body: {
         instance_id: instanceId,
-        client_role: 'Map',
-        client_id: 'pilot-control-regression-map',
+        client_role: role,
+        client_id: `pilot-control-regression-${role.toLowerCase()}`,
         hostname: 'OWNED-LOOPBACK-QA',
         app_version: 'test',
     } });
     const { client, open } = await openSocket(`${wsUrl}/ws`);
-    assert(open, 'Map WebSocket failed to open');
+    assert(open, `${role} WebSocket failed to open`);
     send(client, { type: 'subscribe_context', instance_id: instanceId });
-    await until(() => client.events.some(event => event.type === 'context_subscribed'), Boolean,
-        'Map subscription');
-    return instanceId;
+    const subscribed = await until(() => client.events.find(event => event.type === 'context_subscribed'),
+        Boolean, `${role} subscription`);
+    assert.equal(subscribed.pilot_handoff_requests, handoffEnabled);
+    return { ...client, instanceId };
+}
+
+async function connectMap() {
+    return (await connectContext('Map')).instanceId;
+}
+
+function requestPilotHandoff(client, id, requestId = randomUUID(), expected = {}, extra = {}) {
+    return request('/api/security-plans', {
+        body: { instance_id: client.instanceId, action: 'request_pilot_handoff', uav_id: id, request_id: requestId, ...extra },
+        ...expected,
+    });
 }
 
 async function mapMove(instanceId, id, target, expected = {}) {
@@ -161,6 +173,53 @@ async function mapMove(instanceId, id, target, expected = {}) {
         },
         ...expected,
     });
+}
+
+async function startGroupedHandoffMission(commandClient, mapClient) {
+    let planId, missionId;
+    async function planAction(client, action, fields = {}) {
+        const current = await request('/api/security-plans');
+        return request('/api/security-plans', { body: {
+            instance_id: client.instanceId,
+            action,
+            plan_id: planId,
+            mission_id: missionId,
+            expected_version: current.version,
+            ...fields,
+        } });
+    }
+    const created = await planAction(commandClient, 'create_plan', {
+        name: 'Pilot handoff isolation test', default_mission_name: 'Two-aircraft mission',
+    });
+    ({ plan_id: planId, mission_id: missionId } = created);
+    await planAction(commandClient, 'assign', {
+        assigned_uav_ids: [unassignedAircraft, wingAircraft], formation: 'Line', spacing_m: 3,
+    });
+    const setup = await request('/api/security-plans');
+    const editing = await planAction(mapClient, 'begin_route_edit', {
+        content_revision: setup.plans[planId].content_revision, workflow: true,
+    });
+    const [latitude, longitude, altitude] = await pose(unassignedAircraft);
+    const [, wingLongitude] = await pose(wingAircraft);
+    const route = {
+        pathId: 1,
+        bClosedLoop: false,
+        waypoints: [0.00002, 0.002, 0.004].map((offset, index) => ({
+            sequence: index + 1,
+            latitude: latitude + offset,
+            longitude: (longitude + wingLongitude) / 2,
+            altitude: altitude + 1,
+            segmentSpeed: 2,
+            waitTime: 0,
+        })),
+    };
+    await planAction(mapClient, 'save_route', { edit_session_id: editing.edit_session_id, path: route, keep_editing: true });
+    await planAction(mapClient, 'finish_route_edit', { edit_session_id: editing.edit_session_id });
+    await planAction(commandClient, 'validate');
+    await planAction(commandClient, 'review');
+    await planAction(commandClient, 'deploy');
+    const started = await planAction(commandClient, 'execution_start', { request_id: randomUUID() });
+    return Object.values(started.state.executions).filter(row => row.mission_id === missionId);
 }
 
 function activate(client, row, expected) {
@@ -327,6 +386,41 @@ try {
     const otherSocket = await connect(otherPilot);
     const secondPilotConnection = await connect(pilot);
     pass('Unauthenticated HTTP and WebSocket requests are rejected');
+
+    const videoContext = await connectContext('Video');
+    const videoRequestId = randomUUID();
+    await requestPilotHandoff(videoContext, firstAircraft, videoRequestId,
+        { status: 409, code: 'PILOT_HANDOFF_NO_COMMAND' });
+    const commandContext = await connectContext('Command');
+    const mapContext = await connectContext('Map');
+    const beforeHandoffRequests = await snapshot();
+    const beforeHandoffPlans = await request('/api/security-plans');
+    await requestPilotHandoff(commandContext, firstAircraft, randomUUID(), { status: 403, code: 'ROLE_FORBIDDEN' });
+    await requestPilotHandoff(videoContext, 'UAV-1', randomUUID(), { status: 409, code: 'PILOT_HANDOFF_UNAVAILABLE' });
+    await requestPilotHandoff(videoContext, firstAircraft, 'malformed', { status: 400, code: 'REQUEST_REJECTED' });
+    const videoReceipt = await requestPilotHandoff(videoContext, firstAircraft, videoRequestId, {},
+        { client_role: 'Command', pilot_id: pilot.id, grant_id: randomUUID() });
+    assert.deepEqual(videoReceipt.request, { uav_id: firstAircraft, request_id: videoRequestId, source_role: 'Video' });
+    assert.deepEqual(await requestPilotHandoff(videoContext, firstAircraft, videoRequestId), videoReceipt);
+    await requestPilotHandoff(videoContext, secondAircraft, videoRequestId,
+        { status: 409, code: 'REQUEST_ID_REUSED' });
+    await requestPilotHandoff(videoContext, firstAircraft, randomUUID(),
+        { status: 409, code: 'PILOT_HANDOFF_RATE_LIMITED' });
+    const mapReceipt = await requestPilotHandoff(mapContext, secondAircraft);
+    assert.equal(mapReceipt.request.source_role, 'Map');
+    const notices = client => client.events.filter(event => event.type === 'PilotHandoffRequested');
+    await until(() => notices(commandContext).some(event => event.payload.request_id === mapReceipt.request.request_id),
+        Boolean, 'Command handoff-request notification');
+    assert.deepEqual(notices(commandContext).map(event => event.payload), [videoReceipt.request, mapReceipt.request]);
+    for (const client of [videoContext, mapContext, commandSocket, pilotSocket, otherSocket]) {
+        assert.deepEqual(notices(client), []);
+    }
+    await request(controlPath, { body: { action: 'grant', request_id: randomUUID(), pilot_id: pilot.id,
+        uav_ids: [firstAircraft], instance_id: videoContext.instanceId, client_role: 'Command' },
+    status: 401, code: 'UNAUTHENTICATED' });
+    assert.deepEqual(await snapshot(), beforeHandoffRequests);
+    assert.deepEqual(await request('/api/security-plans'), beforeHandoffPlans);
+    pass('Video and Map handoff requests notify only Command, deduplicate retries, and cannot grant or change plans');
 
     const original = await snapshot();
     const idsToGrant = [firstAircraft, secondAircraft, 'UAV-99'];
@@ -603,6 +697,60 @@ try {
     assert.equal((await assignedState(secondAircraft, otherPilot)).grant_id, replacementGrant.grant_id);
     pass('Backend restart retains durable grants and revocations while expiring active sessions');
 
+    const handoffCommand = await connectContext('Command');
+    const handoffMap = await connectContext('Map');
+    const selectedPilot = await connect(otherPilot);
+    const groupMission = await startGroupedHandoffMission(handoffCommand, handoffMap);
+    assert.equal(groupMission.length, 2);
+    const selectedMission = groupMission.find(row => row.uav_id === unassignedAircraft);
+    const wingMission = groupMission.find(row => row.uav_id === wingAircraft);
+    assert(selectedMission && wingMission);
+    assert.equal(selectedMission.group_id, wingMission.group_id);
+    const handoff = await until(() => assignedState(unassignedAircraft), row =>
+        row.handoff_execution_id === selectedMission.execution_id, 'active mission handoff candidate');
+    const details = {
+        uav_id: unassignedAircraft,
+        pilot_id: otherPilot.id,
+        execution_id: handoff.handoff_execution_id,
+        control_version: handoff.handoff_control_version,
+        expected_revision: handoff.revision,
+    };
+    const missionSnapshot = () => request('/api/security-plans').then(state => state.executions);
+    await change(pilot, 'handoff_grant', details, { status: 403, code: 'ROLE_FORBIDDEN' });
+    await change(command, 'handoff_grant', { ...details, control_version: details.control_version + 1 },
+        { status: 409, code: 'HANDOFF_STALE' });
+    const offline = await change(command, 'handoff_grant', { ...details, pilot_id: 'offline-pilot' });
+    assert.equal(offline.results[0].ok, false);
+    assert.equal(offline.results[0].code, 'PILOT_OFFLINE');
+    assert.equal((await missionSnapshot())[selectedMission.execution_id].state, 'EXECUTING');
+    assert.equal((await assignedState(unassignedAircraft)).grant_id, null);
+    pass('An offline pilot, stale execution, or unprivileged actor cannot release the active mission');
+
+    const approval = { action: 'handoff_grant', request_id: randomUUID(), ...details };
+    const granted = await request(controlPath, { actor: command, body: approval });
+    assert.equal(granted.results[0].code, 'GRANTED');
+    assert.deepEqual(await request(controlPath, { actor: command, body: approval }), granted);
+    const executionsAfterHandoff = await missionSnapshot();
+    const released = executionsAfterHandoff[selectedMission.execution_id];
+    const continuing = executionsAfterHandoff[wingMission.execution_id];
+    assert.equal(released.state, 'ABORTED');
+    assert.equal(released.completion_reason, 'MANUAL_TAKEOVER');
+    assert.equal(continuing.state, 'EXECUTING');
+    assert.deepEqual(continuing.route_snapshot, wingMission.route_snapshot);
+    assert.equal(Object.values(executionsAfterHandoff).filter(row => row.mission_id === selectedMission.mission_id).length, 2);
+    await until(missionSnapshot, state => state[wingMission.execution_id].progress > continuing.progress,
+        'unhanded-off group member to continue');
+    const newGrant = await assignedState(unassignedAircraft, otherPilot);
+    assert.equal(newGrant.control_state, 'IDLE');
+    assert(!newGrant.control_session_id);
+    assert(!aircraft(await snapshot(pilot), unassignedAircraft));
+    assert.deepEqual(await pose(unassignedAircraft), [released.position.latitude, released.position.longitude, released.position.altitude]);
+    await activate(pilotSocket, newGrant, { status: 403, code: 'ROLE_FORBIDDEN' });
+    await activate(selectedPilot, newGrant);
+    const handoffSession = await sessionFor(selectedPilot, unassignedAircraft);
+    await move(selectedPilot, unassignedAircraft, handoffSession);
+    pass('Command hands off only the selected mission member, then only the designated Pilot can activate and move it');
+
     await stopBackend();
     const inactiveMockPath = `${mockPath}.inactive`;
     fs.renameSync(mockPath, inactiveMockPath);
@@ -610,6 +758,9 @@ try {
         await startBackend();
         assert(!(await request('/')).capabilities.includes('pilot_control_mock'));
         await request(controlPath, { actor: command, status: 404, code: 'PILOT_CONTROL_DISABLED' });
+        const unsupportedVideo = await connectContext('Video', false);
+        await requestPilotHandoff(unsupportedVideo, firstAircraft, randomUUID(),
+            { status: 409, code: 'PILOT_HANDOFF_UNAVAILABLE' });
     } finally {
         fs.renameSync(inactiveMockPath, mockPath);
     }

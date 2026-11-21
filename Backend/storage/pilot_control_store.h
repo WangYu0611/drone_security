@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <deque>
 #include <filesystem>
+#include <functional>
 #include <map>
 #include <optional>
 #include <set>
@@ -36,6 +37,8 @@ public:
         std::string uav_id;
         std::string unavailable_reason;
         std::string video_url;
+        std::string handoff_execution_id;
+        std::uint64_t handoff_control_version = 0;
     };
 
     struct ActiveInput {
@@ -57,7 +60,8 @@ public:
                                  const Connections& connections, const std::string& connection_id = {}) const;
     boost::json::object Apply(const Actor& actor, const boost::json::object& request,
                               const std::vector<Aircraft>& aircraft, const Connections& connections,
-                              Clock::time_point now = Clock::now());
+                              Clock::time_point now = Clock::now(),
+                              const std::function<void(const Aircraft&)>& release_mission = {});
     bool Input(const Actor& actor, const std::string& connection_id,
                const boost::json::object& input, Clock::time_point now = Clock::now());
     boost::json::object InputWindow(const Actor& actor, const std::string& connection_id,
@@ -137,6 +141,17 @@ private:
     std::filesystem::path path_;
     std::string server_epoch_;
     State state_;
-    std::map<std::string, std::pair<std::string, std::string>> aircraft_view_;
+    struct AircraftView {
+        std::string unavailable_reason;
+        std::string video_url;
+        std::string handoff_execution_id;
+        std::uint64_t handoff_control_version;
+        bool SameAuthority(const AircraftView& other) const {
+            return unavailable_reason == other.unavailable_reason && handoff_execution_id == other.handoff_execution_id &&
+                   handoff_control_version == other.handoff_control_version;
+        }
+        bool operator==(const AircraftView& other) const { return SameAuthority(other) && video_url == other.video_url; }
+    };
+    std::map<std::string, AircraftView> aircraft_view_;
     std::set<std::string> pilot_view_;
 };

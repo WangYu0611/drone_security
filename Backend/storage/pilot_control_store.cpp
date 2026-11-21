@@ -67,6 +67,8 @@ void check_request_fields(const json::object& request, const std::string& action
         const auto key = item.key();
         if (key == "action" || key == "request_id") continue;
         if (action == "grant" && (key == "pilot_id" || key == "uav_ids" || key == "expected_revisions")) continue;
+        if (action == "handoff_grant" && (key == "pilot_id" || key == "uav_id" || key == "expected_revision" ||
+                                          key == "execution_id" || key == "control_version")) continue;
         if (action == "activate" && (key == "uav_id" || key == "grant_id" || key == "connection_id" || key == "expected_revision")) continue;
         if (action == "revoke" && (key == "uav_id" || key == "grant_id")) continue;
         if (action == "stop" && (key == "control_session_id" || key == "reason")) continue;
@@ -148,12 +150,13 @@ bool PilotControlStore::OwnsAircraft(const std::string& uav_id) const {
 void PilotControlStore::RefreshView(const std::vector<Aircraft>& aircraft, const Connections& connections) {
     decltype(aircraft_view_) aircraft_view;
     for (const auto& entry : aircraft)
-        aircraft_view.emplace(entry.uav_id, std::make_pair(entry.unavailable_reason, entry.video_url));
+        aircraft_view.emplace(entry.uav_id, AircraftView{entry.unavailable_reason, entry.video_url,
+            entry.handoff_execution_id, entry.handoff_control_version});
     auto pilots = online_pilots(connections);
     if (aircraft_view_ == aircraft_view && pilot_view_ == pilots) return;
     for (const auto& entry : aircraft_view_) {
         const auto current = aircraft_view.find(entry.first);
-        if (current == aircraft_view.end() || current->second.first != entry.second.first)
+        if (current == aircraft_view.end() || !current->second.SameAuthority(entry.second))
             ++state_.aircraft[entry.first].revision;
     }
     for (auto& entry : state_.aircraft) {
@@ -161,8 +164,8 @@ void PilotControlStore::RefreshView(const std::vector<Aircraft>& aircraft, const
         const auto current = aircraft_view.find(entry.first);
         if (current == aircraft_view.end()) {
             EndControl(state_, entry.first, entry.second, "UAV_NOT_AVAILABLE", false);
-        } else if (!current->second.first.empty()) {
-            EndControl(state_, entry.first, entry.second, current->second.first, false);
+        } else if (!current->second.unavailable_reason.empty()) {
+            EndControl(state_, entry.first, entry.second, current->second.unavailable_reason, false);
         }
     }
     aircraft_view_ = std::move(aircraft_view);
@@ -202,6 +205,10 @@ json::object PilotControlStore::Snapshot(const Actor& actor, const std::vector<A
         if (record.grant) {
             row["pilot_id"] = record.grant->pilot_id;
             row["grant_id"] = record.grant->id;
+        }
+        if (command && plane && !record.grant && !plane->handoff_execution_id.empty()) {
+            row["handoff_execution_id"] = plane->handoff_execution_id;
+            row["handoff_control_version"] = plane->handoff_control_version;
         }
         if (!command) {
             row["activation_reason"] = unavailable;
@@ -335,9 +342,10 @@ json::object PilotControlStore::ChangeControl(State& next, const Actor& actor, c
 
 json::object PilotControlStore::Apply(const Actor& actor, const json::object& request,
                                       const std::vector<Aircraft>& aircraft, const Connections& connections,
-                                      Clock::time_point now) {
+                                      Clock::time_point now, const std::function<void(const Aircraft&)>& release_mission) {
     const auto action = required_string(request, "action");
-    const bool command_action = action == "grant" || action == "revoke";
+    const bool handoff = action == "handoff_grant";
+    const bool command_action = action == "grant" || action == "revoke" || handoff;
     if (!command_action && action != "activate" && action != "stop")
         throw PilotControlError(400, "INVALID_REQUEST", "Unknown pilot control action");
     if (command_action != (actor.role == Role::Command))
@@ -357,8 +365,29 @@ json::object PilotControlStore::Apply(const Actor& actor, const json::object& re
 
     State next = state_;
     json::array results;
+    bool mission_released = false;
     try {
         if (action == "grant") results = GrantAircraft(next, request, aircraft, connections);
+        else if (handoff) {
+            const auto uav = required_string(request, "uav_id");
+            const auto pilot = required_string(request, "pilot_id");
+            const auto expected = required_revision(request.if_contains("expected_revision"));
+            const auto execution = required_string(request, "execution_id");
+            const auto version = required_revision(request.if_contains("control_version"));
+            const auto* plane = find_aircraft(aircraft, uav);
+            if (!release_mission || !plane || plane->handoff_execution_id != execution ||
+                plane->handoff_control_version != version || OwnsAircraft(uav)) {
+                throw PilotControlError(409, "HANDOFF_STALE", "The aircraft mission or ownership changed");
+            }
+            auto released = *plane;
+            released.unavailable_reason.clear();
+            results = GrantAircraft(next, {{"pilot_id", pilot}, {"uav_ids", json::array{uav}},
+                {"expected_revisions", json::object{{uav, expected}}}}, {released}, connections);
+            if (results.front().as_object().at("ok").as_bool()) {
+                release_mission(*plane);
+                mission_released = true;
+            }
+        }
         else results.emplace_back(ChangeControl(next, actor, action, request, aircraft, connections, now));
     } catch (const PilotControlError& error) {
         if (error.status_code == 409) {
@@ -375,6 +404,9 @@ json::object PilotControlStore::Apply(const Actor& actor, const json::object& re
     try {
         Persist(next);
     } catch (...) {
+        // Leave the original motion owner stopped if the independent grant store
+        // cannot commit. A subsequent normal grant can complete the transfer.
+        if (mission_released) throw PilotControlError(409, "HANDOFF_GRANT_WRITE_FAILED", "Mission released; retry grant");
         // Preserve the durable grant after an I/O failure, while ensuring an
         // operator's validated stop or revoke stops Mock input immediately.
         if (action == "stop" || action == "revoke") {
