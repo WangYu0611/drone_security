@@ -186,25 +186,56 @@ async function sessionFor(client, id, previous = '') {
     }, Boolean, `active session for ${id}`);
 }
 
-function input(client, id, sessionId, windowId, sequence, forward = 1) {
+function input(client, id, sessionId, windowId, sequence, axes = { forward: 1 }, action) {
     send(client, {
         type: 'pilot_input',
         uav_id: id,
         control_session_id: sessionId,
         window_id: windowId,
         seq: sequence,
-        axes: { forward, right: 0, vertical: 0, yaw: 0 },
+        axes: { forward: 0, right: 0, vertical: 0, yaw: 0, ...axes },
+        ...(action === undefined ? {} : { action }),
     });
 }
 
-async function pose(id) {
+function pilotInputStream(client, id, sessionId) {
+    let sequence = 0;
+    return async (axes = {}, action) => {
+        const window = await inputWindow(client, sessionId);
+        input(client, id, sessionId, window.window_id, ++sequence, axes, action);
+    };
+}
+
+async function sustainInput(sendFrame, durationMs, axes = {}) {
+    const deadline = performance.now() + durationMs;
+    do {
+        await sendFrame(axes);
+        await sleep(60);
+    } while (performance.now() < deadline);
+}
+
+async function mockDrone(id) {
     const slot = Number(id.split('-')[1]);
     const row = (await request('/api/drones')).find(drone => Number(drone.slot) === slot);
     assert(row, `Missing Mock drone telemetry for ${id}`);
     assert.equal(row.simulation, true, `${id} must have simulated telemetry`);
+    return row;
+}
+
+async function pose(id) {
+    const row = await mockDrone(id);
     const coordinates = [row.gps_lat, row.gps_lon, row.gps_alt];
     assert(coordinates.every(Number.isFinite));
     return coordinates;
+}
+
+function offsetMetres([homeLat, homeLon, homeAlt], [latitude, longitude, altitude]) {
+    const metresPerDegree = 6371000 * Math.PI / 180;
+    return [
+        (latitude - homeLat) * metresPerDegree,
+        (longitude - homeLon) * metresPerDegree * Math.cos(homeLat * Math.PI / 180),
+        altitude - homeAlt,
+    ];
 }
 
 async function move(client, id, activeSessionId) {
@@ -347,6 +378,7 @@ try {
         { status: 403, code: 'ROLE_FORBIDDEN' });
     pass('Pilots cannot grant or revoke and unrelated principals cannot activate a grant');
 
+    const firstHome = await pose(firstAircraft);
     const secondBefore = await pose(secondAircraft);
     await activate(pilotSocket, firstGrant);
     const firstSession = await sessionFor(pilotSocket, firstAircraft);
@@ -410,6 +442,33 @@ try {
     assert.equal((await assignedState(secondAircraft, otherPilot)).grant_id, replacementGrant.grant_id);
     pass('A stale revocation cannot revoke a replacement grant');
 
+    await activate(otherSocket, replacementGrant);
+    const envelopeSession = await sessionFor(otherSocket, secondAircraft);
+    const envelopeInput = pilotInputStream(otherSocket, secondAircraft, envelopeSession);
+    const outward = { forward: 1, vertical: 1 };
+    const envelopeStart = await pose(secondAircraft);
+    const envelopeStartTime = performance.now();
+    let previousSample = envelopeStart;
+    const boundedPose = await until(async () => {
+        await envelopeInput(outward);
+        const sample = await pose(secondAircraft);
+        assert(Math.hypot(...offsetMetres(previousSample, sample)) <= 0.5,
+            'Mock Pilot translation exceeded the single-step limit');
+        previousSample = sample;
+        const [north, east, elevation] = offsetMetres(secondBefore, sample);
+        assert(Math.hypot(north, east) <= 6.02, 'Mock Pilot crossed the horizontal operating radius');
+        assert(elevation <= 6.02, 'Mock Pilot crossed the altitude ceiling');
+        return Math.hypot(north, east) >= 5.96 && elevation >= 5.96 ? sample : null;
+    }, Boolean, 'both horizontal and vertical Mock operating limits');
+    const travelTime = (performance.now() - envelopeStartTime) / 1000;
+    assert(Math.hypot(...offsetMetres(envelopeStart, boundedPose)) <= 0.8 * (travelTime + 0.15) + 0.03,
+        'Mock Pilot translation exceeded the 0.8 m/s envelope');
+    await sustainInput(envelopeInput, 300, outward);
+    const [edgeNorth, edgeEast, edgeElevation] = offsetMetres(secondBefore, await pose(secondAircraft));
+    assert(Math.hypot(edgeNorth, edgeEast) <= 6.02 && edgeElevation <= 6.02);
+    await change(otherPilot, 'stop', { control_session_id: envelopeSession, reason: 'TEST_COMPLETE' });
+    pass('Continuous Mock Pilot input respects horizontal, altitude, speed, and step limits');
+
     await activate(pilotSocket, await assignedState(firstAircraft, pilot));
     const beforeDisconnect = await sessionFor(pilotSocket, firstAircraft, firstSession);
     const disconnectWindow = await inputWindow(pilotSocket, beforeDisconnect);
@@ -441,8 +500,76 @@ try {
         event.type === 'pilot_input_rejected'), Boolean, 'expired input rejection');
     assert.deepEqual(await pose(firstAircraft), timedOutPose);
     await activate(pilotSocket, await assignedState(firstAircraft, pilot));
-    assert.notEqual(await sessionFor(pilotSocket, firstAircraft, afterReconnect), afterReconnect);
+    const actionSession = await sessionFor(pilotSocket, firstAircraft, afterReconnect);
+    assert.notEqual(actionSession, afterReconnect);
     pass('An open WebSocket cannot preserve expired control or reactivate on late input');
+
+    const actionInput = pilotInputStream(pilotSocket, firstAircraft, actionSession);
+    const drive = (sendFrame, axes, reached, description) => until(async () => {
+        await sendFrame(axes);
+        return pose(firstAircraft);
+    }, reached, description);
+    const height = sample => sample[2] - firstHome[2];
+    const homeDistance = sample => Math.hypot(...offsetMetres(firstHome, sample).slice(0, 2));
+    const actionEvents = pilotSocket.events.length;
+    await actionInput({}, 'unrecognized');
+    await until(() => pilotSocket.events.slice(actionEvents).some(event =>
+        event.type === 'pilot_input_rejected'), Boolean, 'invalid Pilot action rejection');
+
+    await actionInput({}, 'takeoff');
+    await drive(actionInput, {}, sample => height(sample) >= 0.35, 'first takeoff ascent');
+    await actionInput({}, 'hold');
+    await actionInput({}, 'none');
+    await sustainInput(actionInput, 180);
+    const heldPose = await pose(firstAircraft);
+    assert(height(heldPose) >= 0.35 && height(heldPose) < 1.8);
+    await sustainInput(actionInput, 320);
+    assert.deepEqual(await pose(firstAircraft), heldPose, 'Hold must cancel the remaining takeoff target');
+
+    await actionInput({}, 'takeoff');
+    await drive(actionInput, {}, sample => Math.abs(height(sample) - 2) <= 0.03, '2 m takeoff target');
+    await drive(actionInput, { forward: 1 }, sample => homeDistance(sample) >= 0.6, 'departure from home');
+    await actionInput({}, 'gohome');
+    await drive(actionInput, {}, sample => homeDistance(sample) <= 0.03 &&
+        Math.abs(height(sample) - 2) <= 0.03, 'return over home at takeoff altitude');
+
+    await actionInput({}, 'land');
+    await drive(actionInput, {}, sample => Math.abs(height(sample)) <= 0.03, 'landing at home elevation');
+    await sustainInput(actionInput, 300, { vertical: -1 });
+    assert(Math.abs(height(await pose(firstAircraft))) <= 0.03, 'Downward input must respect home elevation');
+    pass('One-shot takeoff, hold, return home, and land update the simulated position targets');
+
+    await drive(actionInput, { vertical: 1 }, sample => height(sample) >= 0.25, 'motion before emergency stop');
+    await actionInput({}, 'estop');
+    await sustainInput(actionInput, 180, { forward: 1, vertical: 1 });
+    const emergencyPose = await pose(firstAircraft);
+    await actionInput({}, 'takeoff');
+    await sustainInput(actionInput, 350, { forward: 1, vertical: 1 });
+    assert.deepEqual(await pose(firstAircraft), emergencyPose);
+    const emergencyState = await assignedState(firstAircraft, pilot);
+    assert.equal(emergencyState.control_state, 'ACTIVE');
+    assert.equal(emergencyState.input_frozen, true);
+    await change(pilot, 'stop', { control_session_id: actionSession, reason: 'TEST_COMPLETE' });
+    await activate(pilotSocket, await assignedState(firstAircraft, pilot));
+    const recoveredSession = await sessionFor(pilotSocket, firstAircraft, actionSession);
+    assert.equal((await assignedState(firstAircraft, pilot)).input_frozen, false);
+    const recoveredInput = pilotInputStream(pilotSocket, firstAircraft, recoveredSession);
+    await until(async () => {
+        await recoveredInput({ yaw: 1 });
+        return (await mockDrone(firstAircraft)).yaw;
+    }, yaw => yaw >= 85 && yaw <= 105, 'eastward pilot heading');
+    const beforeForward = await pose(firstAircraft);
+    const afterForward = await drive(recoveredInput, { forward: 1 },
+        sample => offsetMetres(beforeForward, sample)[1] >= 0.25, 'eastward body-frame movement');
+    assert(Math.abs(offsetMetres(beforeForward, afterForward)[0]) < 0.1);
+    pass('Emergency stop ignores subsequent inputs until fresh activation, then movement follows aircraft heading');
+
+    await sleep(480);
+    const staleInputPose = await pose(firstAircraft);
+    assert.equal((await assignedState(firstAircraft, pilot)).control_state, 'ACTIVE');
+    await sleep(100);
+    assert.deepEqual(await pose(firstAircraft), staleInputPose, 'Stale input must freeze motion before session expiry');
+    pass('Stale Mock Pilot input freezes motion while its session remains active');
 
     const previousEpoch = (await snapshot()).server_epoch;
     await stopBackend();

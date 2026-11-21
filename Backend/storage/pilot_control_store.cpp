@@ -24,7 +24,9 @@ using namespace std::chrono_literals;
 // and verified independently when a real control adapter exists.
 constexpr auto mock_window_rotation = 250ms;
 constexpr auto mock_window_lifetime = 500ms;
+constexpr auto mock_stick_lifetime = 400ms;
 constexpr auto mock_input_timeout = 750ms;
+constexpr std::size_t max_pending_actions = 16;
 
 std::string identifier() {
     std::random_device entropy;
@@ -92,6 +94,20 @@ std::optional<double> axis(const json::object& axes, const char* key) {
     const auto number = value->to_number<double>();
     if (!std::isfinite(number) || number < -1 || number > 1) return std::nullopt;
     return number;
+}
+
+std::optional<PilotControlStore::Action> flight_action(const json::value* value) {
+    using Action = PilotControlStore::Action;
+    if (!value) return Action::None;
+    if (!value->is_string()) return std::nullopt;
+    const auto& name = value->as_string();
+    if (name == "none") return Action::None;
+    if (name == "takeoff") return Action::Takeoff;
+    if (name == "land") return Action::Land;
+    if (name == "hold") return Action::Hold;
+    if (name == "gohome") return Action::GoHome;
+    if (name == "estop") return Action::EmergencyStop;
+    return std::nullopt;
 }
 
 json::object result(const std::string& uav_id, bool ok, const std::string& code, std::uint64_t revision) {
@@ -179,6 +195,7 @@ json::object PilotControlStore::Snapshot(const Actor& actor, const std::vector<A
         json::object row{{"uav_id", uav_id}, {"revision", record.revision},
                          {"assignment_state", record.grant ? "GRANTED" : "UNASSIGNED"},
                          {"control_state", record.session ? "ACTIVE" : "IDLE"},
+                         {"input_frozen", record.session && record.session->emergency_stopped},
                          {"available", reason.empty()}, {"reason", reason},
                          {"aircraft_state", "CONFIRMED"}, {"pilot_id", nullptr}, {"grant_id", nullptr},
                          {"video_url", plane ? plane->video_url : std::string{}}};
@@ -423,11 +440,32 @@ bool PilotControlStore::Input(const Actor& actor, const std::string& connection_
     const auto right = axis(axes_object, "right");
     const auto vertical = axis(axes_object, "vertical");
     const auto yaw = axis(axes_object, "yaw");
-    if (!forward || !right || !vertical || !yaw) return false;
+    const auto action = flight_action(input.if_contains("action"));
+    if (!forward || !right || !vertical || !yaw || !action) return false;
+
+    const auto valid_until = std::min(now + mock_stick_lifetime, window->issued_at + mock_window_lifetime);
+    ActiveInput next{record->first, 0., 0., 0., 0., Action::None, session.id};
+    if (!session.emergency_stopped) {
+        if (*action == Action::EmergencyStop) {
+            session.pending_actions.clear();
+            session.emergency_stopped = true;
+            session.emergency_pending = true;
+            Change(state_, record->second);
+        } else if (*action != Action::None) {
+            if (session.pending_actions.size() >= max_pending_actions) return false;
+            session.pending_actions.push_back({*action, valid_until});
+        } else {
+            next.forward = *forward;
+            next.right = *right;
+            next.vertical = *vertical;
+            next.yaw = *yaw;
+        }
+    }
+
     session.last_sequence = *sequence;
     session.input_deadline = now + mock_input_timeout;
-    session.input = ActiveInput{record->first, *forward, *right, *vertical, *yaw};
-    session.input_valid_until = window->issued_at + mock_window_lifetime;
+    session.input = std::move(next);
+    session.input_valid_until = valid_until;
     return true;
 }
 
@@ -449,12 +487,32 @@ void PilotControlStore::Expire(Clock::time_point now) {
             EndControl(state_, entry.first, entry.second, "INPUT_TIMEOUT", false);
 }
 
-std::vector<PilotControlStore::ActiveInput> PilotControlStore::ActiveInputs(Clock::time_point now) const {
+std::vector<PilotControlStore::ActiveInput> PilotControlStore::ActiveInputs(Clock::time_point now) {
     std::vector<ActiveInput> active;
-    for (const auto& entry : state_.aircraft) {
-        const auto& session = entry.second.session;
-        if (session && session->input && now < session->input_valid_until && now < session->input_deadline)
+    for (auto& entry : state_.aircraft) {
+        auto& session = entry.second.session;
+        if (!session || now >= session->input_deadline) continue;
+
+        if (session->emergency_pending) {
+            active.push_back({entry.first, 0., 0., 0., 0., Action::EmergencyStop, session->id});
+            session->emergency_pending = false;
+            continue;
+        }
+
+        auto& pending = session->pending_actions;
+        while (!pending.empty() && now >= pending.front().valid_until) pending.pop_front();
+        if (!pending.empty()) {
+            active.push_back({entry.first, 0., 0., 0., 0., pending.front().action, session->id});
+            pending.pop_front();
+            // Manual movement requires a new stick sample after the action is delivered.
+            auto& sticks = *session->input;
+            sticks.forward = 0.;
+            sticks.right = 0.;
+            sticks.vertical = 0.;
+            sticks.yaw = 0.;
+        } else if (session->input && now < session->input_valid_until) {
             active.push_back(*session->input);
+        }
     }
     return active;
 }

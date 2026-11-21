@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <cstdint>
+#include <deque>
 #include <filesystem>
 #include <map>
 #include <optional>
@@ -24,6 +25,7 @@ struct PilotControlError : std::runtime_error {
 class PilotControlStore {
 public:
     enum class Role { Command, Pilot };
+    enum class Action { None, Takeoff, Land, Hold, GoHome, EmergencyStop };
 
     struct Actor {
         Role role;
@@ -42,6 +44,8 @@ public:
         double right;
         double vertical;
         double yaw;
+        Action action = Action::None;
+        std::string control_session_id;
     };
 
     using Connections = std::map<std::string, std::string>;
@@ -63,7 +67,7 @@ public:
     void Disconnect(const std::string& connection_id);
     void DeactivateAircraft(const std::string& uav_id, const std::string& reason);
     void Expire(Clock::time_point now = Clock::now());
-    std::vector<ActiveInput> ActiveInputs(Clock::time_point now = Clock::now()) const;
+    std::vector<ActiveInput> ActiveInputs(Clock::time_point now = Clock::now());
     bool OwnsAircraft(const std::string& uav_id) const;
     std::uint64_t Version() const { return state_.version; }
 
@@ -78,6 +82,11 @@ private:
         Clock::time_point issued_at;
     };
 
+    struct PendingAction {
+        Action action;
+        Clock::time_point valid_until;
+    };
+
     struct Session {
         std::string id;
         std::string connection_id;
@@ -87,6 +96,9 @@ private:
         std::uint64_t last_sequence = 0;
         std::optional<ActiveInput> input;
         Clock::time_point input_valid_until;
+        std::deque<PendingAction> pending_actions;
+        bool emergency_stopped = false;
+        bool emergency_pending = false;
     };
 
     struct Record {

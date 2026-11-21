@@ -1,5 +1,6 @@
 #pragma once
 #include "storage/operational_context.h"
+#include "storage/pilot_control_store.h"
 #include "execution/security_mission_adapter.h"
 #include <set>
 #include <map>

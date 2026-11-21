@@ -423,9 +423,15 @@ python tools\simulate_telemetry.py --register --transport udp --drones 1 --hz 10
 | `GET /api/pilot-control` | 按角色读取快照，包含 `server_epoch`、`version` 和飞机记录。 |
 | `POST /api/pilot-control` | 使用 `request_id` 提交 `grant`、`activate`、`stop` 或 `revoke`，返回 `results`。批量 `grant` 提交 `pilot_id`、`uav_ids` 和按机号索引的 `expected_revisions`。 |
 | `/ws/pilot-control` | 发送 `subscribe_pilot_control`，从 `pilot_control_subscribed` 读取 `connection_id` 和初始快照，后续订阅 `pilot_control_changed`。Pilot 启用时提交 `uav_id`、`grant_id`、`connection_id` 和 `expected_revision`。 |
-| `pilot_input` | 使用当前 `control_session_id` 和 Backend 下发的 `window_id`，提交机号 `uav_id`、递增 `seq` 和 `axes`。摇杆量为 `[-1, 1]` 的 `forward`、`right`、`vertical`、`yaw`。 |
+| `pilot_input` | 使用当前 `control_session_id` 和 Backend 下发的 `window_id`，提交机号 `uav_id`、递增 `seq` 和 `axes`。摇杆量为 `[-1, 1]` 的 `forward`、`right`、`vertical`、`yaw`。支持 `pilot_control_actions` 时，可选 `action`。 |
 
 `stop` 提交 `control_session_id` 和 `reason`，保留分配。`revoke` 由 Command 提交 `uav_id` 和 `grant_id`。Mock 在同一个事务内完成退出和输入作废，下一份快照的操控状态为 `IDLE`，飞机状态为 `CONFIRMED`。重启恢复分配，操控需要再次显式启用。位置通过 `/api/drones` 的 `mock_position` 读取，驾驶员操控产生的位置标为 `mock_pilot`。
+
+Command 分配飞机后，Pilot 选机、等图传出帧并启用。UE 以约 20 Hz 采集并发送摇杆，Backend 校验身份、机号、会话、输入窗口和序号，再按当前机头方向推进模拟位置。同一飞机由 Backend 在 Pilot、任务执行和编队/移动指令之间仲裁。前向和横向按机头旋转，`vertical` 正值上升，`yaw` 正值顺时针转向。模拟手控相对于当前 Mock 起点限制在水平半径 6 m、相对高度 0–6 m，平移速度上限 0.8 m/s，并保留机间间距校验。
+
+`action` 省略或为 `none` 时传连续摇杆。`takeoff` 目标高度为起点上方 2 m，`land` 在当前位置降到起点高度，`gohome` 回到起点上方 2 m。动作只提交一次，位移仍要求新鲜输入帧。`hold` 清除目标，后续有效摇杆可继续。`estop` 清除目标并锁定当前会话的输入，Command 和 Pilot 的快照均显示 `input_frozen`。停止后重新启用可解除锁定。最后一帧超过 400 ms 或超出输入窗口即停止推进，会话在 750 ms 无有效输入后退出。退出、撤销或重连均作废旧帧和旧目标。
+
+这个 Pilot 能力目前由显式 Mock 配置启用。实时任务继续使用现有 Backend → Jetson 协议。实时 Pilot 需要为机载端提供受会话约束的连续控制、失联后就地保持及退出确认，并验证操控与任务之间的交接。附件中的 UDP 格式与当前 Jetson 接收协议不同，且附件中的 PX4 包缺少桥接手册所引用的 `teleop_udp` 节点。
 
 使用 Node.js 24 运行协议验收。脚本创建独立 Backend 进程、临时凭据、Mock 注册表和端口，输出位于 `Saved/PilotControlQA`。如需指定后端构建，设置 `DRONE_BACKEND_EXE`。
 
@@ -433,7 +439,7 @@ python tools\simulate_telemetry.py --register --transport udp --drones 1 --hz 10
 node Backend/tests/pilot_control_integration.mjs
 ```
 
-这项验收覆盖后台 HTTP/WebSocket 与 Mock 位移。原生界面、USB 遥控器、图传与真机属于后续验收。
+这项验收覆盖后台 HTTP/WebSocket 与 Mock 位移。原生界面、实体遥控器、图传和飞控链路分别验收。
 
 ## 11. 日志与故障定位
 

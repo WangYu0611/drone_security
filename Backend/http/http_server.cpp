@@ -550,7 +550,11 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 {"debug",     config_.debug},
                 {"capabilities", boost::json::array{"fleet_move_3d", "map_fleet_controls", "plan_configuration", "mock_startup_reset", "telemetry_receive_time", "simulation_rehearsal"}},
             };
-            if (pilot_control_) status.at("capabilities").as_array().emplace_back("pilot_control_mock");
+            if (pilot_control_) {
+                auto& capabilities = status.at("capabilities").as_array();
+                capabilities.emplace_back("pilot_control_mock");
+                capabilities.emplace_back("pilot_control_actions");
+            }
             return MakeResponse(req, 200, json_stringify(status));
         }
 
@@ -663,11 +667,7 @@ void HttpServer::TickPilotMock(double dt) {
     pilot_control_->RefreshView(aircraft, PilotControlConnections());
     pilot_control_->Expire();
 
-    std::vector<SecurityPlanStore::MockPilotMotion> motions;
-    for (const auto& input : pilot_control_->ActiveInputs()) {
-        motions.push_back({input.uav_id, input.forward, input.right, input.vertical, input.yaw});
-    }
-    security_plans_.stepMockPilot(dt, motions);
+    security_plans_.stepMockPilot(dt, pilot_control_->ActiveInputs());
     PublishPilotControlState(&aircraft);
 }
 
