@@ -182,8 +182,11 @@ def role_arguments(config, root, role, instance, log):
     if identity:
         args += ['-PilotControlIdentity=' + identity,
                  '-PilotControlReadyFile=' + str(pilot_ready_path(config, root, role, instance))]
-        if role == PILOT_ROLE and config.get('pilot_control_mock_input') is True:
-            args.append('-PilotMockInput')
+        if role == PILOT_ROLE:
+            if config.get('pilot_control_mock_input') is True:
+                args.append('-PilotMockInput')
+            if config.get('pilot_control_keyboard_input') is True:
+                args.append('-PilotKeyboardInput')
     return args
 
 class Runtime:

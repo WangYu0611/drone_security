@@ -50,7 +50,7 @@
 
 1. 将双机 DEMO 模板复制为 `Launcher/deployment.json`。把 `hosts.Backend` 改成电脑 A 的实际局域网 IPv4，把 `Command`、`Map`、`Video`、`Pilot` 四项都填成电脑 B 的实际局域网 IPv4。将相同内容复制到两机。电脑 A 的防火墙需允许电脑 B 访问配置里的两个 TCP 端口，模板使用 `19880` 和 `19881`。 [双机 DEMO 模板](../Launcher/deployment.two-workstations.demo.example.json)
 2. 在仓库外为两台电脑准备凭据 JSON。Command 与 Pilot 的身份及对应令牌须和 Backend 文件中的记录匹配。 [凭据文件格式](../Backend/README.md#104-驾驶员控制权-mock)
-3. 在电脑 B 的 `Launcher/config.local.json` 中合并以下两项。值使用凭据里的对应 `id`。如需在 Pilot 窗口用屏幕按钮测试输入，可另外设置 `"pilot_control_mock_input": true`。
+3. 在电脑 B 的 `Launcher/config.local.json` 中合并以下两项。值使用凭据里的对应 `id`。如需键盘操控，在 Pilot 端设 `"pilot_control_keyboard_input": true`，按 W/S 前后、A/D 左右、空格/左 Ctrl 升降、Q/E 转向。单独使用 `"pilot_control_mock_input": true` 可启用屏幕上的前进测试按钮。
 
    ```json
    {

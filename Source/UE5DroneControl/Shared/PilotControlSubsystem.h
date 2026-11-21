@@ -21,6 +21,7 @@ struct FPilotControlAircraft
     FString ControlSessionId;
     int64 Revision = 0;
     bool bAvailable = false;
+    bool bInputFrozen = false;
 };
 
 struct FPilotControlPilot
@@ -44,7 +45,10 @@ struct FPilotControlAxes
     float Yaw = 0.f;
 };
 
+enum class EPilotControlAction : uint8 { None, Takeoff, Land, Hold, GoHome, EmergencyStop };
+
 DECLARE_MULTICAST_DELEGATE(FPilotControlChanged);
+DECLARE_DELEGATE_RetVal_OneParam(bool, FPilotControlActionGuard, double);
 
 /** Role-scoped replica and input sender for an explicitly enabled Mock Backend. */
 UCLASS()
@@ -58,6 +62,7 @@ public:
 
     bool IsEnabled() const { return bEnabled; }
     bool IsReady() const { return bReady; }
+    bool SupportsControlActions() const { return bReady && bControlActions; }
     bool IsRequestPending() const { return PendingBody.IsValid(); }
     const FString& GetStatusCode() const { return StatusCode; }
     const TArray<FPilotControlAircraft>& GetAircraft() const { return Aircraft; }
@@ -70,6 +75,7 @@ public:
     bool Revoke(const FString& UavId);
     bool Activate(const FString& UavId);
     bool Stop(const FString& Reason = TEXT("OPERATOR_STOP"));
+    bool QueueControlAction(EPilotControlAction Action, FPilotControlActionGuard Guard);
     void SetControlInput(const FPilotControlAxes& Axes);
     void ClearControlInput();
 
@@ -107,9 +113,13 @@ private:
     TSharedPtr<FJsonObject> PendingBody;
     FString PendingStatusCode;
     FPilotControlAxes Sample;
+    EPilotControlAction PendingAction = EPilotControlAction::None;
+    FPilotControlActionGuard PendingActionGuard;
     int64 Version = -1, PendingVersion = -1, WindowId = 0, Sequence = 0;
     int32 Generation = 0, RetryCount = 0;
     double ConnectDeadline = 0., NextConnect = 0., PendingDeadline = 0.;
     double NextInput = 0., WindowReceivedAt = 0., SampleTime = 0.;
+    double PendingActionAt = 0.;
     bool bEnabled = false, bConfigured = false, bReady = false, bConnecting = false, bStopped = false;
+    bool bControlActions = false;
 };

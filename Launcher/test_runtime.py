@@ -96,6 +96,7 @@ class LauncherTests(unittest.TestCase):
         cfg = json.loads((project_root/'Launcher/config.json').read_text(encoding='utf-8-sig'))
         cfg.update(launch_mode='demo', pilot_control_command_identity='dispatch-a',
                    pilot_control_pilot_identity='pilot-a', pilot_control_mock_input=True,
+                   pilot_control_keyboard_input=True,
                    startup_origin={'latitude': 1, 'longitude': 2, 'altitude': 3})
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
@@ -106,11 +107,13 @@ class LauncherTests(unittest.TestCase):
             self.assertIn('-ClientRole=Pilot', pilot_args)
             self.assertIn('-PilotControlIdentity=pilot-a', pilot_args)
             self.assertIn('-PilotMockInput', pilot_args)
+            self.assertIn('-PilotKeyboardInput', pilot_args)
             self.assertIn('-PilotControlReadyFile='+str(pilot_ready_path(cfg, root, 'Pilot', 'first')), pilot_args)
             self.assertFalse(any(a.startswith('-MapStartupLatitude=') for a in pilot_args))
             command_args = role_arguments(cfg, root, 'Command', 'first', root/'command.log')
             self.assertIn('-PilotControlIdentity=dispatch-a', command_args)
             self.assertNotIn('-PilotMockInput', command_args)
+            self.assertNotIn('-PilotKeyboardInput', command_args)
             realtime = {**cfg, 'launch_mode': 'realtime'}
             self.assertEqual(Runtime(root, realtime).local_client_roles, ('Command', 'Map', 'Video'))
             self.assertFalse(any(a.startswith('-PilotControl') for a in

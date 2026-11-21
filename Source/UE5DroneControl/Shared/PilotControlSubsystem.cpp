@@ -27,6 +27,19 @@ constexpr double MockSendInterval = 0.05;
 constexpr double MockInputAge = 0.20;
 constexpr double MockWindowAge = 0.35;
 
+const TCHAR* ControlActionName(EPilotControlAction Action)
+{
+    switch (Action)
+    {
+        case EPilotControlAction::Takeoff: return TEXT("takeoff");
+        case EPilotControlAction::Land: return TEXT("land");
+        case EPilotControlAction::Hold: return TEXT("hold");
+        case EPilotControlAction::GoHome: return TEXT("gohome");
+        case EPilotControlAction::EmergencyStop: return TEXT("estop");
+        default: return nullptr;
+    }
+}
+
 FString PilotString(const TSharedPtr<FJsonObject>& Json, const TCHAR* Key)
 {
     FString Value;
@@ -191,16 +204,20 @@ void UPilotControlSubsystem::Connect()
                 return;
             }
             const TArray<TSharedPtr<FJsonValue>>* Capabilities = nullptr;
-            const bool bMock = Response->TryGetArrayField(TEXT("capabilities"), Capabilities) &&
-                Capabilities->ContainsByPredicate([](const TSharedPtr<FJsonValue>& Value)
+            Response->TryGetArrayField(TEXT("capabilities"), Capabilities);
+            const auto HasCapability = [Capabilities](const TCHAR* Name)
+            {
+                return Capabilities && Capabilities->ContainsByPredicate([Name](const TSharedPtr<FJsonValue>& Value)
                 {
-                    return Value && Value->Type == EJson::String && Value->AsString() == TEXT("pilot_control_mock");
+                    return Value && Value->Type == EJson::String && Value->AsString() == Name;
                 });
-            if (!bMock)
+            };
+            if (!HasCapability(TEXT("pilot_control_mock")))
             {
                 Disconnect(TEXT("BACKEND_NOT_MOCK"));
                 return;
             }
+            bControlActions = HasCapability(TEXT("pilot_control_actions"));
             Request(TEXT("GET"), ControlPath, nullptr, true,
                 [this, Attempt](int32 ControlStatus, const TSharedPtr<FJsonObject>& Snapshot)
                 {
@@ -250,6 +267,7 @@ void UPilotControlSubsystem::Disconnect(const TCHAR* Code)
     const bool bWasReady = bReady;
     ++Generation;
     bReady = bConnecting = false;
+    bControlActions = false;
     ConnectionId.Reset();
     ServerEpoch.Reset();
     ActiveUavId.Reset();
@@ -347,6 +365,7 @@ bool UPilotControlSubsystem::ApplySnapshot(const TSharedPtr<FJsonObject>& Snapsh
         AircraftRow.ActivationReason = PilotString(Row, TEXT("activation_reason"));
         AircraftRow.VideoUrl = PilotString(Row, TEXT("video_url"));
         AircraftRow.ControlSessionId = PilotString(Row, TEXT("control_session_id"));
+        Row->TryGetBoolField(TEXT("input_frozen"), AircraftRow.bInputFrozen);
         if (AircraftRow.UavId.IsEmpty() || !ReadPilotCounter(Row, TEXT("revision"), AircraftRow.Revision) ||
             !Row->TryGetBoolField(TEXT("available"), AircraftRow.bAvailable)) return false;
         if (AircraftRow.ControlState == TEXT("ACTIVE") && !AircraftRow.ControlSessionId.IsEmpty())
@@ -534,6 +553,7 @@ void UPilotControlSubsystem::FinalizeOperationIfSynchronized()
 
 void UPilotControlSubsystem::SetControlInput(const FPilotControlAxes& Axes)
 {
+    if (Role != TEXT("Pilot") || !bReady || ActiveSessionId.IsEmpty() || ActiveSessionId == SuppressedSessionId) return;
     if (!FMath::IsFinite(Axes.Forward) || !FMath::IsFinite(Axes.Right) ||
         !FMath::IsFinite(Axes.Vertical) || !FMath::IsFinite(Axes.Yaw))
     {
@@ -550,24 +570,52 @@ void UPilotControlSubsystem::ClearControlInput()
 {
     Sample = {};
     SampleTime = 0.;
+    PendingAction = EPilotControlAction::None;
+    PendingActionGuard.Unbind();
+    PendingActionAt = 0.;
+}
+
+bool UPilotControlSubsystem::QueueControlAction(EPilotControlAction Action, FPilotControlActionGuard Guard)
+{
+    const auto* Row = FindAircraft(ActiveUavId);
+    const double Now = FPlatformTime::Seconds();
+    if (!SupportsControlActions() || Role != TEXT("Pilot") || IsRequestPending() || !Row || Row->bInputFrozen ||
+        ActiveSessionId.IsEmpty() || ActiveSessionId == SuppressedSessionId || !ControlActionName(Action) || !Guard.IsBound()) return false;
+    if (Action != EPilotControlAction::EmergencyStop && PendingAction != EPilotControlAction::None &&
+        Now - PendingActionAt <= MockInputAge) return false;
+    PendingAction = Action;
+    PendingActionGuard = MoveTemp(Guard);
+    PendingActionAt = Now;
+    return true;
 }
 
 void UPilotControlSubsystem::SendInput(double Now)
 {
-    if (ActiveSessionId.IsEmpty() || ActiveSessionId == SuppressedSessionId || WindowId <= 0 ||
+    if (Role != TEXT("Pilot") || ActiveSessionId.IsEmpty() || ActiveSessionId == SuppressedSessionId || WindowId <= 0 ||
         SampleTime <= 0. || Now - SampleTime > MockInputAge || Now - WindowReceivedAt > MockWindowAge || Now < NextInput) return;
     NextInput = Now + MockSendInterval;
     auto Input = MakeShared<FJsonObject>();
     auto Axes = MakeShared<FJsonObject>();
-    Axes->SetNumberField(TEXT("forward"), Sample.Forward);
-    Axes->SetNumberField(TEXT("right"), Sample.Right);
-    Axes->SetNumberField(TEXT("vertical"), Sample.Vertical);
-    Axes->SetNumberField(TEXT("yaw"), Sample.Yaw);
+    const auto* Row = FindAircraft(ActiveUavId);
+    const bool bFrozen = Row && Row->bInputFrozen;
+    const auto* Action = ControlActionName(PendingAction);
+    const bool bSendAction = bControlActions && !bFrozen && Action && Now - PendingActionAt <= MockInputAge &&
+        PendingActionGuard.IsBound() && PendingActionGuard.Execute(Now);
+    const FPilotControlAxes WireAxes = bFrozen || (bSendAction && PendingAction == EPilotControlAction::EmergencyStop)
+        ? FPilotControlAxes{} : Sample;
+    Axes->SetNumberField(TEXT("forward"), WireAxes.Forward);
+    Axes->SetNumberField(TEXT("right"), WireAxes.Right);
+    Axes->SetNumberField(TEXT("vertical"), WireAxes.Vertical);
+    Axes->SetNumberField(TEXT("yaw"), WireAxes.Yaw);
     Input->SetStringField(TEXT("type"), TEXT("pilot_input"));
     Input->SetStringField(TEXT("uav_id"), ActiveUavId);
     Input->SetStringField(TEXT("control_session_id"), ActiveSessionId);
     WritePilotCounter(Input, TEXT("window_id"), WindowId);
     WritePilotCounter(Input, TEXT("seq"), ++Sequence);
     Input->SetObjectField(TEXT("axes"), Axes);
+    if (bSendAction) Input->SetStringField(TEXT("action"), Action);
+    PendingAction = EPilotControlAction::None;
+    PendingActionGuard.Unbind();
+    PendingActionAt = 0.;
     Socket->Send(EncodePilotEnvelope(Input));
 }

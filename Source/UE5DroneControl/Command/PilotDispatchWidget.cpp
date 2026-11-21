@@ -46,8 +46,10 @@ FText UPilotDispatchWidget::Title()
 FText UPilotDispatchWidget::AssignmentText(const FPilotControlAircraft& Aircraft)
 {
     if (Aircraft.PilotId.IsEmpty()) return FText::GetEmpty();
-    return FText::Format(Label(TEXT("{0} · {1}"), TEXT("{0} · {1}")), FText::AsCultureInvariant(Aircraft.PilotId),
-        Aircraft.ControlState == TEXT("ACTIVE") ? Label(TEXT("Controlling"), TEXT("操控中")) : Label(TEXT("Assigned"), TEXT("待操控")));
+    FText Status = Label(TEXT("Assigned"), TEXT("待操控"));
+    if (Aircraft.bInputFrozen) Status = Label(TEXT("Emergency stop"), TEXT("已急停"));
+    else if (Aircraft.ControlState == TEXT("ACTIVE")) Status = Label(TEXT("Controlling"), TEXT("操控中"));
+    return FText::Format(Label(TEXT("{0} · {1}"), TEXT("{0} · {1}")), FText::AsCultureInvariant(Aircraft.PilotId), Status);
 }
 
 UTextBlock* UPilotDispatchWidget::MakeText(const FText& Value, int32 Size, bool bBold)
