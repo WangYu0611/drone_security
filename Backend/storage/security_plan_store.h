@@ -32,6 +32,10 @@ public:
             std::ifstream in(path_); std::string text((std::istreambuf_iterator<char>(in)), {});
             boost::json::parse_options options; options.numbers=boost::json::number_precision::precise;
             state_ = boost::json::parse(text, {}, options).as_object();
+            if (auto* receipts = state_.if_contains("mock_mcp_draft_receipts")) {
+                mock_mcp_draft_receipts_ = std::move(receipts->as_object());
+                state_.erase("mock_mcp_draft_receipts");
+            }
             for (auto key : {"plans", "missions", "paths"}) state_.at(key).as_object();
             state_.at("events").as_array();
         }
@@ -87,6 +91,56 @@ public:
     void checkConfigurationAccess(const Object& request) const {
         std::lock_guard<std::mutex> lock(mutex_);
         checkConfigurationRequest(state_,request);
+    }
+    Object createMockMcpDraft(const std::string& identity, const std::string& requestId,
+                              const std::string& name, const std::string& description,
+                              const std::function<void(const Object&)>& publish) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!adapter_->simulation() || path_.empty())
+            throw PlanError("MOCK_UNAVAILABLE", "An isolated persistent Mock workspace is required");
+
+        const auto* actor = mock_mcp_draft_receipts_.if_contains(identity);
+        const auto* receipt = actor ? actor->as_object().if_contains(requestId) : nullptr;
+        if (receipt) {
+            const auto& saved = receipt->as_object();
+            if (str(saved, "name") != name || str(saved, "description") != description)
+                throw PlanError("REQUEST_ID_CONFLICT", "Use the original parameters for this request ID");
+            if (const auto* completed = saved.if_contains("result"))
+                return completed->as_object();
+        }
+
+        auto receipts = mock_mcp_draft_receipts_;
+        if (!receipts.contains(identity)) receipts[identity] = Object{};
+        auto& attempt = receipts.at(identity).as_object()[requestId];
+        attempt = Object{{"name", name}, {"description", description}};
+        auto next = state_;
+        expire(next, OperationalContext::now());
+        if (activeConfiguration(next) || !next.at("edit_sessions").as_object().empty()) {
+            if (!receipt) {
+                persist(state_, receipts);
+                mock_mcp_draft_receipts_.swap(receipts);
+            }
+            throw PlanError("CONFIGURATION_IN_PROGRESS", "Wait for the active configuration session to end");
+        }
+
+        // Hold the same store lock as Command and Map for the entire handoff.
+        // The draft and receipt become visible together with the configuration free.
+        const auto planId = insertDraft(next, name, description, "Mock MCP");
+        auto& plan = next.at("plans").as_object().at(planId).as_object();
+        auto validation = validate(next, planId, {});
+        validation["validated_content_revision"] = nullptr;
+        validation["ready"] = false;
+        plan["validation"] = std::move(validation);
+        Object result{{"request_id", requestId}, {"plan_id", planId}, {"name", name},
+                      {"state", "draft"}, {"created_at", plan.at("created_at")}};
+        attempt.as_object()["result"] = result;
+        next["version"] = state_.at("version").to_number<int64_t>() + 1;
+        const Object notification{{"type", "SecurityPlansChanged"}, {"payload", next}};
+        persist(next, receipts);
+        state_.swap(next);
+        mock_mcp_draft_receipts_.swap(receipts);
+        publish(notification);
+        return result;
     }
     Object transact(const Object& request, const std::set<std::string>& physicalUavs,
                     const std::string& source, const std::function<void(const Object&)>& publish,
@@ -168,11 +222,7 @@ public:
             next["configuration_session"]=nullptr;
         } else if (action == "create_plan") {
             const auto name = requiredName(request);
-            planId = allocate(next, "plan-");
-            plans[planId] = Object{{"id", planId}, {"name", name}, {"description", str(request,"description")},
-                {"status", "DRAFT"}, {"content_revision",1}, {"review",nullptr}, {"version", 1}, {"created_at", OperationalContext::now()},
-                {"updated_at", OperationalContext::now()}, {"mission_ids", Array{}}};
-            event(next,"PLAN_CREATED","PLAN",planId,"Security plan created: " + name,source);
+            planId = insertDraft(next, name, str(request, "description"), source);
             // Optional additive workflow contract: legacy callers still create an empty plan.
             if (!str(request,"default_mission_name").empty()) {
                 missionId=allocate(next,"mission-");
@@ -528,6 +578,17 @@ private:
     static std::string allocate(Object& s, const char* prefix) {
         auto n = s.at("next_id").to_number<int64_t>(); s["next_id"] = n+1; return prefix+std::to_string(n);
     }
+    static std::string insertDraft(Object& state, const std::string& name,
+                                   const std::string& description, const std::string& source) {
+        const auto id = allocate(state, "plan-");
+        const auto now = OperationalContext::now();
+        state.at("plans").as_object()[id] = Object{
+            {"id", id}, {"name", name}, {"description", description}, {"status", "DRAFT"},
+            {"content_revision", 1}, {"review", nullptr}, {"version", 1}, {"created_at", now},
+            {"updated_at", now}, {"mission_ids", Array{}}};
+        event(state, "PLAN_CREATED", "PLAN", id, "Security plan created: " + name, source);
+        return id;
+    }
     static bool closedRoute(const Object& path) {
         const auto* flag=path.if_contains("closedRoute");
         if(!flag)flag=path.if_contains("bClosedLoop");
@@ -627,11 +688,23 @@ private:
         list.emplace_back(Object{{"sequence",list.size()+1},{"timestamp",OperationalContext::now()},
             {"event_type",type},{"params",params},{"category",category},{"target_id",target},{"message",message},{"source",source}});
     }
-    void persist(const Object& value) {
+    void persist(const Object& value) { persist(value, mock_mcp_draft_receipts_); }
+    void persist(const Object& value, const Object& receipts) {
         if (path_.empty()) return;
         auto target=std::filesystem::path(path_); if(target.has_parent_path())std::filesystem::create_directories(target.parent_path());
         auto temp=path_+".tmp";
-        {std::ofstream out(temp,std::ios::trunc);out<<boost::json::serialize(value);out.flush();if(!out)throw std::runtime_error("plan persistence failed");}
+        {
+            std::ofstream out(temp, std::ios::trunc);
+            if (receipts.empty()) {
+                out << boost::json::serialize(value);
+            } else {
+                auto document = value;
+                document["mock_mcp_draft_receipts"] = receipts;
+                out << boost::json::serialize(document);
+            }
+            out.flush();
+            if (!out) throw std::runtime_error("plan persistence failed");
+        }
 #ifdef _WIN32
         if(!MoveFileExA(temp.c_str(),path_.c_str(),MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))throw std::runtime_error("plan persistence replace failed");
 #else
@@ -641,4 +714,5 @@ private:
     #include "storage/mock_execution.inl"
     #include "storage/rehearsal.inl"
     std::string path_; mutable std::mutex mutex_; Object state_;
+    Object mock_mcp_draft_receipts_;
 };

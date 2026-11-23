@@ -11,7 +11,9 @@
 #include <cctype>
 #include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <fstream>
+#include <regex>
 #include <sstream>
 
 namespace {
@@ -151,6 +153,15 @@ HttpServer::HttpServer(const AppConfig& config,
             if(std::filesystem::exists(mockPath))throw std::runtime_error("Choose exactly one execution adapter: remove the Mock configuration before enabling Real");
             security_plans_.configureAdapter(real,security_mission::makeDroneManagerAdapter(drone_mgr_,real,[this]{return exec_engine_.IsRunning() || assembly_ctrl_.GetState()!=AssemblyState::Idle;}));
         }
+    }
+    if (const char* token = std::getenv("DRONE_MOCK_MCP_BRIDGE_TOKEN")) {
+        const std::string value(token);
+        static const std::regex secret("[a-f0-9]{64}");
+        if (!std::regex_match(value, secret) || !explicitPilotMock ||
+            std::filesystem::exists(realPath) || !config_.port_map.empty()) {
+            throw std::runtime_error("Mock MCP requires an explicit simulation workspace, no real configuration or UDP mappings, and a 32-byte hex bridge token");
+        }
+        mock_mcp_bridge_token_ = value;
     }
     LoadPilotControlCredentials(explicitPilotMock && !security_plans_.usesRealAdapter());
     // 注册 DroneManager 回调 -> WS 推送
@@ -473,6 +484,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
         // Method/path only: acceptance audit excludes payloads and query credentials.
         spdlog::debug("[HTTP Request] {} {}", method, path);
 
+        if (path == "/api/mock-mcp/draft") return HandleMockMcpDraft(req);
         if (method == "OPTIONS") return MakeResponse(req, 204, "");
         if (path == "/api/pilot-control") return HandlePilotControlHttp(req);
 
@@ -1676,6 +1688,58 @@ void HttpServer::RunWsSession(tcp::socket socket,
 // ============================================================
 // 连接处理（静态）
 // ============================================================
+http::response<http::string_body> HttpServer::HandleMockMcpDraft(
+    const http::request<http::string_body>& req) {
+    if (mock_mcp_bridge_token_.empty())
+        return MakeResponse(req, 404, R"({"code":"MOCK_UNAVAILABLE"})");
+    if (req.method() != http::verb::post)
+        return MakeResponse(req, 405, R"({"code":"INVALID_ARGUMENT"})");
+    const auto expected = "Bearer " + mock_mcp_bridge_token_;
+    const auto supplied = req[http::field::authorization];
+    if (req.find(http::field::origin) != req.end() || supplied.size() != expected.size())
+        return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
+    unsigned char difference = 0;
+    for (std::size_t i = 0; i < expected.size(); ++i)
+        difference |= static_cast<unsigned char>(supplied[i] ^ expected[i]);
+    if (difference != 0)
+        return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
+
+    boost::system::error_code error;
+    const auto parsed = boost::json::parse(req.body(), error);
+    if (error || !parsed.is_object())
+        return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+    const auto& body = parsed.as_object();
+    for (const auto* key : {"identity", "request_id", "name", "description"}) {
+        const auto* field = body.if_contains(key);
+        if (!field || !field->is_string() || body.size() != 4)
+            return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+    }
+    const auto identity = SecurityPlanStore::str(body, "identity");
+    const auto requestId = SecurityPlanStore::str(body, "request_id");
+    auto name = SecurityPlanStore::str(body, "name");
+    const auto description = SecurityPlanStore::str(body, "description");
+    static const std::regex id("[A-Za-z0-9_-]{1,64}");
+    static const std::regex uuid("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}");
+    const auto start = name.find_first_not_of(" \t\r\n\f\v");
+    if (start == std::string::npos || !std::regex_match(identity, id) ||
+        !std::regex_match(requestId, uuid) || description.size() > 1000)
+        return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+    name = name.substr(start, name.find_last_not_of(" \t\r\n\f\v") - start + 1);
+    if (name.size() > 160)
+        return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+
+    try {
+        std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+        const auto reply = security_plans_.createMockMcpDraft(
+            identity, requestId, name, description,
+            [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); });
+        return MakeResponse(req, 200, json_stringify(reply));
+    } catch (const PlanError& e) {
+        return MakeResponse(req, 409, json_stringify(boost::json::object{
+            {"code", e.code}, {"message", e.what()}}));
+    }
+}
+
 void HttpServer::HandleHttpConnection(tcp::socket socket, HttpServer* self) {
     beast::flat_buffer buf;
     http::request<http::string_body> req;
@@ -1709,10 +1773,11 @@ void HttpServer::HandleWsConnection(tcp::socket socket, HttpServer* self) {
 // ============================================================
 void HttpServer::RunHttpServer() {
     net::io_context ctx{1};
-    tcp::acceptor acceptor(ctx, tcp::endpoint{net::ip::make_address("0.0.0.0"),
+    const auto address = mock_mcp_bridge_token_.empty() ? "0.0.0.0" : "127.0.0.1";
+    tcp::acceptor acceptor(ctx, tcp::endpoint{net::ip::make_address(address),
                                                static_cast<unsigned short>(config_.http_port)});
     acceptor.set_option(net::socket_base::reuse_address(true));
-    spdlog::info("[HTTP] Listening on 0.0.0.0:{}", config_.http_port);
+    spdlog::info("[HTTP] Listening on {}:{}", address, config_.http_port);
 
     while (running_) {
         tcp::socket socket(ctx);
@@ -1726,10 +1791,11 @@ void HttpServer::RunHttpServer() {
 
 void HttpServer::RunWsServer() {
     net::io_context ctx{1};
-    tcp::acceptor acceptor(ctx, tcp::endpoint{net::ip::make_address("0.0.0.0"),
+    const auto address = mock_mcp_bridge_token_.empty() ? "0.0.0.0" : "127.0.0.1";
+    tcp::acceptor acceptor(ctx, tcp::endpoint{net::ip::make_address(address),
                                                static_cast<unsigned short>(config_.ws_port)});
     acceptor.set_option(net::socket_base::reuse_address(true));
-    spdlog::info("[WS] Listening on 0.0.0.0:{}", config_.ws_port);
+    spdlog::info("[WS] Listening on {}:{}", address, config_.ws_port);
 
     while (running_) {
         auto connection_ctx = std::make_shared<net::io_context>(1);

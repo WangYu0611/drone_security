@@ -95,6 +95,7 @@ private:
     // ---- HTTP 处理 ----
     http::response<http::string_body> HandleHttp(
         http::request<http::string_body>& req);
+    http::response<http::string_body> HandleMockMcpDraft(const http::request<http::string_body>& req);
 
     // ---- WebSocket 会话 ----
     void RunWsSession(tcp::socket socket,
@@ -175,6 +176,7 @@ private:
     std::thread plan_lease_thread_;
     boost::json::value ViewRequest(const boost::json::object& body,bool language);
     std::mutex plan_requests_mutex_;
+    std::string mock_mcp_bridge_token_;
     // The plan transaction lock also serializes Pilot authority and Mock motion.
     std::unique_ptr<PilotControlStore> pilot_control_;
     std::map<std::string, PilotControlStore::Actor> pilot_credentials_;

@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　项目已有 Stage 1 Mock 业务流程。本文定义待实现的业务 MCP 契约，联调地址和账号待服务部署后提供。服务交付前，模型侧可以用本文的固定样例测试工具选择、参数生成和结果解析。仓库中的 Unreal Editor MCP 属于编辑器工具。项目现状见 [演示手册](Stage1/Stage1-Demo-Runbook.md) 和 [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)。
+**当前进度**　首批五项可在隔离工作区通过 stdio 或本机 Streamable HTTP 联调。回放使用固定录制场景，草稿由 Mock Backend 落盘。其余 64 项仍为文档契约。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **5 项为原有契约，64 项为本次补充**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`，业务 MCP 待实现和部署。
+目录共 **69 项，契约均已写入**。其中 **5 项已实现固定场景版，64 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 权限按工具和工作区判定。每个工具均需 `mock:read`，写工具还需表中所列权限。服务在发现和调用时校验身份及对象归属。业务写入以隔离 Mock Backend 确认或工具所属会话的结果为准。复核、部署与开始各自校验操作员确认。模拟写入仅面向测试数据和软件仿真，无硬件出口。
 
@@ -262,6 +262,8 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 
 #### 工作区回放扩展
 
+`open_mock_record_replay` 所属的工作区回放扩展随后续工具交付。当前实现以固定录制场景验收。
+
 `open_mock_record_replay` 返回的 `replay_id` 也可传给本工具。参数与回放版本校验沿用上面的契约，返回用 `record_id` 表示工作区记录来源。固定录制场景仍返回 `scenario_id`。版本冲突时用 `list_mock_replay_records` 读取当前身份的回放版本再决定是否重试。
 
 ```json
@@ -329,6 +331,8 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 3. 草稿已落盘、占用释放待确认时，返回 `DRAFT_HANDOFF_PENDING`。重试先查原草稿和占用，再完成交接。若操作员已取得新占用，保留该会话。租约失效由 Backend 判定。
 
 草稿写入沿用现有配置占用、后端确认与指挥端接手规则。去重和交接恢复属于 MCP 契约的实现要求。 [现有配置占用规则](PLAN-Configuration-Workflow.md)
+
+首批实现在 Backend 的同一事务内检查配置占用、持久化草稿与回执并完成交接。活动配置被拒绝时保留原请求键和参数。成功回执返回时 MCP 的配置占用已结束，因此该原子路径无需返回中间交接状态。
 
 业务错误示例 `structuredContent`。外层工具结果为 `isError: true`。
 
