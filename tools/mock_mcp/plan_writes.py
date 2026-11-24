@@ -14,6 +14,10 @@ VALIDATE = "validate_mock_plan"
 BEGIN_ROUTE = "begin_mock_route_edit"
 SAVE_ROUTE = "save_mock_route_draft"
 END_ROUTE = "end_mock_route_edit"
+DELETE_PLAN = "delete_mock_security_plan_draft"
+DELETE_MISSION = "delete_mock_plan_mission"
+REVIEW = "record_mock_plan_review"
+DEPLOY = "publish_mock_plan_snapshot"
 NAME = {"type": "string", "minLength": 1}
 DESCRIPTION = {"type": "string", "maxLength": 1000}
 VERSIONED_PLAN = {"plan_id": ID, "expected_plan_version": COUNTER, "request_id": UUID}
@@ -53,6 +57,23 @@ PLAN_WRITE_TOOLS = {item.name: item for item in (
           }))}),
 )}
 
+APPROVAL_SCOPES = {DELETE_PLAN: "mock:plan:delete", DELETE_MISSION: "mock:plan:delete",
+                   REVIEW: "mock:plan:review", DEPLOY: "mock:plan:deploy"}
+APPROVAL_TOOLS = {item.name: item for item in (
+    write(DELETE_PLAN, "Delete a draft after operator approval for this version.",
+          {**VERSIONED_PLAN, "approval_id": ID},
+          {"request_id": UUID, "plan_id": ID, "deleted": {"const": True}}, ("approval_id",)),
+    write(DELETE_MISSION, "Delete an editable task after operator approval for this version.",
+          {**CONFIGURATION, "mission_id": ID, "approval_id": ID},
+          {**TASK, "deleted": {"const": True}}, ("approval_id",)),
+    write(REVIEW, "Record an operator-confirmed review of a passed validation.",
+          {**CONFIGURATION, "validation_id": ID, "approval_id": ID},
+          {**RESULT, "review_id": ID, "validation_id": ID, "state": {"const": "ready"}}, ("approval_id",)),
+    write(DEPLOY, "Freeze a reviewed plan into a Mock deployment snapshot after operator approval.",
+          {**CONFIGURATION, "review_id": ID, "approval_id": ID},
+          {**RESULT, "deployment_id": ID, "state": {"const": "deployed"}, "configuration_released": BOOLEAN}, ("approval_id",)),
+)}
+
 ROUTE_WRITE_TOOLS = {item.name: item for item in (
     write(BEGIN_ROUTE, "Acquire the route editor session under your Mock configuration lease.",
           {"plan_id": ID, "mission_id": ID, "configuration_id": ID, "expected_route_version": COUNTER, "request_id": UUID},
@@ -82,6 +103,9 @@ BACKEND_ERRORS = {
     "CONFIGURATION_IN_PROGRESS": "CONFIGURATION_IN_PROGRESS", "PLAN_EDIT_IN_PROGRESS": "EDIT_IN_PROGRESS",
     "EDIT_SESSION_CONFLICT": "EDIT_IN_PROGRESS", "MIXED_MISSION_ASSIGNMENT": "INVALID_ARGUMENT",
     "FIXTURE_NOT_FOUND": "FIXTURE_NOT_FOUND", "ROUTE_TOO_SHORT": "CHECK_FAILED", "INVALID_WAYPOINT": "CHECK_FAILED",
+    "APPROVAL_INVALID": "APPROVAL_INVALID", "APPROVAL_REQUIRED": "APPROVAL_REQUIRED", "CHECK_FAILED": "CHECK_FAILED",
+    "PLAN_NOT_READY": "CHECK_FAILED", "VALIDATION_STALE": "CHECK_FAILED", "REVIEW_REQUIRED": "REVIEW_REQUIRED",
+    "REVIEW_STALE": "REVIEW_REQUIRED",
 }
 
 

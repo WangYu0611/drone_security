@@ -25,8 +25,11 @@ private:
     static Object mockPlanFingerprint(const MockPlanCall& call) {
         auto arguments = call.arguments;
         arguments.erase("resolved_fixture_path");
+        arguments.erase("approval_id");
         return arguments;
     }
+
+    #include "storage/mock_mcp_approval.inl"
 
     const Object* mockMcpReceipt(const MockPlanCall& call) const {
         const auto* scope = mock_mcp_draft_receipts_.if_contains(call.scope());
@@ -44,13 +47,15 @@ private:
             throw PlanError("VERSION_CONFLICT", "Read the current plan version");
     }
 
-    static Object mockPlanRequest(Object& next, const MockPlanCall& call) {
+    Object mockPlanRequest(Object& next, const MockPlanCall& call) const {
         static const std::map<std::string, std::string> actions{
             {"begin_mock_plan_edit", "begin_configuration"}, {"end_mock_plan_edit", "end_configuration"},
             {"update_mock_security_plan_draft", "update_plan"}, {"copy_mock_security_plan_draft", "copy_plan"},
             {"reopen_mock_security_plan", "reopen_plan"}, {"add_mock_plan_mission", "add_mission"},
             {"rename_mock_plan_mission", "rename_mission"}, {"set_mock_mission_assignment", "assign"},
             {"validate_mock_plan", "validate"},
+            {"delete_mock_security_plan_draft", "delete_plan"}, {"delete_mock_plan_mission", "delete_mission"},
+            {"record_mock_plan_review", "review"}, {"publish_mock_plan_snapshot", "deploy"},
             {"begin_mock_route_edit", "begin_route_edit"}, {"save_mock_route_draft", "save_route"},
             {"end_mock_route_edit", "finish_route_edit"},
         };
@@ -63,7 +68,8 @@ private:
         const auto* lease = activeConfiguration(next);
         auto planId = str(args, action == "copy_plan" ? "source_plan_id" : "plan_id");
         const auto missionId = str(args, "mission_id");
-        const bool requiresHandle = action != "begin_configuration" && action != "copy_plan" && action != "reopen_plan";
+        const bool requiresHandle = action != "begin_configuration" && action != "copy_plan" && action != "reopen_plan" &&
+                                    action != "delete_plan";
         if (requiresHandle) {
             if (!lease || str(*lease, "owner_instance_id") != call.owner() ||
                 mockConfigurationId(*lease) != str(args, "configuration_id"))
@@ -76,6 +82,7 @@ private:
         if (plan.contains("real_assignment")) throw PlanError("PLAN_NOT_FOUND", "Unknown Mock plan");
         if (action != "end_configuration")
             checkMockPlanVersion(args, plan, action == "copy_plan" ? "expected_source_plan_version" : "expected_plan_version");
+        if (mockPlanApprovalRequired(action)) checkMockPlanApproval(call);
 
         Object request{{"action", action}, {"plan_id", planId}, {"mission_id", missionId},
                        {"instance_id", call.owner()}, {"expected_version", next.at("version")}};
@@ -108,6 +115,24 @@ private:
                     throw PlanError("NOT_FOUND", "Choose a simulated device from this workspace");
             }
             request["assigned_uav_ids"] = devices;
+        } else if (action == "delete_plan" || action == "delete_mission") {
+            if (str(plan, "status") != "DRAFT") throw PlanError("INVALID_STATE", "Only editable drafts can be removed");
+            checkPlanNotExecuting(next, planId);
+            if (action == "delete_plan") {
+                if (lease) configurationConflict(*lease);
+                request["confirmation_name"] = plan.at("name");
+                request["expected_content_revision"] = plan.at("content_revision");
+            } else {
+                for (const auto& entry : next.at("edit_sessions").as_object()) {
+                    if (str(entry.value().as_object(), "mission_id") == missionId)
+                        throw PlanError("PLAN_EDIT_IN_PROGRESS", "Finish editing before removing the task");
+                }
+            }
+        } else if (action == "review" || action == "deploy") {
+            const auto* stage = plan.if_contains(action == "review" ? "validation" : "review");
+            const auto key = action == "review" ? "validation_id" : "review_id";
+            if (!stage || !stage->is_object() || str(stage->as_object(), key) != str(args, key))
+                throw PlanError(action == "review" ? "CHECK_FAILED" : "REVIEW_REQUIRED", "Read the confirmed stage before continuing");
         }
         return request;
     }
@@ -134,6 +159,11 @@ private:
         if (mockRouteAction(action)) return mockRouteResult(next, call, request, planId, missionId);
         Object result{{"request_id", call.arguments.at("request_id")}, {"plan_id", planId},
                       {"confirmed_at", OperationalContext::now()}};
+        if (action == "delete_plan") {
+            result["plan_id"] = call.arguments.at("plan_id");
+            result["deleted"] = true;
+            return result;
+        }
         if (action == "end_configuration") {
             result["configuration_id"] = call.arguments.at("configuration_id");
             result["released"] = true;
@@ -158,7 +188,7 @@ private:
             const auto& validation = plan.at("validation").as_object();
             const bool passed = validation.at("ready").as_bool();
             result["state"] = passed ? "ready" : "draft";
-            result["validation_id"] = "check-" + planId + "-" + std::to_string(plan.at("version").to_number<int64_t>());
+            result["validation_id"] = validation.at("validation_id");
             result["passed"] = passed;
             Array checks;
             for (const auto& value : validation.at("issues").as_array()) {
@@ -166,6 +196,17 @@ private:
                 checks.emplace_back(Object{{"code", code}, {"message", code}, {"severity", "blocking"}});
             }
             result["checks"] = std::move(checks);
+        } else if (action == "review") {
+            result["review_id"] = plan.at("review").as_object().at("review_id");
+            result["validation_id"] = call.arguments.at("validation_id");
+            result["state"] = "ready";
+        } else if (action == "deploy") {
+            result["deployment_id"] = plan.at("deployment_id");
+            result["state"] = "deployed";
+            result["configuration_released"] = next.at("configuration_session").is_null();
+        } else if (action == "delete_mission") {
+            result["mission_id"] = missionId;
+            result["deleted"] = true;
         } else {
             const auto& mission = next.at("missions").as_object().at(missionId).as_object();
             result["mission_id"] = missionId;
@@ -179,7 +220,15 @@ private:
     Object commitMockPlan(Object& next, const MockPlanCall& call, const Object& request,
                           const std::string& planId, const std::string& missionId,
                           const std::function<void(const Object&)>& publish) {
-        if (str(request, "action") == "reopen_plan") next["configuration_session"] = nullptr;
+        const auto action = str(request, "action");
+        if (action == "reopen_plan") next["configuration_session"] = nullptr;
+        if (action == "validate" || action == "review") {
+            auto& plan = next.at("plans").as_object().at(planId).as_object();
+            if (action == "validate") {
+                plan.at("validation").as_object()["validation_id"] = mockPlanStageId("check-", planId, plan);
+                plan["review"] = nullptr;
+            } else plan.at("review").as_object()["review_id"] = mockPlanStageId("review-", planId, plan);
+        }
         renewMockConfiguration(next, call);
         Object result = mockPlanResult(next, call, request, planId, missionId);
         auto receipts = mock_mcp_draft_receipts_;
@@ -187,6 +236,11 @@ private:
         if (!receipts.contains(scope)) receipts[scope] = Object{};
         receipts.at(scope).as_object()[str(call.arguments, "request_id")] =
             Object{{"arguments", mockPlanFingerprint(call)}, {"result", result}};
+        if (mockPlanApprovalRequired(action)) {
+            const char* used = "plan-write/approvals-used";
+            if (!receipts.contains(used)) receipts[used] = Object{};
+            receipts.at(used).as_object()[str(call.arguments, "approval_id")] = true;
+        }
         const Object notification{{"type", "SecurityPlansChanged"}, {"payload", next}};
         persist(next, receipts);
         state_.swap(next);

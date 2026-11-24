@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　36 项可在隔离工作区联调，包含首批五项、15 项工作区查询、3 项工作区回放会话工具、9 项方案配置与检查工具和 4 项航线查询与编辑工具。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。其余 33 项仍为文档契约。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　40 项可在隔离工作区联调，包含首批五项、工作区查询及回放、方案与任务编辑、夹具航线、配置检查，以及经操作员确认的复核、部署和删除。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **36 项已实现，33 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **40 项已实现，29 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -50,11 +50,11 @@ Command 已支持方案与任务配置、草稿复制和删除、已部署方案
 | [`end_mock_plan_edit`](#end_mock_plan_edit) | `mock:read` + `mock:plan:draft` | 已实现 | 结束自己取得的配置占用，报告仍待保存或退出的编辑会话。 |
 | [`update_mock_security_plan_draft`](#update_mock_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已实现 | 修改现有草稿的名称和说明。 |
 | [`copy_mock_security_plan_draft`](#copy_mock_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已实现 | 从可读方案复制新草稿及独立的任务和航线。 |
-| [`delete_mock_security_plan_draft`](#delete_mock_security_plan_draft) | `mock:read` + `mock:plan:delete` | 待实现 | 经确认删除满足状态及占用条件的指定草稿。 |
+| [`delete_mock_security_plan_draft`](#delete_mock_security_plan_draft) | `mock:read` + `mock:plan:delete` | 已实现 | 经确认删除满足状态及占用条件的指定草稿。 |
 | [`reopen_mock_security_plan`](#reopen_mock_security_plan) | `mock:read` + `mock:plan:draft` | 已实现 | 按现有门禁重开已部署方案以继续编辑。 |
 | [`add_mock_plan_mission`](#add_mock_plan_mission) | `mock:read` + `mock:plan:draft` | 已实现 | 在可编辑方案新增任务。 |
 | [`rename_mock_plan_mission`](#rename_mock_plan_mission) | `mock:read` + `mock:plan:draft` | 已实现 | 修改指定任务名称。 |
-| [`delete_mock_plan_mission`](#delete_mock_plan_mission) | `mock:read` + `mock:plan:delete` | 待实现 | 经确认删除指定草稿任务。 |
+| [`delete_mock_plan_mission`](#delete_mock_plan_mission) | `mock:read` + `mock:plan:delete` | 已实现 | 经确认删除指定草稿任务。 |
 | [`set_mock_mission_assignment`](#set_mock_mission_assignment) | `mock:read` + `mock:plan:draft` | 已实现 | 设置、变更或清空任务中的 Mock 模拟成员。 |
 
 ### 地图航线与方案几何
@@ -80,9 +80,9 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 | 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
 | [`validate_mock_plan`](#validate_mock_plan) | `mock:read` + `mock:plan:validate` | 已实现 | 运行配置检查并返回通过、阻塞与当前内容修订。 |
-| [`record_mock_plan_review`](#record_mock_plan_review) | `mock:read` + `mock:plan:review` | 待实现 | 记录操作员针对指定修订确认的模拟方案复核。 |
+| [`record_mock_plan_review`](#record_mock_plan_review) | `mock:read` + `mock:plan:review` | 已实现 | 记录操作员针对指定修订确认的模拟方案复核。 |
 | [`list_mock_plan_deployments`](#list_mock_plan_deployments) | `mock:read` | 已实现 | 读取隔离工作区的模拟部署版本及快照摘要。 |
-| [`publish_mock_plan_snapshot`](#publish_mock_plan_snapshot) | `mock:read` + `mock:plan:deploy` | 待实现 | 经操作员确认冻结经检查与复核的 Mock 配置快照。 |
+| [`publish_mock_plan_snapshot`](#publish_mock_plan_snapshot) | `mock:read` + `mock:plan:deploy` | 已实现 | 经操作员确认冻结经检查与复核的 Mock 配置快照。 |
 | [`list_mock_executions`](#list_mock_executions) | `mock:read` | 已实现 | 按方案、任务或状态查预约、活动与历史模拟执行。 |
 | [`get_mock_execution`](#get_mock_execution) | `mock:read` | 已实现 | 查询模拟执行进度、成员、耗时、状态和结果原因。 |
 | [`request_mock_execution`](#request_mock_execution) | `mock:read` + `mock:execution:start` | 待实现 | 提交操作员已确认的立即或预约模拟任务，并返回模拟执行编号。 |

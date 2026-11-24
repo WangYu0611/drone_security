@@ -23,7 +23,9 @@ from mcp.client.stdio import StdioServerParameters
 from mcp.client.streamable_http import streamable_http_client
 from websockets.asyncio.client import connect
 
-from plan_writes import BEGIN_ROUTE, END_ROUTE, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, SAVE_ROUTE, VALIDATE
+from approve import save_approval
+from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, BEGIN_ROUTE, DELETE_MISSION, DELETE_PLAN, DEPLOY, END_ROUTE
+from plan_writes import PLAN_WRITE_TOOLS, REVIEW, ROUTE_WRITE_TOOLS, SAVE_ROUTE, VALIDATE
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from workspace import WORKSPACE_TOOLS
 
@@ -129,7 +131,8 @@ async def run(backend_exe, workspace):
         "replay-a": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "replay-b": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
-        "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit"]),
+        "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
+                                       *sorted(set(APPROVAL_SCOPES.values()))]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -209,7 +212,8 @@ log:
                 replay_schema = await listing(replay, readers | replay_tools)
                 other_schema = await listing(other, readers | replay_tools)
                 draft_schema = await listing(draft, readers | plan_tools)
-                full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools | ROUTE_WRITE_TOOLS.keys())
+                full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
+                                            ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys())
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -336,6 +340,8 @@ log:
                     await plan_action("end_configuration", plan_id=plan_id)
                     other_draft = await call(all_tools, full_schema, DRAFT_TOOL, args)
                     assert other_draft["plan_id"] != plan_id
+                    await plan_action("simulation_create", request_id=str(uuid4()), count=1, latitude=0.1,
+                                      longitude=0.1, altitude=15)
                 check("configuration conflict, concurrent draft deduplication and Command protocol handoff")
 
                 # Deliberately close the HTTP connection without reading the draft response.
@@ -453,6 +459,52 @@ log:
                 })
                 assert copy_route["route"]["route_id"] != read_route["route"]["route_id"]
                 check("Mock plan lease ownership, version gates, edits, assignment exclusion and copy isolation")
+
+                def confirmed(name, params, owner="all"):
+                    props = {key: value for key, value in params.items() if key != "request_id"}
+                    return {**params, "approval_id": save_approval(workspace, owner, name, props, 120)}
+
+                delete_args = write_args(plan_id=copied["plan_id"], expected_plan_version=copy_plan["plan_version"])
+                await call(all_tools, full_schema, DELETE_PLAN, delete_args, "APPROVAL_REQUIRED")
+                await call(all_tools, full_schema, DELETE_PLAN, confirmed(DELETE_PLAN, delete_args, "other"), "APPROVAL_INVALID")
+                approved_delete = confirmed(DELETE_PLAN, delete_args)
+                deleted = await call(all_tools, full_schema, DELETE_PLAN, approved_delete)
+                assert deleted["deleted"] and await call(all_tools, full_schema, DELETE_PLAN, delete_args) == deleted
+                await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": copied["plan_id"]}, "NOT_FOUND")
+
+                new_lease = await call(all_tools, full_schema, "begin_mock_plan_edit",
+                                       write_args(plan_id=plan_id, expected_plan_version=checked["plan_version"]))
+                reopened_handle = {"plan_id": plan_id, "configuration_id": new_lease["configuration_id"]}
+                assigned = await call(all_tools, full_schema, "set_mock_mission_assignment",
+                                      write_args(**reopened_handle, mission_id=added["mission_id"],
+                                                 expected_plan_version=new_lease["plan_version"], device_ids=["UAV-1001"]))
+                passed = await call(all_tools, full_schema, VALIDATE,
+                                    write_args(**reopened_handle, expected_plan_version=assigned["plan_version"]))
+                assert passed["passed"] and passed["state"] == "ready", passed
+                review_args = write_args(**reopened_handle, validation_id=passed["validation_id"],
+                                         expected_plan_version=passed["plan_version"])
+                review = await call(all_tools, full_schema, REVIEW, confirmed(REVIEW, review_args))
+                deploy_args = write_args(**reopened_handle, review_id=review["review_id"],
+                                         expected_plan_version=review["plan_version"])
+                await call(all_tools, full_schema, DEPLOY, deploy_args, "APPROVAL_REQUIRED")
+                deployed = await call(all_tools, full_schema, DEPLOY, confirmed(DEPLOY, deploy_args))
+                assert deployed["state"] == "deployed" and deployed["configuration_released"]
+                assert await call(all_tools, full_schema, DEPLOY, deploy_args) == deployed
+                deployments = await call(all_tools, full_schema, "list_mock_plan_deployments", {"plan_id": plan_id})
+                assert [row["deployment_id"] for row in deployments["items"]] == [deployed["deployment_id"]]
+                assert (await http.get(backend + "/api/security-plans")).json()["executions"] == {}
+                reopened = await call(all_tools, full_schema, "reopen_mock_security_plan",
+                                      write_args(plan_id=plan_id, expected_plan_version=deployed["plan_version"]))
+                assert reopened["previous_deployment_id"] == deployed["deployment_id"]
+                last_lease = await call(all_tools, full_schema, "begin_mock_plan_edit",
+                                        write_args(plan_id=plan_id, expected_plan_version=reopened["plan_version"]))
+                remove_task = write_args(plan_id=plan_id, configuration_id=last_lease["configuration_id"],
+                                         expected_plan_version=reopened["plan_version"], mission_id=added["mission_id"])
+                removed = await call(all_tools, full_schema, DELETE_MISSION, confirmed(DELETE_MISSION, remove_task))
+                assert removed["deleted"]
+                await call(all_tools, full_schema, "end_mock_plan_edit", write_args(configuration_id=last_lease["configuration_id"]))
+                assert (await call(all_tools, full_schema, "list_mock_plan_deployments", {"plan_id": plan_id}))["items"] == deployments["items"]
+                check("operator approvals, isolated deployment, draft removal and immutable deployment history")
 
                 stop(backend_process)
                 saved_path = workspace / "security_plans.json"

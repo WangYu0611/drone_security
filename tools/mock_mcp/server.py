@@ -21,7 +21,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import uvicorn
 
-from plan_writes import PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, VALIDATE, PlanWriter, load_map_fixtures
+from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, VALIDATE, PlanWriter, load_map_fixtures
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
 from workspace import WORKSPACE_TOOLS, WorkspaceReader
@@ -31,7 +31,7 @@ REPLAY = "mock:replay"
 DRAFT = "mock:plan:draft"
 VALIDATION = "mock:plan:validate"
 ROUTE_EDIT = "mock:route:edit"
-BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS
+BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS
 TOKEN_PATTERN = r"[a-f0-9]{64}"
 MAX_REQUEST = 8192
 DEMO_ID = "demo-a"
@@ -87,7 +87,7 @@ TOOLS.update(WORKSPACE_TOOLS)
 TOOLS.update(RECORD_REPLAY_TOOLS)
 TOOLS.update(BACKEND_WRITES)
 TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
-              **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT),
+              **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES,
               "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
 
@@ -372,7 +372,7 @@ def main():
         if identity is None:
             parser.error("set DRONE_MOCK_MCP_CLIENT_TOKEN to a configured identity token")
     token = os.environ.get("DRONE_MOCK_MCP_BRIDGE_TOKEN", "")
-    if token or identity is None or identity.scopes & {DRAFT, VALIDATION, ROUTE_EDIT}:
+    if token or identity is None or identity.scopes & {DRAFT, VALIDATION, ROUTE_EDIT, *APPROVAL_SCOPES.values()}:
         if not re.fullmatch(TOKEN_PATTERN, token):
             parser.error("set a 32-byte hex DRONE_MOCK_MCP_BRIDGE_TOKEN")
         if hashlib.sha256(token.encode("ascii")).hexdigest() in accounts:

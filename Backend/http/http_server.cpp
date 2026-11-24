@@ -1799,6 +1799,18 @@ http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
         std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
         const auto result = security_plans_.writeMockMcpPlan(identity, tool, args,
             [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); });
+        if (tool == "delete_mock_security_plan_draft" || tool == "delete_mock_plan_mission") {
+            const auto context = operational_context_.snapshot();
+            boost::json::object patch;
+            if (tool == "delete_mock_security_plan_draft" && context.at("active_security_plan_id") == result.at("plan_id")) {
+                patch["active_security_plan_id"] = nullptr;
+                patch["active_mission_id"] = nullptr;
+            } else if (tool == "delete_mock_plan_mission" && context.at("active_mission_id") == result.at("mission_id")) {
+                patch["active_mission_id"] = nullptr;
+            }
+            if (!patch.empty()) operational_context_.update(patch, "Mock MCP",
+                [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); });
+        }
         return MakeResponse(req, 200, json_stringify(result));
     } catch (const PlanError& error) {
         return MakeResponse(req, 409, json_stringify(boost::json::object{{"code", error.code}}));

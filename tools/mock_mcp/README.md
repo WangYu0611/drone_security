@@ -54,6 +54,22 @@ Backend's existing route edit session and saved version checks.
 {"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}}}
 ~~~
 
+## Operator approvals
+
+The operator runs the approval command on the Backend host, using an account with write access to
+the isolated workspace's `mock_mcp_approvals` directory. Keep that directory and the Backend's
+persistence outside the MCP client's filesystem permissions. Tool scopes and operator approvals
+are independent. The operator reviews the exact JSON arguments, excluding the two request IDs.
+
+~~~powershell
+python tools/mock_mcp/approve.py --workspace <backend-workspace> --identity <identity> --tool record_mock_plan_review --arguments <operation.json>
+~~~
+
+After the operator types `APPROVE`, pass the returned `approval_id` to the tool. The Backend checks
+the identity, operation, arguments, current version and expiry before use. The approval is consumed
+with the mutation and receipt. Retrying the completed request with its original request ID and
+arguments returns the original receipt, even after the approval expires.
+
 ## Behavior and acceptance
 
 - The fixed recording is demo-a. A replay identity has its own playback clock and version for the
