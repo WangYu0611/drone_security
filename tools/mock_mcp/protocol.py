@@ -1,6 +1,7 @@
 """Shared schemas and error vocabulary for the Mock MCP contract."""
 
 from datetime import UTC, datetime
+import re
 
 from mcp import types
 
@@ -56,6 +57,12 @@ def tool(name, description, inputs, fields, optional=(), *, read_only=True, resu
 def utc_timestamp(epoch=None):
     now = datetime.now(UTC) if epoch is None else datetime.fromtimestamp(epoch, UTC)
     return now.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def utc_epoch(value):
+    if not re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,6})?Z", value):
+        raise ValueError("Use an RFC 3339 UTC time")
+    return datetime.fromisoformat(value).timestamp()
 
 
 class ToolFailure(Exception):

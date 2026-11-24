@@ -28,6 +28,7 @@ from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, BEGIN_ROUTE, DELETE_MIS
 from plan_writes import CREATE_DEVICES, PLAN_WRITE_TOOLS, REMOVE_DEVICE, REVIEW, REVIEW_REHEARSAL, ROUTE_WRITE_TOOLS
 from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_REHEARSAL, UPDATE_DEVICE, VALIDATE
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
+from session_alerts import ACK_ALERT, ALERT_SCOPE, LIST_ALERTS
 from workspace import LANGUAGE, SELECT, VIDEO, VIEW_SCOPES, VIEW_TOOLS, WORKSPACE_TOOLS
 
 SERVER = Path(__file__).with_name("server.py").resolve()
@@ -133,7 +134,7 @@ async def run(backend_exe, workspace):
         "replay-b": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
         "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
-                                       *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()) |
+                                       ALERT_SCOPE, *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()) |
                                                set(VIEW_SCOPES.values()))]),
     }
     config = workspace / "backend.yaml"
@@ -164,7 +165,9 @@ log:
         "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
         "point-b": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15},
     }}, "devices": {"setup-qa": {"latitude": 0.1, "longitude": 0.1, "altitude": 15}},
-        "video_sources": {"video-qa": {"device_id": "UAV-01", "title": "QA clip", "availability": "available"}}
+        "video_sources": {"video-qa": {"device_id": "UAV-01", "title": "QA clip", "availability": "available"}},
+        "session_alerts": {"session-qa": {"device_id": "UAV-02", "severity": "warning", "code": "DEVICE_OFFLINE",
+                                          "occurred_at": "2026-11-23T07:00:00Z"}}
     }), encoding="utf-8")
     backend_command = [str(backend_exe), str(config)]
     mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port),
@@ -178,7 +181,8 @@ log:
             await wait_ready(mcp_process, http, endpoint, 401)
             response = await http.post(backend + "/api/mock-mcp/draft", json={})
             assert response.status_code == 403
-            for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay"), *VIEW_SCOPES.items()):
+            for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay"),
+                                (ACK_ALERT, ALERT_SCOPE), *VIEW_SCOPES.items()):
                 response = await http.post(endpoint, headers=rpc_headers(identities["read-only"][0], name),
                                            json=rpc(name, {}))
                 assert response.status_code == 403 and scope in response.headers["WWW-Authenticate"]
@@ -210,7 +214,7 @@ log:
                 Client(transport(endpoint, identities["draft-a"][0]), mode="2026-07-28") as draft,
                 Client(transport(endpoint, identities["all"][0]), mode="2026-07-28") as all_tools,
             ):
-                readers = READ_TOOLS | WORKSPACE_TOOLS.keys()
+                readers = READ_TOOLS | WORKSPACE_TOOLS.keys() | {LIST_ALERTS}
                 replay_tools = {REPLAY_TOOL, *RECORD_REPLAY_TOOLS}
                 plan_tools = {DRAFT_TOOL, *(name for name in PLAN_WRITE_TOOLS if name != VALIDATE)}
                 replay_schema = await listing(replay, readers | replay_tools)
@@ -218,7 +222,7 @@ log:
                 draft_schema = await listing(draft, readers | plan_tools)
                 full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
                                             ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys() |
-                                            VIEW_TOOLS.keys())
+                                            VIEW_TOOLS.keys() | {ACK_ALERT})
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -299,6 +303,37 @@ log:
                                       "primary_device_id": None, "request_id": str(uuid4())})
                 assert cleared["device_ids"] == [] and cleared["video_target_device_id"] == "UAV-02"
                 check("versioned selection, isolated shared language, fixture-only video and independent view state")
+
+                alert_query = {**session, "handled": False, "severity": "warning"}
+                fixed_alerts = (await call(replay, replay_schema, "list_sim_alerts", alert_args))["alerts"]
+                pending = await call(replay, replay_schema, LIST_ALERTS, alert_query)
+                assert [row["alert_id"] for row in pending["items"]] == ["session-qa"]
+                acknowledgment = {**session, "alert_id": "session-qa", "expected_version": 1,
+                                  "request_id": str(uuid4())}
+                missing = {**acknowledgment, "alert_id": "foreign"}
+                await call(all_tools, full_schema, ACK_ALERT, missing, "NOT_FOUND")
+                ack = await call(all_tools, full_schema, ACK_ALERT, acknowledgment)
+                assert ack["handled"] and ack["version"] == 2
+                assert await call(all_tools, full_schema, ACK_ALERT, acknowledgment) == ack
+                assert (await call(replay, replay_schema, LIST_ALERTS, alert_query))["items"] == []
+                await call(all_tools, full_schema, ACK_ALERT, {**acknowledgment, "request_id": str(uuid4())},
+                           "VERSION_CONFLICT")
+                await call(all_tools, full_schema, ACK_ALERT, {**acknowledgment, "session_id": "elsewhere"},
+                           "SESSION_EXPIRED")
+                assert (await call(replay, replay_schema, "list_sim_alerts", alert_args))["alerts"] == fixed_alerts
+                other_port, = free_ports(1)
+                second_gateway = start(mcp_command + ["--session-id", "other-session", "--http-port", str(other_port)],
+                                       env, workspace, "mcp-second.log")
+                second_endpoint = f"http://127.0.0.1:{other_port}/mcp"
+                try:
+                    await wait_ready(second_gateway, http, second_endpoint, 401)
+                    async with Client(transport(second_endpoint, identities["replay-a"][0]), mode="2026-07-28") as second_session:
+                        different = await call(second_session, replay_schema, LIST_ALERTS,
+                                               {**alert_query, "session_id": "other-session"})
+                        assert different["items"] == pending["items"]
+                finally:
+                    stop(second_gateway)
+                check("session alert acknowledgment, replay fixture preservation and per-session isolation")
 
                 original = (await call(replay, replay_schema, "get_sim_status", alert_args))["replay"]
                 write = {"replay_id": original["replay_id"], "state": "paused", "expected_version": 3}

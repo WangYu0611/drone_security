@@ -8,7 +8,8 @@ import httpx
 from jsonschema import Draft202012Validator
 
 from protocol import BOOLEAN, COUNTER, ID, STRING, TIMESTAMP, UUID, ToolFailure
-from protocol import array, choices, nullable, object_schema, tool, utc_timestamp
+from protocol import array, choices, nullable, object_schema, tool, utc_epoch, utc_timestamp
+from session_alerts import ALERT_SOURCE
 from workspace import PLAN_STATE, RUN_STATE, VIDEO, VIDEO_SOURCE
 
 VALIDATE = "validate_mock_plan"
@@ -148,12 +149,13 @@ BACKEND_ERRORS = {
 
 def load_fixtures(path):
     if path is None:
-        return {"maps": {}, "devices": {}, "video_sources": {}}
+        return {"maps": {}, "devices": {}, "video_sources": {}, "session_alerts": {}}
     data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or set(data) - {"maps", "devices", "video_sources"}:
+    sections = ("maps", "devices", "video_sources", "session_alerts")
+    if not isinstance(data, dict) or set(data) - set(sections):
         raise ValueError("Unknown Mock fixture section")
-    maps, devices, video = (data.get(section, {}) for section in ("maps", "devices", "video_sources"))
-    if not all(isinstance(section, dict) for section in (maps, devices, video)):
+    maps, devices, video, alerts = (data.get(section, {}) for section in sections)
+    if not all(isinstance(section, dict) for section in (maps, devices, video, alerts)):
         raise ValueError("Fixture sections must be JSON objects")
     schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
                             "longitude": {"type": "number", "minimum": -180, "maximum": 180},
@@ -175,7 +177,12 @@ def load_fixtures(path):
     for key, source in video.items():
         if not re.fullmatch(ID["pattern"], key) or not video_check.is_valid(source):
             raise ValueError("Invalid synthetic video source fixture")
-    return {"maps": maps, "devices": devices, "video_sources": video}
+    alert_check = Draft202012Validator(object_schema(ALERT_SOURCE))
+    for key, alert in alerts.items():
+        if not re.fullmatch(ID["pattern"], key) or key.startswith("mission-alert-") or not alert_check.is_valid(alert):
+            raise ValueError("Invalid synthetic session alert fixture")
+        utc_epoch(alert["occurred_at"])
+    return {"maps": maps, "devices": devices, "video_sources": video, "session_alerts": alerts}
 
 
 class PlanWriter:

@@ -42,7 +42,7 @@ its own token.
 
 Assign authorized clients the `--workspace-id` and `--session-id` used at gateway startup, or use
 the defaults `mock-local` and `mock-session`. Deploy each isolated session with its own Backend, identities,
-bridge secret and state database. `--state-db` sets the replay database path. By default it is named
+bridge secret and state database. `--state-db` stores playback and session alert handling. By default it is named
 `mock-mcp-replay.sqlite3` alongside the identities file. Keep it outside Git with the workspace data.
 
 Set `--fixtures` to a local JSON file containing the synthetic maps, simulator origins, and video
@@ -53,6 +53,11 @@ Backend's existing route edit session and saved version checks. Use the optional
 object to list fixture IDs, each with its `device_id`, `title`, and `availability`. Choosing a target
 defaults to its first available source in ID order. A selected source without a player observation
 reports `unreported`.
+
+The optional `session_alerts` object maps a synthetic alert ID to `severity`, `code`, `device_id`
+(nullable), and the RFC 3339 UTC time `occurred_at`. The gateway also projects qualifying failure
+and separation events from software executions. Handling marks are shared within the assigned
+session and stored independently of the alert source and replay records.
 
 ~~~json
 {"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}},"devices":{"setup-demo":{"latitude":0.1,"longitude":0.1,"altitude":15}},"video_sources":{"video-demo":{"device_id":"UAV-01","title":"Demo clip","availability":"available"}}}

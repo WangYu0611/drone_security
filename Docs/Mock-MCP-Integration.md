@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　49 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线、配置检查和部署、模拟设备管理和任务预演，以及共享选机、语言和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　51 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线、配置检查和部署、模拟设备管理和任务预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **49 项已实现，20 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **51 项已实现，18 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -134,8 +134,8 @@ Command 展示设备、告警和业务日志，已处理告警标记属于界面
 | [`set_mock_workspace_selection`](#set_mock_workspace_selection) | `mock:read` + `mock:context:select` | 已实现 | 在授权的演示会话选择或清空当前方案、任务及设备集合。 |
 | [`get_mock_workspace_preferences`](#get_mock_workspace_preferences) | `mock:read` | 已实现 | 读取演示会话可同步的语言偏好。 |
 | [`set_mock_workspace_language`](#set_mock_workspace_language) | `mock:read` + `mock:context:preferences` | 已实现 | 切换授权演示会话的共享语言。 |
-| [`list_mock_session_alerts`](#list_mock_session_alerts) | `mock:read` | 待实现 | 查询运行中的 Mock 工作区告警。 |
-| [`acknowledge_mock_session_alert`](#acknowledge_mock_session_alert) | `mock:read` + `mock:alerts:ack` | 待实现 | 为当前授权会话标记一条模拟告警已处理。 |
+| [`list_mock_session_alerts`](#list_mock_session_alerts) | `mock:read` | 已实现 | 查询运行中的 Mock 工作区告警。 |
+| [`acknowledge_mock_session_alert`](#acknowledge_mock_session_alert) | `mock:read` + `mock:alerts:ack` | 已实现 | 为当前授权会话标记一条模拟告警已处理。 |
 | [`list_mock_operation_events`](#list_mock_operation_events) | `mock:read` | 已实现 | 按分类、对象或时间查询脱敏业务日志与事件。 |
 | [`list_mock_video_sources`](#list_mock_video_sources) | `mock:read` | 已实现 | 查询允许访问的样例视频源和可用情况。 |
 | [`get_mock_video_view`](#get_mock_video_view) | `mock:read` | 已实现 | 读共享视频目标与样例源状态，分别报告已选目标和已确认播放状态。 |

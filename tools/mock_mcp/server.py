@@ -25,6 +25,7 @@ from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE
 from plan_writes import SIMULATION_TOOLS, VALIDATE, PlanWriter, load_fixtures
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
+from session_alerts import ACK_ALERT, ALERT_SCOPE, SESSION_ALERT_TOOLS, SessionAlerts
 from workspace import VIEW_SCOPES, VIEW_TOOLS, WORKSPACE_TOOLS, WorkspaceReader
 
 READ = "mock:read"
@@ -87,9 +88,11 @@ TOOLS = {
 TOOLS.update(WORKSPACE_TOOLS)
 TOOLS.update(RECORD_REPLAY_TOOLS)
 TOOLS.update(BACKEND_WRITES)
+TOOLS.update(SESSION_ALERT_TOOLS)
 TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
               **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES, **SIMULATION_SCOPES, **VIEW_SCOPES,
-              "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION}
+              "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION,
+              ACK_ALERT: ALERT_SCOPE}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
 
 
@@ -173,9 +176,12 @@ class MockTools:
                                          fixtures["video_sources"]) if bridge_token else None
         self.plan_writer = PlanWriter(backend_port, bridge_token, fixtures) if bridge_token else None
         self.record_replays = RecordReplayStore(state_db, workspace_id) if self.workspace and state_db else None
+        self.session_alerts = SessionAlerts(state_db, self.workspace, fixtures["session_alerts"]) if self.workspace else None
         self.replays = {}
 
     def available(self, name):
+        if name in SESSION_ALERT_TOOLS:
+            return self.session_alerts is not None
         if name in RECORD_REPLAY_TOOLS:
             return self.record_replays is not None
         if name in BACKEND_WRITES:
@@ -243,6 +249,11 @@ class MockTools:
                 replays = (self.record_replays.list_owned(identity.name) if name == "list_mock_replay_records" and
                            self.record_replays and REPLAY in identity.scopes else None)
                 payload, observed_at = await self.workspace.call(identity, name, arguments, replays)
+                return reply(payload, observed_at=observed_at)
+            if name in SESSION_ALERT_TOOLS:
+                if not self.session_alerts:
+                    raise ToolFailure("MOCK_UNAVAILABLE", "This process has no authorized Mock Backend bridge")
+                payload, observed_at = await self.session_alerts.call(identity, name, arguments)
                 return reply(payload, observed_at=observed_at)
             if name in RECORD_REPLAY_TOOLS or (name == "set_replay_state" and arguments["replay_id"].startswith("record-replay-")):
                 return await self.workspace_replay(identity, name, arguments)
