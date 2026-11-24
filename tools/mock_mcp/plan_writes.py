@@ -9,7 +9,7 @@ from jsonschema import Draft202012Validator
 
 from protocol import BOOLEAN, COUNTER, ID, STRING, TIMESTAMP, UUID, ToolFailure
 from protocol import array, choices, nullable, object_schema, tool, utc_timestamp
-from workspace import PLAN_STATE, RUN_STATE
+from workspace import PLAN_STATE, RUN_STATE, VIDEO, VIDEO_SOURCE
 
 VALIDATE = "validate_mock_plan"
 BEGIN_ROUTE = "begin_mock_route_edit"
@@ -142,17 +142,18 @@ BACKEND_ERRORS = {
     "SIMULATION_ORIGIN_OCCUPIED": "OBJECT_IN_USE", "SIMULATION_INVALID_COUNT": "INVALID_ARGUMENT",
     "SIMULATION_INVALID_ORIGIN": "INVALID_ARGUMENT", "SIMULATION_UAV_REQUIRED": "CHECK_FAILED", "ROUTE_MISSING": "CHECK_FAILED",
     "EXECUTION_CONFLICT": "OBJECT_IN_USE", "REHEARSAL_INCOMPLETE": "INVALID_STATE", "REHEARSAL_STALE": "REHEARSAL_STALE",
+    "INVALID_LANGUAGE": "INVALID_ARGUMENT", "INVALID_VIDEO_TARGET": "NOT_FOUND",
 }
 
 
 def load_fixtures(path):
     if path is None:
-        return {"maps": {}, "devices": {}}
+        return {"maps": {}, "devices": {}, "video_sources": {}}
     data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or set(data) - {"maps", "devices"}:
-        raise ValueError("A Mock fixtures file supports maps and devices objects")
-    maps, devices = data.get("maps", {}), data.get("devices", {})
-    if not isinstance(maps, dict) or not isinstance(devices, dict):
+    if not isinstance(data, dict) or set(data) - {"maps", "devices", "video_sources"}:
+        raise ValueError("Unknown Mock fixture section")
+    maps, devices, video = (data.get(section, {}) for section in ("maps", "devices", "video_sources"))
+    if not all(isinstance(section, dict) for section in (maps, devices, video)):
         raise ValueError("Fixture sections must be JSON objects")
     schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
                             "longitude": {"type": "number", "minimum": -180, "maximum": 180},
@@ -170,7 +171,11 @@ def load_fixtures(path):
             check_point(point_id, point)
     for device_id, origin in devices.items():
         check_point(device_id, origin)
-    return {"maps": maps, "devices": devices}
+    video_check = Draft202012Validator(object_schema(VIDEO_SOURCE))
+    for key, source in video.items():
+        if not re.fullmatch(ID["pattern"], key) or not video_check.is_valid(source):
+            raise ValueError("Invalid synthetic video source fixture")
+    return {"maps": maps, "devices": devices, "video_sources": video}
 
 
 class PlanWriter:
@@ -202,6 +207,14 @@ class PlanWriter:
             raise ToolFailure("INVALID_ARGUMENT", "Supply expected_route_version only when finishing")
         elif name == CREATE_DEVICES:
             normalized["resolved_device_origin"] = self.fixtures["devices"].get(arguments["device_fixture_id"])
+        elif name == VIDEO:
+            device = arguments["device_id"]
+            sources = self.fixtures["video_sources"]
+            candidates = sorted(key for key, row in sources.items()
+                                if row["device_id"] == device and row["availability"] == "available")
+            source = arguments.get("source_id", next(iter(candidates), None))
+            normalized["resolved_source_id"] = source if source in candidates else None
+            normalized["source_device_mismatch"] = source in sources and sources[source]["device_id"] != device
         try:
             if "name" in normalized:
                 value = normalized["name"].strip(" \t\r\n\f\v")
@@ -228,7 +241,7 @@ class PlanWriter:
                 return payload, confirmed
             code = BACKEND_ERRORS.get(payload.get("code"))
             if code:
-                raise ToolFailure(code, f"Backend refused the Mock plan operation ({code})")
+                raise ToolFailure(code, f"Backend refused the Mock operation ({code})")
         except (httpx.HTTPError, ValueError, TypeError, KeyError, AttributeError):
             pass
         raise ToolFailure("MOCK_UNAVAILABLE", "Mock Backend unavailable; retry with the same request_id")

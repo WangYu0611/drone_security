@@ -9,7 +9,7 @@ import re
 
 import httpx
 
-from protocol import BOOLEAN, COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, ToolFailure
+from protocol import BOOLEAN, COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure
 from protocol import array, choices, nullable, object_schema, tool, utc_timestamp
 
 PAGE_INPUT = {"limit": {"type": "integer", "minimum": 1, "maximum": 50, "default": 20},
@@ -37,6 +37,30 @@ RECORD_REPLAY = object_schema({"replay_id": ID, "state": choices("playing", "pau
                                "position_ms": COUNTER, "version": COUNTER})
 EVENT_FIELDS = {"event_id": ID, "category": CATEGORY, "object_id": nullable(ID), "code": STRING,
                 "occurred_at": TIMESTAMP, "message": STRING}
+SELECTION = {"plan_id": nullable(ID), "mission_id": nullable(ID),
+             "device_ids": array(ID, uniqueItems=True, maxItems=20), "primary_device_id": nullable(ID)}
+CONTEXT_FIELDS = {"session_id": ID, "version": COUNTER, **SELECTION, "video_target_device_id": nullable(ID)}
+PREFERENCE_FIELDS = {"session_id": ID, "version": COUNTER, "language": choices("en", "zh-Hans")}
+VIDEO_FIELDS = {"session_id": ID, "version": COUNTER, "target_device_id": nullable(ID), "source_id": nullable(ID),
+                "playback_state": choices("unreported", "no_source", "loading", "playing", "paused", "error"),
+                "playback_observed_at": nullable(TIMESTAMP)}
+VIDEO_SOURCE = {"device_id": ID, "title": {"type": "string", "minLength": 1, "maxLength": 160},
+                "availability": choices("available", "unavailable")}
+SELECT = "set_mock_workspace_selection"
+LANGUAGE = "set_mock_workspace_language"
+VIDEO = "set_mock_video_target"
+VIEW_SCOPES = {SELECT: "mock:context:select", LANGUAGE: "mock:context:preferences", VIDEO: "mock:video:select"}
+VERSIONED_VIEW = {"session_id": ID, "expected_version": COUNTER, "request_id": UUID}
+VIEW_TOOLS = {item.name: item for item in (
+    tool(SELECT, "Replace the current Mock selection without changing video.", {**VERSIONED_VIEW, **SELECTION},
+         {**CONTEXT_FIELDS, "request_id": UUID}, read_only=False),
+    tool(LANGUAGE, "Change the shared Mock session language.",
+         {**VERSIONED_VIEW, "language": PREFERENCE_FIELDS["language"]},
+         {**PREFERENCE_FIELDS, "request_id": UUID}, read_only=False),
+    tool(VIDEO, "Choose a synthetic target and one authorized fixture source, or clear the target.",
+         {**VERSIONED_VIEW, "device_id": nullable(ID), "source_id": ID},
+         {**VIDEO_FIELDS, "request_id": UUID}, ("source_id",), read_only=False),
+)}
 
 
 def paged_tool(name, description, filters, fields, required=(), **outer):
@@ -89,14 +113,13 @@ WORKSPACE_TOOLS = {
                   "connection_state": choices("connected", "disconnected"),
               })), "reset_request": {"type": "null"}}),
         tool("get_mock_workspace_context", "Read selection within the assigned Mock session.", {"session_id": ID},
-             {"session_id": ID, "version": COUNTER, "plan_id": nullable(ID), "mission_id": nullable(ID),
-              "device_ids": array(ID), "primary_device_id": nullable(ID), "video_target_device_id": nullable(ID)}),
+             {**CONTEXT_FIELDS, "device_ids": array(ID)}),
         tool("get_mock_workspace_preferences", "Read the isolated session's interface language.", {"session_id": ID},
-             {"session_id": ID, "version": COUNTER, "language": choices("en", "zh-Hans")}),
+             PREFERENCE_FIELDS),
+        paged_tool("list_mock_video_sources", "List synthetic video fixture metadata without media addresses.",
+                   {"device_id": ID, "availability": VIDEO_SOURCE["availability"]}, {"source_id": ID, **VIDEO_SOURCE}),
         tool("get_mock_video_view", "Read the video target in the assigned Mock session.", {"session_id": ID},
-             {"session_id": ID, "version": COUNTER, "target_device_id": nullable(ID), "source_id": nullable(ID),
-              "playback_state": choices("unreported", "loading", "playing", "paused", "error"),
-              "playback_observed_at": nullable(TIMESTAMP)}),
+             VIDEO_FIELDS),
         paged_tool("list_mock_operation_events", "List redacted Mock events from Backend.",
                    {"category": CATEGORY, "object_id": ID, "from": TIMESTAMP, "to": TIMESTAMP}, EVENT_FIELDS),
     )
@@ -159,11 +182,12 @@ def with_update(row, field="updated_at"):
 
 
 class WorkspaceReader:
-    def __init__(self, backend_port, bridge_token, workspace_id, session_id):
+    def __init__(self, backend_port, bridge_token, workspace_id, session_id, video_sources):
         self.url = f"http://127.0.0.1:{backend_port}/api/mock-mcp/workspace"
         self.token = bridge_token
         self.workspace_id = workspace_id
         self.session_id = session_id
+        self.video_sources = video_sources
         self.handlers = {
             "list_mock_security_plans": self.list_plans, "get_mock_security_plan": self.get_plan,
             "get_mock_mission_route": self.get_route,
@@ -173,6 +197,7 @@ class WorkspaceReader:
             "get_mock_rehearsal": self.get_rehearsal, "list_mock_replay_records": self.list_records,
             "get_mock_workspace_health": self.get_health, "get_mock_workspace_context": self.get_context,
             "get_mock_workspace_preferences": self.get_preferences, "get_mock_video_view": self.get_video,
+            "list_mock_video_sources": self.list_video_sources,
             "list_mock_operation_events": self.list_events,
         }
 
@@ -429,9 +454,21 @@ class WorkspaceReader:
 
     def get_video(self, data, _arguments):
         target = data["video"].get("video_target_uav_id")
+        target = target if target in self.devices(data) else None
+        source_id = data["video"].get("mock_source_id")
+        source = self.video_sources.get(source_id, {})
+        source_id = source_id if target and source.get("device_id") == target else None
         return {"session_id": self.session_id, "version": data["video"]["video_view_version"],
-                "target_device_id": target if target in self.devices(data) else None, "source_id": None,
-                "playback_state": "unreported", "playback_observed_at": None}
+                "target_device_id": target, "source_id": source_id,
+                "playback_state": "no_source" if target and not source_id else "unreported",
+                "playback_observed_at": None}
+
+    def list_video_sources(self, data, arguments):
+        devices = self.devices(data)
+        if "device_id" in arguments:
+            lookup(devices, arguments["device_id"])
+        return [(0, key, {"source_id": key, **row}) for key, row in self.video_sources.items()
+                if row["device_id"] in devices and self.matching(arguments, row, ("device_id", "availability"))]
 
     def list_events(self, data, arguments):
         def parse_time(field, default):

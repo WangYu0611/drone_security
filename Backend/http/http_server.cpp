@@ -1778,6 +1778,8 @@ http::response<http::string_body> HttpServer::HandleMockMcpDraft(
     }
 }
 
+#include "http/mock_mcp_view.inl"
+
 http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
     const http::request<http::string_body>& req) {
     if (mock_mcp_bridge_token_.empty())
@@ -1797,6 +1799,10 @@ http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
             !std::regex_match(SecurityPlanStore::str(args, "request_id"), uuid))
             return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
         std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+        if (tool == "set_mock_workspace_selection" || tool == "set_mock_workspace_language" ||
+            tool == "set_mock_video_target") {
+            return MakeResponse(req, 200, json_stringify(MockMcpWriteView(identity, tool, args)));
+        }
         std::set<std::string> registered;
         std::unique_lock<std::mutex> records(records_mutex_, std::defer_lock);
         if (tool == "create_mock_simulated_devices") {
@@ -1823,6 +1829,8 @@ http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
         return MakeResponse(req, 200, json_stringify(result));
     } catch (const PlanError& error) {
         return MakeResponse(req, 409, json_stringify(boost::json::object{{"code", error.code}}));
+    } catch (const MockViewError& error) {
+        return MakeResponse(req, 409, json_stringify(boost::json::object{{"code", error.what()}}));
     } catch (const std::invalid_argument&) {
         return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
     } catch (const std::out_of_range&) {

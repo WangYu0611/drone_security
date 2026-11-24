@@ -28,7 +28,7 @@ from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, BEGIN_ROUTE, DELETE_MIS
 from plan_writes import CREATE_DEVICES, PLAN_WRITE_TOOLS, REMOVE_DEVICE, REVIEW, REVIEW_REHEARSAL, ROUTE_WRITE_TOOLS
 from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_REHEARSAL, UPDATE_DEVICE, VALIDATE
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
-from workspace import WORKSPACE_TOOLS
+from workspace import LANGUAGE, SELECT, VIDEO, VIEW_SCOPES, VIEW_TOOLS, WORKSPACE_TOOLS
 
 SERVER = Path(__file__).with_name("server.py").resolve()
 READ_TOOLS = {"list_demo_scenarios", "get_sim_status", "list_sim_alerts"}
@@ -133,7 +133,8 @@ async def run(backend_exe, workspace):
         "replay-b": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
         "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
-                                       *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()))]),
+                                       *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()) |
+                                               set(VIEW_SCOPES.values()))]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -162,7 +163,9 @@ log:
     fixtures.write_text(json.dumps({"maps": {"map-qa": {
         "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
         "point-b": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15},
-    }}, "devices": {"setup-qa": {"latitude": 0.1, "longitude": 0.1, "altitude": 15}}}), encoding="utf-8")
+    }}, "devices": {"setup-qa": {"latitude": 0.1, "longitude": 0.1, "altitude": 15}},
+        "video_sources": {"video-qa": {"device_id": "UAV-01", "title": "QA clip", "availability": "available"}}
+    }), encoding="utf-8")
     backend_command = [str(backend_exe), str(config)]
     mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port),
                    "--fixtures", str(fixtures)]
@@ -175,7 +178,7 @@ log:
             await wait_ready(mcp_process, http, endpoint, 401)
             response = await http.post(backend + "/api/mock-mcp/draft", json={})
             assert response.status_code == 403
-            for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay")):
+            for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay"), *VIEW_SCOPES.items()):
                 response = await http.post(endpoint, headers=rpc_headers(identities["read-only"][0], name),
                                            json=rpc(name, {}))
                 assert response.status_code == 403 and scope in response.headers["WWW-Authenticate"]
@@ -214,7 +217,8 @@ log:
                 other_schema = await listing(other, readers | replay_tools)
                 draft_schema = await listing(draft, readers | plan_tools)
                 full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
-                                            ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys())
+                                            ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys() |
+                                            VIEW_TOOLS.keys())
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -255,6 +259,46 @@ log:
                 await call(replay, replay_schema, "list_mock_devices",
                            {"kind": "simulated", "cursor": device_cursor}, "CURSOR_INVALID")
                 check("authorized workspace and session reads, canonical device projection and identity-bound cursors")
+
+                session = {"session_id": "mock-session"}
+                language = {**session, "expected_version": 0, "language": "zh-Hans", "request_id": str(uuid4())}
+                changed_language = await call(all_tools, full_schema, LANGUAGE, language)
+                assert changed_language["version"] == 1
+                assert (await http.get(backend + "/api/ui-preferences")).json()["language"] == "zh-Hans"
+                assert (await call(replay, replay_schema, "get_mock_workspace_preferences", session))["language"] == "zh-Hans"
+                await call(all_tools, full_schema, LANGUAGE, {**language, "language": "en"}, "REQUEST_ID_CONFLICT")
+                await call(all_tools, full_schema, LANGUAGE,
+                           {**language, "request_id": str(uuid4())}, "VERSION_CONFLICT")
+                await call(all_tools, full_schema, LANGUAGE, {**language, "session_id": "foreign"}, "SESSION_EXPIRED")
+
+                selected_args = {**session, "expected_version": 0, "plan_id": None, "mission_id": None,
+                                 "device_ids": ["UAV-01", "UAV-02"], "primary_device_id": "UAV-02",
+                                 "request_id": str(uuid4())}
+                await call(all_tools, full_schema, SELECT, {**selected_args, "primary_device_id": "outside"},
+                           "INVALID_ARGUMENT")
+                selected = await call(all_tools, full_schema, SELECT, selected_args)
+                assert selected["version"] == 1 and selected["video_target_device_id"] is None
+                context = await call(replay, replay_schema, "get_mock_workspace_context", session)
+                assert context["primary_device_id"] == "UAV-02" and context["device_ids"] == ["UAV-01", "UAV-02"]
+                sources = await call(replay, replay_schema, "list_mock_video_sources", {"device_id": "UAV-01"})
+                assert sources["items"] == [{"source_id": "video-qa", "device_id": "UAV-01",
+                                             "title": "QA clip", "availability": "available"}]
+                assert (await call(replay, replay_schema, "list_mock_video_sources", {"device_id": "UAV-02"}))["items"] == []
+                video = {**session, "expected_version": 0, "device_id": "UAV-01", "request_id": str(uuid4())}
+                await call(all_tools, full_schema, VIDEO, {**video, "device_id": "UAV-02", "source_id": "video-qa"},
+                           "INVALID_ARGUMENT")
+                first = await call(all_tools, full_schema, VIDEO, video)
+                assert first["source_id"] == "video-qa" and first["playback_state"] == "unreported"
+                second = await call(all_tools, full_schema, VIDEO,
+                                    {**video, "expected_version": 1, "device_id": "UAV-02", "request_id": str(uuid4())})
+                assert second["source_id"] is None and second["playback_state"] == "no_source"
+                view = await call(replay, replay_schema, "get_mock_video_view", session)
+                assert view["target_device_id"] == "UAV-02" and view["playback_observed_at"] is None
+                cleared = await call(all_tools, full_schema, SELECT,
+                                     {**selected_args, "expected_version": 1, "device_ids": [],
+                                      "primary_device_id": None, "request_id": str(uuid4())})
+                assert cleared["device_ids"] == [] and cleared["video_target_device_id"] == "UAV-02"
+                check("versioned selection, isolated shared language, fixture-only video and independent view state")
 
                 original = (await call(replay, replay_schema, "get_sim_status", alert_args))["replay"]
                 write = {"replay_id": original["replay_id"], "state": "paused", "expected_version": 3}
@@ -373,6 +417,9 @@ log:
                 backend_process = start(backend_command, env, workspace, "backend.log")
                 await wait_ready(backend_process, http, backend + "/", 200)
                 assert await call(draft, draft_schema, DRAFT_TOOL, args) == created
+                assert await call(all_tools, full_schema, LANGUAGE, language) == changed_language
+                assert await call(all_tools, full_schema, VIDEO, video) == first
+                assert await call(all_tools, full_schema, SELECT, selected_args) == selected
                 restored = await call(draft, draft_schema, DRAFT_TOOL, lost)
                 assert restored["plan_id"] == matching[0]["id"]
                 final = (await http.get(backend + "/api/security-plans")).json()

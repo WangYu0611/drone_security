@@ -25,14 +25,14 @@ from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE
 from plan_writes import SIMULATION_TOOLS, VALIDATE, PlanWriter, load_fixtures
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
-from workspace import WORKSPACE_TOOLS, WorkspaceReader
+from workspace import VIEW_SCOPES, VIEW_TOOLS, WORKSPACE_TOOLS, WorkspaceReader
 
 READ = "mock:read"
 REPLAY = "mock:replay"
 DRAFT = "mock:plan:draft"
 VALIDATION = "mock:plan:validate"
 ROUTE_EDIT = "mock:route:edit"
-BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS | SIMULATION_TOOLS
+BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS | SIMULATION_TOOLS | VIEW_TOOLS
 TOKEN_PATTERN = r"[a-f0-9]{64}"
 MAX_REQUEST = 8192
 DEMO_ID = "demo-a"
@@ -88,7 +88,7 @@ TOOLS.update(WORKSPACE_TOOLS)
 TOOLS.update(RECORD_REPLAY_TOOLS)
 TOOLS.update(BACKEND_WRITES)
 TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
-              **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES, **SIMULATION_SCOPES,
+              **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES, **SIMULATION_SCOPES, **VIEW_SCOPES,
               "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
 
@@ -169,7 +169,8 @@ class MockTools:
     def __init__(self, backend_port, bridge_token, workspace_id, session_id, state_db, fixtures):
         self.draft_endpoint = f"http://127.0.0.1:{backend_port}/api/mock-mcp/draft"
         self.bridge_token = bridge_token
-        self.workspace = WorkspaceReader(backend_port, bridge_token, workspace_id, session_id) if bridge_token else None
+        self.workspace = WorkspaceReader(backend_port, bridge_token, workspace_id, session_id,
+                                         fixtures["video_sources"]) if bridge_token else None
         self.plan_writer = PlanWriter(backend_port, bridge_token, fixtures) if bridge_token else None
         self.record_replays = RecordReplayStore(state_db, workspace_id) if self.workspace and state_db else None
         self.replays = {}
@@ -248,6 +249,8 @@ class MockTools:
             if name in BACKEND_WRITES:
                 if not self.plan_writer:
                     raise ToolFailure("MOCK_UNAVAILABLE", "This process has no authorized Mock Backend bridge")
+                if name in VIEW_TOOLS and arguments["session_id"] != self.workspace.session_id:
+                    raise ToolFailure("SESSION_EXPIRED", "Choose the session assigned to this service")
                 payload, observed_at = await self.plan_writer.call(identity, name, arguments)
                 return reply(payload, observed_at=observed_at)
             if name == "create_security_plan_draft":

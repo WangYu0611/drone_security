@@ -98,6 +98,8 @@ private:
     http::response<http::string_body> HandleMockMcpDraft(const http::request<http::string_body>& req);
     http::response<http::string_body> HandleMockMcpWorkspace(const http::request<http::string_body>& req);
     http::response<http::string_body> HandleMockMcpPlanWrite(const http::request<http::string_body>& req);
+    boost::json::object MockMcpWriteView(const std::string& identity, const std::string& tool,
+                                       const boost::json::object& arguments);
     bool AuthorizedMockMcp(const http::request<http::string_body>& req) const;
 
     // ---- WebSocket 会话 ----

@@ -41,18 +41,21 @@ local host that can hold the bridge secret. Use the HTTP gateway when the client
 its own token.
 
 Assign authorized clients the `--workspace-id` and `--session-id` used at gateway startup, or use
-the defaults `mock-local` and `mock-session`. Deploy each workspace with its own Backend, identities,
+the defaults `mock-local` and `mock-session`. Deploy each isolated session with its own Backend, identities,
 bridge secret and state database. `--state-db` sets the replay database path. By default it is named
 `mock-mcp-replay.sqlite3` alongside the identities file. Keep it outside Git with the workspace data.
 
-Set `--fixtures` to a local JSON file containing the synthetic maps and simulator origins approved
-for this workspace. The
+Set `--fixtures` to a local JSON file containing the synthetic maps, simulator origins, and video
+source metadata approved for this workspace. The
 `maps` object maps a fixture ID to waypoint IDs. Each point contains `latitude`, `longitude` and
 `altitude` in the ellipsoid datum. The agent supplies fixture IDs to the route tool. Route writes use
-Backend's existing route edit session and saved version checks.
+Backend's existing route edit session and saved version checks. Use the optional `video_sources`
+object to list fixture IDs, each with its `device_id`, `title`, and `availability`. Choosing a target
+defaults to its first available source in ID order. A selected source without a player observation
+reports `unreported`.
 
 ~~~json
-{"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}},"devices":{"setup-demo":{"latitude":0.1,"longitude":0.1,"altitude":15}}}
+{"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}},"devices":{"setup-demo":{"latitude":0.1,"longitude":0.1,"altitude":15}},"video_sources":{"video-demo":{"device_id":"UAV-01","title":"Demo clip","availability":"available"}}}
 ~~~
 
 ## Operator approvals
@@ -75,7 +78,7 @@ arguments returns the original receipt, even after the approval expires.
 
 - The fixed recording is demo-a. A replay identity has its own playback clock and version for the
   lifetime of the MCP process. Read-only identities see replay as null. An MCP replay never changes
-  Backend execution state. Workspace-record playback depends on the later record-opening tools.
+  Backend execution state. Open completed workspace records through `open_mock_record_replay`.
 - Submit the draft request ID once per logical creation. Configuration conflicts retain the reserved
   request parameters. Repeat with the same ID and parameters after the operator releases configuration.
   Draft persistence and release are one Backend transaction, so a successful receipt has no MCP

@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <limits>
 #include <cctype>
+#include "storage/mock_view_receipts.h"
 
 // One server-owned document. Persist before publishing, and serialize competing writers.
 class OperationalContext {
@@ -28,14 +29,22 @@ public:
             std::ifstream in(path_);
             std::string text((std::istreambuf_iterator<char>(in)), {});
             state_ = boost::json::parse(text).as_object(); // Corrupt persistence must fail visibly.
+            mock_receipts_.load(state_);
         }
     }
     boost::json::object snapshot() const {
         std::lock_guard<std::mutex> lock(mutex_); return state_;
     }
     boost::json::object update(const boost::json::object& patch, const std::string& source,
-                              const std::function<void(const boost::json::object&)>& publish) {
+                              const std::function<void(const boost::json::object&)>& publish,
+                              const MockViewReceipts::Write* mock = nullptr) {
         std::lock_guard<std::mutex> lock(mutex_);
+        if (mock) {
+            if (const auto* receipt = mock_receipts_.lookup(*mock)) return *receipt;
+            if (mock->arguments.at("expected_version") != state_.at("context_version"))
+                throw MockViewError("VERSION_CONFLICT");
+            if (mock->validate) mock->validate();
+        }
         auto next = state_;
         boost::json::array changes;
         for (const auto& item : patch) {
@@ -85,16 +94,17 @@ public:
             const auto& selected=next.at("selected_uav_ids").as_array();
             if((selected.empty() && !next.at("active_uav_id").is_null()) || (!selected.empty() && std::find(selected.begin(),selected.end(),next.at("active_uav_id"))==selected.end()))throw std::invalid_argument("primary UAV must belong to selection");
         }
-        if (changes.empty()) return state_;
+        const auto store = [this](const boost::json::object& document) { persist(document); };
+        if (changes.empty()) return mock ? mock_receipts_.commit(state_, mock, store) : state_;
         next["context_version"] = state_.at("context_version").to_number<int64_t>() + 1;
         next["updated_at"] = now(); next["updated_by"] = source;
-        persist(next);
+        auto result = mock_receipts_.commit(next, mock, store);
         state_ = next;
         const auto version = state_.at("context_version");
         publish({{"type", "OperationalContextChanged"}, {"event_type", "OperationalContextChanged"},
             {"event_id", "context-" + std::to_string(version.to_number<int64_t>())}, {"version", version},
             {"timestamp", now()}, {"source_client", source}, {"changes", changes}, {"payload", state_}});
-        return state_;
+        return result;
     }
     static double now() {
         return std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -118,4 +128,5 @@ private:
     std::string path_;
     mutable std::mutex mutex_;
     boost::json::object state_;
+    MockViewReceipts mock_receipts_;
 };
