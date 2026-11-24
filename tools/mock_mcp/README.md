@@ -19,7 +19,7 @@ record replay receipts.
 3. Give each MCP client a different random 32-byte hex token. Keep only its lowercase SHA-256
    digest in the gateway identities file. The file contains an identities array of objects with
    id, token_sha256 and scopes. All identities need mock:read. Add mock:replay, mock:plan:draft or
-   mock:plan:validate as needed. Keep this file and all tokens outside Git. Client tokens and the bridge secret are
+   mock:plan:validate or mock:route:edit as needed. Keep this file and all tokens outside Git. Client tokens and the bridge secret are
    distinct. The gateway binds to loopback.
 
 Install and start the gateway in a Python 3.11+ virtual environment.
@@ -44,6 +44,15 @@ Assign authorized clients the `--workspace-id` and `--session-id` used at gatewa
 the defaults `mock-local` and `mock-session`. Deploy each workspace with its own Backend, identities,
 bridge secret and state database. `--state-db` sets the replay database path. By default it is named
 `mock-mcp-replay.sqlite3` alongside the identities file. Keep it outside Git with the workspace data.
+
+Set `--fixtures` to a local JSON file containing the synthetic maps approved for this workspace. The
+`maps` object maps a fixture ID to waypoint IDs. Each point contains `latitude`, `longitude` and
+`altitude` in the ellipsoid datum. The agent supplies fixture IDs to the route tool. Route writes use
+Backend's existing route edit session and saved version checks.
+
+~~~json
+{"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}}}
+~~~
 
 ## Behavior and acceptance
 

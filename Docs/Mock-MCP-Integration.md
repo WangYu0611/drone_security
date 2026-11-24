@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　32 项可在隔离工作区联调，包含首批五项、15 项工作区查询、3 项工作区回放会话工具和 9 项方案配置与检查工具。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。其余 37 项仍为文档契约。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　36 项可在隔离工作区联调，包含首批五项、15 项工作区查询、3 项工作区回放会话工具、9 项方案配置与检查工具和 4 项航线查询与编辑工具。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。其余 33 项仍为文档契约。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **32 项已实现，37 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **36 项已实现，33 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -24,16 +24,16 @@
 
 固定录制场景用于客户端联调。业务执行和任务预演完成后产生的回放记录来自隔离 Mock 工作区。Map 已具备轨迹回放控件，近期验收记录覆盖了采样和显示，相关原生鼠标交互仍待验收。 [Stage 1 演示手册](Stage1/Stage1-Demo-Runbook.md) · [任务预演验收](../Evidence/SimulationRehearsal/2026-11-20/validation.md)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`list_demo_scenarios`](#list_demo_scenarios) | `mock:read` | 原有契约 | 列出固定录制场景和 `scenario_id`。 |
-| [`get_sim_status`](#get_sim_status) | `mock:read` | 原有契约 | 读取录制场景中的方案、任务、设备及当前身份的回放摘要。 |
-| [`list_sim_alerts`](#list_sim_alerts) | `mock:read` | 原有契约 | 查询固定场景录制告警。 |
-| [`set_replay_state`](#set_replay_state) | `mock:read` + `mock:replay` | 原有契约 | 播放或暂停已分配的录制回放。 |
-| [`list_mock_replay_records`](#list_mock_replay_records) | `mock:read` | 已补齐 | 列出工作区内可回放的模拟执行与预演记录。 |
-| [`open_mock_record_replay`](#open_mock_record_replay) | `mock:read` + `mock:replay` | 已补齐 | 从工作区回放记录打开独立回放会话。 |
-| [`seek_mock_replay`](#seek_mock_replay) | `mock:read` + `mock:replay` | 已补齐 | 定位到回放时间点。 |
-| [`close_mock_replay`](#close_mock_replay) | `mock:read` + `mock:replay` | 已补齐 | 关闭自己的回放会话。 |
+| [`list_demo_scenarios`](#list_demo_scenarios) | `mock:read` | 已实现 | 列出固定录制场景和 `scenario_id`。 |
+| [`get_sim_status`](#get_sim_status) | `mock:read` | 已实现 | 读取录制场景中的方案、任务、设备及当前身份的回放摘要。 |
+| [`list_sim_alerts`](#list_sim_alerts) | `mock:read` | 已实现 | 查询固定场景录制告警。 |
+| [`set_replay_state`](#set_replay_state) | `mock:read` + `mock:replay` | 已实现 | 播放或暂停已分配的录制回放。 |
+| [`list_mock_replay_records`](#list_mock_replay_records) | `mock:read` | 已实现 | 列出工作区内可回放的模拟执行与预演记录。 |
+| [`open_mock_record_replay`](#open_mock_record_replay) | `mock:read` + `mock:replay` | 已实现 | 从工作区回放记录打开独立回放会话。 |
+| [`seek_mock_replay`](#seek_mock_replay) | `mock:read` + `mock:replay` | 已实现 | 定位到回放时间点。 |
+| [`close_mock_replay`](#close_mock_replay) | `mock:read` + `mock:replay` | 已实现 | 关闭自己的回放会话。 |
 
 工作区回放沿用 `set_replay_state` 的状态和版本校验，返回对应的录制来源。播放、暂停和定位均作用于回放会话。
 
@@ -41,35 +41,35 @@
 
 Command 已支持方案与任务配置、草稿复制和删除、已部署方案重开。Backend 持有方案、任务、内容修订和配置占用。 [方案配置流程](PLAN-Configuration-Workflow.md) · [返回编辑与重部署](EditReturnVideo.md)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`list_mock_security_plans`](#list_mock_security_plans) | `mock:read` | 已补齐 | 列出工作区内的方案及草稿、就绪、已部署状态。 |
-| [`get_mock_security_plan`](#get_mock_security_plan) | `mock:read` | 已补齐 | 按方案 ID 读详情、任务列表、修订与当前配置占用摘要。 |
-| [`create_security_plan_draft`](#create_security_plan_draft) | `mock:read` + `mock:plan:draft` | 原有契约 | 持久化空任务草稿并交接给指挥端。 |
-| [`begin_mock_plan_edit`](#begin_mock_plan_edit) | `mock:read` + `mock:plan:draft` | 已补齐 | 申请指定 Mock 方案的配置占用。 |
-| [`end_mock_plan_edit`](#end_mock_plan_edit) | `mock:read` + `mock:plan:draft` | 已补齐 | 结束自己取得的配置占用，报告仍待保存或退出的编辑会话。 |
-| [`update_mock_security_plan_draft`](#update_mock_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已补齐 | 修改现有草稿的名称和说明。 |
-| [`copy_mock_security_plan_draft`](#copy_mock_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已补齐 | 从可读方案复制新草稿及独立的任务和航线。 |
-| [`delete_mock_security_plan_draft`](#delete_mock_security_plan_draft) | `mock:read` + `mock:plan:delete` | 已补齐 | 经确认删除满足状态及占用条件的指定草稿。 |
-| [`reopen_mock_security_plan`](#reopen_mock_security_plan) | `mock:read` + `mock:plan:draft` | 已补齐 | 按现有门禁重开已部署方案以继续编辑。 |
-| [`add_mock_plan_mission`](#add_mock_plan_mission) | `mock:read` + `mock:plan:draft` | 已补齐 | 在可编辑方案新增任务。 |
-| [`rename_mock_plan_mission`](#rename_mock_plan_mission) | `mock:read` + `mock:plan:draft` | 已补齐 | 修改指定任务名称。 |
-| [`delete_mock_plan_mission`](#delete_mock_plan_mission) | `mock:read` + `mock:plan:delete` | 已补齐 | 经确认删除指定草稿任务。 |
-| [`set_mock_mission_assignment`](#set_mock_mission_assignment) | `mock:read` + `mock:plan:draft` | 已补齐 | 设置、变更或清空任务中的 Mock 模拟成员。 |
+| [`list_mock_security_plans`](#list_mock_security_plans) | `mock:read` | 已实现 | 列出工作区内的方案及草稿、就绪、已部署状态。 |
+| [`get_mock_security_plan`](#get_mock_security_plan) | `mock:read` | 已实现 | 按方案 ID 读详情、任务列表、修订与当前配置占用摘要。 |
+| [`create_security_plan_draft`](#create_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已实现 | 持久化空任务草稿并交接给指挥端。 |
+| [`begin_mock_plan_edit`](#begin_mock_plan_edit) | `mock:read` + `mock:plan:draft` | 已实现 | 申请指定 Mock 方案的配置占用。 |
+| [`end_mock_plan_edit`](#end_mock_plan_edit) | `mock:read` + `mock:plan:draft` | 已实现 | 结束自己取得的配置占用，报告仍待保存或退出的编辑会话。 |
+| [`update_mock_security_plan_draft`](#update_mock_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已实现 | 修改现有草稿的名称和说明。 |
+| [`copy_mock_security_plan_draft`](#copy_mock_security_plan_draft) | `mock:read` + `mock:plan:draft` | 已实现 | 从可读方案复制新草稿及独立的任务和航线。 |
+| [`delete_mock_security_plan_draft`](#delete_mock_security_plan_draft) | `mock:read` + `mock:plan:delete` | 待实现 | 经确认删除满足状态及占用条件的指定草稿。 |
+| [`reopen_mock_security_plan`](#reopen_mock_security_plan) | `mock:read` + `mock:plan:draft` | 已实现 | 按现有门禁重开已部署方案以继续编辑。 |
+| [`add_mock_plan_mission`](#add_mock_plan_mission) | `mock:read` + `mock:plan:draft` | 已实现 | 在可编辑方案新增任务。 |
+| [`rename_mock_plan_mission`](#rename_mock_plan_mission) | `mock:read` + `mock:plan:draft` | 已实现 | 修改指定任务名称。 |
+| [`delete_mock_plan_mission`](#delete_mock_plan_mission) | `mock:read` + `mock:plan:delete` | 待实现 | 经确认删除指定草稿任务。 |
+| [`set_mock_mission_assignment`](#set_mock_mission_assignment) | `mock:read` + `mock:plan:draft` | 已实现 | 设置、变更或清空任务中的 Mock 模拟成员。 |
 
 ### 地图航线与方案几何
 
 Map 已支持航点编辑、保存、完成或放弃，以及方案整体移动预览和提交。每项任务在 Map 中应只有一个航线显示所有者。编辑期间可以手动平移、缩放和绕转，自动跟随与聚焦受编辑状态限制。 [方案几何](TASK-P5.3-PlanGeometryClosure.md) · [交互后续](UIInteractionFollowup.md)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`get_mock_mission_route`](#get_mock_mission_route) | `mock:read` | 已补齐 | 读给定任务的 Mock 航线摘要、版本和状态。 |
-| [`begin_mock_route_edit`](#begin_mock_route_edit) | `mock:read` + `mock:route:edit` | 已补齐 | 为测试任务取得与配置会话绑定的航线编辑会话。 |
-| [`save_mock_route_draft`](#save_mock_route_draft) | `mock:read` + `mock:route:edit` | 已补齐 | 基于约定的合成地图夹具保存航线修改并保留编辑会话。 |
-| [`end_mock_route_edit`](#end_mock_route_edit) | `mock:read` + `mock:route:edit` | 已补齐 | 完成或放弃当前会话内的未保存修改。 |
-| [`preview_mock_plan_translation`](#preview_mock_plan_translation) | `mock:read` + `mock:route:edit` | 已补齐 | 预览方案整体平移在指定合成夹具中的结果与检查项。 |
-| [`commit_mock_plan_translation`](#commit_mock_plan_translation) | `mock:read` + `mock:route:edit` | 已补齐 | 提交经确认且版本仍有效的 Mock 平移预览。 |
-| [`cancel_mock_plan_translation`](#cancel_mock_plan_translation) | `mock:read` + `mock:route:edit` | 已补齐 | 取消当前 Mock 整体平移预览并结束其编辑会话。 |
+| [`get_mock_mission_route`](#get_mock_mission_route) | `mock:read` | 已实现 | 读给定任务的 Mock 航线摘要、版本和状态。 |
+| [`begin_mock_route_edit`](#begin_mock_route_edit) | `mock:read` + `mock:route:edit` | 已实现 | 为测试任务取得与配置会话绑定的航线编辑会话。 |
+| [`save_mock_route_draft`](#save_mock_route_draft) | `mock:read` + `mock:route:edit` | 已实现 | 基于约定的合成地图夹具保存航线修改并保留编辑会话。 |
+| [`end_mock_route_edit`](#end_mock_route_edit) | `mock:read` + `mock:route:edit` | 已实现 | 完成或放弃当前会话内的未保存修改。 |
+| [`preview_mock_plan_translation`](#preview_mock_plan_translation) | `mock:read` + `mock:route:edit` | 待实现 | 预览方案整体平移在指定合成夹具中的结果与检查项。 |
+| [`commit_mock_plan_translation`](#commit_mock_plan_translation) | `mock:read` + `mock:route:edit` | 待实现 | 提交经确认且版本仍有效的 Mock 平移预览。 |
+| [`cancel_mock_plan_translation`](#cancel_mock_plan_translation) | `mock:read` + `mock:route:edit` | 待实现 | 取消当前 Mock 整体平移预览并结束其编辑会话。 |
 
 工具面向业务状态和合成场景。相机手势、地图命中和航线显示所有权仍由 Map 处理。
 
@@ -77,36 +77,36 @@ Map 已支持航点编辑、保存、完成或放弃，以及方案整体移动�
 
 Command 已有配置检查、操作员复核、部署快照、立即或预约开始，以及执行详情和历史。部署和开始是独立业务动作。以下写工具只管理隔离模拟数据，分别沿用人工确认和状态校验。 [现有演示流程](Stage1/Stage1-Demo-Runbook.md) · [部署与配置占用](PLAN-Configuration-Workflow.md)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`validate_mock_plan`](#validate_mock_plan) | `mock:read` + `mock:plan:validate` | 已补齐 | 运行配置检查并返回通过、阻塞与当前内容修订。 |
-| [`record_mock_plan_review`](#record_mock_plan_review) | `mock:read` + `mock:plan:review` | 已补齐 | 记录操作员针对指定修订确认的模拟方案复核。 |
-| [`list_mock_plan_deployments`](#list_mock_plan_deployments) | `mock:read` | 已补齐 | 读取隔离工作区的模拟部署版本及快照摘要。 |
-| [`publish_mock_plan_snapshot`](#publish_mock_plan_snapshot) | `mock:read` + `mock:plan:deploy` | 已补齐 | 经操作员确认冻结经检查与复核的 Mock 配置快照。 |
-| [`list_mock_executions`](#list_mock_executions) | `mock:read` | 已补齐 | 按方案、任务或状态查预约、活动与历史模拟执行。 |
-| [`get_mock_execution`](#get_mock_execution) | `mock:read` | 已补齐 | 查询模拟执行进度、成员、耗时、状态和结果原因。 |
-| [`request_mock_execution`](#request_mock_execution) | `mock:read` + `mock:execution:start` | 已补齐 | 提交操作员已确认的立即或预约模拟任务，并返回模拟执行编号。 |
-| [`update_mock_execution_schedule`](#update_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 已补齐 | 重排待开始的模拟任务。 |
-| [`start_scheduled_mock_execution`](#start_scheduled_mock_execution) | `mock:read` + `mock:execution:start` | 已补齐 | 经操作员确认，立即开始指定的待启动模拟任务。 |
-| [`cancel_mock_execution_schedule`](#cancel_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 已补齐 | 取消尚未开始的模拟预约并检查资源释放。 |
-| [`set_mock_execution_state`](#set_mock_execution_state) | `mock:read` + `mock:execution:control` | 已补齐 | 对指定 Mock 执行执行暂停、恢复、模拟返航或经确认终止，按对象类型和当前状态判定可用动作。 |
+| [`validate_mock_plan`](#validate_mock_plan) | `mock:read` + `mock:plan:validate` | 已实现 | 运行配置检查并返回通过、阻塞与当前内容修订。 |
+| [`record_mock_plan_review`](#record_mock_plan_review) | `mock:read` + `mock:plan:review` | 待实现 | 记录操作员针对指定修订确认的模拟方案复核。 |
+| [`list_mock_plan_deployments`](#list_mock_plan_deployments) | `mock:read` | 已实现 | 读取隔离工作区的模拟部署版本及快照摘要。 |
+| [`publish_mock_plan_snapshot`](#publish_mock_plan_snapshot) | `mock:read` + `mock:plan:deploy` | 待实现 | 经操作员确认冻结经检查与复核的 Mock 配置快照。 |
+| [`list_mock_executions`](#list_mock_executions) | `mock:read` | 已实现 | 按方案、任务或状态查预约、活动与历史模拟执行。 |
+| [`get_mock_execution`](#get_mock_execution) | `mock:read` | 已实现 | 查询模拟执行进度、成员、耗时、状态和结果原因。 |
+| [`request_mock_execution`](#request_mock_execution) | `mock:read` + `mock:execution:start` | 待实现 | 提交操作员已确认的立即或预约模拟任务，并返回模拟执行编号。 |
+| [`update_mock_execution_schedule`](#update_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 待实现 | 重排待开始的模拟任务。 |
+| [`start_scheduled_mock_execution`](#start_scheduled_mock_execution) | `mock:read` + `mock:execution:start` | 待实现 | 经操作员确认，立即开始指定的待启动模拟任务。 |
+| [`cancel_mock_execution_schedule`](#cancel_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 待实现 | 取消尚未开始的模拟预约并检查资源释放。 |
+| [`set_mock_execution_state`](#set_mock_execution_state) | `mock:read` + `mock:execution:control` | 待实现 | 对指定 Mock 执行执行暂停、恢复、模拟返航或经确认终止，按对象类型和当前状态判定可用动作。 |
 
 ### 模拟设备与集群演示
 
 当前存在设备列表与状态投影、批量新增模拟机，以及历史 Stage 1 Mock 的单机和集群移动、执行中单机接管。集群预览、提交和执行组控制是不同动作。 [交互后续](UIInteractionFollowup.md) · [集群交互](MAP-Fleet-Control-UX.md) · [单机接管演示](Stage1/Stage1-Demo-Runbook.md#执行中单机手动接管)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`list_mock_devices`](#list_mock_devices) | `mock:read` | 已补齐 | 列出隔离工作区的测试设备与模拟机。 |
-| [`get_mock_device_status`](#get_mock_device_status) | `mock:read` | 已补齐 | 查看来源、观测时间、模拟位置、可用状态、当前任务与占用。 |
-| [`create_mock_simulated_devices`](#create_mock_simulated_devices) | `mock:read` + `mock:fleet:manage` | 已补齐 | 按已配置的合成夹具批量新增模拟机。 |
-| [`update_mock_device_metadata`](#update_mock_device_metadata) | `mock:read` + `mock:fleet:manage` | 已补齐 | 修改隔离测试注册表的展示信息。 |
-| [`remove_mock_test_device`](#remove_mock_test_device) | `mock:read` + `mock:fleet:manage` | 已补齐 | 在无任务或控制权占用且经确认时移除测试注册表条目。 |
-| [`preview_mock_fleet_move`](#preview_mock_fleet_move) | `mock:read` + `mock:fleet:preview` | 已补齐 | 预览单机或集群在指定合成场景中的移动结果。 |
-| [`confirm_mock_fleet_move`](#confirm_mock_fleet_move) | `mock:read` + `mock:fleet:simulate` | 已补齐 | 在隔离模拟器中提交经确认且未过期的移动预览。 |
-| [`preview_mock_single_takeover`](#preview_mock_single_takeover) | `mock:read` + `mock:fleet:preview` | 已补齐 | 预览单架模拟机从已有模拟任务切出的影响。 |
-| [`confirm_mock_single_takeover`](#confirm_mock_single_takeover) | `mock:read` + `mock:fleet:simulate` | 已补齐 | 在隔离模拟器确认已预览的接管，并确认其余演示成员的状态。 |
-| [`cancel_mock_fleet_preview`](#cancel_mock_fleet_preview) | `mock:read` + `mock:fleet:preview` | 已补齐 | 撤销尚未提交的当前移动或接管预览。 |
+| [`list_mock_devices`](#list_mock_devices) | `mock:read` | 已实现 | 列出隔离工作区的测试设备与模拟机。 |
+| [`get_mock_device_status`](#get_mock_device_status) | `mock:read` | 已实现 | 查看来源、观测时间、模拟位置、可用状态、当前任务与占用。 |
+| [`create_mock_simulated_devices`](#create_mock_simulated_devices) | `mock:read` + `mock:fleet:manage` | 待实现 | 按已配置的合成夹具批量新增模拟机。 |
+| [`update_mock_device_metadata`](#update_mock_device_metadata) | `mock:read` + `mock:fleet:manage` | 待实现 | 修改隔离测试注册表的展示信息。 |
+| [`remove_mock_test_device`](#remove_mock_test_device) | `mock:read` + `mock:fleet:manage` | 待实现 | 在无任务或控制权占用且经确认时移除测试注册表条目。 |
+| [`preview_mock_fleet_move`](#preview_mock_fleet_move) | `mock:read` + `mock:fleet:preview` | 待实现 | 预览单机或集群在指定合成场景中的移动结果。 |
+| [`confirm_mock_fleet_move`](#confirm_mock_fleet_move) | `mock:read` + `mock:fleet:simulate` | 待实现 | 在隔离模拟器中提交经确认且未过期的移动预览。 |
+| [`preview_mock_single_takeover`](#preview_mock_single_takeover) | `mock:read` + `mock:fleet:preview` | 待实现 | 预览单架模拟机从已有模拟任务切出的影响。 |
+| [`confirm_mock_single_takeover`](#confirm_mock_single_takeover) | `mock:read` + `mock:fleet:simulate` | 待实现 | 在隔离模拟器确认已预览的接管，并确认其余演示成员的状态。 |
+| [`cancel_mock_fleet_preview`](#cancel_mock_fleet_preview) | `mock:read` + `mock:fleet:preview` | 待实现 | 撤销尚未提交的当前移动或接管预览。 |
 
 暂停、恢复或终止已创建的演示移动使用 `set_mock_execution_state`。设备展示信息只涉及测试数据，模拟状态须携带来源和时间。
 
@@ -114,12 +114,12 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 
 新增模拟机队支持在物理机队为空时完成任务预演，并持久化进度和回放采样。新版预演与历史 Stage 1 演示运行各有记录。 [启动器预演说明](../Launcher/README.md#mission-rehearsals) · [2026-11-20 验收记录](../Evidence/SimulationRehearsal/2026-11-20/validation.md)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`list_mock_rehearsals`](#list_mock_rehearsals) | `mock:read` | 已补齐 | 列出任务的预演批次及复核状态。 |
-| [`get_mock_rehearsal`](#get_mock_rehearsal) | `mock:read` | 已补齐 | 读取成员进度、结果、输入修订以及可回放的记录引用。 |
-| [`start_mock_rehearsal`](#start_mock_rehearsal) | `mock:read` + `mock:rehearsal:run` | 已补齐 | 启动或重新运行仅含模拟机的测试预演。 |
-| [`record_mock_rehearsal_review`](#record_mock_rehearsal_review) | `mock:read` + `mock:rehearsal:review` | 已补齐 | 记录操作员对已完成且输入版本仍有效的预演复核。 |
+| [`list_mock_rehearsals`](#list_mock_rehearsals) | `mock:read` | 已实现 | 列出任务的预演批次及复核状态。 |
+| [`get_mock_rehearsal`](#get_mock_rehearsal) | `mock:read` | 已实现 | 读取成员进度、结果、输入修订以及可回放的记录引用。 |
+| [`start_mock_rehearsal`](#start_mock_rehearsal) | `mock:read` + `mock:rehearsal:run` | 待实现 | 启动或重新运行仅含模拟机的测试预演。 |
+| [`record_mock_rehearsal_review`](#record_mock_rehearsal_review) | `mock:read` + `mock:rehearsal:review` | 待实现 | 记录操作员对已完成且输入版本仍有效的预演复核。 |
 
 新增模拟机、任务分配和预演回放使用前述独立工具。复核结果仅作用于隔离预演。
 
@@ -127,19 +127,19 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 
 Command 展示设备、告警和业务日志，已处理告警标记属于界面会话。Map 与 Video 同步选机和视频目标，播放状态单独确认。Video 的多卡片布局共用一个主播放器。 [界面和数据审计](Stage1/Stage1-Feature-Audit.md) · [选机视频联动](EditReturnVideo.md) · [视频验收](TASK-V2-VideoMultiFeedUI.md)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`get_mock_workspace_health`](#get_mock_workspace_health) | `mock:read` | 已补齐 | 查看隔离工作区就绪、协作客户端连接及数据新鲜度摘要。 |
-| [`get_mock_workspace_context`](#get_mock_workspace_context) | `mock:read` | 已补齐 | 读当前授权会话的选中方案、任务、设备及视频目标。 |
-| [`set_mock_workspace_selection`](#set_mock_workspace_selection) | `mock:read` + `mock:context:select` | 已补齐 | 在授权的演示会话选择或清空当前方案、任务及设备集合。 |
-| [`get_mock_workspace_preferences`](#get_mock_workspace_preferences) | `mock:read` | 已补齐 | 读取演示会话可同步的语言偏好。 |
-| [`set_mock_workspace_language`](#set_mock_workspace_language) | `mock:read` + `mock:context:preferences` | 已补齐 | 切换授权演示会话的共享语言。 |
-| [`list_mock_session_alerts`](#list_mock_session_alerts) | `mock:read` | 已补齐 | 查询运行中的 Mock 工作区告警。 |
-| [`acknowledge_mock_session_alert`](#acknowledge_mock_session_alert) | `mock:read` + `mock:alerts:ack` | 已补齐 | 为当前授权会话标记一条模拟告警已处理。 |
-| [`list_mock_operation_events`](#list_mock_operation_events) | `mock:read` | 已补齐 | 按分类、对象或时间查询脱敏业务日志与事件。 |
-| [`list_mock_video_sources`](#list_mock_video_sources) | `mock:read` | 已补齐 | 查询允许访问的样例视频源和可用情况。 |
-| [`get_mock_video_view`](#get_mock_video_view) | `mock:read` | 已补齐 | 读共享视频目标与样例源状态，分别报告已选目标和已确认播放状态。 |
-| [`set_mock_video_target`](#set_mock_video_target) | `mock:read` + `mock:video:select` | 已补齐 | 显式切换至受控的 Mock 视频目标。 |
+| [`get_mock_workspace_health`](#get_mock_workspace_health) | `mock:read` | 已实现 | 查看隔离工作区就绪、协作客户端连接及数据新鲜度摘要。 |
+| [`get_mock_workspace_context`](#get_mock_workspace_context) | `mock:read` | 已实现 | 读当前授权会话的选中方案、任务、设备及视频目标。 |
+| [`set_mock_workspace_selection`](#set_mock_workspace_selection) | `mock:read` + `mock:context:select` | 待实现 | 在授权的演示会话选择或清空当前方案、任务及设备集合。 |
+| [`get_mock_workspace_preferences`](#get_mock_workspace_preferences) | `mock:read` | 已实现 | 读取演示会话可同步的语言偏好。 |
+| [`set_mock_workspace_language`](#set_mock_workspace_language) | `mock:read` + `mock:context:preferences` | 待实现 | 切换授权演示会话的共享语言。 |
+| [`list_mock_session_alerts`](#list_mock_session_alerts) | `mock:read` | 待实现 | 查询运行中的 Mock 工作区告警。 |
+| [`acknowledge_mock_session_alert`](#acknowledge_mock_session_alert) | `mock:read` + `mock:alerts:ack` | 待实现 | 为当前授权会话标记一条模拟告警已处理。 |
+| [`list_mock_operation_events`](#list_mock_operation_events) | `mock:read` | 已实现 | 按分类、对象或时间查询脱敏业务日志与事件。 |
+| [`list_mock_video_sources`](#list_mock_video_sources) | `mock:read` | 待实现 | 查询允许访问的样例视频源和可用情况。 |
+| [`get_mock_video_view`](#get_mock_video_view) | `mock:read` | 已实现 | 读共享视频目标与样例源状态，分别报告已选目标和已确认播放状态。 |
+| [`set_mock_video_target`](#set_mock_video_target) | `mock:read` + `mock:video:select` | 待实现 | 显式切换至受控的 Mock 视频目标。 |
 
 告警确认仍需约定会话持久化边界。选机与视频切换的契约应保留 Map 显式选机的现有联动语义。
 
@@ -147,13 +147,13 @@ Command 展示设备、告警和业务日志，已处理告警标记属于界面
 
 Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启用和退出。历史 DEMO 启动归位属于测试环境操作。以下工具覆盖交接流程的观察及申请，操作者的授权和 Pilot 操作保持各自的权限。 [驾驶员 Mock](../Backend/README.md#104-驾驶员控制权-mock) · [Mock 启动归位](UIInteractionFollowup.md#启动归位与地图可见性2026-10-20)
 
-| 工具 | 所需权限 | 契约 | 覆盖能力 |
+| 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`list_mock_pilot_handoff_requests`](#list_mock_pilot_handoff_requests) | `mock:read` | 已补齐 | 列出隔离工作区内的 Mock 交接申请和确认状态。 |
-| [`get_mock_pilot_handoff_status`](#get_mock_pilot_handoff_status) | `mock:read` | 已补齐 | 查模拟设备的交接、授权和会话是否已结束，仅返回授权范围内的状态。 |
-| [`request_mock_pilot_handoff`](#request_mock_pilot_handoff) | `mock:read` + `mock:pilot:request` | 已补齐 | 把指定 Mock 设备的交接申请送到人工处理入口。 |
-| [`request_mock_pilot_handoff_release`](#request_mock_pilot_handoff_release) | `mock:read` + `mock:pilot:request` | 已补齐 | 申请由操作员处理 Mock 控制权收回，返回申请及确认状态。 |
-| [`request_mock_workspace_reset`](#request_mock_workspace_reset) | `mock:read` + `mock:sandbox:reset` | 已补齐 | 仅测试管理员可向自己的隔离工作区发起人工确认的重置。 |
+| [`list_mock_pilot_handoff_requests`](#list_mock_pilot_handoff_requests) | `mock:read` | 待实现 | 列出隔离工作区内的 Mock 交接申请和确认状态。 |
+| [`get_mock_pilot_handoff_status`](#get_mock_pilot_handoff_status) | `mock:read` | 待实现 | 查模拟设备的交接、授权和会话是否已结束，仅返回授权范围内的状态。 |
+| [`request_mock_pilot_handoff`](#request_mock_pilot_handoff) | `mock:read` + `mock:pilot:request` | 待实现 | 把指定 Mock 设备的交接申请送到人工处理入口。 |
+| [`request_mock_pilot_handoff_release`](#request_mock_pilot_handoff_release) | `mock:read` + `mock:pilot:request` | 待实现 | 申请由操作员处理 Mock 控制权收回，返回申请及确认状态。 |
+| [`request_mock_workspace_reset`](#request_mock_workspace_reset) | `mock:read` + `mock:sandbox:reset` | 待实现 | 仅测试管理员可向自己的隔离工作区发起人工确认的重置。 |
 
 ### 客户端与环境管理边界
 
@@ -898,7 +898,7 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 }
 ```
 
-**错误处理**　`NOT_FOUND`：确认任务归属；已知任务无已保存航线时返回 `route: null` 和 `route_version: 0`。
+**错误处理**　`NOT_FOUND`：确认任务归属；已知任务无已保存航线时返回 `route: null` 和 `route_version: 0`。早期保存的航线如果没有合成地图夹具引用，返回 `FIXTURE_NOT_FOUND`。
 
 **验收**　已有航线的夹具顺序与快照一致；没有航线的任务可区分于未知任务。
 

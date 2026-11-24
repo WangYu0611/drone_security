@@ -1,12 +1,19 @@
 """Schemas and transport for Backend-owned Mock plan transactions."""
 
+import json
+import re
+
 import httpx
+from jsonschema import Draft202012Validator
 
 from protocol import BOOLEAN, COUNTER, ID, STRING, TIMESTAMP, UUID, ToolFailure
 from protocol import array, choices, nullable, object_schema, tool, utc_timestamp
 from workspace import PLAN_STATE
 
 VALIDATE = "validate_mock_plan"
+BEGIN_ROUTE = "begin_mock_route_edit"
+SAVE_ROUTE = "save_mock_route_draft"
+END_ROUTE = "end_mock_route_edit"
 NAME = {"type": "string", "minLength": 1}
 DESCRIPTION = {"type": "string", "maxLength": 1000}
 VERSIONED_PLAN = {"plan_id": ID, "expected_plan_version": COUNTER, "request_id": UUID}
@@ -46,6 +53,24 @@ PLAN_WRITE_TOOLS = {item.name: item for item in (
           }))}),
 )}
 
+ROUTE_WRITE_TOOLS = {item.name: item for item in (
+    write(BEGIN_ROUTE, "Acquire the route editor session under your Mock configuration lease.",
+          {"plan_id": ID, "mission_id": ID, "configuration_id": ID, "expected_route_version": COUNTER, "request_id": UUID},
+          {"plan_id": ID, "mission_id": ID, "route_edit_id": ID, "route_version": COUNTER,
+           "lease_expires_at": TIMESTAMP, "request_id": UUID}),
+    write(SAVE_ROUTE, "Save a route assembled from authorized synthetic fixture points.",
+          {"route_edit_id": ID, "expected_route_version": COUNTER, "map_fixture_id": ID,
+           "waypoint_fixture_ids": array(ID, maxItems=100), "closed_loop": BOOLEAN, "request_id": UUID},
+          {"mission_id": ID, "route_edit_id": ID, "route_version": COUNTER, "content_revision": COUNTER,
+           "state": {"const": "saved"}, "waypoint_count": COUNTER, "edit_open": {"const": True}, "request_id": UUID},
+          ("closed_loop",)),
+    write(END_ROUTE, "Finish or discard unsaved work in your Mock route edit session.",
+          {"route_edit_id": ID, "disposition": choices("finish", "discard_unsaved"),
+           "expected_route_version": COUNTER, "request_id": UUID},
+          {"mission_id": ID, "route_edit_id": ID, "route_version": COUNTER, "edit_open": {"const": False},
+           "disposition": choices("finish", "discard_unsaved"), "request_id": UUID}, ("expected_route_version",)),
+)}
+
 BACKEND_ERRORS = {
     "PLAN_NOT_FOUND": "NOT_FOUND", "MISSION_NOT_FOUND": "NOT_FOUND", "MISSION_PLAN_MISMATCH": "NOT_FOUND",
     "INVALID_UAV": "NOT_FOUND", "NOT_FOUND": "NOT_FOUND", "PLAN_NOT_DEPLOYED": "INVALID_STATE",
@@ -56,16 +81,54 @@ BACKEND_ERRORS = {
     "CONTENT_REVISION_CONFLICT": "VERSION_CONFLICT", "CONFIGURATION_EXPIRED": "CONFIGURATION_EXPIRED",
     "CONFIGURATION_IN_PROGRESS": "CONFIGURATION_IN_PROGRESS", "PLAN_EDIT_IN_PROGRESS": "EDIT_IN_PROGRESS",
     "EDIT_SESSION_CONFLICT": "EDIT_IN_PROGRESS", "MIXED_MISSION_ASSIGNMENT": "INVALID_ARGUMENT",
+    "FIXTURE_NOT_FOUND": "FIXTURE_NOT_FOUND", "ROUTE_TOO_SHORT": "CHECK_FAILED", "INVALID_WAYPOINT": "CHECK_FAILED",
 }
 
 
+def load_map_fixtures(path):
+    if path is None:
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if set(data) != {"maps"} or not isinstance(data["maps"], dict):
+        raise ValueError("A Mock fixtures file must contain a maps object")
+    for key, points in data["maps"].items():
+        if not re.fullmatch(ID["pattern"], key) or not isinstance(points, dict):
+            raise ValueError("Invalid Mock fixture map")
+        for point_id, point in points.items():
+            schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
+                                    "longitude": {"type": "number", "minimum": -180, "maximum": 180},
+                                    "altitude": {"type": "number", "minimum": -1000, "maximum": 10000}})
+            if not re.fullmatch(ID["pattern"], point_id) or not Draft202012Validator(schema).is_valid(point):
+                raise ValueError("Invalid synthetic fixture point")
+    return data["maps"]
+
+
 class PlanWriter:
-    def __init__(self, backend_port, bridge_token):
+    def __init__(self, backend_port, bridge_token, fixtures):
         self.endpoint = f"http://127.0.0.1:{backend_port}/api/mock-mcp/plan-write"
         self.token = bridge_token
+        self.fixtures = fixtures
+
+    def resolve_route(self, arguments):
+        points = self.fixtures.get(arguments["map_fixture_id"])
+        keys = arguments["waypoint_fixture_ids"]
+        if points is None or any(key not in points for key in keys):
+            # The Backend checks receipts before validating a resolved fixture.
+            # An unresolvable new request fails, while an earlier receipt survives.
+            return None
+        return {"map_fixture_id": arguments["map_fixture_id"], "waypoint_fixture_ids": keys,
+                "bClosedLoop": arguments["closed_loop"], "waypoints": [
+                    {**points[key], "sequence": i, "altitude_reference": "Ellipsoid", "segmentSpeed": 0, "waitTime": 0}
+                    for i, key in enumerate(keys, start=1)
+                ]}
 
     async def call(self, identity, name, arguments):
         normalized = dict(arguments)
+        if name == SAVE_ROUTE:
+            normalized.setdefault("closed_loop", False)
+            normalized["resolved_fixture_path"] = self.resolve_route(normalized)
+        elif name == END_ROUTE and (normalized["disposition"] == "finish") != ("expected_route_version" in normalized):
+            raise ToolFailure("INVALID_ARGUMENT", "Supply expected_route_version only when finishing")
         try:
             if "name" in normalized:
                 value = normalized["name"].strip(" \t\r\n\f\v")

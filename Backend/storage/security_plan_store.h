@@ -310,8 +310,13 @@ public:
                     for(const auto& entry:sessions) {
                         const auto& existing=entry.value().as_object();
                         if(str(existing,"plan_id")==planId) {
-                            if(str(existing,"mode")!="MOVE" && str(existing,"owner_instance_id")==owner && str(existing,"mission_id")==missionId)
+                            if(str(existing,"mode")!="MOVE" && str(existing,"owner_instance_id")==owner && str(existing,"mission_id")==missionId) {
+                                if (mockCall) {
+                                    next["version"] = state_.at("version").to_number<int64_t>() + 1;
+                                    return commitMockPlan(next, *mockCall, request, planId, missionId, publish);
+                                }
                                 return Object{{"state",state_},{"edit_session_id",entry.key()},{"plan_id",planId},{"mission_id",missionId}};
+                            }
                             throw PlanError("EDIT_SESSION_CONFLICT","Plan already has an editor");
                         }
                     }

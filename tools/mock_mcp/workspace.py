@@ -54,6 +54,10 @@ WORKSPACE_TOOLS = {
                  "mission_id": ID, "name": STRING, "device_ids": array(ID), "route_version": COUNTER,
              })), "configuration": object_schema({"state": choices("idle", "busy", "owned"),
                  "configuration_id": nullable(ID), "lease_expires_at": nullable(TIMESTAMP)})}),
+        tool("get_mock_mission_route", "Get the saved route version and its synthetic fixture references.",
+             {"plan_id": ID, "mission_id": ID}, {"plan_id": ID, "mission_id": ID, "route_version": COUNTER,
+              "route": nullable(object_schema({"route_id": ID, "map_fixture_id": ID, "waypoint_fixture_ids": array(ID),
+                                               "closed_loop": BOOLEAN, "state": {"const": "saved"}}))}),
         paged_tool("list_mock_plan_deployments", "List the deployment snapshots of a Mock plan.",
                    {"plan_id": ID}, DEPLOYMENT_FIELDS, required=("plan_id",), plan_id=ID),
         paged_tool("list_mock_executions", "List software-only execution records.",
@@ -162,6 +166,7 @@ class WorkspaceReader:
         self.session_id = session_id
         self.handlers = {
             "list_mock_security_plans": self.list_plans, "get_mock_security_plan": self.get_plan,
+            "get_mock_mission_route": self.get_route,
             "list_mock_plan_deployments": self.list_deployments, "list_mock_executions": self.list_executions,
             "get_mock_execution": self.get_execution, "list_mock_devices": self.list_devices,
             "get_mock_device_status": self.get_device, "list_mock_rehearsals": self.list_rehearsals,
@@ -268,6 +273,26 @@ class WorkspaceReader:
                  "created_at": stamp(row["deployed_at"]), "mission_count": len(row["snapshot"]["missions"])})
                 for key, row in data["deployments"].items() if row["plan_id"] == arguments["plan_id"] and
                 not row["snapshot"]["plan"].get("real_assignment")]
+
+    def get_route(self, data, arguments):
+        plan_id = arguments["plan_id"]
+        mission_id = arguments["mission_id"]
+        plan = lookup(data["plans"], plan_id)
+        if mission_id not in plan["mission_ids"]:
+            raise ToolFailure("NOT_FOUND", "Choose a mission in the selected Mock plan")
+        mission = lookup(data["missions"], mission_id)
+        route_id = mission.get("route_id")
+        result = {"plan_id": plan_id, "mission_id": mission_id, "route_version": 0, "route": None}
+        if not route_id:
+            return result
+        saved = lookup(data["paths"], route_id)
+        if not saved.get("map_fixture_id") or "waypoint_fixture_ids" not in saved:
+            raise ToolFailure("FIXTURE_NOT_FOUND", "The saved route has no approved synthetic fixture references")
+        result["route_version"] = saved.get("revision", 1)
+        result["route"] = {"route_id": route_id, "map_fixture_id": saved["map_fixture_id"],
+                           "waypoint_fixture_ids": saved["waypoint_fixture_ids"],
+                           "closed_loop": bool(saved.get("bClosedLoop")), "state": "saved"}
+        return result
 
     def list_executions(self, data, arguments):
         rows = []

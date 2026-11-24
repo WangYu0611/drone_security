@@ -20,12 +20,20 @@
     }
 
 private:
+    #include "storage/mock_mcp_route.inl"
+
+    static Object mockPlanFingerprint(const MockPlanCall& call) {
+        auto arguments = call.arguments;
+        arguments.erase("resolved_fixture_path");
+        return arguments;
+    }
+
     const Object* mockMcpReceipt(const MockPlanCall& call) const {
         const auto* scope = mock_mcp_draft_receipts_.if_contains(call.scope());
         const auto* value = scope ? scope->as_object().if_contains(str(call.arguments, "request_id")) : nullptr;
         if (!value) return nullptr;
         const auto& receipt = value->as_object();
-        if (receipt.at("arguments") != call.arguments)
+        if (receipt.at("arguments") != mockPlanFingerprint(call))
             throw PlanError("REQUEST_ID_CONFLICT", "Use the original parameters for this request_id");
         return &receipt.at("result").as_object();
     }
@@ -43,11 +51,15 @@ private:
             {"reopen_mock_security_plan", "reopen_plan"}, {"add_mock_plan_mission", "add_mission"},
             {"rename_mock_plan_mission", "rename_mission"}, {"set_mock_mission_assignment", "assign"},
             {"validate_mock_plan", "validate"},
+            {"begin_mock_route_edit", "begin_route_edit"}, {"save_mock_route_draft", "save_route"},
+            {"end_mock_route_edit", "finish_route_edit"},
         };
         const auto found = actions.find(call.tool);
         if (found == actions.end()) throw PlanError("INVALID_ARGUMENT", "Unknown Mock plan operation");
-        const auto& action = found->second;
         const auto& args = call.arguments;
+        const auto action = call.tool == "end_mock_route_edit" && str(args, "disposition") == "discard_unsaved"
+            ? "discard_route_edit" : found->second;
+        if (mockRouteAction(action)) return mockRouteRequest(next, call, action);
         const auto* lease = activeConfiguration(next);
         auto planId = str(args, action == "copy_plan" ? "source_plan_id" : "plan_id");
         const auto missionId = str(args, "mission_id");
@@ -106,12 +118,20 @@ private:
             auto& current = next.at("configuration_session").as_object();
             current["last_seen_at"] = now;
             current["lease_expires_at"] = now + 120;
+            for (auto& entry : next.at("edit_sessions").as_object()) {
+                auto& edit = entry.value().as_object();
+                if (str(edit, "owner_instance_id") == call.owner()) {
+                    edit["last_seen_at"] = now;
+                    edit["lease_expires_at"] = now + 120;
+                }
+            }
         }
     }
 
     static Object mockPlanResult(const Object& next, const MockPlanCall& call, const Object& request,
                                  const std::string& planId, const std::string& missionId) {
         const auto action = str(request, "action");
+        if (mockRouteAction(action)) return mockRouteResult(next, call, request, planId, missionId);
         Object result{{"request_id", call.arguments.at("request_id")}, {"plan_id", planId},
                       {"confirmed_at", OperationalContext::now()}};
         if (action == "end_configuration") {
@@ -166,7 +186,7 @@ private:
         const auto scope = call.scope();
         if (!receipts.contains(scope)) receipts[scope] = Object{};
         receipts.at(scope).as_object()[str(call.arguments, "request_id")] =
-            Object{{"arguments", call.arguments}, {"result", result}};
+            Object{{"arguments", mockPlanFingerprint(call)}, {"result", result}};
         const Object notification{{"type", "SecurityPlansChanged"}, {"payload", next}};
         persist(next, receipts);
         state_.swap(next);

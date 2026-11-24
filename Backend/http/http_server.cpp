@@ -1784,7 +1784,7 @@ http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
         return MakeResponse(req, 404, R"({"code":"MOCK_UNAVAILABLE"})");
     if (!AuthorizedMockMcp(req))
         return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
-    if (req.method() != http::verb::post || req.body().size() > 8192)
+    if (req.method() != http::verb::post || req.body().size() > 65536)
         return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
     try {
         const auto body = require_object(parse_body(req), "body");

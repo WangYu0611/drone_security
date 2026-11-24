@@ -23,7 +23,7 @@ from mcp.client.stdio import StdioServerParameters
 from mcp.client.streamable_http import streamable_http_client
 from websockets.asyncio.client import connect
 
-from plan_writes import PLAN_WRITE_TOOLS, VALIDATE
+from plan_writes import BEGIN_ROUTE, END_ROUTE, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, SAVE_ROUTE, VALIDATE
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from workspace import WORKSPACE_TOOLS
 
@@ -129,7 +129,7 @@ async def run(backend_exe, workspace):
         "replay-a": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "replay-b": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
-        "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate"]),
+        "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit"]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -154,8 +154,14 @@ log:
     ]}), encoding="utf-8")
     env = {**os.environ, "DRONE_MOCK_MCP_BRIDGE_TOKEN": bridge}
     env.pop("DRONE_PILOT_CONTROL_CREDENTIALS", None)
+    fixtures = workspace / "map-fixtures.json"
+    fixtures.write_text(json.dumps({"maps": {"map-qa": {
+        "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
+        "point-b": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15},
+    }}}), encoding="utf-8")
     backend_command = [str(backend_exe), str(config)]
-    mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port)]
+    mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port),
+                   "--fixtures", str(fixtures)]
     backend_process = start(backend_command, env, workspace, "backend.log")
     mcp_process = None
     try:
@@ -203,7 +209,7 @@ log:
                 replay_schema = await listing(replay, readers | replay_tools)
                 other_schema = await listing(other, readers | replay_tools)
                 draft_schema = await listing(draft, readers | plan_tools)
-                full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools)
+                full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools | ROUTE_WRITE_TOOLS.keys())
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -409,6 +415,29 @@ log:
                 checked = await call(all_tools, full_schema, VALIDATE, write_args(**handle, expected_plan_version=cleared["plan_version"]))
                 assert not checked["passed"] and any(issue["code"] == "NO_UAV_ASSIGNED" for issue in checked["checks"])
                 end_args = write_args(configuration_id=handle["configuration_id"])
+                route_key = {"plan_id": plan_id, "mission_id": added["mission_id"]}
+                empty_route = await call(all_tools, full_schema, "get_mock_mission_route", route_key)
+                assert empty_route["route_version"] == 0 and empty_route["route"] is None
+                editing_args = write_args(**task, expected_route_version=0)
+                editing = await call(all_tools, full_schema, BEGIN_ROUTE, editing_args)
+                assert editing["route_version"] == 0
+                assert await call(all_tools, full_schema, BEGIN_ROUTE, editing_args) == editing
+                await call(all_tools, full_schema, "end_mock_plan_edit", end_args, "EDIT_IN_PROGRESS")
+                save_args = write_args(route_edit_id=editing["route_edit_id"], expected_route_version=0,
+                                       map_fixture_id="map-qa", waypoint_fixture_ids=["point-a", "point-b"])
+                await call(all_tools, full_schema, SAVE_ROUTE, {**save_args, "waypoint_fixture_ids": ["foreign"]}, "FIXTURE_NOT_FOUND")
+                route = await call(all_tools, full_schema, SAVE_ROUTE, save_args)
+                assert route["edit_open"] and route["route_version"] == 1 and route["waypoint_count"] == 2
+                assert await call(all_tools, full_schema, SAVE_ROUTE, {**save_args, "closed_loop": False}) == route
+                read_route = await call(all_tools, full_schema, "get_mock_mission_route", route_key)
+                assert read_route["route"]["waypoint_fixture_ids"] == save_args["waypoint_fixture_ids"]
+                finish_args = write_args(route_edit_id=editing["route_edit_id"], disposition="finish", expected_route_version=1)
+                await call(all_tools, full_schema, END_ROUTE, {**finish_args, "expected_route_version": 0}, "VERSION_CONFLICT")
+                finished = await call(all_tools, full_schema, END_ROUTE, finish_args)
+                assert not finished["edit_open"] and finished["route_version"] == 1
+                checked = await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": plan_id})
+                assert checked["configuration"]["configuration_id"] == handle["configuration_id"]
+                check("Mock route fixture validation, saved version checks and parent lease isolation")
                 await call(draft, draft_schema, "end_mock_plan_edit", end_args, "CONFIGURATION_EXPIRED")
                 ended = await call(all_tools, full_schema, "end_mock_plan_edit", end_args)
                 assert ended["released"] and await call(all_tools, full_schema, "end_mock_plan_edit", end_args) == ended
@@ -419,6 +448,10 @@ log:
                 assert copied["plan_id"] != plan_id and copied["mission_count"] == 1
                 copy_plan = await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": copied["plan_id"]})
                 assert copy_plan["missions"][0]["mission_id"] != added["mission_id"]
+                copy_route = await call(all_tools, full_schema, "get_mock_mission_route", {
+                    "plan_id": copied["plan_id"], "mission_id": copy_plan["missions"][0]["mission_id"],
+                })
+                assert copy_route["route"]["route_id"] != read_route["route"]["route_id"]
                 check("Mock plan lease ownership, version gates, edits, assignment exclusion and copy isolation")
 
                 stop(backend_process)
