@@ -55,3 +55,11 @@ its own token.
 python -m pip install "websockets>=15,<17"
 python tools/mock_mcp/verify.py --backend Backend/build/Release/DroneBackend.exe
 ~~~
+
+For an unattended Command UI check, build the Development Editor target and run the following with a new evidence directory. The verifier creates the draft through MCP, clicks the rendered Command buttons through Slate hit testing, and independently observes the lease acquisition and release on the isolated Backend.
+
+~~~powershell
+python tools/mock_mcp/verify_ui.py --backend Backend/build/Release/DroneBackend.exe --editor 'C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe' --evidence Saved/MockMcpDraftUi
+~~~
+
+The two screenshots and `result.json` record the rendered UI and Backend outcome. Testing the desktop Computer Use driver and Windows input delivery is a separate check.
