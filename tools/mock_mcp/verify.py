@@ -25,7 +25,8 @@ from websockets.asyncio.client import connect
 
 from approve import save_approval
 from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, BEGIN_ROUTE, DELETE_MISSION, DELETE_PLAN, DEPLOY, END_ROUTE
-from plan_writes import PLAN_WRITE_TOOLS, REVIEW, ROUTE_WRITE_TOOLS, SAVE_ROUTE, VALIDATE
+from plan_writes import CREATE_DEVICES, PLAN_WRITE_TOOLS, REMOVE_DEVICE, REVIEW, REVIEW_REHEARSAL, ROUTE_WRITE_TOOLS
+from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_REHEARSAL, UPDATE_DEVICE, VALIDATE
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from workspace import WORKSPACE_TOOLS
 
@@ -132,7 +133,7 @@ async def run(backend_exe, workspace):
         "replay-b": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
         "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
-                                       *sorted(set(APPROVAL_SCOPES.values()))]),
+                                       *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()))]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -161,7 +162,7 @@ log:
     fixtures.write_text(json.dumps({"maps": {"map-qa": {
         "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
         "point-b": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15},
-    }}}), encoding="utf-8")
+    }}, "devices": {"setup-qa": {"latitude": 0.1, "longitude": 0.1, "altitude": 15}}}), encoding="utf-8")
     backend_command = [str(backend_exe), str(config)]
     mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port),
                    "--fixtures", str(fixtures)]
@@ -213,7 +214,7 @@ log:
                 other_schema = await listing(other, readers | replay_tools)
                 draft_schema = await listing(draft, readers | plan_tools)
                 full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
-                                            ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys())
+                                            ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys())
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -340,8 +341,6 @@ log:
                     await plan_action("end_configuration", plan_id=plan_id)
                     other_draft = await call(all_tools, full_schema, DRAFT_TOOL, args)
                     assert other_draft["plan_id"] != plan_id
-                    await plan_action("simulation_create", request_id=str(uuid4()), count=1, latitude=0.1,
-                                      longitude=0.1, altitude=15)
                 check("configuration conflict, concurrent draft deduplication and Command protocol handoff")
 
                 # Deliberately close the HTTP connection without reading the draft response.
@@ -475,9 +474,17 @@ log:
                 new_lease = await call(all_tools, full_schema, "begin_mock_plan_edit",
                                        write_args(plan_id=plan_id, expected_plan_version=checked["plan_version"]))
                 reopened_handle = {"plan_id": plan_id, "configuration_id": new_lease["configuration_id"]}
+                device_args = write_args(device_fixture_id="setup-qa", count=1)
+                await call(all_tools, full_schema, CREATE_DEVICES, {**device_args, "device_fixture_id": "outside"}, "FIXTURE_NOT_FOUND")
+                device_batch = await call(all_tools, full_schema, CREATE_DEVICES, device_args)
+                assert device_batch["created_count"] == 1 and await call(all_tools, full_schema, CREATE_DEVICES, device_args) == device_batch
+                simulator = device_batch["devices"][0]
+                label_args = write_args(device_id=simulator["device_id"], expected_version=simulator["version"], label="QA display")
+                labeled = await call(all_tools, full_schema, UPDATE_DEVICE, label_args)
+                assert labeled["label"] == "QA display" and labeled["version"] > simulator["version"]
                 assigned = await call(all_tools, full_schema, "set_mock_mission_assignment",
                                       write_args(**reopened_handle, mission_id=added["mission_id"],
-                                                 expected_plan_version=new_lease["plan_version"], device_ids=["UAV-1001"]))
+                                                 expected_plan_version=new_lease["plan_version"], device_ids=[simulator["device_id"]]))
                 passed = await call(all_tools, full_schema, VALIDATE,
                                     write_args(**reopened_handle, expected_plan_version=assigned["plan_version"]))
                 assert passed["passed"] and passed["state"] == "ready", passed
@@ -493,6 +500,25 @@ log:
                 deployments = await call(all_tools, full_schema, "list_mock_plan_deployments", {"plan_id": plan_id})
                 assert [row["deployment_id"] for row in deployments["items"]] == [deployed["deployment_id"]]
                 assert (await http.get(backend + "/api/security-plans")).json()["executions"] == {}
+                run_args = write_args(plan_id=plan_id, mission_id=added["mission_id"],
+                                      expected_content_revision=deployed["content_revision"])
+                started = await call(all_tools, full_schema, START_REHEARSAL, run_args)
+                assert await call(all_tools, full_schema, START_REHEARSAL, run_args) == started
+                async with asyncio.timeout(18):
+                    while True:
+                        rehearsal = await call(all_tools, full_schema, "get_mock_rehearsal", {"rehearsal_id": started["rehearsal_id"]})
+                        if rehearsal["state"] == "completed":
+                            break
+                        assert rehearsal["state"] not in {"failed", "aborted", "cancelled"}, rehearsal
+                        await asyncio.sleep(0.15)
+                assert rehearsal["input_content_revision"] == deployed["content_revision"] and rehearsal["record_id"]
+                rehearsal_args = write_args(rehearsal_id=started["rehearsal_id"], expected_version=rehearsal["version"])
+                await call(all_tools, full_schema, REVIEW_REHEARSAL, rehearsal_args, "APPROVAL_REQUIRED")
+                reviewed = await call(all_tools, full_schema, REVIEW_REHEARSAL, confirmed(REVIEW_REHEARSAL, rehearsal_args))
+                assert reviewed["review_state"] == "approved"
+                remove_args = write_args(device_id=simulator["device_id"], expected_version=labeled["version"])
+                device_approval = confirmed(REMOVE_DEVICE, remove_args)
+                await call(all_tools, full_schema, REMOVE_DEVICE, device_approval, "OBJECT_IN_USE")
                 reopened = await call(all_tools, full_schema, "reopen_mock_security_plan",
                                       write_args(plan_id=plan_id, expected_plan_version=deployed["plan_version"]))
                 assert reopened["previous_deployment_id"] == deployed["deployment_id"]
@@ -505,6 +531,10 @@ log:
                 await call(all_tools, full_schema, "end_mock_plan_edit", write_args(configuration_id=last_lease["configuration_id"]))
                 assert (await call(all_tools, full_schema, "list_mock_plan_deployments", {"plan_id": plan_id}))["items"] == deployments["items"]
                 check("operator approvals, isolated deployment, draft removal and immutable deployment history")
+                removed_device = await call(all_tools, full_schema, REMOVE_DEVICE, device_approval)
+                assert removed_device["removed"] and await call(all_tools, full_schema, REMOVE_DEVICE, remove_args) == removed_device
+                await call(all_tools, full_schema, "get_mock_device_status", {"device_id": simulator["device_id"]}, "NOT_FOUND")
+                check("simulator fixture creation, metadata, completed rehearsal and operator review")
 
                 stop(backend_process)
                 saved_path = workspace / "security_plans.json"

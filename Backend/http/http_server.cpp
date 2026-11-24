@@ -1797,7 +1797,16 @@ http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
             !std::regex_match(SecurityPlanStore::str(args, "request_id"), uuid))
             return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
         std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
-        const auto result = security_plans_.writeMockMcpPlan(identity, tool, args,
+        std::set<std::string> registered;
+        std::unique_lock<std::mutex> records(records_mutex_, std::defer_lock);
+        if (tool == "create_mock_simulated_devices") {
+            records.lock();
+            for (const auto& drone : drone_records_) {
+                const auto slot = drone.slot;
+                if (slot > 0) registered.insert("UAV-" + std::string(slot < 10 ? "0" : "") + std::to_string(slot));
+            }
+        }
+        const auto result = security_plans_.writeMockMcpPlan(identity, tool, args, registered,
             [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); });
         if (tool == "delete_mock_security_plan_draft" || tool == "delete_mock_plan_mission") {
             const auto context = operational_context_.snapshot();

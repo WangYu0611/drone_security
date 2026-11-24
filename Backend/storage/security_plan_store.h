@@ -155,6 +155,8 @@ public:
         }
         auto next = state_;
         expire(next, OperationalContext::now());
+        if (mockCall && mockSimulationTool(mockCall->tool))
+            return commitMockSimulation(next, *mockCall, physicalUavs, publish);
         const auto mockRequest = mockCall ? mockPlanRequest(next, *mockCall) : Object{};
         const auto& request = mockCall ? mockRequest : originalRequest;
         const auto action = str(request, "action");

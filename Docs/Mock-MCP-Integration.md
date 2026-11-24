@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　40 项可在隔离工作区联调，包含首批五项、工作区查询及回放、方案与任务编辑、夹具航线、配置检查，以及经操作员确认的复核、部署和删除。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　45 项可在隔离工作区联调，包含工作区查询及回放、方案与任务编辑、夹具航线、配置检查和部署、模拟设备管理及任务预演。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **40 项已实现，29 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **45 项已实现，24 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -99,9 +99,9 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 | --- | --- | --- | --- |
 | [`list_mock_devices`](#list_mock_devices) | `mock:read` | 已实现 | 列出隔离工作区的测试设备与模拟机。 |
 | [`get_mock_device_status`](#get_mock_device_status) | `mock:read` | 已实现 | 查看来源、观测时间、模拟位置、可用状态、当前任务与占用。 |
-| [`create_mock_simulated_devices`](#create_mock_simulated_devices) | `mock:read` + `mock:fleet:manage` | 待实现 | 按已配置的合成夹具批量新增模拟机。 |
-| [`update_mock_device_metadata`](#update_mock_device_metadata) | `mock:read` + `mock:fleet:manage` | 待实现 | 修改隔离测试注册表的展示信息。 |
-| [`remove_mock_test_device`](#remove_mock_test_device) | `mock:read` + `mock:fleet:manage` | 待实现 | 在无任务或控制权占用且经确认时移除测试注册表条目。 |
+| [`create_mock_simulated_devices`](#create_mock_simulated_devices) | `mock:read` + `mock:fleet:manage` | 已实现 | 按已配置的合成夹具批量新增模拟机。 |
+| [`update_mock_device_metadata`](#update_mock_device_metadata) | `mock:read` + `mock:fleet:manage` | 已实现 | 修改隔离测试注册表的展示信息。 |
+| [`remove_mock_test_device`](#remove_mock_test_device) | `mock:read` + `mock:fleet:manage` | 已实现 | 在无任务或控制权占用且经确认时移除测试注册表条目。 |
 | [`preview_mock_fleet_move`](#preview_mock_fleet_move) | `mock:read` + `mock:fleet:preview` | 待实现 | 预览单机或集群在指定合成场景中的移动结果。 |
 | [`confirm_mock_fleet_move`](#confirm_mock_fleet_move) | `mock:read` + `mock:fleet:simulate` | 待实现 | 在隔离模拟器中提交经确认且未过期的移动预览。 |
 | [`preview_mock_single_takeover`](#preview_mock_single_takeover) | `mock:read` + `mock:fleet:preview` | 待实现 | 预览单架模拟机从已有模拟任务切出的影响。 |
@@ -118,8 +118,8 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 | --- | --- | --- | --- |
 | [`list_mock_rehearsals`](#list_mock_rehearsals) | `mock:read` | 已实现 | 列出任务的预演批次及复核状态。 |
 | [`get_mock_rehearsal`](#get_mock_rehearsal) | `mock:read` | 已实现 | 读取成员进度、结果、输入修订以及可回放的记录引用。 |
-| [`start_mock_rehearsal`](#start_mock_rehearsal) | `mock:read` + `mock:rehearsal:run` | 待实现 | 启动或重新运行仅含模拟机的测试预演。 |
-| [`record_mock_rehearsal_review`](#record_mock_rehearsal_review) | `mock:read` + `mock:rehearsal:review` | 待实现 | 记录操作员对已完成且输入版本仍有效的预演复核。 |
+| [`start_mock_rehearsal`](#start_mock_rehearsal) | `mock:read` + `mock:rehearsal:run` | 已实现 | 启动或重新运行仅含模拟机的测试预演。 |
+| [`record_mock_rehearsal_review`](#record_mock_rehearsal_review) | `mock:read` + `mock:rehearsal:review` | 已实现 | 记录操作员对已完成且输入版本仍有效的预演复核。 |
 
 新增模拟机、任务分配和预演回放使用前述独立工具。复核结果仅作用于隔离预演。
 
@@ -1539,6 +1539,8 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 
 **验收**　变更展示名称不改变设备身份、模拟观测或任务状态；额外连接配置字段被拒绝。
 
+当前可编辑的对象为 `kind: simulated`。`test_fixture` 来自管理员的 Backend 测试配置，可查询状态。
+
 #### `remove_mock_test_device`
 
 **权限**　`mock:read` + `mock:fleet:manage`。
@@ -1815,6 +1817,8 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 **错误处理**　`CHECK_FAILED`：修正 Mock 任务输入或缺失夹具。`OBJECT_IN_USE`：等待模拟资源可用。`VERSION_CONFLICT`：重读任务。
 
 **验收**　用纯软件夹具启动；同键只有一份预演，明确新发起的重新预演产生新 ID，旧结果与回放保留。
+
+Backend 刚接受预演时回执为 `created`，版本为 0。后续状态和结果通过 `get_mock_rehearsal` 查询。
 
 #### `record_mock_rehearsal_review`
 

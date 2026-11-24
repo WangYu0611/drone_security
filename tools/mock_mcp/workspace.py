@@ -146,7 +146,7 @@ def execution_summary(run):
         "fleet_move" if run.get("control_kind") == "GROUP_MOVE" else "mission")
     return {"execution_id": run["execution_id"], "kind": kind,
             "plan_id": id_or_none(run.get("plan_id")), "mission_id": id_or_none(run.get("mission_id")),
-            "state": run["state"].lower(), "version": run.get("control_version", 0),
+            "state": run["state"].lower(), "version": int(run.get("control_version", 0)),
             "scheduled_for": stamp(run.get("scheduled_start_epoch"))}
 
 
@@ -362,7 +362,7 @@ class WorkspaceReader:
                     "preflight", "created", "scheduled", "failed", "aborted", "cancelled", "completed"]
         return {"rehearsal_id": key, "plan_id": first["plan_id"], "mission_id": first["mission_id"],
                 "state": next(state for state in priority if state in states),
-                "version": sum(run.get("control_version", 0) for run in members),
+                "version": sum(int(run.get("control_version", 0)) for run in members),
                 "review_state": "approved" if all(run.get("rehearsal_review") for run in members) else "pending",
                 "record_id": self.record_for(members)}
 

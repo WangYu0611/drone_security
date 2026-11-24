@@ -21,7 +21,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import uvicorn
 
-from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, VALIDATE, PlanWriter, load_map_fixtures
+from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, SIMULATION_SCOPES
+from plan_writes import SIMULATION_TOOLS, VALIDATE, PlanWriter, load_fixtures
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
 from workspace import WORKSPACE_TOOLS, WorkspaceReader
@@ -31,7 +32,7 @@ REPLAY = "mock:replay"
 DRAFT = "mock:plan:draft"
 VALIDATION = "mock:plan:validate"
 ROUTE_EDIT = "mock:route:edit"
-BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS
+BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS | SIMULATION_TOOLS
 TOKEN_PATTERN = r"[a-f0-9]{64}"
 MAX_REQUEST = 8192
 DEMO_ID = "demo-a"
@@ -87,7 +88,7 @@ TOOLS.update(WORKSPACE_TOOLS)
 TOOLS.update(RECORD_REPLAY_TOOLS)
 TOOLS.update(BACKEND_WRITES)
 TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
-              **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES,
+              **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES, **SIMULATION_SCOPES,
               "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
 
@@ -351,7 +352,7 @@ def main():
     parser.add_argument("--workspace-id", default="mock-local", help="ID of the isolated workspace assigned to these identities")
     parser.add_argument("--session-id", default="mock-session", help="ID of the shared demo session assigned to these identities")
     parser.add_argument("--state-db", type=Path, help="Workspace-local playback database (defaults next to identities)")
-    parser.add_argument("--fixtures", type=Path, help="Administrator-approved synthetic map fixture JSON")
+    parser.add_argument("--fixtures", type=Path, help="Administrator-approved synthetic fixture JSON")
     args = parser.parse_args()
     for port in (args.backend_port, args.http_port):
         if port is not None and not 1 <= port <= 65535:
@@ -363,16 +364,16 @@ def main():
     except (OSError, ValueError, KeyError, TypeError):
         parser.error("could not load the local MCP identities file")
     try:
-        fixtures = load_map_fixtures(args.fixtures)
+        fixtures = load_fixtures(args.fixtures)
     except (OSError, ValueError, KeyError, TypeError):
-        parser.error("could not load the local synthetic map fixtures")
+        parser.error("could not load the local synthetic fixtures")
     identity = None
     if args.http_port is None:
         identity = authenticate(accounts, os.environ.get("DRONE_MOCK_MCP_CLIENT_TOKEN", ""))
         if identity is None:
             parser.error("set DRONE_MOCK_MCP_CLIENT_TOKEN to a configured identity token")
     token = os.environ.get("DRONE_MOCK_MCP_BRIDGE_TOKEN", "")
-    if token or identity is None or identity.scopes & {DRAFT, VALIDATION, ROUTE_EDIT, *APPROVAL_SCOPES.values()}:
+    if token or identity is None or (identity.scopes - {READ, REPLAY}):
         if not re.fullmatch(TOKEN_PATTERN, token):
             parser.error("set a 32-byte hex DRONE_MOCK_MCP_BRIDGE_TOKEN")
         if hashlib.sha256(token.encode("ascii")).hexdigest() in accounts:

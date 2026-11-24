@@ -1,6 +1,7 @@
 """Schemas and transport for Backend-owned Mock plan transactions."""
 
 import json
+import math
 import re
 
 import httpx
@@ -8,7 +9,7 @@ from jsonschema import Draft202012Validator
 
 from protocol import BOOLEAN, COUNTER, ID, STRING, TIMESTAMP, UUID, ToolFailure
 from protocol import array, choices, nullable, object_schema, tool, utc_timestamp
-from workspace import PLAN_STATE
+from workspace import PLAN_STATE, RUN_STATE
 
 VALIDATE = "validate_mock_plan"
 BEGIN_ROUTE = "begin_mock_route_edit"
@@ -18,6 +19,12 @@ DELETE_PLAN = "delete_mock_security_plan_draft"
 DELETE_MISSION = "delete_mock_plan_mission"
 REVIEW = "record_mock_plan_review"
 DEPLOY = "publish_mock_plan_snapshot"
+CREATE_DEVICES = "create_mock_simulated_devices"
+UPDATE_DEVICE = "update_mock_device_metadata"
+REMOVE_DEVICE = "remove_mock_test_device"
+START_REHEARSAL = "start_mock_rehearsal"
+REVIEW_REHEARSAL = "record_mock_rehearsal_review"
+FLEET_MANAGE = "mock:fleet:manage"
 NAME = {"type": "string", "minLength": 1}
 DESCRIPTION = {"type": "string", "maxLength": 1000}
 VERSIONED_PLAN = {"plan_id": ID, "expected_plan_version": COUNTER, "request_id": UUID}
@@ -58,7 +65,8 @@ PLAN_WRITE_TOOLS = {item.name: item for item in (
 )}
 
 APPROVAL_SCOPES = {DELETE_PLAN: "mock:plan:delete", DELETE_MISSION: "mock:plan:delete",
-                   REVIEW: "mock:plan:review", DEPLOY: "mock:plan:deploy"}
+                   REVIEW: "mock:plan:review", DEPLOY: "mock:plan:deploy", REMOVE_DEVICE: FLEET_MANAGE,
+                   REVIEW_REHEARSAL: "mock:rehearsal:review"}
 APPROVAL_TOOLS = {item.name: item for item in (
     write(DELETE_PLAN, "Delete a draft after operator approval for this version.",
           {**VERSIONED_PLAN, "approval_id": ID},
@@ -72,6 +80,30 @@ APPROVAL_TOOLS = {item.name: item for item in (
     write(DEPLOY, "Freeze a reviewed plan into a Mock deployment snapshot after operator approval.",
           {**CONFIGURATION, "review_id": ID, "approval_id": ID},
           {**RESULT, "deployment_id": ID, "state": {"const": "deployed"}, "configuration_released": BOOLEAN}, ("approval_id",)),
+    write(REMOVE_DEVICE, "Remove an unused software simulator after operator approval.",
+          {"device_id": ID, "expected_version": COUNTER, "request_id": UUID, "approval_id": ID},
+          {"device_id": ID, "request_id": UUID, "removed": {"const": True}}, ("approval_id",)),
+    write(REVIEW_REHEARSAL, "Record operator approval for a completed software rehearsal.",
+          {"rehearsal_id": ID, "expected_version": COUNTER, "request_id": UUID, "approval_id": ID},
+          {"rehearsal_id": ID, "request_id": UUID, "version": COUNTER, "state": {"const": "completed"},
+           "review_state": {"const": "approved"}, "reviewed_at": TIMESTAMP}, ("approval_id",)),
+)}
+
+SIMULATION_SCOPES = {CREATE_DEVICES: FLEET_MANAGE, UPDATE_DEVICE: FLEET_MANAGE, START_REHEARSAL: "mock:rehearsal:run"}
+SIMULATION_TOOLS = {item.name: item for item in (
+    write(CREATE_DEVICES, "Add software simulators from an approved device fixture.",
+          {"device_fixture_id": ID, "count": {"type": "integer", "minimum": 1, "maximum": 20}, "request_id": UUID},
+          {"request_id": UUID, "created_count": COUNTER, "devices": array(object_schema({
+              "device_id": ID, "name": STRING, "kind": {"const": "simulated"}, "version": COUNTER,
+          }))}),
+    write(UPDATE_DEVICE, "Set the display name or label of a software simulator.",
+          {"device_id": ID, "expected_version": COUNTER, "name": NAME,
+           "label": {"type": "string", "maxLength": 160}, "request_id": UUID},
+          {"device_id": ID, "version": COUNTER, "name": STRING, "label": STRING, "request_id": UUID}, ("name", "label")),
+    write(START_REHEARSAL, "Start a rehearsal that uses only assigned software simulators.",
+          {"plan_id": ID, "mission_id": ID, "expected_content_revision": COUNTER, "request_id": UUID},
+          {"rehearsal_id": ID, "plan_id": ID, "mission_id": ID, "request_id": UUID, "version": COUNTER,
+           "state": RUN_STATE, "input_content_revision": COUNTER, "review_state": {"const": "pending"}}),
 )}
 
 ROUTE_WRITE_TOOLS = {item.name: item for item in (
@@ -106,25 +138,39 @@ BACKEND_ERRORS = {
     "APPROVAL_INVALID": "APPROVAL_INVALID", "APPROVAL_REQUIRED": "APPROVAL_REQUIRED", "CHECK_FAILED": "CHECK_FAILED",
     "PLAN_NOT_READY": "CHECK_FAILED", "VALIDATION_STALE": "CHECK_FAILED", "REVIEW_REQUIRED": "REVIEW_REQUIRED",
     "REVIEW_STALE": "REVIEW_REQUIRED",
+    "OBJECT_IN_USE": "OBJECT_IN_USE", "SIMULATION_FLEET_FULL": "LIMIT_EXCEEDED", "SIMULATION_ID_CONFLICT": "OBJECT_IN_USE",
+    "SIMULATION_ORIGIN_OCCUPIED": "OBJECT_IN_USE", "SIMULATION_INVALID_COUNT": "INVALID_ARGUMENT",
+    "SIMULATION_INVALID_ORIGIN": "INVALID_ARGUMENT", "SIMULATION_UAV_REQUIRED": "CHECK_FAILED", "ROUTE_MISSING": "CHECK_FAILED",
+    "EXECUTION_CONFLICT": "OBJECT_IN_USE", "REHEARSAL_INCOMPLETE": "INVALID_STATE", "REHEARSAL_STALE": "REHEARSAL_STALE",
 }
 
 
-def load_map_fixtures(path):
+def load_fixtures(path):
     if path is None:
-        return {}
+        return {"maps": {}, "devices": {}}
     data = json.loads(path.read_text(encoding="utf-8"))
-    if set(data) != {"maps"} or not isinstance(data["maps"], dict):
-        raise ValueError("A Mock fixtures file must contain a maps object")
-    for key, points in data["maps"].items():
+    if not isinstance(data, dict) or set(data) - {"maps", "devices"}:
+        raise ValueError("A Mock fixtures file supports maps and devices objects")
+    maps, devices = data.get("maps", {}), data.get("devices", {})
+    if not isinstance(maps, dict) or not isinstance(devices, dict):
+        raise ValueError("Fixture sections must be JSON objects")
+    schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
+                            "longitude": {"type": "number", "minimum": -180, "maximum": 180},
+                            "altitude": {"type": "number", "minimum": -1000, "maximum": 10000}})
+    point_check = Draft202012Validator(schema)
+
+    def check_point(point_id, point):
+        if not re.fullmatch(ID["pattern"], point_id) or not point_check.is_valid(point) or not all(map(math.isfinite, point.values())):
+            raise ValueError("Invalid synthetic fixture point")
+
+    for key, points in maps.items():
         if not re.fullmatch(ID["pattern"], key) or not isinstance(points, dict):
             raise ValueError("Invalid Mock fixture map")
         for point_id, point in points.items():
-            schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
-                                    "longitude": {"type": "number", "minimum": -180, "maximum": 180},
-                                    "altitude": {"type": "number", "minimum": -1000, "maximum": 10000}})
-            if not re.fullmatch(ID["pattern"], point_id) or not Draft202012Validator(schema).is_valid(point):
-                raise ValueError("Invalid synthetic fixture point")
-    return data["maps"]
+            check_point(point_id, point)
+    for device_id, origin in devices.items():
+        check_point(device_id, origin)
+    return {"maps": maps, "devices": devices}
 
 
 class PlanWriter:
@@ -134,7 +180,7 @@ class PlanWriter:
         self.fixtures = fixtures
 
     def resolve_route(self, arguments):
-        points = self.fixtures.get(arguments["map_fixture_id"])
+        points = self.fixtures["maps"].get(arguments["map_fixture_id"])
         keys = arguments["waypoint_fixture_ids"]
         if points is None or any(key not in points for key in keys):
             # The Backend checks receipts before validating a resolved fixture.
@@ -147,12 +193,15 @@ class PlanWriter:
                 ]}
 
     async def call(self, identity, name, arguments):
-        normalized = dict(arguments)
+        normalized = {key: int(value) if key.startswith("expected_") or key == "count" else value
+                      for key, value in arguments.items()}
         if name == SAVE_ROUTE:
             normalized.setdefault("closed_loop", False)
             normalized["resolved_fixture_path"] = self.resolve_route(normalized)
         elif name == END_ROUTE and (normalized["disposition"] == "finish") != ("expected_route_version" in normalized):
             raise ToolFailure("INVALID_ARGUMENT", "Supply expected_route_version only when finishing")
+        elif name == CREATE_DEVICES:
+            normalized["resolved_device_origin"] = self.fixtures["devices"].get(arguments["device_fixture_id"])
         try:
             if "name" in normalized:
                 value = normalized["name"].strip(" \t\r\n\f\v")
@@ -161,6 +210,8 @@ class PlanWriter:
                 normalized["name"] = value
             if len(normalized.get("description", "").encode("utf-8")) > 1000:
                 raise ToolFailure("INVALID_ARGUMENT", "Use a description of at most 1,000 UTF-8 bytes")
+            if len(normalized.get("label", "").encode("utf-8")) > 160:
+                raise ToolFailure("INVALID_ARGUMENT", "Use a label of at most 160 UTF-8 bytes")
         except UnicodeError as error:
             raise ToolFailure("INVALID_ARGUMENT", "Use valid UTF-8 text") from error
         try:
@@ -172,6 +223,8 @@ class PlanWriter:
                 confirmed = utc_timestamp(payload.pop("confirmed_at"))
                 if "lease_expires_at" in payload:
                     payload["lease_expires_at"] = utc_timestamp(payload["lease_expires_at"])
+                if "reviewed_at" in payload:
+                    payload["reviewed_at"] = utc_timestamp(payload["reviewed_at"])
                 return payload, confirmed
             code = BACKEND_ERRORS.get(payload.get("code"))
             if code:

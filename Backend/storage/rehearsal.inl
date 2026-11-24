@@ -48,12 +48,12 @@ private:
         return (latest?latest->at("position"):aircraft.at("home_position")).as_object();
     }
 
-    void createSimulationAircraft(Object& doc,const Object& r,const std::set<std::string>& physicalUavs) const {
+    void createSimulationAircraft(Object& doc,const Object& r,const std::set<std::string>& physicalUavs,int maximum=12) const {
         const auto* count=r.if_contains("count");
         if(!count || !count->is_number() || !std::isfinite(count->to_number<double>()) ||
-           count->to_number<double>()<1 || count->to_number<double>()>12 ||
+           count->to_number<double>()<1 || count->to_number<double>()>maximum ||
            std::floor(count->to_number<double>())!=count->to_number<double>())
-            throw PlanError("SIMULATION_INVALID_COUNT","Add between one and twelve simulated aircraft");
+            throw PlanError("SIMULATION_INVALID_COUNT","Add between one and " + std::to_string(maximum) + " simulated aircraft");
         for(const auto* key:{"latitude","longitude","altitude"}) {
             const auto* value=r.if_contains(key);
             if(!value || !value->is_number() || !std::isfinite(value->to_number<double>()))

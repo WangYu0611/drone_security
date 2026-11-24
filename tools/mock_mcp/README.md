@@ -45,13 +45,14 @@ the defaults `mock-local` and `mock-session`. Deploy each workspace with its own
 bridge secret and state database. `--state-db` sets the replay database path. By default it is named
 `mock-mcp-replay.sqlite3` alongside the identities file. Keep it outside Git with the workspace data.
 
-Set `--fixtures` to a local JSON file containing the synthetic maps approved for this workspace. The
+Set `--fixtures` to a local JSON file containing the synthetic maps and simulator origins approved
+for this workspace. The
 `maps` object maps a fixture ID to waypoint IDs. Each point contains `latitude`, `longitude` and
 `altitude` in the ellipsoid datum. The agent supplies fixture IDs to the route tool. Route writes use
 Backend's existing route edit session and saved version checks.
 
 ~~~json
-{"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}}}
+{"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}},"devices":{"setup-demo":{"latitude":0.1,"longitude":0.1,"altitude":15}}}
 ~~~
 
 ## Operator approvals
@@ -59,7 +60,7 @@ Backend's existing route edit session and saved version checks.
 The operator runs the approval command on the Backend host, using an account with write access to
 the isolated workspace's `mock_mcp_approvals` directory. Keep that directory and the Backend's
 persistence outside the MCP client's filesystem permissions. Tool scopes and operator approvals
-are independent. The operator reviews the exact JSON arguments, excluding the two request IDs.
+are independent. The operator reviews the exact JSON arguments, excluding `request_id` and `approval_id`.
 
 ~~~powershell
 python tools/mock_mcp/approve.py --workspace <backend-workspace> --identity <identity> --tool record_mock_plan_review --arguments <operation.json>

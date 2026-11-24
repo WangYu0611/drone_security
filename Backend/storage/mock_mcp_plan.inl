@@ -13,10 +13,10 @@
         return "configuration-" + std::to_string(lease.at("acquired_version").to_number<int64_t>());
     }
 
-    Object writeMockMcpPlan(std::string identity, std::string tool, Object arguments,
+    Object writeMockMcpPlan(std::string identity, std::string tool, Object arguments, const std::set<std::string>& registered,
                             const std::function<void(const Object&)>& publish) {
         const MockPlanCall call{std::move(identity), std::move(tool), std::move(arguments)};
-        return transact({}, {}, "Mock MCP", publish, {}, &call);
+        return transact({}, registered, "Mock MCP", publish, {}, &call);
     }
 
 private:
@@ -25,11 +25,13 @@ private:
     static Object mockPlanFingerprint(const MockPlanCall& call) {
         auto arguments = call.arguments;
         arguments.erase("resolved_fixture_path");
+        arguments.erase("resolved_device_origin");
         arguments.erase("approval_id");
         return arguments;
     }
 
     #include "storage/mock_mcp_approval.inl"
+    #include "storage/mock_mcp_simulation.inl"
 
     const Object* mockMcpReceipt(const MockPlanCall& call) const {
         const auto* scope = mock_mcp_draft_receipts_.if_contains(call.scope());
@@ -230,13 +232,18 @@ private:
             } else plan.at("review").as_object()["review_id"] = mockPlanStageId("review-", planId, plan);
         }
         renewMockConfiguration(next, call);
-        Object result = mockPlanResult(next, call, request, planId, missionId);
+        return persistMockMcpResult(next, call, mockPlanResult(next, call, request, planId, missionId),
+                                    mockPlanApprovalRequired(action), publish);
+    }
+
+    Object persistMockMcpResult(Object& next, const MockPlanCall& call, Object result, bool consumeApproval,
+                                const std::function<void(const Object&)>& publish) {
         auto receipts = mock_mcp_draft_receipts_;
         const auto scope = call.scope();
         if (!receipts.contains(scope)) receipts[scope] = Object{};
         receipts.at(scope).as_object()[str(call.arguments, "request_id")] =
             Object{{"arguments", mockPlanFingerprint(call)}, {"result", result}};
-        if (mockPlanApprovalRequired(action)) {
+        if (consumeApproval) {
             const char* used = "plan-write/approvals-used";
             if (!receipts.contains(used)) receipts[used] = Object{};
             receipts.at(used).as_object()[str(call.arguments, "approval_id")] = true;
