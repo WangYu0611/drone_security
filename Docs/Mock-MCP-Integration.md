@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　56 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线、检查复核与部署、Mock 执行和预约、模拟设备管理和预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　59 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线与方案平移、检查复核与部署、Mock 执行和预约、模拟设备管理和预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **56 项已实现，13 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **59 项已实现，10 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -67,9 +67,9 @@ Map 已支持航点编辑、保存、完成或放弃，以及方案整体移动�
 | [`begin_mock_route_edit`](#begin_mock_route_edit) | `mock:read` + `mock:route:edit` | 已实现 | 为测试任务取得与配置会话绑定的航线编辑会话。 |
 | [`save_mock_route_draft`](#save_mock_route_draft) | `mock:read` + `mock:route:edit` | 已实现 | 基于约定的合成地图夹具保存航线修改并保留编辑会话。 |
 | [`end_mock_route_edit`](#end_mock_route_edit) | `mock:read` + `mock:route:edit` | 已实现 | 完成或放弃当前会话内的未保存修改。 |
-| [`preview_mock_plan_translation`](#preview_mock_plan_translation) | `mock:read` + `mock:route:edit` | 待实现 | 预览方案整体平移在指定合成夹具中的结果与检查项。 |
-| [`commit_mock_plan_translation`](#commit_mock_plan_translation) | `mock:read` + `mock:route:edit` | 待实现 | 提交经确认且版本仍有效的 Mock 平移预览。 |
-| [`cancel_mock_plan_translation`](#cancel_mock_plan_translation) | `mock:read` + `mock:route:edit` | 待实现 | 取消当前 Mock 整体平移预览并结束其编辑会话。 |
+| [`preview_mock_plan_translation`](#preview_mock_plan_translation) | `mock:read` + `mock:route:edit` | 已实现 | 预览方案整体平移在指定合成夹具中的结果与检查项。 |
+| [`commit_mock_plan_translation`](#commit_mock_plan_translation) | `mock:read` + `mock:route:edit` | 已实现 | 提交经确认且版本仍有效的 Mock 平移预览。 |
+| [`cancel_mock_plan_translation`](#cancel_mock_plan_translation) | `mock:read` + `mock:route:edit` | 已实现 | 取消当前 Mock 整体平移预览并结束其编辑会话。 |
 
 工具面向业务状态和合成场景。相机手势、地图命中和航线显示所有权仍由 Map 处理。
 

@@ -59,6 +59,13 @@ The optional `session_alerts` object maps a synthetic alert ID to `severity`, `c
 and separation events from software executions. Handling marks are shared within the assigned
 session and stored independently of the alert source and replay records.
 
+The optional `translations` object maps a fixture ID to a `map_fixture_id` and a `replacements` object.
+Each replacement key is a source waypoint ID. Its value defines a `target_id` in the same map and
+operator-provisioned `before_location` and `after_location` vectors with `x`, `y`, and `z` in that
+scene's Unreal coordinates. The Backend verifies one common translation across affected routes
+and retains topology and route settings. The preview lasts 60 seconds and uses the current plan
+configuration. The move is applied only after an operator approves the preview ID.
+
 ~~~json
 {"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}},"devices":{"setup-demo":{"latitude":0.1,"longitude":0.1,"altitude":15}},"video_sources":{"video-demo":{"device_id":"UAV-01","title":"Demo clip","availability":"available"}}}
 ~~~

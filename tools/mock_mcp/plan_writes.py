@@ -16,6 +16,9 @@ VALIDATE = "validate_mock_plan"
 BEGIN_ROUTE = "begin_mock_route_edit"
 SAVE_ROUTE = "save_mock_route_draft"
 END_ROUTE = "end_mock_route_edit"
+PREVIEW_TRANSLATION = "preview_mock_plan_translation"
+COMMIT_TRANSLATION = "commit_mock_plan_translation"
+CANCEL_TRANSLATION = "cancel_mock_plan_translation"
 DELETE_PLAN = "delete_mock_security_plan_draft"
 DELETE_MISSION = "delete_mock_plan_mission"
 REVIEW = "record_mock_plan_review"
@@ -128,6 +131,19 @@ ROUTE_WRITE_TOOLS = {item.name: item for item in (
            "expected_route_version": COUNTER, "request_id": UUID},
           {"mission_id": ID, "route_edit_id": ID, "route_version": COUNTER, "edit_open": {"const": False},
            "disposition": choices("finish", "discard_unsaved"), "request_id": UUID}, ("expected_route_version",)),
+    write(PREVIEW_TRANSLATION, "Preview an approved translation of a Mock draft's fixture routes.",
+          {**CONFIGURATION, "translation_fixture_id": ID},
+          {"plan_id": ID, "preview_id": ID, "base_plan_version": COUNTER, "state": choices("ready", "blocked"),
+           "affected_mission_ids": array(ID), "checks": array(object_schema({
+               "code": STRING, "message": STRING, "severity": choices("blocking", "warning"),
+           })), "expires_at": TIMESTAMP, "request_id": UUID}),
+    write(COMMIT_TRANSLATION, "Commit a current translation after operator approval.",
+          {"preview_id": ID, "approval_id": ID, "request_id": UUID},
+          {**RESULT, "preview_id": ID, "updated_mission_ids": array(ID), "state": {"const": "committed"}},
+          ("approval_id",)),
+    write(CANCEL_TRANSLATION, "Close your translation preview without changing saved routes.",
+          {"preview_id": ID, "request_id": UUID},
+          {"plan_id": ID, "preview_id": ID, "state": {"const": "canceled"}, "request_id": UUID}),
 )}
 
 EXECUTION_SCOPES = {REQUEST_EXECUTION: "mock:execution:start", START_SCHEDULED: "mock:execution:start",
@@ -175,18 +191,18 @@ BACKEND_ERRORS = {
     "INVALID_SCHEDULE": "INVALID_ARGUMENT", "NO_UAV_ASSIGNED": "CHECK_FAILED",
     "SIMULATION_START_REQUIRED": "INVALID_STATE", "MOCK_UAV_UNAVAILABLE": "NOT_FOUND",
     "PILOT_CONTROL_ASSIGNED": "OBJECT_IN_USE", "TRAJECTORY_CONFLICT": "CHECK_FAILED",
+    "PREVIEW_EXPIRED": "PREVIEW_EXPIRED", "PREVIEW_STALE": "PREVIEW_STALE", "PREVIEW_BLOCKED": "PREVIEW_BLOCKED",
 }
 
 
 def load_fixtures(path):
     if path is None:
-        return {"maps": {}, "devices": {}, "video_sources": {}, "session_alerts": {}}
+        return {section: {} for section in FIXTURE_SECTIONS}
     data = json.loads(path.read_text(encoding="utf-8"))
-    sections = ("maps", "devices", "video_sources", "session_alerts")
-    if not isinstance(data, dict) or set(data) - set(sections):
+    if not isinstance(data, dict) or set(data) - set(FIXTURE_SECTIONS):
         raise ValueError("Unknown Mock fixture section")
-    maps, devices, video, alerts = (data.get(section, {}) for section in sections)
-    if not all(isinstance(section, dict) for section in (maps, devices, video, alerts)):
+    maps, devices, video, alerts, translations = (data.get(section, {}) for section in FIXTURE_SECTIONS)
+    if not all(isinstance(section, dict) for section in (maps, devices, video, alerts, translations)):
         raise ValueError("Fixture sections must be JSON objects")
     schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
                             "longitude": {"type": "number", "minimum": -180, "maximum": 180},
@@ -213,7 +229,38 @@ def load_fixtures(path):
         if not re.fullmatch(ID["pattern"], key) or key.startswith("mission-alert-") or not alert_check.is_valid(alert):
             raise ValueError("Invalid synthetic session alert fixture")
         utc_epoch(alert["occurred_at"])
-    return {"maps": maps, "devices": devices, "video_sources": video, "session_alerts": alerts}
+    return {"maps": maps, "devices": devices, "video_sources": video, "session_alerts": alerts,
+            "translations": load_translations(translations, maps)}
+
+
+FIXTURE_SECTIONS = ("maps", "devices", "video_sources", "session_alerts", "translations")
+
+
+def load_translations(translations, maps):
+    vector = object_schema({axis: {"type": "number", "minimum": -1e10, "maximum": 1e10} for axis in "xyz"})
+    replacement = object_schema({"target_id": ID, "before_location": vector, "after_location": vector})
+    check = Draft202012Validator(object_schema({
+        "map_fixture_id": ID,
+        "replacements": {"type": "object", "minProperties": 1, "maxProperties": 100,
+                         "propertyNames": ID, "additionalProperties": replacement},
+    }))
+    resolved = {}
+    for key, row in translations.items():
+        if not re.fullmatch(ID["pattern"], key) or not check.is_valid(row) or row["map_fixture_id"] not in maps:
+            raise ValueError("Invalid synthetic translation fixture")
+        points = maps[row["map_fixture_id"]]
+        pairs = {}
+        for source, pair in row["replacements"].items():
+            target = pair["target_id"]
+            if source not in points or target not in points:
+                raise ValueError("Translation points must belong to the same map fixture")
+            before, after = pair["before_location"], pair["after_location"]
+            if not all(map(math.isfinite, (*before.values(), *after.values()))):
+                raise ValueError("Translation locations must be finite")
+            pairs[source] = {"target_id": target, "before": {**points[source], "location": before},
+                             "after": {**points[target], "location": after}}
+        resolved[key] = {"map_fixture_id": row["map_fixture_id"], "replacements": pairs}
+    return resolved
 
 
 class PlanWriter:
@@ -245,6 +292,8 @@ class PlanWriter:
             raise ToolFailure("INVALID_ARGUMENT", "Supply expected_route_version only when finishing")
         elif name == CREATE_DEVICES:
             normalized["resolved_device_origin"] = self.fixtures["devices"].get(arguments["device_fixture_id"])
+        elif name == PREVIEW_TRANSLATION:
+            normalized["resolved_translation_fixture"] = self.fixtures["translations"].get(arguments["translation_fixture_id"])
         elif name == VIDEO:
             device = arguments["device_id"]
             sources = self.fixtures["video_sources"]
@@ -272,12 +321,9 @@ class PlanWriter:
             payload = response.json()
             if response.status_code == 200:
                 confirmed = utc_timestamp(payload.pop("confirmed_at"))
-                if "lease_expires_at" in payload:
-                    payload["lease_expires_at"] = utc_timestamp(payload["lease_expires_at"])
-                if "reviewed_at" in payload:
-                    payload["reviewed_at"] = utc_timestamp(payload["reviewed_at"])
-                if payload.get("scheduled_for") is not None:
-                    payload["scheduled_for"] = utc_timestamp(payload["scheduled_for"])
+                for timestamp in ("lease_expires_at", "reviewed_at", "scheduled_for", "expires_at"):
+                    if payload.get(timestamp) is not None:
+                        payload[timestamp] = utc_timestamp(payload[timestamp])
                 if name in EXECUTION_TOOLS:
                     payload["version"] = int(payload["version"])
                 return payload, confirmed

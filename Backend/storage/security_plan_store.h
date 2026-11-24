@@ -159,6 +159,8 @@ public:
             return commitMockSimulation(next, *mockCall, physicalUavs, publish);
         if (mockCall && mockExecutionTool(mockCall->tool))
             return writeMockExecution(next, *mockCall, publish, checkPilotOwner);
+        if (mockCall && mockTranslationTool(mockCall->tool))
+            return writeMockTranslation(next, *mockCall, publish);
         const auto mockRequest = mockCall ? mockPlanRequest(next, *mockCall) : Object{};
         const auto& request = mockCall ? mockRequest : originalRequest;
         const auto action = str(request, "action");

@@ -29,6 +29,7 @@ from plan_writes import CREATE_DEVICES, PLAN_WRITE_TOOLS, REMOVE_DEVICE, REVIEW,
 from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_REHEARSAL, UPDATE_DEVICE, VALIDATE
 from plan_writes import CANCEL_SCHEDULED, EXECUTION_SCOPES, EXECUTION_TOOLS, REQUEST_EXECUTION
 from plan_writes import RESCHEDULE, SET_EXECUTION, START_SCHEDULED
+from plan_writes import CANCEL_TRANSLATION, COMMIT_TRANSLATION, PREVIEW_TRANSLATION
 from protocol import utc_timestamp
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from session_alerts import ACK_ALERT, ALERT_SCOPE, LIST_ALERTS
@@ -169,10 +170,18 @@ log:
         "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
         "point-b": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15},
         "point-c": {"latitude": 0.1, "longitude": 0.0995, "altitude": 15},
+        "shift-a": {"latitude": 0.1002, "longitude": 0.1000, "altitude": 15},
+        "shift-b": {"latitude": 0.1002, "longitude": 0.1001, "altitude": 15},
     }}, "devices": {"setup-qa": {"latitude": 0.1, "longitude": 0.1, "altitude": 15}},
         "video_sources": {"video-qa": {"device_id": "UAV-01", "title": "QA clip", "availability": "available"}},
         "session_alerts": {"session-qa": {"device_id": "UAV-02", "severity": "warning", "code": "DEVICE_OFFLINE",
-                                          "occurred_at": "2026-11-23T07:00:00Z"}}
+                                          "occurred_at": "2026-11-23T07:00:00Z"}},
+        "translations": {
+            key: {"map_fixture_id": "map-qa", "replacements": {
+                f"point-{suffix}": {"target_id": f"shift-{suffix}", "before_location": {"x": 0, "y": y, "z": 0},
+                                    "after_location": {"x": 2200, "y": y, "z": 0}} for suffix, y in members}}
+            for key, members in (("shift-qa", (("a", 0), ("b", 1113))), ("shift-blocked", (("a", 0),)))
+        },
     }), encoding="utf-8")
     backend_command = [str(backend_exe), str(config)]
     mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port),
@@ -549,6 +558,43 @@ log:
                 def confirmed(name, params, owner="all"):
                     props = {key: value for key, value in params.items() if key != "request_id"}
                     return {**params, "approval_id": save_approval(workspace, owner, name, props, 120)}
+
+                copy_id = {"plan_id": copied["plan_id"]}
+                copy_task = {**copy_id, "mission_id": copy_plan["missions"][0]["mission_id"]}
+                move_lease = await call(all_tools, full_schema, "begin_mock_plan_edit",
+                                        write_args(**copy_id, expected_plan_version=copy_plan["plan_version"]))
+                moving = {**copy_id, "configuration_id": move_lease["configuration_id"],
+                          "expected_plan_version": move_lease["plan_version"]}
+                await call(all_tools, full_schema, PREVIEW_TRANSLATION,
+                           write_args(**moving, translation_fixture_id="foreign"), "FIXTURE_NOT_FOUND")
+                blocked = await call(all_tools, full_schema, PREVIEW_TRANSLATION,
+                                     write_args(**moving, translation_fixture_id="shift-blocked"))
+                assert blocked["state"] == "blocked" and blocked["checks"][0]["code"] == "FIXTURE_NOT_FOUND", blocked
+                cancel = write_args(preview_id=blocked["preview_id"])
+                await call(all_tools, full_schema, COMMIT_TRANSLATION, cancel, "PREVIEW_BLOCKED")
+                canceled_preview = await call(all_tools, full_schema, CANCEL_TRANSLATION, cancel)
+                assert await call(all_tools, full_schema, CANCEL_TRANSLATION, cancel) == canceled_preview
+                preview_args = write_args(**moving, translation_fixture_id="shift-qa")
+                preview = await call(all_tools, full_schema, PREVIEW_TRANSLATION, preview_args)
+                assert preview["state"] == "ready" and preview["affected_mission_ids"] == [copy_task["mission_id"]], preview
+                assert await call(all_tools, full_schema, PREVIEW_TRANSLATION, preview_args) == preview
+                original_route = await call(all_tools, full_schema, "get_mock_mission_route", copy_task)
+                assert original_route["route_version"] == copy_route["route_version"]
+                apply_move = write_args(preview_id=preview["preview_id"])
+                await call(all_tools, full_schema, COMMIT_TRANSLATION, apply_move, "APPROVAL_REQUIRED")
+                await call(all_tools, full_schema, COMMIT_TRANSLATION,
+                           confirmed(COMMIT_TRANSLATION, apply_move, "foreign"), "APPROVAL_INVALID")
+                moved = await call(all_tools, full_schema, COMMIT_TRANSLATION, confirmed(COMMIT_TRANSLATION, apply_move))
+                assert moved["state"] == "committed"
+                assert await call(all_tools, full_schema, COMMIT_TRANSLATION, apply_move) == moved
+                await call(all_tools, full_schema, CANCEL_TRANSLATION, apply_move, "INVALID_STATE")
+                shifted = await call(all_tools, full_schema, "get_mock_mission_route", copy_task)
+                assert shifted["route"]["waypoint_fixture_ids"] == ["shift-a", "shift-b"]
+                assert shifted["route_version"] == original_route["route_version"] + 1
+                await call(all_tools, full_schema, "end_mock_plan_edit",
+                           write_args(configuration_id=moving["configuration_id"]))
+                copy_plan = await call(all_tools, full_schema, "get_mock_security_plan", copy_id)
+                check("Mock plan translation preview isolation, blocked or canceled paths, atomic approved commit")
 
                 delete_args = write_args(plan_id=copied["plan_id"], expected_plan_version=copy_plan["plan_version"])
                 await call(all_tools, full_schema, DELETE_PLAN, delete_args, "APPROVAL_REQUIRED")
