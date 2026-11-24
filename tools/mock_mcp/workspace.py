@@ -20,6 +20,7 @@ RUN_STATE = choices("created", "preflight", "starting", "start_requested", "wait
 DEVICE_KIND = choices("simulated", "test_fixture")
 DEVICE_AVAILABILITY = choices("available", "busy", "offline")
 CATEGORY = choices("plan", "execution", "rehearsal", "fleet", "video", "handoff", "system")
+OPERATOR_STATE = choices("pending_operator", "approved", "rejected", "expired", "completed")
 PERCENT = {"type": "number", "minimum": 0, "maximum": 100}
 PLAN_FIELDS = {"plan_id": ID, "name": STRING, "state": PLAN_STATE, "plan_version": COUNTER,
                "content_revision": COUNTER}
@@ -111,7 +112,7 @@ WORKSPACE_TOOLS = {
               "simulation_time": nullable(TIMESTAMP), "clients": array(object_schema({
                   "role": choices("command", "map", "video"),
                   "connection_state": choices("connected", "disconnected"),
-              })), "reset_request": {"type": "null"}}),
+              })), "reset_request": nullable(object_schema({"reset_request_id": ID, "state": OPERATOR_STATE}))}),
         tool("get_mock_workspace_context", "Read selection within the assigned Mock session.", {"session_id": ID},
              {**CONTEXT_FIELDS, "device_ids": array(ID)}),
         tool("get_mock_workspace_preferences", "Read the isolated session's interface language.", {"session_id": ID},
@@ -359,7 +360,7 @@ class WorkspaceReader:
                     "availability": "busy" if run else "available", "telemetry_source": "synthetic",
                     "telemetry_observed_at": stamp(with_update(run)), "position_fixture_id": None,
                     "mission_id": id_or_none(run.get("mission_id")), "execution_id": run.get("execution_id"),
-                    "pilot_handoff_active": row.get("telemetry_source") == "mock_pilot"})
+                    "pilot_handoff_active": data.get("pilot_authority", {}).get(key, {}).get("active", False)})
         return devices
 
     def list_devices(self, data, arguments):
@@ -496,10 +497,13 @@ class WorkspaceReader:
             when = event.get("timestamp", 0)
             if not when or not lower <= when < upper:
                 continue
-            category = EVENT_CATEGORIES.get(event.get("category"), "system")
             target = id_or_none(event.get("target_id"))
-            if category == "execution" and target not in data["executions"]:
-                continue
+            category = EVENT_CATEGORIES.get(event.get("category"), "system")
+            if "execution_snapshot" in event or category == "execution":
+                run = data["executions"].get(target)
+                if not run:
+                    continue
+                category = "rehearsal" if run.get("rehearsal") else "execution"
             code = event.get("event_type", "")
             if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,63}", code):
                 continue

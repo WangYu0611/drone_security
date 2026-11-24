@@ -12,6 +12,14 @@
             if(previous->as_object().at("request")!=request)throw PlanError("REQUEST_ID_REUSED","Reset request id has different content");
             return {{"state",state_},{"reset_epoch",previous->as_object().at("epoch")},{"replayed",true}};
         }
+        const bool idleOnly = request.contains("require_idle");
+        if (idleOnly) {
+            if (request.at("require_idle") != true || !received.empty() || activeConfiguration(state_) ||
+                !state_.at("edit_sessions").as_object().empty())
+                throw PlanError("INVALID_STATE", "The Mock workspace must be idle");
+            for (const auto& row : state_.at("executions").as_object())
+                if (executionActive(row.value().as_object())) throw PlanError("INVALID_STATE", "Finish active Mock work first");
+        }
         const auto* input=request.if_contains("startup_formation");
         if(!input)input=mock_.if_contains("startup_formation");
         if(!input || !input->is_object())throw PlanError("INVALID_STARTUP_FORMATION","Startup formation is required");
@@ -76,6 +84,7 @@
         for(const auto& a:positions)for(const auto& b:positions)if(a.key()<b.key() &&
             distance(a.value().as_object(),b.value().as_object())<requiredDistance(std::string(a.key()),std::string(b.key())))
             throw PlanError("INVALID_STARTUP_FORMATION","Formation violates aircraft separation");
+        if (idleOnly && positions.empty()) throw PlanError("INVALID_STATE", "No provisioned startup fixture devices");
         const int64_t epoch=state_.contains("mock_position_baseline")?
             state_.at("mock_position_baseline").as_object().at("epoch").to_number<int64_t>()+1:1;
         auto next=state_;const double now=OperationalContext::now();

@@ -24,6 +24,8 @@ from mcp.client.streamable_http import streamable_http_client
 from websockets.asyncio.client import connect
 
 from approve import save_approval
+from operator_queue import GET_HANDOFF, LIST_HANDOFF, OPERATOR_SCOPES, OPERATOR_TOOLS
+from operator_queue import REQUEST_HANDOFF, REQUEST_RELEASE, REQUEST_RESET, RESET_SCOPE
 from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, BEGIN_ROUTE, DELETE_MISSION, DELETE_PLAN, DEPLOY, END_ROUTE
 from plan_writes import CREATE_DEVICES, PLAN_WRITE_TOOLS, REMOVE_DEVICE, REVIEW, REVIEW_REHEARSAL, ROUTE_WRITE_TOOLS
 from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_REHEARSAL, UPDATE_DEVICE, VALIDATE
@@ -141,8 +143,9 @@ async def run(backend_exe, workspace):
         "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
                                        ALERT_SCOPE, *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()) |
                                                set(VIEW_SCOPES.values()) | set(EXECUTION_SCOPES.values()) |
-                                               set(FLEET_SCOPES.values()))]),
+                                               set(FLEET_SCOPES.values()) | set(OPERATOR_SCOPES.values()))]),
         "schedule-only": (secrets.token_hex(32), ["mock:read", EXECUTION_SCOPES[RESCHEDULE]]),
+        "reset-without-role": (secrets.token_hex(32), ["mock:read", RESET_SCOPE]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -155,18 +158,28 @@ storage:
 log:
   level: warn
 """, encoding="utf-8")
-    (workspace / "mock_execution.json").write_text(json.dumps({"simulation": True, "uavs": {
+    startup = {"direction": "east", "spacing_m": 20,
+               "origin": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15}}
+    (workspace / "mock_execution.json").write_text(json.dumps({"simulation": True, "startup_formation": startup, "uavs": {
         "UAV-01": {"home_position": {"latitude": 0.10, "longitude": 0.1000, "altitude": 15}},
         "UAV-02": {"home_position": {"latitude": 0.10, "longitude": 0.1001, "altitude": 15}},
     }}), encoding="utf-8")
-    (workspace / "drones.json").write_text("[]", encoding="utf-8")
+    (workspace / "drones.json").write_text(json.dumps([{"id": "2", "slot": 2, "name": "Synthetic operator QA"}]),
+                                          encoding="utf-8")
     accounts = workspace / "identities.json"
     accounts.write_text(json.dumps({"identities": [
-        {"id": name, "token_sha256": hashlib.sha256(token.encode()).hexdigest(), "scopes": scopes}
+        {"id": name, "token_sha256": hashlib.sha256(token.encode()).hexdigest(), "scopes": scopes,
+         "role": "test_admin" if name == "all" else "client"}
         for name, (token, scopes) in identities.items()
     ]}), encoding="utf-8")
     env = {**os.environ, "DRONE_MOCK_MCP_BRIDGE_TOKEN": bridge}
-    env.pop("DRONE_PILOT_CONTROL_CREDENTIALS", None)
+    command_token, pilot_token = secrets.token_hex(32), secrets.token_hex(32)
+    pilot_credentials = workspace / "pilot-qa.json"
+    pilot_credentials.write_text(json.dumps({"credentials": [
+        {"id": "qa-command", "role": "Command", "token": command_token},
+        {"id": "qa-pilot", "role": "Pilot", "token": pilot_token},
+    ]}), encoding="utf-8")
+    env["DRONE_PILOT_CONTROL_CREDENTIALS"] = str(pilot_credentials)
     fixtures = workspace / "map-fixtures.json"
     fixtures.write_text(json.dumps({"maps": {"map-qa": {
         "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
@@ -193,7 +206,7 @@ log:
     backend_process = start(backend_command, env, workspace, "backend.log")
     mcp_process = None
     try:
-        mcp_process = start(mcp_command + ["--http-port", str(mcp_port)], env, workspace, "mcp.log")
+        mcp_process = start(mcp_command + ["--dedicated-workspace", "--http-port", str(mcp_port)], env, workspace, "mcp.log")
         async with httpx.AsyncClient(trust_env=False, timeout=5) as http:
             await wait_ready(backend_process, http, backend + "/", 200)
             await wait_ready(mcp_process, http, endpoint, 401)
@@ -201,13 +214,16 @@ log:
             assert response.status_code == 403
             for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay"),
                                 (ACK_ALERT, ALERT_SCOPE), *VIEW_SCOPES.items(), *EXECUTION_SCOPES.items(),
-                                *FLEET_SCOPES.items()):
+                                *FLEET_SCOPES.items(), *OPERATOR_SCOPES.items()):
                 response = await http.post(endpoint, headers=rpc_headers(identities["read-only"][0], name),
                                            json=rpc(name, {}))
                 assert response.status_code == 403 and scope in response.headers["WWW-Authenticate"]
             invalid = await http.post(endpoint, headers=rpc_headers(secrets.token_hex(32), DRAFT_TOOL),
                                       json=rpc(DRAFT_TOOL, {}))
             assert invalid.status_code == 401
+            reset_headers = rpc_headers(identities["reset-without-role"][0], REQUEST_RESET)
+            forbidden = await http.post(endpoint, headers=reset_headers, json=rpc(REQUEST_RESET, {}))
+            assert forbidden.status_code == 403
             headers = rpc_headers(identities["draft-a"][0], DRAFT_TOOL)
             headers["Origin"] = "http://untrusted.invalid"
             response = await http.post(endpoint, headers=headers, json=rpc(DRAFT_TOOL, {}))
@@ -233,7 +249,7 @@ log:
                 Client(transport(endpoint, identities["draft-a"][0]), mode="2026-07-28") as draft,
                 Client(transport(endpoint, identities["all"][0]), mode="2026-07-28") as all_tools,
             ):
-                readers = READ_TOOLS | WORKSPACE_TOOLS.keys() | {LIST_ALERTS}
+                readers = READ_TOOLS | WORKSPACE_TOOLS.keys() | {LIST_ALERTS, LIST_HANDOFF, GET_HANDOFF}
                 replay_tools = {REPLAY_TOOL, *RECORD_REPLAY_TOOLS}
                 plan_tools = {DRAFT_TOOL, *(name for name in PLAN_WRITE_TOOLS if name != VALIDATE)}
                 replay_schema = await listing(replay, readers | replay_tools)
@@ -241,7 +257,8 @@ log:
                 draft_schema = await listing(draft, readers | plan_tools)
                 full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
                                             ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys() |
-                                            VIEW_TOOLS.keys() | EXECUTION_TOOLS.keys() | FLEET_TOOLS.keys() | {ACK_ALERT})
+                                            VIEW_TOOLS.keys() | EXECUTION_TOOLS.keys() | FLEET_TOOLS.keys() |
+                                            OPERATOR_TOOLS.keys() | {ACK_ALERT})
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -795,6 +812,9 @@ log:
                 assert approved_abort["state"] == "aborted"
                 assert await call(all_tools, full_schema, START_SCHEDULED, kick) == kicked
                 assert await call(all_tools, full_schema, SET_EXECUTION, abort) == approved_abort
+                execution_events = await call(all_tools, full_schema, "list_mock_operation_events",
+                                              {"category": "execution", "object_id": active_id["execution_id"]})
+                assert "MISSION_ABORTED" in {row["code"] for row in execution_events["items"]}
                 check("Mock execution reservation, ownership, separate scopes, immediate start and control receipts")
 
                 idle_snapshot = (await http.get(backend + "/api/security-plans")).json()["executions"]
@@ -855,6 +875,88 @@ log:
                 child = await call(all_tools, full_schema, "get_mock_execution", {"execution_id": replacement["execution_id"]})
                 assert child["kind"] == "single_takeover" and child["execution_id"] != direct_key["execution_id"]
                 check("fixture fleet preview and approval, stale confirmation, and software-only single-device transition")
+
+                async def operator(*args, response):
+                    command = [sys.executable, str(SERVER.with_name("operator_queue.py")), "--state-db",
+                               str(accounts.with_name("mock-mcp-replay.sqlite3")), "--workspace", "mock-local", *args]
+                    completed = await asyncio.to_thread(subprocess.run, command, input=response + "\n", text=True,
+                                                        capture_output=True, env=env, timeout=10)
+                    assert completed.returncode == 0, completed.stderr
+                    return completed.stdout
+
+                current_health = await call(all_tools, full_schema, "get_mock_workspace_health")
+                restore_request = write_args(workspace_id="mock-local", reason="QA fixture restore",
+                                             expected_workspace_version=current_health["version"])
+                await call(all_tools, full_schema, REQUEST_RESET, restore_request, "INVALID_STATE")
+                child_key = {"execution_id": child["execution_id"]}
+                async with asyncio.timeout(20):
+                    while (await call(all_tools, full_schema, "get_mock_execution", child_key))["state"] not in {
+                            "completed", "failed", "aborted"}:
+                        await asyncio.sleep(0.08)
+                aircraft = {"device_id": "UAV-02"}
+                initial_authority = await call(all_tools, full_schema, GET_HANDOFF, aircraft)
+                assert initial_authority["authority_state"] == "unassigned" and initial_authority["latest_request"] is None
+                handoff_request = write_args(**aircraft, expected_version=initial_authority["version"], note="Review requested")
+                await call(all_tools, full_schema, REQUEST_RELEASE, handoff_request, "INVALID_STATE")
+                requested = await call(all_tools, full_schema, REQUEST_HANDOFF, handoff_request)
+                assert await call(all_tools, full_schema, REQUEST_HANDOFF, handoff_request) == requested
+                assert (await call(all_tools, full_schema, GET_HANDOFF, aircraft))["authority_state"] == "unassigned"
+                pending_handoff = await call(replay, replay_schema, LIST_HANDOFF, {"state": "pending_operator", **aircraft})
+                assert [row["handoff_request_id"] for row in pending_handoff["items"]] == [requested["handoff_request_id"]]
+                await call(all_tools, full_schema, REQUEST_HANDOFF, {**handoff_request, "request_id": str(uuid4())},
+                           "OBJECT_IN_USE")
+                await operator("review", requested["handoff_request_id"], response="APPROVE")
+                approved_handoff = await call(all_tools, full_schema, GET_HANDOFF, aircraft)
+                assert approved_handoff["latest_request"]["state"] == "approved"
+                assert approved_handoff["authority_state"] == "unassigned"
+                command_headers = {"Authorization": f"Bearer {command_token}"}
+                async with connect(f"ws://127.0.0.1:{ws_port}/ws/pilot-control",
+                                   additional_headers={"Authorization": f"Bearer {pilot_token}"}) as native_pilot:
+                    await native_pilot.send(json.dumps({"type": "subscribe_pilot_control"}))
+                    subscribed = json.loads(await asyncio.wait_for(native_pilot.recv(), timeout=5))
+                    assert subscribed["type"] == "pilot_control_subscribed"
+                    snapshot = (await http.get(backend + "/api/pilot-control", headers=command_headers)).json()
+                    native_row = next(row for row in snapshot["aircraft"] if row["uav_id"] == aircraft["device_id"])
+                    grant = await http.post(backend + "/api/pilot-control", headers=command_headers, json=write_args(
+                        action="grant", pilot_id="qa-pilot", uav_ids=[aircraft["device_id"]],
+                        expected_revisions={aircraft["device_id"]: native_row["revision"]}))
+                    assert grant.status_code == 200 and grant.json()["results"][0]["ok"], grant.text
+                    assigned = await call(all_tools, full_schema, GET_HANDOFF, aircraft)
+                    assert assigned["authority_state"] == "assigned" and assigned["session_state"] == "inactive"
+                    assert assigned["latest_request"]["state"] == "completed"
+                    release_args = write_args(**aircraft, expected_version=assigned["version"])
+                    release = await call(all_tools, full_schema, REQUEST_RELEASE, release_args)
+                    assert (await call(all_tools, full_schema, GET_HANDOFF, aircraft))["authority_state"] == "assigned"
+                    await operator("review", release["handoff_request_id"], response="APPROVE")
+                    revoke = await http.post(backend + "/api/pilot-control", headers=command_headers, json=write_args(
+                        action="revoke", uav_id=aircraft["device_id"], grant_id=grant.json()["results"][0]["grant_id"]))
+                    assert revoke.status_code == 200 and revoke.json()["results"][0]["ok"], revoke.text
+                    released = await call(all_tools, full_schema, GET_HANDOFF, aircraft)
+                    assert released["authority_state"] == "unassigned" and released["latest_request"]["state"] == "completed"
+                check("Pilot requests and local operator decisions with authoritative grant and release readback")
+
+                pre_restore = (await http.get(backend + "/api/security-plans")).json()
+                current_health = await call(all_tools, full_schema, "get_mock_workspace_health")
+                restore_request["expected_workspace_version"] = current_health["version"]
+                pending_reset = await call(all_tools, full_schema, REQUEST_RESET, restore_request)
+                assert (await http.get(backend + "/api/security-plans")).json() == pre_restore
+                assert await call(all_tools, full_schema, REQUEST_RESET, restore_request) == pending_reset
+                reset_id = pending_reset["reset_request_id"]
+                unauth_reset = await http.post(backend + "/api/mock-executions/reset", json={
+                    "request_id": reset_id, "require_idle": True, "simulation": True,
+                })
+                assert unauth_reset.status_code == 403
+                await operator("review", reset_id, response="APPROVE")
+                await operator("apply-reset", reset_id, "--backend-port", str(backend_port), response="RESTORE")
+                restored_health = await call(all_tools, full_schema, "get_mock_workspace_health")
+                assert restored_health["reset_request"] == {"reset_request_id": reset_id, "state": "completed"}
+                assert await call(all_tools, full_schema, REQUEST_RESET, restore_request) == pending_reset
+                after_reset = (await http.get(backend + "/api/security-plans")).json()
+                assert after_reset["mock_position_baseline"]["request_id"] == reset_id
+                assert after_reset["plans"] == pre_restore["plans"] and after_reset["deployments"] == pre_restore["deployments"]
+                after_id = write_args(workspace_id="mock-local", reason="Old version", expected_workspace_version=current_health["version"])
+                await call(all_tools, full_schema, REQUEST_RESET, after_id, "VERSION_CONFLICT")
+                check("dedicated workspace reset queue, idle and admin guards, human restore and replay-stable receipt")
     except Exception:
         for name in ("backend.log", "mcp.log"):
             path = workspace / name

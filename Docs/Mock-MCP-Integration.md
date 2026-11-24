@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　64 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线与方案平移、检查复核与部署、Mock 执行和预约、模拟设备与集群演示、任务预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　八个模块共 69 项工具已实现，可在隔离工作区按权限联调。Mock Backend 持有业务状态，MCP 服务持有回放会话、告警已处理标记和操作员请求。驾驶员交接、释放和工作区恢复由 LLM 提出申请，再走各自的人工流程。 [Mock MCP 运行说明](../tools/mock_mcp/README.md) · [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **64 项已实现，5 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，均已实现**。点击工具名称可查看参数、成功回执、权限、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -149,11 +149,11 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 
 | 工具 | 所需权限 | 实现 | 覆盖能力 |
 | --- | --- | --- | --- |
-| [`list_mock_pilot_handoff_requests`](#list_mock_pilot_handoff_requests) | `mock:read` | 待实现 | 列出隔离工作区内的 Mock 交接申请和确认状态。 |
-| [`get_mock_pilot_handoff_status`](#get_mock_pilot_handoff_status) | `mock:read` | 待实现 | 查模拟设备的交接、授权和会话是否已结束，仅返回授权范围内的状态。 |
-| [`request_mock_pilot_handoff`](#request_mock_pilot_handoff) | `mock:read` + `mock:pilot:request` | 待实现 | 把指定 Mock 设备的交接申请送到人工处理入口。 |
-| [`request_mock_pilot_handoff_release`](#request_mock_pilot_handoff_release) | `mock:read` + `mock:pilot:request` | 待实现 | 申请由操作员处理 Mock 控制权收回，返回申请及确认状态。 |
-| [`request_mock_workspace_reset`](#request_mock_workspace_reset) | `mock:read` + `mock:sandbox:reset` | 待实现 | 仅测试管理员可向自己的隔离工作区发起人工确认的重置。 |
+| [`list_mock_pilot_handoff_requests`](#list_mock_pilot_handoff_requests) | `mock:read` | 已实现 | 列出隔离工作区内的 Mock 交接申请和确认状态。 |
+| [`get_mock_pilot_handoff_status`](#get_mock_pilot_handoff_status) | `mock:read` | 已实现 | 查模拟设备的交接、授权和会话是否已结束，仅返回授权范围内的状态。 |
+| [`request_mock_pilot_handoff`](#request_mock_pilot_handoff) | `mock:read` + `mock:pilot:request` | 已实现 | 把指定 Mock 设备的交接申请送到人工处理入口。 |
+| [`request_mock_pilot_handoff_release`](#request_mock_pilot_handoff_release) | `mock:read` + `mock:pilot:request` | 已实现 | 申请由操作员处理 Mock 控制权收回，返回申请及确认状态。 |
+| [`request_mock_workspace_reset`](#request_mock_workspace_reset) | `mock:read` + `mock:sandbox:reset` | 已实现 | 仅测试管理员可向自己的隔离工作区发起人工确认的重置。 |
 
 ### 客户端与环境管理边界
 
@@ -165,11 +165,10 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 | Launcher 进程启停、依赖检查、地图定位与常用地点、日志文件及配置文件 | 工作区健康和业务日志对模型提供脱敏摘要，进程、文件和地图环境由运行人员维护。 |
 | 真实设备、真实图传、真机分配、飞控链路、历史目标与攻击预演 | 属于本目录之外的功能面。Mock 服务使用合成数据和独立工作区。 |
 
-### 实现与联调验收
+### 联调验收
 
-1. 实现时先用方案、设备和事件查询跑通授权与数据回读，再接草稿编辑、航线会话与复核。执行、预演、视频和交接工具使用对应的状态与确认用例验收。
-2. 每个写工具交付前明确作用对象、权限、版本冲突、重复请求、部分失败及重试语义。配置会话继续以 Backend 为权威，回放会话与业务执行独立，部署快照与开始执行分开。
-3. 各工具在隔离工作区核对工具发现、成功与失败响应、跨身份访问拒绝和操作前后快照。协议或组件自动化与原生 UI 验收分别保存证据。
+1. 协议验收用同一套隔离夹具测试工具发现、身份与权限、成功和失败回执、跨身份访问拒绝，以及操作前后的 Backend 快照。
+2. Unreal Command 单独验收打开草稿、取得和释放配置占用。渲染界面验收通过 Slate 命中测试完成，并从 Backend 独立回读占用。Windows 桌面指针投递有单独的验收路径。 [自动化联调命令](../tools/mock_mcp/README.md#behavior-and-acceptance)
 
 ## 通用数据约定
 
@@ -2175,7 +2174,7 @@ Backend 刚接受预演时回执为 `created`，版本为 0。后续状态和结
 
 ### 驾驶员交接与测试工作区契约
 
-人工申请 `state` 为 `pending_operator`、`approved`、`rejected`、`expired` 或 `completed`。驾驶员 `authority_state` 为 `unassigned` 或 `assigned`，`session_state` 为 `inactive` 或 `active`。无历史申请时 `latest_request` 为 `null`。健康接口的 `reset_request` 有值时包含 `reset_request_id` 和申请状态。人工处理后以读取结果为准。
+人工申请 `state` 为 `pending_operator`、`approved`、`rejected`、`expired` 或 `completed`。驾驶员 `authority_state` 为 `unassigned` 或 `assigned`，`session_state` 为 `inactive` 或 `active`。无历史申请时 `latest_request` 为 `null`。健康接口的 `reset_request` 有值时包含 `reset_request_id` 和申请状态。操作员用本地命令审阅申请，再在现有 Command 流程中执行分配或释放。MCP 从 Backend 读取确认状态。 [操作员流程](../tools/mock_mcp/README.md#operator-requests)
 
 #### `list_mock_pilot_handoff_requests`
 
@@ -2319,7 +2318,7 @@ Backend 刚接受预演时回执为 `created`，版本为 0。后续状态和结
 
 **错误处理**　`INVALID_STATE`：组织共享或含活动业务占用的工作区不能受理。`OBJECT_IN_USE`：已有待确认重置。`VERSION_CONFLICT`：重读健康状态。HTTP 403：需要测试管理员角色及重置权限。
 
-**验收**　专用工作区只生成一条待确认请求，业务数据保持；确认后才恢复初始夹具。重置前的重复键和旧工作区版本不会再触发一次重置。
+**验收**　专用工作区只生成一条待确认请求。操作员确认并执行恢复后，已注册模拟设备回到启动位置夹具，原有方案和部署历史保留。重置前的重复键和旧工作区版本不会再触发一次重置。
 
 ## 联调步骤
 

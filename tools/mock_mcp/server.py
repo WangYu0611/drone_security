@@ -23,6 +23,7 @@ import uvicorn
 
 from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, SIMULATION_SCOPES
 from plan_writes import EXECUTION_SCOPES, EXECUTION_TOOLS, FLEET_SCOPES, FLEET_TOOLS
+from operator_queue import HEALTH, OPERATOR_SCOPES, OPERATOR_TOOLS, REQUEST_RESET, OperatorRequests
 from plan_writes import SIMULATION_TOOLS, VALIDATE, PlanWriter, load_fixtures
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
@@ -91,9 +92,10 @@ TOOLS.update(WORKSPACE_TOOLS)
 TOOLS.update(RECORD_REPLAY_TOOLS)
 TOOLS.update(BACKEND_WRITES)
 TOOLS.update(SESSION_ALERT_TOOLS)
+TOOLS.update(OPERATOR_TOOLS)
 TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
               **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES, **SIMULATION_SCOPES, **VIEW_SCOPES,
-              **EXECUTION_SCOPES, **FLEET_SCOPES,
+              **EXECUTION_SCOPES, **FLEET_SCOPES, **OPERATOR_SCOPES,
               "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION,
               ACK_ALERT: ALERT_SCOPE}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
@@ -103,9 +105,11 @@ INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in 
 class Identity:
     name: str
     scopes: frozenset[str]
+    role: str = "client"
 
     def allows(self, tool_name):
-        return READ in self.scopes and TOOL_SCOPE.get(tool_name, READ) in self.scopes
+        return (READ in self.scopes and TOOL_SCOPE.get(tool_name, READ) in self.scopes and
+                (tool_name != REQUEST_RESET or self.role == "test_admin"))
 
 
 def load_identities(path):
@@ -113,11 +117,12 @@ def load_identities(path):
     identities = set()
     for row in json.loads(path.read_text(encoding="utf-8"))["identities"]:
         identity, digest, scopes = row["id"], row["token_sha256"], frozenset(row["scopes"])
+        role = row.get("role", "client")
         if (not re.fullmatch(ID_PATTERN, identity) or not re.fullmatch(TOKEN_PATTERN, digest)
                 or identity in identities or digest in accounts or READ not in scopes
-                or not scopes <= {READ, *TOOL_SCOPE.values()}):
+                or not scopes <= {READ, *TOOL_SCOPE.values()} or role not in ("client", "test_admin")):
             raise ValueError("Invalid or duplicate MCP identity")
-        accounts[digest] = Identity(identity, scopes)
+        accounts[digest] = Identity(identity, scopes, role)
         identities.add(identity)
     if not accounts:
         raise ValueError("At least one MCP identity is required")
@@ -172,7 +177,7 @@ class Replay:
 
 
 class MockTools:
-    def __init__(self, backend_port, bridge_token, workspace_id, session_id, state_db, fixtures):
+    def __init__(self, backend_port, bridge_token, workspace_id, session_id, state_db, fixtures, dedicated=False):
         self.draft_endpoint = f"http://127.0.0.1:{backend_port}/api/mock-mcp/draft"
         self.bridge_token = bridge_token
         self.workspace = WorkspaceReader(backend_port, bridge_token, workspace_id, session_id,
@@ -180,9 +185,13 @@ class MockTools:
         self.plan_writer = PlanWriter(backend_port, bridge_token, fixtures) if bridge_token else None
         self.record_replays = RecordReplayStore(state_db, workspace_id) if self.workspace and state_db else None
         self.session_alerts = SessionAlerts(state_db, self.workspace, fixtures["session_alerts"]) if self.workspace else None
+        self.operator_requests = OperatorRequests(state_db, workspace_id) if self.workspace else None
+        self.dedicated = dedicated
         self.replays = {}
 
     def available(self, name):
+        if name in OPERATOR_TOOLS:
+            return self.operator_requests is not None
         if name in SESSION_ALERT_TOOLS:
             return self.session_alerts is not None
         if name in RECORD_REPLAY_TOOLS:
@@ -246,6 +255,12 @@ class MockTools:
         try:
             if not INPUT_CHECKS[name].is_valid(arguments):
                 raise ToolFailure("INVALID_ARGUMENT", "Arguments do not match the tool input schema")
+            if name in OPERATOR_TOOLS or name == HEALTH and self.operator_requests:
+                if not self.operator_requests:
+                    raise ToolFailure("MOCK_UNAVAILABLE", "This process has no authorized Mock Backend bridge")
+                payload, observed_at = await self.operator_requests.call(self.workspace, identity, name, arguments,
+                                                                         self.dedicated)
+                return reply(payload, observed_at=observed_at)
             if name in WORKSPACE_TOOLS:
                 if not self.workspace:
                     raise ToolFailure("MOCK_UNAVAILABLE", "This process has no authorized Mock Backend bridge")
@@ -370,6 +385,7 @@ def main():
     parser.add_argument("--session-id", default="mock-session", help="ID of the shared demo session assigned to these identities")
     parser.add_argument("--state-db", type=Path, help="Workspace-local playback database (defaults next to identities)")
     parser.add_argument("--fixtures", type=Path, help="Administrator-approved synthetic fixture JSON")
+    parser.add_argument("--dedicated-workspace", action="store_true", help="Allow eligible administrators to request a restore")
     args = parser.parse_args()
     for port in (args.backend_port, args.http_port):
         if port is not None and not 1 <= port <= 65535:
@@ -396,7 +412,8 @@ def main():
         if hashlib.sha256(token.encode("ascii")).hexdigest() in accounts:
             parser.error("bridge token must be distinct from MCP identity tokens")
     state_db = args.state_db or args.identities.with_name("mock-mcp-replay.sqlite3")
-    service = MockTools(args.backend_port, token, args.workspace_id, args.session_id, state_db, fixtures)
+    service = MockTools(args.backend_port, token, args.workspace_id, args.session_id, state_db, fixtures,
+                        args.dedicated_workspace)
     if args.http_port is not None:
         uvicorn.run(make_http_app(service, accounts), host="127.0.0.1", port=args.http_port, workers=1)
     else:

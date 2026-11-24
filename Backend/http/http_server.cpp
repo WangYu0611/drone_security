@@ -507,6 +507,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
         if(method=="POST" && path=="/api/mock-executions/reset") {
             if(security_plans_.usesRealAdapter())throw PlanError("ADAPTER_MODE_MISMATCH","Mock reset cannot control real aircraft");
             const auto request=require_object(body,"body");
+            if (request.contains("require_idle") && !AuthorizedMockMcp(req)) throw ApiError(403,"Mock operator authorization required");
             std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
             std::lock_guard<std::mutex> records(records_mutex_);
             // This lock makes received-source exclusion atomic with the reset.
@@ -519,8 +520,13 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 if(received_telemetry_.count(drone_id_from_string(rec.id)))received.insert(uid);
                 if (pilot_control_ && pilot_control_->OwnsAircraft(uid)) received.insert(uid);
             }
-            return MakeResponse(req,200,json_stringify(security_plans_.resetMockPositions(request,registered,received,
-                [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));})));
+            try {
+                return MakeResponse(req,200,json_stringify(security_plans_.resetMockPositions(request,registered,received,
+                    [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));})));
+            } catch (const PlanError& error) {
+                if (!request.contains("require_idle")) throw;
+                return MakeResponse(req,409,json_stringify(boost::json::object{{"code",error.code}}));
+            }
         }
         if(method=="POST" && path=="/api/mock-executions/pause-all") {
             if(security_plans_.usesRealAdapter())throw PlanError("ADAPTER_MODE_MISMATCH","Mock shutdown endpoint cannot control real aircraft");
@@ -1716,11 +1722,35 @@ http::response<http::string_body> HttpServer::HandleMockMcpWorkspace(
     std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
     auto state = security_plans_.snapshot();
     boost::json::object workspace;
+    bool resetBlocked = !state.at("edit_sessions").as_object().empty() || !state.at("configuration_session").is_null();
+    for (const auto& row : state.at("executions").as_object())
+        resetBlocked = resetBlocked || SecurityPlanStore::executionActive(row.value().as_object());
+    const auto* baseline = state.if_contains("mock_position_baseline");
+    workspace["reset_marker"] = baseline ? baseline->as_object().at("request_id") : boost::json::value(nullptr);
     for (const auto* key : {"version", "plans", "missions", "paths", "deployments", "executions",
                             "events", "configuration_session", "simulation_uavs"}) {
         workspace[key] = std::move(state.at(key));
     }
     workspace["fixture_devices"] = security_plans_.mockTelemetryPositions();
+    boost::json::object authority;
+    if (pilot_control_) {
+        const auto aircraft = PilotAircraftSnapshot();
+        const auto connections = PilotControlConnections();
+        const auto pilot = pilot_control_->Snapshot({PilotControlStore::Role::Command, "Mock MCP"}, aircraft, connections);
+        const auto& known = workspace.at("fixture_devices").as_object();
+        for (const auto& value : pilot.at("aircraft").as_array()) {
+            const auto& row = value.as_object();
+            const bool assigned = row.at("assignment_state") == "GRANTED";
+            const bool active = row.at("control_state") == "ACTIVE";
+            resetBlocked = resetBlocked || assigned || active;
+            const auto id = row.at("uav_id").as_string();
+            if (known.contains(id)) authority[id] = boost::json::object{
+                {"revision", row.at("revision")}, {"assigned", assigned}, {"active", active},
+                {"eligible", row.at("available") == true || row.contains("handoff_execution_id")}};
+        }
+    }
+    workspace["pilot_authority"] = std::move(authority);
+    workspace["reset_blocked"] = resetBlocked;
     workspace["context"] = operational_context_.snapshot();
     workspace["preferences"] = ui_preferences_.snapshot();
     workspace["video"] = video_view_.snapshot();

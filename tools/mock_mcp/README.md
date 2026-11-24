@@ -1,9 +1,9 @@
 # Drone Security Mock MCP
 
 The gateway serves the implemented tools from [the v0.2 integration contract](../../Docs/Mock-MCP-Integration.md).
-The isolated Backend owns the workspace query data and stores drafts together with their receipts.
-Command receives its ordinary plan snapshot and update. MCP owns the playback clocks and workspace
-record replay receipts.
+The isolated Backend owns workspace business state and stores its mutation receipts with that state.
+Command receives its ordinary plan snapshot and updates. The gateway stores record replay sessions,
+alert handling marks, and operator requests in the workspace's SQLite database.
 
 ## Run an isolated workspace
 
@@ -18,9 +18,10 @@ record replay receipts.
    and binds HTTP and WebSocket to 127.0.0.1. Use local Command with those same ports for handoff.
 3. Give each MCP client a different random 32-byte hex token. Keep only its lowercase SHA-256
    digest in the gateway identities file. The file contains an identities array of objects with
-   id, token_sha256 and scopes. All identities need mock:read. Add mock:replay, mock:plan:draft or
-   mock:plan:validate or mock:route:edit as needed. Keep this file and all tokens outside Git. Client tokens and the bridge secret are
-   distinct. The gateway binds to loopback.
+   id, token_sha256 and scopes. All identities need `mock:read`. Grant the individual tool scopes
+   listed in the integration contract. Set `role` to `test_admin` for identities authorized to request
+   a dedicated workspace restore. Keep this file and all tokens outside Git. Client tokens and the
+   bridge secret are distinct. The gateway binds to loopback.
 
 Install and start the gateway in a Python 3.11+ virtual environment.
 
@@ -42,7 +43,7 @@ its own token.
 
 Assign authorized clients the `--workspace-id` and `--session-id` used at gateway startup, or use
 the defaults `mock-local` and `mock-session`. Deploy each isolated session with its own Backend, identities,
-bridge secret and state database. `--state-db` stores playback and session alert handling. By default it is named
+bridge secret and state database. `--state-db` stores playback, session alert handling and operator requests. By default it is named
 `mock-mcp-replay.sqlite3` alongside the identities file. Keep it outside Git with the workspace data.
 
 Set `--fixtures` to a local JSON file containing the synthetic maps, simulator origins, and video
@@ -91,6 +92,33 @@ the identity, operation, arguments, current version and expiry before use. The a
 with the mutation and receipt. Retrying the completed request with its original request ID and
 arguments returns the original receipt, even after the approval expires.
 
+## Operator requests
+
+The Pilot request tools enqueue handoff and release for registered synthetic pilot fixtures.
+Configure the existing Mock Pilot service and its Command and Pilot identities using the native
+workflow. The gateway reports only the device authority, session state and request history.
+Review requests locally on the gateway host.
+
+~~~powershell
+python tools/mock_mcp/operator_queue.py --state-db <state.sqlite3> --workspace <workspace-id> list
+python tools/mock_mcp/operator_queue.py --state-db <state.sqlite3> --workspace <workspace-id> review <request-id>
+~~~
+
+Type `APPROVE` or `REJECT` after reviewing the item. For an approved handoff or release, use the
+existing native Command action. The next MCP read confirms completion from the aircraft authority.
+Pending and approved items expire after 15 minutes if the intended outcome has yet to be observed.
+
+For restore requests, start the gateway with `--dedicated-workspace`, give the requester
+`mock:sandbox:reset` and the `test_admin` role, and provision the Backend's synthetic
+`startup_formation`. Once approved, the operator runs the following on the local host and types
+`RESTORE`. The private Mock Backend rechecks that the workspace is idle and restores the registered
+fixtures' startup positions under the original request ID. Plans and deployment history remain
+available. Keep the SQLite database and bridge secret under operator control.
+
+~~~powershell
+python tools/mock_mcp/operator_queue.py --state-db <state.sqlite3> --workspace <workspace-id> apply-reset <request-id> --backend-port <backend-http>
+~~~
+
 ## Behavior and acceptance
 
 - The fixed recording is demo-a. A replay identity has its own playback clock and version for the
@@ -104,7 +132,7 @@ arguments returns the original receipt, even after the approval expires.
   editing that plan, and call `end_mock_plan_edit` to free the lease. The Backend grants the lease
   for up to 120 seconds of inactivity and renews it after a successful operation on that lease.
   The plan and mutation receipt are committed together. A completed retry returns its first receipt.
-- The automated acceptance uses temporary test credentials, an empty registry and isolated ports.
+- The automated acceptance uses temporary test credentials, a synthetic registry and isolated ports.
   It exercises the MCP protocol and the Command HTTP/WebSocket handoff. Native Command interaction
   is a separate acceptance check.
 - Execution and scheduling use UAV IDs provisioned in the isolated Backend's `mock_execution.json`
