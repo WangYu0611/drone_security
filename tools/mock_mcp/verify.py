@@ -23,6 +23,9 @@ from mcp.client.stdio import StdioServerParameters
 from mcp.client.streamable_http import streamable_http_client
 from websockets.asyncio.client import connect
 
+from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
+from workspace import WORKSPACE_TOOLS
+
 SERVER = Path(__file__).with_name("server.py").resolve()
 READ_TOOLS = {"list_demo_scenarios", "get_sim_status", "list_sim_alerts"}
 DRAFT_TOOL = "create_security_plan_draft"
@@ -138,7 +141,10 @@ storage:
 log:
   level: warn
 """, encoding="utf-8")
-    (workspace / "mock_execution.json").write_text('{"simulation": true}', encoding="utf-8")
+    (workspace / "mock_execution.json").write_text(json.dumps({"simulation": True, "uavs": {
+        "UAV-01": {"home_position": {"latitude": 0.10, "longitude": 0.1000, "altitude": 15}},
+        "UAV-02": {"home_position": {"latitude": 0.10, "longitude": 0.1001, "altitude": 15}},
+    }}), encoding="utf-8")
     (workspace / "drones.json").write_text("[]", encoding="utf-8")
     accounts = workspace / "identities.json"
     accounts.write_text(json.dumps({"identities": [
@@ -190,10 +196,12 @@ log:
                 Client(transport(endpoint, identities["draft-a"][0]), mode="2026-07-28") as draft,
                 Client(transport(endpoint, identities["all"][0]), mode="2026-07-28") as all_tools,
             ):
-                replay_schema = await listing(replay, READ_TOOLS | {REPLAY_TOOL})
-                other_schema = await listing(other, READ_TOOLS | {REPLAY_TOOL})
-                draft_schema = await listing(draft, READ_TOOLS | {DRAFT_TOOL})
-                full_schema = await listing(all_tools, READ_TOOLS | {DRAFT_TOOL, REPLAY_TOOL})
+                readers = READ_TOOLS | WORKSPACE_TOOLS.keys()
+                replay_tools = {REPLAY_TOOL, *RECORD_REPLAY_TOOLS}
+                replay_schema = await listing(replay, readers | replay_tools)
+                other_schema = await listing(other, readers | replay_tools)
+                draft_schema = await listing(draft, readers | {DRAFT_TOOL})
+                full_schema = await listing(all_tools, readers | {DRAFT_TOOL} | replay_tools)
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -206,6 +214,34 @@ log:
                     assert [row["alert_id"] for row in data["alerts"]] == expected
                 await call(replay, replay_schema, "list_sim_alerts", {**alert_args, "limit": 0}, "INVALID_ARGUMENT")
                 check("five schemas, role-specific listing, fixed scenario status and alert filtering")
+
+                denied_workspace = await http.get(backend + "/api/mock-mcp/workspace")
+                assert denied_workspace.status_code == 403
+                for name in ("list_mock_security_plans", "list_mock_executions", "list_mock_rehearsals",
+                             "list_mock_replay_records", "list_mock_operation_events"):
+                    page = await call(replay, replay_schema, name)
+                    assert page["items"] == [] and page["next_cursor"] is None
+                health = await call(replay, replay_schema, "get_mock_workspace_health")
+                assert health["state"] == "ready" and health["workspace_id"] == "mock-local"
+                for name in ("get_mock_workspace_context", "get_mock_workspace_preferences", "get_mock_video_view"):
+                    value = await call(replay, replay_schema, name, {"session_id": "mock-session"})
+                    assert value["session_id"] == "mock-session"
+                    await call(replay, replay_schema, name, {"session_id": "other-session"}, "NOT_FOUND")
+                devices = await call(replay, replay_schema, "list_mock_devices", {"kind": "test_fixture", "limit": 1})
+                device_id = devices["items"][0]["device_id"]
+                device = await call(replay, replay_schema, "get_mock_device_status", {"device_id": device_id})
+                assert device["kind"] == "test_fixture" and device["position_fixture_id"] is None
+                await call(replay, replay_schema, "get_mock_device_status", {"device_id": "outside"}, "NOT_FOUND")
+                device_cursor = devices["next_cursor"]
+                assert device_cursor
+                next_devices = await call(replay, replay_schema, "list_mock_devices",
+                                          {"kind": "test_fixture", "limit": 1, "cursor": device_cursor})
+                assert next_devices["items"][0]["device_id"] != device_id
+                await call(other, other_schema, "list_mock_devices",
+                           {"kind": "test_fixture", "cursor": device_cursor}, "CURSOR_INVALID")
+                await call(replay, replay_schema, "list_mock_devices",
+                           {"kind": "simulated", "cursor": device_cursor}, "CURSOR_INVALID")
+                check("authorized workspace and session reads, canonical device projection and identity-bound cursors")
 
                 original = (await call(replay, replay_schema, "get_sim_status", alert_args))["replay"]
                 write = {"replay_id": original["replay_id"], "state": "paused", "expected_version": 3}
@@ -266,6 +302,16 @@ log:
                     assert live["plans"][plan_id]["status"] == "DRAFT"
                     assert live["plans"][plan_id]["mission_ids"] == []
                     assert live["executions"] == before_replay["executions"]
+                    plan_args = {"plan_id": plan_id}
+                    plan = await call(replay, replay_schema, "get_mock_security_plan", plan_args)
+                    assert plan["configuration"]["state"] == "idle" and plan["missions"] == []
+                    plan_page = await call(replay, replay_schema, "list_mock_security_plans", {"state": "draft"})
+                    assert [item["plan_id"] for item in plan_page["items"]] == [plan_id]
+                    deployments = await call(replay, replay_schema, "list_mock_plan_deployments", plan_args)
+                    assert deployments["items"] == [] and deployments["plan_id"] == plan_id
+                    events = await call(replay, replay_schema, "list_mock_operation_events",
+                                        {"category": "plan", "object_id": plan_id})
+                    assert any(row["code"] == "PLAN_CREATED" for row in events["items"])
                     async with asyncio.timeout(5):
                         while True:
                             message = json.loads(await ws.recv())
@@ -273,6 +319,8 @@ log:
                                 assert "mock_mcp_draft_receipts" not in message["payload"]
                                 break
                     handed_off = await plan_action("begin_configuration", plan_id=plan_id)
+                    occupied = await call(replay, replay_schema, "get_mock_security_plan", plan_args)
+                    assert occupied["configuration"] == {"state": "busy", "configuration_id": None, "lease_expires_at": None}
                     assert handed_off["configuration_session"]["owner_instance_id"] == command_id
                     assert await call(draft, draft_schema, DRAFT_TOOL, {**args, "description": ""}) == created
                     await call(draft, draft_schema, DRAFT_TOOL, {**args, "description": "different"}, "REQUEST_ID_CONFLICT")
@@ -318,6 +366,50 @@ log:
                 assert len(final["plans"]) == len(locked["plans"]) + 3
                 assert final["configuration_session"] is None and final["executions"] == before_replay["executions"]
                 check("unread response, Backend restart, stable durable receipt and no duplicate plan")
+
+                stop(backend_process)
+                saved_path = workspace / "security_plans.json"
+                saved = json.loads(saved_path.read_text(encoding="utf-8"))
+                synthetic_run = {"execution_id": "execution-qa", "uav_id": "UAV-1001", "group_id": "group-qa",
+                                 "state": "COMPLETED", "control_version": 3, "adapter": "Mock", "simulation": True,
+                                 "created_at": 1795410200, "updated_at": 1795410260, "elapsed_seconds": 60,
+                                 "progress": 1, "replay_samples": [{"elapsed_seconds": 0}, {"elapsed_seconds": 60}]}
+                saved["executions"] = {synthetic_run["execution_id"]: synthetic_run,
+                                       "outside-qa": {**synthetic_run, "execution_id": "outside-qa", "uav_id": "UAV-99",
+                                                      "simulation": False, "adapter": "Real"}}
+                saved_path.write_text(json.dumps(saved), encoding="utf-8")
+                backend_process = start(backend_command, env, workspace, "backend.log")
+                await wait_ready(backend_process, http, backend + "/", 200)
+                executions = await call(replay, replay_schema, "list_mock_executions")
+                assert [item["execution_id"] for item in executions["items"]] == ["execution-qa"]
+                await call(replay, replay_schema, "get_mock_execution", {"execution_id": "outside-qa"}, "NOT_FOUND")
+                execution = await call(replay, replay_schema, "get_mock_execution", {"execution_id": "execution-qa"})
+                assert execution["elapsed_ms"] == 60000 and execution["members"][0]["device_id"] == "UAV-1001"
+                listing_args = {"execution_id": "execution-qa"}
+                records = await call(replay, replay_schema, "list_mock_replay_records", listing_args)
+                record = records["items"][0]
+                assert record["duration_ms"] == 60000 and record["replay"] is None
+                open_args = {"record_id": record["record_id"], "request_id": str(uuid4())}
+                opened = await call(replay, replay_schema, OPEN, open_args)
+                assert opened["replay"]["version"] == 1 and opened["replay"]["position_ms"] == 0
+                assert await call(replay, replay_schema, OPEN, open_args) == opened
+                assert (await call(other, other_schema, "list_mock_replay_records", listing_args))["items"][0]["replay"] is None
+                seek = {"replay_id": opened["replay"]["replay_id"], "position_ms": 12000,
+                        "expected_version": 1, "request_id": str(uuid4())}
+                await call(other, other_schema, SEEK, seek, "REPLAY_NOT_FOUND")
+                sought = await call(replay, replay_schema, SEEK, seek)
+                assert sought["replay"]["version"] == 2 and sought["replay"]["position_ms"] == 12000
+                await call(replay, replay_schema, SEEK, {**seek, "position_ms": 13000}, "REQUEST_ID_CONFLICT")
+                await call(replay, replay_schema, SEEK, {**seek, "request_id": str(uuid4())}, "REVISION_CONFLICT")
+                playing = await call(replay, replay_schema, REPLAY_TOOL,
+                                     {"replay_id": seek["replay_id"], "expected_version": 2, "state": "playing"})
+                assert playing["record_id"] == record["record_id"] and playing["replay"]["version"] == 3
+                close = {"replay_id": seek["replay_id"], "expected_version": 3, "request_id": str(uuid4())}
+                closed = await call(replay, replay_schema, CLOSE, close)
+                assert closed["closed"] and await call(replay, replay_schema, CLOSE, close) == closed
+                assert (await call(replay, replay_schema, "list_mock_replay_records", listing_args))["items"][0]["replay"] is None
+                assert (await http.get(backend + "/api/security-plans")).json()["executions"] == saved["executions"]
+                check("stored workspace playback, cross-identity rejection and no execution mutation")
     except Exception:
         for name in ("backend.log", "mcp.log"):
             path = workspace / name

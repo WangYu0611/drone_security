@@ -3,7 +3,6 @@
 import argparse
 import asyncio
 from dataclasses import dataclass, field
-from datetime import datetime, UTC
 import hashlib
 import json
 import os
@@ -22,11 +21,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import uvicorn
 
+from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
+from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
+from workspace import WORKSPACE_TOOLS, WorkspaceReader
+
 READ = "mock:read"
 REPLAY = "mock:replay"
 DRAFT = "mock:plan:draft"
-ID_PATTERN = r"^[A-Za-z0-9_-]{1,64}(?![\s\S])"
-UUID_PATTERN = r"^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}(?![\s\S])"
 TOKEN_PATTERN = r"[a-f0-9]{64}"
 MAX_REQUEST = 8192
 DEMO_ID = "demo-a"
@@ -39,39 +40,12 @@ ALERTS = (
 )
 
 
-def object_schema(properties, optional=()):
-    return {
-        "type": "object", "properties": properties,
-        "required": [name for name in properties if name not in optional],
-        "additionalProperties": False,
-    }
-
-
-STRING = {"type": "string"}
-ID = {"type": "string", "pattern": ID_PATTERN}
-UUID = {"type": "string", "pattern": UUID_PATTERN}
-COUNTER = {"type": "integer", "minimum": 0}
 REPLAY_STATE = {"enum": ["playing", "paused"]}
 SEVERITY = {"enum": ["info", "warning", "critical"]}
-TIMESTAMP = {"type": "string", "format": "date-time"}
-ENVELOPE = {"contract_version": {"const": "0.2"}, "simulation": {"const": True}, "observed_at": TIMESTAMP}
-ERROR = object_schema({
-    **ENVELOPE, "error": object_schema({"code": STRING, "message": STRING}),
-})
 REPLAY_VALUE = object_schema({
     "replay_id": ID, "state": REPLAY_STATE, "position_ms": COUNTER, "version": COUNTER,
 })
 SCENARIO = object_schema({"scenario_id": ID, "title": STRING})
-
-
-def tool(name, description, inputs, fields, optional=(), *, read_only=True):
-    return types.Tool(
-        name=name,
-        description=description,
-        input_schema=object_schema(inputs, optional),
-        output_schema={"type": "object", "oneOf": [object_schema({**ENVELOPE, **fields}), ERROR]},
-        annotations=types.ToolAnnotations(read_only_hint=read_only, open_world_hint=False),
-    )
 
 
 TOOLS = {
@@ -96,7 +70,8 @@ TOOLS = {
              })}}, ("severity", "limit")),
         tool("set_replay_state", "Play or pause your synthetic demo replay.",
              {"replay_id": ID, "state": REPLAY_STATE, "expected_version": COUNTER},
-             {"scenario_id": ID, "replay": REPLAY_VALUE}, read_only=False),
+             {"scenario_id": ID, "replay": REPLAY_VALUE}, read_only=False,
+             result_alternatives=({"record_id": ID, "replay": REPLAY_VALUE},)),
         tool("create_security_plan_draft", "Save an empty-task draft in the isolated Mock Backend.",
              {"request_id": UUID, "name": {"type": "string", "minLength": 1},
               "description": {"type": "string", "maxLength": 1000, "default": ""}},
@@ -104,7 +79,9 @@ TOOLS = {
              ("description",), read_only=False),
     )
 }
-TOOL_SCOPE = {"set_replay_state": REPLAY, "create_security_plan_draft": DRAFT}
+TOOLS.update(WORKSPACE_TOOLS)
+TOOLS.update(RECORD_REPLAY_TOOLS)
+TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
 
 
@@ -137,17 +114,6 @@ def authenticate(accounts, token):
     if not re.fullmatch(TOKEN_PATTERN, token):
         return None
     return accounts.get(hashlib.sha256(token.encode("ascii")).hexdigest())
-
-
-def utc_timestamp(epoch=None):
-    now = datetime.now(UTC) if epoch is None else datetime.fromtimestamp(epoch, UTC)
-    return now.isoformat(timespec="milliseconds").replace("+00:00", "Z")
-
-
-class ToolFailure(Exception):
-    def __init__(self, code, message):
-        super().__init__(message)
-        self.code = code
 
 
 def reply(payload, *, error=False, observed_at=None):
@@ -192,10 +158,27 @@ class Replay:
 
 
 class MockTools:
-    def __init__(self, backend_port, bridge_token):
+    def __init__(self, backend_port, bridge_token, workspace_id, session_id, state_db):
         self.draft_endpoint = f"http://127.0.0.1:{backend_port}/api/mock-mcp/draft"
         self.bridge_token = bridge_token
+        self.workspace = WorkspaceReader(backend_port, bridge_token, workspace_id, session_id) if bridge_token else None
+        self.record_replays = RecordReplayStore(state_db, workspace_id) if self.workspace and state_db else None
         self.replays = {}
+
+    def available(self, name):
+        if name in RECORD_REPLAY_TOOLS:
+            return self.record_replays is not None
+        return name not in WORKSPACE_TOOLS or self.workspace is not None
+
+    async def workspace_replay(self, identity, name, arguments):
+        if not self.record_replays:
+            raise ToolFailure("MOCK_UNAVAILABLE", "The workspace recorder is not configured")
+        records = await self.workspace.records()
+        if name == "set_replay_state":
+            payload, observed_at = self.record_replays.set_state(identity.name, arguments, records)
+        else:
+            payload, observed_at = self.record_replays.write(identity.name, name, arguments, records)
+        return reply(payload, observed_at=observed_at)
 
     def replay(self, identity):
         if REPLAY not in identity.scopes:
@@ -242,6 +225,15 @@ class MockTools:
         try:
             if not INPUT_CHECKS[name].is_valid(arguments):
                 raise ToolFailure("INVALID_ARGUMENT", "Arguments do not match the tool input schema")
+            if name in WORKSPACE_TOOLS:
+                if not self.workspace:
+                    raise ToolFailure("MOCK_UNAVAILABLE", "This process has no authorized Mock Backend bridge")
+                replays = (self.record_replays.list_owned(identity.name) if name == "list_mock_replay_records" and
+                           self.record_replays and REPLAY in identity.scopes else None)
+                payload, observed_at = await self.workspace.call(identity, name, arguments, replays)
+                return reply(payload, observed_at=observed_at)
+            if name in RECORD_REPLAY_TOOLS or (name == "set_replay_state" and arguments["replay_id"].startswith("record-replay-")):
+                return await self.workspace_replay(identity, name, arguments)
             if name == "create_security_plan_draft":
                 return await self.create_draft(identity, arguments)
             if arguments.get("scenario_id", DEMO_ID) != DEMO_ID:
@@ -277,7 +269,7 @@ def make_server(service, stdio_identity=None):
     async def list_tools(context, _params):
         identity = caller(context)
         return types.ListToolsResult(
-            tools=[info for name, info in TOOLS.items() if identity.allows(name)], ttl_ms=0,
+            tools=[info for name, info in TOOLS.items() if identity.allows(name) and service.available(name)], ttl_ms=0,
         )
 
     async def call_tool(context, params):
@@ -341,10 +333,15 @@ def main():
     parser.add_argument("--identities", required=True, type=Path)
     parser.add_argument("--backend-port", required=True, type=int)
     parser.add_argument("--http-port", type=int, help="Use localhost Streamable HTTP instead of stdio")
+    parser.add_argument("--workspace-id", default="mock-local", help="ID of the isolated workspace assigned to these identities")
+    parser.add_argument("--session-id", default="mock-session", help="ID of the shared demo session assigned to these identities")
+    parser.add_argument("--state-db", type=Path, help="Workspace-local playback database (defaults next to identities)")
     args = parser.parse_args()
     for port in (args.backend_port, args.http_port):
         if port is not None and not 1 <= port <= 65535:
             parser.error("ports must be between 1 and 65535")
+    if not all(re.fullmatch(ID_PATTERN, value) for value in (args.workspace_id, args.session_id)):
+        parser.error("workspace and session IDs must match the tool ID format")
     try:
         accounts = load_identities(args.identities)
     except (OSError, ValueError, KeyError, TypeError):
@@ -354,14 +351,14 @@ def main():
         identity = authenticate(accounts, os.environ.get("DRONE_MOCK_MCP_CLIENT_TOKEN", ""))
         if identity is None:
             parser.error("set DRONE_MOCK_MCP_CLIENT_TOKEN to a configured identity token")
-    token = ""
-    if identity is None or DRAFT in identity.scopes:
-        token = os.environ.get("DRONE_MOCK_MCP_BRIDGE_TOKEN", "")
+    token = os.environ.get("DRONE_MOCK_MCP_BRIDGE_TOKEN", "")
+    if token or identity is None or DRAFT in identity.scopes:
         if not re.fullmatch(TOKEN_PATTERN, token):
             parser.error("set a 32-byte hex DRONE_MOCK_MCP_BRIDGE_TOKEN")
         if hashlib.sha256(token.encode("ascii")).hexdigest() in accounts:
             parser.error("bridge token must be distinct from MCP identity tokens")
-    service = MockTools(args.backend_port, token)
+    state_db = args.state_db or args.identities.with_name("mock-mcp-replay.sqlite3")
+    service = MockTools(args.backend_port, token, args.workspace_id, args.session_id, state_db)
     if args.http_port is not None:
         uvicorn.run(make_http_app(service, accounts), host="127.0.0.1", port=args.http_port, workers=1)
     else:

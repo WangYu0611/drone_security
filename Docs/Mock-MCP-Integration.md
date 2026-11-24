@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　首批五项可在隔离工作区通过 stdio 或本机 Streamable HTTP 联调。回放使用固定录制场景，草稿由 Mock Backend 落盘。其余 64 项仍为文档契约。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　23 项可在隔离工作区联调，包含首批五项、15 项工作区查询和 3 项工作区回放会话工具。草稿与业务数据由 Mock Backend 持有，工作区回放由 MCP 服务持有。其余 46 项仍为文档契约。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,9 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **5 项已实现固定场景版，64 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **23 项已实现，46 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+
+当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
 权限按工具和工作区判定。每个工具均需 `mock:read`，写工具还需表中所列权限。服务在发现和调用时校验身份及对象归属。业务写入以隔离 Mock Backend 确认或工具所属会话的结果为准。复核、部署与开始各自校验操作员确认。模拟写入仅面向测试数据和软件仿真，无硬件出口。
 
@@ -262,7 +264,7 @@ Mock Pilot 存在显式交接申请、Command 人工授权及收回、Pilot 启�
 
 #### 工作区回放扩展
 
-`open_mock_record_replay` 所属的工作区回放扩展随后续工具交付。当前实现以固定录制场景验收。
+工作区回放会话和请求回执保存在工作区的 SQLite 文件。每项记录必须有已完成的回放采样，记录列表只显示调用身份自己的回放会话。
 
 `open_mock_record_replay` 返回的 `replay_id` 也可传给本工具。参数与回放版本校验沿用上面的契约，返回用 `record_id` 表示工作区记录来源。固定录制场景仍返回 `scenario_id`。版本冲突时用 `list_mock_replay_records` 读取当前身份的回放版本再决定是否重试。
 

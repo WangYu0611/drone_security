@@ -1,8 +1,9 @@
 # Drone Security Mock MCP
 
-This stage runs five tools from [the v0.2 integration contract](../../Docs/Mock-MCP-Integration.md).
-The recorded demo scenario and its playback clock live in MCP. The isolated Backend stores drafts and
-their receipts in the same atomic write, and Command receives the ordinary plan snapshot and update.
+The gateway serves the implemented tools from [the v0.2 integration contract](../../Docs/Mock-MCP-Integration.md).
+The isolated Backend owns the workspace query data and stores drafts together with their receipts.
+Command receives its ordinary plan snapshot and update. MCP owns the playback clocks and workspace
+record replay receipts.
 
 ## Run an isolated workspace
 
@@ -34,9 +35,15 @@ for invalid tokens or missing tool scopes. Cross-machine TLS and OAuth need an o
 deployment. This package validates local bearer tokens on loopback.
 
 For stdio, omit --http-port and pass DRONE_MOCK_MCP_CLIENT_TOKEN to the subprocess. A read or
-replay-only stdio process does not need the bridge secret. The stdio draft identity is for a trusted
+replay-only stdio process can use fixed demo tools without the bridge secret. Workspace tools appear
+in discovery when the process has the bridge secret. The stdio draft identity is for a trusted
 local host that can hold the bridge secret. Use the HTTP gateway when the client must receive only
 its own token.
+
+Assign authorized clients the `--workspace-id` and `--session-id` used at gateway startup, or use
+the defaults `mock-local` and `mock-session`. Deploy each workspace with its own Backend, identities,
+bridge secret and state database. `--state-db` sets the replay database path. By default it is named
+`mock-mcp-replay.sqlite3` alongside the identities file. Keep it outside Git with the workspace data.
 
 ## Behavior and acceptance
 

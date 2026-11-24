@@ -485,6 +485,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
         spdlog::debug("[HTTP Request] {} {}", method, path);
 
         if (path == "/api/mock-mcp/draft") return HandleMockMcpDraft(req);
+        if (path == "/api/mock-mcp/workspace") return HandleMockMcpWorkspace(req);
         if (method == "OPTIONS") return MakeResponse(req, 204, "");
         if (path == "/api/pilot-control") return HandlePilotControlHttp(req);
 
@@ -1688,20 +1689,56 @@ void HttpServer::RunWsSession(tcp::socket socket,
 // ============================================================
 // 连接处理（静态）
 // ============================================================
+bool HttpServer::AuthorizedMockMcp(const http::request<http::string_body>& req) const {
+    const auto expected = "Bearer " + mock_mcp_bridge_token_;
+    const auto supplied = req[http::field::authorization];
+    if (mock_mcp_bridge_token_.empty() || req.find(http::field::origin) != req.end() ||
+        supplied.size() != expected.size()) return false;
+    unsigned char difference = 0;
+    for (std::size_t i = 0; i < expected.size(); ++i)
+        difference |= static_cast<unsigned char>(supplied[i] ^ expected[i]);
+    return difference == 0;
+}
+
+http::response<http::string_body> HttpServer::HandleMockMcpWorkspace(
+    const http::request<http::string_body>& req) {
+    if (mock_mcp_bridge_token_.empty())
+        return MakeResponse(req, 404, R"({"code":"MOCK_UNAVAILABLE"})");
+    if (!AuthorizedMockMcp(req))
+        return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
+    if (req.method() != http::verb::get)
+        return MakeResponse(req, 405, R"({"code":"INVALID_ARGUMENT"})");
+
+    std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+    auto state = security_plans_.snapshot();
+    boost::json::object workspace;
+    for (const auto* key : {"version", "plans", "missions", "paths", "deployments", "executions",
+                            "events", "configuration_session", "simulation_uavs"}) {
+        workspace[key] = std::move(state.at(key));
+    }
+    workspace["fixture_devices"] = security_plans_.mockTelemetryPositions();
+    workspace["context"] = operational_context_.snapshot();
+    workspace["preferences"] = ui_preferences_.snapshot();
+    workspace["video"] = video_view_.snapshot();
+    boost::json::array clients;
+    const auto snapshot = ContextClients();
+    for (const auto& item : snapshot.as_array()) {
+        const auto& client = item.as_object();
+        clients.emplace_back(boost::json::object{{"role", client.at("client_role")}, {"state", client.at("state")}});
+    }
+    workspace["clients"] = std::move(clients);
+    workspace["simulation"] = true;
+    workspace["observed_at"] = OperationalContext::now();
+    return MakeResponse(req, 200, json_stringify(workspace));
+}
+
 http::response<http::string_body> HttpServer::HandleMockMcpDraft(
     const http::request<http::string_body>& req) {
     if (mock_mcp_bridge_token_.empty())
         return MakeResponse(req, 404, R"({"code":"MOCK_UNAVAILABLE"})");
     if (req.method() != http::verb::post)
         return MakeResponse(req, 405, R"({"code":"INVALID_ARGUMENT"})");
-    const auto expected = "Bearer " + mock_mcp_bridge_token_;
-    const auto supplied = req[http::field::authorization];
-    if (req.find(http::field::origin) != req.end() || supplied.size() != expected.size())
-        return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
-    unsigned char difference = 0;
-    for (std::size_t i = 0; i < expected.size(); ++i)
-        difference |= static_cast<unsigned char>(supplied[i] ^ expected[i]);
-    if (difference != 0)
+    if (!AuthorizedMockMcp(req))
         return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
 
     boost::system::error_code error;

@@ -96,6 +96,8 @@ private:
     http::response<http::string_body> HandleHttp(
         http::request<http::string_body>& req);
     http::response<http::string_body> HandleMockMcpDraft(const http::request<http::string_body>& req);
+    http::response<http::string_body> HandleMockMcpWorkspace(const http::request<http::string_body>& req);
+    bool AuthorizedMockMcp(const http::request<http::string_body>& req) const;
 
     // ---- WebSocket 会话 ----
     void RunWsSession(tcp::socket socket,
