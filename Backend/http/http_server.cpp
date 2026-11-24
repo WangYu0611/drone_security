@@ -486,6 +486,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
 
         if (path == "/api/mock-mcp/draft") return HandleMockMcpDraft(req);
         if (path == "/api/mock-mcp/workspace") return HandleMockMcpWorkspace(req);
+        if (path == "/api/mock-mcp/plan-write") return HandleMockMcpPlanWrite(req);
         if (method == "OPTIONS") return MakeResponse(req, 204, "");
         if (path == "/api/pilot-control") return HandlePilotControlHttp(req);
 
@@ -1777,6 +1778,37 @@ http::response<http::string_body> HttpServer::HandleMockMcpDraft(
     }
 }
 
+http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
+    const http::request<http::string_body>& req) {
+    if (mock_mcp_bridge_token_.empty())
+        return MakeResponse(req, 404, R"({"code":"MOCK_UNAVAILABLE"})");
+    if (!AuthorizedMockMcp(req))
+        return MakeResponse(req, 403, R"({"code":"FORBIDDEN"})");
+    if (req.method() != http::verb::post || req.body().size() > 8192)
+        return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+    try {
+        const auto body = require_object(parse_body(req), "body");
+        const auto& args = require_object(body.at("arguments"), "arguments");
+        const auto identity = SecurityPlanStore::str(body, "identity");
+        const auto tool = SecurityPlanStore::str(body, "tool");
+        static const std::regex id("[A-Za-z0-9_-]{1,64}");
+        static const std::regex uuid("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}");
+        if (body.size() != 3 || !std::regex_match(identity, id) ||
+            !std::regex_match(SecurityPlanStore::str(args, "request_id"), uuid))
+            return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+        std::lock_guard<std::mutex> transaction(plan_requests_mutex_);
+        const auto result = security_plans_.writeMockMcpPlan(identity, tool, args,
+            [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); });
+        return MakeResponse(req, 200, json_stringify(result));
+    } catch (const PlanError& error) {
+        return MakeResponse(req, 409, json_stringify(boost::json::object{{"code", error.code}}));
+    } catch (const std::invalid_argument&) {
+        return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+    } catch (const std::out_of_range&) {
+        return MakeResponse(req, 400, R"({"code":"INVALID_ARGUMENT"})");
+    }
+}
+
 void HttpServer::HandleHttpConnection(tcp::socket socket, HttpServer* self) {
     beast::flat_buffer buf;
     http::request<http::string_body> req;
@@ -1940,6 +1972,8 @@ boost::json::value HttpServer::RegisterContextClient(const boost::json::object& 
             throw ApiError(400, "invalid client identity");
     }
     const auto instance = get_string(body, "instance_id");
+    if (!mock_mcp_bridge_token_.empty() && instance.rfind("mock-mcp-", 0) == 0)
+        throw ApiError(403, "Reserved Mock MCP instance prefix");
     std::lock_guard<std::mutex> lock(context_clients_mutex_);
     auto existing = context_clients_.find(instance);
     if (existing != context_clients_.end()) {

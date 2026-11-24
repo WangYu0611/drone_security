@@ -190,6 +190,7 @@ class WorkspaceReader:
         # The private transport is not authorization to expose arbitrary registry rows.
         data["executions"] = {key: row for key, row in data["executions"].items() if belongs_in_workspace(row)}
         data["plans"] = {key: row for key, row in data["plans"].items() if not row.get("real_assignment")}
+        data["configuration_owner"] = "mock-mcp-" + identity.name
         result = self.handlers[name](data, arguments)
         if name == "list_mock_replay_records" and record_replays:
             for _, key, record in result:
@@ -255,9 +256,11 @@ class WorkspaceReader:
                              "route_version": path.get("revision", 1) if path else 0})
         lease = data["configuration_session"]
         active = lease and lease["lease_expires_at"] > data["observed_at"]
+        owned = active and lease["owner_instance_id"] == data["configuration_owner"] and lease["plan_id"] == plan["id"]
         return {**plan_summary(plan), "description": plan.get("description", ""), "missions": missions,
-                "configuration": {"state": "busy" if active else "idle", "configuration_id": None,
-                                  "lease_expires_at": None}}
+                "configuration": {"state": "owned" if owned else "busy" if active else "idle",
+                                  "configuration_id": "configuration-" + str(lease["acquired_version"]) if owned else None,
+                                  "lease_expires_at": stamp(lease["lease_expires_at"]) if owned else None}}
 
     def list_deployments(self, data, arguments):
         lookup(data["plans"], arguments["plan_id"])

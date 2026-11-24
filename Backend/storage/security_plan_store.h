@@ -142,12 +142,21 @@ public:
         publish(notification);
         return result;
     }
-    Object transact(const Object& request, const std::set<std::string>& physicalUavs,
+    #include "storage/mock_mcp_plan.inl"
+    Object transact(const Object& originalRequest, const std::set<std::string>& physicalUavs,
                     const std::string& source, const std::function<void(const Object&)>& publish,
-                    const std::function<void(const std::string&)>& checkPilotOwner = {}) {
+                    const std::function<void(const std::string&)>& checkPilotOwner = {},
+                    const MockPlanCall* mockCall = nullptr) {
         std::lock_guard<std::mutex> lock(mutex_);
+        if (mockCall) {
+            if (!adapter_->simulation() || path_.empty())
+                throw PlanError("MOCK_UNAVAILABLE", "An isolated persistent Mock workspace is required");
+            if (const auto* receipt = mockMcpReceipt(*mockCall)) return *receipt;
+        }
         auto next = state_;
         expire(next, OperationalContext::now());
+        const auto mockRequest = mockCall ? mockPlanRequest(next, *mockCall) : Object{};
+        const auto& request = mockCall ? mockRequest : originalRequest;
         const auto action = str(request, "action");
         if (action.rfind("execution_",0)==0) return executionRequest(request,physicalUavs,source,publish,checkPilotOwner);
         if (action.rfind("simulation_",0)==0) return rehearsalRequest(next,request,physicalUavs,source,publish);
@@ -157,6 +166,10 @@ public:
         const bool guardedDeployment=checkDeploymentRequestGuard(next,request);
         if(action=="begin_configuration")if(const auto* current=activeConfiguration(next)) {
             if(str(*current,"owner_instance_id")!=str(request,"instance_id") || str(*current,"plan_id")!=str(request,"plan_id"))configurationConflict(*current);
+            if (mockCall) {
+                next["version"] = state_.at("version").to_number<int64_t>() + 1;
+                return commitMockPlan(next, *mockCall, request, str(*current,"plan_id"), str(request,"mission_id"), publish);
+            }
             return {{"state",state_},{"plan_id",str(*current,"plan_id")},{"mission_id",str(request,"mission_id")}};
         }
         if(action=="end_configuration" && state_.at("configuration_session").is_null())
@@ -451,6 +464,7 @@ public:
             if(!plan.contains("validation")) {summary["validated_content_revision"]=nullptr;summary["ready"]=false;plan["validation"]=summary;}
         }
         next["version"] = state_.at("version").to_number<int64_t>() + 1;
+        if (mockCall) return commitMockPlan(next, *mockCall, request, planId, missionId, publish);
         // Construct the event before touching durable state. A synchronous publisher
         // rejection restores the authoritative file and leaves the in-memory document unchanged.
         const Object notification{{"type","SecurityPlansChanged"},{"payload",next}};

@@ -21,6 +21,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import uvicorn
 
+from plan_writes import PLAN_WRITE_TOOLS, VALIDATE, PlanWriter
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
 from workspace import WORKSPACE_TOOLS, WorkspaceReader
@@ -28,6 +29,7 @@ from workspace import WORKSPACE_TOOLS, WorkspaceReader
 READ = "mock:read"
 REPLAY = "mock:replay"
 DRAFT = "mock:plan:draft"
+VALIDATION = "mock:plan:validate"
 TOKEN_PATTERN = r"[a-f0-9]{64}"
 MAX_REQUEST = 8192
 DEMO_ID = "demo-a"
@@ -81,7 +83,9 @@ TOOLS = {
 }
 TOOLS.update(WORKSPACE_TOOLS)
 TOOLS.update(RECORD_REPLAY_TOOLS)
-TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT}
+TOOLS.update(PLAN_WRITE_TOOLS)
+TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
+              "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}
 
 
@@ -101,7 +105,7 @@ def load_identities(path):
         identity, digest, scopes = row["id"], row["token_sha256"], frozenset(row["scopes"])
         if (not re.fullmatch(ID_PATTERN, identity) or not re.fullmatch(TOKEN_PATTERN, digest)
                 or identity in identities or digest in accounts or READ not in scopes
-                or not scopes <= {READ, REPLAY, DRAFT}):
+                or not scopes <= {READ, *TOOL_SCOPE.values()}):
             raise ValueError("Invalid or duplicate MCP identity")
         accounts[digest] = Identity(identity, scopes)
         identities.add(identity)
@@ -162,12 +166,15 @@ class MockTools:
         self.draft_endpoint = f"http://127.0.0.1:{backend_port}/api/mock-mcp/draft"
         self.bridge_token = bridge_token
         self.workspace = WorkspaceReader(backend_port, bridge_token, workspace_id, session_id) if bridge_token else None
+        self.plan_writer = PlanWriter(backend_port, bridge_token) if bridge_token else None
         self.record_replays = RecordReplayStore(state_db, workspace_id) if self.workspace and state_db else None
         self.replays = {}
 
     def available(self, name):
         if name in RECORD_REPLAY_TOOLS:
             return self.record_replays is not None
+        if name in PLAN_WRITE_TOOLS:
+            return self.plan_writer is not None
         return name not in WORKSPACE_TOOLS or self.workspace is not None
 
     async def workspace_replay(self, identity, name, arguments):
@@ -234,6 +241,11 @@ class MockTools:
                 return reply(payload, observed_at=observed_at)
             if name in RECORD_REPLAY_TOOLS or (name == "set_replay_state" and arguments["replay_id"].startswith("record-replay-")):
                 return await self.workspace_replay(identity, name, arguments)
+            if name in PLAN_WRITE_TOOLS:
+                if not self.plan_writer:
+                    raise ToolFailure("MOCK_UNAVAILABLE", "This process has no authorized Mock Backend bridge")
+                payload, observed_at = await self.plan_writer.call(identity, name, arguments)
+                return reply(payload, observed_at=observed_at)
             if name == "create_security_plan_draft":
                 return await self.create_draft(identity, arguments)
             if arguments.get("scenario_id", DEMO_ID) != DEMO_ID:
@@ -352,7 +364,7 @@ def main():
         if identity is None:
             parser.error("set DRONE_MOCK_MCP_CLIENT_TOKEN to a configured identity token")
     token = os.environ.get("DRONE_MOCK_MCP_BRIDGE_TOKEN", "")
-    if token or identity is None or DRAFT in identity.scopes:
+    if token or identity is None or DRAFT in identity.scopes or VALIDATION in identity.scopes:
         if not re.fullmatch(TOKEN_PATTERN, token):
             parser.error("set a 32-byte hex DRONE_MOCK_MCP_BRIDGE_TOKEN")
         if hashlib.sha256(token.encode("ascii")).hexdigest() in accounts:

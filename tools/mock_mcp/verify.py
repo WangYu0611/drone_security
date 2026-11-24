@@ -23,6 +23,7 @@ from mcp.client.stdio import StdioServerParameters
 from mcp.client.streamable_http import streamable_http_client
 from websockets.asyncio.client import connect
 
+from plan_writes import PLAN_WRITE_TOOLS, VALIDATE
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from workspace import WORKSPACE_TOOLS
 
@@ -128,7 +129,7 @@ async def run(backend_exe, workspace):
         "replay-a": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "replay-b": (secrets.token_hex(32), ["mock:read", "mock:replay"]),
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
-        "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay"]),
+        "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate"]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -198,10 +199,11 @@ log:
             ):
                 readers = READ_TOOLS | WORKSPACE_TOOLS.keys()
                 replay_tools = {REPLAY_TOOL, *RECORD_REPLAY_TOOLS}
+                plan_tools = {DRAFT_TOOL, *(name for name in PLAN_WRITE_TOOLS if name != VALIDATE)}
                 replay_schema = await listing(replay, readers | replay_tools)
                 other_schema = await listing(other, readers | replay_tools)
-                draft_schema = await listing(draft, readers | {DRAFT_TOOL})
-                full_schema = await listing(all_tools, readers | {DRAFT_TOOL} | replay_tools)
+                draft_schema = await listing(draft, readers | plan_tools)
+                full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools)
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -367,6 +369,58 @@ log:
                 assert final["configuration_session"] is None and final["executions"] == before_replay["executions"]
                 check("unread response, Backend restart, stable durable receipt and no duplicate plan")
 
+                def write_args(**props):
+                    return {"request_id": str(uuid4()), **props}
+
+                denied_write = await http.post(backend + "/api/mock-mcp/plan-write", json={})
+                assert denied_write.status_code == 403
+                forged_owner = await http.post(backend + "/api/context/clients", json={
+                    "instance_id": "mock-mcp-all", "client_id": "Other", "client_role": "Command",
+                    "hostname": "SYNTHETIC-QA", "app_version": "MCP-QA",
+                })
+                assert forged_owner.status_code == 403
+                plan = await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": plan_id})
+                begin_args = write_args(plan_id=plan_id, expected_plan_version=plan["plan_version"])
+                begin = await call(all_tools, full_schema, "begin_mock_plan_edit", begin_args)
+                assert await call(all_tools, full_schema, "begin_mock_plan_edit", begin_args) == begin
+                await call(draft, draft_schema, "begin_mock_plan_edit", begin_args, "CONFIGURATION_IN_PROGRESS")
+                owned = await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": plan_id})
+                assert owned["configuration"]["configuration_id"] == begin["configuration_id"]
+                stranger = await call(draft, draft_schema, "get_mock_security_plan", {"plan_id": plan_id})
+                assert stranger["configuration"]["state"] == "busy" and stranger["configuration"]["configuration_id"] is None
+                handle = {"plan_id": plan_id, "configuration_id": begin["configuration_id"]}
+                updates = write_args(**handle, expected_plan_version=owned["plan_version"], description="Only edited by Mock MCP")
+                updated = await call(all_tools, full_schema, "update_mock_security_plan_draft", updates)
+                assert updated["name"] == plan["name"] and updated["description"] == updates["description"]
+                await call(all_tools, full_schema, "update_mock_security_plan_draft", {**updates, "name": "Different"}, "REQUEST_ID_CONFLICT")
+                await call(all_tools, full_schema, "update_mock_security_plan_draft",
+                           {**updates, "request_id": str(uuid4())}, "VERSION_CONFLICT")
+                add_args = write_args(**handle, expected_plan_version=updated["plan_version"], name="Synthetic QA task")
+                added = await call(all_tools, full_schema, "add_mock_plan_mission", add_args)
+                assert added["device_ids"] == [] and added["route_version"] == 0
+                assert await call(all_tools, full_schema, "add_mock_plan_mission", add_args) == added
+                task = {**handle, "mission_id": added["mission_id"]}
+                rename = await call(all_tools, full_schema, "rename_mock_plan_mission",
+                                    write_args(**task, expected_plan_version=added["plan_version"], name="Updated QA task"))
+                assignment_args = write_args(**task, expected_plan_version=rename["plan_version"], device_ids=["UAV-01"])
+                await call(all_tools, full_schema, "set_mock_mission_assignment", assignment_args, "NOT_FOUND")
+                cleared = await call(all_tools, full_schema, "set_mock_mission_assignment", {**assignment_args, "device_ids": []})
+                assert cleared["device_ids"] == []
+                checked = await call(all_tools, full_schema, VALIDATE, write_args(**handle, expected_plan_version=cleared["plan_version"]))
+                assert not checked["passed"] and any(issue["code"] == "NO_UAV_ASSIGNED" for issue in checked["checks"])
+                end_args = write_args(configuration_id=handle["configuration_id"])
+                await call(draft, draft_schema, "end_mock_plan_edit", end_args, "CONFIGURATION_EXPIRED")
+                ended = await call(all_tools, full_schema, "end_mock_plan_edit", end_args)
+                assert ended["released"] and await call(all_tools, full_schema, "end_mock_plan_edit", end_args) == ended
+                await call(all_tools, full_schema, "reopen_mock_security_plan",
+                           write_args(plan_id=plan_id, expected_plan_version=checked["plan_version"]), "INVALID_STATE")
+                copy_args = write_args(source_plan_id=plan_id, expected_source_plan_version=checked["plan_version"])
+                copied = await call(all_tools, full_schema, "copy_mock_security_plan_draft", copy_args)
+                assert copied["plan_id"] != plan_id and copied["mission_count"] == 1
+                copy_plan = await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": copied["plan_id"]})
+                assert copy_plan["missions"][0]["mission_id"] != added["mission_id"]
+                check("Mock plan lease ownership, version gates, edits, assignment exclusion and copy isolation")
+
                 stop(backend_process)
                 saved_path = workspace / "security_plans.json"
                 saved = json.loads(saved_path.read_text(encoding="utf-8"))
@@ -380,6 +434,8 @@ log:
                 saved_path.write_text(json.dumps(saved), encoding="utf-8")
                 backend_process = start(backend_command, env, workspace, "backend.log")
                 await wait_ready(backend_process, http, backend + "/", 200)
+                assert await call(all_tools, full_schema, "copy_mock_security_plan_draft", copy_args) == copied
+                assert await call(all_tools, full_schema, "add_mock_plan_mission", add_args) == added
                 executions = await call(replay, replay_schema, "list_mock_executions")
                 assert [item["execution_id"] for item in executions["items"]] == ["execution-qa"]
                 await call(replay, replay_schema, "get_mock_execution", {"execution_id": "outside-qa"}, "NOT_FOUND")

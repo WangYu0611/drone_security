@@ -18,8 +18,8 @@ record replay receipts.
    and binds HTTP and WebSocket to 127.0.0.1. Use local Command with those same ports for handoff.
 3. Give each MCP client a different random 32-byte hex token. Keep only its lowercase SHA-256
    digest in the gateway identities file. The file contains an identities array of objects with
-   id, token_sha256 and scopes. All identities need mock:read. Add mock:replay or mock:plan:draft
-   as needed. Keep this file and all tokens outside Git. Client tokens and the bridge secret are
+   id, token_sha256 and scopes. All identities need mock:read. Add mock:replay, mock:plan:draft or
+   mock:plan:validate as needed. Keep this file and all tokens outside Git. Client tokens and the bridge secret are
    distinct. The gateway binds to loopback.
 
 Install and start the gateway in a Python 3.11+ virtual environment.
@@ -54,6 +54,10 @@ bridge secret and state database. `--state-db` sets the replay database path. By
   request parameters. Repeat with the same ID and parameters after the operator releases configuration.
   Draft persistence and release are one Backend transaction, so a successful receipt has no MCP
   lease left to release. The same receipt is returned following a timeout or Backend restart.
+- `begin_mock_plan_edit` returns a configuration ID. Pass it with the current plan version when
+  editing that plan, and call `end_mock_plan_edit` to free the lease. The Backend grants the lease
+  for up to 120 seconds of inactivity and renews it after a successful operation on that lease.
+  The plan and mutation receipt are committed together. A completed retry returns its first receipt.
 - The automated acceptance uses temporary test credentials, an empty registry and isolated ports.
   It exercises the MCP protocol and the Command HTTP/WebSocket handoff. Native Command interaction
   is a separate acceptance check.
