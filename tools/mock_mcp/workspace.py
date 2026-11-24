@@ -16,7 +16,7 @@ PAGE_INPUT = {"limit": {"type": "integer", "minimum": 1, "maximum": 50, "default
               "cursor": {"type": "string", "minLength": 1, "maxLength": 512}}
 PLAN_STATE = choices("draft", "ready", "deployed")
 RUN_STATE = choices("created", "preflight", "starting", "start_requested", "waiting_ack", "scheduled",
-                    "executing", "paused", "returning", "completed", "failed", "aborted", "cancelled")
+                    "executing", "paused", "returning", "completed", "failed", "aborted", "cancelled", "canceled")
 DEVICE_KIND = choices("simulated", "test_fixture")
 DEVICE_AVAILABILITY = choices("available", "busy", "offline")
 CATEGORY = choices("plan", "execution", "rehearsal", "fleet", "video", "handoff", "system")
@@ -125,7 +125,7 @@ WORKSPACE_TOOLS = {
     )
 }
 
-TERMINAL = {"completed", "failed", "aborted", "cancelled"}
+TERMINAL = {"completed", "failed", "aborted", "cancelled", "canceled"}
 EVENT_CATEGORIES = {"PLAN": "plan", "MISSION": "plan", "ROUTE": "plan", "EXECUTION": "execution",
                     "REHEARSAL": "rehearsal", "SIMULATION": "rehearsal", "FLEET": "fleet", "VIDEO": "video",
                     "HANDOFF": "handoff", "SYSTEM": "system"}
@@ -167,10 +167,15 @@ def plan_summary(plan):
 def execution_summary(run):
     kind = "single_takeover" if run.get("source_execution_id") else (
         "fleet_move" if run.get("control_kind") == "GROUP_MOVE" else "mission")
+    state = run["state"].lower()
+    if state == "cancelled":
+        state = "canceled"
+    elif state == "scheduled" and run.get("mock_mcp_start_requested"):
+        state = "starting"
     return {"execution_id": run["execution_id"], "kind": kind,
             "plan_id": id_or_none(run.get("plan_id")), "mission_id": id_or_none(run.get("mission_id")),
-            "state": run["state"].lower(), "version": int(run.get("control_version", 0)),
-            "scheduled_for": stamp(run.get("scheduled_start_epoch"))}
+            "state": state, "version": int(run.get("control_version", 0)),
+            "scheduled_for": stamp(run.get("scheduled_start_epoch")) if state == "scheduled" else None}
 
 
 def belongs_in_workspace(run):

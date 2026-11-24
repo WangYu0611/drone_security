@@ -25,6 +25,11 @@ UPDATE_DEVICE = "update_mock_device_metadata"
 REMOVE_DEVICE = "remove_mock_test_device"
 START_REHEARSAL = "start_mock_rehearsal"
 REVIEW_REHEARSAL = "record_mock_rehearsal_review"
+REQUEST_EXECUTION = "request_mock_execution"
+RESCHEDULE = "update_mock_execution_schedule"
+START_SCHEDULED = "start_scheduled_mock_execution"
+CANCEL_SCHEDULED = "cancel_mock_execution_schedule"
+SET_EXECUTION = "set_mock_execution_state"
 FLEET_MANAGE = "mock:fleet:manage"
 NAME = {"type": "string", "minLength": 1}
 DESCRIPTION = {"type": "string", "maxLength": 1000}
@@ -125,6 +130,27 @@ ROUTE_WRITE_TOOLS = {item.name: item for item in (
            "disposition": choices("finish", "discard_unsaved"), "request_id": UUID}, ("expected_route_version",)),
 )}
 
+EXECUTION_SCOPES = {REQUEST_EXECUTION: "mock:execution:start", START_SCHEDULED: "mock:execution:start",
+                    RESCHEDULE: "mock:execution:schedule", CANCEL_SCHEDULED: "mock:execution:schedule",
+                    SET_EXECUTION: "mock:execution:control"}
+EXECUTION_INPUT = {"execution_id": ID, "expected_version": COUNTER, "request_id": UUID}
+EXECUTION_RESULT = {"execution_id": ID, "state": RUN_STATE, "version": COUNTER, "request_id": UUID}
+SCHEDULE_RESULT = {**EXECUTION_RESULT, "scheduled_for": nullable(TIMESTAMP)}
+EXECUTION_TOOLS = {item.name: item for item in (
+    write(REQUEST_EXECUTION, "Start or schedule an approved synthetic deployment mission.",
+          {"deployment_id": ID, "mission_id": ID, "mode": choices("now", "scheduled"),
+           "scheduled_for": TIMESTAMP, "approval_id": ID, "request_id": UUID},
+          {**SCHEDULE_RESULT, "deployment_id": ID, "mission_id": ID}, ("scheduled_for", "approval_id")),
+    write(RESCHEDULE, "Change the start time of an existing Mock reservation.",
+          {**EXECUTION_INPUT, "scheduled_for": TIMESTAMP}, SCHEDULE_RESULT),
+    write(START_SCHEDULED, "Queue an existing Mock reservation to start after operator approval.",
+          {**EXECUTION_INPUT, "approval_id": ID}, SCHEDULE_RESULT, ("approval_id",)),
+    write(CANCEL_SCHEDULED, "Cancel an existing Mock reservation.", EXECUTION_INPUT, EXECUTION_RESULT),
+    write(SET_EXECUTION, "Change the state of a software-only run. Aborting needs operator approval.",
+          {**EXECUTION_INPUT, "action": choices("pause", "resume", "return", "abort"), "approval_id": ID},
+          EXECUTION_RESULT, ("approval_id",)),
+)}
+
 BACKEND_ERRORS = {
     "PLAN_NOT_FOUND": "NOT_FOUND", "MISSION_NOT_FOUND": "NOT_FOUND", "MISSION_PLAN_MISMATCH": "NOT_FOUND",
     "INVALID_UAV": "NOT_FOUND", "NOT_FOUND": "NOT_FOUND", "PLAN_NOT_DEPLOYED": "INVALID_STATE",
@@ -144,6 +170,11 @@ BACKEND_ERRORS = {
     "SIMULATION_INVALID_ORIGIN": "INVALID_ARGUMENT", "SIMULATION_UAV_REQUIRED": "CHECK_FAILED", "ROUTE_MISSING": "CHECK_FAILED",
     "EXECUTION_CONFLICT": "OBJECT_IN_USE", "REHEARSAL_INCOMPLETE": "INVALID_STATE", "REHEARSAL_STALE": "REHEARSAL_STALE",
     "INVALID_LANGUAGE": "INVALID_ARGUMENT", "INVALID_VIDEO_TARGET": "NOT_FOUND",
+    "DEPLOYMENT_MISSING": "INVALID_STATE", "EXECUTION_NOT_FOUND": "NOT_FOUND",
+    "EXECUTION_STALE": "VERSION_CONFLICT", "EXECUTION_STATE_INVALID": "INVALID_STATE",
+    "INVALID_SCHEDULE": "INVALID_ARGUMENT", "NO_UAV_ASSIGNED": "CHECK_FAILED",
+    "SIMULATION_START_REQUIRED": "INVALID_STATE", "MOCK_UAV_UNAVAILABLE": "NOT_FOUND",
+    "PILOT_CONTROL_ASSIGNED": "OBJECT_IN_USE", "TRAJECTORY_CONFLICT": "CHECK_FAILED",
 }
 
 
@@ -245,6 +276,10 @@ class PlanWriter:
                     payload["lease_expires_at"] = utc_timestamp(payload["lease_expires_at"])
                 if "reviewed_at" in payload:
                     payload["reviewed_at"] = utc_timestamp(payload["reviewed_at"])
+                if payload.get("scheduled_for") is not None:
+                    payload["scheduled_for"] = utc_timestamp(payload["scheduled_for"])
+                if name in EXECUTION_TOOLS:
+                    payload["version"] = int(payload["version"])
                 return payload, confirmed
             code = BACKEND_ERRORS.get(payload.get("code"))
             if code:

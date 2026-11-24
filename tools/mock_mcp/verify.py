@@ -1,4 +1,4 @@
-"""Run the five-tool MCP acceptance suite against an owned, isolated Backend."""
+"""Run Mock MCP protocol acceptance against an owned, isolated Backend."""
 
 import argparse
 import asyncio
@@ -27,6 +27,9 @@ from approve import save_approval
 from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, BEGIN_ROUTE, DELETE_MISSION, DELETE_PLAN, DEPLOY, END_ROUTE
 from plan_writes import CREATE_DEVICES, PLAN_WRITE_TOOLS, REMOVE_DEVICE, REVIEW, REVIEW_REHEARSAL, ROUTE_WRITE_TOOLS
 from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_REHEARSAL, UPDATE_DEVICE, VALIDATE
+from plan_writes import CANCEL_SCHEDULED, EXECUTION_SCOPES, EXECUTION_TOOLS, REQUEST_EXECUTION
+from plan_writes import RESCHEDULE, SET_EXECUTION, START_SCHEDULED
+from protocol import utc_timestamp
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from session_alerts import ACK_ALERT, ALERT_SCOPE, LIST_ALERTS
 from workspace import LANGUAGE, SELECT, VIDEO, VIEW_SCOPES, VIEW_TOOLS, WORKSPACE_TOOLS
@@ -135,7 +138,8 @@ async def run(backend_exe, workspace):
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
         "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
                                        ALERT_SCOPE, *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()) |
-                                               set(VIEW_SCOPES.values()))]),
+                                               set(VIEW_SCOPES.values()) | set(EXECUTION_SCOPES.values()))]),
+        "schedule-only": (secrets.token_hex(32), ["mock:read", EXECUTION_SCOPES[RESCHEDULE]]),
     }
     config = workspace / "backend.yaml"
     config.write_text(f"""server:
@@ -164,6 +168,7 @@ log:
     fixtures.write_text(json.dumps({"maps": {"map-qa": {
         "point-a": {"latitude": 0.1, "longitude": 0.1000, "altitude": 15},
         "point-b": {"latitude": 0.1, "longitude": 0.1001, "altitude": 15},
+        "point-c": {"latitude": 0.1, "longitude": 0.0995, "altitude": 15},
     }}, "devices": {"setup-qa": {"latitude": 0.1, "longitude": 0.1, "altitude": 15}},
         "video_sources": {"video-qa": {"device_id": "UAV-01", "title": "QA clip", "availability": "available"}},
         "session_alerts": {"session-qa": {"device_id": "UAV-02", "severity": "warning", "code": "DEVICE_OFFLINE",
@@ -182,7 +187,7 @@ log:
             response = await http.post(backend + "/api/mock-mcp/draft", json={})
             assert response.status_code == 403
             for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay"),
-                                (ACK_ALERT, ALERT_SCOPE), *VIEW_SCOPES.items()):
+                                (ACK_ALERT, ALERT_SCOPE), *VIEW_SCOPES.items(), *EXECUTION_SCOPES.items()):
                 response = await http.post(endpoint, headers=rpc_headers(identities["read-only"][0], name),
                                            json=rpc(name, {}))
                 assert response.status_code == 403 and scope in response.headers["WWW-Authenticate"]
@@ -222,7 +227,7 @@ log:
                 draft_schema = await listing(draft, readers | plan_tools)
                 full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
                                             ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys() |
-                                            VIEW_TOOLS.keys() | {ACK_ALERT})
+                                            VIEW_TOOLS.keys() | EXECUTION_TOOLS.keys() | {ACK_ALERT})
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -495,7 +500,7 @@ log:
                 task = {**handle, "mission_id": added["mission_id"]}
                 rename = await call(all_tools, full_schema, "rename_mock_plan_mission",
                                     write_args(**task, expected_plan_version=added["plan_version"], name="Updated QA task"))
-                assignment_args = write_args(**task, expected_plan_version=rename["plan_version"], device_ids=["UAV-01"])
+                assignment_args = write_args(**task, expected_plan_version=rename["plan_version"], device_ids=["UAV-99"])
                 await call(all_tools, full_schema, "set_mock_mission_assignment", assignment_args, "NOT_FOUND")
                 cleared = await call(all_tools, full_schema, "set_mock_mission_assignment", {**assignment_args, "device_ids": []})
                 assert cleared["device_ids"] == []
@@ -663,6 +668,83 @@ log:
                 assert (await call(replay, replay_schema, "list_mock_replay_records", listing_args))["items"][0]["replay"] is None
                 assert (await http.get(backend + "/api/security-plans")).json()["executions"] == saved["executions"]
                 check("stored workspace playback, cross-identity rejection and no execution mutation")
+
+                simulated_plan = await call(all_tools, full_schema, DRAFT_TOOL, write_args(name="Scheduled scenario"))
+                sim_handle = await call(all_tools, full_schema, "begin_mock_plan_edit",
+                                        write_args(plan_id=simulated_plan["plan_id"], expected_plan_version=1))
+                owner = {key: sim_handle[key] for key in ("configuration_id", "plan_id")}
+                mission = await call(all_tools, full_schema, "add_mock_plan_mission",
+                                     write_args(**owner, name="Isolated run", expected_plan_version=sim_handle["plan_version"]))
+                sim_task = {**owner, "mission_id": mission["mission_id"]}
+                await call(all_tools, full_schema, "set_mock_mission_assignment",
+                           write_args(**sim_task, expected_plan_version=mission["plan_version"], device_ids=["UAV-01"]))
+                sim_edit = await call(all_tools, full_schema, BEGIN_ROUTE, write_args(**sim_task, expected_route_version=0))
+                sim_route = await call(all_tools, full_schema, SAVE_ROUTE,
+                                       write_args(route_edit_id=sim_edit["route_edit_id"], expected_route_version=0,
+                                                  map_fixture_id="map-qa", waypoint_fixture_ids=["point-a", "point-c"]))
+                await call(all_tools, full_schema, END_ROUTE,
+                           write_args(route_edit_id=sim_edit["route_edit_id"], expected_route_version=sim_route["route_version"],
+                                      disposition="finish"))
+                current = await call(all_tools, full_schema, "get_mock_security_plan", {"plan_id": owner["plan_id"]})
+                checked_sim = await call(all_tools, full_schema, VALIDATE,
+                                         write_args(**owner, expected_plan_version=current["plan_version"]))
+                assert checked_sim["passed"], checked_sim
+                review_sim = write_args(**owner, expected_plan_version=checked_sim["plan_version"],
+                                       validation_id=checked_sim["validation_id"])
+                accepted = await call(all_tools, full_schema, REVIEW, confirmed(REVIEW, review_sim))
+                publish_sim = write_args(**owner, expected_plan_version=accepted["plan_version"], review_id=accepted["review_id"])
+                published = await call(all_tools, full_schema, DEPLOY, confirmed(DEPLOY, publish_sim))
+                scheduled_time = utc_timestamp(time.time() + 600)[:19] + "Z"
+                execution_args = write_args(deployment_id=published["deployment_id"], mission_id=mission["mission_id"],
+                                            mode="scheduled", scheduled_for=scheduled_time)
+                await call(all_tools, full_schema, REQUEST_EXECUTION, execution_args, "APPROVAL_REQUIRED")
+                reservation = await call(all_tools, full_schema, REQUEST_EXECUTION, confirmed(REQUEST_EXECUTION, execution_args))
+                assert reservation["state"] == "scheduled" and reservation["version"] == 1
+                assert await call(all_tools, full_schema, REQUEST_EXECUTION, execution_args) == reservation
+                run_id = {"execution_id": reservation["execution_id"]}
+                await call(all_tools, full_schema, RESCHEDULE, write_args(**run_id, expected_version=0,
+                                                                         scheduled_for=scheduled_time), "VERSION_CONFLICT")
+                async with Client(transport(endpoint, identities["schedule-only"][0]), mode="2026-07-28") as scheduler:
+                    await listing(scheduler, readers | {RESCHEDULE, CANCEL_SCHEDULED})
+                    headers = rpc_headers(identities["schedule-only"][0], START_SCHEDULED)
+                    response = await http.post(endpoint, headers=headers, json=rpc(START_SCHEDULED, {}))
+                    assert response.status_code == 403
+                revised_time = utc_timestamp(time.time() + 750)[:19] + "Z"
+                revised = await call(all_tools, full_schema, RESCHEDULE,
+                                     write_args(**run_id, expected_version=reservation["version"], scheduled_for=revised_time))
+                assert revised["execution_id"] == reservation["execution_id"] and revised["state"] == "scheduled"
+                canceled = await call(all_tools, full_schema, CANCEL_SCHEDULED,
+                                      write_args(**run_id, expected_version=revised["version"]))
+                assert canceled["state"] == "canceled"
+                assert (await call(all_tools, full_schema, "get_mock_execution", run_id))["state"] == "canceled"
+                second_args = {**execution_args, "request_id": str(uuid4())}
+                second_run = await call(all_tools, full_schema, REQUEST_EXECUTION, confirmed(REQUEST_EXECUTION, second_args))
+                assert second_run["execution_id"] != reservation["execution_id"]
+                active_id = {"execution_id": second_run["execution_id"]}
+                kick = write_args(**active_id, expected_version=second_run["version"])
+                await call(all_tools, full_schema, START_SCHEDULED, kick, "APPROVAL_REQUIRED")
+                kicked = await call(all_tools, full_schema, START_SCHEDULED, confirmed(START_SCHEDULED, kick))
+                assert kicked["state"] == "starting" and kicked["scheduled_for"] is None
+                async with asyncio.timeout(8):
+                    while True:
+                        active_run = await call(all_tools, full_schema, "get_mock_execution", active_id)
+                        if active_run["state"] == "executing":
+                            break
+                        assert active_run["state"] not in {"failed", "aborted", "completed"}, active_run
+                        await asyncio.sleep(0.05)
+                paused_sim = await call(all_tools, full_schema, SET_EXECUTION,
+                                        write_args(**active_id, expected_version=active_run["version"], action="pause"))
+                assert paused_sim["state"] == "paused"
+                resumed = await call(all_tools, full_schema, SET_EXECUTION,
+                                     write_args(**active_id, expected_version=paused_sim["version"], action="resume"))
+                assert resumed["state"] == "executing"
+                abort = write_args(**active_id, expected_version=resumed["version"], action="abort")
+                await call(all_tools, full_schema, SET_EXECUTION, abort, "APPROVAL_REQUIRED")
+                approved_abort = await call(all_tools, full_schema, SET_EXECUTION, confirmed(SET_EXECUTION, abort))
+                assert approved_abort["state"] == "aborted"
+                assert await call(all_tools, full_schema, START_SCHEDULED, kick) == kicked
+                assert await call(all_tools, full_schema, SET_EXECUTION, abort) == approved_abort
+                check("Mock execution reservation, ownership, separate scopes, immediate start and control receipts")
     except Exception:
         for name in ("backend.log", "mcp.log"):
             path = workspace / name

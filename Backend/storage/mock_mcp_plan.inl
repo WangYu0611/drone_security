@@ -14,9 +14,10 @@
     }
 
     Object writeMockMcpPlan(std::string identity, std::string tool, Object arguments, const std::set<std::string>& registered,
-                            const std::function<void(const Object&)>& publish) {
+                            const std::function<void(const Object&)>& publish,
+                            const std::function<void(const std::string&)>& checkPilotOwner = {}) {
         const MockPlanCall call{std::move(identity), std::move(tool), std::move(arguments)};
-        return transact({}, registered, "Mock MCP", publish, {}, &call);
+        return transact({}, registered, "Mock MCP", publish, checkPilotOwner, &call);
     }
 
 private:
@@ -32,6 +33,7 @@ private:
 
     #include "storage/mock_mcp_approval.inl"
     #include "storage/mock_mcp_simulation.inl"
+    #include "storage/mock_mcp_execution.inl"
 
     const Object* mockMcpReceipt(const MockPlanCall& call) const {
         const auto* scope = mock_mcp_draft_receipts_.if_contains(call.scope());
@@ -113,7 +115,8 @@ private:
         } else if (action == "assign") {
             const auto& devices = args.at("device_ids").as_array();
             for (const auto& device : devices) {
-                if (!device.is_string() || !next.at("simulation_uavs").as_object().contains(device.as_string()))
+                if (!device.is_string() || (!next.at("simulation_uavs").as_object().contains(device.as_string()) &&
+                    !mock_.at("uavs").as_object().contains(device.as_string())))
                     throw PlanError("NOT_FOUND", "Choose a simulated device from this workspace");
             }
             request["assigned_uav_ids"] = devices;

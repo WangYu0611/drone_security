@@ -10,7 +10,7 @@ from uuid import uuid4
 
 from jsonschema import Draft202012Validator
 
-from plan_writes import APPROVAL_TOOLS
+from plan_writes import APPROVAL_TOOLS, EXECUTION_TOOLS, REQUEST_EXECUTION, SET_EXECUTION, START_SCHEDULED
 from protocol import ID_PATTERN
 
 
@@ -30,10 +30,11 @@ def save_approval(workspace, identity, tool, arguments, ttl):
 
 
 def main():
+    tools = APPROVAL_TOOLS | {name: EXECUTION_TOOLS[name] for name in (REQUEST_EXECUTION, START_SCHEDULED, SET_EXECUTION)}
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", required=True, type=Path)
     parser.add_argument("--identity", required=True)
-    parser.add_argument("--tool", required=True, choices=sorted(APPROVAL_TOOLS))
+    parser.add_argument("--tool", required=True, choices=sorted(tools))
     parser.add_argument("--arguments", required=True, type=Path, help="JSON arguments without request_id or approval_id")
     parser.add_argument("--ttl", type=int, default=180)
     args = parser.parse_args()
@@ -50,8 +51,10 @@ def main():
         if "approval_id" in arguments or "request_id" in arguments:
             raise ValueError("Do not include approval_id or request_id")
         sample = {**arguments, "request_id": str(uuid4()), "approval_id": "approval-to-issue"}
-        if not Draft202012Validator(APPROVAL_TOOLS[args.tool].input_schema).is_valid(sample):
+        if not Draft202012Validator(tools[args.tool].input_schema).is_valid(sample):
             raise ValueError("The arguments do not match this tool schema")
+        if args.tool == SET_EXECUTION and arguments["action"] != "abort":
+            raise ValueError("Only abort requires approval for this tool")
     except (OSError, ValueError, KeyError, TypeError) as error:
         parser.error(str(error))
     print(json.dumps({"identity": args.identity, "tool": args.tool, "arguments": arguments},

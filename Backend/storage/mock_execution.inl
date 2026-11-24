@@ -407,12 +407,12 @@ private:
     }
     Object executionRequest(const Object& r,const std::set<std::string>& uavs,const std::string&,
         const std::function<void(const Object&)>& publish,
-        const std::function<void(const std::string&)>& checkPilotOwner) {
+        const std::function<void(const std::string&)>& checkPilotOwner, const MockPlanCall* mockCall = nullptr) {
         const auto action=str(r,"action"),key=str(r,"request_id");
         if(key.empty())throw PlanError("REQUEST_ID_REQUIRED","Execution request id required");
         Object identity=r;identity.erase("expected_version");identity.erase("instance_id");
         auto& requests=state_.at("execution_requests").as_object();
-        if(auto* old=requests.if_contains(key)) {
+        if(auto* old=requests.if_contains(key); old && !mockCall) {
             if(old->as_object().at("request")!=identity)throw PlanError("REQUEST_ID_REUSED","Request id has different content");
             if(!str(old->as_object(),"error_code").empty())throw PlanError(str(old->as_object(),"error_code"),str(old->as_object(),"error_message"));
             return {{"state",state_},{"execution_id",old->as_object().at("execution_id")}};
@@ -528,6 +528,7 @@ private:
                 const auto start=currentPosition(next,uid);
                 id=createRuntimeExecution(next,route,plan,mission,uid,pid,mid,rid,did);
                 auto& execution=all.at(id).as_object();execution["group_id"]=group;
+                if (mockCall) execution["control_version"] = 1;
                 execution["plan_route_snapshot"]=central;execution["formation"]=str(mission,"formation");
                 execution["safety_separation_m"]=safetySeparation();
                 if(r.contains("scheduled_start_at")){
@@ -561,6 +562,7 @@ private:
                 const double when=parseScheduledTime(str(r,"scheduled_start_at"));if(when<=OperationalContext::now())throw PlanError("INVALID_SCHEDULE","Time must be in the future");
                 e["scheduled_start_at"]=r.at("scheduled_start_at");e["scheduled_start_epoch"]=when;transition(next,e,"SCHEDULED","SCHEDULE_CHANGED");
             } else if(action=="execution_start_now" && s=="SCHEDULED") {
+                if (mockCall) e["mock_mcp_start_requested"] = true;
                 e["scheduled_start_epoch"]=OperationalContext::now();transition(next,e,"SCHEDULED","SCHEDULE_DUE");
             } else if(action=="execution_cancel" && s=="SCHEDULED") {
                 e["completed_at"]=OperationalContext::now();transition(next,e,"CANCELLED","MISSION_CANCELLED");
@@ -578,6 +580,7 @@ private:
             } else throw PlanError("EXECUTION_STATE_INVALID","Action is unavailable in current execution state");
             }
         }
+        if (mockCall) return commitMockExecution(next, *mockCall, id, publish);
         next.at("execution_requests").as_object()[key]=Object{{"request",identity},{"execution_id",id}};
         commitExecutions(next,publish,action=="execution_takeover_move"?key:std::string{});
         const auto& result=state_.at("execution_requests").as_object().at(key).as_object();

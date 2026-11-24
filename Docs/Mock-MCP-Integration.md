@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　51 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线、配置检查和部署、模拟设备管理和任务预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　56 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线、检查复核与部署、Mock 执行和预约、模拟设备管理和预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **51 项已实现，18 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **56 项已实现，13 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -85,11 +85,11 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 | [`publish_mock_plan_snapshot`](#publish_mock_plan_snapshot) | `mock:read` + `mock:plan:deploy` | 已实现 | 经操作员确认冻结经检查与复核的 Mock 配置快照。 |
 | [`list_mock_executions`](#list_mock_executions) | `mock:read` | 已实现 | 按方案、任务或状态查预约、活动与历史模拟执行。 |
 | [`get_mock_execution`](#get_mock_execution) | `mock:read` | 已实现 | 查询模拟执行进度、成员、耗时、状态和结果原因。 |
-| [`request_mock_execution`](#request_mock_execution) | `mock:read` + `mock:execution:start` | 待实现 | 提交操作员已确认的立即或预约模拟任务，并返回模拟执行编号。 |
-| [`update_mock_execution_schedule`](#update_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 待实现 | 重排待开始的模拟任务。 |
-| [`start_scheduled_mock_execution`](#start_scheduled_mock_execution) | `mock:read` + `mock:execution:start` | 待实现 | 经操作员确认，立即开始指定的待启动模拟任务。 |
-| [`cancel_mock_execution_schedule`](#cancel_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 待实现 | 取消尚未开始的模拟预约并检查资源释放。 |
-| [`set_mock_execution_state`](#set_mock_execution_state) | `mock:read` + `mock:execution:control` | 待实现 | 对指定 Mock 执行执行暂停、恢复、模拟返航或经确认终止，按对象类型和当前状态判定可用动作。 |
+| [`request_mock_execution`](#request_mock_execution) | `mock:read` + `mock:execution:start` | 已实现 | 提交操作员已确认的立即或预约模拟任务，并返回模拟执行编号。 |
+| [`update_mock_execution_schedule`](#update_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 已实现 | 重排待开始的模拟任务。 |
+| [`start_scheduled_mock_execution`](#start_scheduled_mock_execution) | `mock:read` + `mock:execution:start` | 已实现 | 经操作员确认，立即开始指定的待启动模拟任务。 |
+| [`cancel_mock_execution_schedule`](#cancel_mock_execution_schedule) | `mock:read` + `mock:execution:schedule` | 已实现 | 取消尚未开始的模拟预约并检查资源释放。 |
+| [`set_mock_execution_state`](#set_mock_execution_state) | `mock:read` + `mock:execution:control` | 已实现 | 对指定 Mock 执行执行暂停、恢复、模拟返航或经确认终止，按对象类型和当前状态判定可用动作。 |
 
 ### 模拟设备与集群演示
 

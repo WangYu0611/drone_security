@@ -95,6 +95,11 @@ arguments returns the original receipt, even after the approval expires.
 - The automated acceptance uses temporary test credentials, an empty registry and isolated ports.
   It exercises the MCP protocol and the Command HTTP/WebSocket handoff. Native Command interaction
   is a separate acceptance check.
+- Execution and scheduling use UAV IDs provisioned in the isolated Backend's `mock_execution.json`
+  with synthetic home points. Simulator devices created for rehearsals run through `start_mock_rehearsal`.
+  Execute/start and reschedule/cancel use separate scopes. Submit UTC schedule timestamps to the
+  nearest second. An immediate start receipt for an existing reservation reports `starting` while
+  the simulation controller runs its due-start checks.
 
 ~~~powershell
 python -m pip install "websockets>=15,<17"

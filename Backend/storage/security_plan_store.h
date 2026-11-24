@@ -157,6 +157,8 @@ public:
         expire(next, OperationalContext::now());
         if (mockCall && mockSimulationTool(mockCall->tool))
             return commitMockSimulation(next, *mockCall, physicalUavs, publish);
+        if (mockCall && mockExecutionTool(mockCall->tool))
+            return writeMockExecution(next, *mockCall, publish, checkPilotOwner);
         const auto mockRequest = mockCall ? mockPlanRequest(next, *mockCall) : Object{};
         const auto& request = mockCall ? mockRequest : originalRequest;
         const auto action = str(request, "action");
@@ -164,6 +166,7 @@ public:
         if (action.rfind("simulation_",0)==0) return rehearsalRequest(next,request,physicalUavs,source,publish);
         auto uavs=physicalUavs;
         for(const auto& entry:next.at("simulation_uavs").as_object())uavs.emplace(entry.key());
+        if (mockCall) for (const auto& entry : mock_.at("uavs").as_object()) uavs.emplace(entry.key());
         checkConfigurationRequest(next,request);
         const bool guardedDeployment=checkDeploymentRequestGuard(next,request);
         if(action=="begin_configuration")if(const auto* current=activeConfiguration(next)) {

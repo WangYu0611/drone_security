@@ -366,6 +366,9 @@ void HttpServer::Run() {
                     for (const auto& drone : drone_records_) {
                         if (drone.slot > 0) uavs.insert("UAV-" + std::string(drone.slot < 10 ? "0" : "") + std::to_string(drone.slot));
                     }
+                    if (!mock_mcp_bridge_token_.empty()) {
+                        for (const auto& fixture : security_plans_.mockTelemetryPositions()) uavs.emplace(fixture.key());
+                    }
                     security_plans_.tickExecutions(dt, uavs, [this](const boost::json::object& e){ws_manager_.broadcast(json_stringify(e));});
                 }
                 if (pilot_control_) TickPilotMock(dt);
@@ -1813,7 +1816,11 @@ http::response<http::string_body> HttpServer::HandleMockMcpPlanWrite(
             }
         }
         const auto result = security_plans_.writeMockMcpPlan(identity, tool, args, registered,
-            [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); });
+            [this](const boost::json::object& event) { ws_manager_.broadcast(json_stringify(event)); },
+            [this](const std::string& device) {
+                if (pilot_control_ && pilot_control_->OwnsAircraft(device))
+                    throw PlanError("PILOT_CONTROL_ASSIGNED", "The mock device has an active Pilot assignment");
+            });
         if (tool == "delete_mock_security_plan_draft" || tool == "delete_mock_plan_mission") {
             const auto context = operational_context_.snapshot();
             boost::json::object patch;
