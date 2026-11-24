@@ -4,7 +4,7 @@
 
 目标是让 LLM 通过 MCP 逐项使用指挥系统的 Mock 业务功能。v0.2 文档包含 69 项工具的参数、回执、权限、错误处理和验收，覆盖下列八个模块。
 
-**当前进度**　59 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线与方案平移、检查复核与部署、Mock 执行和预约、模拟设备管理和预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
+**当前进度**　64 项可在隔离工作区联调，包含查询及回放、方案与任务编辑、夹具航线与方案平移、检查复核与部署、Mock 执行和预约、模拟设备与集群演示、任务预演，以及共享选机、语言、会话告警和视频目标。各工具在表中标记实现状态。草稿与业务数据由 Mock Backend 持有，工作区回放和告警已处理标记由 MCP 服务持有。启动、鉴权与自动化验收见 [Mock MCP 运行说明](../tools/mock_mcp/README.md)。 [业务演示手册](Stage1/Stage1-Demo-Runbook.md) · [编辑器 MCP 记录](TASK-A3-Startup-Visual.md#unreal-mcp-evidence-and-current-boundary)
 
 ## 当前系统功能盘点
 
@@ -12,7 +12,7 @@
 
 ## 工具与权限
 
-目录共 **69 项，契约均已写入**。其中 **59 项已实现，10 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
+目录共 **69 项，契约均已写入**。其中 **64 项已实现，5 项等待实现**。点击工具名称可查看参数、成功回执、错误处理与逐项验收。文档沿用 v0.2 的 `contract_version`。
 
 当前工作区查询包括方案详情与列表、部署、执行、模拟设备、预演、回放记录、健康、会话选择、语言、视频目标和事件。实际工具清单由 `tools/list` 按令牌权限返回。带 `session_id` 的工具使用启动时分配的会话 ID。
 
@@ -102,11 +102,11 @@ Command 已有配置检查、操作员复核、部署快照、立即或预约开
 | [`create_mock_simulated_devices`](#create_mock_simulated_devices) | `mock:read` + `mock:fleet:manage` | 已实现 | 按已配置的合成夹具批量新增模拟机。 |
 | [`update_mock_device_metadata`](#update_mock_device_metadata) | `mock:read` + `mock:fleet:manage` | 已实现 | 修改隔离测试注册表的展示信息。 |
 | [`remove_mock_test_device`](#remove_mock_test_device) | `mock:read` + `mock:fleet:manage` | 已实现 | 在无任务或控制权占用且经确认时移除测试注册表条目。 |
-| [`preview_mock_fleet_move`](#preview_mock_fleet_move) | `mock:read` + `mock:fleet:preview` | 待实现 | 预览单机或集群在指定合成场景中的移动结果。 |
-| [`confirm_mock_fleet_move`](#confirm_mock_fleet_move) | `mock:read` + `mock:fleet:simulate` | 待实现 | 在隔离模拟器中提交经确认且未过期的移动预览。 |
-| [`preview_mock_single_takeover`](#preview_mock_single_takeover) | `mock:read` + `mock:fleet:preview` | 待实现 | 预览单架模拟机从已有模拟任务切出的影响。 |
-| [`confirm_mock_single_takeover`](#confirm_mock_single_takeover) | `mock:read` + `mock:fleet:simulate` | 待实现 | 在隔离模拟器确认已预览的接管，并确认其余演示成员的状态。 |
-| [`cancel_mock_fleet_preview`](#cancel_mock_fleet_preview) | `mock:read` + `mock:fleet:preview` | 待实现 | 撤销尚未提交的当前移动或接管预览。 |
+| [`preview_mock_fleet_move`](#preview_mock_fleet_move) | `mock:read` + `mock:fleet:preview` | 已实现 | 预览单机或集群在指定合成场景中的移动结果。 |
+| [`confirm_mock_fleet_move`](#confirm_mock_fleet_move) | `mock:read` + `mock:fleet:simulate` | 已实现 | 在隔离模拟器中提交经确认且未过期的移动预览。 |
+| [`preview_mock_single_takeover`](#preview_mock_single_takeover) | `mock:read` + `mock:fleet:preview` | 已实现 | 预览单架模拟机从已有模拟任务切出的影响。 |
+| [`confirm_mock_single_takeover`](#confirm_mock_single_takeover) | `mock:read` + `mock:fleet:simulate` | 已实现 | 在隔离模拟器确认已预览的接管，并确认其余演示成员的状态。 |
+| [`cancel_mock_fleet_preview`](#cancel_mock_fleet_preview) | `mock:read` + `mock:fleet:preview` | 已实现 | 撤销尚未提交的当前移动或接管预览。 |
 
 暂停、恢复或终止已创建的演示移动使用 `set_mock_execution_state`。设备展示信息只涉及测试数据，模拟状态须携带来源和时间。
 

@@ -10,7 +10,8 @@ from uuid import uuid4
 
 from jsonschema import Draft202012Validator
 
-from plan_writes import APPROVAL_TOOLS, COMMIT_TRANSLATION, EXECUTION_TOOLS, REQUEST_EXECUTION
+from plan_writes import APPROVAL_TOOLS, COMMIT_TRANSLATION, CONFIRM_FLEET, CONFIRM_TAKEOVER, EXECUTION_TOOLS, FLEET_TOOLS
+from plan_writes import REQUEST_EXECUTION
 from plan_writes import ROUTE_WRITE_TOOLS, SET_EXECUTION, START_SCHEDULED
 from protocol import ID_PATTERN
 
@@ -33,6 +34,7 @@ def save_approval(workspace, identity, tool, arguments, ttl):
 def main():
     tools = APPROVAL_TOOLS | {name: EXECUTION_TOOLS[name] for name in (REQUEST_EXECUTION, START_SCHEDULED, SET_EXECUTION)}
     tools[COMMIT_TRANSLATION] = ROUTE_WRITE_TOOLS[COMMIT_TRANSLATION]
+    tools.update({name: FLEET_TOOLS[name] for name in (CONFIRM_FLEET, CONFIRM_TAKEOVER)})
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", required=True, type=Path)
     parser.add_argument("--identity", required=True)

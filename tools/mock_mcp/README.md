@@ -66,6 +66,11 @@ scene's Unreal coordinates. The Backend verifies one common translation across a
 and retains topology and route settings. The preview lasts 60 seconds and uses the current plan
 configuration. The move is applied only after an operator approves the preview ID.
 
+The optional `motions` object maps an ID to a `map_fixture_id`, a `waypoint_fixture_id` within that
+map, and an optional `target_area_radius_m`. Fleet and single-device tools resolve only these fixture
+IDs in the isolated software adapter. Previews expire after 60 seconds. Confirmation checks the
+operator approval and rechecks the device and execution state in the same Backend transaction.
+
 ~~~json
 {"maps":{"map-demo":{"point-a":{"latitude":0.1,"longitude":0.1,"altitude":15},"point-b":{"latitude":0.1,"longitude":0.1001,"altitude":15}}},"devices":{"setup-demo":{"latitude":0.1,"longitude":0.1,"altitude":15}},"video_sources":{"video-demo":{"device_id":"UAV-01","title":"Demo clip","availability":"available"}}}
 ~~~

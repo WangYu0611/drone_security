@@ -161,6 +161,8 @@ public:
             return writeMockExecution(next, *mockCall, publish, checkPilotOwner);
         if (mockCall && mockTranslationTool(mockCall->tool))
             return writeMockTranslation(next, *mockCall, publish);
+        if (mockCall && mockFleetTool(mockCall->tool))
+            return writeMockFleet(next, *mockCall, publish, checkPilotOwner);
         const auto mockRequest = mockCall ? mockPlanRequest(next, *mockCall) : Object{};
         const auto& request = mockCall ? mockRequest : originalRequest;
         const auto action = str(request, "action");

@@ -82,6 +82,20 @@
             const auto* scheduled = row.if_contains("scheduled_start_epoch");
             result["scheduled_for"] = state == "scheduled" && scheduled ? *scheduled : boost::json::value(nullptr);
         }
+        const bool fleet = call.tool == "confirm_mock_fleet_move" || call.tool == "confirm_mock_single_takeover";
+        if (fleet) {
+            const auto preview = str(call.arguments, "preview_id");
+            const auto& staged = next.at("mock_mcp_fleet_previews").as_object().at(preview).as_object().at("result").as_object();
+            result["preview_id"] = preview;
+            result["state"] = "starting";
+            if (call.tool == "confirm_mock_fleet_move") result["device_ids"] = staged.at("device_ids");
+            else {
+                result["source_execution_id"] = staged.at("source_execution_id");
+                result["device_id"] = staged.at("affected_device_id");
+                result["unaffected_device_ids"] = staged.at("unaffected_device_ids");
+            }
+        }
         next["version"] = state_.at("version").to_number<int64_t>() + 1;
-        return persistMockMcpResult(next, call, std::move(result), mockExecutionApprovalRequired(call), publish);
+        next["execution_version"] = state_.at("execution_version").to_number<int64_t>() + 1;
+        return persistMockMcpResult(next, call, std::move(result), fleet || mockExecutionApprovalRequired(call), publish);
     }

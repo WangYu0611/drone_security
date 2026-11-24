@@ -28,6 +28,7 @@ private:
         arguments.erase("resolved_fixture_path");
         arguments.erase("resolved_device_origin");
         arguments.erase("resolved_translation_fixture");
+        arguments.erase("resolved_motion_fixture");
         arguments.erase("approval_id");
         return arguments;
     }
@@ -36,6 +37,7 @@ private:
     #include "storage/mock_mcp_simulation.inl"
     #include "storage/mock_mcp_execution.inl"
     #include "storage/mock_mcp_translation.inl"
+    #include "storage/mock_mcp_fleet.inl"
 
     const Object* mockMcpReceipt(const MockPlanCall& call) const {
         const auto* scope = mock_mcp_draft_receipts_.if_contains(call.scope());

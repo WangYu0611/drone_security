@@ -33,6 +33,11 @@ RESCHEDULE = "update_mock_execution_schedule"
 START_SCHEDULED = "start_scheduled_mock_execution"
 CANCEL_SCHEDULED = "cancel_mock_execution_schedule"
 SET_EXECUTION = "set_mock_execution_state"
+PREVIEW_FLEET = "preview_mock_fleet_move"
+CONFIRM_FLEET = "confirm_mock_fleet_move"
+PREVIEW_TAKEOVER = "preview_mock_single_takeover"
+CONFIRM_TAKEOVER = "confirm_mock_single_takeover"
+CANCEL_FLEET = "cancel_mock_fleet_preview"
 FLEET_MANAGE = "mock:fleet:manage"
 NAME = {"type": "string", "minLength": 1}
 DESCRIPTION = {"type": "string", "maxLength": 1000}
@@ -167,6 +172,34 @@ EXECUTION_TOOLS = {item.name: item for item in (
           EXECUTION_RESULT, ("approval_id",)),
 )}
 
+PREVIEW_SCOPE = "mock:fleet:preview"
+SIMULATE_SCOPE = "mock:fleet:simulate"
+FLEET_SCOPES = {PREVIEW_FLEET: PREVIEW_SCOPE, PREVIEW_TAKEOVER: PREVIEW_SCOPE, CANCEL_FLEET: PREVIEW_SCOPE,
+                CONFIRM_FLEET: SIMULATE_SCOPE, CONFIRM_TAKEOVER: SIMULATE_SCOPE}
+MOTION_INPUT = {"motion_fixture_id": ID, "request_id": UUID}
+MOTION_PREVIEW = {"preview_id": ID, "request_id": UUID, "state": choices("ready", "blocked"),
+                  "checks": array(object_schema({"code": STRING, "message": STRING,
+                                                 "severity": choices("blocking", "warning")})), "expires_at": TIMESTAMP}
+MOTION_CONFIRM = {"preview_id": ID, "approval_id": ID, "request_id": UUID}
+FLEET_TOOLS = {item.name: item for item in (
+    write(PREVIEW_FLEET, "Check a synthetic fleet move without starting any execution.",
+          {**MOTION_INPUT, "device_ids": array(ID, minItems=1, maxItems=20, uniqueItems=True)},
+          {**MOTION_PREVIEW, "kind": {"const": "fleet_move"}, "device_ids": array(ID)}),
+    write(PREVIEW_TAKEOVER, "Check a single-device transition in a software execution.",
+          {**MOTION_INPUT, "execution_id": ID, "device_id": ID, "expected_execution_version": COUNTER},
+          {**MOTION_PREVIEW, "kind": {"const": "single_takeover"}, "source_execution_id": ID,
+           "affected_device_id": ID, "unaffected_device_ids": array(ID)}),
+    write(CONFIRM_FLEET, "Start an operator-approved software fleet preview.",
+          MOTION_CONFIRM, {**EXECUTION_RESULT, "preview_id": ID, "device_ids": array(ID)}, ("approval_id",)),
+    write(CONFIRM_TAKEOVER, "Commit an operator-approved transition for one software-only device.",
+          MOTION_CONFIRM, {**EXECUTION_RESULT, "preview_id": ID, "source_execution_id": ID, "device_id": ID,
+                           "unaffected_device_ids": array(ID)}, ("approval_id",)),
+    write(CANCEL_FLEET, "Close your software motion preview without starting any runs.",
+          {"preview_id": ID, "request_id": UUID},
+          {"preview_id": ID, "request_id": UUID, "kind": choices("fleet_move", "single_takeover"),
+           "state": {"const": "canceled"}}),
+)}
+
 BACKEND_ERRORS = {
     "PLAN_NOT_FOUND": "NOT_FOUND", "MISSION_NOT_FOUND": "NOT_FOUND", "MISSION_PLAN_MISMATCH": "NOT_FOUND",
     "INVALID_UAV": "NOT_FOUND", "NOT_FOUND": "NOT_FOUND", "PLAN_NOT_DEPLOYED": "INVALID_STATE",
@@ -201,8 +234,8 @@ def load_fixtures(path):
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict) or set(data) - set(FIXTURE_SECTIONS):
         raise ValueError("Unknown Mock fixture section")
-    maps, devices, video, alerts, translations = (data.get(section, {}) for section in FIXTURE_SECTIONS)
-    if not all(isinstance(section, dict) for section in (maps, devices, video, alerts, translations)):
+    maps, devices, video, alerts, translations, motions = (data.get(section, {}) for section in FIXTURE_SECTIONS)
+    if not all(isinstance(section, dict) for section in (maps, devices, video, alerts, translations, motions)):
         raise ValueError("Fixture sections must be JSON objects")
     schema = object_schema({"latitude": {"type": "number", "minimum": -90, "maximum": 90},
                             "longitude": {"type": "number", "minimum": -180, "maximum": 180},
@@ -230,10 +263,10 @@ def load_fixtures(path):
             raise ValueError("Invalid synthetic session alert fixture")
         utc_epoch(alert["occurred_at"])
     return {"maps": maps, "devices": devices, "video_sources": video, "session_alerts": alerts,
-            "translations": load_translations(translations, maps)}
+            "translations": load_translations(translations, maps), "motions": load_motions(motions, maps)}
 
 
-FIXTURE_SECTIONS = ("maps", "devices", "video_sources", "session_alerts", "translations")
+FIXTURE_SECTIONS = ("maps", "devices", "video_sources", "session_alerts", "translations", "motions")
 
 
 def load_translations(translations, maps):
@@ -261,6 +294,27 @@ def load_translations(translations, maps):
                              "after": {**points[target], "location": after}}
         resolved[key] = {"map_fixture_id": row["map_fixture_id"], "replacements": pairs}
     return resolved
+
+
+def load_motions(motions, maps):
+    check = Draft202012Validator(object_schema({
+        "map_fixture_id": ID, "waypoint_fixture_id": ID,
+        "target_area_radius_m": {"type": "number", "exclusiveMinimum": 0, "maximum": 10000},
+    }, ("target_area_radius_m",)))
+    result = {}
+    for key, motion in motions.items():
+        if not re.fullmatch(ID["pattern"], key) or not check.is_valid(motion):
+            raise ValueError("Invalid software motion fixture")
+        point = maps.get(motion["map_fixture_id"], {}).get(motion["waypoint_fixture_id"])
+        if point is None:
+            raise ValueError("Choose a waypoint from the same synthetic map fixture")
+        result[key] = {"point": point}
+        if "target_area_radius_m" in motion:
+            radius = motion["target_area_radius_m"]
+            if not math.isfinite(radius):
+                raise ValueError("Motion radius must be finite")
+            result[key]["radius"] = radius
+    return result
 
 
 class PlanWriter:
@@ -294,6 +348,8 @@ class PlanWriter:
             normalized["resolved_device_origin"] = self.fixtures["devices"].get(arguments["device_fixture_id"])
         elif name == PREVIEW_TRANSLATION:
             normalized["resolved_translation_fixture"] = self.fixtures["translations"].get(arguments["translation_fixture_id"])
+        elif name in (PREVIEW_FLEET, PREVIEW_TAKEOVER):
+            normalized["resolved_motion_fixture"] = self.fixtures["motions"].get(arguments["motion_fixture_id"])
         elif name == VIDEO:
             device = arguments["device_id"]
             sources = self.fixtures["video_sources"]

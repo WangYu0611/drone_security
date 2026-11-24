@@ -407,18 +407,19 @@ private:
     }
     Object executionRequest(const Object& r,const std::set<std::string>& uavs,const std::string&,
         const std::function<void(const Object&)>& publish,
-        const std::function<void(const std::string&)>& checkPilotOwner, const MockPlanCall* mockCall = nullptr) {
+        const std::function<void(const std::string&)>& checkPilotOwner, const MockPlanCall* mockCall = nullptr,
+        Object* mockState = nullptr) {
         const auto action=str(r,"action"),key=str(r,"request_id");
         if(key.empty())throw PlanError("REQUEST_ID_REQUIRED","Execution request id required");
         Object identity=r;identity.erase("expected_version");identity.erase("instance_id");
         auto& requests=state_.at("execution_requests").as_object();
-        if(auto* old=requests.if_contains(key); old && !mockCall) {
+        if(auto* old=requests.if_contains(key); old && !mockCall && !mockState) {
             if(old->as_object().at("request")!=identity)throw PlanError("REQUEST_ID_REUSED","Request id has different content");
             if(!str(old->as_object(),"error_code").empty())throw PlanError(str(old->as_object(),"error_code"),str(old->as_object(),"error_message"));
             return {{"state",state_},{"execution_id",old->as_object().at("execution_id")}};
         }
         checkConfigurationRequest(state_,r);
-        auto next=state_;auto& all=next.at("executions").as_object();auto id=str(r,"execution_id");
+        auto next=mockState?std::move(*mockState):state_;auto& all=next.at("executions").as_object();auto id=str(r,"execution_id");
         if(action=="execution_group_move" || action=="execution_takeover_move") {
             const bool takeover=action=="execution_takeover_move";
             const auto sourceId=takeover?id:std::string{};
@@ -482,6 +483,7 @@ private:
             for(const auto& member:routes){const std::string uid(member.key());const auto eid=createRuntimeExecution(next,member.value().as_object(),Object{{"name","Group Move"}},Object{{"name","Group Move"}},uid,"","","","");
                 if (adapter_->simulation()) clearMockPilotPose(next, uid);
                 auto& e=all.at(eid).as_object();e["group_id"]=group;e["control_kind"]="GROUP_MOVE";e["formation"]=needsPacking?"Line":"RelativeOffset";e["safety_separation_m"]=safetySeparation();
+                if (mockCall) e["control_version"] = 1;
                 if(takeover) {
                     auto& source=all.at(sourceId).as_object();
                     e["source_execution_id"]=sourceId;e["source_plan_id"]=source.at("plan_id");
@@ -581,6 +583,7 @@ private:
             }
         }
         if (mockCall) return commitMockExecution(next, *mockCall, id, publish);
+        if (mockState) return {{"execution_id", id}, {"formation", all.at(id).as_object().at("formation")}};
         next.at("execution_requests").as_object()[key]=Object{{"request",identity},{"execution_id",id}};
         commitExecutions(next,publish,action=="execution_takeover_move"?key:std::string{});
         const auto& result=state_.at("execution_requests").as_object().at(key).as_object();

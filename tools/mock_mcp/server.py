@@ -22,7 +22,7 @@ from starlette.responses import JSONResponse
 import uvicorn
 
 from plan_writes import APPROVAL_SCOPES, APPROVAL_TOOLS, PLAN_WRITE_TOOLS, ROUTE_WRITE_TOOLS, SIMULATION_SCOPES
-from plan_writes import EXECUTION_SCOPES, EXECUTION_TOOLS
+from plan_writes import EXECUTION_SCOPES, EXECUTION_TOOLS, FLEET_SCOPES, FLEET_TOOLS
 from plan_writes import SIMULATION_TOOLS, VALIDATE, PlanWriter, load_fixtures
 from protocol import COUNTER, ID, ID_PATTERN, STRING, TIMESTAMP, UUID, ToolFailure, object_schema, tool, utc_timestamp
 from record_replay import RECORD_REPLAY_TOOLS, RecordReplayStore
@@ -34,7 +34,8 @@ REPLAY = "mock:replay"
 DRAFT = "mock:plan:draft"
 VALIDATION = "mock:plan:validate"
 ROUTE_EDIT = "mock:route:edit"
-BACKEND_WRITES = PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS | SIMULATION_TOOLS | VIEW_TOOLS | EXECUTION_TOOLS
+BACKEND_WRITES = (PLAN_WRITE_TOOLS | ROUTE_WRITE_TOOLS | APPROVAL_TOOLS | SIMULATION_TOOLS |
+                  VIEW_TOOLS | EXECUTION_TOOLS | FLEET_TOOLS)
 TOKEN_PATTERN = r"[a-f0-9]{64}"
 MAX_REQUEST = 8192
 DEMO_ID = "demo-a"
@@ -92,7 +93,7 @@ TOOLS.update(BACKEND_WRITES)
 TOOLS.update(SESSION_ALERT_TOOLS)
 TOOL_SCOPE = {**dict.fromkeys(RECORD_REPLAY_TOOLS, REPLAY), **dict.fromkeys(PLAN_WRITE_TOOLS, DRAFT),
               **dict.fromkeys(ROUTE_WRITE_TOOLS, ROUTE_EDIT), **APPROVAL_SCOPES, **SIMULATION_SCOPES, **VIEW_SCOPES,
-              **EXECUTION_SCOPES,
+              **EXECUTION_SCOPES, **FLEET_SCOPES,
               "set_replay_state": REPLAY, "create_security_plan_draft": DRAFT, VALIDATE: VALIDATION,
               ACK_ALERT: ALERT_SCOPE}
 INPUT_CHECKS = {name: Draft202012Validator(info.input_schema) for name, info in TOOLS.items()}

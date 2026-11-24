@@ -30,6 +30,7 @@ from plan_writes import SAVE_ROUTE, SIMULATION_SCOPES, SIMULATION_TOOLS, START_R
 from plan_writes import CANCEL_SCHEDULED, EXECUTION_SCOPES, EXECUTION_TOOLS, REQUEST_EXECUTION
 from plan_writes import RESCHEDULE, SET_EXECUTION, START_SCHEDULED
 from plan_writes import CANCEL_TRANSLATION, COMMIT_TRANSLATION, PREVIEW_TRANSLATION
+from plan_writes import CANCEL_FLEET, CONFIRM_FLEET, CONFIRM_TAKEOVER, FLEET_SCOPES, FLEET_TOOLS, PREVIEW_FLEET, PREVIEW_TAKEOVER
 from protocol import utc_timestamp
 from record_replay import CLOSE, OPEN, SEEK, RECORD_REPLAY_TOOLS
 from session_alerts import ACK_ALERT, ALERT_SCOPE, LIST_ALERTS
@@ -139,7 +140,8 @@ async def run(backend_exe, workspace):
         "draft-a": (secrets.token_hex(32), ["mock:read", "mock:plan:draft"]),
         "all": (secrets.token_hex(32), ["mock:read", "mock:plan:draft", "mock:replay", "mock:plan:validate", "mock:route:edit",
                                        ALERT_SCOPE, *sorted(set(APPROVAL_SCOPES.values()) | set(SIMULATION_SCOPES.values()) |
-                                               set(VIEW_SCOPES.values()) | set(EXECUTION_SCOPES.values()))]),
+                                               set(VIEW_SCOPES.values()) | set(EXECUTION_SCOPES.values()) |
+                                               set(FLEET_SCOPES.values()))]),
         "schedule-only": (secrets.token_hex(32), ["mock:read", EXECUTION_SCOPES[RESCHEDULE]]),
     }
     config = workspace / "backend.yaml"
@@ -182,6 +184,8 @@ log:
                                     "after_location": {"x": 2200, "y": y, "z": 0}} for suffix, y in members}}
             for key, members in (("shift-qa", (("a", 0), ("b", 1113))), ("shift-blocked", (("a", 0),)))
         },
+        "motions": {"shift-demo": {"map_fixture_id": "map-qa", "waypoint_fixture_id": "shift-a"},
+                    "single-demo": {"map_fixture_id": "map-qa", "waypoint_fixture_id": "point-c"}},
     }), encoding="utf-8")
     backend_command = [str(backend_exe), str(config)]
     mcp_command = [sys.executable, str(SERVER), "--identities", str(accounts), "--backend-port", str(backend_port),
@@ -196,7 +200,8 @@ log:
             response = await http.post(backend + "/api/mock-mcp/draft", json={})
             assert response.status_code == 403
             for name, scope in ((DRAFT_TOOL, "mock:plan:draft"), (REPLAY_TOOL, "mock:replay"),
-                                (ACK_ALERT, ALERT_SCOPE), *VIEW_SCOPES.items(), *EXECUTION_SCOPES.items()):
+                                (ACK_ALERT, ALERT_SCOPE), *VIEW_SCOPES.items(), *EXECUTION_SCOPES.items(),
+                                *FLEET_SCOPES.items()):
                 response = await http.post(endpoint, headers=rpc_headers(identities["read-only"][0], name),
                                            json=rpc(name, {}))
                 assert response.status_code == 403 and scope in response.headers["WWW-Authenticate"]
@@ -236,7 +241,7 @@ log:
                 draft_schema = await listing(draft, readers | plan_tools)
                 full_schema = await listing(all_tools, readers | plan_tools | {VALIDATE} | replay_tools |
                                             ROUTE_WRITE_TOOLS.keys() | APPROVAL_TOOLS.keys() | SIMULATION_TOOLS.keys() |
-                                            VIEW_TOOLS.keys() | EXECUTION_TOOLS.keys() | {ACK_ALERT})
+                                            VIEW_TOOLS.keys() | EXECUTION_TOOLS.keys() | FLEET_TOOLS.keys() | {ACK_ALERT})
                 await call(replay, replay_schema, "list_demo_scenarios", {"unknown": 1}, "INVALID_ARGUMENT")
                 await call(replay, replay_schema, "get_sim_status", {"scenario_id": "demo-a\n"},
                            "INVALID_ARGUMENT")
@@ -791,6 +796,65 @@ log:
                 assert await call(all_tools, full_schema, START_SCHEDULED, kick) == kicked
                 assert await call(all_tools, full_schema, SET_EXECUTION, abort) == approved_abort
                 check("Mock execution reservation, ownership, separate scopes, immediate start and control receipts")
+
+                idle_snapshot = (await http.get(backend + "/api/security-plans")).json()["executions"]
+                formation = write_args(device_ids=["UAV-01", "UAV-02"], motion_fixture_id="shift-demo")
+                await call(all_tools, full_schema, PREVIEW_FLEET, {**formation, "motion_fixture_id": "foreign"},
+                           "FIXTURE_NOT_FOUND")
+                team = await call(all_tools, full_schema, PREVIEW_FLEET, formation)
+                assert team["state"] == "ready" and team["device_ids"] == formation["device_ids"], team
+                assert (await http.get(backend + "/api/security-plans")).json()["executions"] == idle_snapshot
+                delayed = await call(all_tools, full_schema, PREVIEW_FLEET, {**formation, "request_id": str(uuid4())})
+                disposable = await call(all_tools, full_schema, PREVIEW_FLEET,
+                                        write_args(device_ids=["UAV-01"], motion_fixture_id="single-demo"))
+                cancel_team = write_args(preview_id=disposable["preview_id"])
+                canceled_team = await call(all_tools, full_schema, CANCEL_FLEET, cancel_team)
+                assert await call(all_tools, full_schema, CANCEL_FLEET, cancel_team) == canceled_team
+                team_args = write_args(preview_id=team["preview_id"])
+                await call(all_tools, full_schema, CONFIRM_FLEET, team_args, "APPROVAL_REQUIRED")
+                team_run = await call(all_tools, full_schema, CONFIRM_FLEET, confirmed(CONFIRM_FLEET, team_args))
+                assert team_run["state"] == "starting" and team_run["version"] == 1
+                assert await call(all_tools, full_schema, CONFIRM_FLEET, team_args) == team_run
+                late = write_args(preview_id=delayed["preview_id"])
+                await call(all_tools, full_schema, CONFIRM_FLEET, confirmed(CONFIRM_FLEET, late), "PREVIEW_STALE")
+                team_key = {"execution_id": team_run["execution_id"]}
+                team_live = await call(all_tools, full_schema, "get_mock_execution", team_key)
+                assert team_live["kind"] == "fleet_move"
+                assert {member["device_id"] for member in team_live["members"]} == {"UAV-01", "UAV-02"}
+                end_team = write_args(**team_key, expected_version=team_live["version"], action="abort")
+                for _ in range(6):
+                    try:
+                        await call(all_tools, full_schema, SET_EXECUTION, confirmed(SET_EXECUTION, end_team))
+                        break
+                    except AssertionError:
+                        team_live = await call(all_tools, full_schema, "get_mock_execution", team_key)
+                        end_team = write_args(**team_key, expected_version=team_live["version"], action="abort")
+                else:
+                    raise AssertionError("Could not stop the checked fleet simulation")
+                direct = write_args(deployment_id=published["deployment_id"], mission_id=mission["mission_id"], mode="now")
+                direct_run = await call(all_tools, full_schema, REQUEST_EXECUTION, confirmed(REQUEST_EXECUTION, direct))
+                direct_key = {"execution_id": direct_run["execution_id"]}
+                async with asyncio.timeout(8):
+                    while True:
+                        source = await call(all_tools, full_schema, "get_mock_execution", direct_key)
+                        if source["state"] == "executing":
+                            break
+                        assert source["state"] not in {"failed", "aborted", "completed"}, source
+                        await asyncio.sleep(0.05)
+                handover_args = write_args(**direct_key, device_id="UAV-01", motion_fixture_id="single-demo",
+                                           expected_execution_version=source["version"])
+                await call(all_tools, full_schema, PREVIEW_TAKEOVER, {**handover_args, "expected_execution_version": 0},
+                           "VERSION_CONFLICT")
+                handover = await call(all_tools, full_schema, PREVIEW_TAKEOVER, handover_args)
+                assert handover["state"] == "ready" and handover["affected_device_id"] == "UAV-01", handover
+                assert (await call(all_tools, full_schema, "get_mock_execution", direct_key))["state"] == "executing"
+                replace_args = write_args(preview_id=handover["preview_id"])
+                replacement = await call(all_tools, full_schema, CONFIRM_TAKEOVER, confirmed(CONFIRM_TAKEOVER, replace_args))
+                assert replacement["source_execution_id"] == direct_key["execution_id"] and replacement["device_id"] == "UAV-01"
+                assert (await call(all_tools, full_schema, "get_mock_execution", direct_key))["state"] == "aborted"
+                child = await call(all_tools, full_schema, "get_mock_execution", {"execution_id": replacement["execution_id"]})
+                assert child["kind"] == "single_takeover" and child["execution_id"] != direct_key["execution_id"]
+                check("fixture fleet preview and approval, stale confirmation, and software-only single-device transition")
     except Exception:
         for name in ("backend.log", "mcp.log"):
             path = workspace / name
