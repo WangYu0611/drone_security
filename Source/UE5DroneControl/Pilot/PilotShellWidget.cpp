@@ -1,6 +1,7 @@
 #include "Pilot/PilotShellWidget.h"
 
 #include "Blueprint/WidgetTree.h"
+#include "Brushes/SlateRoundedBoxBrush.h"
 #include "Command/FigmaCommandStyle.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
@@ -182,7 +183,7 @@ void UPilotShellWidget::NativeConstruct()
     MockForwardButton->SetVisibility(bMockInput ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
     if (KeyboardInput)
     {
-        InputLabel->SetToolTipText(LOCTEXT("KeyboardHint", "W/S 前后，A/D 左右，空格/左 Ctrl 升降，Q/E 转向"));
+        InputLabel->SetToolTipText(LOCTEXT("KeyboardHint", "W/S 前后，A/D 左右，空格/左 Ctrl 升降。Q/E 仅提交偏航输入"));
     }
     ProbePrefix = TEXT("PILOT-") + FGuid::NewGuid().ToString(EGuidFormats::Digits) + TEXT(":");
     if (GConfig)

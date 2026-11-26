@@ -297,12 +297,11 @@ function offsetMetres([homeLat, homeLon, homeAlt], [latitude, longitude, altitud
     ];
 }
 
-async function move(client, id, activeSessionId) {
+async function move(id, sendFrame, { takeoff = false } = {}) {
     const start = await pose(id);
-    let sequence = 0;
+    if (takeoff) await sendFrame({}, 'takeoff');
     return until(async () => {
-        const window = await inputWindow(client, activeSessionId);
-        input(client, id, activeSessionId, window.window_id, ++sequence);
+        await sendFrame(takeoff ? {} : { forward: 1 });
         const position = await pose(id);
         return start.some((coordinate, index) => Math.abs(coordinate - position[index]) > 1e-10);
     }, Boolean, `movement of ${id} by authenticated pilot`);
@@ -371,6 +370,12 @@ try {
         video_url: '',
     }))));
     fs.copyFileSync(path.join(root, 'Backend', 'mock_execution.json'), mockPath);
+    // Existing stored poses may have a heading from the older yaw-enabled controller.
+    const homePosition = JSON.parse(fs.readFileSync(mockPath, 'utf8')).uavs[firstAircraft].home_position;
+    fs.writeFileSync(path.join(runDirectory, 'security_plans.json'), JSON.stringify({
+        version: 0, next_id: 1, plans: {}, missions: {}, paths: {}, events: [],
+        mock_pilot_poses: { [firstAircraft]: { position: homePosition, yaw: 90, updated_at: Date.now() / 1000 } },
+    }));
     await startBackend();
 
     await request(controlPath, { status: 401, code: 'UNAUTHENTICATED' });
@@ -499,7 +504,12 @@ try {
     }));
     assert.deepEqual(await pose(firstAircraft), firstHome);
     pass('Only the assigned Pilot connection with an active session can send stick or flight actions');
-    await move(pilotSocket, firstAircraft, firstSession);
+    const firstInput = pilotInputStream(pilotSocket, firstAircraft, firstSession);
+    await sustainInput(firstInput, 650, { forward: 1, vertical: 1, yaw: 1 });
+    assert.deepEqual(await pose(firstAircraft), firstHome, 'Grounded stick input cannot start flight');
+    assert.equal((await mockDrone(firstAircraft)).yaw, 90, 'Grounded yaw cannot change heading');
+    pass('A grounded aircraft requires an explicit takeoff');
+    await move(firstAircraft, firstInput, { takeoff: true });
     assert.deepEqual(await pose(secondAircraft), secondBefore);
     await change(pilot, 'stop', { control_session_id: firstSession, reason: 'SWITCH' });
     assert.equal((await assignedState(firstAircraft, pilot)).control_state, 'IDLE');
@@ -509,7 +519,7 @@ try {
     await activate(pilotSocket, await assignedState(secondAircraft, pilot));
     const secondSession = await sessionFor(pilotSocket, secondAircraft);
     assert.notEqual(firstSession, secondSession);
-    await move(pilotSocket, secondAircraft, secondSession);
+    await move(secondAircraft, pilotInputStream(pilotSocket, secondAircraft, secondSession), { takeoff: true });
     assert.deepEqual(await pose(firstAircraft), firstStopped);
     pass('Only one aircraft moves at a time and switching invalidates the previous input session');
 
@@ -637,11 +647,22 @@ try {
     assert.deepEqual(await pose(firstAircraft), heldPose, 'Hold must cancel the remaining takeoff target');
 
     await actionInput({}, 'takeoff');
+    const spinupPosition = await pose(firstAircraft);
+    await sustainInput(actionInput, 1100, { forward: 1, right: 1 });
+    const duringSpinup = await pose(firstAircraft);
+    assert.deepEqual(duringSpinup.slice(0, 2), spinupPosition.slice(0, 2),
+        'Horizontal inputs must be suppressed during takeoff spin-up');
+    assert(height(duringSpinup) > height(spinupPosition), 'Takeoff ascent continues during spin-up');
     await drive(actionInput, {}, sample => Math.abs(height(sample) - 2) <= 0.03, '2 m takeoff target');
     await drive(actionInput, { forward: 1 }, sample => homeDistance(sample) >= 0.6, 'departure from home');
     await actionInput({}, 'gohome');
     await drive(actionInput, {}, sample => homeDistance(sample) <= 0.03 &&
         Math.abs(height(sample) - 2) <= 0.03, 'return over home at takeoff altitude');
+
+    await drive(actionInput, { vertical: -1 }, sample => height(sample) <= 0.51, '0.5 m stick descent floor');
+    await sustainInput(actionInput, 450, { vertical: -1 });
+    assert(Math.abs(height(await pose(firstAircraft)) - 0.5) <= 0.01, 'Stick descent must stop at the airborne floor');
+    pass('Takeoff suppresses horizontal input during spin-up and stick descent stops at 0.5 m');
 
     await actionInput({}, 'land');
     await drive(actionInput, {}, sample => Math.abs(height(sample)) <= 0.03, 'landing at home elevation');
@@ -649,7 +670,8 @@ try {
     assert(Math.abs(height(await pose(firstAircraft))) <= 0.03, 'Downward input must respect home elevation');
     pass('One-shot takeoff, hold, return home, and land update the simulated position targets');
 
-    await drive(actionInput, { vertical: 1 }, sample => height(sample) >= 0.25, 'motion before emergency stop');
+    await actionInput({}, 'takeoff');
+    await drive(actionInput, {}, sample => height(sample) >= 0.6, 'motion before emergency stop');
     await actionInput({}, 'estop');
     await sustainInput(actionInput, 180, { forward: 1, vertical: 1 });
     const emergencyPose = await pose(firstAircraft);
@@ -664,15 +686,15 @@ try {
     const recoveredSession = await sessionFor(pilotSocket, firstAircraft, actionSession);
     assert.equal((await assignedState(firstAircraft, pilot)).input_frozen, false);
     const recoveredInput = pilotInputStream(pilotSocket, firstAircraft, recoveredSession);
-    await until(async () => {
-        await recoveredInput({ yaw: 1 });
-        return (await mockDrone(firstAircraft)).yaw;
-    }, yaw => yaw >= 85 && yaw <= 105, 'eastward pilot heading');
+    const beforeYaw = await pose(firstAircraft);
+    await sustainInput(recoveredInput, 650, { yaw: 1 });
+    assert.deepEqual(await pose(firstAircraft), beforeYaw);
+    assert.equal((await mockDrone(firstAircraft)).yaw, 90, 'v1 yaw input must not change simulated heading');
     const beforeForward = await pose(firstAircraft);
     const afterForward = await drive(recoveredInput, { forward: 1 },
         sample => offsetMetres(beforeForward, sample)[1] >= 0.25, 'eastward body-frame movement');
     assert(Math.abs(offsetMetres(beforeForward, afterForward)[0]) < 0.1);
-    pass('Emergency stop ignores subsequent inputs until fresh activation, then movement follows aircraft heading');
+    pass('Emergency stop fences input until reactivation, yaw is inert, and forward follows the stored heading');
 
     await sleep(480);
     const staleInputPose = await pose(firstAircraft);
@@ -700,12 +722,15 @@ try {
     const handoffCommand = await connectContext('Command');
     const handoffMap = await connectContext('Map');
     const selectedPilot = await connect(otherPilot);
+    const beforeMission = await pose(unassignedAircraft);
     const groupMission = await startGroupedHandoffMission(handoffCommand, handoffMap);
     assert.equal(groupMission.length, 2);
     const selectedMission = groupMission.find(row => row.uav_id === unassignedAircraft);
     const wingMission = groupMission.find(row => row.uav_id === wingAircraft);
     assert(selectedMission && wingMission);
     assert.equal(selectedMission.group_id, wingMission.group_id);
+    await until(() => pose(unassignedAircraft), sample => sample[2] >= beforeMission[2] + 0.6,
+        'selected aircraft to be airborne before handoff');
     const handoff = await until(() => assignedState(unassignedAircraft), row =>
         row.handoff_execution_id === selectedMission.execution_id, 'active mission handoff candidate');
     const details = {
@@ -748,7 +773,7 @@ try {
     await activate(pilotSocket, newGrant, { status: 403, code: 'ROLE_FORBIDDEN' });
     await activate(selectedPilot, newGrant);
     const handoffSession = await sessionFor(selectedPilot, unassignedAircraft);
-    await move(selectedPilot, unassignedAircraft, handoffSession);
+    await move(unassignedAircraft, pilotInputStream(selectedPilot, unassignedAircraft, handoffSession));
     pass('Command hands off only the selected mission member, then only the designated Pilot can activate and move it');
 
     await stopBackend();

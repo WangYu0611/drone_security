@@ -49,6 +49,7 @@ public:
         double yaw;
         Action action = Action::None;
         std::string control_session_id;
+        std::uint64_t stream_generation = 0;
     };
 
     using Connections = std::map<std::string, std::string>;

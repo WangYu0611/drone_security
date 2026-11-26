@@ -66,6 +66,42 @@ TEST_F(P52Execution, MockTelemetryDoesNotMoveForFutureSchedule){
     send({{"action","execution_start"},{"request_id","future-position"},{"scheduled_start_at","2099-09-22T13:30:00Z"}});
     EXPECT_EQ(store.mockTelemetryPositions(),home);
 }
+TEST_F(P52Execution, MockPilotCommitsAtFourHertzAndDoesNotReplayExpiredIntent) {
+    using Input = PilotControlStore::ActiveInput;
+    using Action = PilotControlStore::Action;
+    Input frame{"UAV-01", 0., 0., 0., 0., Action::Takeoff, "test-session"};
+    const auto altitude = [&] {
+        const auto telemetry = store.mockTelemetryPositions();
+        return telemetry.at("UAV-01").as_object().at("position").as_object().at("altitude").to_number<double>();
+    };
+    const auto sample = [&] { store.stepMockPilot(0.05, {frame}); };
+
+    sample();
+    const double firstAltitude = altitude();
+    EXPECT_NEAR(firstAltitude, 60.04, 1e-8);
+    frame.action = Action::None;
+    for (int i = 0; i < 4; ++i) {
+        sample();
+        EXPECT_DOUBLE_EQ(altitude(), firstAltitude);
+    }
+    sample();
+    const double secondAltitude = altitude();
+    EXPECT_NEAR(secondAltitude - firstAltitude, 0.20, 1e-8);
+
+    // Fresh input arriving after a timeout can retain the same control session.
+    ++frame.stream_generation;
+    for (int i = 0; i < 10; ++i) sample();
+    EXPECT_DOUBLE_EQ(altitude(), secondAltitude);
+
+    frame.action = Action::Takeoff;
+    sample();
+    const double resumedAltitude = altitude();
+    ASSERT_GT(resumedAltitude, secondAltitude);
+    store.stepMockPilot(0.05, {});
+    frame.action = Action::None;
+    for (int i = 0; i < 10; ++i) sample();
+    EXPECT_DOUBLE_EQ(altitude(), resumedAltitude);
+}
 TEST_F(P52Execution, MockTelemetryRejectsMissingInvalidAndRealAdapterPositions){
     store.configureMock({{"uavs",O{{"UAV-01",O{{"home_position",O{{"latitude",91.},{"longitude",116.},{"altitude",30.}}}}},{"UAV-02",O{}}}}});
     EXPECT_TRUE(store.mockTelemetryPositions().empty());

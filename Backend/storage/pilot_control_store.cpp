@@ -477,6 +477,14 @@ bool PilotControlStore::Input(const Actor& actor, const std::string& connection_
 
     const auto valid_until = std::min(now + mock_stick_lifetime, window->issued_at + mock_window_lifetime);
     ActiveInput next{record->first, 0., 0., 0., 0., Action::None, session.id};
+    if (session.input) {
+        next.stream_generation = session.input->stream_generation;
+        // An expired stream can recover between simulator ticks. Fence off its old motion.
+        if (now >= session.input_valid_until) {
+            ++next.stream_generation;
+            session.pending_actions.clear();
+        }
+    }
     if (!session.emergency_stopped) {
         if (*action == Action::EmergencyStop) {
             session.pending_actions.clear();
@@ -526,7 +534,8 @@ std::vector<PilotControlStore::ActiveInput> PilotControlStore::ActiveInputs(Cloc
         if (!session || now >= session->input_deadline) continue;
 
         if (session->emergency_pending) {
-            active.push_back({entry.first, 0., 0., 0., 0., Action::EmergencyStop, session->id});
+            active.push_back({entry.first, 0., 0., 0., 0., Action::EmergencyStop,
+                              session->id, session->input->stream_generation});
             session->emergency_pending = false;
             continue;
         }
@@ -534,7 +543,8 @@ std::vector<PilotControlStore::ActiveInput> PilotControlStore::ActiveInputs(Cloc
         auto& pending = session->pending_actions;
         while (!pending.empty() && now >= pending.front().valid_until) pending.pop_front();
         if (!pending.empty()) {
-            active.push_back({entry.first, 0., 0., 0., 0., pending.front().action, session->id});
+            active.push_back({entry.first, 0., 0., 0., 0., pending.front().action,
+                              session->id, session->input->stream_generation});
             pending.pop_front();
             // Manual movement requires a new stick sample after the action is delivered.
             auto& sticks = *session->input;

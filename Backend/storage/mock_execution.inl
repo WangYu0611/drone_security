@@ -46,13 +46,22 @@ public:
         if (!std::isfinite(dt) || dt <= 0.) return;
         std::lock_guard<std::mutex> lock(mutex_);
         if (!adapter_->simulation()) return;
-        // A target can advance only while fresh input from its own session is present.
-        for (auto target = mockPilotTargets_.begin(); target != mockPilotTargets_.end();) {
+        // Keep the timing gates across input gaps and ownership changes, while
+        // discarding motion accumulated by a session that has lost fresh input.
+        for (auto entry = mockPilotMotions_.begin(); entry != mockPilotMotions_.end();) {
+            auto& motion = entry->second;
+            motion.setpoint_cooldown_s = std::max(0., motion.setpoint_cooldown_s - dt);
+            motion.takeoff_remaining_s = std::max(0., motion.takeoff_remaining_s - dt);
             const auto fresh = std::any_of(inputs.begin(), inputs.end(), [&](const auto& input) {
-                return input.uav_id == target->first && input.control_session_id == target->second.session_id;
+                return input.uav_id == entry->first && input.control_session_id == motion.session_id &&
+                    input.stream_generation == motion.stream_generation;
             });
-            if (fresh) ++target;
-            else target = mockPilotTargets_.erase(target);
+            if (!fresh) {
+                motion.session_id.clear();
+                motion.ClearIntent();
+            }
+            if (fresh || motion.setpoint_cooldown_s > 0. || motion.takeoff_remaining_s > 0.) ++entry;
+            else entry = mockPilotMotions_.erase(entry);
         }
         if (inputs.empty()) return;
         const double elapsed = std::min(dt, 0.1);
@@ -202,29 +211,49 @@ private:
         double up;
     };
     struct MockPilotTarget {
-        std::string session_id;
+        PilotControlStore::Action action;
         PilotOffset offset;
     };
-    std::map<std::string, MockPilotTarget> mockPilotTargets_;
+    struct MockPilotMotion {
+        std::string session_id;
+        std::uint64_t stream_generation = 0;
+        std::optional<MockPilotTarget> target;
+        PilotOffset stick_offset{};
+        double motion_elapsed_s = 0.;
+        double setpoint_cooldown_s = 0.;
+        double takeoff_remaining_s = 0.;
+
+        void ClearIntent() {
+            target.reset();
+            stick_offset = {};
+            motion_elapsed_s = 0.;
+        }
+    };
+    std::map<std::string, MockPilotMotion> mockPilotMotions_;
 
     bool applyMockPilotMotion(Object& next, const PilotControlStore::ActiveInput& motion, double dt) {
         using Action = PilotControlStore::Action;
         const auto& uid = motion.uav_id;
         const auto& configured = mock_.at("uavs").as_object();
         if (!configured.contains(uid)) return false;
+        auto& control = mockPilotMotions_[uid];
+        control.session_id = motion.control_session_id;
+        control.stream_generation = motion.stream_generation;
         if (motion.action == Action::Hold || motion.action == Action::EmergencyStop) {
-            mockPilotTargets_.erase(uid);
+            control.ClearIntent();
             return false;
         }
-        const bool hasStick = motion.forward != 0. || motion.right != 0. || motion.vertical != 0. || motion.yaw != 0.;
-        if (hasStick) mockPilotTargets_.erase(uid);
-        if (motion.action == Action::None && !hasStick && !mockPilotTargets_.count(uid)) return false;
+        if (motion.action == Action::None && !control.target &&
+            motion.forward == 0. && motion.right == 0. && motion.vertical == 0.) {
+            control.ClearIntent();
+            return false;
+        }
 
         const auto from = currentPosition(next, uid);
         const auto home = geo(homePosition(uid));
         const auto* previous = mockPilotPose(next, uid);
+        // v1 stick yaw is informational. Body axes use the previous simulated heading.
         const double heading = previous ? number(*previous, "yaw") : 0.;
-        const double yaw = std::remainder(heading + (motion.yaw * 60. * dt), 360.);
         constexpr double radians = 3.14159265358979323846 / 180.;
         constexpr double metresPerDegree = 6371000. * radians;
         const double cosLat = std::cos(home.latitude * radians);
@@ -236,31 +265,66 @@ private:
             std::remainder(current.longitude - home.longitude, 360.) * metresPerDegree * cosLat,
             current.altitude - home.altitude};
         constexpr double takeoffHeight = 2.;
+        constexpr double takeoffSpinup = 3.;
         constexpr double maxRadius = 6.;
+        constexpr double minHeight = .5;
         constexpr double maxHeight = 6.;
         constexpr double maxSpeed = .8;
         constexpr double maxStep = .5;
+        constexpr double setpointInterval = .25;
+        constexpr double stationaryTolerance = 1e-6;
+        const bool airborne = offset.up > stationaryTolerance;
 
+        if (motion.action != Action::None) control.ClearIntent();
         if (motion.action == Action::Takeoff) {
-            mockPilotTargets_[uid] = {motion.control_session_id, {offset.north, offset.east, takeoffHeight}};
-        } else if (motion.action == Action::Land) {
-            mockPilotTargets_[uid] = {motion.control_session_id, {offset.north, offset.east, 0.}};
-        } else if (motion.action == Action::GoHome) {
-            mockPilotTargets_[uid] = {motion.control_session_id, {0., 0., takeoffHeight}};
+            control.target = MockPilotTarget{Action::Takeoff, {offset.north, offset.east, takeoffHeight}};
+            control.takeoff_remaining_s = takeoffSpinup;
+        } else if (motion.action == Action::Land && airborne) {
+            control.target = MockPilotTarget{Action::Land, {offset.north, offset.east, 0.}};
+        } else if (motion.action == Action::GoHome && airborne) {
+            control.target = MockPilotTarget{Action::GoHome, {0., 0., takeoffHeight}};
         }
 
-        const double step = std::min(maxSpeed * dt, maxStep);
-        PilotOffset desired = offset;
-        const auto targetIt = mockPilotTargets_.find(uid);
-        if (targetIt != mockPilotTargets_.end()) {
-            desired = targetIt->second.offset;
-        } else {
-            const double cosHeading = std::cos(yaw * radians);
-            const double sinHeading = std::sin(yaw * radians);
-            desired.north += (motion.forward * cosHeading - motion.right * sinHeading) * step;
-            desired.east += (motion.forward * sinHeading + motion.right * cosHeading) * step;
-            desired.up += motion.vertical * step;
+        const bool landing = control.target && control.target->action == Action::Land;
+        if (motion.action == Action::None && airborne && !landing) {
+            const bool horizontalAllowed = offset.up + stationaryTolerance >= minHeight && control.takeoff_remaining_s <= 0.;
+            const double forward = horizontalAllowed ? motion.forward : 0.;
+            const double right = horizontalAllowed ? motion.right : 0.;
+            const double vertical = offset.up > minHeight || motion.vertical > 0. ? motion.vertical : 0.;
+            const double magnitude = std::hypot(forward, right, vertical);
+            if (magnitude > 0.) {
+                if (control.target) control.ClearIntent();
+                const double scale = maxSpeed * dt / std::max(1., magnitude);
+                const double cosHeading = std::cos(heading * radians);
+                const double sinHeading = std::sin(heading * radians);
+                control.stick_offset.north += (forward * cosHeading - right * sinHeading) * scale;
+                control.stick_offset.east += (forward * sinHeading + right * cosHeading) * scale;
+                control.stick_offset.up += vertical * scale;
+            } else if (!control.target) {
+                control.ClearIntent();
+                return false;
+            }
         }
+        if (!control.target && !airborne) {
+            control.ClearIntent();
+            return false;
+        }
+
+        control.motion_elapsed_s += dt;
+        if (control.setpoint_cooldown_s > 1e-9) return false;
+        const double step = std::min(maxSpeed * control.motion_elapsed_s, maxStep);
+        auto desired = control.target ? control.target->offset : PilotOffset{
+            offset.north + control.stick_offset.north,
+            offset.east + control.stick_offset.east,
+            offset.up + control.stick_offset.up};
+        const bool deferHorizontalReturn = control.target && control.target->action == Action::GoHome &&
+            control.takeoff_remaining_s > 0.;
+        if (deferHorizontalReturn) {
+            desired.north = offset.north;
+            desired.east = offset.east;
+        }
+        control.stick_offset = {};
+        control.motion_elapsed_s = 0.;
 
         // Mission motion may have previously left the envelope. Permit recovery
         // without jumping to the boundary or moving farther out.
@@ -270,16 +334,15 @@ private:
             desired.north *= radiusLimit / desiredRadius;
             desired.east *= radiusLimit / desiredRadius;
         }
-        desired.up = std::clamp(desired.up, std::min(0., offset.up), std::max(maxHeight, offset.up));
+        desired.up = std::clamp(desired.up, std::min(landing ? 0. : minHeight, offset.up), std::max(maxHeight, offset.up));
         const double north = desired.north - offset.north;
         const double east = desired.east - offset.east;
         const double up = desired.up - offset.up;
         const double distanceToTarget = std::hypot(north, east, up);
-        constexpr double stationaryTolerance = 1e-6;
-        if (distanceToTarget <= stationaryTolerance && targetIt != mockPilotTargets_.end()) {
-            mockPilotTargets_.erase(targetIt);
+        if (distanceToTarget <= stationaryTolerance) {
+            if (!deferHorizontalReturn) control.target.reset();
+            return false;
         }
-        if (distanceToTarget <= stationaryTolerance && yaw == heading) return false;
         const double scale = distanceToTarget > step ? step / distanceToTarget : 1.;
         auto to = current;
         to.latitude += north * scale / metresPerDegree;
@@ -288,19 +351,18 @@ private:
         security_mission::validate(to);
         const auto target = jsonPosition(to);
 
-        if (distanceToTarget > stationaryTolerance) {
-            const Timeline travelled{{0., 1., from, target}};
-            for (const auto& entry : configured) {
-                const std::string other(entry.key());
-                if (other == uid || !entry.value().as_object().contains("home_position")) continue;
-                const auto occupied = currentPosition(next, other);
-                const Timeline stationary{{0., 1., occupied, occupied}};
-                if (minimumSeparation(travelled, stationary) + 1e-6 < requiredDistance(uid, other)) return false;
-            }
+        const Timeline travelled{{0., 1., from, target}};
+        for (const auto& entry : configured) {
+            const std::string other(entry.key());
+            if (other == uid || !entry.value().as_object().contains("home_position")) continue;
+            const auto occupied = currentPosition(next, other);
+            const Timeline stationary{{0., 1., occupied, occupied}};
+            if (minimumSeparation(travelled, stationary) + 1e-6 < requiredDistance(uid, other)) return false;
         }
+        control.setpoint_cooldown_s = setpointInterval;
         if (!next.contains("mock_pilot_poses")) next["mock_pilot_poses"] = Object{};
         next.at("mock_pilot_poses").as_object()[uid] = Object{
-            {"position", target}, {"yaw", yaw}, {"updated_at", OperationalContext::now()}};
+            {"position", target}, {"yaw", heading}, {"updated_at", OperationalContext::now()}};
         return true;
     }
 
