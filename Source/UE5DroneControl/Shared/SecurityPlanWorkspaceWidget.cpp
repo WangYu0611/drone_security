@@ -485,9 +485,7 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     MissionName=Input(TaskPage,TEXT("Plan.MissionName"));
     Label(WidgetTree,TaskPage,T(TEXT("Workflow.AssignedUAV")),15);
     PlannedAircraftCaption=Label(WidgetTree,TaskPage,FText::GetEmpty(),14);
-    auto* RefreshCandidate = Add(TaskPage,TEXT("refresh_real_candidate"),TEXT("Common.Refresh"));
-    CastChecked<UTextBlock>(RefreshCandidate->GetContent())->SetText(
-        SimulationUI::Label(TEXT("Use current aircraft association"), TEXT("采用当前真机关联")));
+    Add(TaskPage,TEXT("refresh_real_candidate"),TEXT("Common.Refresh"));
     UAVs=WidgetTree->ConstructWidget<UComboBoxString>();UAVs->OnGenerateWidgetEvent.BindDynamic(this,&USecurityPlanWorkspaceWidget::UAVOption);UAVs->OnSelectionChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::UAVSelected);
     auto* UAVHeight=WidgetTree->ConstructWidget<USizeBox>();UAVHeight->SetMinDesiredHeight(40);UAVHeight->SetContent(UAVs);TaskPage->AddChild(UAVHeight);
     auto ComboStyle=UAVs->GetWidgetStyle();auto ComboButton=ComboStyle.ComboButtonStyle;FButtonStyle ButtonStyle;ButtonStyle.SetNormal(FSlateRoundedBoxBrush(CommandTheme::Elevated,5));ButtonStyle.SetHovered(FSlateRoundedBoxBrush(CommandTheme::Hover,5));ButtonStyle.SetPressed(FSlateRoundedBoxBrush(CommandTheme::Selected,5));ComboButton.SetButtonStyle(ButtonStyle);ComboStyle.SetComboButtonStyle(ComboButton);UAVs->SetWidgetStyle(ComboStyle);
@@ -522,21 +520,19 @@ void USecurityPlanWorkspaceWidget::NativeOnInitialized(){
     ExecutionPrompt=Label(WidgetTree,ExecutionPage,FText::GetEmpty(),16);
     for(const auto& Item:TArray<TPair<FString,FString>>{{TEXT("confirm"),TEXT("Confirm")},{TEXT("pause"),TEXT("Pause")},{TEXT("resume"),TEXT("Resume")},{TEXT("return_prompt"),TEXT("Return")},{TEXT("abort_prompt"),TEXT("Abort")},{TEXT("cancel"),TEXT("Cancel")},{TEXT("details"),TEXT("History")},{TEXT("video"),TEXT("Video")}})
         Add(ExecutionPage,*(TEXT("execution_")+Item.Key),*(TEXT("Execution.")+Item.Value));
-    auto AddRehearsalAction = [&](const TCHAR* ActionName,const FText& Caption)
+    auto AddRehearsalAction = [&](const TCHAR* ActionName)
     {
-        auto* Button = Add(ExecutionPage, ActionName, TEXT("Execution.Simulation"));
-        CastChecked<UTextBlock>(Button->GetContent())->SetText(Caption);
-        Button->SetVisibility(ESlateVisibility::Collapsed);
+        Add(ExecutionPage, ActionName, TEXT("Execution.Simulation"))->SetVisibility(ESlateVisibility::Collapsed);
     };
-    AddRehearsalAction(TEXT("simulation_start"), SimulationUI::Label(TEXT("Run another rehearsal"), TEXT("重新预演")));
-    AddRehearsalAction(TEXT("simulation_review"), SimulationUI::Label(TEXT("Approve rehearsal result"), TEXT("复核通过")));
-    AddRehearsalAction(TEXT("simulation_prepare_real"), SimulationUI::Label(TEXT("Prepare real execution"), TEXT("准备真机执行")));
+    AddRehearsalAction(TEXT("simulation_start"));
+    AddRehearsalAction(TEXT("simulation_review"));
+    AddRehearsalAction(TEXT("simulation_prepare_real"));
     RehearsalRealTarget = WidgetTree->ConstructWidget<UComboBoxString>();
     RehearsalRealTarget->SetContentPadding(FMargin(8, 4));
     RehearsalRealTarget->OnSelectionChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::RehearsalRealTargetChanged);
     RehearsalRealTarget->SetVisibility(ESlateVisibility::Collapsed);
     ExecutionPage->AddChildToVerticalBox(RehearsalRealTarget);
-    AddRehearsalAction(TEXT("simulation_assign_real"), SimulationUI::Label(TEXT("Confirm real aircraft"), TEXT("确认分配真机")));
+    AddRehearsalAction(TEXT("simulation_assign_real"));
     // Keep the existing action bindings available to regression automation, hidden from the product flow.
     Plans=WidgetTree->ConstructWidget<UComboBoxString>();Plans->OnSelectionChanged.AddDynamic(this,&USecurityPlanWorkspaceWidget::PlanSelected);
     for(const TCHAR* A:{TEXT("unassign"),TEXT("delete_mission"),TEXT("validate"),TEXT("review_page"),TEXT("review"),TEXT("deploy_page"),TEXT("deploy"),TEXT("cancel")}){
@@ -642,6 +638,8 @@ void USecurityPlanWorkspaceWidget::Refresh(){
         ((DefaultBinding && (!Candidate || Candidate->GetNumberField(TEXT("binding_version")) != Simulator->GetNumberField(TEXT("binding_version"))))
             || (!DefaultBinding && Candidate));
     Show(TEXT("refresh_real_candidate"), !Deployed && CanRefreshBinding);
+    CastChecked<UTextBlock>(Actions[TEXT("refresh_real_candidate")]->GetContent())->SetText(
+        SimulationUI::Label(TEXT("Use current aircraft association"), TEXT("采用当前真机关联")));
     Actions[TEXT("refresh_real_candidate")]->SetIsEnabled(!bPending && Sync->IsReady() && CanEditConfiguration());
     RelatedPlanId.Empty();
     RelatedMissionId.Empty();
@@ -1024,6 +1022,15 @@ void USecurityPlanWorkspaceWidget::RefreshExecution(const TSharedPtr<FJsonObject
 void USecurityPlanWorkspaceWidget::RefreshRehearsal(const TSharedPtr<FJsonObject>& State,
     const TSharedPtr<FJsonObject>& Execution,TArray<FText>& Lines)
 {
+    auto RefreshCaption = [this](const TCHAR* ActionName, const TCHAR* English, const TCHAR* Chinese)
+    {
+        CastChecked<UTextBlock>(Actions[ActionName]->GetContent())->SetText(SimulationUI::Label(English, Chinese));
+    };
+    RefreshCaption(TEXT("simulation_start"), TEXT("Run another rehearsal"), TEXT("重新预演"));
+    RefreshCaption(TEXT("simulation_review"), TEXT("Approve rehearsal result"), TEXT("复核通过"));
+    RefreshCaption(TEXT("simulation_prepare_real"), TEXT("Prepare real execution"), TEXT("准备真机执行"));
+    RefreshCaption(TEXT("simulation_assign_real"), TEXT("Confirm real aircraft"), TEXT("确认分配真机"));
+
     const bool Rehearsal = ExecutionUI::IsRehearsal(Execution);
     const bool Showing = Rehearsal && ExecutionIntent.IsEmpty();
     const auto Mission = Find(State, TEXT("missions"), MissionId);

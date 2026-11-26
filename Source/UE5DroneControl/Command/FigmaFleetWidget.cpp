@@ -231,7 +231,7 @@ void UFigmaFleetWidget::BuildRows(const TArray<FDroneDescriptor>& Descriptors)
         auto* PrimarySlot = Body->AddChildToHorizontalBox(Sized(WidgetTree, Row.Primary, 106, 36)); PrimarySlot->SetVerticalAlignment(VAlign_Center); PrimarySlot->SetPadding(FMargin(12, 0));
         Body->AddChildToHorizontalBox(MakeAction(TEXT("label"), TEXT("Figma.Fleet.Label"), Id, TEXT("edit")))->SetVerticalAlignment(VAlign_Center);
         Row.Association = MakeAction(TEXT("simulation_binding"), TEXT(""), Id);
-        Row.Association->SetContent(MakeText(SimulationUI::Label(TEXT("Associate"), TEXT("关联真机")), 12));
+        Row.Association->SetContent(MakeText(FText::GetEmpty(), 12));
         Body->AddChildToHorizontalBox(Row.Association)->SetVerticalAlignment(VAlign_Center);
         auto* RowSlot = Cast<UScrollBoxSlot>(DroneScroll->AddChild(Sized(WidgetTree, Row.Card, 0, 78))); RowSlot->SetPadding(FMargin(0, 0, 9, 10)); Rows.Add(Id, Row);
     }
@@ -335,6 +335,8 @@ void UFigmaFleetWidget::Refresh()
         const FText Battery = Telemetry.BatteryPercent >= 0 ? User(FString::Printf(TEXT("%d%%"), Telemetry.BatteryPercent)) : User(TEXT("N/A"));
         FText Detail = FText::Format(T(TEXT("Figma.Fleet.RowDetail")), Battery, Task(Telemetry.TaskState));
         Row->Association->SetVisibility(bSimulated ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+        if (bSimulated)
+            CastChecked<UTextBlock>(Row->Association->GetContent())->SetText(SimulationUI::Label(TEXT("Associate"), TEXT("关联真机")));
         Row->Association->SetIsEnabled(Sync->IsReady() && !bSimulationPending);
         const auto Binding = PlanUI::Object(PlanUI::Find(Plans, TEXT("simulation_uavs"), UavId), TEXT("real_binding"));
         const auto BoundUav = PlanUI::Field(Binding, TEXT("uav_id"));
