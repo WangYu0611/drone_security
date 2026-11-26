@@ -61,6 +61,7 @@ class UE5DRONECONTROL_API USecurityPlanWorkspaceWidget:public UUserWidget {
     friend class FPlanMissionActions;
     friend class FPlanStartReadinessUxTest;
     friend class FPlanScheduleDraftUxTest;
+    friend class FPlanRehearsalWorkflow;
 public:
     void Refresh();
     bool IsConfiguring() const;
@@ -83,6 +84,9 @@ private:
     UPROPERTY() TObjectPtr<class UVerticalBox> RoutePage;
     UPROPERTY() TObjectPtr<class UVerticalBox> ReviewPage;
     UPROPERTY() TObjectPtr<class UTextBlock> WorkspaceTitle;
+    UPROPERTY() TObjectPtr<class UTextBlock> PlanIdentityCaption;
+    UPROPERTY() TObjectPtr<class UTextBlock> PlannedAircraftCaption;
+    UPROPERTY() TObjectPtr<UComboBoxString> PlanTypeFilter;
     UPROPERTY() TObjectPtr<class UTextBlock> GeometryStatus;
     UPROPERTY() TObjectPtr<class UTextBlock> Steps;
     UPROPERTY() TObjectPtr<class UHorizontalBox> DetailColumns;
@@ -103,13 +107,16 @@ private:
     UPROPERTY() TObjectPtr<class UEditableTextBox> DeletePlanNameInput;
     UPROPERTY() TObjectPtr<class UVerticalBox> NewPlanContent;
     UPROPERTY() TObjectPtr<class UVerticalBox> EmptyPlanState;
+    UPROPERTY() TObjectPtr<class UTextBlock> EmptyFilteredPlans;
     UPROPERTY() TObjectPtr<class UScrollBox> WorkspaceScroll;
     UPROPERTY() TObjectPtr<class UMultiLineEditableTextBox> DescriptionEditor;
     UPROPERTY() TObjectPtr<class UTextBlock> BasicHeading;
     bool bList=true,bCreating=false,bInitializedSelection=false;
     int32 CurrentStep=1;
     FString CardsSignature;
+    int32 VisiblePlanCards = 0;
     void RefreshPlanCards(const TSharedPtr<FJsonObject>& State);
+    UFUNCTION() void PlanTypeFilterChanged(FString Option, ESelectInfo::Type Type);
     FString LastWorkflow;
     FString PendingDeletePlan;
     FString PendingDeleteName;
@@ -129,6 +136,9 @@ private:
     UPROPERTY() TObjectPtr<class UProgressBar> ExecutionProgress;
     UPROPERTY() TObjectPtr<UComboBoxString> RehearsalRealTarget;
     TArray<FString> RehearsalRealTargets;
+    TMap<FString, int32> RehearsalRealRegistrations;
+    FString RehearsalTargetScope, PreparationExecutionId;
+    FString RelatedPlanId, RelatedMissionId, RelatedExecutionId, OpenedRehearsalId;
     FString RehearsalRequestKey,RehearsalRequestId;
     FString ExecutionId,ExecutionIntent,StartRequestId;
     FString ScheduleExecutionId,ScheduleAcceptedAt,ScheduleLoadedText;

@@ -50,6 +50,11 @@ FText SimulationError(const FString& Code)
         return SimulationUI::Label(TEXT("The simulated fleet is full."), TEXT("模拟机数量已达上限。"));
     if (Code == TEXT("SIMULATION_ORIGIN_OCCUPIED"))
         return SimulationUI::Label(TEXT("Choose a different starting location."), TEXT("请选择其他起点。"));
+    if (Code == TEXT("REAL_UAV_REGISTRATION_CHANGED"))
+        return SimulationUI::Label(TEXT("Aircraft registration changed. Select the aircraft again."), TEXT("设备登记已变更，请重新选择真机。"));
+    if (Code == TEXT("VERSION_CONFLICT"))
+        return SimulationUI::Label(TEXT("The fleet data changed. Retry, or reopen the association to see its current value."),
+            TEXT("机队数据已变更，请重试或重新打开关联窗口查看当前设置。"));
     return ProductText::Get(TEXT("Errors.") + Code);
 }
 FText Connection(EDroneAvailability State)
@@ -225,6 +230,9 @@ void UFigmaFleetWidget::BuildRows(const TArray<FDroneDescriptor>& Descriptors)
         Row.Primary = MakeAction(TEXT("primary"), TEXT("Figma.Fleet.SetPrimary"), Id); Row.PrimaryLabel = Cast<UTextBlock>(Cast<UHorizontalBox>(Row.Primary->GetContent())->GetChildAt(0));
         auto* PrimarySlot = Body->AddChildToHorizontalBox(Sized(WidgetTree, Row.Primary, 106, 36)); PrimarySlot->SetVerticalAlignment(VAlign_Center); PrimarySlot->SetPadding(FMargin(12, 0));
         Body->AddChildToHorizontalBox(MakeAction(TEXT("label"), TEXT("Figma.Fleet.Label"), Id, TEXT("edit")))->SetVerticalAlignment(VAlign_Center);
+        Row.Association = MakeAction(TEXT("simulation_binding"), TEXT(""), Id);
+        Row.Association->SetContent(MakeText(SimulationUI::Label(TEXT("Associate"), TEXT("关联真机")), 12));
+        Body->AddChildToHorizontalBox(Row.Association)->SetVerticalAlignment(VAlign_Center);
         auto* RowSlot = Cast<UScrollBoxSlot>(DroneScroll->AddChild(Sized(WidgetTree, Row.Card, 0, 78))); RowSlot->SetPadding(FMargin(0, 0, 9, 10)); Rows.Add(Id, Row);
     }
     if (Descriptors.IsEmpty()) DroneScroll->AddChild(EmptyList);
@@ -309,6 +317,7 @@ void UFigmaFleetWidget::Refresh()
         }
     }
     const bool CanSelect = (!Sync->IsEnabled() || Sync->IsHydrated()) && !bSelectionPending;
+    const auto Registered = SimulationUI::RegisteredAircraft(*Registry, Plans);
     for (const auto& Descriptor : Descriptors)
     {
         auto* Row = Rows.Find(Descriptor.DroneId); if (!Row) continue;
@@ -325,6 +334,20 @@ void UFigmaFleetWidget::Refresh()
         Row->State->SetText(IsPrimary ? T(TEXT("Fleet.Primary")) : bSimulated ? SimulationUI::Label(TEXT("Simulation"), TEXT("模拟")) : Connection(Telemetry.Availability));
         const FText Battery = Telemetry.BatteryPercent >= 0 ? User(FString::Printf(TEXT("%d%%"), Telemetry.BatteryPercent)) : User(TEXT("N/A"));
         FText Detail = FText::Format(T(TEXT("Figma.Fleet.RowDetail")), Battery, Task(Telemetry.TaskState));
+        Row->Association->SetVisibility(bSimulated ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+        Row->Association->SetIsEnabled(Sync->IsReady() && !bSimulationPending);
+        const auto Binding = PlanUI::Object(PlanUI::Find(Plans, TEXT("simulation_uavs"), UavId), TEXT("real_binding"));
+        const auto BoundUav = PlanUI::Field(Binding, TEXT("uav_id"));
+        if (bSimulated && !BoundUav.IsEmpty())
+        {
+            int32 BoundRegistration = 0;
+            Binding->TryGetNumberField(TEXT("drone_id"), BoundRegistration);
+            const bool bRegistered = Registered.ContainsByPredicate([&](const auto& Aircraft) {
+                return Aircraft.UavId == BoundUav && Aircraft.RegistrationId == BoundRegistration;
+            });
+            Detail = FText::Format(bRegistered ? SimulationUI::Label(TEXT("{0} · Associated {1}"), TEXT("{0} · 已关联 {1}"))
+                : SimulationUI::Label(TEXT("{0} · Registration changed for {1}"), TEXT("{0} · {1} 设备已变更")), Detail, User(BoundUav));
+        }
         if (bPilotEnabled && Control->IsReady())
         {
             const FString ControlId = FString::Printf(TEXT("UAV-%02d"), Descriptor.Slot > 0 ? Descriptor.Slot : Descriptor.DroneId);
@@ -382,6 +405,7 @@ void UFigmaFleetWidget::Action(FName Name, int32 Id)
     auto* Sync = GetGameInstance() ? GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>() : nullptr;
     if (!Registry || !Sync) return;
     if (Name == TEXT("simulation_open")) { OpenSimulationDialog(); return; }
+    if (Name == TEXT("simulation_binding")) { OpenSimulationBinding(Id); return; }
     if (Name == TEXT("simulation_cancel"))
     {
         if (!bSimulationPending) SimulationLayer->SetVisibility(ESlateVisibility::Collapsed);
@@ -453,13 +477,15 @@ void UFigmaFleetWidget::BuildSimulationDialog()
     SimulationLayer->SetContent(Sized(WidgetTree, Card, 460, 0));
     auto* Body = WidgetTree->ConstructWidget<UVerticalBox>();
     Card->SetContent(Body);
-    auto* Title = MakeText(SimulationUI::Label(TEXT("Add simulated aircraft"), TEXT("新增模拟机")), 22, true);
-    Body->AddChildToVerticalBox(Title)->SetPadding(FMargin(0, 0, 0, 14));
+    SimulationTitle = MakeText(FText::GetEmpty(), 22, true);
+    Body->AddChildToVerticalBox(SimulationTitle)->SetPadding(FMargin(0, 0, 0, 14));
+    SimulationPositionForm = WidgetTree->ConstructWidget<UVerticalBox>();
+    Body->AddChildToVerticalBox(SimulationPositionForm);
 
     SimulationOrigin = WidgetTree->ConstructWidget<UComboBoxString>();
     SimulationOrigin->SetContentPadding(FMargin(8, 4));
     SimulationOrigin->OnSelectionChanged.AddDynamic(this, &UFigmaFleetWidget::SimulationOriginSelected);
-    Body->AddChildToVerticalBox(SimulationOrigin)->SetPadding(FMargin(0, 0, 0, 10));
+    SimulationPositionForm->AddChildToVerticalBox(SimulationOrigin)->SetPadding(FMargin(0, 0, 0, 10));
     const TArray<FText> Labels = {
         SimulationUI::Label(TEXT("Quantity (1–12)"), TEXT("数量（1 到 12 架）")),
         SimulationUI::Label(TEXT("Starting latitude"), TEXT("起点纬度")),
@@ -469,7 +495,7 @@ void UFigmaFleetWidget::BuildSimulationDialog()
     for (const auto& Caption : Labels)
     {
         auto* Row = WidgetTree->ConstructWidget<UHorizontalBox>();
-        Body->AddChildToVerticalBox(Row)->SetPadding(FMargin(0, 0, 0, 8));
+        SimulationPositionForm->AddChildToVerticalBox(Row)->SetPadding(FMargin(0, 0, 0, 8));
         auto* LabelSlot = Row->AddChildToHorizontalBox(MakeText(Caption, 13));
         LabelSlot->SetSize(Fill());
         LabelSlot->SetVerticalAlignment(VAlign_Center);
@@ -478,6 +504,14 @@ void UFigmaFleetWidget::BuildSimulationDialog()
         Row->AddChildToHorizontalBox(Sized(WidgetTree, Input, 225, 34));
         SimulationInputs.Add(Input);
     }
+    SimulationInputs[0]->OnTextChanged.AddDynamic(this, &UFigmaFleetWidget::SimulationCountChanged);
+    SimulationAssociationForm = WidgetTree->ConstructWidget<UVerticalBox>();
+    Body->AddChildToVerticalBox(SimulationAssociationForm)->SetPadding(FMargin(0, 0, 0, 8));
+    SimulationAssociationForm->AddChildToVerticalBox(MakeText(
+        SimulationUI::Label(TEXT("Associated real aircraft"), TEXT("关联真机")), 13));
+    SimulationRealTarget = WidgetTree->ConstructWidget<UComboBoxString>();
+    SimulationRealTarget->SetContentPadding(FMargin(8, 4));
+    SimulationAssociationForm->AddChildToVerticalBox(SimulationRealTarget);
     SimulationResult = MakeText(FText::GetEmpty(), 13);
     SimulationResult->SetAutoWrapText(true);
     Body->AddChildToVerticalBox(SimulationResult);
@@ -497,7 +531,14 @@ void UFigmaFleetWidget::OpenSimulationDialog()
     auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     if (bSimulationPending || !Sync->IsReady() || !SimulationUI::Supported(Sync->GetPlans())) return;
     if (!SimulationLayer) BuildSimulationDialog();
-    SimulationInputs[0]->SetText(User(TEXT("3")));
+    SimulationBindingId.Empty();
+    SimulationBindingVersion = 0;
+    SimulationTitle->SetText(SimulationUI::Label(TEXT("Add simulated aircraft"), TEXT("新增模拟机")));
+    CastChecked<UTextBlock>(SimulationConfirm->GetContent())->SetText(SimulationUI::Label(TEXT("Add"), TEXT("添加")));
+    SimulationPositionForm->SetVisibility(ESlateVisibility::Visible);
+    SimulationInputs[0]->SetText(User(TEXT("1")));
+    PopulateSimulationRealTargets();
+    SimulationCountChanged(SimulationInputs[0]->GetText());
     SimulationInputs[1]->SetText(FText::GetEmpty());
     SimulationInputs[2]->SetText(FText::GetEmpty());
     SimulationInputs[3]->SetText(User(TEXT("0")));
@@ -543,6 +584,64 @@ void UFigmaFleetWidget::OpenSimulationDialog()
     SimulationInputs[0]->SetKeyboardFocus();
 }
 
+void UFigmaFleetWidget::SimulationCountChanged(const FText& Text)
+{
+    int32 Count = 0;
+    const bool bSingle = LexTryParseString(Count, *Text.ToString().TrimStartAndEnd()) && Count == 1;
+    if (SimulationAssociationForm)
+        SimulationAssociationForm->SetVisibility(bSingle ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+}
+
+void UFigmaFleetWidget::PopulateSimulationRealTargets(const FString& BoundUav, int32 BoundRegistration)
+{
+    const auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    const auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
+    const auto Empty = SimulationUI::Label(TEXT("No association"), TEXT("暂不关联")).ToString();
+    SimulationRealTarget->ClearOptions();
+    SimulationRealIdentities.Reset();
+    SimulationRealIds.Reset();
+    SimulationRealTarget->AddOption(Empty);
+    FString Selection = Empty;
+    for (const auto& Aircraft : SimulationUI::RegisteredAircraft(*Registry, Sync->GetPlans()))
+    {
+        const auto Status = Aircraft.bOnline ? SimulationUI::Label(TEXT("Online"), TEXT("在线")) :
+            SimulationUI::Label(TEXT("Offline"), TEXT("离线"));
+        const auto Option = Aircraft.UavId + TEXT(" · ") + Aircraft.Name + TEXT(" · ") + Status.ToString();
+        SimulationRealTarget->AddOption(Option);
+        SimulationRealIdentities.Add(Option, Aircraft.RegistrationId);
+        SimulationRealIds.Add(Option, Aircraft.UavId);
+        if (Aircraft.UavId == BoundUav && Aircraft.RegistrationId == BoundRegistration) Selection = Option;
+    }
+    SimulationRealTarget->SetSelectedOption(Selection);
+    SimulationResult->SetText(!BoundUav.IsEmpty() && Selection == Empty
+        ? SimulationUI::Label(TEXT("The registered aircraft changed. Select a current aircraft."), TEXT("设备登记已变更，请重新选择真机。"))
+        : FText::GetEmpty());
+}
+
+void UFigmaFleetWidget::OpenSimulationBinding(int32 Id)
+{
+    const auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+    if (bSimulationPending || !Sync->IsReady()) return;
+    const auto Uav = FString::Printf(TEXT("UAV-%02d"), Id);
+    const auto Aircraft = PlanUI::Find(Sync->GetPlans(), TEXT("simulation_uavs"), Uav);
+    if (!Aircraft) return;
+    if (!SimulationLayer) BuildSimulationDialog();
+    SimulationBindingId = Uav;
+    SimulationBindingVersion = 0;
+    Aircraft->TryGetNumberField(TEXT("binding_version"), SimulationBindingVersion);
+    const auto Binding = PlanUI::Object(Aircraft, TEXT("real_binding"));
+    int32 Registration = 0;
+    if (Binding) Binding->TryGetNumberField(TEXT("drone_id"), Registration);
+    PopulateSimulationRealTargets(PlanUI::Field(Binding, TEXT("uav_id")), Registration);
+    SimulationPositionForm->SetVisibility(ESlateVisibility::Collapsed);
+    SimulationAssociationForm->SetVisibility(ESlateVisibility::Visible);
+    SimulationTitle->SetText(FText::Format(SimulationUI::Label(TEXT("Real aircraft for {0}"), TEXT("{0} 的关联真机")),
+        User(PlanUI::Field(Aircraft, TEXT("name")))));
+    CastChecked<UTextBlock>(SimulationConfirm->GetContent())->SetText(SimulationUI::Label(TEXT("Save"), TEXT("保存")));
+    SimulationLayer->SetVisibility(ESlateVisibility::Visible);
+    SimulationRealTarget->SetKeyboardFocus();
+}
+
 void UFigmaFleetWidget::SimulationOriginSelected(FString Option, ESelectInfo::Type SelectionType)
 {
     if (SelectionType == ESelectInfo::Direct) return;
@@ -557,15 +656,16 @@ void UFigmaFleetWidget::SimulationOriginSelected(FString Option, ESelectInfo::Ty
 void UFigmaFleetWidget::SubmitSimulationBatch()
 {
     if (bSimulationPending) return;
+    const bool bEditing = !SimulationBindingId.IsEmpty();
     const FString Quantity = SimulationInputs[0]->GetText().ToString().TrimStartAndEnd();
-    int32 Count = 0;
-    if (!LexTryParseString(Count, *Quantity) || Count < 1 || Count > 12)
+    int32 Count = 1;
+    if (!bEditing && (!LexTryParseString(Count, *Quantity) || Count < 1 || Count > 12))
     {
         SimulationResult->SetText(SimulationError(TEXT("SIMULATION_INVALID_COUNT")));
         return;
     }
     double Coordinates[3] = {};
-    for (int32 Index = 0; Index < UE_ARRAY_COUNT(Coordinates); ++Index)
+    for (int32 Index = 0; !bEditing && Index < UE_ARRAY_COUNT(Coordinates); ++Index)
     {
         const FString Value = SimulationInputs[Index + 1]->GetText().ToString().TrimStartAndEnd();
         if (Value.IsEmpty() || !LexTryParseString(Coordinates[Index], *Value) || !FMath::IsFinite(Coordinates[Index]))
@@ -581,19 +681,39 @@ void UFigmaFleetWidget::SubmitSimulationBatch()
     }
     // Reuse a request identity after an ambiguous response so a retry cannot
     // add another batch. A changed input is a separate user request.
-    const auto InputKey = FString::Printf(TEXT("%d/%.17g/%.17g/%.17g"), Count, Coordinates[0], Coordinates[1], Coordinates[2]);
+    const FString Selected = SimulationRealTarget->GetSelectedOption();
+    const int32 Registration = Count == 1 ? SimulationRealIdentities.FindRef(Selected) : 0;
+    const FString RealUav = SimulationRealIds.FindRef(Selected);
+    const auto InputKey = FString::Printf(TEXT("%s/%d/%s/%d/%d/%.17g/%.17g/%.17g"),
+        *SimulationBindingId, SimulationBindingVersion, *RealUav, Registration, Count, Coordinates[0], Coordinates[1], Coordinates[2]);
     if (SimulationRequestId.IsEmpty() || SimulationLastInput != InputKey)
     {
         SimulationRequestId = FGuid::NewGuid().ToString();
         SimulationLastInput = InputKey;
     }
     auto Request = MakeShared<FJsonObject>();
-    Request->SetStringField(TEXT("action"), TEXT("simulation_create"));
+    Request->SetStringField(TEXT("action"), bEditing ? TEXT("simulation_set_real_binding") : TEXT("simulation_create"));
     Request->SetStringField(TEXT("request_id"), SimulationRequestId);
-    Request->SetNumberField(TEXT("count"), Count);
-    Request->SetNumberField(TEXT("latitude"), Coordinates[0]);
-    Request->SetNumberField(TEXT("longitude"), Coordinates[1]);
-    Request->SetNumberField(TEXT("altitude"), Coordinates[2]);
+    if (bEditing)
+    {
+        Request->SetStringField(TEXT("simulated_uav_id"), SimulationBindingId);
+        Request->SetNumberField(TEXT("expected_binding_version"), SimulationBindingVersion);
+    }
+    else
+    {
+        Request->SetNumberField(TEXT("count"), Count);
+        Request->SetNumberField(TEXT("latitude"), Coordinates[0]);
+        Request->SetNumberField(TEXT("longitude"), Coordinates[1]);
+        Request->SetNumberField(TEXT("altitude"), Coordinates[2]);
+    }
+    if (Registration > 0)
+    {
+        auto Target = MakeShared<FJsonObject>();
+        Target->SetStringField(TEXT("uav_id"), RealUav);
+        Target->SetNumberField(TEXT("drone_id"), Registration);
+        Request->SetObjectField(TEXT("association"), Target);
+    }
+    else if (bEditing) Request->SetField(TEXT("association"), MakeShared<FJsonValueNull>());
     auto* Sync = GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
     if (!Sync->IsReady()) { SimulationResult->SetText(T(TEXT("Errors.SYNC_OFFLINE"))); return; }
     const TWeakObjectPtr<UFigmaFleetWidget> Weak(this);
@@ -601,7 +721,7 @@ void UFigmaFleetWidget::SubmitSimulationBatch()
     SimulationConfirm->SetIsEnabled(false);
     SimulationCancel->SetIsEnabled(false);
     SimulationResult->SetText(T(TEXT("Common.Waiting")));
-    if (!Sync->SubmitPlan(Request, [Weak, Count](TSharedPtr<FJsonObject> Reply)
+    if (!Sync->SubmitPlan(Request, [Weak, Count, bEditing](TSharedPtr<FJsonObject> Reply)
     {
         if (!Weak.IsValid()) return;
         Weak->bSimulationPending = false;
@@ -611,7 +731,7 @@ void UFigmaFleetWidget::SubmitSimulationBatch()
         if (!Code.IsEmpty()) { Weak->SimulationResult->SetText(SimulationError(Code)); return; }
         Weak->SimulationRequestId.Empty();
         Weak->SimulationLayer->SetVisibility(ESlateVisibility::Collapsed);
-        Weak->SetSelectionStatus(FText::Format(
+        Weak->SetSelectionStatus(bEditing ? SimulationUI::Label(TEXT("Association saved."), TEXT("已保存真机关联。")) : FText::Format(
             SimulationUI::Label(TEXT("Added {0} simulated aircraft."), TEXT("已添加 {0} 架模拟机。")),
             FText::AsNumber(Count)));
         Weak->Refresh();

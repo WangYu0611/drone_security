@@ -135,7 +135,7 @@ async function createMission(command, map, name, members, start, spacing) {
     return ids;
 }
 
-async function finishRehearsal(command, mission, count) {
+async function finishRehearsal(command, mission, count, beforeReview = () => {}) {
     const started = await actions(command, 'simulation_start', mission);
     const id = started.execution_id;
     const group = started.state.executions[id].group_id;
@@ -153,6 +153,7 @@ async function finishRehearsal(command, mission, count) {
         assert.deepEqual(row.replay_samples.at(-1).position, row.position);
         assert.equal(row.replay_samples.at(-1).completed_waypoints, row.completed_waypoints);
     }
+    await beforeReview(id);
     const reviewed = await actions(command, 'simulation_review', {execution_id: id});
     assert(reviewed.state.executions[id].rehearsal_review);
     return id;
@@ -229,12 +230,50 @@ try {
     assert.equal(hardware.telemetry_source, 'unavailable');
     assert.equal((await actions(command, 'simulation_assign_real',
         {execution_id: group, assigned_uav_id: 'UAV-01'}, 409)).code, 'REHEARSAL_MULTI_AIRCRAFT');
-    const middle = mixed.find(row => row.slot === ordered[1].slot);
+    const association = {uav_id: 'UAV-01', drone_id: hardware.id};
+    assert.equal((await actions(command, 'simulation_create',
+        {...origin, count: 1, association: {...association, drone_id: hardware.id + 100}}, 409)).code,
+        'REAL_UAV_REGISTRATION_CHANGED');
+    assert.equal((await actions(command, 'simulation_create',
+        {...origin, count: 2, association}, 409)).code, 'SIMULATION_BINDING_SINGLE_AIRCRAFT');
+    const bound = {...origin, count: 1, association, request_id: crypto.randomUUID()};
+    const boundAck = await actions(command, 'simulation_create', bound);
+    assert.deepEqual(await actions(command, 'simulation_create', bound).then(result => result.state.simulation_uavs),
+        boundAck.state.simulation_uavs);
+    const [simulatedId, simulatedRecord] = Object.entries(boundAck.state.simulation_uavs)
+        .find(([, row]) => row.real_binding?.drone_id === hardware.id);
+    assert.deepEqual(simulatedRecord.real_binding, association);
+    assert.equal(simulatedRecord.binding_version, 1);
     const solo = await createMission(command, map, 'Single-aircraft rehearsal',
-        ['UAV-' + middle.slot], middle.mock_position, 20);
-    const soloRun = await finishRehearsal(command, solo, 1);
+        [simulatedId], simulatedRecord.home_position, 20);
+    const savedCandidate = {...association, simulated_uav_id: simulatedId, binding_version: 1};
+    assert.deepEqual((await api(missionEndpoint)).missions[solo.mission_id].planned_real_aircraft, savedCandidate);
+    const editAssociation = {simulated_uav_id: simulatedId, expected_binding_version: 1, association: null};
+    assert.equal((await actions(map, 'simulation_set_real_binding', editAssociation, 403)).code, 'ROLE_FORBIDDEN');
+    const cleared = await actions(command, 'simulation_set_real_binding', editAssociation);
+    assert.equal(cleared.state.simulation_uavs[simulatedId].real_binding, null);
+    assert.deepEqual(cleared.state.missions[solo.mission_id].planned_real_aircraft, savedCandidate);
+    assert.equal((await actions(command, 'simulation_set_real_binding', editAssociation, 409)).code, 'VERSION_CONFLICT');
+    const reselected = await actions(command, 'simulation_set_real_binding',
+        {...editAssociation, association, expected_binding_version: 2});
+    assert.deepEqual(reselected.state.simulation_uavs[simulatedId].real_binding, association);
+    assert.deepEqual(reselected.state.missions[solo.mission_id].planned_real_aircraft, savedCandidate);
+    const soloRun = await finishRehearsal(command, solo, 1, async execution_id => {
+        const rejected = await actions(command, 'simulation_assign_real', {
+            execution_id, assigned_uav_id: association.uav_id, expected_assigned_drone_id: association.drone_id,
+        }, 409);
+        assert.equal(rejected.code, 'REHEARSAL_REVIEW_REQUIRED');
+    });
+    const updatedCandidate = {...savedCandidate, binding_version: 3};
+    const refreshed = await actions(command, 'assign', {
+        ...solo, assigned_uav_ids: [simulatedId], formation: 'Line', spacing_m: 20, refresh_real_candidate: true,
+    });
+    assert.deepEqual(refreshed.state.missions[solo.mission_id].planned_real_aircraft, updatedCandidate);
+    assert.equal((await actions(command, 'simulation_assign_real', {execution_id: soloRun,
+        assigned_uav_id: 'UAV-01', expected_assigned_drone_id: hardware.id + 1}, 409)).code,
+        'REAL_UAV_REGISTRATION_CHANGED');
     const handoff = {execution_id: soloRun, assigned_uav_id: 'UAV-01',
-        assigned_drone_id: hardware.id + 99, request_id: crypto.randomUUID()};
+        assigned_drone_id: hardware.id + 99, expected_assigned_drone_id: hardware.id, request_id: crypto.randomUUID()};
     const pending = await actions(command, 'simulation_assign_real', handoff);
     await actions(command, 'select', solo);
     assert.equal((await actions(command, 'simulation_assign_real', handoff)).plan_id, pending.plan_id);
@@ -244,18 +283,26 @@ try {
     assert.equal(pending.state.plans[pending.plan_id].real_assignment.assigned_drone_id, hardware.id,
         'The Backend must assert the registration ID from its registry');
     assert.equal(pending.state.missions[pending.mission_id].assigned_uav_id, 'UAV-01');
+    assert(!Object.hasOwn(pending.state.missions[pending.mission_id], 'planned_real_aircraft'));
+    const repeated = await actions(command, 'simulation_assign_real', {...handoff, request_id: crypto.randomUUID()});
+    assert.equal(repeated.plan_id, pending.plan_id);
+    assert.equal(repeated.existing_assignment, true);
+    assert.equal(repeated.state.missions[solo.mission_id].preferred_real_plan_id, pending.plan_id);
     assert(pending.state.plans[pending.plan_id].validation.issues.some(issue => issue.code === 'REAL_EXECUTION_DISABLED'));
     assert(Object.values(pending.state.executions).every(execution => execution.simulation));
     await sleep(250);
     assert.equal(incoming.length, 0, 'mixed-fleet rehearsal and pending assignment must emit no physical datagrams');
-    console.log('PASS mixed fleet keeps the physical slot separate and stages reviewed solo handoff without UDP traffic');
+    console.log('PASS persistent association, independent task candidate, guarded handoff and deduplication without UDP traffic');
 
     await stopBackend();
     await startBackend();
     const restored = await api(missionEndpoint);
     assert.equal(restored.plans[pending.plan_id].real_assignment.source_execution_id, soloRun);
     assert.deepEqual(restored.executions[soloRun].replay_samples, pending.state.executions[soloRun].replay_samples);
-    assert.equal((await api('/api/drones')).filter(row => row.simulation).length, 3);
+    assert.deepEqual(restored.simulation_uavs[simulatedId].real_binding, association);
+    assert.deepEqual(restored.missions[solo.mission_id].planned_real_aircraft, updatedCandidate);
+    assert.equal(restored.missions[solo.mission_id].preferred_real_plan_id, pending.plan_id);
+    assert.equal((await api('/api/drones')).filter(row => row.simulation).length, 4);
     console.log('PASS restart retains simulated aircraft, rehearsal replay and pending real assignment');
 
     await stopBackend();
@@ -292,6 +339,9 @@ try {
     fs.writeFileSync(realConfiguration, JSON.stringify(realSettings));
     await startBackend();
     const replacementCommand = await openClient('Command');
+    const staleCandidate = await actions(replacementCommand, 'simulation_set_real_binding',
+        {...editAssociation, association, expected_binding_version: 3}, 409);
+    assert.equal(staleCandidate.code, 'REAL_UAV_REGISTRATION_CHANGED');
     const changed = await actions(replacementCommand, 'validate', {plan_id: pending.plan_id});
     const changedValidation = changed.state.plans[pending.plan_id].validation;
     assert.equal(changedValidation.ready, false);

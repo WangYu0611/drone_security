@@ -41,6 +41,10 @@ void USecurityPlanWorkspaceWidget::BuildPlanPresentation()
     auto* TitleWidth=WidgetTree->ConstructWidget<USizeBox>();TitleWidth->SetMaxDesiredWidth(520);TitleWidth->SetContent(WorkspaceTitle);auto* TitleSlot=TitleRow->AddChildToHorizontalBox(TitleWidth);TitleSlot->SetVerticalAlignment(VAlign_Center);
     PlanStatusCaption=Label(WidgetTree,TitleRow,FText::GetEmpty(),12);FigmaUI::Text(PlanStatusCaption,12,FigmaUI::Online);auto* StatusSlot=CastChecked<UHorizontalBoxSlot>(PlanStatusCaption->Slot);StatusSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));StatusSlot->SetVerticalAlignment(VAlign_Center);StatusSlot->SetPadding(FMargin(14,0));
     MoveAction(TEXT("request_map_plan_move"),TitleRow);
+    PlanIdentityCaption->RemoveFromParent();
+    Overview->AddChildToVerticalBox(PlanIdentityCaption)->SetPadding(FMargin(0, 8, 0, 0));
+    Actions[TEXT("open_related_plan")]->RemoveFromParent();
+    Overview->AddChildToVerticalBox(Actions[TEXT("open_related_plan")])->SetHorizontalAlignment(HAlign_Left);
     Summary->RemoveFromParent();FigmaUI::Text(Summary,14,FigmaUI::Muted);Overview->AddChildToVerticalBox(Summary)->SetPadding(FMargin(0,10,0,18));
     GeometryStatus->RemoveFromParent();Overview->AddChild(GeometryStatus);
     auto* TrackCard=WidgetTree->ConstructWidget<UBorder>();FigmaUI::Panel(TrackCard,FigmaUI::Inset,FigmaUI::Outline,8,FMargin(12,8));Overview->AddChild(TrackCard);
@@ -219,8 +223,9 @@ void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
         auto* Registry = GetGameInstance()->GetSubsystem<UDroneRegistrySubsystem>();
         int32 DroneId = 0;
         FDroneTelemetrySnapshot Telemetry;
-        const bool PositionUnavailable = Uav.StartsWith(TEXT("UAV-")) && LexTryParseString(DroneId, *Uav.Mid(4))
-            && Registry && Registry->GetTelemetry(DroneId, Telemetry) && !Telemetry.bGpsFix;
+        if (!Assignment->TryGetNumberField(TEXT("assigned_drone_id"), DroneId) && Uav.StartsWith(TEXT("UAV-")))
+            LexTryParseString(DroneId, *Uav.Mid(4));
+        const bool PositionUnavailable = DroneId > 0 && Registry && Registry->GetTelemetry(DroneId, Telemetry) && !Telemetry.bGpsFix;
         PlanStatus = PositionUnavailable
             ? SimulationUI::Label(TEXT("Awaiting checks · No valid positioning"), TEXT("待执行检查 · 无有效定位"))
             : SimulationUI::Label(TEXT("Awaiting real-aircraft checks"), TEXT("真机分配 · 待执行检查"));
@@ -244,6 +249,9 @@ void USecurityPlanWorkspaceWidget::RefreshPlanPresentation()
     Actions[TEXT("refresh_delete")]->SetIsEnabled(!bPending);
     NewPlanDialog->SetIsEnabled(!bConfigurationGuard);
     EmptyPlanState->SetVisibility(PlanIds.IsEmpty() && !Creating ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
+    EmptyFilteredPlans->SetText(SimulationUI::Label(TEXT("No plans of this type"), TEXT("此类型暂无方案")));
+    EmptyFilteredPlans->SetVisibility(VisiblePlanCards == 0 && !PlanIds.IsEmpty() && !Creating
+        ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
     if(Creating && BasicPage->GetParent()!=NewPlanContent)
     {
         BasicPage->RemoveFromParent();NewPlanContent->AddChild(BasicPage);

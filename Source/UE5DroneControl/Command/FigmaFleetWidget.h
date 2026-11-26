@@ -32,6 +32,7 @@ private:
         class UTextBlock* PrimaryLabel = nullptr;
         class UCommandActionButton* Toggle = nullptr;
         class UCommandActionButton* Primary = nullptr;
+        class UCommandActionButton* Association = nullptr;
         class UImage* Check = nullptr;
     };
     TMap<int32, FRow> Rows;
@@ -52,11 +53,19 @@ private:
     UPROPERTY() TObjectPtr<class UCommandActionButton> AddSimulation;
     UPROPERTY() TObjectPtr<class UBorder> SimulationLayer;
     UPROPERTY() TObjectPtr<class UComboBoxString> SimulationOrigin;
+    UPROPERTY() TObjectPtr<class UComboBoxString> SimulationRealTarget;
+    UPROPERTY() TObjectPtr<class UVerticalBox> SimulationPositionForm;
+    UPROPERTY() TObjectPtr<class UVerticalBox> SimulationAssociationForm;
+    UPROPERTY() TObjectPtr<class UTextBlock> SimulationTitle;
     UPROPERTY() TArray<TObjectPtr<class UEditableTextBox>> SimulationInputs;
     UPROPERTY() TObjectPtr<class UTextBlock> SimulationResult;
     UPROPERTY() TObjectPtr<class UCommandActionButton> SimulationConfirm;
     UPROPERTY() TObjectPtr<class UCommandActionButton> SimulationCancel;
     TMap<FString, FVector2D> SimulationFavorites;
+    TMap<FString, int32> SimulationRealIdentities;
+    TMap<FString, FString> SimulationRealIds;
+    FString SimulationBindingId;
+    int32 SimulationBindingVersion = 0;
     FString SimulationRequestId;
     FString SimulationLastInput;
     bool bSimulationPending = false;
@@ -87,7 +96,10 @@ private:
     void SetSelectionStatus(const FText& Text);
     void BuildSimulationDialog();
     void OpenSimulationDialog();
+    void OpenSimulationBinding(int32 Id);
+    void PopulateSimulationRealTargets(const FString& BoundUav = {}, int32 BoundRegistration = 0);
     void SubmitSimulationBatch();
+    UFUNCTION() void SimulationCountChanged(const FText& Text);
     UFUNCTION() void SimulationOriginSelected(FString Option, ESelectInfo::Type SelectionType);
     void BuildLabelDialog();
     void OpenLabelDialog(int32 Id);

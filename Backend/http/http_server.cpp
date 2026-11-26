@@ -903,6 +903,17 @@ boost::json::value HttpServer::ApiRegisterDrone(const boost::json::object& body)
             if (assigned_id > 0) assigned_drone_ids.insert(assigned_id);
         }
     }
+    const auto reserve_associated_ids = [&](const char* collection, const char* field) {
+        for (const auto& entry : plans.at(collection).as_object()) {
+            const auto* binding = entry.value().as_object().if_contains(field);
+            if (binding && binding->is_object()) {
+                const int id = get_int(binding->as_object(), "drone_id");
+                if (id > 0) assigned_drone_ids.insert(id);
+            }
+        }
+    };
+    reserve_associated_ids("simulation_uavs", "real_binding");
+    reserve_associated_ids("missions", "planned_real_aircraft");
     while (SecurityPlanStore::isSimulationSlot(next_drone_seq_) || assigned_drone_ids.count(next_drone_seq_))
         ++next_drone_seq_;
     DroneRecord rec;
@@ -2255,7 +2266,7 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     if (action == "request_pilot_handoff") return RequestPilotHandoff(body, instance, role);
     if(role!="Map" && role!="Command") throw ApiError(403,"Video cannot modify security plans");
     const std::set<std::string> commandActions{"begin_configuration","end_configuration","execution_group_move","execution_takeover_move","execution_reschedule","execution_start_now","execution_cancel","execution_start","execution_pause","execution_resume","execution_return","execution_abort","execution_shutdown","create_plan","update_plan","add_mission","rename_mission","delete_mission","assign","validate","review","deploy","copy_plan","open_plan","reopen_plan","delete_plan","set_workflow_step","select","request_map_route_edit","request_map_plan_move",
-        "simulation_create","simulation_start","simulation_review","simulation_assign_real"};
+        "simulation_create","simulation_start","simulation_review","simulation_assign_real","simulation_set_real_binding"};
     const std::set<std::string> mapActions{"execution_group_move","execution_takeover_move","execution_pause","execution_resume","execution_abort","begin_plan_move","move_plan","cancel_plan_move","select","validate","begin_route_edit","mark_route_dirty","save_route","discard_route_edit","finish_route_edit"};
     if(!(role=="Command"?commandActions:mapActions).count(action))throw ApiError(403,"Role cannot perform this plan action");
     if(role=="Map" && (action=="execution_pause" || action=="execution_resume" || action=="execution_abort")) {
@@ -2303,6 +2314,30 @@ boost::json::value HttpServer::PlanRequest(const boost::json::object& body) {
     boost::json::object asserted_handoff;
     const auto* plan_request = &body;
     std::string assigned_uav;
+    if (action == "simulation_create" || action == "simulation_set_real_binding") {
+        asserted_handoff = body;
+        asserted_handoff.erase("resolved_real_binding");
+        plan_request = &asserted_handoff;
+        if (const auto* target = body.if_contains("association")) {
+            if (target->is_null()) {
+                if (action == "simulation_set_real_binding") asserted_handoff["resolved_real_binding"] = nullptr;
+            } else {
+                const auto& selection = require_object(*target, "association");
+                const auto id = get_string(selection, "uav_id");
+                const auto* expected = selection.if_contains("drone_id");
+                for (const auto& drone : drone_records_) {
+                    if (drone.slot <= 0 || SecurityPlanStore::isSimulationSlot(drone.slot)) continue;
+                    const auto identity = drone_id_from_string(drone.id);
+                    if (id == pilot_uav_id(drone.slot) && expected && *expected == boost::json::value(identity)) {
+                        asserted_handoff["resolved_real_binding"] = boost::json::object{{"uav_id", id}, {"drone_id", identity}};
+                        break;
+                    }
+                }
+                if (!asserted_handoff.contains("resolved_real_binding"))
+                    asserted_handoff["resolved_real_binding"] = false;
+            }
+        }
+    }
     if (action == "simulation_assign_real") {
         assigned_uav = get_string(body, "assigned_uav_id");
         asserted_handoff = body;

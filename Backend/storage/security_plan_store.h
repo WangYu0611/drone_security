@@ -272,6 +272,7 @@ public:
             for(const auto& id:original.at("mission_ids").as_array()) {
                 auto m=missions.at(id.as_string()).as_object();auto mid=allocate(next,"mission-");
                 m["id"]=mid;m["plan_id"]=planId;m["status"]="DRAFT";
+                m.erase("preferred_real_plan_id");
                 const auto oldRoute=str(m,"route_id");if(!oldRoute.empty()) {
                     auto r=paths.at(oldRoute).as_object();const auto rid=allocate(next,"route-");r["route_id"]=rid;paths[rid]=r;m["route_id"]=rid;
                 }
@@ -426,6 +427,14 @@ public:
                         for(const auto& id:ids)if(std::string(id.as_string())!=missionId)
                             for(const auto& other:assignment(missions.at(id.as_string()).as_object()))if(other==v)
                                 throw PlanError("UAV_ALREADY_ASSIGNED",uav+" already assigned");
+                    }
+                    const auto* refresh = request.if_contains("refresh_real_candidate");
+                    const bool refreshCandidate = refresh && *refresh == true;
+                    const bool changedAssignment = assignment(mission) != assigned;
+                    if (changedAssignment || refreshCandidate) {
+                        if (refreshCandidate && changedAssignment)
+                            throw PlanError("VERSION_CONFLICT", "Save aircraft assignment before refreshing its association");
+                        captureSimulationCandidate(next, mission, assigned);
                     }
                     mission["assigned_uav_ids"]=assigned;
                     mission["assigned_uav_id"]=assigned.empty()?boost::json::value(nullptr):assigned.front();

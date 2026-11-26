@@ -354,4 +354,117 @@ bool FPlanMissionActionsTest::RunTest(const FString&){
     ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Tests/P55OfflineMap")));ADD_LATENT_AUTOMATION_COMMAND(FPlanTasksStartPIE());ADD_LATENT_AUTOMATION_COMMAND(FWaitLatentCommand(8));
     ADD_LATENT_AUTOMATION_COMMAND(FPlanMissionActions(this));ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());return true;
 }
+
+// Run against a loopback workspace seeded with a reviewed, linked simulator.
+class FPlanRehearsalWorkflow : public IAutomationLatentCommand
+{
+public:
+    explicit FPlanRehearsalWorkflow(FAutomationTestBase& InTest) : Test(InTest) {}
+
+    bool Update() override
+    {
+        if (FPlatformTime::Seconds() > Deadline)
+        {
+            Test.AddError(FString::Printf(TEXT("Rehearsal workflow timed out at step %d"), Step));
+            return true;
+        }
+        USecurityPlanWorkspaceWidget* Workspace = nullptr;
+        for (TObjectIterator<USecurityPlanWorkspaceWidget> It; It; ++It)
+        {
+            if (It->GetWorld() && It->GetWorld()->WorldType == EWorldType::PIE)
+            {
+                Workspace = *It;
+                break;
+            }
+        }
+        if (!Workspace) return false;
+        auto* Sync = Workspace->GetGameInstance()->GetSubsystem<UOperationalContextSubsystem>();
+        if (!Sync->IsHydrated() || Workspace->bPending) return false;
+        Workspace->Refresh();
+        if (!Workspace->ErrorCode.IsEmpty())
+        {
+            Test.AddError(TEXT("Command reported ") + Workspace->ErrorCode);
+            return true;
+        }
+        const auto State = Sync->GetPlans();
+        const auto Plans = Object(State, TEXT("plans")), Runs = Object(State, TEXT("executions"));
+        if (Step == 0)
+        {
+            SourcePlan = Field(Sync->GetContext(), TEXT("active_security_plan_id"));
+            SourceMission = Field(Sync->GetContext(), TEXT("active_mission_id"));
+            const auto Source = Find(State, TEXT("plans"), SourcePlan);
+            const auto Mission = Find(State, TEXT("missions"), SourceMission);
+            if (!Test.TestTrue(TEXT("Expected a single isolated reviewed fixture"), Plans && Plans->Values.Num() == 1 &&
+                Field(Source, TEXT("name")) == TEXT("Rehearsal Binding QA") && Runs && Runs->Values.Num() == 1)) return true;
+            SourceRun = Field(Runs->Values.CreateConstIterator().Value()->AsObject(), TEXT("execution_id"));
+            Target = Field(Object(Mission, TEXT("planned_real_aircraft")), TEXT("uav_id"));
+            if (!Test.TestFalse(TEXT("Fixture has a saved candidate"), Target.IsEmpty())) return true;
+            Workspace->OpenMissionExecution(SourcePlan, SourceMission);
+        }
+        else if (Step == 1)
+        {
+            if (!Test.TestTrue(TEXT("Reviewed source execution is visible"), Workspace->bExecutionView &&
+                Workspace->Actions[TEXT("simulation_prepare_real")]->IsVisible())) return true;
+            Workspace->Action(TEXT("simulation_prepare_real"), 0);
+            Test.TestEqual(TEXT("Command preselects the pinned candidate"), Workspace->RehearsalRealTarget->GetSelectedOption(), Target);
+            Test.TestTrue(TEXT("Preparing leaves the isolated plan list unchanged"), Plans->Values.Num() == 1);
+            if (!Test.TestTrue(TEXT("Separate confirmation is available"), Workspace->Actions[TEXT("simulation_assign_real")]->IsVisible() &&
+                Workspace->Actions[TEXT("simulation_assign_real")]->GetIsEnabled())) return true;
+            Workspace->Action(TEXT("simulation_assign_real"), 0);
+        }
+        else if (Step == 2)
+        {
+            const auto Draft = Find(State, TEXT("plans"), Workspace->PlanId);
+            if (!Test.TestTrue(TEXT("Confirmation opens the linked real draft"), Workspace->PlanId != SourcePlan &&
+                Plans->Values.Num() == 2 && Field(Draft, TEXT("status")) == TEXT("DRAFT") &&
+                Field(Object(Draft, TEXT("real_assignment")), TEXT("source_execution_id")) == SourceRun &&
+                Field(Object(Draft, TEXT("real_assignment")), TEXT("assigned_uav_id")) == Target)) return true;
+            Test.TestEqual(TEXT("Preparing a draft starts no additional execution"), Runs->Values.Num(), 1);
+            for (const int32 Filter : {1, 2})
+            {
+                Workspace->PlanTypeFilter->SetSelectedIndex(Filter);
+                Workspace->Refresh();
+                Test.TestEqual(TEXT("Each mode shows one of the same-named plans"), Workspace->VisiblePlanCards, 1);
+            }
+            Workspace->PlanTypeFilter->SetSelectedIndex(0);
+            Workspace->Refresh();
+            Test.TestEqual(TEXT("All plans includes both modes"), Workspace->VisiblePlanCards, 2);
+            if (!Test.TestTrue(TEXT("The draft links to its exact source rehearsal"), Workspace->Actions[TEXT("open_related_plan")]->IsVisible()))
+                return true;
+            Workspace->Action(TEXT("open_related_plan"), 0);
+        }
+        else
+        {
+            Test.TestTrue(TEXT("Returning to source opens the reviewed execution again"), Workspace->PlanId == SourcePlan &&
+                Workspace->MissionId == SourceMission && Workspace->OpenedRehearsalId == SourceRun && Workspace->bExecutionView);
+            return true;
+        }
+        ++Step;
+        return false;
+    }
+
+private:
+    FAutomationTestBase& Test;
+    double Deadline = FPlatformTime::Seconds() + 60;
+    int32 Step = 0;
+    FString SourcePlan, SourceMission, SourceRun, Target;
+};
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FPlanRehearsalWorkflowTest, "DroneOps.PlanConfiguration.RehearsalWorkflow",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FPlanRehearsalWorkflowTest::RunTest(const FString&)
+{
+    FString Role, Http, Ws;
+    const auto* Args = FCommandLine::Get();
+    if (!TestTrue(TEXT("Run only in the isolated loopback Command fixture"), FParse::Param(Args, TEXT("RehearsalBindingQa")) &&
+        FParse::Value(Args, TEXT("ClientRole="), Role) && Role == TEXT("Command") &&
+        FParse::Value(Args, TEXT("P1Http="), Http) && Http.StartsWith(TEXT("http://127.0.0.1:")) &&
+        FParse::Value(Args, TEXT("P1Ws="), Ws) && Ws.StartsWith(TEXT("ws://127.0.0.1:")))) return false;
+    ADD_LATENT_AUTOMATION_COMMAND(FEditorLoadMap(TEXT("/Game/Tests/P55OfflineMap")));
+    ADD_LATENT_AUTOMATION_COMMAND(FPlanTasksStartPIE());
+    ADD_LATENT_AUTOMATION_COMMAND(FPlanRehearsalWorkflow(*this));
+    ADD_LATENT_AUTOMATION_COMMAND(FEndPlayMapCommand());
+    return true;
+}
 #endif

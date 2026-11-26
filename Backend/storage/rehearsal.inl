@@ -48,6 +48,31 @@ private:
         return (latest?latest->at("position"):aircraft.at("home_position")).as_object();
     }
 
+    static void setSimulationBinding(Object& aircraft, const Object& request) {
+        const auto* target = request.if_contains("resolved_real_binding");
+        if (!target) return;
+        if (!target->is_null() && (!target->is_object() || !target->as_object().contains("drone_id")))
+            throw PlanError("REAL_UAV_REGISTRATION_CHANGED", "Select the currently registered aircraft");
+        const auto* previous = aircraft.if_contains("binding_version");
+        const auto version = previous ? previous->to_number<int64_t>() : 0;
+        aircraft["binding_version"] = version + 1;
+        aircraft["real_binding"] = *target;
+    }
+
+    static void captureSimulationCandidate(const Object& doc, Object& mission, const Array& assigned) {
+        mission.erase("planned_real_aircraft");
+        if (assigned.size() != 1) return;
+        const auto* simulation = doc.at("simulation_uavs").as_object().if_contains(assigned.front().as_string());
+        if (!simulation) return;
+        const auto& aircraft = simulation->as_object();
+        const auto* binding = aircraft.if_contains("real_binding");
+        if (!binding || !binding->is_object()) return;
+        auto candidate = binding->as_object();
+        candidate["simulated_uav_id"] = assigned.front();
+        candidate["binding_version"] = aircraft.at("binding_version");
+        mission["planned_real_aircraft"] = std::move(candidate);
+    }
+
     void createSimulationAircraft(Object& doc,const Object& r,const std::set<std::string>& physicalUavs,int maximum=12) const {
         const auto* count=r.if_contains("count");
         if(!count || !count->is_number() || !std::isfinite(count->to_number<double>()) ||
@@ -66,6 +91,8 @@ private:
         auto& fleet=doc.at("simulation_uavs").as_object();
         std::vector<int> slots;
         const int requested=count->to_number<int>();
+        if (requested != 1 && r.contains("resolved_real_binding"))
+            throw PlanError("SIMULATION_BINDING_SINGLE_AIRCRAFT", "Set the association on an individual simulated aircraft");
         for(int slot=simulationFirstSlot_;slot<=simulationLastSlot_ && static_cast<int>(slots.size())<requested;++slot) {
             const auto uid="UAV-"+std::to_string(slot);
             if(!fleet.contains(uid) && !physicalUavs.count(uid))slots.push_back(slot);
@@ -102,6 +129,7 @@ private:
             const int ordinal=slot-simulationFirstSlot_+1;
             fleet[uid]=Object{{"slot",slot},{"name","SIM-"+std::string(ordinal<10?"0":"")+std::to_string(ordinal)},
                 {"home_position",std::move(start->second)}};
+            setSimulationBinding(fleet.at(uid).as_object(), r);
             ++start;
         }
     }
@@ -214,13 +242,34 @@ private:
         if(!physicalUavs.count(uid) || isSimulatedAircraft(doc,uid) || !registration ||
            !registration->is_int64() || registration->as_int64()<=0)
             throw PlanError("REAL_UAV_REQUIRED","Select a registered real aircraft");
+        if (const auto* expected = request.if_contains("expected_assigned_drone_id"); expected && *expected != *registration)
+            throw PlanError("REAL_UAV_REGISTRATION_CHANGED", "Select the currently registered aircraft");
 
         const auto sourcePlan=str(execution,"plan_id"),sourceMission=str(execution,"mission_id");
+        auto& sourceTask = doc.at("missions").as_object().at(sourceMission).as_object();
+        for (const auto& entry : doc.at("plans").as_object()) {
+            const auto& plan = entry.value().as_object();
+            const auto* linked = plan.if_contains("real_assignment");
+            if (!linked || !linked->is_object() || !str(plan, "source_plan_id").empty()) continue;
+            const auto& record = linked->as_object();
+            const auto* identity = record.if_contains("assigned_drone_id");
+            if (str(record, "source_execution_id") == str(execution, "execution_id") &&
+                str(record, "assigned_uav_id") == uid && identity && *identity == *registration) {
+                if (const auto& tasks = plan.at("mission_ids").as_array(); !tasks.empty()) {
+                    sourceTask["preferred_real_plan_id"] = entry.key();
+                    doc["configuration_session"] = nullptr;
+                    return {{"plan_id", entry.key()}, {"mission_id", tasks.front()}, {"existing_assignment", true}};
+                }
+            }
+        }
         const auto pid=allocate(doc,"plan-"),mid=allocate(doc,"mission-"),rid=allocate(doc,"route-");
         auto& plans=doc.at("plans").as_object();
         auto& missions=doc.at("missions").as_object();
         const auto& original=plans.at(sourcePlan).as_object();
-        auto mission=missions.at(sourceMission).as_object();
+        sourceTask["preferred_real_plan_id"] = pid;
+        auto mission=sourceTask;
+        mission.erase("planned_real_aircraft");
+        mission.erase("preferred_real_plan_id");
         mission["id"]=mid;mission["plan_id"]=pid;mission["route_id"]=rid;mission["status"]="DRAFT";
         mission["assigned_uav_id"]=uid;mission["assigned_uav_ids"]=Array{uid};
         missions[mid]=std::move(mission);
@@ -278,6 +327,8 @@ private:
         if(key.empty() || key.size()>128)throw PlanError("REQUEST_ID_REQUIRED","A rehearsal request ID is required");
         auto identity=r;
         identity.erase("expected_version");identity.erase("instance_id");
+        identity.erase("resolved_real_binding");
+        if (r.contains("expected_assigned_drone_id")) identity.erase("assigned_drone_id");
         auto& requests=next.at("simulation_requests").as_object();
         if(const auto* recorded=requests.if_contains(key)) {
             const auto& prior=recorded->as_object();
@@ -293,6 +344,15 @@ private:
         Object reply;
         if(action=="simulation_create") {
             createSimulationAircraft(next,r,physicalUavs);
+        } else if (action == "simulation_set_real_binding") {
+            auto& aircraft = lookup(next.at("simulation_uavs").as_object(), str(r, "simulated_uav_id"), "SIMULATION_UAV_UNAVAILABLE");
+            const auto* version = aircraft.if_contains("binding_version");
+            const auto expected = r.if_contains("expected_binding_version");
+            if (!expected || *expected != boost::json::value(version ? version->to_number<int64_t>() : 0))
+                throw PlanError("VERSION_CONFLICT", "Refresh the simulated aircraft association");
+            if (!r.contains("resolved_real_binding"))
+                throw PlanError("REAL_UAV_REQUIRED", "Choose a registered aircraft or clear the association");
+            setSimulationBinding(aircraft, r);
         } else if(action=="simulation_start") {
             checkConfigurationRequest(next,r);
             reply["execution_id"]=startRehearsal(next,r);
