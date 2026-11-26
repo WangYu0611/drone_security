@@ -429,7 +429,7 @@ python tools\simulate_telemetry.py --register --transport udp --drones 1 --hz 10
 
 `stop` 提交 `control_session_id` 和 `reason`，保留分配。`revoke` 由 Command 提交 `uav_id` 和 `grant_id`。Mock 在同一个事务内完成退出和输入作废，下一份快照的操控状态为 `IDLE`，飞机状态为 `CONFIRMED`。重启恢复分配，操控需要再次显式启用。位置通过 `/api/drones` 的 `mock_position` 读取，驾驶员操控产生的位置标为 `mock_pilot`。
 
-Command 负责分配和收回飞机。只有获分配的驾驶员选机、等图传出帧并启用后，其绑定的 Pilot 连接才能发送摇杆和动作。UE 以约 20 Hz 采集并发送摇杆。Backend 校验身份、机号、会话、输入窗口和序号，累积有效输入，每 250 ms 最多推进一次模拟目标。同一飞机由 Backend 在 Pilot、任务执行和编队/移动指令之间仲裁。
+Command 负责分配和收回飞机。原生 UE Pilot 选机、等图传出帧并显式启用后，以约 20 Hz 直接向绑定的 `/ws/pilot-control` 会话发送摇杆和动作。Backend 校验身份、机号、会话、输入窗口和序号，累积有效输入，每 250 ms 最多推进一次模拟目标。同一飞机由 Backend 在 Pilot、任务执行和编队/移动指令之间仲裁。
 
 前向和横向按 Backend 当前模拟航向旋转，`vertical` 正值上升。`yaw` 保留为输入字段，v1 位置模拟忽略该输入。以当前 Mock 起点为基准，水平半径上限为 6 m，普通空中摇杆的相对高度范围为 0.5–6 m。平移速度上限为 0.8 m/s，每次目标位移上限为 0.5 m，同时执行机间间距校验。任务交接沿用已有模拟位置，包线之外的飞机可逐步回到范围内。
 
@@ -437,11 +437,17 @@ Video 的「交接申请」取当前画面飞机。Map 的「手动接管」取�
 
 `action` 省略或为 `none` 时传连续摇杆。地面状态需要显式 `takeoff` 才能使用摇杆，起飞目标为起点上方 2 m，开始起飞的前 3 秒仅允许垂直移动。`land` 原地下降至起点标高（相对高度 0 m），空中可用 `gohome` 回到起点上方 2 m。每个动作只提交一次，推进仍要求新鲜输入帧。`hold` 清除目标，后续有效摇杆可继续。`estop` 清除目标并锁定当前会话的输入，Command 和 Pilot 的快照均显示 `input_frozen`。最后一帧超过 400 ms 或超出输入窗口即停止推进，恢复输入时从已确认位置开始。会话在 750 ms 无有效输入后退出。退出、撤销或重连均作废旧帧和旧目标。停止后重新启用可解除急停锁定。
 
-#### 交接原型对照
+#### 本机模拟输入桥
 
-交接包的示例配置使用调试注入。交接文档将 Backend WebSocket 输出描述为 20 Hz，包内脚本实际在目标更新时发送，目标更新间隔为 250 ms，空闲时约每秒补发一次。脚本消息携带实例 ID，省略设计稿列出的会话字段，也没有现有 Pilot 通道的认证和订阅。直连 UDP 原型使用的扁平报文和数值 `mode` 与仓库第 9 节所示的嵌套报文和字符串 `mode` 不兼容。本节的 v1 行为适用于显式启用的隔离 Mock，位移结果由 Backend 模拟。
+`GET /` 仅在显式 Mock 已加载 Pilot 控制凭据、`server.debug` 关闭、`port_map` 为空且数据目录中无 `real_execution.json` 时公布 `pilot_sim_bridge`。桥从本机升级到 `/ws/pilot-control`，同时提交 Pilot 的 `Authorization: Bearer` 和 `X-Drone-Pilot-Sim-Bridge: 1`。Backend 对带该标记的连接检查回环地址、Pilot 角色和模拟配置。
 
-本机 UDP `stick` 输入可通过 [驾驶员 Mock 输入桥](../tools/pilot_sim_bridge/README.md) 进入同一个认证会话。输入桥使用独立 Mock 配置和 `pilot_sim_bridge` 能力。
+桥接收本机 UDP `stick`。Command 授权、Pilot 启用且 Backend 下发输入窗口后，桥以最高 20 Hz 转发 `type: pilot_input`，包含 `uav_id`、`control_session_id`、`window_id`、递增 `seq`、`axes` 和 `action`。普通帧的 `action` 为 `none`。UDP 的 `up` 映射为 `axes.vertical`，模拟航向由 Backend 决定。Backend 从收到最后一帧有效输入起计算 400 ms 输入期限和 750 ms 会话期限。 [驾驶员 Mock 输入桥](../tools/pilot_sim_bridge/README.md)
+
+#### 历史交接原型
+
+原型示例配置使用调试注入。原型的 WebSocket 设计稿标注 20 Hz，脚本按约 250 ms 的目标更新发送，空闲时约每秒补发一次。原型消息携带实例 ID，缺少现行 Pilot 认证、授权与会话。原型直连 UDP 的扁平消息也与仓库原有设备报文不兼容。现行输入桥采用实时摇杆输入，位置目标由 Backend 模拟。
+
+#### 协议验证
 
 使用 Node.js 24 运行协议验收。脚本创建独立 Backend 进程、临时凭据、Mock 注册表和端口，输出位于 `Saved/PilotControlQA`。如需指定后端构建，设置 `DRONE_BACKEND_EXE`。
 
@@ -449,7 +455,7 @@ Video 的「交接申请」取当前画面飞机。Map 的「手动接管」取�
 node Backend/tests/pilot_control_integration.mjs
 ```
 
-这项验收覆盖后台 HTTP/WebSocket 与 Mock 位移。原生界面、实体遥控器、图传和飞控链路分别验收。
+这项验收覆盖输入桥到 Backend 的本机 UDP、认证 WebSocket、授权与模拟位移。PX4 SITL 和原生 UE 界面另行验收。 [隔离协议验证记录](../Evidence/PilotSimBridge/2026-11-26/validation.md)
 
 ## 11. 日志与故障定位
 

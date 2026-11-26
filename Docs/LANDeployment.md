@@ -43,6 +43,8 @@
 
 ## 两台电脑运行驾驶员 Mock
 
+本节使用 UE Pilot 客户端。交接包格式的 UDP 摇杆联调需要在同一台电脑上运行发送端、输入桥和隔离 Mock Backend。 [本机输入桥指南](../tools/pilot_sim_bridge/README.md)
+
 | 电脑 | 启动器选择 | 本机运行内容 |
 | --- | --- | --- |
 | A | **Auto**（匹配 Backend） | Mock Backend。可用 `SetupDroneBackend.cmd` 构建 |

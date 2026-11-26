@@ -14,6 +14,8 @@
 
 当前主流程包括安保方案编辑与部署、闭合航线、方案整体移动、Mock 执行，以及执行中单机接管移动。日常操作见 [使用与演示手册](Docs/Stage1/Stage1-Demo-Runbook.md)，配置与排障见 [Windows 首次运行指南](Docs/First-Run-Windows.md)。
 
+本机手动控制联调可将 UDP 摇杆输入经认证桥接交给 Backend，由 Backend 推进 Mock 飞机位置。 [驾驶员 Mock 输入桥](tools/pilot_sim_bridge/README.md) · [验收记录与 PX4 SITL 状态](Evidence/PilotSimBridge/2026-11-26/validation.md)
+
 需要 Backend、Command、Map、Video 分别运行在四台电脑时，使用 [局域网四机部署指南](Docs/LANDeployment.md)：四机复制同一份部署 JSON，在启动器各选自己的角色，先启动 Backend。默认 `All` 保留下面的单机流程；Backend 专用电脑可运行 `SetupDroneBackend.cmd`，不要求 UE/Cesium。
 
 **新电脑必须额外安装 Cesium for Unreal 到 UE 5.8**，并通过 Git LFS 下载资源。只安装 UE 和 VS 尚不足以运行。
