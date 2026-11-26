@@ -9,6 +9,7 @@
 2. [使用与演示手册](Stage1/Stage1-Demo-Runbook.md)：方案创建/编辑/部署、Map 选机与框选、Mock 执行、接管移动、视频联动、关闭与恢复。
 3. [Launcher 说明](../Launcher/README.md)：端口、本地配置、窗口管理和启动重置规则。
 4. [地图启动与缓存](MarinaBayStartup.md)、[方案配置流程](PLAN-Configuration-Workflow.md)、[单机接管](ManualTakeover.md)：专项说明及证据边界。
+5. [安保方案真机地面验收清单](Security-Plan-Real-Aircraft-Ground-Acceptance.md) 覆盖单机真机关联、预演、检查、部署及开始确认页的停手点。
 
 从仓库根目录先运行 `SetupDroneSecurity.cmd` 编译，配置地图服务，再用 `CheckDroneSecurity.cmd` 检查和 `DroneSecurityLauncher.cmd` 启动。正常 Launcher 使用 **19880/19881**、`Saved/Stage1/data`，无需启动下面的独立后端。默认新建自有 Mock Backend 会执行编队重置；活动执行与预约的处理见使用手册。
 
