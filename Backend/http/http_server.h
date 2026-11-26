@@ -184,6 +184,7 @@ private:
     std::string mock_mcp_bridge_token_;
     // The plan transaction lock also serializes Pilot authority and Mock motion.
     std::unique_ptr<PilotControlStore> pilot_control_;
+    bool pilot_sim_bridge_enabled_ = false;
     std::map<std::string, PilotControlStore::Actor> pilot_credentials_;
     struct PilotSocket;
     std::map<std::string, std::shared_ptr<PilotSocket>> pilot_connections_;

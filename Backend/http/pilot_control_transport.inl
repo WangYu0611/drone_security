@@ -298,13 +298,35 @@ http::response<http::string_body> HttpServer::HandlePilotControlHttp(
 
 void HttpServer::RunPilotControlWsSession(tcp::socket socket,
                                          http::request<http::string_body> request) {
-    const auto* actor = PilotControlActor(request);
-    if (!pilot_control_ || !actor) {
-        const int status = pilot_control_ ? 401 : 404;
-        const std::string code = pilot_control_ ? "UNAUTHENTICATED" : "PILOT_CONTROL_DISABLED";
+    const auto reject = [&](int status, const char* code) {
         const auto reply = MakeResponse(request, status, json_stringify(boost::json::object{{"code", code}}));
         http::write(socket, reply);
+    };
+    const auto* actor = PilotControlActor(request);
+    if (!pilot_control_ || !actor) {
+        if (pilot_control_) reject(401, "UNAUTHENTICATED");
+        else reject(404, "PILOT_CONTROL_DISABLED");
         return;
+    }
+    if (const auto marker = request.find("X-Drone-Pilot-Sim-Bridge"); marker != request.end()) {
+        if (marker->value() != "1") {
+            reject(400, "INVALID_PILOT_SIM_BRIDGE_HEADER");
+            return;
+        }
+        if (!pilot_sim_bridge_enabled_) {
+            reject(404, "PILOT_SIM_BRIDGE_DISABLED");
+            return;
+        }
+        beast::error_code error;
+        const auto peer = socket.remote_endpoint(error);
+        if (error || !peer.address().is_loopback()) {
+            reject(403, "PILOT_SIM_BRIDGE_LOOPBACK_REQUIRED");
+            return;
+        }
+        if (actor->role != PilotControlStore::Role::Pilot) {
+            reject(403, "ROLE_FORBIDDEN");
+            return;
+        }
     }
 
     static const auto process_id = std::chrono::system_clock::now().time_since_epoch().count();

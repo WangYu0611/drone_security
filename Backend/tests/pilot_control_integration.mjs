@@ -3,9 +3,11 @@
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
+import { createSocket } from 'node:dgram';
 import fs from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
+import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -19,6 +21,8 @@ const configPath = path.join(runDirectory, 'config.json');
 const registryPath = path.join(runDirectory, 'drones.json');
 const mockPath = path.join(runDirectory, 'mock_execution.json');
 const controlPath = '/api/pilot-control';
+const bridgePath = path.join(root, 'tools', 'pilot_sim_bridge', 'bridge.mjs');
+const bridgeHeader = { 'X-Drone-Pilot-Sim-Bridge': '1' };
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 const aircraftIds = ['UAV-01', 'UAV-02', 'UAV-03', 'UAV-04'];
 const [firstAircraft, secondAircraft, unassignedAircraft, wingAircraft] = aircraftIds;
@@ -28,6 +32,7 @@ const otherPilot = { token: randomUUID(), role: 'Pilot', id: 'pilot-b-qa' };
 const controlSockets = [];
 const passed = [];
 const processIds = [];
+const bridges = [];
 let child;
 
 async function reservePort() {
@@ -97,10 +102,10 @@ function send(client, body) {
     client.socket.send(JSON.stringify(body));
 }
 
-async function openSocket(url, actor) {
-    const socket = actor
-        ? new WebSocket(url, { headers: { Authorization: `Bearer ${actor.token}` } })
-        : new WebSocket(url);
+async function openSocket(url, actor, headers = {}) {
+    const socket = new WebSocket(url, { headers: {
+        ...headers, ...(actor && { Authorization: `Bearer ${actor.token}` }),
+    } });
     const client = { actor, socket, events: [] };
     controlSockets.push(client);
     socket.addEventListener('message', event => client.events.push(JSON.parse(event.data)));
@@ -348,6 +353,121 @@ async function stopBackend() {
 function pass(name) {
     passed.push(name);
     console.log(`PASS ${name}`);
+}
+
+function startBridge() {
+    const bridgeProcess = spawn(process.execPath, [bridgePath,
+        '--http-port', String(httpPort), '--ws-port', String(wsPort), '--listen-port', '0',
+        '--pilot-id', pilot.id, '--uav-id', firstAircraft, '--activate',
+    ], {
+        cwd: root,
+        env: { ...process.env, DRONE_PILOT_CONTROL_CREDENTIALS: credentialPath },
+        stdio: ['ignore', 'pipe', 'pipe'],
+        windowsHide: true,
+    });
+    const bridge = { process: bridgeProcess, events: [], errors: '' };
+    bridges.push(bridge);
+    const lines = createInterface({ input: bridgeProcess.stdout });
+    lines.on('line', line => {
+        try { bridge.events.push(JSON.parse(line)); }
+        catch { bridge.errors += `${line}\n`; }
+    });
+    bridgeProcess.stderr.setEncoding('utf8');
+    bridgeProcess.stderr.on('data', chunk => { bridge.errors += chunk; });
+    bridge.exited = new Promise(resolve => {
+        bridgeProcess.once('error', error => { bridge.errors += String(error); });
+        bridgeProcess.once('close', (code, signal) => resolve({ code, signal }));
+    });
+    return bridge;
+}
+
+function sendStick(socket, port, packet) {
+    return new Promise((resolve, reject) => socket.send(JSON.stringify(packet), port, '127.0.0.1',
+        error => error ? reject(error) : resolve()));
+}
+
+async function verifyBridge() {
+    const bridge = startBridge();
+    const listening = await until(() => {
+        assert.equal(bridge.process.exitCode, null, JSON.stringify(bridge.events) + bridge.errors);
+        return bridge.events.find(event => event.event === 'listening');
+    }, Boolean, 'loopback bridge listener');
+    const ingress = createSocket('udp4');
+    const otherIngress = createSocket('udp4');
+    const stickSession = randomUUID().replaceAll('-', '');
+    let sequence = 0;
+    const frame = (axes, action) => ({
+        type: 'stick', session: stickSession, seq: ++sequence, t: Date.now() / 1000,
+        heading_deg: 0, forward: 0, right: 0, up: 0, yaw: 0, action: action ?? 'none', ...axes,
+    });
+    const sample = (axes, action) => sendStick(ingress, listening.port, frame(axes, action));
+    try {
+        const before = await pose(firstAircraft);
+        await sustainInput(sample, 220);
+        assert.equal((await assignedState(firstAircraft)).grant_id, null);
+        assert.deepEqual(await pose(firstAircraft), before);
+        await sleep(200);
+        await change(command, 'grant', {
+            pilot_id: pilot.id,
+            uav_ids: [firstAircraft],
+            expected_revisions: { [firstAircraft]: (await assignedState(firstAircraft)).revision },
+        });
+        await sustainInput(sample, 280, { forward: 1 });
+        assert.equal((await assignedState(firstAircraft)).control_state, 'IDLE');
+        assert.deepEqual(await pose(firstAircraft), before);
+        await until(async () => {
+            await sample();
+            return bridge.events.find(event => event.event === 'active');
+        }, Boolean, 'bridge with an assigned control session and fresh neutral stick');
+        pass('The bridge requires a Command grant and a fresh neutral stick before activation');
+
+        await sample({}, 'takeoff');
+        await until(async () => {
+            await sample();
+            return (await pose(firstAircraft))[2];
+        }, height => height > before[2] + 0.2, 'bridge one-shot takeoff');
+        await sample({}, 'hold');
+        await sustainInput(sample, 300);
+        const held = await pose(firstAircraft);
+        await sustainInput(sample, 350);
+        assert.deepEqual(await pose(firstAircraft), held);
+
+        const eastward = await until(async () => {
+            await sample({ forward: 1 });
+            return pose(firstAircraft);
+        }, value => offsetMetres(held, value)[1] >= 0.2, 'bridge body-axis movement');
+        assert(Math.abs(offsetMetres(held, eastward)[0]) < 0.03);
+        await until(async () => {
+            await sample({ up: 1 });
+            return (await pose(firstAircraft))[2];
+        }, height => height > eastward[2] + 0.16, 'bridge up mapped to vertical');
+        pass('UDP stick input reaches Backend Mock through the authenticated bridge, including body axes and one-shot actions');
+
+        await sustainInput(sample, 250);
+        const stopped = await pose(firstAircraft);
+        await sustainInput(async () => {
+            const denied = frame({ up: 1 });
+            await sendStick(otherIngress, listening.port, denied);
+            await sendStick(ingress, listening.port, { ...denied, session: 'other-stick' });
+            await sendStick(ingress, listening.port, { ...denied, seq: 1 });
+            await sendStick(ingress, listening.port, { ...denied, up: 2 });
+            await sample();
+        }, 450);
+        assert.deepEqual(await pose(firstAircraft), stopped);
+        pass('The bridge discards other senders, mismatched sessions, replayed sequences and invalid axes');
+
+        await sustainInput(sample, 300, { up: 1 });
+        await sleep(480);
+        const last = await pose(firstAircraft);
+        await until(() => snapshot(pilot), state => state.last_exit?.reason === 'INPUT_TIMEOUT' &&
+            aircraft(state, firstAircraft)?.control_state === 'IDLE', 'bridge input timeout');
+        assert.deepEqual(await pose(firstAircraft), last);
+        await until(() => bridge.process.exitCode !== null, Boolean, 'bridge shutdown after input timeout');
+        pass('Loss of UDP input freezes motion, expires the Backend session, and terminates the bridge');
+    } finally {
+        ingress.close();
+        otherIngress.close();
+    }
 }
 
 let failure, executableSha256;
@@ -776,12 +896,40 @@ try {
     await move(unassignedAircraft, pilotInputStream(selectedPilot, unassignedAircraft, handoffSession));
     pass('Command hands off only the selected mission member, then only the designated Pilot can activate and move it');
 
+    assert((await request('/')).capabilities.includes('pilot_sim_bridge'));
+    assert.equal((await openSocket(`${wsUrl}/ws/pilot-control`, undefined, bridgeHeader)).open, false);
+    assert.equal((await openSocket(`${wsUrl}/ws/pilot-control`, command, bridgeHeader)).open, false);
+    await change(command, 'revoke', { uav_id: firstAircraft, grant_id: firstGrant.grant_id });
+    await verifyBridge();
+
     await stopBackend();
+    const realPath = path.join(runDirectory, 'real_execution.json');
+    fs.writeFileSync(realPath, JSON.stringify({ enabled: false }));
+    try {
+        await startBackend();
+        const { capabilities } = await request('/');
+        assert(capabilities.includes('pilot_control_mock'));
+        assert(!capabilities.includes('pilot_sim_bridge'));
+        assert.equal((await openSocket(`${wsUrl}/ws/pilot-control`, pilot, bridgeHeader)).open, false);
+        await connect(pilot);
+        const refusedBridge = startBridge();
+        await until(() => refusedBridge.process.exitCode !== null, Boolean, 'bridge refusal on incompatible Backend');
+        const { code } = await refusedBridge.exited;
+        assert(code > 0, JSON.stringify(refusedBridge.events) + refusedBridge.errors);
+        assert(!refusedBridge.events.some(event => event.event === 'listening'));
+        pass('A real configuration file disables the marked bridge while existing Mock clients remain compatible');
+    } finally {
+        await stopBackend();
+        fs.rmSync(realPath, { force: true });
+    }
+
     const inactiveMockPath = `${mockPath}.inactive`;
     fs.renameSync(mockPath, inactiveMockPath);
     try {
         await startBackend();
-        assert(!(await request('/')).capabilities.includes('pilot_control_mock'));
+        const { capabilities } = await request('/');
+        assert(!capabilities.includes('pilot_control_mock'));
+        assert(!capabilities.includes('pilot_sim_bridge'));
         await request(controlPath, { actor: command, status: 404, code: 'PILOT_CONTROL_DISABLED' });
         const unsupportedVideo = await connectContext('Video', false);
         await requestPilotHandoff(unsupportedVideo, firstAircraft, randomUUID(),
@@ -795,14 +943,22 @@ try {
     console.error(failure);
     process.exitCode = 1;
 } finally {
+    const bridgeRuns = [];
+    for (const bridge of bridges) {
+        const { process: bridgeProcess } = bridge;
+        if (bridgeProcess.exitCode === null && bridgeProcess.signalCode === null) bridgeProcess.kill();
+        const exit = await bridge.exited;
+        bridgeRuns.push({ pid: bridgeProcess.pid, exit, events: bridge.events, errors: bridge.errors });
+    }
     await stopBackend();
     fs.rmSync(credentialPath, { force: true });
     fs.writeFileSync(path.join(runDirectory, 'result.json'), JSON.stringify({
-        scope: 'Owned Backend with synthetic Mock aircraft and protocol clients',
+        scope: 'Owned loopback Backend, UDP bridge, synthetic Mock aircraft, and protocol clients',
         executableSha256,
         httpPort,
         wsPort,
         processIds,
+        bridgeRuns,
         passed,
         result: failure ? 'FAIL' : 'PASS',
         failure,

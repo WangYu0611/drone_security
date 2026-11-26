@@ -146,7 +146,8 @@ HttpServer::HttpServer(const AppConfig& config,
         explicitPilotMock = simulation && *simulation == true;
     }
     const auto realPath=std::filesystem::path(config.storage_path).parent_path()/"real_execution.json";
-    if(std::filesystem::exists(realPath)){
+    const bool hasRealConfig = std::filesystem::exists(realPath);
+    if(hasRealConfig){
         std::ifstream input(realPath);std::string text((std::istreambuf_iterator<char>(input)),{});
         const auto real=boost::json::parse(text).as_object();
         if(real.contains("enabled") && real.at("enabled").as_bool()){
@@ -158,12 +159,13 @@ HttpServer::HttpServer(const AppConfig& config,
         const std::string value(token);
         static const std::regex secret("[a-f0-9]{64}");
         if (!std::regex_match(value, secret) || !explicitPilotMock ||
-            std::filesystem::exists(realPath) || !config_.port_map.empty()) {
+            hasRealConfig || !config_.port_map.empty()) {
             throw std::runtime_error("Mock MCP requires an explicit simulation workspace, no real configuration or UDP mappings, and a 32-byte hex bridge token");
         }
         mock_mcp_bridge_token_ = value;
     }
     LoadPilotControlCredentials(explicitPilotMock && !security_plans_.usesRealAdapter());
+    pilot_sim_bridge_enabled_ = pilot_control_ && !hasRealConfig && !config_.debug && config_.port_map.empty();
     // 注册 DroneManager 回调 -> WS 推送
     drone_mgr_.SetTelemetryCallback([this](int drone_id, const TelemetryData& tel, DroneConnectionState connection) {
         const double received_at=std::chrono::duration<double>(
@@ -577,6 +579,7 @@ http::response<http::string_body> HttpServer::HandleHttp(
                 auto& capabilities = status.at("capabilities").as_array();
                 capabilities.emplace_back("pilot_control_mock");
                 capabilities.emplace_back("pilot_control_actions");
+                if (pilot_sim_bridge_enabled_) capabilities.emplace_back("pilot_sim_bridge");
             }
             return MakeResponse(req, 200, json_stringify(status));
         }

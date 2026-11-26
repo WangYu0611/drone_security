@@ -441,6 +441,8 @@ Video 的「交接申请」取当前画面飞机。Map 的「手动接管」取�
 
 交接包的示例配置使用调试注入。交接文档将 Backend WebSocket 输出描述为 20 Hz，包内脚本实际在目标更新时发送，目标更新间隔为 250 ms，空闲时约每秒补发一次。脚本消息携带实例 ID，省略设计稿列出的会话字段，也没有现有 Pilot 通道的认证和订阅。直连 UDP 原型使用的扁平报文和数值 `mode` 与仓库第 9 节所示的嵌套报文和字符串 `mode` 不兼容。本节的 v1 行为适用于显式启用的隔离 Mock，位移结果由 Backend 模拟。
 
+本机 UDP `stick` 输入可通过 [驾驶员 Mock 输入桥](../tools/pilot_sim_bridge/README.md) 进入同一个认证会话。输入桥使用独立 Mock 配置和 `pilot_sim_bridge` 能力。
+
 使用 Node.js 24 运行协议验收。脚本创建独立 Backend 进程、临时凭据、Mock 注册表和端口，输出位于 `Saved/PilotControlQA`。如需指定后端构建，设置 `DRONE_BACKEND_EXE`。
 
 ```powershell
